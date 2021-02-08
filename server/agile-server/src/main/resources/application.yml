@@ -1,0 +1,58 @@
+server:
+  port: 8060
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    context-path: /req
+  max-http-header-size: 20480
+oss:
+  size:
+    limit: 1536
+spring:
+  application:
+    name: agile-server
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: ${oss.size.limit}MB
+      max-request-size: ${oss.size.limit}MB
+#feign:
+#  hystrix:
+#    enabled: true
+####超时配置####
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+  ServerListRefreshInterval: 5000
+  ConnIdleEvictTimeMilliSeconds: 5000
+  eureka:
+    enabled: true
+hystrix:
+  command:
+    default:
+      circuitBreaker:
+        requestVolumeThreshold: 1000
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 600000
+  threadpool:
+    default:
+      coreSize: 10000 #缺省为10
+#prometheus监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    tags:
+      application: ${spring.application.name}

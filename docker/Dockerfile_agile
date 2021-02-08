@@ -1,0 +1,15 @@
+FROM java:8-alpine
+
+RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main/" > /etc/apk/repositories && \
+    apk --update add curl bash ttf-dejavu tzdata && \
+    rm -rf /var/cache/apk/* && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+ENV LANG=UTF-8
+ENV MEMORY=3072
+ENV TZ=Asia/Shanghai
+ENV NAME=agile
+
+COPY server/${NAME}-server/${NAME}-impl/target/${NAME}-impl.jar /home/app/${NAME}.jar
+
+CMD java -Djava.security.egd=file:/dev/./urandom -Dfile.encoding=UTF-8 -jar -Xms${MEMORY}M -Xmx${MEMORY}M -XX:+UseParNewGC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/logs/gc/ -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -XX:+PrintGCDateStamps /home/app/${NAME}.jar --spring.profiles.active=prod

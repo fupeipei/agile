@@ -1,0 +1,155 @@
+package com.yusys.agile.set.stage.dto;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @description 看板模板实体类
+ *  
+ * @date 2020/07/28
+ */
+public class KanbanTemplateDTO implements Serializable {
+
+    private static final long serialVersionUID = 6461482741892532447L;
+
+    private Long templateId;
+
+    private String templateName;
+
+    private String templateDesc;
+
+    private Byte templateType;
+
+    private Byte defaultTemplate;
+
+    private String state;
+
+    private Long createUid;
+
+    private Date createTime;
+
+    private Long updateUid;
+
+    private Date updateTime;
+
+    private String tenantCode;
+
+    private List<Long> checkedStageIdList;
+
+    //private List<TemplateStageDTO> templateStages;
+
+    public Long getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(Long templateId) {
+        this.templateId = templateId;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public String getTemplateDesc() {
+        return templateDesc;
+    }
+
+    public void setTemplateDesc(String templateDesc) {
+        this.templateDesc = templateDesc;
+    }
+
+    public Byte getTemplateType() {
+        return templateType;
+    }
+
+    public void setTemplateType(Byte templateType) {
+        this.templateType = templateType;
+    }
+
+    public Byte getDefaultTemplate() {
+        return defaultTemplate;
+    }
+
+    public void setDefaultTemplate(Byte defaultTemplate) {
+        this.defaultTemplate = defaultTemplate;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Long getCreateUid() {
+        return createUid;
+    }
+
+    public void setCreateUid(Long createUid) {
+        this.createUid = createUid;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Long getUpdateUid() {
+        return updateUid;
+    }
+
+    public void setUpdateUid(Long updateUid) {
+        this.updateUid = updateUid;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
+    public List<Long> getCheckedStageIdList() {
+        return checkedStageIdList;
+    }
+
+    public void setCheckedStageIdList(List<Long> checkedStageIdList) {
+        this.checkedStageIdList = checkedStageIdList;
+    }
+
+    @Override
+    public String toString() {
+        return "KanbanTemplateDTO{" +
+                "templateId=" + templateId +
+                ", templateName='" + templateName + '\'' +
+                ", templateDesc='" + templateDesc + '\'' +
+                ", templateType=" + templateType +
+                ", defaultTemplate=" + defaultTemplate +
+                ", state='" + state + '\'' +
+                ", createUid=" + createUid +
+                ", createTime=" + createTime +
+                ", updateUid=" + updateUid +
+                ", updateTime=" + updateTime +
+                ", tenantCode='" + tenantCode + '\'' +
+                ", checkedStageIdList=" + checkedStageIdList +
+                '}';
+    }
+}

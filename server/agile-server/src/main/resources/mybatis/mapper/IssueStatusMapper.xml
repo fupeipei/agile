@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.issue.dao.IssueStatusMapper">
+
+    <select id="getBySprintAndDate" resultType="com.yusys.agile.issue.domain.IssueStatus">
+        select project_id,sprint_id,sprint_date,issue_type,in_sprint,finished,not_started,create_time
+        from issue_status where sprint_id = #{sprintId} and sprint_date = #{sprintDate} and  issue_type = #{issueType}
+    </select>
+
+    <insert id="create">
+        insert into issue_status(project_id,sprint_id,sprint_date,issue_type,in_sprint,finished,not_started,create_time) values
+            (#{projectId},#{sprintId},#{sprintDate},#{issueType},#{inSprint},#{finished},#{notStarted},now())
+    </insert>
+
+    <update id="update">
+        update issue_status set in_sprint = #{inSprint},finished = #{finished},not_started=#{notStarted}
+        where sprint_id = #{sprintId} and sprint_date = #{sprintDate} and issue_type = #{issueType}
+    </update>
+</mapper>

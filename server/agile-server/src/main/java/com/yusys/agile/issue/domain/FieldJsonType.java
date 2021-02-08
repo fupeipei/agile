@@ -1,0 +1,76 @@
+package com.yusys.agile.issue.domain;
+
+import java.util.Date;
+import java.util.List;
+
+public class FieldJsonType {
+
+    private List<String> dataString;
+
+    private List<Byte> dataByte;
+
+    private List<Long> dataLong;
+
+    private List<Integer> dataInteger;
+
+    private Date dateBegin;//开始
+    private Date dateEnd;//结束
+
+    private Integer queryType;//1:查询全部;2:根据value查询;3:查询为null的记录
+
+    public Integer getQueryType() {
+        return queryType;
+    }
+
+    public void setQueryType(Integer queryType) {
+        this.queryType = queryType;
+    }
+
+    public List<String> getDataString() {
+        return dataString;
+    }
+
+    public void setDataString(List<String> dataString) {
+        this.dataString = dataString;
+    }
+
+    public List<Byte> getDataByte() {
+        return dataByte;
+    }
+
+    public void setDataByte(List<Byte> dataByte) {
+        this.dataByte = dataByte;
+    }
+
+    public List<Long> getDataLong() {
+        return dataLong;
+    }
+
+    public void setDataLong(List<Long> dataLong) {
+        this.dataLong = dataLong;
+    }
+
+    public List<Integer> getDataInteger() {
+        return dataInteger;
+    }
+
+    public void setDataInteger(List<Integer> dataInteger) {
+        this.dataInteger = dataInteger;
+    }
+
+    public Date getDateBegin() {
+        return dateBegin;
+    }
+
+    public void setDateBegin(Date dateBegin) {
+        this.dateBegin = dateBegin;
+    }
+
+    public Date getDateEnd() {
+        return dateEnd;
+    }
+
+    public void setDateEnd(Date dateEnd) {
+        this.dateEnd = dateEnd;
+    }
+}

@@ -1,0 +1,32 @@
+# fastdfs配置
+upload:
+  path: ${user.dir}/YuDO-oss/upload
+fdfs:
+  connect_timeout: 60
+  network_timeout: 120
+  charset: UTF-8
+  http:
+    tracker_http_port: ${FASTDFS_TRACKER__PORT:18820}
+    anti_steal_token: no
+    secret_key: ${FASTDFS_HTTP_SECRET_KEY:FastDFS1234567890}
+  tracker_server: ${FASTDFS_TRACKER_SERVER:192.168.48.2:12050}
+multipart:
+  temp:
+    location: ${OSS_MULTIPART_TMP_LOCATION:/fdata/YuDO/tmp}
+file:
+  #上传方式 sftp和fastdfs
+  type: ${FILE_UPLOAD_TYPE:sftp}
+  server: ${FASTDFS_FILE_SERVER:http://10.19.10.34:18820/}
+  #linux服务器账号密码
+  ip: ${FILE_UPLOAD_SFTP_IP:10.19.18.98}
+  port: ${FILE_UPLOAD_SFTP_PORT:22022}
+  hostUser: ${FILE_UPLOAD_SFTP_HOST_USER:wangxj}
+  pwd: ${FILE_UPLOAD_SFTP_PWD:wangxj}
+  remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/home/wangxj/test}
+
+async:
+  executor:
+    thread.core_pool_size: 8
+    thread.max_pool_size: 10
+    thread.queue_capacity: 200
+    thread.name.prefix: async-service-

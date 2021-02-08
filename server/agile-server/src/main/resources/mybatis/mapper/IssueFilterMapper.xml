@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.issue.dao.IssueFilterMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.issue.domain.IssueFilter">
+    <id column="filter_id" jdbcType="BIGINT" property="filterId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="category" jdbcType="TINYINT" property="category" />
+    <result column="filter_type" jdbcType="TINYINT" property="filterType" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    filter_id, name, category, filter_type, project_id, create_uid, create_name, create_time, 
+    state,tenant_code
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from issue_filter
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from issue_filter
+    where filter_id = #{filterId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from issue_filter
+    where filter_id = #{filterId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterExample">
+    delete from issue_filter
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueFilter" useGeneratedKeys="true" keyProperty="filterId">
+    insert into issue_filter (filter_id, name, category, 
+      filter_type, project_id, create_uid, 
+      create_name, create_time, state,tenant_code
+      )
+    values (#{filterId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{category,jdbcType=TINYINT}, 
+      #{filterType,jdbcType=TINYINT}, #{projectId,jdbcType=BIGINT}, #{createUid,jdbcType=BIGINT}, 
+      #{createName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=VARCHAR},#{tenantCode}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueFilter">
+    insert into issue_filter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="filterId != null">
+        filter_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="filterType != null">
+        filter_type,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="filterId != null">
+        #{filterId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=TINYINT},
+      </if>
+      <if test="filterType != null">
+        #{filterType,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterExample" resultType="java.lang.Long">
+    select count(*) from issue_filter
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update issue_filter
+    <set>
+      <if test="record.filterId != null">
+        filter_id = #{record.filterId,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.category != null">
+        category = #{record.category,jdbcType=TINYINT},
+      </if>
+      <if test="record.filterType != null">
+        filter_type = #{record.filterType,jdbcType=TINYINT},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createName != null">
+        create_name = #{record.createName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update issue_filter
+    set filter_id = #{record.filterId,jdbcType=BIGINT},
+      name = #{record.name,jdbcType=VARCHAR},
+      category = #{record.category,jdbcType=TINYINT},
+      filter_type = #{record.filterType,jdbcType=TINYINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_name = #{record.createName,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      state = #{record.state,jdbcType=VARCHAR},
+    tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueFilter">
+    update issue_filter
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=TINYINT},
+      </if>
+      <if test="filterType != null">
+        filter_type = #{filterType,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where filter_id = #{filterId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueFilter">
+    update issue_filter
+    set name = #{name,jdbcType=VARCHAR},
+      category = #{category,jdbcType=TINYINT},
+      filter_type = #{filterType,jdbcType=TINYINT},
+      project_id = #{projectId,jdbcType=BIGINT},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_name = #{createName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=VARCHAR},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where filter_id = #{filterId,jdbcType=BIGINT}
+  </update>
+</mapper>

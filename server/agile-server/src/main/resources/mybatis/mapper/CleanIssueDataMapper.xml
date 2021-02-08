@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.issue.dao.CleanIssueDataMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.issue.domain.CleanIssueData">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="issue_id" jdbcType="BIGINT" property="issueId" />
+    <result column="biz_name" jdbcType="VARCHAR" property="bizName" />
+    <result column="biz_num" jdbcType="VARCHAR" property="bizNum" />
+    <result column="biz_type" jdbcType="VARCHAR" property="bizType" />
+    <result column="biz_source" jdbcType="VARCHAR" property="bizSource" />
+    <result column="biz_res" jdbcType="VARCHAR" property="bizRes" />
+    <result column="biz_scheduling" jdbcType="VARCHAR" property="bizScheduling" />
+    <result column="parta_req_num" jdbcType="VARCHAR" property="partaReqNum" />
+    <result column="scheduling_num" jdbcType="VARCHAR" property="schedulingNum" />
+    <result column="make_man" jdbcType="VARCHAR" property="makeMan" />
+    <result column="make_depart" jdbcType="VARCHAR" property="makeDepart" />
+    <result column="req_group" jdbcType="VARCHAR" property="reqGroup" />
+    <result column="biz_plan_status" jdbcType="VARCHAR" property="bizPlanStatus" />
+    <result column="biz_status" jdbcType="BIGINT" property="bizStatus" />
+    <result column="ask_line_time" jdbcType="VARCHAR" property="askLineTime" />
+    <result column="issue_time" jdbcType="VARCHAR" property="issueTime" />
+    <result column="close_time" jdbcType="VARCHAR" property="closeTime" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, issue_id, biz_name, biz_num, biz_type,biz_source, biz_res, biz_scheduling, parta_req_num,
+    scheduling_num, make_man, make_depart, req_group, biz_plan_status, biz_status, ask_line_time, 
+    issue_time, close_time, system_name
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.CleanIssueDataExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from clean_issue_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.CleanIssueDataExample">
+    delete from clean_issue_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.issue.domain.CleanIssueData" useGeneratedKeys="true" keyProperty="id">
+    insert into clean_issue_data (id, issue_id, biz_name, 
+      biz_num, biz_type,biz_source, biz_res,
+      biz_scheduling, parta_req_num, scheduling_num, 
+      make_man, make_depart, req_group, 
+      biz_plan_status, biz_status, ask_line_time, 
+      issue_time, close_time,
+      system_name)
+    values (#{id,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{bizName,jdbcType=VARCHAR}, 
+      #{bizNum,jdbcType=VARCHAR}, #{bizType,jdbcType=VARCHAR}, #{bizSource,jdbcType=VARCHAR}, #{bizRes,jdbcType=VARCHAR},
+      #{bizScheduling,jdbcType=VARCHAR}, #{partaReqNum,jdbcType=VARCHAR}, #{schedulingNum,jdbcType=VARCHAR}, 
+      #{makeMan,jdbcType=VARCHAR}, #{makeDepart,jdbcType=VARCHAR}, #{reqGroup,jdbcType=VARCHAR}, 
+      #{bizPlanStatus,jdbcType=VARCHAR}, #{bizStatus,jdbcType=BIGINT}, #{askLineTime,jdbcType=VARCHAR}, 
+      #{issueTime,jdbcType=VARCHAR},#{closeTime,jdbcType=VARCHAR},
+      #{systemName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.CleanIssueData">
+    insert into clean_issue_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="issueId != null">
+        issue_id,
+      </if>
+      <if test="bizName != null">
+        biz_name,
+      </if>
+      <if test="bizNum != null">
+        biz_num,
+      </if>
+      <if test="bizSource != null">
+        biz_source,
+      </if>
+      <if test="bizRes != null">
+        biz_res,
+      </if>
+      <if test="bizScheduling != null">
+        biz_scheduling,
+      </if>
+      <if test="partaReqNum != null">
+        parta_req_num,
+      </if>
+      <if test="schedulingNum != null">
+        scheduling_num,
+      </if>
+      <if test="makeMan != null">
+        make_man,
+      </if>
+      <if test="makeDepart != null">
+        make_depart,
+      </if>
+      <if test="reqGroup != null">
+        req_group,
+      </if>
+      <if test="bizPlanStatus != null">
+        biz_plan_status,
+      </if>
+      <if test="bizStatus != null">
+        biz_status,
+      </if>
+      <if test="askLineTime != null">
+        ask_line_time,
+      </if>
+      <if test="issueTime != null">
+        issue_time,
+      </if>
+      <if test="closeTime != null">
+        close_time,
+      </if>
+      <if test="systemName != null">
+        system_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="issueId != null">
+        #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="bizName != null">
+        #{bizName,jdbcType=VARCHAR},
+      </if>
+      <if test="bizNum != null">
+        #{bizNum,jdbcType=VARCHAR},
+      </if>
+      <if test="bizSource != null">
+        #{bizSource,jdbcType=VARCHAR},
+      </if>
+      <if test="bizRes != null">
+        #{bizRes,jdbcType=VARCHAR},
+      </if>
+      <if test="bizScheduling != null">
+        #{bizScheduling,jdbcType=VARCHAR},
+      </if>
+      <if test="partaReqNum != null">
+        #{partaReqNum,jdbcType=VARCHAR},
+      </if>
+      <if test="schedulingNum != null">
+        #{schedulingNum,jdbcType=VARCHAR},
+      </if>
+      <if test="makeMan != null">
+        #{makeMan,jdbcType=VARCHAR},
+      </if>
+      <if test="makeDepart != null">
+        #{makeDepart,jdbcType=VARCHAR},
+      </if>
+      <if test="reqGroup != null">
+        #{reqGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="bizPlanStatus != null">
+        #{bizPlanStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="bizStatus != null">
+        #{bizStatus,jdbcType=BIGINT},
+      </if>
+      <if test="askLineTime != null">
+        #{askLineTime,jdbcType=VARCHAR},
+      </if>
+      <if test="issueTime != null">
+        #{issueTime,jdbcType=VARCHAR},
+      </if>
+      <if test="closeTime != null">
+        #{closeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="systemName != null">
+        #{systemName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.issue.domain.CleanIssueDataExample" resultType="java.lang.Long">
+    select count(*) from clean_issue_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update clean_issue_data
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.issueId != null">
+        issue_id = #{record.issueId,jdbcType=BIGINT},
+      </if>
+      <if test="record.bizName != null">
+        biz_name = #{record.bizName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizNum != null">
+        biz_num = #{record.bizNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizSource != null">
+        biz_source = #{record.bizSource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizRes != null">
+        biz_res = #{record.bizRes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizScheduling != null">
+        biz_scheduling = #{record.bizScheduling,jdbcType=VARCHAR},
+      </if>
+      <if test="record.partaReqNum != null">
+        parta_req_num = #{record.partaReqNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.schedulingNum != null">
+        scheduling_num = #{record.schedulingNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.makeMan != null">
+        make_man = #{record.makeMan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.makeDepart != null">
+        make_depart = #{record.makeDepart,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqGroup != null">
+        req_group = #{record.reqGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizPlanStatus != null">
+        biz_plan_status = #{record.bizPlanStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bizStatus != null">
+        biz_status = #{record.bizStatus,jdbcType=BIGINT},
+      </if>
+      <if test="record.askLineTime != null">
+        ask_line_time = #{record.askLineTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issueTime != null">
+        issue_time = #{record.issueTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.closeTime != null">
+        close_time = #{record.closeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.systemName != null">
+        system_name = #{record.systemName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update clean_issue_data
+    set id = #{record.id,jdbcType=BIGINT},
+      issue_id = #{record.issueId,jdbcType=BIGINT},
+      biz_name = #{record.bizName,jdbcType=VARCHAR},
+      biz_num = #{record.bizNum,jdbcType=VARCHAR},
+      biz_type = #{record.bizType,jdbcType=VARCHAR},
+      biz_source = #{record.bizSource,jdbcType=VARCHAR},
+      biz_res = #{record.bizRes,jdbcType=VARCHAR},
+      biz_scheduling = #{record.bizScheduling,jdbcType=VARCHAR},
+      parta_req_num = #{record.partaReqNum,jdbcType=VARCHAR},
+      scheduling_num = #{record.schedulingNum,jdbcType=VARCHAR},
+      make_man = #{record.makeMan,jdbcType=VARCHAR},
+      make_depart = #{record.makeDepart,jdbcType=VARCHAR},
+      req_group = #{record.reqGroup,jdbcType=VARCHAR},
+      biz_plan_status = #{record.bizPlanStatus,jdbcType=VARCHAR},
+      biz_status = #{record.bizStatus,jdbcType=BIGINT},
+      ask_line_time = #{record.askLineTime,jdbcType=VARCHAR},
+      issue_time = #{record.issueTime,jdbcType=VARCHAR},
+      close_time = #{record.closeTime,jdbcType=VARCHAR},
+      system_name = #{record.systemName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <select id="getAllIssue" resultMap="BaseResultMap">
+    select
+            t.issue_id as issue_id,
+            i.title as biz_name,
+            t.bizNum as biz_num,
+            case t.bizType
+                WHEN '1' THEN '配置类'
+                WHEN '2' THEN '开发类'
+                WHEN '3' THEN '开发类'
+                ELSE '配置类'
+            end as biz_type,
+            t.bizSource as biz_source,
+            t.responsiblePerson as biz_res,
+            t.reqScheduling as biz_scheduling,
+            t.formalReqCode as parta_req_num,
+            t.businessReqCode as scheduling_num,
+            t.makeMan as make_man,
+            t.makeSecondaryDept as make_depart,
+            case t.reqGroup
+                 when '001' then '个人业务组'
+                 when '002' then '集团业务组'
+                 when '003' then '基础服务组'
+                 when '004' then '电子稽核组'
+                 when '005' then '规划建设组'
+                 when '006' then '数据一致性组'
+                 when '008' then '能力支撑组'
+                 when '009' then '应用产品组'
+                 when '010' then '统计需求组'
+                 when '011' then '业务运营中心需求组'
+                 when '012' then 'IT支撑室需求组1组'
+                 when '013' then '系统运维组'
+                 when '014' then '综合室需求组'
+                 when '015' then '集团客户组'
+                 when '016' then '服务营销组'
+                 when '017' then 'CRM运维团队'
+                 when '018' then '业务产品组'
+                 when '019' then '运营规划组'
+                 when '020' then '持续审计组'
+                 when '021' then 'BI项目组'
+                 when '022' then '电子渠道组'
+                 when '023' then 'IT支撑室需求组2组'
+                 when '024' then '业务运维组'
+                 when '025' then '服务支撑组'
+                 when '050' then '话管需求组'
+                 when '060' then '云基础设施中心组'
+                 when '088' then '政企家庭组'
+            end as req_group,
+            case t.planStates
+                 when '8880' then '需求取消'
+                 when '8881' then '需求挂起'
+                 when '8882' then '需求取消挂起'
+                 when '8883' then '延期'
+                 when '8884' then '无需部署'
+                 when '8888' then '按期'
+                 when '8889' then '分期'
+                 else t.planStates
+            end as biz_plan_status,
+            i.stage_id as biz_status,
+            DATE_FORMAT(t.actualAskLineTime, '%Y-%m-%d') as ask_line_time,
+            DATE_FORMAT(i.create_time, '%Y-%m-%d') as issue_time,
+            (
+              select
+                    max(create_time)
+              from
+                    issue_history_record re
+              where
+                    re.issue_id = i.issue_id
+                and re.new_value = '6-9') as close_time
+    from
+            issue i
+            left join(
+            select
+                  issue_id ,
+                  max(CASE field_id when 'bizNum' then `value` else '' end) as bizNum,
+                  max(CASE field_id when 'formalReqCode' then `value` else '' end) as formalReqCode,
+                  max(CASE field_id when 'businessReqCode' then `value` else '' end) as businessReqCode,
+                  max(CASE field_id when 'reqScheduling' then `value` else '' end) as reqScheduling,
+                  max(CASE field_id when 'responsiblePerson' then `value` else '' end) as responsiblePerson,
+                  max(CASE field_id when 'makeMan' then `value` else '' end) as makeMan,
+                  max(CASE field_id when 'askLineTime' then `value` else '' end) as askLineTime,
+                  max(CASE field_id when 'actualAskLineTime' then `value` else '' end) as actualAskLineTime,
+                  max(CASE field_id when 'makeSecondaryDep' then `value` else '' end) as makeSecondaryDept,
+                  max(CASE field_id when 'bjSource' then `value` else '' end) as bizSource,
+                  max(CASE field_id when 'planStates' then `value` else '' end) as planStates,
+                  max(CASE field_id when 'reqGroup' then `value` else '' end) as reqGroup,
+                  max(CASE field_id when 'bizType' then `value` else '' end) as bizType
+            from
+                  sys_extend_field_detail
+            where
+                  issue_id in(
+                      select
+                          DISTINCT issue_id
+                      from
+                          sys_extend_field_detail
+                      where
+                          field_id = 'reqScheduling'
+                          and `value` like concat(#{year}, '%')
+                  )
+            GROUP by
+                    1 ) t on
+            t.issue_id = i.issue_id
+    where
+      i.issue_type = 1
+      and i.state = 'U'
+      and t.planStates !='8884'
+      and i.issue_id in(
+            select
+                DISTINCT issue_id
+            from
+                sys_extend_field_detail
+            where
+                field_id = 'reqScheduling'
+                and `value` like concat(#{year}, '%') )
+  </select>
+
+  <delete id="deleteCleanIssueByBizScheduling" parameterType="String">
+    delete from
+        clean_issue_data
+    where
+        biz_scheduling like CONCAT(#{year},'%' )
+        <choose>
+          <when test="bizPlanStatus == 'deploy'">
+            and biz_plan_status !='无需部署'
+          </when>
+          <otherwise>
+            and biz_plan_status ='无需部署'
+          </otherwise>
+        </choose>
+  </delete>
+  <insert id="batchInsert" parameterType="list">
+    insert into clean_issue_data
+            (issue_id, biz_name,
+            biz_num, biz_type,biz_source, biz_res,
+            biz_scheduling, parta_req_num, scheduling_num,
+            make_man, make_depart, req_group,
+            biz_plan_status, biz_status, ask_line_time,
+            issue_time, close_time,
+            system_name)
+    values
+    <foreach collection="issues" item="cleanIssue" separator=",">
+      (#{cleanIssue.issueId}, #{cleanIssue.bizName},
+      #{cleanIssue.bizNum}, #{cleanIssue.bizType}, #{cleanIssue.bizSource}, #{cleanIssue.bizRes},
+      #{cleanIssue.bizScheduling}, #{cleanIssue.partaReqNum}, #{cleanIssue.schedulingNum},
+      #{cleanIssue.makeMan}, #{cleanIssue.makeDepart}, #{cleanIssue.reqGroup},
+      #{cleanIssue.bizPlanStatus}, #{cleanIssue.bizStatus}, #{cleanIssue.askLineTime},
+      #{cleanIssue.issueTime},  #{cleanIssue.closeTime},
+      #{cleanIssue.systemName})
+    </foreach>
+  </insert>
+
+  <select id="getIssuesNoDeploy" resultMap="BaseResultMap">
+    select
+            t.issue_id as issue_id,
+            i.title as biz_name,
+            t.bizNum as biz_num,
+            case t.bizType
+                WHEN '1' THEN '配置类'
+                WHEN '2' THEN '开发类'
+                WHEN '3' THEN '开发类'
+                ELSE '配置类'
+            end as biz_type,
+            t.bizSource as biz_source,
+            t.responsiblePerson as biz_res,
+            t.reqScheduling as biz_scheduling,
+            t.formalReqCode as parta_req_num,
+            t.businessReqCode as scheduling_num,
+            t.makeMan as make_man,
+            t.makeSecondaryDept as make_depart,
+            case t.reqGroup
+                  when '001' then '个人业务组'
+                  when '002' then '集团业务组'
+                  when '003' then '基础服务组'
+                  when '004' then '电子稽核组'
+                  when '005' then '规划建设组'
+                  when '006' then '数据一致性组'
+                  when '008' then '能力支撑组'
+                  when '009' then '应用产品组'
+                  when '010' then '统计需求组'
+                  when '011' then '业务运营中心需求组'
+                  when '012' then 'IT支撑室需求组1组'
+                  when '013' then '系统运维组'
+                  when '014' then '综合室需求组'
+                  when '015' then '集团客户组'
+                  when '016' then '服务营销组'
+                  when '017' then 'CRM运维团队'
+                  when '018' then '业务产品组'
+                  when '019' then '运营规划组'
+                  when '020' then '持续审计组'
+                  when '021' then 'BI项目组'
+                  when '022' then '电子渠道组'
+                  when '023' then 'IT支撑室需求组2组'
+                  when '024' then '业务运维组'
+                  when '025' then '服务支撑组'
+                  when '050' then '话管需求组'
+                  when '060' then '云基础设施中心组'
+                  when '088' then '政企家庭组'
+            end as req_group,
+            case t.planStates
+                  when '8880' then '需求取消'
+                  when '8881' then '需求挂起'
+                  when '8882' then '需求取消挂起'
+                  when '8883' then '延期'
+                  when '8884' then '无需部署'
+                  when '8888' then '按期'
+                  when '8889' then '分期'
+                  else t.planStates
+            end as biz_plan_status,
+            i.stage_id as biz_status,
+            DATE_FORMAT(t.actualAskLineTime,'%Y-%m-%d') as ask_line_time,
+            DATE_FORMAT(i.create_time, '%Y-%m-%d') as issue_time,
+            (
+              select
+                  max(create_time)
+              from
+                  issue_history_record re
+              where
+                  re.issue_id = i.issue_id
+                  and re.new_value = '6-9') as close_time
+    from
+            issue i
+            left join(
+            select
+                issue_id ,
+                max(CASE field_id when 'bizNum' then `value` else '' end) as bizNum,
+                max(CASE field_id when 'formalReqCode' then `value` else '' end) as formalReqCode,
+                max(CASE field_id when 'businessReqCode' then `value` else '' end) as businessReqCode,
+                max(CASE field_id when 'reqScheduling' then `value` else '' end) as reqScheduling,
+                max(CASE field_id when 'responsiblePerson' then `value` else '' end) as responsiblePerson,
+                max(CASE field_id when 'makeMan' then `value` else '' end) as makeMan,
+                max(CASE field_id when 'actualAskLineTime' then `value` else '' end) as actualAskLineTime,
+                max(CASE field_id when 'makeSecondaryDep' then `value` else '' end) as makeSecondaryDept,
+                max(CASE field_id when 'bjSource' then `value` else '' end) as bizSource,
+                max(CASE field_id when 'planStates' then `value` else '' end) as planStates,
+                max(CASE field_id when 'reqGroup' then `value` else '' end) as reqGroup,
+                max(CASE field_id when 'bizType' then `value` else '' end) as bizType
+            from
+                sys_extend_field_detail
+            where
+                issue_id in(
+                    select
+                        DISTINCT issue_id
+                    from
+                        sys_extend_field_detail
+                    where
+                        field_id = 'reqScheduling'
+                        and `value` =#{reqScheduling}
+                    )
+            GROUP by
+                    1 ) t on
+            t.issue_id = i.issue_id
+    where
+      i.issue_type = 1
+      and i.state = 'U'
+      and t.planStates ='8884'
+      and i.issue_id in(
+            select
+                  DISTINCT issue_id
+            from
+                  sys_extend_field_detail
+            where
+                  field_id = 'reqScheduling'
+              and `value` = #{reqScheduling}
+      )
+      and t.formalReqCode not in(
+            select
+                distinct parta_req_num
+            from
+                clean_issue_data
+            where
+                biz_plan_status != '无需部署'
+                and biz_scheduling = #{reqScheduling}
+            )
+  </select>
+</mapper>

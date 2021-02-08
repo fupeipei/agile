@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.businesskanban.dao.BusinessMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.businesskanban.domain.Business">
+    <id column="business_id" jdbcType="BIGINT" property="businessId" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="kanban_id" jdbcType="BIGINT" property="kanbanId" />
+    <result column="business_name" jdbcType="VARCHAR" property="businessName" />
+    <result column="business_type" jdbcType="BIGINT" property="businessType" />
+    <result column="business_state" jdbcType="TINYINT" property="businessState" />
+    <result column="is_visible" jdbcType="TINYINT" property="isVisible" />
+    <result column="business_owner" jdbcType="BIGINT" property="businessOwner" />
+    <result column="business_owner_name" jdbcType="VARCHAR" property="businessOwnerName" />
+    <result column="business_level" jdbcType="TINYINT" property="businessLevel" />
+    <result column="business_importance" jdbcType="TINYINT" property="businessImportance" />
+    <result column="plan_workload" jdbcType="INTEGER" property="planWorkload" />
+    <result column="actual_workload" jdbcType="INTEGER" property="actualWorkload" />
+    <result column="plan_start_time" jdbcType="TIMESTAMP" property="planStartTime" />
+    <result column="plan_end_time" jdbcType="TIMESTAMP" property="planEndTime" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.businesskanban.domain.BusinessWithBLOBs">
+    <result column="business_desc" jdbcType="LONGVARCHAR" property="businessDesc" />
+    <result column="desc_text" jdbcType="LONGVARCHAR" property="descText" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    business_id, project_id, kanban_id, business_name, business_type, business_state, 
+    is_visible, business_owner, business_owner_name, business_level, business_importance, 
+    plan_workload, actual_workload, plan_start_time, plan_end_time, start_time, end_time, 
+    create_uid, create_time, update_time, update_uid, status, state,tenant_code
+  </sql>
+  <sql id="Blob_Column_List">
+    business_desc, desc_text
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.businesskanban.domain.BusinessExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from business
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yusys.agile.businesskanban.domain.BusinessExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from business
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from business
+    where business_id = #{businessId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from business
+    where business_id = #{businessId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.businesskanban.domain.BusinessExample">
+    delete from business
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.businesskanban.domain.BusinessWithBLOBs" useGeneratedKeys="true" keyProperty="businessId">
+    insert into business (business_id, project_id, kanban_id, 
+      business_name, business_type, business_state, 
+      is_visible, business_owner, business_owner_name, 
+      business_level, business_importance, plan_workload, 
+      actual_workload, plan_start_time, plan_end_time, 
+      start_time, end_time, create_uid, 
+      create_time, update_time, update_uid, 
+      status, state, business_desc, 
+      desc_text,tenant_code)
+    values (#{businessId,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{kanbanId,jdbcType=BIGINT}, 
+      #{businessName,jdbcType=VARCHAR}, #{businessType,jdbcType=BIGINT}, #{businessState,jdbcType=TINYINT}, 
+      #{isVisible,jdbcType=TINYINT}, #{businessOwner,jdbcType=BIGINT}, #{businessOwnerName,jdbcType=VARCHAR}, 
+      #{businessLevel,jdbcType=TINYINT}, #{businessImportance,jdbcType=TINYINT}, #{planWorkload,jdbcType=INTEGER}, 
+      #{actualWorkload,jdbcType=INTEGER}, #{planStartTime,jdbcType=TIMESTAMP}, #{planEndTime,jdbcType=TIMESTAMP}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
+      #{status,jdbcType=TINYINT}, #{state,jdbcType=VARCHAR}, #{businessDesc,jdbcType=LONGVARCHAR}, 
+      #{descText,jdbcType=LONGVARCHAR},#{tenantCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.businesskanban.domain.BusinessWithBLOBs">
+    insert into business
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="businessId != null">
+        business_id,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="kanbanId != null">
+        kanban_id,
+      </if>
+      <if test="businessName != null">
+        business_name,
+      </if>
+      <if test="businessType != null">
+        business_type,
+      </if>
+      <if test="businessState != null">
+        business_state,
+      </if>
+      <if test="isVisible != null">
+        is_visible,
+      </if>
+      <if test="businessOwner != null">
+        business_owner,
+      </if>
+      <if test="businessOwnerName != null">
+        business_owner_name,
+      </if>
+      <if test="businessLevel != null">
+        business_level,
+      </if>
+      <if test="businessImportance != null">
+        business_importance,
+      </if>
+      <if test="planWorkload != null">
+        plan_workload,
+      </if>
+      <if test="actualWorkload != null">
+        actual_workload,
+      </if>
+      <if test="planStartTime != null">
+        plan_start_time,
+      </if>
+      <if test="planEndTime != null">
+        plan_end_time,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="businessDesc != null">
+        business_desc,
+      </if>
+      <if test="descText != null">
+        desc_text,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="businessId != null">
+        #{businessId,jdbcType=BIGINT},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="kanbanId != null">
+        #{kanbanId,jdbcType=BIGINT},
+      </if>
+      <if test="businessName != null">
+        #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=BIGINT},
+      </if>
+      <if test="businessState != null">
+        #{businessState,jdbcType=TINYINT},
+      </if>
+      <if test="isVisible != null">
+        #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="businessOwner != null">
+        #{businessOwner,jdbcType=BIGINT},
+      </if>
+      <if test="businessOwnerName != null">
+        #{businessOwnerName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLevel != null">
+        #{businessLevel,jdbcType=TINYINT},
+      </if>
+      <if test="businessImportance != null">
+        #{businessImportance,jdbcType=TINYINT},
+      </if>
+      <if test="planWorkload != null">
+        #{planWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="actualWorkload != null">
+        #{actualWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="planStartTime != null">
+        #{planStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planEndTime != null">
+        #{planEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="businessDesc != null">
+        #{businessDesc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="descText != null">
+        #{descText,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.businesskanban.domain.BusinessExample" resultType="java.lang.Long">
+    select count(*) from business
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update business
+    <set>
+      <if test="record.businessId != null">
+        business_id = #{record.businessId,jdbcType=BIGINT},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.kanbanId != null">
+        kanban_id = #{record.kanbanId,jdbcType=BIGINT},
+      </if>
+      <if test="record.businessName != null">
+        business_name = #{record.businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null">
+        business_type = #{record.businessType,jdbcType=BIGINT},
+      </if>
+      <if test="record.businessState != null">
+        business_state = #{record.businessState,jdbcType=TINYINT},
+      </if>
+      <if test="record.isVisible != null">
+        is_visible = #{record.isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="record.businessOwner != null">
+        business_owner = #{record.businessOwner,jdbcType=BIGINT},
+      </if>
+      <if test="record.businessOwnerName != null">
+        business_owner_name = #{record.businessOwnerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessLevel != null">
+        business_level = #{record.businessLevel,jdbcType=TINYINT},
+      </if>
+      <if test="record.businessImportance != null">
+        business_importance = #{record.businessImportance,jdbcType=TINYINT},
+      </if>
+      <if test="record.planWorkload != null">
+        plan_workload = #{record.planWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="record.actualWorkload != null">
+        actual_workload = #{record.actualWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="record.planStartTime != null">
+        plan_start_time = #{record.planStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.planEndTime != null">
+        plan_end_time = #{record.planEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.startTime != null">
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null">
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUid != null">
+        update_uid = #{record.updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessDesc != null">
+        business_desc = #{record.businessDesc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.descText != null">
+        desc_text = #{record.descText,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update business
+    set business_id = #{record.businessId,jdbcType=BIGINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      kanban_id = #{record.kanbanId,jdbcType=BIGINT},
+      business_name = #{record.businessName,jdbcType=VARCHAR},
+      business_type = #{record.businessType,jdbcType=BIGINT},
+      business_state = #{record.businessState,jdbcType=TINYINT},
+      is_visible = #{record.isVisible,jdbcType=TINYINT},
+      business_owner = #{record.businessOwner,jdbcType=BIGINT},
+      business_owner_name = #{record.businessOwnerName,jdbcType=VARCHAR},
+      business_level = #{record.businessLevel,jdbcType=TINYINT},
+      business_importance = #{record.businessImportance,jdbcType=TINYINT},
+      plan_workload = #{record.planWorkload,jdbcType=INTEGER},
+      actual_workload = #{record.actualWorkload,jdbcType=INTEGER},
+      plan_start_time = #{record.planStartTime,jdbcType=TIMESTAMP},
+      plan_end_time = #{record.planEndTime,jdbcType=TIMESTAMP},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      status = #{record.status,jdbcType=TINYINT},
+      state = #{record.state,jdbcType=VARCHAR},
+      business_desc = #{record.businessDesc,jdbcType=LONGVARCHAR},
+      desc_text = #{record.descText,jdbcType=LONGVARCHAR},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update business
+    set business_id = #{record.businessId,jdbcType=BIGINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      kanban_id = #{record.kanbanId,jdbcType=BIGINT},
+      business_name = #{record.businessName,jdbcType=VARCHAR},
+      business_type = #{record.businessType,jdbcType=BIGINT},
+      business_state = #{record.businessState,jdbcType=TINYINT},
+      is_visible = #{record.isVisible,jdbcType=TINYINT},
+      business_owner = #{record.businessOwner,jdbcType=BIGINT},
+      business_owner_name = #{record.businessOwnerName,jdbcType=VARCHAR},
+      business_level = #{record.businessLevel,jdbcType=TINYINT},
+      business_importance = #{record.businessImportance,jdbcType=TINYINT},
+      plan_workload = #{record.planWorkload,jdbcType=INTEGER},
+      actual_workload = #{record.actualWorkload,jdbcType=INTEGER},
+      plan_start_time = #{record.planStartTime,jdbcType=TIMESTAMP},
+      plan_end_time = #{record.planEndTime,jdbcType=TIMESTAMP},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      status = #{record.status,jdbcType=TINYINT},
+      state = #{record.state,jdbcType=VARCHAR},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.businesskanban.domain.BusinessWithBLOBs">
+    update business
+    <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="kanbanId != null">
+        kanban_id = #{kanbanId,jdbcType=BIGINT},
+      </if>
+      <if test="businessName != null">
+        business_name = #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        business_type = #{businessType,jdbcType=BIGINT},
+      </if>
+      <if test="businessState != null">
+        business_state = #{businessState,jdbcType=TINYINT},
+      </if>
+      <if test="isVisible != null">
+        is_visible = #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="businessOwner != null">
+        business_owner = #{businessOwner,jdbcType=BIGINT},
+      </if>
+      <if test="businessOwnerName != null">
+        business_owner_name = #{businessOwnerName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLevel != null">
+        business_level = #{businessLevel,jdbcType=TINYINT},
+      </if>
+      <if test="businessImportance != null">
+        business_importance = #{businessImportance,jdbcType=TINYINT},
+      </if>
+      <if test="planWorkload != null">
+        plan_workload = #{planWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="actualWorkload != null">
+        actual_workload = #{actualWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="planStartTime != null">
+        plan_start_time = #{planStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planEndTime != null">
+        plan_end_time = #{planEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="businessDesc != null">
+        business_desc = #{businessDesc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="descText != null">
+        desc_text = #{descText,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where business_id = #{businessId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.businesskanban.domain.BusinessWithBLOBs">
+    update business
+    set project_id = #{projectId,jdbcType=BIGINT},
+      kanban_id = #{kanbanId,jdbcType=BIGINT},
+      business_name = #{businessName,jdbcType=VARCHAR},
+      business_type = #{businessType,jdbcType=BIGINT},
+      business_state = #{businessState,jdbcType=TINYINT},
+      is_visible = #{isVisible,jdbcType=TINYINT},
+      business_owner = #{businessOwner,jdbcType=BIGINT},
+      business_owner_name = #{businessOwnerName,jdbcType=VARCHAR},
+      business_level = #{businessLevel,jdbcType=TINYINT},
+      business_importance = #{businessImportance,jdbcType=TINYINT},
+      plan_workload = #{planWorkload,jdbcType=INTEGER},
+      actual_workload = #{actualWorkload,jdbcType=INTEGER},
+      plan_start_time = #{planStartTime,jdbcType=TIMESTAMP},
+      plan_end_time = #{planEndTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      state = #{state,jdbcType=VARCHAR},
+      business_desc = #{businessDesc,jdbcType=LONGVARCHAR},
+      desc_text = #{descText,jdbcType=LONGVARCHAR}
+    where business_id = #{businessId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.businesskanban.domain.Business">
+    update business
+    set project_id = #{projectId,jdbcType=BIGINT},
+      kanban_id = #{kanbanId,jdbcType=BIGINT},
+      business_name = #{businessName,jdbcType=VARCHAR},
+      business_type = #{businessType,jdbcType=BIGINT},
+      business_state = #{businessState,jdbcType=TINYINT},
+      is_visible = #{isVisible,jdbcType=TINYINT},
+      business_owner = #{businessOwner,jdbcType=BIGINT},
+      business_owner_name = #{businessOwnerName,jdbcType=VARCHAR},
+      business_level = #{businessLevel,jdbcType=TINYINT},
+      business_importance = #{businessImportance,jdbcType=TINYINT},
+      plan_workload = #{planWorkload,jdbcType=INTEGER},
+      actual_workload = #{actualWorkload,jdbcType=INTEGER},
+      plan_start_time = #{planStartTime,jdbcType=TIMESTAMP},
+      plan_end_time = #{planEndTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      state = #{state,jdbcType=VARCHAR},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where business_id = #{businessId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.requirement.dao.SysExtendFieldDetailMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.requirement.domain.SysExtendFieldDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="issue_id" jdbcType="BIGINT" property="issueId" />
+    <result column="field_id" jdbcType="VARCHAR" property="fieldId" />
+    <result column="field_name" jdbcType="VARCHAR" property="fieldName" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, issue_id, field_id, field_name, value, state, create_uid, create_time, update_uid, 
+    update_time, tenant_code
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetailExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sys_extend_field_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_extend_field_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_extend_field_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetailExample">
+    delete from sys_extend_field_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetail">
+    insert into sys_extend_field_detail (id, issue_id, field_id, 
+      field_name, value, state, 
+      create_uid, create_time, update_uid, 
+      update_time, tenant_code)
+    values (#{id,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{fieldId,jdbcType=VARCHAR}, 
+      #{fieldName,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, 
+      #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetail">
+    insert into sys_extend_field_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="issueId != null">
+        issue_id,
+      </if>
+      <if test="fieldId != null">
+        field_id,
+      </if>
+      <if test="fieldName != null">
+        field_name,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="issueId != null">
+        #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldId != null">
+        #{fieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldName != null">
+        #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetailExample" resultType="java.lang.Long">
+    select count(*) from sys_extend_field_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update sys_extend_field_detail
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.issueId != null">
+        issue_id = #{record.issueId,jdbcType=BIGINT},
+      </if>
+      <if test="record.fieldId != null">
+        field_id = #{record.fieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fieldName != null">
+        field_name = #{record.fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.value != null">
+        value = #{record.value,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUid != null">
+        update_uid = #{record.updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update sys_extend_field_detail
+    set id = #{record.id,jdbcType=BIGINT},
+      issue_id = #{record.issueId,jdbcType=BIGINT},
+      field_id = #{record.fieldId,jdbcType=VARCHAR},
+      field_name = #{record.fieldName,jdbcType=VARCHAR},
+      value = #{record.value,jdbcType=VARCHAR},
+      state = #{record.state,jdbcType=VARCHAR},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetail">
+    update sys_extend_field_detail
+    <set>
+      <if test="issueId != null">
+        issue_id = #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldId != null">
+        field_id = #{fieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldName != null">
+        field_name = #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetail">
+    update sys_extend_field_detail
+    set issue_id = #{issueId,jdbcType=BIGINT},
+      field_id = #{fieldId,jdbcType=VARCHAR},
+      field_name = #{fieldName,jdbcType=VARCHAR},
+      value = #{value,jdbcType=VARCHAR},
+      state = #{state,jdbcType=VARCHAR},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <insert id="batchSave">
+      insert into sys_extend_field_detail (issue_id, field_id,
+      field_name, `value`, state,
+      create_uid, create_time, update_uid,
+      update_time, tenant_code)
+      values
+      <foreach collection="sysExtendFieldDetailList" item="item" separator=",">
+        (#{item.issueId,jdbcType=BIGINT}, #{item.fieldId,jdbcType=VARCHAR},
+        #{item.fieldName,jdbcType=VARCHAR}, #{item.value,jdbcType=VARCHAR}, #{item.state,jdbcType=VARCHAR},
+        #{item.createUid,jdbcType=BIGINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateUid,jdbcType=BIGINT},
+        #{item.updateTime,jdbcType=TIMESTAMP}, #{item.tenantCode,jdbcType=VARCHAR})
+      </foreach>
+    </insert>
+  <update id="updateApprovalStatusByBizNums">
+    update
+    sys_extend_field_detail
+    set
+    approval_status = #{approvalStatus}
+    where biz_num in
+    <foreach collection="bizNums" index="index" item="bizNum" open="(" separator="," close=")">
+      #{bizNum}
+    </foreach>
+  </update>
+  <update id="updateSelective" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetail">
+    update sys_extend_field_detail
+    <set>
+
+      <if test="fieldName != null">
+        field_name = #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+      issue_id = #{issueId,jdbcType=BIGINT},
+      field_id = #{fieldId,jdbcType=VARCHAR}
+      where  field_id = #{fieldId,jdbcType=VARCHAR}  and   issue_id = #{issueId,jdbcType=BIGINT}
+    </set>
+  </update>
+    <select id="countEmptyApprovalResultByBizBacklogIds" resultType="int">
+      select count(1)
+      from sys_extend_field_detail a,issue b
+      where  a.issue_id = b.issue_id
+      and b.state = 'U'
+      and a.issue_id in
+      <foreach collection="bizBacklogIds" item="backlogId" open="(" separator="," close=")">
+        #{backlogId}
+      </foreach>
+      and a.field_id='approvalResult' and(a.value is null or  a.value = '')
+    </select>
+
+  <select id="countApprovalFailedBizBacklog" resultType="int">
+    select count(1)
+    from sys_extend_field_detail a,issue b
+    where  a.issue_id = b.issue_id
+    and b.state = 'U'
+    and a.issue_id in
+    <foreach collection="bizBacklogIds" item="backlogId" open="(" separator="," close=")">
+      #{backlogId}
+    </foreach>
+    and a.field_id='approvalResult' and  a.value = '不通过'
+  </select>
+    <update id="updateSuccessBizBacklogDeployType">
+      update sys_extend_field_detail set `value`=#{deployType} where field_id='type' and
+      issue_id in
+      <foreach collection="successBizBacklogIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </update>
+  <update id="updateByPrimaryKeySelectiveWithNull" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldDetail">
+    update sys_extend_field_detail
+    <set>
+      value = #{value,jdbcType=VARCHAR},
+      <if test="issueId != null">
+        issue_id = #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldId != null">
+        field_id = #{fieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldName != null">
+        field_name = #{fieldName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="getSysExtendFieldDetailByIds" parameterType="map" resultType="java.lang.Long">
+
+    select
+    distinct a.issue_id
+    from sys_extend_field_detail a
+    <where>
+      1=1
+      <if test="bizBacklogIds!=null">
+        and  a.issue_id in
+        <foreach collection="bizBacklogIds" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+
+      <if test="sysExtendFieldDetails.size()>0 ">
+        and exists
+        <foreach collection="sysExtendFieldDetails" index="index" item="item" separator="  and exists  " >
+          <choose>
+            <when test="item.fieldId =='relatedSystem'">
+              (select 1 from req.issue_system_relp isr  where a.issue_id =isr.issue_id and isr.system_id =#{item.value})
+            </when>
+            <otherwise>
+              ( select 1 from req.sys_extend_field_detail  b where a.issue_id  =b.issue_id
+              and (b.field_id = #{item.fieldId} and b.`value` like CONCAT('%',#{item.value},'%') ))
+            </otherwise>
+          </choose>
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <update id="batchUpdate" parameterType="java.util.List">
+    <foreach collection="list" item="bean" index="index" open="" close="" separator=";">
+      UPDATE sys_extend_field_detail
+      <set>
+        `value` = #{bean.value,jdbcType=VARCHAR}
+      </set>
+      <where>
+        issue_id = #{bean.issueId} and field_id=#{bean.fieldId,jdbcType=VARCHAR}
+      </where>
+    </foreach>
+  </update>
+
+
+  <select id="getSysExtendFieldMap" parameterType="java.lang.Long" resultType="java.util.HashMap">
+    select
+      field_id,
+      value
+    from
+      sys_extend_field_detail
+    where
+      issue_id = #{issueId}
+    and
+      state = 'U'
+  </select>
+
+  <select id="getTmpSysExtendFieldMap"  resultMap="BaseResultMap">
+    select * from sys_extend_field_detail where
+    issue_id in (
+    select DISTINCT a.issue_id  from issue a where a.issue_type  = 1 and a.state = 'U' and  (a.stage_id in (1) or a.stage_id is null )-- and title like '%-BOSS'
+    and not exists (select 1 from issue b where b.issue_type= 2  and a.state = 'U' and b.parent_id = a.issue_id)  ORDER BY a.create_time desc )
+  </select>
+
+
+  <select id="getSysExtendFieldDetail" parameterType="map" resultType="java.lang.Long">
+
+    SELECT
+    DISTINCT issue_id
+    FROM
+    `sys_extend_field_detail` a
+    WHERE
+    <foreach collection="map" index="key"  item="value" separator="and">
+     EXISTS (
+
+    SELECT
+     1
+     FROM
+        `sys_extend_field_detail` a1
+    WHERE
+        a1.field_id = #{key}
+      <if test="key =='responsiblePerson'">
+        AND a1.`value` in
+        <foreach collection="value" index="index"  item="item" separator="," open="(" close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="key !='responsiblePerson'">
+        AND a1.`value` LIKE CONCAT('%',#{value},'%')
+      </if>
+        AND a.issue_id = a1.issue_id
+    )
+    </foreach>
+      <if test="issueIds.size>0">
+          and
+          a.issue_id  in
+          <foreach collection="issueIds" item="issueId" open="(" separator="," close=")">
+              #{issueId}
+          </foreach>
+      </if>
+  </select>
+    <select id="getPlanDeployDateListByFormalReqCode" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from sys_extend_field_detail b where b.field_id='planDeployDate' and  b.issue_id in(
+select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCode,jdbcType=VARCHAR}) order by b.`value`;
+    </select>
+  <select id="getBizNumListByFormalReqCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_extend_field_detail b where b.field_id='bizNum' and  b.issue_id in(
+    select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCode,jdbcType=VARCHAR}) order by b.`value`;
+  </select>
+
+  <delete id="batchDelEpicActualOnlineTime" parameterType="java.util.List">
+    delete from
+      sys_extend_field_detail
+    where
+      field_id = 'actualOnlineTime'
+    and
+      issue_id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <insert id="batchInsertEpicActualOnlineTime" parameterType="java.util.List">
+    insert into
+      sys_extend_field_detail
+    (
+      issue_id,
+      field_id,
+      field_name,
+      value,
+      state,
+      create_time
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+    (
+      #{item.issueId},
+      #{item.fieldId},
+      #{item.fieldName},
+      #{item.value},
+      #{item.state},
+      #{item.createTime}
+    )
+    </foreach>
+  </insert>
+    <delete id="batchUpdateReqSchedulingByIssueIdList">
+      update sys_extend_field_detail set `value` = #{reqScheduling}
+      <where>
+        field_id = 'reqScheduling'
+        <if test="notCanceledAndOnlineIssueIdList != null and notCanceledAndOnlineIssueIdList.size() > 0">
+          AND issue_id IN
+          <foreach collection="notCanceledAndOnlineIssueIdList" index="index" item="item" separator="," open="(" close=")">
+            #{item}
+          </foreach>
+        </if>
+      </where>
+    </delete>
+  
+  <select id="getSysExtendFieldDetailByBizNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from
+      sys_extend_field_detail
+    where
+      issue_id =
+    (
+      select
+        issue_id
+      from
+        sys_extend_field_detail
+      where
+        field_id = 'bizNum'
+      and
+        value = #{bizNum}
+    )
+  </select>
+    <select id="checkEpicIsNotAllOnline" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List" />
+      from sys_extend_field_detail a where a.field_id = 'formalReqCode' and a.`value` = #{formalReqCode}
+      and exists (select 1 from issue b where  b.stage_id != '7' and b.issue_id = a.issue_id and b.state = 'U')
+    </select>
+  <select id="getSysExtendFieldDetailByFormalReqCodeAndProp" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from sys_extend_field_detail aa
+    where aa.issue_id in (
+      select a.issue_id from sys_extend_field_detail a
+      where exists (
+        select 1 from sys_extend_field_detail b where a.issue_id = b.issue_id and b.field_id = 'formalReqCode' and b.`value` = #{formalReqCode}
+      )
+    )
+    and aa.field_id = #{fieldId}
+    and aa.`value`= #{fieldValue};
+  </select>
+  <select id="getNoDeployAndToBePublish" resultMap="BaseResultMap">
+    select a.* from sys_extend_field_detail a,issue b
+    where a.issue_id = b.issue_id
+    and  a.field_id='planStates'
+    and a.`value`='8884'
+    and b.state = 'U'
+    and b.stage_id = 6;
+  </select>
+</mapper>

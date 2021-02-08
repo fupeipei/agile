@@ -1,0 +1,447 @@
+package com.yusys.agile.issue.service;
+
+import com.yusys.agile.commit.dto.CommitDTO;
+import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.dto.DemandPlanDTO;
+import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.IssueListDTO;
+import com.yusys.agile.issue.dto.PanoramasEpicDTO;
+import com.yusys.agile.servicemanager.dto.CustomizePageInfoDTO;
+import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
+import com.github.pagehelper.PageInfo;
+import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public interface IssueService {
+
+
+    /**
+     * 功能描述 列表查询接口 1:epic 2:feature 3:story 4:task 5:fault
+     *
+     * @param map
+     * @param projectId
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     *
+     * @date 2020/4/16
+     */
+
+    PageInfo getIssueList(Map<String,Object> map, Long projectId);
+
+    /**
+     * @param issueId
+     *
+     * @Date: 18:22
+     * @Description: 建立关联关系
+     * @Param: * @param parentId
+     * @Return: void
+     */
+    void createRelation(Long parentId, Long issueId);
+
+    /**
+     * @param issueId
+     *
+     * @Date: 18:22
+     * @Description: 删除关联关系
+     * @Param: * @param parentId
+     * @Return: void
+     */
+    void deleteRelation(Long parentId, Long issueId);
+
+    /**
+     * 功能描述  查询当前Issue
+     *
+     * @param issueId
+     * @param projectId
+     * @param issueQuery 1:不查询child，2：查询child
+     * @param noLogin 免登录标识，"true"标识免登录调用，other非免登录调用
+     * @return   com.yusys.agile.requirement.SysExtendFieldDetailDTO;
+     *
+     * @date 2020/4/21
+     */
+    IssueListDTO getIssue(Long issueId, Long projectId, Byte issueQuery,String noLogin) throws  Exception;
+
+    /**
+     * 功能描述  根据issueId查询当前Issue
+     * @param issueId
+     * @param projectId
+     * @return Map
+     *
+     * @date 2020/10/15
+     */
+    Map getIssueByIssueId(Long issueId, Long projectId) throws  Exception;
+
+    /**
+     * 功能描述  添加、取消Issue的收藏
+     *
+     * @param issueId
+     * @param isCollect 0：非收藏 1：收藏
+     * @return void
+     *
+     * @date 2020/4/22
+     */
+    void isCollect(Long issueId, Byte isCollect, SecurityDTO securityDTO);
+
+    /**
+     * @param listIssueId
+     *
+     * @Date: 9:08
+     * @Description: 批量建立关联关系
+     * @Param: * @param parentId
+     * @Return: void
+     */
+    void createBatchRelation(Long parentId, List<Long> listIssueId, Long userId);
+
+    /**
+     *
+     * @Date: 10:52
+     * @Description: 批量建立工作项
+     * @Param: * @param listIssue
+     * @Return: void
+     */
+    void createBatchIssue(String listIssue);
+
+    /**
+     * 功能描述
+     *
+     * @param rootIds
+     * @return java.util.List<  com.yusys.agile.requirement.SysExtendFieldDetailDTO;>
+     *
+     * @date 2020/4/30
+     */
+    List<IssueListDTO> issueListByIds(String rootIds, Long projectId)throws  Exception;
+
+
+    Map getOptionList(String filedCodeValue, String filedCode,Map<String , HashMap<String,String>>  hashMapMap);
+
+    /**
+     * @param handler
+     *
+     * @Date: 2020/5/26 16:28
+     * @Description: 更新处理人
+     * @Param: * @param issueId
+     * @Return: void
+     */
+    void updateHandler(Long issueId, Long handler);
+
+    /**
+     * @param issueId
+     * @param pageNum  分页页数
+     * @param pageSize 分页条数
+     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     *   :zhaoqj3
+     * @Date:2020/6/1 11:05
+     * @Description:根据issueId，查询操作历史分页数据
+     */
+    ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO);
+
+    ControllerResponse getRecordRichText(Long recordId);
+
+    /**
+     * @param issueId
+     * @param issueType
+     *
+     * @Date: 2020/6/3 10:20
+     * @Description: 详情显示工作项关联关系列表
+     * @Param: projectId
+     * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     */
+    //List<IssueDTO> listRelation(Long issueId, Byte issueType, Long projectId);
+    List<IssueDTO> listRelation(Long issueId, Byte issueType);
+
+    /**
+     * @param issueType
+     *   : zhangtao11
+     * @Date: 2020/6/10 10:20
+     * @Description: 查询模板父工作项列表
+     * @Param: projectId
+     * @Return: java.util.List<java.lang.String>
+     */
+    List<String> getTemplateParentIssueList(Long projectId, Byte issueType);
+
+
+    /**
+     * 功能描述 高级搜索列表查询接口 1:epic 2:feature 3:story 4:task 5:fault
+     * 根据查询条件，返回List<Issue>对象
+     *
+     * @param map
+     * @param projectId
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     *
+     * @date 2020/06/15
+     */
+
+    List<Issue> queryIssueList(Map<String,Object> map, Long projectId) throws Exception;
+
+    /**
+     *    maxp
+     * @Date 2020/6/22
+     * @Description 项目概览页面统计各个阶段的需求个数
+     * @param projectId
+     * @Return java.util.List<com.yusys.agile.issue.dto.IssueStageIdCountDTO>
+     */
+    PageInfo countIssueByStageId(Long projectId,Integer pageNum, Integer pageSize);
+
+    /**
+     * 需求规划获取列表数据
+     * @param title 标题
+     * @param stages 阶段ID
+     * @return DemandPlanDTO
+     */
+    DemandPlanDTO getDemandPlans(String title, String stages, SecurityDTO securityDTO);
+
+    /**
+     * 需求规划中卡片拖拽。可修改迭代编码，父工作项编码
+     * @param issueId   工作项ID
+     * @param sprintId  迭代编号
+     * @param parentId  父工作项编码
+     * @return
+     */
+    void dragDemand(Long issueId, Long sprintId, Long parentId,Long projectId);
+
+    /**
+     * @description 查询项目下成员任务总数
+     * @param commitDTO
+     * @return
+     */
+    long getProjectMemberTaskTotal(CommitDTO commitDTO);
+
+    /**
+     * @description 查询项目下成员任务列表
+     *  
+     * @param commitDTO
+     * @return
+     */
+    List<Issue> getProjectMemberTaskList(CommitDTO commitDTO);
+
+    /**
+     * @description 查询项目下人员任务列表
+     *  
+     * @param commitDTO
+     * @param startIndex 起始下标
+     * @param pageSize 每页记录数
+     * @return
+     */
+    List<Issue> getProjectMemberTaskList(CommitDTO commitDTO, long startIndex, long pageSize);
+
+    /**
+     * @description 查询迭代下提交任务列表
+     *  
+     * @param projectId
+     * @param sprintId
+     * @param queryStr
+     * @param pageNumber
+     * @param pageSize
+     * @return
+     */
+    PageInfo<List<Issue>> getSprintRelatedCommitTaskList(Long projectId, Long sprintId, String queryStr, Integer pageNumber, Integer pageSize);
+
+    List<Long> selectIssueIdByProjectId(Long projectId,String title);
+
+    Issue selectIssueInfo(Long issueId, int type);
+
+    /**
+     *功能描述
+      * @param projrctId
+     * @param noLogin 免登录标识，"true"标识免登录调用，other非免登录调用
+     * @return java.util.Map
+     */
+     Map IssueMap(Long projrctId,String noLogin);
+
+     IssueListDTO arrangeIssueListDTO(Issue issue, IssueListDTO issueListDTO, Map<String, Map> mapMap);
+
+
+    void sortIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
+    /**
+     *    maxp
+     * @Date 2020/11/16
+     * @Description 功能描述  版本管理中递归查找Issue的children
+     * @param queryType
+     * @param rootIds
+     * @param issueListDTO
+     * @param mapMap
+     * @Return void
+     */
+    void sortVersionIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
+
+    /**
+     *功能描述 根据bizNum获取需求信息
+     *
+     * @date 2020/9/18
+      * @param bizNums
+     * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     */
+    List<Issue> getIssueByBizNums(List<String> bizNums,Byte issueType);
+
+    /**
+     *功能描述 获取基础和扩展信息
+     *
+     * @date 2020/9/23
+      * @param bizBacklogId
+     * @return com.yusys.agile.issue.dto.IssueDTO
+     */
+    IssueDTO selectIssueAndExtends(Long bizBacklogId);
+
+    List<IssueDTO> selectIssueAndExtendsByIssueIds(List<Long> duplicatedBindingReqIds);
+
+    /**
+     *功能描述
+     *
+     * @date 2020/9/19
+      * @param issueIdList
+     *  @param getChildren 是否获取子工作项
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     */
+    List<IssueDTO> getIssueListByIssueIds(List<Long> issueIdList,boolean getChildren);
+
+    /**
+     *功能描述 查询issue信息
+     *
+     * @date  2021/2/5
+      * @param issueId
+     * @return com.yusys.agile.issue.domain.Issue
+     */
+    Issue selectIssueByIssueId(Long issueId);
+
+    /**
+     * @description 查询子工作项待上线状态
+     *  
+     * @date 2020/10/09
+     * @param parentId
+     * @return
+     */
+    Map<Boolean, List<Long>> getChildIssueWaitOnlineState(Long parentId);
+
+    /**
+     * @description 更新工作项上线状态
+     *  
+     * @date 2020/10/09
+     * @param issueId
+     * @param issueType
+     * @return
+     */
+    void updateIssueLaunchState(Long issueId, Byte issueType);
+
+    /**
+     *
+     * @Date 2020/10/21
+     * @Description 根据登入用户获取代办事项
+     * @Return PageInfo
+     */
+    PageInfo getIssueCommissionByHandler(Integer pageNum, Integer pageSize);
+
+    /**
+     *功能描述 显示全景图
+     *
+     * @date 2020/10/28
+      * @param issueId
+     * @param noLogin
+     * @return com.yusys.agile.issue.dto.PanoramasEpicDTO
+     */
+    PanoramasEpicDTO getIssuePanoramas(String issueId,String planDeployDate,String noLogin)  throws Exception;
+
+    /**
+     * @description 服务治理平台查询接口
+     *  
+     * @date 2020/10/26
+     * @param serviceManageIssueDTO
+     * @return
+     */
+    CustomizePageInfoDTO queryIssueList(ServiceManageIssueDTO serviceManageIssueDTO);
+
+
+
+    /**
+      *功能描述   翻译扩展字段对应的名称
+      *
+      * @date 2020/11/16
+     * @param fieldId
+     * @param value
+      * @return java.lang.String
+     */
+
+
+    String  translateExtendFieldMap(String fieldId,String value);
+
+
+    Map queryIssueEpic(Long issueId, Byte issueType);
+
+    /**
+     *功能描述  根据局方需求编号获取分期【planDeployDate】
+     *
+     * @date 2020/11/18
+      * @param formalReqCode
+     * @return java.util.List<java.lang.String>
+     */
+    List<String> queryPlanDeployDate(String formalReqCode);
+
+    /**
+     *功能描述 根据局方需求编号获取客户需求编号
+     *
+     * @date 2021/2/7
+      * @param formalReqCode
+     * @return java.util.List<java.lang.String>
+     */
+    List<String> queryBizNumList(String formalReqCode);
+
+    /**
+     *功能描述 根据IssueIdList查询出未取消的需求
+     *
+     * @date 2020/11/30
+      * @param issueIdList
+     * @return java.util.List<java.lang.Long>
+     */
+    List<Long> getNotCanceledAndOnlineIssueByIssueIdList(List<Long> issueIdList);
+
+    /**
+     * @description 更新工作项已上线状态带时间(临时方法)
+     *  
+     * @date 2020/11/30
+     * @param issueId
+     * @param issueType
+     * @param actualOnlineTime
+     */
+    void updateIssueLaunchStateWithDate( Long issueId, Byte issueType, String actualOnlineTime);
+
+    /**
+     *功能描述 查询未上线的Epic
+     *
+     * @date 2020/12/8
+      * @param
+     * @return java.util.List<java.lang.Long>
+     */
+
+    List<Long> getNotOnlineEpic();
+
+    /**
+     *功能描述 获取没有需求排期或需求排期为空或需求排期为null的Epic信息
+     *
+     * @date 2020/12/8
+      * @param
+     * @return java.util.List<java.lang.Long>
+     */
+    List<Long> noReqSchedulingEpicIdList();
+
+    /**
+     *功能描述  根据epicId查询所有故事上的功能测试负责人
+     *
+     * @date 2020/12/11
+      * @param epicId
+     * @return void
+     */
+    List<String> getAllTaskFunTester(Long epicId);
+
+    void noDeployChangeStage();
+
+    /**
+     *功能描述 根据工作项ID列表获取有效状态的工作项列表
+     *
+     * @date 2020/12/30
+      * @param epicIdList
+     * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     */
+    List<Issue> getValidIssue(List<Long> epicIdList);
+}

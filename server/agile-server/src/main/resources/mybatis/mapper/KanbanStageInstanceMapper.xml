@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    <id column="instance_id" jdbcType="BIGINT" property="instanceId" />
+    <result column="stage_id" jdbcType="BIGINT" property="stageId" />
+    <result column="stage_name" jdbcType="VARCHAR" property="stageName" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="type_id" jdbcType="TINYINT" property="typeId" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="max_numbers" jdbcType="INTEGER" property="maxNumbers" />
+    <result column="stay_days" jdbcType="INTEGER" property="stayDays" />
+    <result column="is_show" jdbcType="TINYINT" property="isShow" />
+    <result column="level" jdbcType="TINYINT" property="level" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="enable_cancel" jdbcType="TINYINT" property="enableCancel" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <result column="principal" jdbcType="BIGINT" property="principal" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    <result column="admittance_rule" jdbcType="LONGVARCHAR" property="admittanceRule" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    instance_id, stage_id, stage_name, parent_id, type_id, project_id, order_id, max_numbers, 
+    stay_days, is_show, level, state, enable_cancel, create_uid, create_time, update_uid, 
+    update_time,tenant_code,principal,template_id
+  </sql>
+  <sql id="Blob_Column_List">
+    admittance_rule
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstanceExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from kanban_stage_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstanceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from kanban_stage_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from kanban_stage_instance
+    where
+      instance_id = #{instanceId,jdbcType=BIGINT}
+    and
+      state = 'U'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from kanban_stage_instance
+    where instance_id = #{instanceId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstanceExample">
+    delete from kanban_stage_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance" useGeneratedKeys="true" keyProperty="instanceId">
+    insert into kanban_stage_instance (instance_id, stage_id, stage_name, 
+      parent_id, type_id, project_id, 
+      order_id, max_numbers, stay_days, 
+      is_show, level, state, 
+      enable_cancel, create_uid, create_time, 
+      update_uid, update_time, admittance_rule,
+      tenant_code, principal, template_id
+      )
+    values (#{instanceId,jdbcType=BIGINT}, #{stageId,jdbcType=BIGINT}, #{stageName,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=BIGINT}, #{typeId,jdbcType=TINYINT}, #{projectId,jdbcType=BIGINT}, 
+      #{orderId,jdbcType=INTEGER}, #{maxNumbers,jdbcType=INTEGER}, #{stayDays,jdbcType=INTEGER}, 
+      #{isShow,jdbcType=TINYINT}, #{level,jdbcType=TINYINT}, #{state,jdbcType=VARCHAR}, 
+      #{enableCancel,jdbcType=TINYINT}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{admittanceRule,jdbcType=LONGVARCHAR},
+      #{tenantCode}, #{principal,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance" useGeneratedKeys="true" keyProperty="instanceId">
+    insert into kanban_stage_instance
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="instanceId != null">
+        instance_id,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
+      <if test="stageName != null">
+        stage_name,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="maxNumbers != null">
+        max_numbers,
+      </if>
+      <if test="stayDays != null">
+        stay_days,
+      </if>
+      <if test="isShow != null">
+        is_show,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="enableCancel != null">
+        enable_cancel,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="admittanceRule != null">
+        admittance_rule,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+      <if test="principal != null">
+        principal,
+      </if>
+      <if test="templateId != null">
+        template_id
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="instanceId != null">
+        #{instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=BIGINT},
+      </if>
+      <if test="stageName != null">
+        #{stageName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="maxNumbers != null">
+        #{maxNumbers,jdbcType=INTEGER},
+      </if>
+      <if test="stayDays != null">
+        #{stayDays,jdbcType=INTEGER},
+      </if>
+      <if test="isShow != null">
+        #{isShow,jdbcType=TINYINT},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=TINYINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="enableCancel != null">
+        #{enableCancel,jdbcType=TINYINT},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="admittanceRule != null">
+        #{admittanceRule,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="principal != null">
+        #{principal,jdbcType=BIGINT},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=BIGINT}
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstanceExample" resultType="java.lang.Long">
+    select count(*) from kanban_stage_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update kanban_stage_instance
+    <set>
+      <if test="record.instanceId != null">
+        instance_id = #{record.instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=BIGINT},
+      </if>
+      <if test="record.stageName != null">
+        stage_name = #{record.stageName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.typeId != null">
+        type_id = #{record.typeId,jdbcType=TINYINT},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.maxNumbers != null">
+        max_numbers = #{record.maxNumbers,jdbcType=INTEGER},
+      </if>
+      <if test="record.stayDays != null">
+        stay_days = #{record.stayDays,jdbcType=INTEGER},
+      </if>
+      <if test="record.isShow != null">
+        is_show = #{record.isShow,jdbcType=TINYINT},
+      </if>
+      <if test="record.level != null">
+        level = #{record.level,jdbcType=TINYINT},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.enableCancel != null">
+        enable_cancel = #{record.enableCancel,jdbcType=TINYINT},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUid != null">
+        update_uid = #{record.updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.admittanceRule != null">
+        admittance_rule = #{record.admittanceRule,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.principal != null">
+        principal = #{record.principal,jdbcType=BIGINT},
+      </if>
+      <if test="record.templateId != null">
+        template_id = #{record.templateId,jdbcType=BIGINT}
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update kanban_stage_instance
+    set instance_id = #{record.instanceId,jdbcType=BIGINT},
+      stage_id = #{record.stageId,jdbcType=BIGINT},
+      stage_name = #{record.stageName,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=BIGINT},
+      type_id = #{record.typeId,jdbcType=TINYINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      order_id = #{record.orderId,jdbcType=INTEGER},
+      max_numbers = #{record.maxNumbers,jdbcType=INTEGER},
+      stay_days = #{record.stayDays,jdbcType=INTEGER},
+      is_show = #{record.isShow,jdbcType=TINYINT},
+      level = #{record.level,jdbcType=TINYINT},
+      state = #{record.state,jdbcType=VARCHAR},
+      enable_cancel = #{record.enableCancel,jdbcType=TINYINT},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      admittance_rule = #{record.admittanceRule,jdbcType=LONGVARCHAR},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      principal = #{record.principal,jdbcType=BIGINT},
+      template_id = #{record.templateId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update kanban_stage_instance
+    set instance_id = #{record.instanceId,jdbcType=BIGINT},
+      stage_id = #{record.stageId,jdbcType=BIGINT},
+      stage_name = #{record.stageName,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=BIGINT},
+      type_id = #{record.typeId,jdbcType=TINYINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      order_id = #{record.orderId,jdbcType=INTEGER},
+      max_numbers = #{record.maxNumbers,jdbcType=INTEGER},
+      stay_days = #{record.stayDays,jdbcType=INTEGER},
+      is_show = #{record.isShow,jdbcType=TINYINT},
+      level = #{record.level,jdbcType=TINYINT},
+      state = #{record.state,jdbcType=VARCHAR},
+      enable_cancel = #{record.enableCancel,jdbcType=TINYINT},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{record.tenantCode},
+      principal = #{record.principal,jdbcType=BIGINT},
+      template_id = #{record.templateId,jdbcType=BIGINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    update kanban_stage_instance
+    <set>
+        principal = #{principal},
+      <if test="stageId != null">
+        stage_id = #{stageId,jdbcType=BIGINT},
+      </if>
+      <if test="stageName != null">
+        stage_name = #{stageName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="maxNumbers != null">
+        max_numbers = #{maxNumbers,jdbcType=INTEGER},
+      </if>
+      <if test="stayDays != null">
+        stay_days = #{stayDays,jdbcType=INTEGER},
+      </if>
+      <if test="isShow != null">
+        is_show = #{isShow,jdbcType=TINYINT},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=TINYINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="enableCancel != null">
+        enable_cancel = #{enableCancel,jdbcType=TINYINT},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="admittanceRule != null">
+        admittance_rule = #{admittanceRule,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode},
+      </if>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=BIGINT}
+      </if>
+    </set>
+    where instance_id = #{instanceId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    update kanban_stage_instance
+    set stage_id = #{stageId,jdbcType=BIGINT},
+      stage_name = #{stageName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      type_id = #{typeId,jdbcType=TINYINT},
+      project_id = #{projectId,jdbcType=BIGINT},
+      order_id = #{orderId,jdbcType=INTEGER},
+      max_numbers = #{maxNumbers,jdbcType=INTEGER},
+      stay_days = #{stayDays,jdbcType=INTEGER},
+      is_show = #{isShow,jdbcType=TINYINT},
+      level = #{level,jdbcType=TINYINT},
+      state = #{state,jdbcType=VARCHAR},
+      enable_cancel = #{enableCancel,jdbcType=TINYINT},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      admittance_rule = #{admittanceRule,jdbcType=LONGVARCHAR},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      principal = #{principal,jdbcType=BIGINT},
+      template_id = #{templateId,jdbcType=BIGINT}
+    where instance_id = #{instanceId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    update kanban_stage_instance
+    set stage_id = #{stageId,jdbcType=BIGINT},
+      stage_name = #{stageName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      type_id = #{typeId,jdbcType=TINYINT},
+      project_id = #{projectId,jdbcType=BIGINT},
+      order_id = #{orderId,jdbcType=INTEGER},
+      max_numbers = #{maxNumbers,jdbcType=INTEGER},
+      stay_days = #{stayDays,jdbcType=INTEGER},
+      is_show = #{isShow,jdbcType=TINYINT},
+      level = #{level,jdbcType=TINYINT},
+      state = #{state,jdbcType=VARCHAR},
+      enable_cancel = #{enableCancel,jdbcType=TINYINT},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{tenantCode},
+      principal = #{principal,jdbcType=BIGINT},
+      template_id = #{templateId,jdbcType=BIGINT}
+    where instance_id = #{instanceId,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateSelectStatusByPrimaryKeyList">
+    update
+      kanban_stage_instance
+    set
+      is_show = #{status},
+      update_uid = #{updateUid},
+      update_time = #{updateTime}
+    where
+      instance_id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <select id="validateSecondStageExists" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance" resultType="int">
+    select
+      count(1)
+    from
+    kanban_stage_instance
+    <trim prefix="where" prefixOverrides="and">
+      <if test="projectId != null">
+        project_id = #{projectId}
+      </if>
+      <if test="parentId != null">
+        and parent_id = #{parentId}
+      </if>
+      <if test="stageName != null">
+        and stage_name = #{stageName}
+      </if>
+      <if test="level != null">
+        and level = #{level}
+      </if>
+      <if test="isShow != null">
+        and is_show = #{isShow}
+      </if>
+      <if test="state != null">
+        and state = #{state}
+      </if>
+    </trim>
+  </select>
+
+  <select id="selectMaxOrderId" resultType="int">
+    select
+      max(order_id)
+    from
+    kanban_stage_instance t
+  </select>
+
+  <select id="selectMaxStateId" resultType="long">
+    select
+      max(stage_id)
+    from
+    kanban_stage_instance t
+  </select>
+
+  <select id="getSecondStageInstances" resultType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      kanban_stage_instance
+    where
+      project_id = #{projectId}
+    and
+      parent_id = #{parentId}
+    and
+      level = 2
+    and
+      state = 'U'
+    order by order_id
+  </select>
+
+  <select id="getSecondStageOrderList" parameterType="java.util.List" resultType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    select
+    instance_id,
+    order_id
+    from
+    kanban_stage_instance
+    where
+    instance_id in
+    <foreach collection="instanceIds" item="item" index="index" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and
+      state = 'U'
+    and
+      level = 2
+  </select>
+
+  <update id="updateSecondStageSort" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    update
+      kanban_stage_instance t
+    set
+      order_id = #{orderId},
+      update_uid = #{updateUid},
+      update_time = #{updateTime}
+    where
+      instance_id = #{instanceId}
+  </update>
+
+  <select id="selectBatchSecondStages" resultType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    select
+      <include refid="Base_Column_List" />
+      ,
+      <include refid="Blob_Column_List" />
+    from
+      kanban_stage_instance
+    where
+      project_id = #{projectId}
+    and
+      level = 2
+    and
+      state = 'U'
+    and
+      parent_id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    order by order_id
+  </select>
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert
+      into
+    kanban_stage_instance
+    (
+      stage_id,
+      stage_name,
+      parent_id,
+      project_id,
+      order_id,
+      is_show,
+      level,
+      state,
+      create_uid,
+      create_time,
+      tenant_code,
+      principal,
+      template_id
+    )
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (
+      #{item.stageId},
+      #{item.stageName},
+      #{item.parentId},
+      #{item.projectId},
+      #{item.orderId},
+      #{item.isShow},
+      #{item.level},
+      #{item.state},
+      #{item.createUid},
+      #{item.createTime},
+      #{item.tenantCode},
+      #{item.principal},
+      #{item.templateId}
+      )
+    </foreach>
+  </insert>
+
+  <update id="updateStagePopUpInfo" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
+    update
+      kanban_stage_instance
+    set
+       max_numbers = #{maxNumbers},
+       stay_days = #{stayDays},
+       admittance_rule = #{admittanceRule},
+       update_uid = #{updateUid},
+       update_time = #{updateTime}
+    where
+      instance_id = #{instanceId}
+  </update>
+  <select id="getSecondStagesByOrderId" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List" />
+    from
+        kanban_stage_instance
+    where
+        state ='U'
+        and order_id =(
+            select
+                order_id
+            from
+                kanban_stage_instance
+            where
+               state = 'U'
+               and order_id &gt;(
+                  select
+                      order_id
+                  from
+                      kanban_stage_instance
+                  where
+                      project_id=#{projectId}
+                      <choose>
+                        <when test="oldStageId != null and oldLaneId !=null">
+                           and stage_id = #{oldLaneId} and parent_id=#{oldStageId}
+                        </when>
+                        <otherwise>
+                           and stage_id = #{oldStageId}
+                        </otherwise>
+                      </choose>
+              )
+            order by
+                    order_id asc
+            limit 1 )
+    order by
+            order_id asc
+    limit 1
+  </select>
+</mapper>

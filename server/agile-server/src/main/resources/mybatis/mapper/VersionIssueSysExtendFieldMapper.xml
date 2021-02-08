@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yusys.agile.versionmanager.dao.VersionIssueSysExtendMapper" >
+  <resultMap id="BaseResultMap" type="com.yusys.agile.versionmanager.dto.VersionIssueDTO">
+      <result property="versionName" column="versionName"/>
+      <result property="issueId" column="issueId"/>
+      <result property="bizName" column="bizName"/>
+      <result property="versionIsRemove" column="versionIsRemove"/>
+      <result property="bizStatus" column="bizStatus"/>
+      <result property="approvalStatus" column="approvalStatus"/>
+      <result property="approvalResult" column="approvalResult"/>
+      <result property="responsiblePerson" column="responsiblePerson"/>
+      <result property="bizPlanStates" column="bizPlanStates"/>
+      <result property="bizNum" column="bizNum"/>
+      <result property="formalReqCode" column="formalReqCode"/>
+      <result property="reqGroup" column="reqGroup"/>
+  </resultMap>
+
+  <resultMap id="extendResultMap" type="com.yusys.agile.versionmanager.dto.VersionIssueSysExtendFieldDetailDTO">
+    <result property="issueId" column="issueId"/>
+    <result property="parentId" column="parentId"/>
+    <result property="bizStatus" column="bizStatus"/>
+    <result property="systemName" column="systemName"/>
+    <result property="handlerName" column="handlerName"/>
+    <result property="baUserName" column="baUserName"/>
+      <result property="deployIllustration" column="deployIllustration"/>
+      <result property="actualFinishTime" column="actualFinishTime"/>
+      <result property="debugActualFinishTime" column="debugActualFinishTime"/>
+  </resultMap>
+
+  <select id="selectEpicIssueByVersionId" resultMap="BaseResultMap">
+        SELECT
+      tt.versionName,	tt.issueId,tt.bizName,tt.versionIsRemove,tt.bizStatus,
+        (SELECT case a.`value` WHEN '0' THEN '未审批'
+        WHEN '1' THEN '审批中'
+        WHEN '2' THEN '已审批'
+        else a.`value`
+      end as approvalStatus
+        FROM sys_extend_field_detail a WHERE a.issue_id = tt.issueId  AND a.field_id = 'approvalStatus'  AND a.state = 'U' AND a.`value` != '[]' LIMIT 1) as approvalStatus,
+        (SELECT a.`value` FROM sys_extend_field_detail a WHERE a.issue_id = tt.issueId  AND a.field_id = 'approvalResult'  AND a.state = 'U' AND a.`value` != '[]' LIMIT 1) as approvalResult,
+        (SELECT a.`value` FROM sys_extend_field_detail a WHERE a.issue_id = tt.issueId  AND a.field_id = 'responsiblePerson'  AND a.state = 'U' AND a.`value` != '[]' LIMIT 1) as responsiblePerson,
+        (SELECT a.`value` FROM sys_extend_field_detail a WHERE a.issue_id = tt.issueId  AND a.field_id = 'bizNum'  AND a.state = 'U' AND a.`value` != '[]' LIMIT 1) as bizNum,
+        (SELECT case a.`value`
+        WHEN '8880' THEN '需求取消'
+        WHEN '8881' THEN '需求挂起'
+        WHEN '8882' THEN '需求取消挂起'
+        WHEN '8883' THEN '延期'
+        WHEN '8884' THEN '无需部署'
+        WHEN '8888' THEN '按期'
+        WHEN '8889' THEN '分期'
+        else a.`value`
+       end as bizPlanStates
+        FROM sys_extend_field_detail a WHERE a.issue_id = tt.issueId  AND a.field_id = 'planStates'  AND a.state = 'U' AND a.`value` != '[]' LIMIT 1) as bizPlanStates,
+        (SELECT a.`value` FROM sys_extend_field_detail a WHERE a.issue_id = tt.issueId  AND a.field_id = 'formalReqCode'  AND a.state = 'U' AND a.`value` != '[]' LIMIT 1 ) as formalReqCode,
+        (SELECT case a.`value`
+            WHEN '001' THEN '个人业务组'
+            WHEN '002' THEN '集团业务组'
+            WHEN '003' THEN '基础服务组'
+            WHEN '004' THEN '电子稽核组'
+            WHEN '005' THEN '规划建设组'
+            WHEN '012' THEN 'IT支撑室需求组1组'
+            WHEN '013' THEN '系统运维组'
+            WHEN '023' THEN 'IT支撑室需求组2组'
+            WHEN '024' THEN '业务运维组'
+            WHEN '025' THEN '服务支撑组'
+            WHEN '050' THEN '话管需求组'
+            else a.`value`
+  end as reqGroup FROM sys_extend_field_detail a WHERE a.issue_id = tt.issueId  AND a.field_id = 'reqGroup'  AND a.state = 'U' AND a.`value` != '[]' LIMIT 1 ) as reqGroup
+    FROM
+        (
+    SELECT DISTINCT
+        t1.id as versionId,
+        t1.version_name as versionName,
+        t3.issue_id as issueId,
+        t3.title as bizName,
+        case t2.valid_status
+        WHEN '0' THEN '已移除'
+        WHEN '1' THEN '未移除'
+        else t2.valid_status
+         end as versionIsRemove,
+        ( SELECT a.stage_name FROM kanban_stage_instance a WHERE a.stage_id = t3.stage_id AND a.stage_name != '[]' LIMIT 1 ) AS bizStatus
+    FROM
+        version_manager t1,
+        bj_version_plan_requirements t2,
+        issue t3
+    WHERE
+        t1.id = t2.version_plan_id
+        AND t2.requirement_id = t3.issue_id
+        AND t3.state = 'U'
+      <if test="versionIds != null and versionIds.size() > 0">
+          AND t1.id IN
+          <foreach collection="versionIds" index="index" item="item" separator="," open="(" close=")">
+              #{item}
+          </foreach>
+      </if>
+        ) tt ORDER BY versionId,bizNum,formalReqCode
+
+  </select>
+
+  <select id="selectFeatureIssueByEpicId" resultMap="extendResultMap">
+      select
+      b.issue_id issueId,
+      b.parent_id parentId,
+      (select DATE_FORMAT(max((create_time)),"%Y-%m-%d")  from issue_history_record where new_value = "2-22" and issue_id = b.issue_id) as actualFinishTime,
+      (select DATE_FORMAT(max((create_time)),"%Y-%m-%d")  from issue_history_record where new_value = "6-9" and issue_id = b.issue_id) as debugActualFinishTime,
+      ( SELECT a.stage_name FROM kanban_stage_instance a WHERE a.stage_id = b.stage_id AND a.stage_name != '[]' LIMIT 1) AS bizStatus,
+      (SELECT p.`value` FROM sys_extend_field_detail p WHERE p.issue_id = issueId  AND p.field_id = 'deployIllustration' AND p.state = 'U' AND p.`value` != '[]' LIMIT 1 ) AS deployIllustration,
+      ( SELECT u.user_name FROM sso.sso_user u WHERE b.`handler` = u.user_id AND u.state = 'U' AND u.user_name != '[]' LIMIT 1) AS handlerName,
+      (
+      SELECT
+      a.`value`
+      FROM
+      sys_extend_field_detail a
+      WHERE
+      a.issue_id = issueId
+      AND a.field_id = 'externalHandlerId'
+      AND a.state = 'U' AND a.`value` != '[]' LIMIT 1
+      ) AS externalHandlerId,
+      ( SELECT u.user_name FROM sso.sso_user u WHERE externalHandlerId = u.user_id AND u.state = 'U'  AND u.user_name != '[]' LIMIT 1) AS baUserName,
+      CASE
+      ( SELECT l.system_id FROM issue_system_relp l WHERE issueId = l.issue_id AND l.system_id != '[]' LIMIT 1 )
+      WHEN '766665833022611456' THEN
+      'NGCRM'
+      WHEN '766665865394249728' THEN
+      'BOSS'
+      WHEN '766681391080267776' THEN
+      '电子商务'
+      END AS systemName
+      from
+      issue b
+      WHERE
+      b.issue_type = 2
+      AND b.state = 'U'
+      and b.parent_id IN
+        <foreach collection="issueIds" index="index" item="item"
+                                   open="("  separator="," close=")">
+            #{item}
+        </foreach>
+    order by
+      issueId
+  </select>
+</mapper>

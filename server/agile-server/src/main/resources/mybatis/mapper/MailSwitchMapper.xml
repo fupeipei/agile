@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.noticesettings.dao.MailSwitchMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.noticesettings.domain.MailSwitch">
+    <id column="mail_id" jdbcType="BIGINT" property="mailId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="mail_type" jdbcType="TINYINT" property="mailType" />
+    <result column="main_switch" jdbcType="TINYINT" property="mainSwitch" />
+    <result column="main_switch_name" jdbcType="VARCHAR" property="mainSwitchName" />
+    <result column="sub_switch" jdbcType="TINYINT" property="subSwitch" />
+    <result column="sub_switch_name" jdbcType="VARCHAR" property="subSwitchName" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    mail_id, user_id, project_id, type, mail_type, main_switch, main_switch_name, sub_switch, 
+    sub_switch_name,tenant_code
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.noticesettings.domain.MailSwitchExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from mail_switch
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mail_switch
+    where mail_id = #{mailId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from mail_switch
+    where mail_id = #{mailId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.noticesettings.domain.MailSwitchExample">
+    delete from mail_switch
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.noticesettings.domain.MailSwitch" useGeneratedKeys="true" keyProperty="mailId">
+    insert into mail_switch (mail_id, user_id, project_id, 
+      type, mail_type, main_switch, 
+      main_switch_name, sub_switch, sub_switch_name,tenant_code
+      )
+    values (#{mailId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, 
+      #{type,jdbcType=TINYINT}, #{mailType,jdbcType=TINYINT}, #{mainSwitch,jdbcType=TINYINT}, 
+      #{mainSwitchName,jdbcType=VARCHAR}, #{subSwitch,jdbcType=TINYINT}, #{subSwitchName,jdbcType=VARCHAR},#{tenantCode}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.noticesettings.domain.MailSwitch">
+    insert into mail_switch
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mailId != null">
+        mail_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="mailType != null">
+        mail_type,
+      </if>
+      <if test="mainSwitch != null">
+        main_switch,
+      </if>
+      <if test="mainSwitchName != null">
+        main_switch_name,
+      </if>
+      <if test="subSwitch != null">
+        sub_switch,
+      </if>
+      <if test="subSwitchName != null">
+        sub_switch_name,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mailId != null">
+        #{mailId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="mailType != null">
+        #{mailType,jdbcType=TINYINT},
+      </if>
+      <if test="mainSwitch != null">
+        #{mainSwitch,jdbcType=TINYINT},
+      </if>
+      <if test="mainSwitchName != null">
+        #{mainSwitchName,jdbcType=VARCHAR},
+      </if>
+      <if test="subSwitch != null">
+        #{subSwitch,jdbcType=TINYINT},
+      </if>
+      <if test="subSwitchName != null">
+        #{subSwitchName,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.noticesettings.domain.MailSwitchExample" resultType="java.lang.Long">
+    select count(*) from mail_switch
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update mail_switch
+    <set>
+      <if test="record.mailId != null">
+        mail_id = #{record.mailId,jdbcType=BIGINT},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=BIGINT},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=TINYINT},
+      </if>
+      <if test="record.mailType != null">
+        mail_type = #{record.mailType,jdbcType=TINYINT},
+      </if>
+      <if test="record.mainSwitch != null">
+        main_switch = #{record.mainSwitch,jdbcType=TINYINT},
+      </if>
+      <if test="record.mainSwitchName != null">
+        main_switch_name = #{record.mainSwitchName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.subSwitch != null">
+        sub_switch = #{record.subSwitch,jdbcType=TINYINT},
+      </if>
+      <if test="record.subSwitchName != null">
+        sub_switch_name = #{record.subSwitchName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update mail_switch
+    set mail_id = #{record.mailId,jdbcType=BIGINT},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      type = #{record.type,jdbcType=TINYINT},
+      mail_type = #{record.mailType,jdbcType=TINYINT},
+      main_switch = #{record.mainSwitch,jdbcType=TINYINT},
+      main_switch_name = #{record.mainSwitchName,jdbcType=VARCHAR},
+      sub_switch = #{record.subSwitch,jdbcType=TINYINT},
+      sub_switch_name = #{record.subSwitchName,jdbcType=VARCHAR},
+    tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.noticesettings.domain.MailSwitch">
+    update mail_switch
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="mailType != null">
+        mail_type = #{mailType,jdbcType=TINYINT},
+      </if>
+      <if test="mainSwitch != null">
+        main_switch = #{mainSwitch,jdbcType=TINYINT},
+      </if>
+      <if test="mainSwitchName != null">
+        main_switch_name = #{mainSwitchName,jdbcType=VARCHAR},
+      </if>
+      <if test="subSwitch != null">
+        sub_switch = #{subSwitch,jdbcType=TINYINT},
+      </if>
+      <if test="subSwitchName != null">
+        sub_switch_name = #{subSwitchName,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mail_id = #{mailId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.noticesettings.domain.MailSwitch">
+    update mail_switch
+    set user_id = #{userId,jdbcType=BIGINT},
+      project_id = #{projectId,jdbcType=BIGINT},
+      type = #{type,jdbcType=TINYINT},
+      mail_type = #{mailType,jdbcType=TINYINT},
+      main_switch = #{mainSwitch,jdbcType=TINYINT},
+      main_switch_name = #{mainSwitchName,jdbcType=VARCHAR},
+      sub_switch = #{subSwitch,jdbcType=TINYINT},
+      sub_switch_name = #{subSwitchName,jdbcType=VARCHAR},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where mail_id = #{mailId,jdbcType=BIGINT}
+  </update>
+  <select id="selectMailSwtchByMailType" parameterType="java.lang.Byte" resultMap="BaseResultMap">
+    select
+        DISTINCT
+        ms.mail_id, ms.user_id, ms.project_id, ms.type, ms.mail_type, ms.main_switch,
+        ms.main_switch_name, ms.sub_switch, ms.sub_switch_name,ms.tenant_code
+    from
+          mail_switch ms, user_sprint_hour ush, sprint s
+    where
+      ms.user_id =ush.user_id
+      and s.sprint_id = ush.sprint_id
+      and ms.`type` = 2
+      and ms.main_switch = 1
+      and ms.mail_type = #{mailType}
+  </select>
+</mapper>

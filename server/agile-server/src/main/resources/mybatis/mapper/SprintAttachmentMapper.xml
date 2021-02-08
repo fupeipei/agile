@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.sprint.dao.SprintAttachmentMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.sprint.domain.SprintAttachment">
+    <id column="attachment_id" jdbcType="BIGINT" property="attachmentId" />
+    <result column="sprint_id" jdbcType="BIGINT" property="sprintId" />
+    <result column="file_uri" jdbcType="VARCHAR" property="fileUri" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_size" jdbcType="INTEGER" property="fileSize" />
+    <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime" />
+    <result column="upload_uid" jdbcType="BIGINT" property="uploadUid" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    attachment_id, sprint_id, file_uri, file_name, file_size, upload_time, upload_uid,tenant_code
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.sprint.domain.SprintAttachmentExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sprint_attachment
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sprint_attachment
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sprint_attachment
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.sprint.domain.SprintAttachmentExample">
+    delete from sprint_attachment
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.sprint.domain.SprintAttachment" useGeneratedKeys="true" keyProperty="attachmentId">
+    insert into sprint_attachment (attachment_id, sprint_id, file_uri, 
+      file_name, file_size, upload_time, 
+      upload_uid,tenant_code)
+    values (#{attachmentId,jdbcType=BIGINT}, #{sprintId,jdbcType=BIGINT}, #{fileUri,jdbcType=VARCHAR}, 
+      #{fileName,jdbcType=VARCHAR}, #{fileSize,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
+      #{uploadUid,jdbcType=BIGINT},#{tenantCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.sprint.domain.SprintAttachment" useGeneratedKeys="true" keyProperty="attachmentId">
+    insert into sprint_attachment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="attachmentId != null">
+        attachment_id,
+      </if>
+      <if test="sprintId != null">
+        sprint_id,
+      </if>
+      <if test="fileUri != null">
+        file_uri,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="fileSize != null">
+        file_size,
+      </if>
+      <if test="uploadTime != null">
+        upload_time,
+      </if>
+      <if test="uploadUid != null">
+        upload_uid,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="attachmentId != null">
+        #{attachmentId,jdbcType=BIGINT},
+      </if>
+      <if test="sprintId != null">
+        #{sprintId,jdbcType=BIGINT},
+      </if>
+      <if test="fileUri != null">
+        #{fileUri,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        #{fileSize,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null">
+        #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadUid != null">
+        #{uploadUid,jdbcType=BIGINT},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.sprint.domain.SprintAttachmentExample" resultType="java.lang.Long">
+    select count(*) from sprint_attachment
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update sprint_attachment
+    <set>
+      <if test="record.attachmentId != null">
+        attachment_id = #{record.attachmentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.sprintId != null">
+        sprint_id = #{record.sprintId,jdbcType=BIGINT},
+      </if>
+      <if test="record.fileUri != null">
+        file_uri = #{record.fileUri,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileName != null">
+        file_name = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileSize != null">
+        file_size = #{record.fileSize,jdbcType=INTEGER},
+      </if>
+      <if test="record.uploadTime != null">
+        upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.uploadUid != null">
+        upload_uid = #{record.uploadUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update sprint_attachment
+    set attachment_id = #{record.attachmentId,jdbcType=BIGINT},
+      sprint_id = #{record.sprintId,jdbcType=BIGINT},
+      file_uri = #{record.fileUri,jdbcType=VARCHAR},
+      file_name = #{record.fileName,jdbcType=VARCHAR},
+      file_size = #{record.fileSize,jdbcType=INTEGER},
+      upload_time = #{record.uploadTime,jdbcType=TIMESTAMP},
+      upload_uid = #{record.uploadUid,jdbcType=BIGINT},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sprint.domain.SprintAttachment">
+    update sprint_attachment
+    <set>
+      <if test="sprintId != null">
+        sprint_id = #{sprintId,jdbcType=BIGINT},
+      </if>
+      <if test="fileUri != null">
+        file_uri = #{fileUri,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        file_size = #{fileSize,jdbcType=INTEGER},
+      </if>
+      <if test="uploadTime != null">
+        upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadUid != null">
+        upload_uid = #{uploadUid,jdbcType=BIGINT},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sprint.domain.SprintAttachment">
+    update sprint_attachment
+    set sprint_id = #{sprintId,jdbcType=BIGINT},
+      file_uri = #{fileUri,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=INTEGER},
+      upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+      upload_uid = #{uploadUid,jdbcType=BIGINT},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where attachment_id = #{attachmentId,jdbcType=BIGINT}
+  </update>
+  <!-- 自写sql-->
+  <insert id="createBatch"  parameterType="List">
+    insert into sprint_attachment(sprint_id,file_uri,file_name,size,upload_time,upload_uid,tenant_code)
+    values
+    <foreach collection="attachments" item="item" index="index" separator=",">
+      (#{item.sprintId},#{item.fileUri},#{item.fileName},#{item.size},now(),#{item.uploadUid},#{item.tenantCode})
+    </foreach>
+  </insert>
+
+  <delete id="deleteInIds" parameterType="List">
+    delete from sprint_attachment where attachment_id IN(
+    <foreach collection="ids" separator="," item="id">
+      #{id}
+    </foreach>
+    )
+  </delete>
+
+  <delete id="deleteBySprintId">
+        DELETE FROM sprint_attachment where sprint_id = #{sprintId}
+    </delete>
+</mapper>

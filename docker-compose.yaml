@@ -1,0 +1,9 @@
+version: "2"
+services:
+  agile:
+    image: 10.1.195.244:5002/agile/agile-impl:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile_agile
+  
+  

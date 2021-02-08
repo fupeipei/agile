@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.versionmanager.dao.VersionManagerMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.versionmanager.domain.VersionManager">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="version_name" jdbcType="VARCHAR" property="versionName" />
+    <result column="version_code" jdbcType="VARCHAR" property="versionCode" />
+    <result column="plan_release_date" jdbcType="DATE" property="planReleaseDate" />
+    <result column="plan_deploy_date" jdbcType="DATE" property="planDeployDate" />
+    <result column="version_state" jdbcType="VARCHAR" property="versionState" />
+    <result column="version_describe" jdbcType="VARCHAR" property="versionDescribe" />
+    <result column="change_release_date" jdbcType="DATE" property="changeReleaseDate" />
+    <result column="change_reason" jdbcType="VARCHAR" property="changeReason" />
+    <result column="change_description" jdbcType="VARCHAR" property="changeDescription" />
+    <result column="send_to_rmp" jdbcType="INTEGER" property="sendToRmp" />
+    <result column="send_to_cmp" jdbcType="INTEGER" property="sendToCmp" />
+    <result column="send_to_itc" jdbcType="INTEGER" property="sendToItc" />
+    <result column="review_count" jdbcType="INTEGER" property="reviewCount" />
+    <result column="review_start_time" jdbcType="TIMESTAMP" property="reviewStartTime" />
+    <result column="review_end_time" jdbcType="TIMESTAMP" property="reviewEndTime" />
+    <result column="plan_delivery_number" jdbcType="INTEGER" property="planDeliveryNumber" />
+    <result column="baseline_flag" jdbcType="TINYINT" property="baselineFlag" />
+    <result column="operation_uid" jdbcType="INTEGER" property="operationUid" />
+    <result column="baseline_time" jdbcType="TIMESTAMP" property="baselineTime" />
+    <result column="deploy_type" jdbcType="TINYINT" property="deployType" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="deploy_period" jdbcType="VARCHAR" property="deployPeriod" />
+    <result column="main_watch" jdbcType="VARCHAR" property="mainWatch" />
+    <result column="secondary_watch" jdbcType="VARCHAR" property="secondaryWatch" />
+    <result column="main_guarantee" jdbcType="VARCHAR" property="mainGuarantee" />
+    <result column="secondary_guarantee" jdbcType="VARCHAR" property="secondaryGuarantee" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <result column="fitst_edition_date" jdbcType="DATE" property="fitstEditionDate" />
+    <result column="sealed_edition_date" jdbcType="DATE" property="sealedEditionDate" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, version_name, version_code, plan_release_date, plan_deploy_date, version_state, 
+    version_describe, change_release_date, change_reason, change_description, send_to_rmp, 
+    send_to_cmp, send_to_itc, review_count, review_start_time, review_end_time, plan_delivery_number, 
+    baseline_flag, operation_uid, baseline_time, deploy_type, batch_code, deploy_period, 
+    main_watch, secondary_watch, main_guarantee, secondary_guarantee, create_uid, create_name, 
+    project_id, create_time, update_uid, update_time, tenant_code, fitst_edition_date, 
+    sealed_edition_date, state
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.versionmanager.domain.VersionManagerExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from version_manager
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from version_manager
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from version_manager
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.versionmanager.domain.VersionManagerExample">
+    delete from version_manager
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.versionmanager.domain.VersionManager" useGeneratedKeys="true" keyProperty="id">
+    insert into version_manager (id, version_name, version_code, 
+      plan_release_date, plan_deploy_date, version_state, 
+      version_describe, change_release_date, change_reason, 
+      change_description, send_to_rmp, send_to_cmp, 
+      send_to_itc, review_count, review_start_time, 
+      review_end_time, plan_delivery_number, baseline_flag, 
+      operation_uid, baseline_time, deploy_type, 
+      batch_code, deploy_period, main_watch, 
+      secondary_watch, main_guarantee, secondary_guarantee, 
+      create_uid, create_name, project_id, 
+      create_time, update_uid, update_time, 
+      tenant_code, fitst_edition_date, sealed_edition_date, 
+      state)
+    values (#{id,jdbcType=BIGINT}, #{versionName,jdbcType=VARCHAR}, #{versionCode,jdbcType=VARCHAR}, 
+      #{planReleaseDate,jdbcType=DATE}, #{planDeployDate,jdbcType=DATE}, #{versionState,jdbcType=VARCHAR}, 
+      #{versionDescribe,jdbcType=VARCHAR}, #{changeReleaseDate,jdbcType=DATE}, #{changeReason,jdbcType=VARCHAR}, 
+      #{changeDescription,jdbcType=VARCHAR}, #{sendToRmp,jdbcType=INTEGER}, #{sendToCmp,jdbcType=INTEGER}, 
+      #{sendToItc,jdbcType=INTEGER}, #{reviewCount,jdbcType=INTEGER}, #{reviewStartTime,jdbcType=TIMESTAMP}, 
+      #{reviewEndTime,jdbcType=TIMESTAMP}, #{planDeliveryNumber,jdbcType=INTEGER}, #{baselineFlag,jdbcType=TINYINT}, 
+      #{operationUid,jdbcType=INTEGER}, #{baselineTime,jdbcType=TIMESTAMP}, #{deployType,jdbcType=TINYINT}, 
+      #{batchCode,jdbcType=VARCHAR}, #{deployPeriod,jdbcType=VARCHAR}, #{mainWatch,jdbcType=VARCHAR}, 
+      #{secondaryWatch,jdbcType=VARCHAR}, #{mainGuarantee,jdbcType=VARCHAR}, #{secondaryGuarantee,jdbcType=VARCHAR}, 
+      #{createUid,jdbcType=BIGINT}, #{createName,jdbcType=VARCHAR}, #{projectId,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{tenantCode,jdbcType=VARCHAR}, #{fitstEditionDate,jdbcType=DATE}, #{sealedEditionDate,jdbcType=DATE}, 
+      #{state,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.versionmanager.domain.VersionManager" useGeneratedKeys="true" keyProperty="id">
+    insert into version_manager
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="versionName != null">
+        version_name,
+      </if>
+      <if test="versionCode != null">
+        version_code,
+      </if>
+      <if test="planReleaseDate != null">
+        plan_release_date,
+      </if>
+      <if test="planDeployDate != null">
+        plan_deploy_date,
+      </if>
+      <if test="versionState != null">
+        version_state,
+      </if>
+      <if test="versionDescribe != null">
+        version_describe,
+      </if>
+      <if test="changeReleaseDate != null">
+        change_release_date,
+      </if>
+      <if test="changeReason != null">
+        change_reason,
+      </if>
+      <if test="changeDescription != null">
+        change_description,
+      </if>
+      <if test="sendToRmp != null">
+        send_to_rmp,
+      </if>
+      <if test="sendToCmp != null">
+        send_to_cmp,
+      </if>
+      <if test="sendToItc != null">
+        send_to_itc,
+      </if>
+      <if test="reviewCount != null">
+        review_count,
+      </if>
+      <if test="reviewStartTime != null">
+        review_start_time,
+      </if>
+      <if test="reviewEndTime != null">
+        review_end_time,
+      </if>
+      <if test="planDeliveryNumber != null">
+        plan_delivery_number,
+      </if>
+      <if test="baselineFlag != null">
+        baseline_flag,
+      </if>
+      <if test="operationUid != null">
+        operation_uid,
+      </if>
+      <if test="baselineTime != null">
+        baseline_time,
+      </if>
+      <if test="deployType != null">
+        deploy_type,
+      </if>
+      <if test="batchCode != null">
+        batch_code,
+      </if>
+      <if test="deployPeriod != null">
+        deploy_period,
+      </if>
+      <if test="mainWatch != null">
+        main_watch,
+      </if>
+      <if test="secondaryWatch != null">
+        secondary_watch,
+      </if>
+      <if test="mainGuarantee != null">
+        main_guarantee,
+      </if>
+      <if test="secondaryGuarantee != null">
+        secondary_guarantee,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+      <if test="fitstEditionDate != null">
+        fitst_edition_date,
+      </if>
+      <if test="sealedEditionDate != null">
+        sealed_edition_date,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="versionName != null">
+        #{versionName,jdbcType=VARCHAR},
+      </if>
+      <if test="versionCode != null">
+        #{versionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="planReleaseDate != null">
+        #{planReleaseDate,jdbcType=DATE},
+      </if>
+      <if test="planDeployDate != null">
+        #{planDeployDate,jdbcType=DATE},
+      </if>
+      <if test="versionState != null">
+        #{versionState,jdbcType=VARCHAR},
+      </if>
+      <if test="versionDescribe != null">
+        #{versionDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="changeReleaseDate != null">
+        #{changeReleaseDate,jdbcType=DATE},
+      </if>
+      <if test="changeReason != null">
+        #{changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="changeDescription != null">
+        #{changeDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="sendToRmp != null">
+        #{sendToRmp,jdbcType=INTEGER},
+      </if>
+      <if test="sendToCmp != null">
+        #{sendToCmp,jdbcType=INTEGER},
+      </if>
+      <if test="sendToItc != null">
+        #{sendToItc,jdbcType=INTEGER},
+      </if>
+      <if test="reviewCount != null">
+        #{reviewCount,jdbcType=INTEGER},
+      </if>
+      <if test="reviewStartTime != null">
+        #{reviewStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reviewEndTime != null">
+        #{reviewEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planDeliveryNumber != null">
+        #{planDeliveryNumber,jdbcType=INTEGER},
+      </if>
+      <if test="baselineFlag != null">
+        #{baselineFlag,jdbcType=TINYINT},
+      </if>
+      <if test="operationUid != null">
+        #{operationUid,jdbcType=INTEGER},
+      </if>
+      <if test="baselineTime != null">
+        #{baselineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deployType != null">
+        #{deployType,jdbcType=TINYINT},
+      </if>
+      <if test="batchCode != null">
+        #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deployPeriod != null">
+        #{deployPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="mainWatch != null">
+        #{mainWatch,jdbcType=VARCHAR},
+      </if>
+      <if test="secondaryWatch != null">
+        #{secondaryWatch,jdbcType=VARCHAR},
+      </if>
+      <if test="mainGuarantee != null">
+        #{mainGuarantee,jdbcType=VARCHAR},
+      </if>
+      <if test="secondaryGuarantee != null">
+        #{secondaryGuarantee,jdbcType=VARCHAR},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fitstEditionDate != null">
+        #{fitstEditionDate,jdbcType=DATE},
+      </if>
+      <if test="sealedEditionDate != null">
+        #{sealedEditionDate,jdbcType=DATE},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.versionmanager.domain.VersionManagerExample" resultType="java.lang.Long">
+    select count(*) from version_manager
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update version_manager
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.versionName != null">
+        version_name = #{record.versionName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.versionCode != null">
+        version_code = #{record.versionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.planReleaseDate != null">
+        plan_release_date = #{record.planReleaseDate,jdbcType=DATE},
+      </if>
+      <if test="record.planDeployDate != null">
+        plan_deploy_date = #{record.planDeployDate,jdbcType=DATE},
+      </if>
+      <if test="record.versionState != null">
+        version_state = #{record.versionState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.versionDescribe != null">
+        version_describe = #{record.versionDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="record.changeReleaseDate != null">
+        change_release_date = #{record.changeReleaseDate,jdbcType=DATE},
+      </if>
+      <if test="record.changeReason != null">
+        change_reason = #{record.changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="record.changeDescription != null">
+        change_description = #{record.changeDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sendToRmp != null">
+        send_to_rmp = #{record.sendToRmp,jdbcType=INTEGER},
+      </if>
+      <if test="record.sendToCmp != null">
+        send_to_cmp = #{record.sendToCmp,jdbcType=INTEGER},
+      </if>
+      <if test="record.sendToItc != null">
+        send_to_itc = #{record.sendToItc,jdbcType=INTEGER},
+      </if>
+      <if test="record.reviewCount != null">
+        review_count = #{record.reviewCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.reviewStartTime != null">
+        review_start_time = #{record.reviewStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.reviewEndTime != null">
+        review_end_time = #{record.reviewEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.planDeliveryNumber != null">
+        plan_delivery_number = #{record.planDeliveryNumber,jdbcType=INTEGER},
+      </if>
+      <if test="record.baselineFlag != null">
+        baseline_flag = #{record.baselineFlag,jdbcType=TINYINT},
+      </if>
+      <if test="record.operationUid != null">
+        operation_uid = #{record.operationUid,jdbcType=INTEGER},
+      </if>
+      <if test="record.baselineTime != null">
+        baseline_time = #{record.baselineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.deployType != null">
+        deploy_type = #{record.deployType,jdbcType=TINYINT},
+      </if>
+      <if test="record.batchCode != null">
+        batch_code = #{record.batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deployPeriod != null">
+        deploy_period = #{record.deployPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mainWatch != null">
+        main_watch = #{record.mainWatch,jdbcType=VARCHAR},
+      </if>
+      <if test="record.secondaryWatch != null">
+        secondary_watch = #{record.secondaryWatch,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mainGuarantee != null">
+        main_guarantee = #{record.mainGuarantee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.secondaryGuarantee != null">
+        secondary_guarantee = #{record.secondaryGuarantee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createName != null">
+        create_name = #{record.createName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUid != null">
+        update_uid = #{record.updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fitstEditionDate != null">
+        fitst_edition_date = #{record.fitstEditionDate,jdbcType=DATE},
+      </if>
+      <if test="record.sealedEditionDate != null">
+        sealed_edition_date = #{record.sealedEditionDate,jdbcType=DATE},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update version_manager
+    set id = #{record.id,jdbcType=BIGINT},
+      version_name = #{record.versionName,jdbcType=VARCHAR},
+      version_code = #{record.versionCode,jdbcType=VARCHAR},
+      plan_release_date = #{record.planReleaseDate,jdbcType=DATE},
+      plan_deploy_date = #{record.planDeployDate,jdbcType=DATE},
+      version_state = #{record.versionState,jdbcType=VARCHAR},
+      version_describe = #{record.versionDescribe,jdbcType=VARCHAR},
+      change_release_date = #{record.changeReleaseDate,jdbcType=DATE},
+      change_reason = #{record.changeReason,jdbcType=VARCHAR},
+      change_description = #{record.changeDescription,jdbcType=VARCHAR},
+      send_to_rmp = #{record.sendToRmp,jdbcType=INTEGER},
+      send_to_cmp = #{record.sendToCmp,jdbcType=INTEGER},
+      send_to_itc = #{record.sendToItc,jdbcType=INTEGER},
+      review_count = #{record.reviewCount,jdbcType=INTEGER},
+      review_start_time = #{record.reviewStartTime,jdbcType=TIMESTAMP},
+      review_end_time = #{record.reviewEndTime,jdbcType=TIMESTAMP},
+      plan_delivery_number = #{record.planDeliveryNumber,jdbcType=INTEGER},
+      baseline_flag = #{record.baselineFlag,jdbcType=TINYINT},
+      operation_uid = #{record.operationUid,jdbcType=INTEGER},
+      baseline_time = #{record.baselineTime,jdbcType=TIMESTAMP},
+      deploy_type = #{record.deployType,jdbcType=TINYINT},
+      batch_code = #{record.batchCode,jdbcType=VARCHAR},
+      deploy_period = #{record.deployPeriod,jdbcType=VARCHAR},
+      main_watch = #{record.mainWatch,jdbcType=VARCHAR},
+      secondary_watch = #{record.secondaryWatch,jdbcType=VARCHAR},
+      main_guarantee = #{record.mainGuarantee,jdbcType=VARCHAR},
+      secondary_guarantee = #{record.secondaryGuarantee,jdbcType=VARCHAR},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_name = #{record.createName,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      fitst_edition_date = #{record.fitstEditionDate,jdbcType=DATE},
+      sealed_edition_date = #{record.sealedEditionDate,jdbcType=DATE},
+      state = #{record.state,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.versionmanager.domain.VersionManager">
+    update version_manager
+    <set>
+      <if test="versionName != null">
+        version_name = #{versionName,jdbcType=VARCHAR},
+      </if>
+      <if test="versionCode != null">
+        version_code = #{versionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="planReleaseDate != null">
+        plan_release_date = #{planReleaseDate,jdbcType=DATE},
+      </if>
+      <if test="planDeployDate != null">
+        plan_deploy_date = #{planDeployDate,jdbcType=DATE},
+      </if>
+      <if test="versionState != null">
+        version_state = #{versionState,jdbcType=VARCHAR},
+      </if>
+      <if test="versionDescribe != null">
+        version_describe = #{versionDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="changeReleaseDate != null">
+        change_release_date = #{changeReleaseDate,jdbcType=DATE},
+      </if>
+      <if test="changeReason != null">
+        change_reason = #{changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="changeDescription != null">
+        change_description = #{changeDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="sendToRmp != null">
+        send_to_rmp = #{sendToRmp,jdbcType=INTEGER},
+      </if>
+      <if test="sendToCmp != null">
+        send_to_cmp = #{sendToCmp,jdbcType=INTEGER},
+      </if>
+      <if test="sendToItc != null">
+        send_to_itc = #{sendToItc,jdbcType=INTEGER},
+      </if>
+      <if test="reviewCount != null">
+        review_count = #{reviewCount,jdbcType=INTEGER},
+      </if>
+      <if test="reviewStartTime != null">
+        review_start_time = #{reviewStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reviewEndTime != null">
+        review_end_time = #{reviewEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planDeliveryNumber != null">
+        plan_delivery_number = #{planDeliveryNumber,jdbcType=INTEGER},
+      </if>
+      <if test="baselineFlag != null">
+        baseline_flag = #{baselineFlag,jdbcType=TINYINT},
+      </if>
+      <if test="operationUid != null">
+        operation_uid = #{operationUid,jdbcType=INTEGER},
+      </if>
+      <if test="baselineTime != null">
+        baseline_time = #{baselineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deployType != null">
+        deploy_type = #{deployType,jdbcType=TINYINT},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deployPeriod != null">
+        deploy_period = #{deployPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="mainWatch != null">
+        main_watch = #{mainWatch,jdbcType=VARCHAR},
+      </if>
+      <if test="secondaryWatch != null">
+        secondary_watch = #{secondaryWatch,jdbcType=VARCHAR},
+      </if>
+      <if test="mainGuarantee != null">
+        main_guarantee = #{mainGuarantee,jdbcType=VARCHAR},
+      </if>
+      <if test="secondaryGuarantee != null">
+        secondary_guarantee = #{secondaryGuarantee,jdbcType=VARCHAR},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fitstEditionDate != null">
+        fitst_edition_date = #{fitstEditionDate,jdbcType=DATE},
+      </if>
+      <if test="sealedEditionDate != null">
+        sealed_edition_date = #{sealedEditionDate,jdbcType=DATE},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.versionmanager.domain.VersionManager">
+    update version_manager
+    set version_name = #{versionName,jdbcType=VARCHAR},
+      version_code = #{versionCode,jdbcType=VARCHAR},
+      plan_release_date = #{planReleaseDate,jdbcType=DATE},
+      plan_deploy_date = #{planDeployDate,jdbcType=DATE},
+      version_state = #{versionState,jdbcType=VARCHAR},
+      version_describe = #{versionDescribe,jdbcType=VARCHAR},
+      change_release_date = #{changeReleaseDate,jdbcType=DATE},
+      change_reason = #{changeReason,jdbcType=VARCHAR},
+      change_description = #{changeDescription,jdbcType=VARCHAR},
+      send_to_rmp = #{sendToRmp,jdbcType=INTEGER},
+      send_to_cmp = #{sendToCmp,jdbcType=INTEGER},
+      send_to_itc = #{sendToItc,jdbcType=INTEGER},
+      review_count = #{reviewCount,jdbcType=INTEGER},
+      review_start_time = #{reviewStartTime,jdbcType=TIMESTAMP},
+      review_end_time = #{reviewEndTime,jdbcType=TIMESTAMP},
+      plan_delivery_number = #{planDeliveryNumber,jdbcType=INTEGER},
+      baseline_flag = #{baselineFlag,jdbcType=TINYINT},
+      operation_uid = #{operationUid,jdbcType=INTEGER},
+      baseline_time = #{baselineTime,jdbcType=TIMESTAMP},
+      deploy_type = #{deployType,jdbcType=TINYINT},
+      batch_code = #{batchCode,jdbcType=VARCHAR},
+      deploy_period = #{deployPeriod,jdbcType=VARCHAR},
+      main_watch = #{mainWatch,jdbcType=VARCHAR},
+      secondary_watch = #{secondaryWatch,jdbcType=VARCHAR},
+      main_guarantee = #{mainGuarantee,jdbcType=VARCHAR},
+      secondary_guarantee = #{secondaryGuarantee,jdbcType=VARCHAR},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_name = #{createName,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      fitst_edition_date = #{fitstEditionDate,jdbcType=DATE},
+      sealed_edition_date = #{sealedEditionDate,jdbcType=DATE},
+      state = #{state,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--自定义方法-->
+  <update id="updatePlanDeliveryNumber">
+    update version_manager
+    set plan_delivery_number = #{planDeliveryNumber}
+    where id =#{id}
+    </update>
+  <select id="selectSyncVersionPlanInfoByPrimaryKey"
+          resultType="com.yusys.agile.versionmanager.domain.VersionManager">
+      select id, version_name, version_code, plan_release_date, plan_deploy_date, version_state,
+      version_describe, version_capacity, create_time, create_uid, update_uid, update_time, change_release_date,
+      change_reason, change_description, crm_base_capacity, boss_base_capacity, online_base_capacity
+      from version_manager
+      where id = #{id,jdbcType=BIGINT}
+  </select>
+  <!--按版本统计系统各个阶段需求个数  -->
+  <select id="selectGroupVersion" resultType="com.yusys.agile.versionmanager.domain.VersionManager">
+    SELECT a.version_id id,b.version_name version_name FROM version_issue_relate a LEFT JOIN version_manager b ON a.version_id=b.id where a.project_id = #{projectId} GROUP BY version_id
+  </select>
+
+  <select id="selectVersionByBizNumAndTitle" resultType="com.yusys.agile.versionmanager.domain.VersionManager">
+    SELECT DISTINCT
+    v.id, v.version_name, v.version_code, v.plan_release_date, v.plan_deploy_date, v.version_state,
+    v.version_describe, v.change_release_date, v.change_reason, v.change_description, v.send_to_rmp,
+    v.send_to_cmp, v.send_to_itc, v.review_count, v.review_start_time, v.review_end_time, v.plan_delivery_number,
+    v.baseline_flag, v.operation_uid, v.baseline_time, v.deploy_type, v.batch_code, v.deploy_period,
+    v.main_watch, v.secondary_watch, v.main_guarantee, v.secondary_guarantee, v.create_uid, v.create_name,
+    v.project_id, v.create_time, v.update_uid,v.update_time, v.tenant_code, v.fitst_edition_date,
+    v.sealed_edition_date
+    FROM
+    bj_version_plan_requirements bj,
+    version_manager v
+    WHERE
+    bj.version_plan_id = v.id
+    AND v.project_id = #{projectId}
+    <if test="versionName != null">
+      AND v.version_name like CONCAT('%',#{versionName},'%')
+    </if>
+    <if test="bizBacklogIds != null and bizBacklogIds.size() > 0">
+      AND bj.requirement_id in
+      <foreach collection="bizBacklogIds" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    order by v.plan_release_date DESC,v.create_time DESC
+  </select>
+</mapper>

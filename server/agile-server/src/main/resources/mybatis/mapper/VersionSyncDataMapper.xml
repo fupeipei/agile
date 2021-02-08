@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.versionmanager.dao.VersionSyncDataMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.versionmanager.domain.VersionSyncData">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="version_id" jdbcType="BIGINT" property="versionId" />
+    <result column="operate_type" jdbcType="INTEGER" property="operateType" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="sync_system" jdbcType="TINYINT" property="syncSystem" />
+    <result column="sync_result" jdbcType="TINYINT" property="syncResult" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, version_id, operate_type, project_id, sync_system, sync_result, create_uid, create_time, 
+    update_uid, update_time, tenant_code
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncDataExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from version_sync_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from version_sync_data
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from version_sync_data
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncDataExample">
+    delete from version_sync_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncData">
+    insert into version_sync_data (id, version_id, operate_type, 
+      project_id, sync_system, sync_result, 
+      create_uid, create_time, update_uid, 
+      update_time, tenant_code)
+    values (#{id,jdbcType=BIGINT}, #{versionId,jdbcType=BIGINT}, #{operateType,jdbcType=INTEGER}, 
+      #{projectId,jdbcType=BIGINT}, #{syncSystem,jdbcType=TINYINT}, #{syncResult,jdbcType=TINYINT}, 
+      #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncData">
+    insert into version_sync_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="versionId != null">
+        version_id,
+      </if>
+      <if test="operateType != null">
+        operate_type,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="syncSystem != null">
+        sync_system,
+      </if>
+      <if test="syncResult != null">
+        sync_result,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="versionId != null">
+        #{versionId,jdbcType=BIGINT},
+      </if>
+      <if test="operateType != null">
+        #{operateType,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="syncSystem != null">
+        #{syncSystem,jdbcType=TINYINT},
+      </if>
+      <if test="syncResult != null">
+        #{syncResult,jdbcType=TINYINT},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncDataExample" resultType="java.lang.Long">
+    select count(*) from version_sync_data
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update version_sync_data
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.versionId != null">
+        version_id = #{record.versionId,jdbcType=BIGINT},
+      </if>
+      <if test="record.operateType != null">
+        operate_type = #{record.operateType,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.syncSystem != null">
+        sync_system = #{record.syncSystem,jdbcType=TINYINT},
+      </if>
+      <if test="record.syncResult != null">
+        sync_result = #{record.syncResult,jdbcType=TINYINT},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUid != null">
+        update_uid = #{record.updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update version_sync_data
+    set id = #{record.id,jdbcType=BIGINT},
+      version_id = #{record.versionId,jdbcType=BIGINT},
+      operate_type = #{record.operateType,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      sync_system = #{record.syncSystem,jdbcType=TINYINT},
+      sync_result = #{record.syncResult,jdbcType=TINYINT},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncData">
+    update version_sync_data
+    <set>
+      <if test="versionId != null">
+        version_id = #{versionId,jdbcType=BIGINT},
+      </if>
+      <if test="operateType != null">
+        operate_type = #{operateType,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="syncSystem != null">
+        sync_system = #{syncSystem,jdbcType=TINYINT},
+      </if>
+      <if test="syncResult != null">
+        sync_result = #{syncResult,jdbcType=TINYINT},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncData">
+    update version_sync_data
+    set version_id = #{versionId,jdbcType=BIGINT},
+      operate_type = #{operateType,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=BIGINT},
+      sync_system = #{syncSystem,jdbcType=TINYINT},
+      sync_result = #{syncResult,jdbcType=TINYINT},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="getVersionSyncDataList" resultMap="BaseResultMap">
+    select
+      id,
+      version_id,
+      operate_type,
+      project_id
+    from
+      version_sync_data
+    where
+      id >=
+    (
+    select
+      id
+    from
+      version_sync_data
+    where
+      sync_system = 2
+    and
+      sync_result in (-1,0)
+    order by id limit #{startIndex},1
+    )
+    and
+      sync_system = 2
+    and
+      sync_result in (-1,0)
+    order by id limit #{pageSize}
+  </select>
+
+  <update id="updateVersionSyncSuccessDatas" parameterType="com.yusys.agile.versionmanager.domain.VersionSyncData">
+    <![CDATA[
+      update
+        version_sync_data
+      set
+        sync_result = #{syncResult}
+      where
+        id <= #{id}
+      and
+        version_id = #{versionId}
+      and
+        operate_type = #{operateType}
+      and
+        project_id = #{projectId}
+      and
+        sync_system = #{syncSystem}
+      and
+        sync_result in (-1,0)
+    </update>
+  ]]>
+  </update>
+
+  <insert id="batchInsertVersionSyncData" parameterType="java.util.List">
+    insert into version_sync_data
+    (
+      version_id,
+      operate_type,
+      project_id,
+      sync_system,
+      sync_result,
+      create_uid,
+      create_time,
+      update_uid,
+      update_time,
+      tenant_code
+    )
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+    (
+      #{item.versionId},
+      #{item.operateType},
+      #{item.projectId},
+      #{item.syncSystem},
+      #{item.syncResult},
+      #{item.createUid},
+      #{item.createTime},
+      #{item.updateUid},
+      #{item.updateTime},
+      #{item.tenantCode}
+    )
+    </foreach>
+  </insert>
+</mapper>

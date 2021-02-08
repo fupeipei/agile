@@ -1,0 +1,102 @@
+spring:
+  redis:
+    password: ${REDIS_PASSWD:}
+    lettuce:
+      pool:
+        max-active: 100
+        max-idle: 30
+        max-wait: 10000
+        min-idle: 20
+    sentinel:
+      master: ${REDIS_MASTER}
+      nodes: ${REDIS_NODES}
+    timeout: 60000
+  rabbitmq:
+    addresses: ${RABBIT_ADDRESS}
+    username: ${RABBIT_USER}
+    password: ${RABBIT_PASSWD}
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}
+  instance:
+                  prefer-ip-address: true
+                  instance-id: ${HOSTNAME}${K8S_DOMAIN:}:${server.port}
+                  ip-address: ${HOSTNAME}${K8S_DOMAIN:}
+frame:
+  druid:
+    datasource:
+      filters: stat
+      maxActive: 100
+      initialSize: 1
+      maxWait: 3000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x' from dual
+      testWhileIdle: true
+      testOnBorrow: true
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 50
+    ds:
+      master:
+        url: jdbc:mysql://192.168.48.1:3306/req?serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        username: root
+        password: root+654321
+        driverClassName: com.mysql.cj.jdbc.Driver
+        base:
+          url: jdbc:mysql://192.168.48.1:3306/base?serverTimezone=Asia/Shanghai
+          username: root
+          password: root+654321
+          driverClassName: com.mysql.cj.jdbc.Driver
+uuidFlag: ${UUID_FLAG:""}
+xxl:
+  job:
+    admin:
+      addresses: http://${JOB_ADDRESS:cicd-job}:8025/job
+    executor:
+      appname: agile-impl
+      ip:
+      port: 10003
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 3
+    accessToken:
+#缺陷来源 itc或者YuDO
+fault:
+  source: ${FAULT_SOURCE:itc}
+
+chamc:
+  service:
+    login:
+      appName: ${LOGIN_APP_NAME:devops}
+      hostName: ${LOGIN_HOST_NAME:https://kb.chamc.com.cn/pages/viewpage.action?pageId=9339321}
+      loginAppValidateKey: ${LOGIN_VALIDATE_KEY:devopsABCabcde}
+    mail:
+      host: ${MAIL_IP:http://kb.chamc.com.cn/pages/viewpage.action?pageId=9339315}
+      token: devopsABCabcde
+    usercenter:
+      token: devopsABCabcde
+      basePath: ${USERCENTER_IP:http://kb.chamc.com.cn/pages/viewpage.action?pageId=9339314}
+    syncProject:
+      url: ${SYNC_PROJECT_URL:http://10.1.8.112:8080/DevMgmt/DevOpsConnector/syncProjects}
+
+issue:
+  regular:
+    flag: ${ISSUE_REGULAR_FLAG:true}
+#graylog
+graylog:
+  host: ${GRAYLOG_HOST:10.19.85.29}
+  port: ${GRAYLOG_PORT:12201}
+  appname: agile-impl
+  appenv: ${APP_ENV:prod}
+
+env: ${ENV:test}
+cmp:
+  url: ${CMP_URL:http://10.19.18.98:7730}
+  reqCodeConfig: ${cmp.url}/api/cms/YuDO/bizInfo/queryBizInfos
+
+YuDO:
+  url: ${YuDO_URL:192.168.48.1:8300}
+project:
+  location: ${PROJECT_LOCATION:devops}

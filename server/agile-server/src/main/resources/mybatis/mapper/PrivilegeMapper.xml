@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.privilege.dao.PrivilegeMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.privilege.domain.Privilege">
+    <id column="privilege_id" jdbcType="BIGINT" property="privilegeId" />
+    <result column="privilege_name" jdbcType="VARCHAR" property="privilegeName" />
+    <result column="privilege_type" jdbcType="BIGINT" property="privilegeType" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="re_type" jdbcType="VARCHAR" property="reType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    privilege_id, privilege_name, privilege_type, path, re_type, create_time
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.privilege.domain.PrivilegeExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from privilege
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from privilege
+    where privilege_id = #{privilegeId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from privilege
+    where privilege_id = #{privilegeId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.privilege.domain.PrivilegeExample">
+    delete from privilege
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.privilege.domain.Privilege">
+    insert into privilege (privilege_id, privilege_name, privilege_type, 
+      path, re_type, create_time
+      )
+    values (#{privilegeId,jdbcType=BIGINT}, #{privilegeName,jdbcType=VARCHAR}, #{privilegeType,jdbcType=BIGINT}, 
+      #{path,jdbcType=VARCHAR}, #{reType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.privilege.domain.Privilege">
+    insert into privilege
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="privilegeId != null">
+        privilege_id,
+      </if>
+      <if test="privilegeName != null">
+        privilege_name,
+      </if>
+      <if test="privilegeType != null">
+        privilege_type,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="reType != null">
+        re_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="privilegeId != null">
+        #{privilegeId,jdbcType=BIGINT},
+      </if>
+      <if test="privilegeName != null">
+        #{privilegeName,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeType != null">
+        #{privilegeType,jdbcType=BIGINT},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="reType != null">
+        #{reType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.privilege.domain.PrivilegeExample" resultType="java.lang.Long">
+    select count(*) from privilege
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update privilege
+    <set>
+      <if test="record.privilegeId != null">
+        privilege_id = #{record.privilegeId,jdbcType=BIGINT},
+      </if>
+      <if test="record.privilegeName != null">
+        privilege_name = #{record.privilegeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.privilegeType != null">
+        privilege_type = #{record.privilegeType,jdbcType=BIGINT},
+      </if>
+      <if test="record.path != null">
+        path = #{record.path,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reType != null">
+        re_type = #{record.reType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update privilege
+    set privilege_id = #{record.privilegeId,jdbcType=BIGINT},
+      privilege_name = #{record.privilegeName,jdbcType=VARCHAR},
+      privilege_type = #{record.privilegeType,jdbcType=BIGINT},
+      path = #{record.path,jdbcType=VARCHAR},
+      re_type = #{record.reType,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.privilege.domain.Privilege">
+    update privilege
+    <set>
+      <if test="privilegeName != null">
+        privilege_name = #{privilegeName,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeType != null">
+        privilege_type = #{privilegeType,jdbcType=BIGINT},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="reType != null">
+        re_type = #{reType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where privilege_id = #{privilegeId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.privilege.domain.Privilege">
+    update privilege
+    set privilege_name = #{privilegeName,jdbcType=VARCHAR},
+      privilege_type = #{privilegeType,jdbcType=BIGINT},
+      path = #{path,jdbcType=VARCHAR},
+      re_type = #{reType,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where privilege_id = #{privilegeId,jdbcType=BIGINT}
+  </update>
+</mapper>
