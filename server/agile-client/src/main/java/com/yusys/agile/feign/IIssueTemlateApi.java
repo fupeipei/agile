@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name="req-agile-impl")
+@FeignClient(name="agile-server")
 public interface IIssueTemlateApi {
 
 
@@ -16,7 +16,7 @@ public interface IIssueTemlateApi {
          * @param projectId
          * @return
          */
-        @GetMapping("/req/issueTemplate/init")
+        @GetMapping("/agile/issueTemplate/init")
         public void initIssueTemplate(@RequestParam("projectId") Long  projectId);
 
     }

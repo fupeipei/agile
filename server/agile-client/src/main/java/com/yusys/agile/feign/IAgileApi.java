@@ -9,6 +9,6 @@ import java.util.List;
 
 @FeignClient(name = "agile-server")
 public interface IAgileApi {
-    @GetMapping("/req/issue/stage/countForSso")
+    @GetMapping("/agile/issue/stage/countForSso")
     List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam("projectId") Long projectId);
 }

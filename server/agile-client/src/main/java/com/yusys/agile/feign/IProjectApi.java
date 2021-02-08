@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2020/8/19
  * @return
  */
-@FeignClient(name = "req-agile-impl")
+@FeignClient(name = "agile-server")
 public interface IProjectApi {
 
     /**
@@ -29,7 +29,7 @@ public interface IProjectApi {
      *
      * @date 2020/8/19
      */
-    @GetMapping("/req/sprint/listUnFinisherSprintsByProjectId")
+    @GetMapping("/agile/sprint/listUnFinisherSprintsByProjectId")
     public ControllerResponse listSprintsByProjectId(@RequestParam("projectId") Long projectId,
                                                      @RequestParam(name = "name", required = false) String name,
                                                      @RequestParam(name = "pageNum", required = false) Integer pageNum,
@@ -45,7 +45,7 @@ public interface IProjectApi {
      *
      * @date 2020/11/5
      */
-    @GetMapping("/req/sprint/listAllSprintsByProjectId")
+    @GetMapping("/agile/sprint/listAllSprintsByProjectId")
     public ControllerResponse listAllSprintsByProjectId(@RequestParam("projectId") Long projectId,
                                                         @RequestParam(name = "name", required = false) String name);
 
@@ -57,7 +57,7 @@ public interface IProjectApi {
      *
      * @date 2020/8/19
      */
-    @GetMapping("/req/issue/listStorysByProjectId")
+    @GetMapping("/agile/issue/listStorysByProjectId")
     public ControllerResponse listStorysByProjectId(@RequestParam("projectId") Long projectId,
                                                     @RequestParam(name = "pageNum") Integer pageNum,
                                                     @RequestParam(name = "pageSize") Integer pageSize);
@@ -70,7 +70,7 @@ public interface IProjectApi {
      * @return
      * @description 查询迭代下未完成的用户故事
      */
-    @GetMapping("/req/issue/getUnfinishedStorysBySprintId")
+    @GetMapping("/agile/issue/getUnfinishedStorysBySprintId")
     public ControllerResponse getUnfinishedStorysBySprintId(@RequestParam("sprintId") Long sprintId,
                                                             @RequestParam(name = "pageNum") Integer pageNum,
                                                             @RequestParam(name = "pageSize") Integer pageSize);
@@ -84,7 +84,7 @@ public interface IProjectApi {
      *
      * @date 2020/11/10
      */
-    @PostMapping("/req/case/listCaseByStoryIds")
+    @PostMapping("/agile/case/listCaseByStoryIds")
     public ControllerResponse listCaseByStoryIds(@RequestBody CaseParamDTO caseParamDTO);
 
 
@@ -95,7 +95,7 @@ public interface IProjectApi {
      * @param caseParamDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
-    @PostMapping("/req/case/listCaseByTaskIds")
+    @PostMapping("/agile/case/listCaseByTaskIds")
     public ControllerResponse listCaseByTaskIds(@RequestBody CaseParamDTO caseParamDTO);
 
     /**

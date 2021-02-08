@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "req-agile-impl")//url = "http://localhost:8060"
+@FeignClient(name = "agile-server")//url = "http://localhost:8060"
 public interface IStageTemplateConfigApi {
 
-    @GetMapping("/req/stageTemplateConfig/getStageTemplateConfigListByLevel")
+    @GetMapping("/agile/stageTemplateConfig/getStageTemplateConfigListByLevel")
     public List<StageTemplateConfigDTO> getDefaultStageTemplateConfigListByLevel(@RequestParam Byte level);
 }

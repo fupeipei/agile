@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name="req-agile-impl")//url = "http://localhost:8060"
+@FeignClient(name="agile-server")//url = "http://localhost:8060"
 public interface ITemplateStageApi {
 
     /**
@@ -19,7 +19,7 @@ public interface ITemplateStageApi {
      * @param level
      * @return
      */
-    @GetMapping("/req/templateStage/queryTemplateStageListByLevel")
+    @GetMapping("/agile/templateStage/queryTemplateStageListByLevel")
     public List<TemplateStageDTO> queryTemplateStageListByLevel(@RequestParam("level") Byte level);
 
     /**
@@ -29,7 +29,7 @@ public interface ITemplateStageApi {
      * @param templateId
      * @return
      */
-    @GetMapping("/req/templateStage/queryTemplateStagesByTemplateId")
+    @GetMapping("/agile/templateStage/queryTemplateStagesByTemplateId")
     public List<TemplateStageDTO> queryTemplateStagesByTemplateId(@RequestParam("tenantCode") String tenantCode, @RequestParam("templateId") Long templateId);
 
     /**
@@ -38,6 +38,6 @@ public interface ITemplateStageApi {
      * @param kanbanStageInstances
      * @return
      */
-    @PostMapping("/req/stage/initKanbanStageTemplateDatas")
+    @PostMapping("/agile/stage/initKanbanStageTemplateDatas")
     public int initKanbanStageTemplateDatas(@RequestBody List<KanbanStageInstanceDTO> kanbanStageInstances);
 }

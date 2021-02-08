@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "req-agile-impl")//url = "http://localhost:8060"
+@FeignClient(name = "agile-server")//url = "http://localhost:8060"
 public interface IKanbanTemplateApi {
 
-    @GetMapping("/req/kanbanTemplate/getDefaultKanbanTemplate")
+    @GetMapping("/agile/kanbanTemplate/getDefaultKanbanTemplate")
     public KanbanTemplateDTO getDefaultKanbanTemplateByTenantCode(@RequestParam("tenantCode") String tenantCode);
 
-    @PostMapping("/req/kanbanTemplate/createDefaultKanbanTemplate")
+    @PostMapping("/agile/kanbanTemplate/createDefaultKanbanTemplate")
     public Long createDefaultKanbanTemplate(@RequestBody KanbanTemplateDTO kanbanTemplateDTO);
 }

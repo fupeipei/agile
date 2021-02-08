@@ -16,12 +16,12 @@ import java.util.List;
  *  
  * @date 2020/09/17
  */
-@FeignClient(name="req-agile-impl")
+@FeignClient(name="agile-server")
 public interface ICustomizeIssueApi {
 
-    @PostMapping("/req/customizeIssue/task/getRelatedIssues")
+    @PostMapping("/agile/customizeIssue/task/getRelatedIssues")
     public ControllerResponse<List<CustomizeIssueDTO>> getRelatedIssues(@RequestBody List<Long> issueIds);
 
-    @GetMapping("/req/customizeIssue/feature/getFeatureByTaskOrFaultId")
+    @GetMapping("/agile/customizeIssue/feature/getFeatureByTaskOrFaultId")
     public ControllerResponse<CustomizeIssueDTO> getFeatureByTaskOrFaultId(@RequestParam("issueId") Long issueId);
 }
