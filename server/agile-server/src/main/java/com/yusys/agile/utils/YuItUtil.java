@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 /**
  * YuIt同步工具类
  *
- *     
+
  * @create 2020-04-24 10:00
  */
 @Component
@@ -39,7 +39,7 @@ public class YuItUtil {
      *
      * @param
      * @return java.lang.Boolean
-     *     
+
      * @date 2020/4/24
      */
     public static Boolean yuItSync() {

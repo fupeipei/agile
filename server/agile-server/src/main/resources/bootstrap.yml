@@ -20,9 +20,9 @@ file:
   #linux服务器账号密码
   ip: ${FILE_UPLOAD_SFTP_IP:192.168.48.2}
   port: ${FILE_UPLOAD_SFTP_PORT:22022}
-  hostUser: ${FILE_UPLOAD_SFTP_HOST_USER:maxp2}
-  pwd: ${FILE_UPLOAD_SFTP_PWD:maxp2}
-  remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/home/maxp2/test}
+  hostUser: ${FILE_UPLOAD_SFTP_HOST_USER: 2}
+  pwd: ${FILE_UPLOAD_SFTP_PWD: 2}
+  remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/home/ 2/test}
 
 async:
   executor:

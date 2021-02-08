@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * 里程碑业务类
  *
- *     
+
  * @create 2020-08-12 15:49
  */
 @Service("mileStoneService")
@@ -56,7 +56,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneDTO
      * @return void
-     *     
+
      * @date 2020/8/12
      */
     @Override
@@ -103,7 +103,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      * @param userIds
      * @param milestone
      * @return java.util.List<com.yusys.agile.user.domain.ReqUserRlat>
-     *     
+
      * @date 2020/8/13
      */
     private List<ReqUserRlat> assembleReqUserRlats(List<Long> userIds, Milestone milestone) {
@@ -127,7 +127,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneId
      * @return void
-     *     
+
      * @date 2020/8/12
      */
     @Override
@@ -146,7 +146,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneDTO
      * @return void
-     *     
+
      * @date 2020/8/13
      */
     @Override
@@ -204,7 +204,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneId
      * @return com.yusys.agile.milestone.dto.MilestoneDTO
-     *     
+
      * @date 2020/8/13
      */
     @Override
@@ -225,7 +225,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.milestone.dto.MilestoneDTO>
-     *     
+
      * @date 2020/8/17
      */
     @Override
@@ -258,7 +258,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param rlats
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-     *     
+
      * @date 2020/8/13
      */
     private List<UserDTO> assembleUserDTOs(List<ReqUserRlat> rlats) {
@@ -288,7 +288,7 @@ public class MileStoneServiceImpl implements MilestoneService {
      * @param projectId
      * @param id
      * @return boolean
-     *     
+
      * @date 2020/8/12
      */
     private boolean checkSameName(String milestoneName, Long projectId, Long id) {

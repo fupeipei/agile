@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * 版本信息DTO
  *
- *     
+
  * @create 2020-12-01 14:26
  */
 public class VersionInfoDTO {

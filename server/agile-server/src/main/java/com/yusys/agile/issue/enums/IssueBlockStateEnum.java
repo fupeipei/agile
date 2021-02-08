@@ -1,8 +1,8 @@
 package com.yusys.agile.issue.enums;
 
 /**
- *    maxp
- * @Date 2020/5/11
+
+ * @Date 2021/2/11
  * @Description 任务和缺陷阻塞状态枚举
  */
 public enum IssueBlockStateEnum {

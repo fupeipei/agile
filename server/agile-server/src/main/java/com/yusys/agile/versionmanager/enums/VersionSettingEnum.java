@@ -4,7 +4,7 @@ package com.yusys.agile.versionmanager.enums;
 /**
  * @ClassName: MailSwitchServiceImpl
  * @Description: 工作项类型允许纳入版本管理枚举类
- *   : zhaoqj3
+ *   :
  * @CreateDate: 2020/08/19 17:28
  * @Version 1.0
  */

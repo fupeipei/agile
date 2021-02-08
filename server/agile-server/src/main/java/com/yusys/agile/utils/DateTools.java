@@ -326,11 +326,11 @@ public class DateTools {
 	/**
 	 * 将String型格式化,比如想要将2015-01-01 10:10:10 格式化为2015-01-01).
 	 * @param date
-	 *            String 想要格式化的日期
+	         String 想要格式化的日期
 	 * @param oldPattern
-	 *            String 想要格式化的日期的现有格式
+	         String 想要格式化的日期的现有格式
 	 * @param newPattern
-	 *            String 想要格式化成什么格式
+	         String 想要格式化成什么格式
 	 * @return String
 	 */
 	public static final String stringPattern(String date, String oldPattern, String newPattern) {
@@ -406,9 +406,9 @@ public class DateTools {
 	 * 传入的时间，在该时间的基础上增加天数和小时数
 	 * @param dateStr
 	 * @param day
-	 *            天数
+	         天数
 	 * @param hour
-	 *            小时数
+	         小时数
 	 * @return
 	 */
 	public static Date getDateAddDayAndHour(String dateStr, int day, int hour) {
@@ -559,7 +559,7 @@ public class DateTools {
 	/**
 	 * 在当前日期是增加或减少天数
 	 * @param date
-	 *            yyyy-MM-dd HH:mm:ss
+	         yyyy-MM-dd HH:mm:ss
 	 * @param day
 	 * @return
 	 */
@@ -656,7 +656,7 @@ public class DateTools {
 	 * 转换日期时间字符串为date
 	 *
 	 * @param dateTime
-	 *            2017-07-12 00:00:00
+	         2017-07-12 00:00:00
 	 * @return
 	 */
 	public static Date parseStringToDateTime(String dateTime) {
@@ -716,7 +716,7 @@ public class DateTools {
 	/**
 	 * 获取redis失效时间
 	 * @param endTime
-	 *            结束时间
+	         结束时间
 	 * @return
 	 */
     public static int getRedisExpireSeconds(String endTime) {

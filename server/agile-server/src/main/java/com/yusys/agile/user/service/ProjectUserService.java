@@ -8,14 +8,14 @@ import java.util.List;
 
 
 /**
- *    maxp
- * @Date: 2020/7/6
+
+ * @Date: 2021/2/6
  */
 public interface ProjectUserService {
 
     /**
-     *    maxp
-     * @Date 2020/7/6
+
+     * @Date 2021/2/6
      * @Description 项目概览中获取人员信息
      * @param projectId
      * @param pageNum
@@ -25,8 +25,8 @@ public interface ProjectUserService {
     PageInfo projectUserInfo(Long projectId,Integer pageNum,Integer pageSize);
 
     /**
-     *    maxp
-     * @Date 2020/7/16
+
+     * @Date 2021/2/16
      * @Description 封装人员信息
      * @param projectId
      * @param pageNum

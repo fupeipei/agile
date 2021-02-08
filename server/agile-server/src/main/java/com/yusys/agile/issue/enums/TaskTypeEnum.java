@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *    maxp
+
  * @Date 2020/4/30
  * @Description 任务类型枚举
  */
@@ -53,8 +53,8 @@ public enum TaskTypeEnum {
      *
      * @param name
      * @return java.lang.Integer
-     *     
-     * @date 2020/6/17
+
+     * @date 2021/2/17
      */
     public static Integer getCode(String name) {
         for (TaskTypeEnum stateType : TaskTypeEnum.values()) {
@@ -80,8 +80,8 @@ public enum TaskTypeEnum {
      *
      * @param
      * @return java.lang.String[]
-     *     
-     * @date 2020/6/17
+
+     * @date 2021/2/17
      */
     public static String[] getNames() {
         List<String> list = Lists.newArrayList();

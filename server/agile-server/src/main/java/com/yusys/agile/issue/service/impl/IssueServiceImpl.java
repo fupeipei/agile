@@ -367,8 +367,8 @@ public class IssueServiceImpl implements IssueService {
      * @param rootIds
      * @param issueListDTO
      * @param mapMap
-     *    maxp
-     * @Date 2020/11/16
+
+     * @Date 2021/2/16
      * @Description 功能描述  版本管理中递归查找Issue的children
      * @Return void
      */
@@ -926,7 +926,7 @@ public class IssueServiceImpl implements IssueService {
      * @param filedCode
      * @return java.util.Map
      *
-     * @date 2020/5/14
+     * @date 2021/2/14
      */
     @Override
     public Map getOptionList(String filedCodeValue, String filedCode, Map<String, HashMap<String, String>> hashMapMap) {
@@ -1474,7 +1474,7 @@ public class IssueServiceImpl implements IssueService {
      * @param type
      * @return com.yusys.agile.issue.domain.FieldJsonType
      *
-     * @date 2020/6/16
+     * @date 2021/2/16
      */
     public FieldJsonType dealData(String string, String type) {
         FieldJsonType fieldJsonType = new FieldJsonType();
@@ -1518,7 +1518,7 @@ public class IssueServiceImpl implements IssueService {
      * @param userId
      * @return java.util.List<java.lang.Long>
      *
-     * @date 2020/6/17
+     * @date 2021/2/17
      */
     public List<Long> getIsCollectByUserId(Long userId) {
         UserAttentionExample userAttentionExample = new UserAttentionExample();
@@ -1563,8 +1563,8 @@ public class IssueServiceImpl implements IssueService {
      * @param pageSize
      * @param page
      * @param issueStageIdCountDTOS
-     *    maxp
-     * @Date 2020/7/10
+
+     * @Date 2021/2/10
      * @Description 为处理好的list增加分页
      * @Return com.github.pagehelper.PageInfo
      */
@@ -1705,8 +1705,8 @@ public class IssueServiceImpl implements IssueService {
      * @param ssoSystem
      * @param stageIdCountDTO
      * @param i，i2，i3，i4，i5，i5，i7
-     *    maxp
-     * @Date 2020/6/22
+
+     * @Date 2021/2/22
      * @Description 各阶段个数赋值
      * @Return void
      */
@@ -1729,8 +1729,8 @@ public class IssueServiceImpl implements IssueService {
      * @param ssoSystem
      * @param stageIdCountDTO
      * @param issueDTOS
-     *    maxp
-     * @Date 2020/6/22
+
+     * @Date 2021/2/22
      * @Description 统计需求各个阶段的个数
      * @Return void
      */
@@ -2263,7 +2263,7 @@ public class IssueServiceImpl implements IssueService {
      * @param epicId
      * @return boolean
      *
-     * @date 2020/11/25
+     * @date 2021/2/25
      */
     private boolean epicInDemandCancellation(Long epicId) {
         // 查询epic的
@@ -2791,7 +2791,7 @@ public class IssueServiceImpl implements IssueService {
      * @param stringBooleanMap 根据此字段判断是否有扩展字段的查询条件
      * @return java.util.List<java.lang.Long>
      *
-     * @date 2020/11/11
+     * @date 2021/2/11
      */
     public Map<Byte, List<Long>> getExtendFields(Map<String, Object> map, Map<String, Boolean> stringBooleanMap) {
         Map<Byte, List<Long>> listMap = new HashMap<>();
@@ -2976,7 +2976,7 @@ public class IssueServiceImpl implements IssueService {
     /**
      * @description 临时过渡接口后期删除
      *  
-     * @date 2020/11/30
+     * @date 2021/2/20
      * @param issueId
      * @param issueType
      * @param actualOnlineTime

@@ -65,8 +65,8 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
      *
      * @param customFieldDTO
      * @return com.yusys.agile.issue.dto.IssueCustomFieldDTO
-     *     
-     * @date 2020/7/21
+
+     * @date 2021/2/21
      */
     private IssueCustomFieldDTO assembleIssueCustomFieldDTO(CustomFieldDTO customFieldDTO, Long issueId) {
         IssueCustomFieldDTO issueCustomFieldDTO = new IssueCustomFieldDTO();
@@ -107,8 +107,8 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     /**
      * 功能描述: 修改自定义字段
      * 如果有externId主键走修改，没有走新增
-     *     
-     * @date 2020/7/21
+
+     * @date 2021/2/21
      * @param fieldsAfterEdit
      * @return void
      */

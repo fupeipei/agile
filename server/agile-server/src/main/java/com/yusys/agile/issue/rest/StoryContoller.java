@@ -155,7 +155,7 @@ public class StoryContoller {
      * @param pageSize
      * @param title
      *
-     * @Date: 2020/6/9 9:44
+     * @Date: 2021/2/9 9:44
      * @Description: 查询未关联业务需求的研发需求
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -183,8 +183,8 @@ public class StoryContoller {
     /**
      * @param projectId
      * @param issueDTO
-     *    maxp
-     * @Date 2020/5/12
+
+     * @Date 2021/2/12
      * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -197,8 +197,8 @@ public class StoryContoller {
     /**
      * @param issueDTO
      * @param projectId
-     *    maxp
-     * @Date 2020/5/27
+
+     * @Date 2021/2/27
      * @Description 看板编辑故事状态和任务卡片阻塞状态
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -214,8 +214,8 @@ public class StoryContoller {
     /**
      * @param issueDTO
      * @param projectId
-     *    maxp
-     * @Date 2020/6/1
+
+     * @Date 2021/2/1
      * @Description 迭代评审获取故事及故事验收标准信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -227,8 +227,8 @@ public class StoryContoller {
 
     /**
      * @param issueDTO
-     *    maxp
-     * @Date 2020/6/1
+
+     * @Date 2021/2/1
      * @Description 编辑故事评审状态及备注
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -247,7 +247,7 @@ public class StoryContoller {
      * @param pageSize
      * @param title
      *
-     * @Date: 2020/6/9 9:44
+     * @Date: 2021/2/9 9:44
      * @Description: 查询所有符合条件的研发需求
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -275,7 +275,7 @@ public class StoryContoller {
     /**
      * @param epicId
      *
-     * @Date: 2020/6/9 9:47
+     * @Date: 2021/2/9 9:47
      * @Description: 查询业务需求下的所有用户故事
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -295,7 +295,7 @@ public class StoryContoller {
     /**
      * @param featureId
      *
-     * @Date: 2020/6/9 9:47
+     * @Date: 2021/2/9 9:47
      * @Description: 查询研发需求下的所有用户故事
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;

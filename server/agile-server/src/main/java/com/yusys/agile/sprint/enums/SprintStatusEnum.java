@@ -3,7 +3,7 @@ package com.yusys.agile.sprint.enums;
 /**
  *迭代状态枚举
  *
- *    maxp
+
  * @Date 2020/4/13
  * */
 public enum SprintStatusEnum {

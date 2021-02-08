@@ -72,7 +72,7 @@ import java.util.*;
 /**
  * 缺陷service实现类
  *
- *     
+
  * @create 2020-04-10 16:28
  */
 @Service("faultService")
@@ -169,7 +169,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueId
      * @return void
-     *     
+
      * @date 2020/4/11
      */
     @Override
@@ -195,7 +195,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueId
      * @return com.yusys.agile.fault.dto.FaultDTO
-     *     
+
      * @date 2020/4/11
      */
     @Override
@@ -268,8 +268,8 @@ public class FaultServiceImpl implements FaultService {
      * @param key
      * @param fieldCode
      * @return java.lang.String
-     *     
-     * @date 2020/5/25
+
+     * @date 2021/2/25
      */
     private String getOperationValue(Long key, String fieldCode) {
         Map map = new HashMap<String, String>();
@@ -294,7 +294,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param userId
      * @return java.lang.String
-     *     
+
      * @date 2020/4/13
      */
     private String getUserName(Long userId) {
@@ -314,7 +314,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param faultDTO
      * @return void
-     *     
+
      * @date 2020/4/13
      */
     @Override
@@ -439,8 +439,8 @@ public class FaultServiceImpl implements FaultService {
      * @param to
      * @param handler
      * @return com.yusys.agile.issue.domain.Issue
-     *     
-     * @date 2020/5/29
+
+     * @date 2021/2/29
      */
     private Issue generateFaultByStageId(Issue fault, Long to, Long handler, Issue oldFault) {
         // 拖到待修复
@@ -483,7 +483,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param
      * @return java.util.List<com.yusys.agile.fault.domain.FaultLevel>
-     *     
+
      * @date 2020/4/11
      */
     @Override
@@ -498,7 +498,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param
      * @return java.util.List<com.yusys.agile.fault.domain.FaultType>
-     *     
+
      * @date 2020/4/11
      */
     @Override
@@ -513,7 +513,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-     *     
+
      * @date 2020/4/14
      */
     @Override
@@ -528,7 +528,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-     *     
+
      * @date 2020/4/14
      */
     @Override
@@ -542,7 +542,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-     *     
+
      * @date 2020/4/14
      */
     @Override
@@ -566,7 +566,7 @@ public class FaultServiceImpl implements FaultService {
      * @param pageNum    每页数量
      * @param pageSize   页数
      * @return java.util.List<com.yusys.agile.fault.dto.FaultDTO>
-     *     
+
      * @date 2020/4/14
      * * @param faultId     缺陷id
      * * @param faultName   缺陷名称
@@ -653,7 +653,7 @@ public class FaultServiceImpl implements FaultService {
      * @param pageNum
      * @param pageSize
      * @return java.util.List<IssueDTO>
-     *     
+
      * @date 2020/4/14
      */
     @Override
@@ -715,7 +715,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueDTO
      * @return void
-     *     
+
      * @date 2020/4/26
      */
     @Override
@@ -799,8 +799,8 @@ public class FaultServiceImpl implements FaultService {
      * @param bugId   yuIt id
      * @param handler 处理人
      * @return void
-     *     
-     * @date 2020/5/22
+
+     * @date 2021/2/22
      */
     private void syncFixedFault(Long issueId, Long bugId, Long handler) throws Exception {
         FaultFixDTO faultFixDTO = new FaultFixDTO();
@@ -822,7 +822,7 @@ public class FaultServiceImpl implements FaultService {
      * @param faultList
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.FaultDTO>
-     *     
+
      * @date 2020/4/14
      */
     private List<IssueDTO> assembleFaultDTOs(List<IssueDTO> faultList, Long projectId) {
@@ -873,8 +873,8 @@ public class FaultServiceImpl implements FaultService {
      * @param userMap
      * @param userId
      * @return java.lang.String
-     *     
-     * @date 2020/6/1
+
+     * @date 2021/2/1
      */
     private String getUserNameById(Map<Long, String> userMap, Long userId) {
         String userName = MapUtils.getString(userMap, userId);
@@ -903,7 +903,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.Map<java.lang.Long, com.yusys.portal.model.facade.entity.SsoUser>
-     *     
+
      * @date 2020/4/14
      */
     @Override
@@ -940,8 +940,8 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueDTO
      * @return void
-     *     
-     * @date 2020/6/1
+
+     * @date 2021/2/1
      */
     @Override
     public void editBlockState(IssueDTO issueDTO) {
@@ -962,7 +962,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param createUserIds
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-     *     
+
      * @date 2020/4/14
      */
     private List<UserDTO> getUserDTOS(List<Long> createUserIds) {
@@ -982,7 +982,7 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param users
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-     *     
+
      * @date 2020/4/14
      */
     private List<UserDTO> assembleUserDTOs(List<SsoUser> users) {

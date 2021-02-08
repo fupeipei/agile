@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *    maxp
+
  * @Date 2020/4/17
  */
 public interface SprintService {
@@ -16,7 +16,7 @@ public interface SprintService {
     /**
      * @param sprintDTO
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 新建迭代
      * @Return java.lang.Long
@@ -26,7 +26,7 @@ public interface SprintService {
     /**
      * @param sprintId
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 查看迭代编辑页面
      * @Return com.yusys.agile.sprint.dto.SprintDTO
@@ -35,7 +35,7 @@ public interface SprintService {
 
     /**
      * @param dateList
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 转换迭代有效日期为String，中间以|隔开
      * @Return java.lang.String
@@ -44,7 +44,7 @@ public interface SprintService {
 
     /**
      * @param str
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 将有效日期由String转为timeStamp
      * @Return java.util.List<java.util.Date>
@@ -53,7 +53,7 @@ public interface SprintService {
 
     /**
      * @param sprintId
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 判断该迭代是否满足编辑条件
      * @Return boolean
@@ -63,7 +63,7 @@ public interface SprintService {
     /**
      * @param sprintDTO
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 编辑迭代信息
      * @Return int
@@ -73,9 +73,9 @@ public interface SprintService {
     /**
      * @param teamId
      * @param sprintName * @param pageNum
-     *                   * @param pageSize
-     *                   * @param projectId
-     *    maxp
+                    * @param pageSize
+                    * @param projectId
+
      * @Date 2020/4/17
      * @Description 通过团队id获取迭代信息以及通过迭代名称和status查询
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
@@ -84,7 +84,7 @@ public interface SprintService {
 
     /**
      * @param sprintId
-     *    maxp
+
      * @Date 2020/4/27
      * @Description 获取迭代中人员预估工作量
      * @Return java.lang.Integer
@@ -94,7 +94,7 @@ public interface SprintService {
     /**
      * @param sprintDays
      * @param sprintTime
-     *    maxp
+
      * @Date 2020/4/27
      * @Description 是否在迭代周期内
      * @Return boolean
@@ -104,7 +104,7 @@ public interface SprintService {
     /**
      * @param sprintId
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 逻辑删除迭代
      * @Return boolean
@@ -113,7 +113,7 @@ public interface SprintService {
 
     /**
      * @param sprintDTO
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 迭代添加故事或缺陷
      * @Return int
@@ -125,7 +125,7 @@ public interface SprintService {
      * @param idOrName
      * @param pageNum
      * @param pageSize
-     *    maxp
+
      * @Date 2020/4/28
      * @Description 分页查询项目中所有进行中/已完成迭代
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
@@ -139,8 +139,8 @@ public interface SprintService {
      * @param projectId
      * @param pageNum
      * @param pageSize
-     *    maxp
-     * @Date 2020/5/7
+
+     * @Date 2021/2/7
      * @Description 获取项目中所有迭代
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
      */
@@ -149,8 +149,8 @@ public interface SprintService {
     /**
      * @param projectId
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/12
+
+     * @Date 2021/2/12
      * @Description 根据迭代id获取迭代中人员信息
      * @Return java.util.List<com.yusys.portal.model.facade.entity.SsoUser>
      */
@@ -163,7 +163,7 @@ public interface SprintService {
      * @param projectId
      * @return com.yusys.agile.sprint.dto.SprintDTO
      *
-     * @date 2020/5/28
+     * @date 2021/2/28
      */
     List<SprintDTO>  selectSprint(Long sprintId, Long projectId) ;
 
@@ -180,16 +180,16 @@ public interface SprintService {
     /**
      * @param projectId
      * @param sprintId
-     *    maxp
-     * @Date 2020/6/9
+
+     * @Date 2021/2/9
      * @Description 编辑迭代为已完成状态
      * @Return int
      */
     int completeSprint(Long projectId, Long sprintId);
 
     /**
-     *    maxp
-     * @Date 2020/6/18
+
+     * @Date 2021/2/18
      * @Description 根据现在时间，把所有迭代未开始状态改为进行中
      * @param
      * @Return void
@@ -197,8 +197,8 @@ public interface SprintService {
     void changeStatusDaily();
 
     /**
-     *    maxp
-     * @Date 2020/7/16
+
+     * @Date 2021/2/16
      * @Description 统计迭代中人员代码提交次数
      * @param projectId
      * @param sprintId
@@ -231,7 +231,7 @@ public interface SprintService {
     /**
      * 功能描述:根据项目id查询所有迭代信息
      *
-     * @date 2020/11/5
+     * @date 2021/2/5
      * @param projectId
      * @param sprintName
      * @return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>

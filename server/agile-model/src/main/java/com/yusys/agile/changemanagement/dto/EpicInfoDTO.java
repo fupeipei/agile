@@ -3,7 +3,7 @@ package com.yusys.agile.changemanagement.dto;
 /**
  * 外部系统调用返回epic封装信息
  *
- *     
+
  * @create 2020-11-30 09:44
  */
 public class EpicInfoDTO {

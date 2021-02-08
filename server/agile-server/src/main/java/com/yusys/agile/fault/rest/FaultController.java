@@ -275,7 +275,7 @@ public class FaultController {
     /**
      * 功能描述: 缺陷设置阻塞状态
      *
-     * @date 2020/6/1
+     * @date 2021/2/1
      * @param issueDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */

@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 
 /**
  *   :
- * @Date: 2020/7/30
+ * @Date: 2021/2/20
  * @Description: TODO
  */
 @RestController
@@ -44,7 +44,7 @@ public class IssueTemplateController {
     /**
      *功能描述  移除应用的自定义字段
      *   
-     * @date 2020/7/31
+     * @date 2021/2/31
      * @param id
      * @return
      */

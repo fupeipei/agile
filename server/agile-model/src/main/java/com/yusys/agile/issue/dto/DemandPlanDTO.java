@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * @ClassName DemandPlanDTO
  * @Description 需求规划DTO
- *    zhaoqj3
- * @Date 2020/6/24 14:02
+ *
+ * @Date 2021/2/24 14:02
  * @Version 1.0
  */
 public class DemandPlanDTO {

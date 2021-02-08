@@ -6,14 +6,14 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- *    maxp
+
  * @Date 2020/4/30
  * @Description 看板故事及任务信息查询
  */
 public interface TaskBoardMapper {
 
     /**
-     *    maxp
+
      * @Date 2020/4/30
      * @Description 看板故事及任务信息查询
      * @param sprintId 迭代id

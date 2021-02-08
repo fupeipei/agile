@@ -26,7 +26,7 @@ public interface IssueModuleRelpService {
 
     /**
      *
-     * @Date: 2020/6/24 17:23
+     * @Date: 2021/2/24 17:23
      * @Description: 删除工作项关联的模块
      * @Param: * @param issueId
      * @Return: void

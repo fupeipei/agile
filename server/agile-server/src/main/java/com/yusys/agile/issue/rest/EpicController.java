@@ -145,7 +145,7 @@ public class EpicController {
      * @param type 1 业务需求 2研发需求
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      *
-     * @date 2020/7/22
+     * @date 2021/2/22
      */
     @GetMapping("/issue/queryStroyIds")
     public ControllerResponse queryStroyIds(@RequestParam(value = "id") Long id, @RequestParam(value = "type") Byte type) {

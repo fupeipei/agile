@@ -2,7 +2,7 @@ package com.yusys.agile.businesskanban.dto;
 
 import java.util.Date;
 /**
- *   : zhaoyd6
+ *
  * @Date: 2020/4/30
  * @Description: 
  */

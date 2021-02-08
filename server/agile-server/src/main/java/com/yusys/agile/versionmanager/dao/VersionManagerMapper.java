@@ -29,7 +29,7 @@ public interface VersionManagerMapper {
     int updateByPrimaryKey(VersionManager record);
 
     /**
-     *   :shenfeng
+     *
      * 更新版本计划交付个数
      * @Date:2020-09-16
      * @param versionPlanData
@@ -50,7 +50,7 @@ public interface VersionManagerMapper {
 
     /**
      *
-     * @Date 2020/11/18
+     * @Date 2021/2/18
      * @Description 根据需求名称及客户需求编号获取版本计划
      * @param projectId
      * @param versionName

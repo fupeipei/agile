@@ -2,8 +2,8 @@ package com.yusys.agile.user.dto;
 
 
 /**
- *    maxp
- * @Date: 2020/7/6
+
+ * @Date: 2021/2/6
  */
 public class ProjectUserDTO {
     private Long projectId;

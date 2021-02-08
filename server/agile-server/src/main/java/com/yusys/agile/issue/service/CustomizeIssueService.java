@@ -7,7 +7,7 @@ import java.util.List;
 public interface CustomizeIssueService {
 
     /**
-     *   : zhangtao11
+     *
      * @Date: 2020/08/17 11:22
      * @Description: 查询关联的工作项
      * @param issueIds

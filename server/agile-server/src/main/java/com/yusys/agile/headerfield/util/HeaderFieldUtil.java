@@ -2,7 +2,7 @@ package com.yusys.agile.headerfield.util;
 
 /**
  *   :
- * @Date: 2020/5/25
+ * @Date: 2021/2/25
  * @Description: 静态属性
  */
 public class HeaderFieldUtil {

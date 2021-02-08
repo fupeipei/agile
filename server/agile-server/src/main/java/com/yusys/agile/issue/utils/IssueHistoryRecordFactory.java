@@ -120,7 +120,7 @@ public class IssueHistoryRecordFactory {
 
     /**
      * 根据项目ID查询阶段状态，并封装成Map<String,String>
-     *     key为阶段ID，value为阶段名称，
+      key为阶段ID，value为阶段名称，
      * @param projectId
      * @return
      */

@@ -5,8 +5,8 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import java.util.List;
 
 /**
- *   : zhaoyd6
- * @Date: 2020/5/19
+ *
+ * @Date: 2021/2/19
  * @Description: 组装精益看板
  *
  */

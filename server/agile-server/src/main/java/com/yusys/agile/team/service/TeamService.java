@@ -9,13 +9,13 @@ import com.yusys.portal.model.facade.entity.SsoUser;
 import java.util.List;
 
 /**
- *    maxp
+
  * @Date 2020/4/17
  */
 public interface TeamService {
 
     /**
-     *    maxp
+
      * @Date 2020/4/17 17:38
      * @Description 获取项目下所有团队
       * @param projectId
@@ -24,7 +24,7 @@ public interface TeamService {
     List<TeamDTO> getListTeam(Long projectId);
 
     /**
-     *    maxp
+
      * @Date 2020/4/17 17:39
      * @Description 获取项目中的人员信息
       * @param subjectId
@@ -34,7 +34,7 @@ public interface TeamService {
     List<SsoUser> listMemberUsers(Long subjectId, Integer userRelateType);
 
     /**
-     *    maxp
+
      * @Date 2020/4/17 17:39
      * @Description 增加成员迭代时长信息
       * @param userSprintHourDTOS

@@ -70,7 +70,7 @@ public interface FeatureService {
     List<IssueDTO> queryUnlinkedFeature(Long projectId,Integer pageNum,Integer pageSize,String title);
     /**
      *
-     * @Date: 2020/6/3 14:57
+     * @Date: 2021/2/3 14:57
      * @Description: 分页查询所有研发需求
      * @Param: * @param projectId
     * @param pageNum
@@ -82,7 +82,7 @@ public interface FeatureService {
 
     /**
      *
-     * @Date: 2020/6/9 9:31
+     * @Date: 2021/2/9 9:31
      * @Description: 查询某epic下所有的feature
      * @Param: * @param projectId
     * @param epicId

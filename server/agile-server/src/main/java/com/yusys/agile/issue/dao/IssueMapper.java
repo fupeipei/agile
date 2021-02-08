@@ -116,7 +116,7 @@ public interface IssueMapper {
     /**
      * @param issueId
      * @param sprintId
-     *    maxp
+
      * @Date 2020/4/17
      * @Description 让故事下的任务关联迭代
      * @Return int
@@ -125,7 +125,7 @@ public interface IssueMapper {
 
     /**
      * @param issueIds
-     *    maxp
+
      * @Date 2020/4/20
      * @Description 通过主键id查询无效故事（做判断）
      * @Return int
@@ -134,7 +134,7 @@ public interface IssueMapper {
 
     /**
      * @param storyId
-     *    maxp
+
      * @Date 2020/4/20 16:55
      * @Description 通过故事id将任务移出迭代
      * @Return int
@@ -188,8 +188,8 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/14
+
+     * @Date 2021/2/14
      * @Description 统计迭代下所有的任务数
      * @Return java.lang.Integer
      */
@@ -197,8 +197,8 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/14
+
+     * @Date 2021/2/14
      * @Description 统计迭代下完成的任务数
      * @Return int
      */
@@ -206,8 +206,7 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/14
+     * @Date 2021/2/14
      * @Description 统计迭代下所有的缺陷数
      * @Return java.lang.Integer
      */
@@ -215,8 +214,7 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/14
+     * @Date 2021/2/14
      * @Description 统计迭代下未完成的缺陷数
      * @Return int
      */
@@ -224,8 +222,7 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/14
+     * @Date 2021/2/14
      * @Description 统计迭代中计划工作量
      * @Return java.lang.Integer
      */
@@ -233,8 +230,7 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/14
+     * @Date 2021/2/14
      * @Description 统计迭代中剩余工作量
      * @Return java.lang.Integer
      */
@@ -242,7 +238,7 @@ public interface IssueMapper {
 
     /**
      *
-     * @Date: 2020/5/21 11:20
+     * @Date: 2021/2/21 11:20
      * @Description: 更新迭代id
      * @Param: * @param issue
      * @Return: void
@@ -254,14 +250,13 @@ public interface IssueMapper {
      *
      * @param record
      * @return int
-     *     
-     * @date 2020/5/26
+     * @date 2021/2/26
      */
     int updateFaultByPrimaryKeySelectiveWithNull(Issue record);
 
     /**
      *
-     * @Date: 2020/5/26 17:06
+     * @Date: 2021/2/26 17:06
      * @Description: 更新处理人
      * @Param: * @param issue
      * @Return: void
@@ -273,15 +268,14 @@ public interface IssueMapper {
      *
      * @param record
      * @return void
-     *     
-     * @date 2020/5/28
+     * @date 2021/2/28
      */
     void reopenFault(Issue record);
 
     /**
      * @param issueId
      *
-     * @Date: 2020/6/3 10:22
+     * @Date: 2021/2/3 10:22
      * @Description: 详情显示工作项关联关系列表
      * @Param: projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
@@ -293,7 +287,7 @@ public interface IssueMapper {
     /**
      * @param epicId
      *
-     * @Date: 2020/6/9 10:00
+     * @Date: 2021/2/9 10:00
      * @Description: 查询业务需求下的所有用户故事
      * @Param: * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
@@ -302,8 +296,8 @@ public interface IssueMapper {
 
     /**
      * @param issueType
-     *   : zhangtao11
-     * @Date: 2020/6/10 10:20
+     *
+     * @Date: 2021/2/10 10:20
      * @Description: 查询模板父工作项列表
      * @Param: projectId
      * @Return: java.util.List<com.yusys.agile.issue.domain.Issue>
@@ -312,8 +306,7 @@ public interface IssueMapper {
 
     /**
      * @param record
-     *    maxp
-     * @Date 2020/6/15
+     * @Date 2021/2/15
      * @Description 看板修改故事状态及任务阻塞状态
      * @Return int
      */
@@ -325,23 +318,22 @@ public interface IssueMapper {
      * @param issueRecord
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      *   
-     * @date 2020/6/16
+     * @date 2021/2/16
      */
     List<Issue> queryIssueList(@Param("issueRecord") IssueRecord issueRecord, @Param("customFieldJsonTypeList") List<CustomFieldJsonType> customFieldJsonTypeList);
 
     /**
      * @param issueId
      * @param sprintId
-     *    maxp
-     * @Date 2020/6/21
+     * @Date 2021/2/21
      * @Description 修改工作项的迭代id
      * @Return int
      */
     int updateBySprintId(@Param("issueId") Long issueId, @Param("sprintId") Long sprintId);
 
     /**
-     *    maxp
-     * @Date 2020/6/22
+
+     * @Date 2021/2/22
      * @Description 根据项目id和系统id获取工作项信息
      * @param projectId
      * @param systemId
@@ -363,8 +355,7 @@ public interface IssueMapper {
     List<IssueDTO> selectBySystemIdAndVersion(@Param("projectId") Long projectId,@Param("systemId")Long systemId,@Param("versionId")Long versionId,@Param("issueType") Byte issueType);
 
     /**
-     *    maxp
-     * @Date 2020/7/6
+     * @Date 2021/2/6
      * @Description 统计人员的任务数
      * @param projectId
      * @param userId
@@ -373,8 +364,7 @@ public interface IssueMapper {
     int sumTaskByHandler(@Param("projectId") Long projectId,@Param("userId")Long userId);
 
     /**
-     *    maxp
-     * @Date 2020/7/6
+     * @Date 2021/2/6
      * @Description 统计人员的工时数
      * @param projectId
      * @param userId
@@ -396,8 +386,7 @@ public interface IssueMapper {
 
     /**
      * 功能描述:
-     *     
-     * @date 2020/7/22
+     * @date 2021/2/22
      * @param id
      * @return java.util.List<java.lang.Long>
      */
@@ -405,8 +394,8 @@ public interface IssueMapper {
 
     /**
      * 功能描述:
-     *     
-     * @date 2020/7/22
+
+     * @date 2021/2/22
      * @param id
      * @return java.util.List<java.lang.Long>
      */
@@ -521,8 +510,8 @@ public interface IssueMapper {
     List<IssueDTO> selectIssueForVersion(IssueDTO issueExample);
 
     /**
-     *    maxp
-     * @Date 2020/11/4
+
+     * @Date 2021/2/4
      * @Description 项目及迭代中已完成工作项个数
      * @param sprintId
      * @param issueType
@@ -530,8 +519,7 @@ public interface IssueMapper {
      */
     int countAchievedIssues4Sprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId,@Param("issueType")Byte issueType);
     /**
-     *    maxp
-     * @Date 2020/11/4
+     * @Date 2021/2/4
      * @Description 项目及迭代中进行中工作项个数
      * @param sprintId
      * @param issueType
@@ -539,8 +527,7 @@ public interface IssueMapper {
      */
     int countInsprintIssuesBySprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId,@Param("issueType")Byte issueType);
     /**
-     *    maxp
-     * @Date 2020/11/4
+     * @Date 2021/2/4
      * @Description 项目及迭代中未完成工作项个数
      * @param sprintId
      * @param issueType
@@ -549,8 +536,8 @@ public interface IssueMapper {
     int countNotStartIssuesBySprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId,@Param("issueType")Byte issueType);
 
     /**
-     *    maxp
-     * @Date 2020/11/4
+
+     * @Date 2021/2/4
      * @Description 项目及迭代中未完成任务个数
      * @param sprintId
      * @Return int
@@ -558,8 +545,8 @@ public interface IssueMapper {
     int countInsprintTaskBySprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId);
 
     /**
-     *    maxp
-     * @Date 2020/11/4
+
+     * @Date 2021/2/4
      * @Description 项目及迭代中未完成任务个数
      * @param sprintId
      * @Return int
@@ -569,8 +556,8 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/14
+
+     * @Date 2021/2/14
      * @Description 统计项目及迭代下完成的任务数
      * @Return int
      */

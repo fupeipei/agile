@@ -7,7 +7,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 /**
  * @ClassName: MailSwitchService
  * @Description: 通知设置Service
- *   : zhaoqj3
+ *   :
  * @CreateDate: 2020/06/16 17:28
  * @Version 1.0
  */

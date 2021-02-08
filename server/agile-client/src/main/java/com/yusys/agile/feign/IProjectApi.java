@@ -43,7 +43,7 @@ public interface IProjectApi {
      * @param name
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      *
-     * @date 2020/11/5
+     * @date 2021/2/5
      */
     @GetMapping("/agile/sprint/listAllSprintsByProjectId")
     public ControllerResponse listAllSprintsByProjectId(@RequestParam("projectId") Long projectId,
@@ -82,7 +82,7 @@ public interface IProjectApi {
      * @param caseParamDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      *
-     * @date 2020/11/10
+     * @date 2021/2/10
      */
     @PostMapping("/agile/case/listCaseByStoryIds")
     public ControllerResponse listCaseByStoryIds(@RequestBody CaseParamDTO caseParamDTO);

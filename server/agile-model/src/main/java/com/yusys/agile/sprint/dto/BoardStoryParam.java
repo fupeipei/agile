@@ -3,7 +3,7 @@ package com.yusys.agile.sprint.dto;
 import java.util.List;
 
 /**
- *    maxp
+
  * @Date 2020/4/30
  * @Description 看板搜索条件
  */

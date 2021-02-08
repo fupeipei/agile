@@ -26,7 +26,7 @@ import java.util.Optional;
 
 /**
  *  工作项富文本处理
- *    zhaoqj3
+ *
  */
 @Component
 public class IssueRichTextFactory {

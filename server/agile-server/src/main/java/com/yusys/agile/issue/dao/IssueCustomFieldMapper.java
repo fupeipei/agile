@@ -54,8 +54,8 @@ public interface IssueCustomFieldMapper {
 
     /**
      * 功能描述: 修改自定义字段明细值是允许为空
-     *     
-     * @date 2020/7/22
+
+     * @date 2021/2/22
      * @param record
      * @param example
      * @return int

@@ -204,7 +204,7 @@ public class IssueController {
     /**
      * @param handler
      *
-     * @Date: 2020/5/26 16:28
+     * @Date: 2021/2/26 16:28
      * @Description: 更新处理人
      * @Param: * @param issueId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -225,8 +225,8 @@ public class IssueController {
      * @param pageNum  分页页数
      * @param pageSize 分页条数
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *   :zhaoqj3
-     * @Date:2020/6/1 11:05
+     *   :
+     * @Date:2021/2/1 11:05
      * @Description:根据issueId，查询操作历史分页数据
      */
     @GetMapping("/issue/query/records")
@@ -240,8 +240,8 @@ public class IssueController {
     /**
      * @param recordId 历史操作主键ID
      * @return
-     *   :zhaoqj3
-     * @Date:2020/6/2 11:05
+     *   :
+     * @Date:2021/2/2 11:05
      * @Description:根据recordId，查询富文本内容
      */
     @GetMapping("/issue/history/richText")
@@ -251,7 +251,7 @@ public class IssueController {
 
     /**
      *
-     * @Date: 2020/6/3 10:15
+     * @Date: 2021/2/3 10:15
      * @Description: 详情显示工作项关联关系列表
      * @Param: * @param issueId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -264,8 +264,7 @@ public class IssueController {
 
     /**
      * @param projectId
-     *    maxp
-     * @Date 2020/6/22
+     * @Date 2021/2/22
      * @Description 项目概览页面统计各个阶段的需求个数
      * 看这个产品是否关联了故事，关联了故事就统计故事数，没有故事就统计关联的研发需求数，
      * 没有研发需求就统计关联的业务需求数，都没有关联该产品就为0了，最子到故事
@@ -432,7 +431,7 @@ public class IssueController {
     /**
      *功能描述  根据当前issueId查询客户需求编号
      *
-     * @date 2020/11/18
+     * @date 2021/2/18
      * @param issueId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */

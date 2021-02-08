@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 团队DTO
  *
- *    maxp
+
  * @create 2020-04-10 17:25
  */
 public class TeamDTO {

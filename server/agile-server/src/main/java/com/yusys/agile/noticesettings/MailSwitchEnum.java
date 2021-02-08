@@ -4,7 +4,7 @@ package com.yusys.agile.noticesettings;
 /**
  * @ClassName: MailSwitchServiceImpl
  * @Description: 邮件模版枚举
- *   : zhaoqj3
+ *   :
  * @CreateDate: 2020/06/16 17:28
  * @Version 1.0
  */

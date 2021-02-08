@@ -32,8 +32,8 @@ public interface LeanKanbanService {
 
 
     /**
-     *   : zhaoyd6
-     * @Date: 2020/5/19
+     *
+     * @Date: 2021/2/19
      * @Description: 获取精益看板视图
      * @Param: [projectId, queries,selectType]
      * @Return: com.yusys.agile.leankanban.dto.IssueResultDTO

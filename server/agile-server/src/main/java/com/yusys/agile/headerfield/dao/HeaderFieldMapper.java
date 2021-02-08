@@ -38,8 +38,8 @@ public interface HeaderFieldMapper {
 
     /**
      * 功能描述: 分页查询自定义字段
-     *     
-     * @date 2020/7/16
+
+     * @date 2021/2/16
      * @param example
      * @return java.util.List<com.yusys.agile.headerfield.dto.HeaderFieldDTO>
      */

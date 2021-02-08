@@ -29,7 +29,7 @@ public interface BusinessKanbanMembersMapper {
     int updateByPrimaryKey(BusinessKanbanMembers record);
 
     /**
-     *   : zhaoyd6
+     *
      * @Date: 2020/4/30
      * @Description: 批量创建看板成员
      * @Param: [businessKanbanMembers]

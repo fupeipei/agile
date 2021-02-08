@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- *    maxp
+
  * @Date 2020/4/10
  */
 @Service("sprintService")
@@ -128,7 +128,7 @@ public class SprintServiceImpl implements SprintService {
     /**
      * @param sprintDTO
      * @param sprint
-     *    maxp
+
      * @Date 2020/4/24
      * @Description 时间戳排序，结束时间取最后日期后一天
      * @Return java.util.Date
@@ -149,7 +149,7 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintId
      * @param userId
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/26
      * @Description 新建团队，创建迭代人员
      * @Return java.lang.Long
@@ -195,7 +195,7 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintDTO
      * @param sprintId
      * @param userId
-     *    maxp
+
      * @Date 2020/4/26 16:23
      * @Description 创建迭代人员
      * @Return void
@@ -248,8 +248,8 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-     *    maxp
-     * @Date 2020/5/14
+
+     * @Date 2021/2/14
      * @Description 统计迭代的已完成工作量和剩余工作量
      * @Return void
      */
@@ -265,8 +265,8 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-     *    maxp
-     * @Date 2020/5/14
+
+     * @Date 2021/2/14
      * @Description 统计项目中的缺陷总数和已完成数
      * @Return void
      */
@@ -281,7 +281,7 @@ public class SprintServiceImpl implements SprintService {
     /**
      * @param projectId
      * @param sprintId
-     *    maxp
+
      * @Date 2020/4/26 16:24
      * @Description 获取团队以及团队中人员信息
      * @Return java.util.List<com.yusys.agile.team.dto.TeamDTO>
@@ -400,8 +400,8 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-     *    maxp
-     * @Date 2020/6/16
+
+     * @Date 2021/2/16
      * @Description 判断版本号只能是英文数字_.常用字符
      * @Return void
      */
@@ -416,7 +416,7 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-     *    maxp
+
      * @Date 2020/4/27
      * @Description 检查版本号是否重复
      * @Return boolean
@@ -443,8 +443,8 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintDTO
      * @param projectId
      * @param sprint
-     *    maxp
-     * @Date 2020/5/21
+
+     * @Date 2021/2/21
      * @Description 确定版本编号与哪个项目重复
      * @Return void
      */
@@ -461,7 +461,7 @@ public class SprintServiceImpl implements SprintService {
     /**
      * @param teamName
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/27
      * @Description 检查团队名称是否重复
      * @Return boolean
@@ -677,8 +677,8 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-     *    maxp
-     * @Date 2020/5/7
+
+     * @Date 2021/2/7
      * @Description 统计迭代中的故事总数和已完成数以及任务总数和已完成数
      * @Return void
      */
@@ -698,8 +698,8 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-     *    maxp
-     * @Date 2020/5/4
+
+     * @Date 2021/2/4
      * @Description 获取团队名称
      * @Return void
      */
@@ -715,7 +715,7 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintExample
      * @param criteria
      * @param criteria2
-     *    maxp
+
      * @Date 2020/4/28
      * @Description 判断传来的参数是id还是name
      * @Return void
@@ -739,7 +739,7 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param issueIds
-     *    maxp
+
      * @Date 2020/4/27
      * @Description 通过工作项id判断数据是否有效
      * @Return boolean
@@ -750,7 +750,7 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param teamId
-     *    maxp
+
      * @Date 2020/4/26 16:28
      * @Description 把没迭代的原始团队数据设置无效
      * @Return void
@@ -961,7 +961,7 @@ public class SprintServiceImpl implements SprintService {
     /**
      * 功能描述:根据项目id查询所有的迭代信息
      *
-     * @date 2020/11/5
+     * @date 2021/2/5
      * @param projectId
      * @param
      * @return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>

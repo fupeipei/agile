@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * 模块管理Model辅助类
  * @date 2020.5.25
- *    zhaoqj3
+ *
  */
 public class ModuleDTO {
     private Long moduleId;

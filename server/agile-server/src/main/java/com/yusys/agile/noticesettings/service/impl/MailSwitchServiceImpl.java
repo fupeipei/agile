@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @ClassName: MailSwitchServiceImpl
  * @Description: 通知设置Service Impl
- *   : zhaoqj3
+ *   :
  * @CreateDate: 2020/06/16 17:28
  * @Version 1.0
  */

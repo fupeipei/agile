@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 /**
  *   :
- * @Date: 2020/7/31
+ * @Date: 2021/2/31
  * @Description: TODO
  */
 @Service
@@ -49,7 +49,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      * @param issueType
      * @return java.util.List<com.yusys.agile.issue.domain.IssueCustomRelation>
      *
-     * @date 2020/7/31
+     * @date 2021/2/31
      */
     @Override
     public List<IssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType) {
@@ -84,7 +84,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      * @param id
      * @return
      *
-     * @date 2020/7/31
+     * @date 2021/2/31
      */
     @Override
     public void deleteIssueCustomRelation(Long id) {

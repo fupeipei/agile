@@ -9,7 +9,7 @@ import java.util.List;
  * @ClassName IssueRuleService
  * @Description TODO
  *
- * @Date 2020/7/8 11:03
+ * @Date 2021/2/8 11:03
  * @Version 1.0
  */
 public interface IssueRuleService {

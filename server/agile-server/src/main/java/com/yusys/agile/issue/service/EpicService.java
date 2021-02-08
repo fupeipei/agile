@@ -62,7 +62,7 @@ public interface EpicService {
      * @param pageSize
      * @param title
      *
-     * @Date: 2020/6/3 14:56
+     * @Date: 2021/2/3 14:56
      * @Description: 分页查询所有业务需求
      * @Param: * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
@@ -83,7 +83,7 @@ public interface EpicService {
      *
      * @param epicId
      * @return java.util.List<java.lang.Long>
-     *     
+
      * @date 2020/10/13
      */
     List<Long> queryFeatureIdsByEpicId(Long epicId);

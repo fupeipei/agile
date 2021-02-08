@@ -120,7 +120,7 @@ public interface IssueService {
     /**
      * @param handler
      *
-     * @Date: 2020/5/26 16:28
+     * @Date: 2021/2/26 16:28
      * @Description: 更新处理人
      * @Param: * @param issueId
      * @Return: void
@@ -132,8 +132,8 @@ public interface IssueService {
      * @param pageNum  分页页数
      * @param pageSize 分页条数
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *   :zhaoqj3
-     * @Date:2020/6/1 11:05
+     *   :
+     * @Date:2021/2/1 11:05
      * @Description:根据issueId，查询操作历史分页数据
      */
     ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO);
@@ -144,7 +144,7 @@ public interface IssueService {
      * @param issueId
      * @param issueType
      *
-     * @Date: 2020/6/3 10:20
+     * @Date: 2021/2/3 10:20
      * @Description: 详情显示工作项关联关系列表
      * @Param: projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
@@ -154,8 +154,8 @@ public interface IssueService {
 
     /**
      * @param issueType
-     *   : zhangtao11
-     * @Date: 2020/6/10 10:20
+     *
+     * @Date: 2021/2/10 10:20
      * @Description: 查询模板父工作项列表
      * @Param: projectId
      * @Return: java.util.List<java.lang.String>
@@ -177,8 +177,8 @@ public interface IssueService {
     List<Issue> queryIssueList(Map<String,Object> map, Long projectId) throws Exception;
 
     /**
-     *    maxp
-     * @Date 2020/6/22
+
+     * @Date 2021/2/22
      * @Description 项目概览页面统计各个阶段的需求个数
      * @param projectId
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueStageIdCountDTO>
@@ -256,8 +256,8 @@ public interface IssueService {
 
     void sortIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
     /**
-     *    maxp
-     * @Date 2020/11/16
+
+     * @Date 2021/2/16
      * @Description 功能描述  版本管理中递归查找Issue的children
      * @param queryType
      * @param rootIds
@@ -357,7 +357,7 @@ public interface IssueService {
     /**
       *功能描述   翻译扩展字段对应的名称
       *
-      * @date 2020/11/16
+      * @date 2021/2/16
      * @param fieldId
      * @param value
       * @return java.lang.String
@@ -372,7 +372,7 @@ public interface IssueService {
     /**
      *功能描述  根据局方需求编号获取分期【planDeployDate】
      *
-     * @date 2020/11/18
+     * @date 2021/2/18
       * @param formalReqCode
      * @return java.util.List<java.lang.String>
      */
@@ -390,7 +390,7 @@ public interface IssueService {
     /**
      *功能描述 根据IssueIdList查询出未取消的需求
      *
-     * @date 2020/11/30
+     * @date 2021/2/20
       * @param issueIdList
      * @return java.util.List<java.lang.Long>
      */
@@ -399,7 +399,7 @@ public interface IssueService {
     /**
      * @description 更新工作项已上线状态带时间(临时方法)
      *  
-     * @date 2020/11/30
+     * @date 2021/2/20
      * @param issueId
      * @param issueType
      * @param actualOnlineTime

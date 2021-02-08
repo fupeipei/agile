@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *    maxp
+
  * @Date 2020/4/30
  */
 @RestController
@@ -21,7 +21,7 @@ public class BoardController {
     private BoardService boardService;
 
     /**
-     *    maxp
+
      * @Date 2020/4/30
      * @Description 看板搜索故事和任务
       * @param param

@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- *    maxp
+
  */
 @RestController
 public class TeamController {
     @Autowired
     private TeamService teamService;
     /**
-     *    maxp
+
      * @Date 2020/4/13
      * @Description 获取项目下所有团队
      * @param projectId
@@ -26,7 +26,7 @@ public class TeamController {
     }
 
     /**
-     *    maxp
+
      * @Date 2020/4/14
      * @Description 获取项目中的人员信息
       * @param projectId

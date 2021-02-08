@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 文件上传下载service
  *
- *     
+
  * @create 2020-04-17 14:25
  */
 public interface FileService {
@@ -20,14 +20,14 @@ public interface FileService {
      *
      * @param file
      * @return void
-     *     
+
      * @date 2020/4/17
      */
     FileInfo upload(MultipartFile file) throws Exception;
 
     /**
      * 功能描述: 文件下载
-     *     
+
      * @date 2020/4/20
      * @param
      * @param request

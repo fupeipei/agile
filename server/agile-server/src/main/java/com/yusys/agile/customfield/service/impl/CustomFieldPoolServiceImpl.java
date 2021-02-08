@@ -157,8 +157,8 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
      *
      * @param fieldId
      * @return com.yusys.agile.customfield.dto.CustomFieldDTO
-     *     
-     * @date 2020/7/31
+
+     * @date 2021/2/31
      */
     @Override
     public CustomFieldDTO getCustomField(Long fieldId) {

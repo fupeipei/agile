@@ -91,7 +91,7 @@ public class StoryServiceImpl implements StoryService {
      * 功能描述 百分号
      *
      *
-     * @date 2020/11/01
+     * @date 2021/2/01
      * @return
      */
     private static final String PERCENT_SIGN = "%";
@@ -158,7 +158,7 @@ public class StoryServiceImpl implements StoryService {
 
     /**
      *
-     * @Date: 2020/5/21 10:42
+     * @Date: 2021/2/21 10:42
      * @Description: 更新故事对应任务上面的迭代ID
      * @Param: * @param issueDTO
      * @Return: void
@@ -286,8 +286,8 @@ public class StoryServiceImpl implements StoryService {
      * @param projectId
      * @param sprintId
      * @param issueDTOS
-     *    maxp
-     * @Date 2020/5/12
+
+     * @Date 2021/2/12
      * @Description 获取故事下的任务
      * @Return void
      */
@@ -399,7 +399,7 @@ public class StoryServiceImpl implements StoryService {
      * @param end
      * @param planWorkload
      * @param workHours
-     *    maxp
+
      * @Date 2020/4/30
      * @Description 设置是否超时
      * @Return boolean
@@ -491,7 +491,7 @@ public class StoryServiceImpl implements StoryService {
     /**
      * @param storyId
      * @param sprintId
-     *    maxp
+
      * @Date 2020/4/26
      * @Description 将故事下的任务加入迭代, 状态初始化为未领取，处理人为null
      * @Return void
@@ -558,7 +558,7 @@ public class StoryServiceImpl implements StoryService {
     /**
      * @param storyId
      * @param sprintId
-     *    maxp
+
      * @Date 2020/4/26
      * @Description 增加工作项修改迭代的历史记录
      * @Return void
@@ -848,8 +848,8 @@ public class StoryServiceImpl implements StoryService {
 
     /**
      * @param issueDTO
-     *    maxp
-     * @Date 2020/6/1
+
+     * @Date 2021/2/1
      * @Description 编辑故事评审状态及备注
      * @Return int
      */

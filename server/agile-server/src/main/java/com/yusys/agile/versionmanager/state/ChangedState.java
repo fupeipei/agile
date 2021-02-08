@@ -1,6 +1,5 @@
 package com.yusys.agile.versionmanager.state;
 
-import com.yusys.agile.versionmanager.dto.RequirementUnbindDTO;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
 import com.yusys.agile.versionmanager.enums.VersionStateEnum;
 

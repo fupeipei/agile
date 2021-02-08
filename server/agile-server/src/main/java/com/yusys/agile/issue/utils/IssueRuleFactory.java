@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @ClassName IssueRuleFactory
  * @Description 工作项流转规则封装类
  *
- * @Date 2020/7/9 11:01
+ * @Date 2021/2/9 11:01
  * @Version 1.0
  */
 @Component

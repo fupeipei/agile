@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *    maxp
- * @Date: 2020/7/6
+
+ * @Date: 2021/2/6
  */
 @Service
 public class ProjectUserServiceImpl implements ProjectUserService {
@@ -85,8 +85,8 @@ public class ProjectUserServiceImpl implements ProjectUserService {
      * @param commitTimes
      * @param ssoUser
      * @param projectUserDTO
-     *    maxp
-     * @Date 2020/7/16
+
+     * @Date 2021/2/16
      * @Description 获取代码提交次数
      * @Return void
      */
@@ -111,8 +111,8 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     }
 
     /**
-     *    maxp
-     * @Date 2020/7/30
+
+     * @Date 2021/2/20
      * @Description 获取代码提交行数
      * @param addLinesList
      * @param ssoUser
@@ -138,8 +138,8 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     }
 
     /**
-     *    maxp
-     * @Date 2020/7/30
+
+     * @Date 2021/2/20
      * @Description 获取代码减少行数
      * @param deleteLinesList
      * @param ssoUser
@@ -169,8 +169,8 @@ public class ProjectUserServiceImpl implements ProjectUserService {
      * @param pageSize
      * @param page
      * @param projectUserDTOS
-     *    maxp
-     * @Date 2020/7/10
+
+     * @Date 2021/2/10
      * @Description 为处理好的list增加分页
      * @Return com.github.pagehelper.PageInfo
      */

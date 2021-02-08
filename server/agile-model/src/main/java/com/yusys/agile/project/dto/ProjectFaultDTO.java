@@ -1,8 +1,8 @@
 package com.yusys.agile.project.dto;
 
 /**
- *    maxp
- * @Date 2020/5/7
+
+ * @Date 2021/2/7
  * @Description 迭代中所有故事数以及完成数
  */
 public class ProjectFaultDTO {

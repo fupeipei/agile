@@ -13,7 +13,7 @@ public interface SysExtendFieldDetailService {
   int save(SysExtendFieldDetail sysExtendFieldDetail);
 
   /**
-   *   :shenfeng
+   *
    * 根据工作项id列表获取工作项扩展字段列表
    * @param issueIds
    * @return
@@ -21,7 +21,7 @@ public interface SysExtendFieldDetailService {
   List<SysExtendFieldDetail> getIssueExtendDetailList(List<Long> issueIds);
 
   /**
-   *    maxp
+
    * @Date 2020/10/19
    * @Description 批量插入扩展字段信息
    * @param sysExtendFieldDetailList
@@ -30,7 +30,7 @@ public interface SysExtendFieldDetailService {
   void batchSave(List<SysExtendFieldDetail> sysExtendFieldDetailList);
 
   /**
-   *   :shenfeng
+   *
    * @Date:2020-09-16
    * 根据业务需求编号更新审批状态
    * @param bizNumList
@@ -166,7 +166,7 @@ public interface SysExtendFieldDetailService {
   List<SysExtendFieldDetail> getSysExtendFieldDetail(Long issueId);
 
   /**
-   *    maxp
+
    * @Date 2020/10/19
    * @Description 批量更新需求扩展信息
    * @param sysExtendFieldDetailListUpdate
@@ -207,7 +207,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述  根据某个属性和值查询扩展表信息
    *
-   * @date 2020/11/1
+   * @date 2021/2/1
     * @param prop
    * @param propValue
    * @return java.util.List<com.yusys.agile.requirement.domain.SysExtendFieldDetail>
@@ -217,7 +217,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述  根据工作项id查询扩展表中多个属性的值
    *
-   * @date 2020/11/11
+   * @date 2021/2/11
     * @param issueId
    * @param extendFieldIdList
    * @return java.util.List<com.yusys.agile.requirement.domain.SysExtendFieldDetail>
@@ -235,7 +235,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述 获取一组epic下某个属性的扩展属性值
    *
-   * @date 2020/11/12
+   * @date 2021/2/12
     * @param epicIdList
    * @param fieldId
    * @return java.util.List<com.yusys.agile.requirement.domain.SysExtendFieldDetail>
@@ -245,7 +245,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述 根据局方需求编号获取分期
    *
-   * @date 2020/11/18
+   * @date 2021/2/18
     * @param formalReqCode
    * @return java.util.List<java.lang.String>
    */

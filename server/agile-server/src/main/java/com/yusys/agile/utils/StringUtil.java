@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  *   :
- * @Date: 2020/5/6
+ * @Date: 2021/2/6
  * @Description: TODO
  */
 public class StringUtil {
@@ -62,7 +62,7 @@ public class StringUtil {
     /**
      * 功能描述:判断字符串是否是正整数
      *
-     * @date 2020/6/10
+     * @date 2021/2/10
      * @param string
      * @return boolean
      */

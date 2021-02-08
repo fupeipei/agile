@@ -564,8 +564,8 @@ public class ExcelUtil {
      *
      * @param cell
      * @return java.lang.String
-     *     
-     * @date 2020/6/10
+
+     * @date 2021/2/10
      */
     public static String getStringData(Cell cell) {
         String cellValue = "";

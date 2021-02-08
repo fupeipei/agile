@@ -155,7 +155,7 @@ public class IssueDTO {
     /**
      *功能描述  在版本中的需求id
      *
-     * @date 2020/11/2
+     * @date 2021/2/2
      * @return
      */
     List<Long> inVersionIssueList;
@@ -171,7 +171,7 @@ public class IssueDTO {
     /**
      *功能描述 扩展表中需求id
      *
-     * @date 2020/11/2
+     * @date 2021/2/2
      * @return
      */
     List<Long> sysExtendList;
@@ -279,7 +279,7 @@ public class IssueDTO {
 
     /**
      *
-     * @Date: 2020/5/9 10:31
+     * @Date: 2021/2/9 10:31
      * @Description: 阶段数组
      */
     private Long[] stages;
@@ -293,7 +293,7 @@ public class IssueDTO {
 
     /**
      *
-     * @Date: 2020/5/13 9:41
+     * @Date: 2021/2/13 9:41
      * @Description: 系统列表
      */
     private List<Long> systemIds;
@@ -318,7 +318,7 @@ public class IssueDTO {
 
     /**
      *
-     * @Date: 2020/6/124  15:39
+     * @Date: 2021/2/124  15:39
      * @Description: 模块列表
      */
     private List<Long> moduleIds;

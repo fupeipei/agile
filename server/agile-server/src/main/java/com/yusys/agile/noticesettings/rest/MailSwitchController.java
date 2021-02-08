@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @ClassName: MailSwitchController
  * @Description: 通知设置controller
- *   : zhaoqj3
+ *   :
  * @CreateDate: 2020/06/16 17:28
  * @Version 1.0
  */

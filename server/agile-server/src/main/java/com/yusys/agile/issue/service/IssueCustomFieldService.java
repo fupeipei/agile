@@ -39,8 +39,8 @@ public interface IssueCustomFieldService {
 
     /**
      * 功能描述: 修改自定义字段
-     *     
-     * @date 2020/7/21
+
+     * @date 2021/2/21
      * @param fieldsAfterEdit
      * @return void
      */

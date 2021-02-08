@@ -42,8 +42,8 @@ public interface SprintMapper {
 
     /**
      * @param example
-     *    maxp
-     * @Date 2020/5/4
+
+     * @Date 2021/2/4
      * @Description 查询未关联故事或任务的迭代
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
      */
@@ -81,8 +81,8 @@ public interface SprintMapper {
 
     /**
      * @param now
-     *    maxp
-     * @Date 2020/6/18
+
+     * @Date 2021/2/18
      * @Description 根据当前时间获取迭代id
      * @Return java.util.List<java.lang.Long>
      */
@@ -90,8 +90,8 @@ public interface SprintMapper {
 
     /**
      * @param sprintIds
-     *    maxp
-     * @Date 2020/6/18
+
+     * @Date 2021/2/18
      * @Description 根据迭代id将迭代未开始状态改为进行中
      * @Return int
      */
@@ -99,8 +99,8 @@ public interface SprintMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/6/21
+
+     * @Date 2021/2/21
      * @Description 获取迭代信息去掉文本
      * @Return com.yusys.agile.sprint.domain.SprintWithBLOBs
      */
@@ -108,8 +108,8 @@ public interface SprintMapper {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/6/23
+
+     * @Date 2021/2/23
      * @Description 编辑迭代为已完成状态
      * @Return int
      */

@@ -62,7 +62,7 @@ public interface StoryService {
     int distributeSprint(Long storyId, Long sprintId);
 
     /**
-     *    maxp
+
      * @Date 2020/4/17 17:27
      * @Description 将故事移出迭代
      * @param sprintId
@@ -84,8 +84,8 @@ public interface StoryService {
     List<IssueDTO> queryUnlinkedStory(Long projectId,Integer pageNum,Integer pageSize,String title);
 
     /**
-     *    maxp
-     * @Date 2020/5/12
+
+     * @Date 2021/2/12
      * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
      * @param projectId
      * @param issueDTO
@@ -94,8 +94,8 @@ public interface StoryService {
     List<IssueDTO> listStorysAndTasks(Long projectId, IssueDTO issueDTO);
 
     /**
-     *    maxp
-     * @Date 2020/5/27
+
+     * @Date 2021/2/27
      * @Description 看板编辑故事状态和任务卡片阻塞状态
      * @param issueDTO
      * @param projectId
@@ -104,8 +104,8 @@ public interface StoryService {
     int editStoryOrTask(IssueDTO issueDTO, Long projectId);
 
    /**
-    *    maxp
-    * @Date 2020/6/2
+
+    * @Date 2021/2/2
     * @Description 迭代评审获取故事及故事验收标准信息
     * @param issueDTO
     * @param projectId
@@ -116,8 +116,8 @@ public interface StoryService {
     List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO,Long projectId,Integer pageNum, Integer pageSize);
 
     /**
-     *    maxp
-     * @Date 2020/6/1
+
+     * @Date 2021/2/1
      * @Description 编辑故事评审状态及备注
      * @param issueDTO
      * @Return int
@@ -126,7 +126,7 @@ public interface StoryService {
 
     /**
      *
-     * @Date: 2020/6/3 14:57
+     * @Date: 2021/2/3 14:57
      * @Description: 分页查询所有用户故事
      * @Param: * @param projectId
     * @param pageNum
@@ -138,7 +138,7 @@ public interface StoryService {
 
     /**
      *
-     * @Date: 2020/6/9 9:48
+     * @Date: 2021/2/9 9:48
      * @Description: 查询业务需求下的所有用户故事
      * @Param: * @param projectId
     * @param epicId
@@ -148,7 +148,7 @@ public interface StoryService {
 
     /**
      *
-     * @Date: 2020/6/9 9:51
+     * @Date: 2021/2/9 9:51
      * @Description: 查询研发需求下所有用户故事
      * @Param: * @param projectId
     * @param featureId

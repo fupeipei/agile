@@ -285,8 +285,8 @@ public class IssueFactory {
      * @param issueDTO
      * @param issueType
      * @param issueId
-     *    maxp
-     * @Date 2020/6/1
+
+     * @Date 2021/2/1
      * @Description 新增故事验收标准
      * @Return void
      */
@@ -804,8 +804,8 @@ public class IssueFactory {
     /**
      * @param issueId
      * @param issueDTO
-     *    maxp
-     * @Date 2020/6/1
+
+     * @Date 2021/2/1
      * @Description 查询故事验收标准信息
      * @Return void
      */
@@ -1164,7 +1164,7 @@ public class IssueFactory {
      * @param pageSize
      * @param parentId
      *
-     * @Date: 2020/6/3 14:59
+     * @Date: 2021/2/3 14:59
      * @Description: 查询所有子工作项
      * @Param: * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
@@ -1211,7 +1211,7 @@ public class IssueFactory {
      * @param handlers
      * @param issueType
      *
-     * @Date: 2020/6/4 16:11
+     * @Date: 2021/2/4 16:11
      * @Description: 设置处理人id列表及状态名称
      * @Param: * @param issueDTOList
      * @Return: void
@@ -1239,7 +1239,7 @@ public class IssueFactory {
     /**
      * @param issueDTOList
      *
-     * @Date: 2020/6/3 14:10
+     * @Date: 2021/2/3 14:10
      * @Description: 处理人名称设置
      * @Param: * @param handlers
      * @Return: void
@@ -1264,7 +1264,7 @@ public class IssueFactory {
      * @param type 1 业务需求 2研发需求
      * @return java.lang.Object
      *
-     * @date 2020/7/22
+     * @date 2021/2/22
      */
     public List<Long> queryStroyIds(Long id, Byte type) {
         if (IssueTypeEnum.TYPE_EPIC.CODE.equals(type)) {

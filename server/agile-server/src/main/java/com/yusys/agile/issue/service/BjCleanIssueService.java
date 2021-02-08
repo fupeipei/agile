@@ -4,7 +4,7 @@ package com.yusys.agile.issue.service;
  * @ClassName BjCleanIssueService
  * @Description TODO
  *
- * @Date 2020/11/30 下午12:31
+ * @Date 2021/2/20 下午12:31
  * @Version 1.0
  */
 public interface BjCleanIssueService {

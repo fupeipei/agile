@@ -4,7 +4,7 @@ package com.yusys.agile.issue.enums;
  * @ClassName IssueCompletionEnum
  * @Description 完成度枚举
  *
- * @Date 2020/7/16 11:45
+ * @Date 2021/2/16 11:45
  * @Version 1.0
  */
 public enum IssueCompletionEnum {

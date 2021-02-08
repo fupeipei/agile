@@ -6,13 +6,13 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import java.util.List;
 
 /**
- *    maxp
+
  * @Date 2020/4/30
  */
 public interface BoardService {
 
     /**
-     *    maxp
+
      * @Date 2020/4/30
      * @Description 看板搜索故事和任务
       * @param param

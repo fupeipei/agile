@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * 缺陷DTO
  *
- *     
+  
  * @create 2020-04-10 16:24
  */
 public class FaultDTO {

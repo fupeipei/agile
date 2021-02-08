@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *    maxp
+
  * @Date 2020/4/10
  */
 @RestController
@@ -37,7 +37,7 @@ public class SprintController {
     /**
      * @param sprintDTO
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/10
      * @Description新增迭代
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -55,8 +55,8 @@ public class SprintController {
 
     /**
      * @param sprintDTO
-     *    maxp
-     * @Date 2020/6/2
+
+     * @Date 2021/2/2
      * @Description 对传来的参数做判断
      * @Return void
      */
@@ -74,7 +74,7 @@ public class SprintController {
     /**
      * @param projectId
      * @param sprintId
-     *    maxp
+
      * @Date 2020/4/10
      * @Description查看迭代编辑页面
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -87,7 +87,7 @@ public class SprintController {
     /**
      * @param projectId
      * @param sprintDTO
-     *    maxp
+
      * @Date 2020/4/10
      * @Description编辑迭代详情
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -111,7 +111,7 @@ public class SprintController {
      * @param sprintName
      * @param pageNum
      * @param pageSize
-     *    maxp
+
      * @Date 2020/4/13
      * @Description 通过团队id获取迭代信息以及通过迭代名称查询
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -128,7 +128,7 @@ public class SprintController {
     /**
      * @param sprintId
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/16
      * @Description 删除迭代信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -144,7 +144,7 @@ public class SprintController {
     /**
      * @param sprintId
      * @param issueId
-     *    maxp
+
      * @Date 2020/4/17 17:43
      * @Description 通过迭代id和故事id将故事移出迭代
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -159,7 +159,7 @@ public class SprintController {
 
     /**
      * @param sprintDTO
-     *    maxp
+
      * @Date 2020/4/17 21:08
      * @Description 迭代添加工作项（故事或缺陷）
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -178,7 +178,7 @@ public class SprintController {
      * @param pageNum
      * @param pageSize
      * @param projectId
-     *    maxp
+
      * @Date 2020/4/28
      * @Description 根据迭代id或迭代名称分页查询迭代列表
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -202,8 +202,8 @@ public class SprintController {
     /**
      * @param sprintDTO
      * @param projectId
-     *    maxp
-     * @Date 2020/5/7
+
+     * @Date 2021/2/7
      * @Description 获取项目中所有迭代
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -217,8 +217,8 @@ public class SprintController {
     /**
      * @param projectId
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/12
+
+     * @Date 2021/2/12
      * @Description 根据迭代id获取迭代中人员信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -237,8 +237,8 @@ public class SprintController {
     /**
      * @param projectId
      * @param sprintId
-     *    maxp 编辑迭代为已完成状态
-     * @Date 2020/6/9
+       编辑迭代为已完成状态
+     * @Date 2021/2/9
      * @Description
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -263,8 +263,8 @@ public class SprintController {
 
     /**
      * @param
-     *    maxp
-     * @Date 2020/6/18
+
+     * @Date 2021/2/18
      * @Description 根据现在时间，把所有迭代未开始状态改为进行中
      * @Return void
      */
@@ -275,8 +275,8 @@ public class SprintController {
     }
 
     /**
-     *    maxp
-     * @Date 2020/7/16
+
+     * @Date 2021/2/16
      * @Description 获取迭代中人员代码提交次数
      * @param projectId
      * @param sprintId

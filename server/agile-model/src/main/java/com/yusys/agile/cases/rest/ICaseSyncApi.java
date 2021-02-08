@@ -8,7 +8,7 @@ import com.yusys.portal.model.common.dto.ControllerResponse;
 /**
  * itc同步测试用例api
  *
- *     
+
  * @create 2020-06-22 09:11
  */
 public interface ICaseSyncApi {
@@ -18,8 +18,8 @@ public interface ICaseSyncApi {
      *
      * @param jsonObject
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *     
-     * @date 2020/6/22
+
+     * @date 2021/2/22
      */
     ControllerResponse syncCaseFromITC(JSONObject jsonObject);
 
@@ -29,8 +29,8 @@ public interface ICaseSyncApi {
      *
      * @param jsonObject
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *     
-     * @date 2020/6/22
+
+     * @date 2021/2/22
      */
     ControllerResponse editCaseFromITC(JSONObject jsonObject);
 
@@ -39,8 +39,8 @@ public interface ICaseSyncApi {
      *
      * @param caseId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *     
-     * @date 2020/6/22
+
+     * @date 2021/2/22
      */
     ControllerResponse deleteCaseFromITC(Long caseId);
 
@@ -49,8 +49,8 @@ public interface ICaseSyncApi {
      *
      * @param jsonObject
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *     
-     * @date 2020/6/22
+
+     * @date 2021/2/22
      */
     ControllerResponse syncCaseExecuteFromITC(JSONObject jsonObject);
 }

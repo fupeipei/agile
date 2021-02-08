@@ -57,7 +57,7 @@ public interface TaskService {
     Long copyTask(Long taskId, Long projectId);
 
     /**
-     *    maxp
+
      * @Date 2020/4/20 16:07
      * @Description 根据故事Id取消任务，并创建相关任务变更历史
       * @param storyId
@@ -66,7 +66,7 @@ public interface TaskService {
     int cancel4Story(Long storyId);
 
     /**
-     *    maxp
+
      * @Date 2020/4/20 16:47
      * @Description 创建工作项的历史记录
      * @param records
@@ -87,8 +87,8 @@ public interface TaskService {
     List<IssueDTO> queryUnlinkedTask(Long projectId,Integer pageNum,Integer pageSize,String title);
 
     /**
-     *    maxp
-     * @Date 2020/5/7
+
+     * @Date 2021/2/7
      * @Description 任务卡片拖拽
       * @param issueId
      * @param from
@@ -99,7 +99,7 @@ public interface TaskService {
 
     /**
      *
-     * @Date: 2020/6/9 10:21
+     * @Date: 2021/2/9 10:21
      * @Description: 查询故事下所有任务
      * @Param: * @param projectId
     * @param code
@@ -110,7 +110,7 @@ public interface TaskService {
 
     /**
      *
-     * @Date: 2020/6/9 10:22
+     * @Date: 2021/2/9 10:22
      * @Description: 查询故事下所有缺陷
      * @Param: * @param projectId
     * @param code
@@ -121,7 +121,7 @@ public interface TaskService {
 
     /**
      *
-     * @Date: 2020/6/16 11:22
+     * @Date: 2021/2/16 11:22
      * @Description: 查询所有任务
      * @Param: * @param projectId
     * @param pageNum

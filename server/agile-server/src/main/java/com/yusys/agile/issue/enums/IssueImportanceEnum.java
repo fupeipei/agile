@@ -3,7 +3,7 @@ package com.yusys.agile.issue.enums;
 /**
  * 工作项重要程度枚举
  *
- *     
+
  * @create 2020-06-09 16:18
  */
 public enum IssueImportanceEnum {

@@ -25,12 +25,12 @@ import java.util.*;
 /**
  * @ClassName IssueUpRegularFactory
  * @Description 工作项 业务需求/研发需求/用户故事 阶段状态向上规整
- *      按悲观法则，当研发需求从【就绪状态】到下一阶段状态，依据悲观法则，
- *      根据研发需求的parent_id查询业务需求下的研发需求，按照一级阶段和二级阶段的orderId升序排序，
- *      获取第一条数据作为父级业务需求的变更状态，将业务需求状态修改为相应的阶段状态。SQL如下：
+   按悲观法则，当研发需求从【就绪状态】到下一阶段状态，依据悲观法则，
+   根据研发需求的parent_id查询业务需求下的研发需求，按照一级阶段和二级阶段的orderId升序排序，
+   获取第一条数据作为父级业务需求的变更状态，将业务需求状态修改为相应的阶段状态。SQL如下：
  * 		select * from req.issue where parent_id =10108 order by stage_id  asc, lane_id  asc;
- *    zhaoqj3
- * @Date 2020/7/30 10:41
+ *
+ * @Date 2021/2/20 10:41
  * @Version 1.0
  */
 @Component

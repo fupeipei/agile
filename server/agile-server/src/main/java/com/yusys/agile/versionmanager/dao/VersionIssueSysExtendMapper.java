@@ -7,13 +7,13 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- *    maxp
- * @Date: 2020/11/11
+
+ * @Date: 2021/2/11
  */
 public interface VersionIssueSysExtendMapper {
 
     /**
-     *    maxp
+
      * @Date  2021/2/8
      * @Description 获取版本下的业务需求信息及扩展字段信息
      * @param versionIdList
@@ -23,7 +23,7 @@ public interface VersionIssueSysExtendMapper {
 
 
     /**
-     *    maxp
+
      * @Date  2021/2/8
      * @Description 获取业务需求下的研发需求信息及扩展字段信息
      * @param issueIds

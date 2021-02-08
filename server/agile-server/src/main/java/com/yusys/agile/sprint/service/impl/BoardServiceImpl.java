@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- *    maxp
+
  * @Date 2020/4/30
  * @Description
  */
@@ -149,7 +149,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     /**
-     *    maxp
+
      * @Date 2020/4/30
      * @Description 故事优先级排序
       * @param storyDTOMap
@@ -171,8 +171,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     /**
-     *    maxp
-     * @Date 2020/5/11
+
+     * @Date 2021/2/11
      * @Description 按照故事创建时间排序
       * @param storyDTOS
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
@@ -200,7 +200,7 @@ public class BoardServiceImpl implements BoardService {
 
 
     /**
-     *    maxp
+
      * @Date 2020/4/30
      * @Description 设置是否超时
      * @param start
@@ -215,7 +215,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     /**
-     *    maxp
+
      * @Date 2020/4/30
      * @Description 删除掉没有任务的故事
       * @param storyDTOMap

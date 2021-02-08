@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Optional;
 /**
  * 自定义过滤器controller实现类
- *    zhaoqj3
+ *
  * @create 2020-06-10 16:28
  */
 @Service
@@ -344,13 +344,13 @@ public class IssueFilterServiceImpl implements IssueFilterService {
 
     /**
      *  "fieldValue": "[
-     *      [{\"key\":1,\"value\":\"就绪阶段\",\"level\":1}],
-     *      [{\"key\":2,\"value\":\"分析阶段\",\"level\":1},{\"key\":104,\"value\":\"未开始\",\"level\":2},{\"key\":105,\"value\":\"进行中\",\"level\":2},{\"key\":106,\"value\":\"已完成\",\"level\":2}],
-     *      [{\"key\":3,\"value\":\"设计阶段\",\"level\":1},{\"key\":107,\"value\":\"未开始\",\"level\":2},{\"key\":108,\"value\":\"进行中\",\"level\":2},{\"key\":109,\"value\":\"已完成\",\"level\":2}],
-     *      [{\"key\":4,\"value\":\"开发阶段\",\"level\":1},{\"key\":110,\"value\":\"未开始\",\"level\":2},{\"key\":111,\"value\":\"进行中\",\"level\":2},{\"key\":112,\"value\":\"已完成\",\"level\":2}],
-     *      [{\"key\":5,\"value\":\"测试阶段\",\"level\":1},{\"key\":113,\"value\":\"未开始\",\"level\":2},{\"key\":114,\"value\":\"进行中\",\"level\":2},{\"key\":115,\"value\":\"已完成\",\"level\":2}],
-     *      [{\"key\":6,\"value\":\"上线阶段\",\"level\":1},{\"key\":116,\"value\":\"未开始\",\"level\":2},{\"key\":117,\"value\":\"进行中\",\"level\":2},{\"key\":118,\"value\":\"已完成\",\"level\":2}]
-     *      ]"
+       [{\"key\":1,\"value\":\"就绪阶段\",\"level\":1}],
+       [{\"key\":2,\"value\":\"分析阶段\",\"level\":1},{\"key\":104,\"value\":\"未开始\",\"level\":2},{\"key\":105,\"value\":\"进行中\",\"level\":2},{\"key\":106,\"value\":\"已完成\",\"level\":2}],
+       [{\"key\":3,\"value\":\"设计阶段\",\"level\":1},{\"key\":107,\"value\":\"未开始\",\"level\":2},{\"key\":108,\"value\":\"进行中\",\"level\":2},{\"key\":109,\"value\":\"已完成\",\"level\":2}],
+       [{\"key\":4,\"value\":\"开发阶段\",\"level\":1},{\"key\":110,\"value\":\"未开始\",\"level\":2},{\"key\":111,\"value\":\"进行中\",\"level\":2},{\"key\":112,\"value\":\"已完成\",\"level\":2}],
+       [{\"key\":5,\"value\":\"测试阶段\",\"level\":1},{\"key\":113,\"value\":\"未开始\",\"level\":2},{\"key\":114,\"value\":\"进行中\",\"level\":2},{\"key\":115,\"value\":\"已完成\",\"level\":2}],
+       [{\"key\":6,\"value\":\"上线阶段\",\"level\":1},{\"key\":116,\"value\":\"未开始\",\"level\":2},{\"key\":117,\"value\":\"进行中\",\"level\":2},{\"key\":118,\"value\":\"已完成\",\"level\":2}]
+       ]"
      * @param stageList
      * @return
      */

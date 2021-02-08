@@ -3,8 +3,8 @@ package com.yusys.agile.versionmanager.dto;
 import java.io.Serializable;
 
 /**
- *    maxp
- * @Date 2020/11/11
+
+ * @Date 2021/2/11
  * @Description 导出版本关联工作项信息
  * @Return
  */

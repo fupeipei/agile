@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 
 /**
- *    maxp
- * @Date 2020/5/25
+
+ * @Date 2021/2/25
  */
 @RestController
 @RequestMapping("/sprint/review")
@@ -21,8 +21,8 @@ public class SprintReviewController {
 
     /**
      * @param sprintReviewDTO
-     *    maxp
-     * @Date 2020/5/25
+
+     * @Date 2021/2/25
      * @Description 新增迭代回顾信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -38,8 +38,8 @@ public class SprintReviewController {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/25
+
+     * @Date 2021/2/25
      * @Description 根据迭代id获取迭代回顾信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -50,8 +50,8 @@ public class SprintReviewController {
 
     /**
      * @param sprintReviewDTO
-     *    maxp
-     * @Date 2020/5/25
+
+     * @Date 2021/2/25
      * @Description 编辑迭代回顾信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -67,8 +67,8 @@ public class SprintReviewController {
 
     /**
      * @param reviewId
-     *    maxp
-     * @Date 2020/5/25
+
+     * @Date 2021/2/25
      * @Description 删除迭代回顾信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -84,8 +84,8 @@ public class SprintReviewController {
     /**
      * @param file
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/26
+
+     * @Date 2021/2/26
      * @Description 迭代回顾附件信息上传及保存
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -96,8 +96,8 @@ public class SprintReviewController {
 
     /**
      * @param sprintId
-     *    maxp
-     * @Date 2020/5/26
+
+     * @Date 2021/2/26
      * @Description 获取迭代回顾附件信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -108,8 +108,8 @@ public class SprintReviewController {
 
     /**
      * @param attachmentId
-     *    maxp
-     * @Date 2020/5/27
+
+     * @Date 2021/2/27
      * @Description 通过附件id删除附件
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */

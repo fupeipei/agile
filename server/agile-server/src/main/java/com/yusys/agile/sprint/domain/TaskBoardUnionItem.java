@@ -3,7 +3,7 @@ package com.yusys.agile.sprint.domain;
 import java.util.Date;
 
 /**
- *    maxp
+
  * @Date 2020/4/29
  * @Description 看板查询故事及任务信息
  */

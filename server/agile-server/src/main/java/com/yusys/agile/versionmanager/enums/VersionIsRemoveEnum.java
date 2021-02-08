@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 /**
  * @ClassName VersionStatusEnum
  * @Description 版本、需求是否移除
- *      
+
  * @Date 2020/8/19 09:54
  * @Version 1.0
  */

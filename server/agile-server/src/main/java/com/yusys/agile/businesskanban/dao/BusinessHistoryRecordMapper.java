@@ -36,8 +36,8 @@ public interface BusinessHistoryRecordMapper {
     int updateByPrimaryKey(BusinessHistoryRecord record);
 
     /**
-     *   : zhaoyd6
-     * @Date: 2020/5/7
+     *
+     * @Date: 2021/2/7
      * @Description: 批量创建历史记录
      * @Param: [records]
      * @Return: int

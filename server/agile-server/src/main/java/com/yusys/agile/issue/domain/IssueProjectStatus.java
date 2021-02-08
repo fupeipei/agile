@@ -3,8 +3,8 @@ package com.yusys.agile.issue.domain;
 import java.util.Date;
 
 /**
- *    maxp
- * @Date 2020/11/4
+
+ * @Date 2021/2/4
  * @Description 项目中的工作项状态个数统计
  */
 public class IssueProjectStatus {

@@ -12,7 +12,7 @@ public interface IIssueTemlateApi {
 
         /**
          * @description 初始工作项模板
-         *      
+
          * @param projectId
          * @return
          */

@@ -22,7 +22,7 @@ public interface VersionManagerService {
 
     /**
      * 根据项目ID和版本名称模糊查询版本计划
-     * 2020/11/18 新增根据需求名称以及客户需求编号查询版本计划列表
+     * 2021/2/18 新增根据需求名称以及客户需求编号查询版本计划列表
      * @param versionName
      * @param projectId
      * @return
@@ -158,7 +158,7 @@ public interface VersionManagerService {
   /**
    *功能描述
    *
-   * @date 2020/11/24
+   * @date 2021/2/24
     * @param newVersionPlanId
    * @return import com.yusys.agile.versionmanager.domain.VersionManager;
    */
@@ -167,7 +167,7 @@ public interface VersionManagerService {
     /**
      *功能描述 获取所有未发版的版本号
      *
-     * @date 2020/11/27
+     * @date 2021/2/27
       * @param
      * @return java.util.List<java.lang.Long>
      */
@@ -176,7 +176,7 @@ public interface VersionManagerService {
     /**
      *功能描述 获取所有版本号
      *
-     * @date 2020/11/27
+     * @date 2021/2/27
      * @param
      * @return java.util.List<java.lang.Long>
      */

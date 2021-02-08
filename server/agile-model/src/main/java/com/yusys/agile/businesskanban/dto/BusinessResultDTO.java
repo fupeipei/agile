@@ -2,8 +2,8 @@ package com.yusys.agile.businesskanban.dto;
 
 import java.util.List;
 /**
- *   : zhaoyd6
- * @Date: 2020/5/8
+ *
+ * @Date: 2021/2/8
  * @Description: 事务视图
  */
 public class BusinessResultDTO {

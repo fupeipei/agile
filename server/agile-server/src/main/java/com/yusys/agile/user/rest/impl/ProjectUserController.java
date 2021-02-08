@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- *    maxp
- * @Date: 2020/7/6
+
+ * @Date: 2021/2/6
  */
 @RestController
 public class ProjectUserController {
@@ -21,8 +21,8 @@ public class ProjectUserController {
      * @param projectId
      * @param pageNum
      * @param pageSize
-     *    maxp
-     * @Date 2020/7/6
+
+     * @Date 2021/2/6
      * @Description 项目概览中获取人员信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
