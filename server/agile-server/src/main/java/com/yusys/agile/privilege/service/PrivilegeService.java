@@ -7,14 +7,14 @@ import java.util.List;
 /**
  *
  * @description
- * @date 2020/11/17
+ * @date  2021/2/8
  */
 public interface PrivilegeService {
 
     /**
      *功能描述 根据权限id列表获取权限信息
      *
-     * @date 2020/11/17
+     * @date  2021/2/8
       * @param privilegeIdList
      * @return java.util.List<com.yusys.agile.privilege.domain.Privilege>
      */

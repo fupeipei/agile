@@ -410,7 +410,7 @@ public class IssueController {
     /**
       *功能描述  根据当前issueId 和 issueType查询Epic
       *
-      * @date 2020/11/17
+      * @date  2021/2/8
       * @param issueId
       * @param issueType
       * @return import com.yusys.portal.model.common.dto.ControllerResponse;

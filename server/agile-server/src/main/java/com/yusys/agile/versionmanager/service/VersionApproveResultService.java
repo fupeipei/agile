@@ -8,17 +8,17 @@ import java.util.List;
 
 public interface VersionApproveResultService {
     /**
-     * @Author maxp
-     * @Date 2020/11/17
+     *
+     * @Date  2021/2/8
      * @Description 获取版本审批结果详情信息
      * @param query
-     * @Return java.util.List<com.ai.req.agile.versionmanager.dto.BjVersionApproveResultDTO>
+     * @Return java.util.List<com.yusys.agile.versionmanager.dto.BjVersionApproveResultDTO>
      */
     List<BjVersionApproveResultDTO> getAllRecordsByPaging(PageQuery<BjVersionApproveResultDTO> query);
 
     /**
-     * @Author maxp
-     * @Date 2020/11/17
+     *
+     * @Date  2021/2/8
      * @Description 获取版本审批结果总数
      * @param versionApproveResult
      * @Return int

@@ -91,7 +91,7 @@ public interface IProjectApi {
     /**
      * 功能描述:cicd接口-根据taskId查用例信息
      *
-     * @date 2020/11/17
+     * @date  2021/2/8
      * @param caseParamDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -101,7 +101,7 @@ public interface IProjectApi {
     /**
      * 功能描述:提供cicd接口-根据任务id查询故事id
      *
-     * @date 2020/11/17
+     * @date  2021/2/8
      * @param taskIds
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */

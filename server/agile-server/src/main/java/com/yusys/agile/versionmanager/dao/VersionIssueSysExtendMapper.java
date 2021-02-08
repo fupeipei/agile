@@ -14,7 +14,7 @@ public interface VersionIssueSysExtendMapper {
 
     /**
      *    maxp
-     * @Date 2020/11/17
+     * @Date  2021/2/8
      * @Description 获取版本下的业务需求信息及扩展字段信息
      * @param versionIdList
      * @Return java.util.List<com.yusys.agile.versionmanager.dto.VersionIssueDTO>
@@ -24,7 +24,7 @@ public interface VersionIssueSysExtendMapper {
 
     /**
      *    maxp
-     * @Date 2020/11/17
+     * @Date  2021/2/8
      * @Description 获取业务需求下的研发需求信息及扩展字段信息
      * @param issueIds
      * @Return java.util.List<com.yusys.agile.versionmanager.dto.VersionIssueSysExtendFieldDetailDTO>

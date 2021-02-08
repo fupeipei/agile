@@ -9,7 +9,7 @@ public interface RolePrivilegeService {
     /**
      *功能描述 根据角色列表获取权限列表
      *
-     * @date 2020/11/17
+     * @date  2021/2/8
       * @param roleList
      * @return java.util.List<com.yusys.agile.privilege.domain.RolePrivilege>
      */

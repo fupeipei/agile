@@ -197,7 +197,7 @@ public class VersionIssueRelateServiceImpl implements VersionIssueRelateService 
     }
 
     /**
-     * @Author maxp
+     *
      * @Date 2020/11/23
      * @Description 获取Feature的系统和处理人
      * @param issueId
