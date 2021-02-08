@@ -3,7 +3,7 @@ server:
   tomcat:
     uri-encoding: UTF-8
   servlet:
-    context-path: /req
+    context-path: /agile
   max-http-header-size: 20480
 oss:
   size:
