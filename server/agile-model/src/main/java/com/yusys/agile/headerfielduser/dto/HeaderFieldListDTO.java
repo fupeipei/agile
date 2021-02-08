@@ -3,7 +3,6 @@ package com.yusys.agile.headerfielduser.dto;
 import java.util.List;
 
 /**
- *   :   
  * @Date: 2020/4/17
  * @Description: TODO
  */

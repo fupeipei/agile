@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * @description:
- *   : HaoXU
  * @date:Create: 2020/8/1
  */
 public class VersionApprovalRequestDTO {

@@ -13,7 +13,7 @@ public interface VCenterService {
     /**
       *功能描述  查询环境信息
       *
-      * @date 2021/2/29
+      * @date 2021/2/25
       * @param
       * @return com.yusys.agile.vcenter.domain.VcenterDev
      */
@@ -22,7 +22,7 @@ public interface VCenterService {
     /**
       *功能描述  获取所有的模板
       *
-      * @date 2021/2/29
+      * @date 2021/2/25
       * @param devId
       * @return java.util.List<java.lang.String>
      */
@@ -31,7 +31,7 @@ public interface VCenterService {
     /**
       *功能描述  获取所有的数据中心
       *
-      * @date 2021/2/29
+      * @date 2021/2/25
       * @param devId
       * @return java.util.List<java.lang.String>
      */
@@ -40,7 +40,7 @@ public interface VCenterService {
     /**
      *功能描述  获取所有的集群
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -50,7 +50,7 @@ public interface VCenterService {
     /**
      *功能描述  获取集群下的主机
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -59,7 +59,7 @@ public interface VCenterService {
     /**
      *功能描述  选择存放位置
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -67,7 +67,7 @@ public interface VCenterService {
     /**
      *功能描述  选择自定义规范
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -75,7 +75,7 @@ public interface VCenterService {
     /**
      *功能描述  选择存储器
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -83,7 +83,7 @@ public interface VCenterService {
     /**
      *功能描述  选择资源池
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -91,7 +91,7 @@ public interface VCenterService {
     /**
      *功能描述  查询ip地址
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -99,7 +99,7 @@ public interface VCenterService {
     /**
      *功能描述  查询列表
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param vcenterApplication
      * @return java.util.List<java.lang.String>
      */
@@ -107,7 +107,7 @@ public interface VCenterService {
     /**
      *功能描述  查询列表
      *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param createVMDTO
      * @return java.util.List<java.lang.String>
      */

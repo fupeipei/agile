@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * @description: 基线版本状态
- *   : HaoXU
  * @date:Create: 2021/2/10
  */
 public class BaselineState extends AbstractState {

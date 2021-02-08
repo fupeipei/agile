@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- *   :
- * @Date: 2021/2/29
+ * @Date: 2021/2/25
  * @Description: vm相关接口
  */
 @RestController
@@ -24,8 +23,7 @@ public class VCenterController {
     private VCenterService vCenterService;
 /**
   *功能描述  查询环境信息
-  *
-  * @date 2021/2/29
+  * @date 2021/2/25
   * @param
   * @return import com.yusys.portal.model.common.dto.ControllerResponse;
  */
@@ -36,8 +34,7 @@ public class VCenterController {
 
     /**
      *功能描述  获取所有的模板
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -48,8 +45,7 @@ public class VCenterController {
 
     /**
      *功能描述  获取所有的数据中心
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -59,8 +55,7 @@ public class VCenterController {
     }
     /**
      *功能描述  获取所有的集群名
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -71,8 +66,7 @@ public class VCenterController {
 
     /**
      *功能描述  获取主机名称
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -83,8 +77,7 @@ public class VCenterController {
 
     /**
      *功能描述  获取所有的集群名
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -94,8 +87,7 @@ public class VCenterController {
     }
     /**
      *功能描述  选择自定义规范
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -105,8 +97,7 @@ public class VCenterController {
     }
     /**
      *功能描述  选择存储器
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -116,8 +107,7 @@ public class VCenterController {
     }
     /**
      *功能描述  选择资源池
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -127,8 +117,7 @@ public class VCenterController {
     }
     /**
      *功能描述  选择ip
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param devId
      * @return java.util.List<java.lang.String>
      */
@@ -138,8 +127,7 @@ public class VCenterController {
     }
     /**
      *功能描述  获取申清单列表
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param vcenterApplication
      * @return java.util.List<java.lang.String>
      */
@@ -149,8 +137,7 @@ public class VCenterController {
     }
     /**
      *功能描述  根据模板创建虚拟机
-     *
-     * @date 2021/2/29
+     * @date 2021/2/25
      * @param createVMDTO
      * @return java.util.List<java.lang.String>
      */

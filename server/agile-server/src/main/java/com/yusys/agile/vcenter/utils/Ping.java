@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *   :   
  * @Date: 2021/2/3
  * 检查目前服务器是否在线
  *  windows:  ping 127.0.0.1 -n 10 -w 3000   的命令，该命令ping10次，等待每个响应的超时时间3秒

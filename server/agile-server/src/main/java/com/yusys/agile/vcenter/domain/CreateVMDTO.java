@@ -3,7 +3,6 @@ package com.yusys.agile.vcenter.domain;
 import java.util.List;
 
 /**
- *   :   
  * @Date: 2021/2/2
  * @Description: TODO
  */
