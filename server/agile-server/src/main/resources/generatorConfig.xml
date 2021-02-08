@@ -20,7 +20,7 @@
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
-		<!-- targetPackage:包名；targetProject：生成文件的位置（相对于generatorConfig.xml所在项目，这里指的是req-agile-impl）-->
+		<!-- targetPackage:包名；targetProject：生成文件的位置（相对于generatorConfig.xml所在项目，这里指的是agile-server）-->
 		<javaModelGenerator
 				targetPackage="com.yusys.req.agile.user.domain"
 				targetProject="./src/main/java">

@@ -60,7 +60,7 @@ xxl:
     admin:
       addresses: http://localhost:8025/job
     executor:
-      appname: agile-impl
+      appname: agile-server
       ip:
       port: 10001
       logpath: /data/applogs/xxl-job/jobhandler
@@ -69,21 +69,6 @@ xxl:
 #缺陷来源 itc或者YuDO
 fault:
   source: ${FAULT_SOURCE:itc}
-
-chamc:
-  service:
-    login:
-      appName: DevOps_dev
-      hostName: http://10.1.8.16/
-      loginAppValidateKey: dkfjeaksdi3
-    mail:
-      host: http://10.1.1.33:8888/
-      token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJEZXZPcHNfZGV2IiwiaXNzIjoiZHAtc2VydmljZW1ndCIsInNlcnZpY2VzIjpbIm1lc3NhZ2VjZW50ZXItYXBpIiwicmVnaXN0cnktY2VudGVyIiwidXNlcmNlbnRlci1hcGkiXSwiZXhwIjoxNjA5MzQ0MDAwLCJpYXQiOjE1ODc4NzIwMTB9.2KlfOsbbm8NMdc1msw-BcY242yrHMuoHmgoDUAd5PhMlm4eHe30ltjozPg2qPOND6fs7oYX8m2tCf7U2Ri8Y_MzIZQN0VWpH3V8HHgVLu_e59_HsuQvvopAPoMqdnazqmL5n2-9QvjT0KyKAMWKhQqYGqoe2_pNv9gLBUytllfs
-    usercenter:
-      token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJEZXZPcHNfZGV2IiwiaXNzIjoiZHAtc2VydmljZW1ndCIsInNlcnZpY2VzIjpbIm1lc3NhZ2VjZW50ZXItYXBpIiwicmVnaXN0cnktY2VudGVyIiwidXNlcmNlbnRlci1hcGkiXSwiZXhwIjoxNjA5MzQ0MDAwLCJpYXQiOjE1ODcxMDAxMzd9.VFVi-uEYwtykH8DnJfLpeQx8vMJY5xg1MwbSfey23CJx2iYqNgkgo_YsCPKLSVieB1njTjgY1lhl-7Rkj46ybEY6OnnQGE5H0zTidCvF8UKA8sLR2gCsU-dXjtbuqrqJpCi2XDUeIs5VNzRMA7Xy2cI-t1GIlx3Bh858qZoOLTM
-      basePath: http://10.1.8.187:8080
-    syncProject:
-      url: http://10.1.8.112:8080/DevMgmt/DevOpsConnector/syncProjects
 
 issue:
   regular:

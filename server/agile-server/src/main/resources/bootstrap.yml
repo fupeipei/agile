@@ -16,13 +16,13 @@ multipart:
 file:
   #上传方式 sftp和fastdfs
   type: ${FILE_UPLOAD_TYPE:sftp}
-  server: ${FASTDFS_FILE_SERVER:http://10.19.10.34:18820/}
+  server: ${FASTDFS_FILE_SERVER:http://192.168.48.2:18820/}
   #linux服务器账号密码
-  ip: ${FILE_UPLOAD_SFTP_IP:10.19.18.98}
+  ip: ${FILE_UPLOAD_SFTP_IP:192.168.48.2}
   port: ${FILE_UPLOAD_SFTP_PORT:22022}
-  hostUser: ${FILE_UPLOAD_SFTP_HOST_USER:wangxj}
-  pwd: ${FILE_UPLOAD_SFTP_PWD:wangxj}
-  remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/home/wangxj/test}
+  hostUser: ${FILE_UPLOAD_SFTP_HOST_USER:maxp2}
+  pwd: ${FILE_UPLOAD_SFTP_PWD:maxp2}
+  remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/home/maxp2/test}
 
 async:
   executor:
