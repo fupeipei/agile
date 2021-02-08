@@ -1,7 +1,7 @@
 #stages:
-#  - build_maven
-#  - deploy_dev
-#  - execute_dev_sql
+  - build_maven
+  - deploy_dev
+  - execute_dev_sql
 #  - deploy_test
 #  - execute_test_sql
 #  - check_db_info  
@@ -16,7 +16,7 @@ build_maven:
     - echo $tag > docker-tag
     - sed -i s/latest/$tag/g docker-compose.yaml
     - docker-compose build 
-    - docker login 10.1.195.244:5002 -uadmin -pHarbor12345
+    - docker login 192.168.48.2:5002 -uadmin -pHarbor12345
     - cat docker-compose.yaml |grep image|grep -v web |awk '{print $2}' |xargs -I {} docker push {}
   artifacts:
     paths:
@@ -28,7 +28,7 @@ build_maven:
 deploy_dev:
   when: manual
   stage: deploy_dev
-  image: 10.1.195.244:5002/library/git-mysql:alpine
+  image: 192.168.48.2:5002/library/git-mysql:alpine
   dependencies:
     - build_maven
   script:
@@ -43,10 +43,10 @@ deploy_dev:
 execute_dev_sql:
   when: manual
   stage: execute_dev_sql
-  image: 10.1.195.244:5002/library/git-mysql:alpine
+  image: 192.168.48.2:5002/library/git-mysql:alpine
   script:
     - env_name=dev
-    - git clone ssh://git@10.1.241.24:22022/YuDO2.0/YuDO-sql.git
+    - git clone ssh://git@192.168.48.2:yusys_devops/devops_sql.git
     - cd YuDO-sql
     - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
   only:

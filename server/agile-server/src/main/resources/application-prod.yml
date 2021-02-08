@@ -92,9 +92,6 @@ graylog:
   appenv: ${APP_ENV:prod}
 
 env: ${ENV:test}
-cmp:
-  url: ${CMP_URL:http://10.19.18.98:7730}
-  reqCodeConfig: ${cmp.url}/api/cms/YuDO/bizInfo/queryBizInfos
 
 YuDO:
   url: ${YuDO_URL:192.168.48.1:8300}
