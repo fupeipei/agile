@@ -158,7 +158,7 @@ public class EpicController {
      * @param projectId 项目id
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      *
-     * @date 2020/9/30
+     * @date 2021/3/30
      */
     @GetMapping("/issue/queryAllEpicCountByVersionId")
     public ControllerResponse queryAllEpicCountByVersionId(@RequestHeader(name = "projectId", required = false) Long projectId) {

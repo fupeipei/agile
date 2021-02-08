@@ -345,7 +345,7 @@ public interface IssueMapper {
 
     /**
      *
-     * @Date 2020/9/30
+     * @Date 2021/3/30
      * @Description 根据项目id、系统id、版本号获取工作项信息
      * @param projectId
      * @param systemId
@@ -415,7 +415,7 @@ public interface IssueMapper {
     /**
      * @description 根据工作项id和类型查询工作项信息
      *  
-     * @date 2020/9/18
+     * @date 2021/3/18
      * @param issueId
      * @param type
      * @return

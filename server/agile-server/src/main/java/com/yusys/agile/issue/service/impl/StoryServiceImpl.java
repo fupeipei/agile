@@ -558,7 +558,6 @@ public class StoryServiceImpl implements StoryService {
     /**
      * @param storyId
      * @param sprintId
-
      * @Date 2020/4/26
      * @Description 增加工作项修改迭代的历史记录
      * @Return void
@@ -604,7 +603,7 @@ public class StoryServiceImpl implements StoryService {
             }
             /**
              * @description 修复迭代管理变更带二级泳道状态到只包括一级阶段过程中，二级状态未清除导致泳道视图卡片重复展示问题
-             * @fixer zhangtao11
+             * @fixer
              * @date 2021/1/8
              */
             if (null != stages && stages.length > 0) {
@@ -768,7 +767,7 @@ public class StoryServiceImpl implements StoryService {
      * @param
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      *
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     @Override
     public List<IssueDTO> listUnFinisherStorysByProjectId(Long projectId, String name, Integer pageNum, Integer pageSize) {

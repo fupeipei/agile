@@ -91,7 +91,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewDTO
      * @return void
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -144,7 +144,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewId
      * @return void
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     @Override
     public void cancelReview(Long reviewId, Long operatorId) {
@@ -169,7 +169,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewRecordDTO
      * @return void
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     @Override
     public void executeReview(ReviewRecordDTO reviewRecordDTO, Long operatorId) {
@@ -216,7 +216,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param operatorId
      * @return boolean
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     private boolean hasReviewed(Long reviewId, Long operatorId) {
 
@@ -238,7 +238,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewId
      * @return java.util.Map<java.lang.Long, java.lang.String>
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     private Map<Long, String> getReviewerMap(Long reviewId) {
         Map<Long, String> map = new HashMap<>();
@@ -255,7 +255,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewId
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     private List<UserDTO> listUserDtosByReviewId(Long reviewId) {
         List<ReqUserRlat> rlats = reqUserRlatService.listRlatsBySubjectId(reviewId, AgileUserRlatEnum.REVIEW.CODE, null);
@@ -271,7 +271,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param issueId
      * @return java.util.List<com.yusys.agile.review.dto.ReviewDTO>
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     @Override
     public List<ReviewDTO> listReview(Long issueId) {
@@ -294,7 +294,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewId
      * @return com.yusys.agile.review.dto.ReviewDTO
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     @Override
     public ReviewDTO getReview(Long reviewId) {
@@ -323,7 +323,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param tempReview
      * @return com.yusys.agile.review.dto.ReviewDTO
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     private ReviewDTO assembleReviewDTO(Long projectId, Long issueId, Review tempReview, Integer i) {
         ReviewDTO reviewDTO = ReflectUtil.copyProperties(tempReview, ReviewDTO.class);
@@ -358,7 +358,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewId
      * @return java.util.List<com.yusys.agile.review.dto.ReviewRecordDTO>
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     private List<ReviewRecordDTO> listReviewRecordDTOs(Long reviewId) {
         ReviewRecordExample example = new ReviewRecordExample();
@@ -385,7 +385,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param isConcurrent   是否负责人1是 2成员
      * @return java.util.List<com.yusys.agile.user.domain.ReqUserRlat>
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     private List<ReqUserRlat> assembleReqUserRlats(List<Long> userIds, Long projectId, Long subjectId, Integer userRelateType, Integer isConcurrent) {
         List<ReqUserRlat> reqUserRlats = Lists.newArrayList();
@@ -409,7 +409,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewList
      * @return java.lang.String
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     private String getReviewVersion(List<Review> reviewList) {
         if (CollectionUtils.isEmpty(reviewList)) {
@@ -427,7 +427,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param issueId
      * @return java.util.List<com.yusys.agile.review.domain.Review>
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     private List<Review> getReviewList(Long issueId) {
         ReviewExample example = new ReviewExample();
@@ -445,7 +445,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param reviewList
      * @return java.lang.Boolean
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     private Boolean hasNotFinishedReview(Long projectId, Long issueId, Byte issueType, List<Review> reviewList) {
         // 没有评审信息
@@ -486,7 +486,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param latestReviewId 最近一次评审id
      * @return java.lang.String
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     public String calculateReviewStatus(Long projectId, Long issueId, Byte issueType, Long latestReviewId) {
 
@@ -529,7 +529,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param code
      * @return void
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     private void updateReviewByCalculate(Long latestReviewId, String code) {
         Review review = new Review();
@@ -544,7 +544,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param latestReviewId
      * @return java.lang.Integer
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     private Integer getNum(Long latestReviewId, String reviewResult) {
         ReviewRecordExample example = new ReviewRecordExample();
@@ -568,7 +568,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param storyId
      * @return java.lang.Boolean
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     @Override
     public StoryCheckResultDTO allowStoryInSprint(Long storyId, Long projectId) {
@@ -648,7 +648,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param issueType
      * @return com.yusys.agile.review.dto.ReviewSetDTO
 
-     * @date 2020/9/10
+     * @date 2021/3/10
      */
     @Override
     public ReviewSetDTO getReviewSetDTO(Long projectId, Byte issueType) {
@@ -699,7 +699,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @param issueType
      * @return java.lang.Boolean
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     private Boolean hasPassReview(Long projectId, Long issueId, Byte issueType) {
         // 查询评审记录

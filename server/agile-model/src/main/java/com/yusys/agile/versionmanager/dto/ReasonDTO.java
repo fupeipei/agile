@@ -3,7 +3,7 @@ package com.yusys.agile.versionmanager.dto;
 /**
  *
  * @description
- * @date 2020/9/28
+ * @date 2021/3/28
  */
 public class ReasonDTO {
     public Integer getId() {

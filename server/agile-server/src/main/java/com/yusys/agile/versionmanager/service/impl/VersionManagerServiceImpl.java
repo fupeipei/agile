@@ -332,8 +332,8 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      * @param projectId   项目id
      * @return
      * @Description:根据项目id获取版本信息
-     * @author zhouzy3
-     * @date 2020/9/18
+     *
+     * @date 2021/3/18
      */
     @Override
     public List<VersionManagerDTO> getAllByVersionNameAndProjectId(String versionName, Integer pageNum, Integer pageSize, Long projectId) {
@@ -450,8 +450,8 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      *
      * @param projectId
      * @return
-     * @author zhouzy3
-     * @date 2020/9/30
+     *
+     * @date 2021/3/30
      */
     @Override
     public List<VersionManagerDTO> getAllVersionInfo(Long projectId) {
@@ -467,7 +467,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      * @param issueId
      * @return
      * @description 根据工作项编号查询工作项
-     * @author zhangtao11
+     * @author
      */
     private List<Issue> getIssueList(Long issueId) {
         IssueExample example = new IssueExample();
@@ -482,7 +482,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      * @param parentIdList
      * @return
      * @description 根据父工作项编号查询子工作项
-     * @author zhangtao11
+     *
      */
     private List<Issue> getChildIssueList(List<Long> parentIdList) {
         IssueExample example = new IssueExample();
@@ -496,7 +496,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
     /**
      * @param issueIdList
      * @description 更新工作项上线状态
-     * @author zhangtao11
+     *
      */
     private int updateIssueOnlineStatus(List<Long> issueIdList) {
         int row = 0;

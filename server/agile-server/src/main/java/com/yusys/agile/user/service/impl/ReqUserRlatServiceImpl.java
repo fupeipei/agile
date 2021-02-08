@@ -86,7 +86,7 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
      * @param rlats
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
      *
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     @Override
     public List<UserDTO> assembleUserDTOs(List<ReqUserRlat> rlats) {

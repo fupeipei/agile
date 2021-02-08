@@ -48,7 +48,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述 统计没有审批结果的业务需求的个数
    *
-   * @date 2020/9/18
+   * @date 2021/3/18
     * @param bizBacklogIds
    * @return int
    */
@@ -57,7 +57,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述 统计是否有审批不通过的需求
    *
-   * @date 2020/9/18
+   * @date 2021/3/18
     * @param bizBacklogIds
    * @return int
    */
@@ -66,7 +66,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述  获取issue的某个扩展字段对象
    *
-   * @date 2020/9/18
+   * @date 2021/3/18
     * @param bizBacklogId
    * @param fieldId
    * @return com.yusys.agile.requirement.domain.SysExtendFieldDetail
@@ -75,7 +75,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述  获取issue的某个扩展字段对象
    *
-   * @date 2020/9/18
+   * @date 2021/3/18
    * @param bizBacklogIds
    * @param fieldId
    * @return com.yusys.agile.requirement.domain.SysExtendFieldDetail
@@ -84,7 +84,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述 更新
    *
-   * @date 2020/9/18
+   * @date 2021/3/18
     * @param sysExtendFieldDetail
    * @return int
    */
@@ -150,7 +150,7 @@ public interface SysExtendFieldDetailService {
   /**
    *功能描述 更新审批开始时间和局方审批状态
    *
-   * @date 2020/9/25
+   * @date 2021/3/25
     * @param reviewingBizBacklogIds
    * @return void
    */

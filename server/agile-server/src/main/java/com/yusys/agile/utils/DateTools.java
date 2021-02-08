@@ -757,8 +757,8 @@ public class DateTools {
 	 * @param newVal
 	 * @param oldVal
 	 * @return boolean
-	 *    HaoXU
-	 * @date 2020/9/30
+	 *
+	 * @date 2021/3/30
 	 **/
 	public static boolean isChanged(Date newVal, Date oldVal) {
 		if (newVal != null ) {
@@ -777,8 +777,8 @@ public class DateTools {
 	 * @param target1
 	 * @param target2
 	 * @return int
-	 *    HaoXU
-	 * @date 2020/9/30
+	 *
+	 * @date 2021/3/30
 	 **/
 	public static int betweenHour(Date target1, Date target2) {
 		if (target1 == null || target2 == null) {

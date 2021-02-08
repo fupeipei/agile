@@ -17,7 +17,6 @@ import java.util.List;
 public class VersionPlanTool {
     /**
      * 功能描述
-     *    xuhao
      * @date 2020/4/21
      * @description 获得版本计划中已经绑定的业务需求的ID
      * @param versionPlanList

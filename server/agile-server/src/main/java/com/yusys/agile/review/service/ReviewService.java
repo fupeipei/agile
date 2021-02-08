@@ -20,7 +20,7 @@ public interface ReviewService {
      * @param reviewDTO
      * @return void
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     void addReview(ReviewDTO reviewDTO);
 
@@ -30,7 +30,7 @@ public interface ReviewService {
      * @param reviewId
      * @return void
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     void cancelReview(Long reviewId, Long operatorId);
 
@@ -40,7 +40,7 @@ public interface ReviewService {
      * @param reviewRecordDTO
      * @return void
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     void executeReview(ReviewRecordDTO reviewRecordDTO, Long operatorId);
 
@@ -50,7 +50,7 @@ public interface ReviewService {
      * @param issueId
      * @return java.util.List<com.yusys.agile.review.dto.ReviewDTO>
 
-     * @date 2020/9/8
+     * @date 2021/3/8
      */
     List<ReviewDTO> listReview(Long issueId);
 
@@ -60,7 +60,7 @@ public interface ReviewService {
      * @param reviewId
      * @return com.yusys.agile.review.dto.ReviewDTO
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     ReviewDTO getReview(Long reviewId);
 
@@ -70,14 +70,14 @@ public interface ReviewService {
      * @param storyId
      * @return java.lang.Boolean
 
-     * @date 2020/9/9
+     * @date 2021/3/9
      */
     StoryCheckResultDTO allowStoryInSprint(Long storyId, Long projectId);
 
     /**
      * 功能描述: 获取项目下某类型工作项的评审设置
 
-     * @date 2020/9/11
+     * @date 2021/3/11
      * @param projectId
      * @param issueType
      * @return com.yusys.agile.review.dto.ReviewSetDTO

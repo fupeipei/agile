@@ -78,7 +78,7 @@ public interface VersionIssueRelateService {
     /**
      *功能描述 获取版本计划中绑定的需求与对应的系统分支列表的映射关系
      *
-     * @date 2020/9/19
+     * @date 2021/3/19
       * @param issueRelates
      * @return java.util.Map<java.lang.Long,java.util.List<java.lang.Long>>
      */
@@ -87,7 +87,7 @@ public interface VersionIssueRelateService {
     /**
      *功能描述 根据版本id和项目id获取工作项目id
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
      * @param issueStringDTO
      * @param projectId
      * @return

@@ -33,7 +33,7 @@ public interface ReviewRecordMapper {
     /**
      * 功能描述: 查询返回dto
      *
-     * @date 2020/9/9
+     * @date 2021/3/9
      * @param example
      * @return java.util.List<com.yusys.agile.review.dto.ReviewRecordDTO>
      */

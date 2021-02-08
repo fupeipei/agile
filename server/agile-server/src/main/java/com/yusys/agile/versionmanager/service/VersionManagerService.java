@@ -68,7 +68,7 @@ public interface VersionManagerService {
     /**
      *功能描述 校验局方需求管理平台返回的报文信息
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
       * @param jsonObject
      * @return java.lang.String
      */
@@ -77,7 +77,7 @@ public interface VersionManagerService {
     /**
      *功能描述
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
       * @param
      * @return com.alibaba.fastjson.JSONObject
      */
@@ -87,7 +87,7 @@ public interface VersionManagerService {
     /**
      *功能描述 根据版本id获取版本状态
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
       * @param versionPlanId
      * @return java.lang.String
      */
@@ -97,7 +97,7 @@ public interface VersionManagerService {
      * 根据项目id获取版本信息
      * @param projectId 项目id
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
      * @return
      */
     List<VersionManagerDTO> getAllByVersionNameAndProjectId(String versionName,Integer pageNum,Integer pageSize,Long projectId);

@@ -88,8 +88,7 @@ public class StringUtil {
      * @param newVal
      * @param oldVal
      * @return boolean
-     *    HaoXU
-     * @date 2020/9/30
+     * @date 2021/3/30
      **/
     public static boolean isChanged(String newVal, String oldVal) {
         if (org.apache.commons.lang.StringUtils.isNotBlank(newVal) && !org.apache.commons.lang.StringUtils.equals(newVal,oldVal)) {
@@ -102,8 +101,8 @@ public class StringUtil {
      * @description 将集合转换成字符串，字符串之间逗号间隔
      * @param collection
      * @return java.lang.String
-     *    HaoXU
-     * @date 2020/9/30
+     *
+     * @date 2021/3/30
      **/
     public static String convertCollectionToString(Collection<?> collection) {
         StringBuilder builder = new StringBuilder();

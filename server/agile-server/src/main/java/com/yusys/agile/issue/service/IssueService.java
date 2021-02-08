@@ -270,7 +270,7 @@ public interface IssueService {
     /**
      *功能描述 根据bizNum获取需求信息
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
       * @param bizNums
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      */
@@ -279,7 +279,7 @@ public interface IssueService {
     /**
      *功能描述 获取基础和扩展信息
      *
-     * @date 2020/9/23
+     * @date 2021/3/23
       * @param bizBacklogId
      * @return com.yusys.agile.issue.dto.IssueDTO
      */
@@ -290,7 +290,7 @@ public interface IssueService {
     /**
      *功能描述
      *
-     * @date 2020/9/19
+     * @date 2021/3/19
       * @param issueIdList
      *  @param getChildren 是否获取子工作项
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>

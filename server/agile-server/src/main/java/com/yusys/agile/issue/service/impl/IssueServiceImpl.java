@@ -2002,7 +2002,7 @@ public class IssueServiceImpl implements IssueService {
      * @return
      * @description 根据工作项id和类型查询工作项信息
      *  
-     * @date 2020/9/18
+     * @date 2021/3/18
      */
     @Override
     public Issue selectIssueInfo(Long issueId, int type) {
@@ -2017,7 +2017,7 @@ public class IssueServiceImpl implements IssueService {
      * @param projectId
      * @return java.util.List<java.lang.Long>
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
      */
     public List<Long> queryVersionIssueRelatList(com.yusys.agile.issue.dto.IssueStringDTO issueStringDTO, Long projectId) {
         List<Long> listIssuesId = Lists.newArrayList();
@@ -2036,7 +2036,7 @@ public class IssueServiceImpl implements IssueService {
      * @param projectId
      * @return java.util.List<java.lang.Long>
      *
-     * @date 2020/9/23
+     * @date 2021/3/23
      */
     public List<Long> queryIssueByFaultStatusList(com.yusys.agile.issue.dto.IssueStringDTO issueStringDTO, Long projectId) {
         List<Long> listIssuesId = Lists.newArrayList();

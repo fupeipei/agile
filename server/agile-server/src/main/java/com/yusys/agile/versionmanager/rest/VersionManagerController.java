@@ -103,7 +103,7 @@ public class VersionManagerController {
      * @param pageSize 每页条数
      * @param projectId 项目id
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/version/manager/getAllByVersionNameAndProjectId")

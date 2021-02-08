@@ -43,7 +43,7 @@ public interface ReqUserRlatService {
     /**
      * 功能描述: 组装返回对象
      *
-     * @date 2020/9/9
+     * @date 2021/3/9
      * @param rlats
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
      */

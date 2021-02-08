@@ -91,7 +91,7 @@ public class EpicServiceImpl implements EpicService {
 
     /**
      *   :
-     * @Date: 2020/9/30
+     * @Date: 2021/3/30
      * @Description: 按版本统计系统各个阶段需求个数
      * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueStageIdCountDTO>
@@ -150,7 +150,7 @@ public class EpicServiceImpl implements EpicService {
      * @param issueDTOS
      * @param versionManagerDTO
      *
-     * @Date 2020/9/30
+     * @Date 2021/3/30
      * @Description 统计需求各个阶段的个数
      * @Return void
      */
@@ -191,7 +191,7 @@ public class EpicServiceImpl implements EpicService {
      * @param versionManagerDTO
      * @param i，i2，i3，i4，i5，i5，i7
      *
-     * @Date 2020/9/30
+     * @Date 2021/3/30
      * @Description 各阶段个数赋值
      * @Return void
      */

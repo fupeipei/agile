@@ -2,7 +2,6 @@ package com.yusys.agile.burndown.dto;
 
 /**
  * @Description 成员工作量/任务数
- *    zhaoqj
  * @Date 2020-07-01
  */
 public class HistogramTaskDTO {

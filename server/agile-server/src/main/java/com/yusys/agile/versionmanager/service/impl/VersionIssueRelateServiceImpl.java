@@ -431,7 +431,7 @@ public class VersionIssueRelateServiceImpl implements VersionIssueRelateService 
     /**
      *功能描述 根据版本id和项目id获取工作项目id
      *
-     * @date 2020/9/18
+     * @date 2021/3/18
      * @param issueStringDTO
      * @param projectId
      * @return

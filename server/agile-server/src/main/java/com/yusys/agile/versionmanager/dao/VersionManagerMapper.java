@@ -41,7 +41,7 @@ public interface VersionManagerMapper {
     /**
      * 根据项目id获取版本计划
      *
-     * @date 2020/9/30
+     * @date 2021/3/30
      * @param projectId
      * @return
      */
