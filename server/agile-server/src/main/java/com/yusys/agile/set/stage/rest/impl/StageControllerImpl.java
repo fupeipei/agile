@@ -32,7 +32,7 @@ public class StageControllerImpl {
      * @description 根据项目id查询阶段列表
      * @param projectId
      * @param paramProjectId
-     * @return com.ai.portal.model.common.dto.ControllerResponse
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/getStageList")
     public ControllerResponse queryStageList(@RequestHeader("projectId") Long projectId, @RequestParam(name = "projectId",required = false) Long paramProjectId) {
@@ -57,7 +57,7 @@ public class StageControllerImpl {
     /**
      * @description 编辑一阶段
      * @param stageInstanceDTOList
-     * @return com.ai.portal.model.common.dto.ControllerResponse
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/configFirstStages")
     public ControllerResponse configFirstStages(@RequestBody List<KanbanStageInstanceDTO> stageInstanceDTOList) {
@@ -80,7 +80,7 @@ public class StageControllerImpl {
      * @description 新增二阶段
      * @param projectId
      * @param kanbanStageInstanceDTO
-     * @return com.ai.portal.model.common.dto.ControllerResponse
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/addSecondStages")
     public ControllerResponse addSecondStages(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
@@ -104,7 +104,7 @@ public class StageControllerImpl {
      * @description 修改二阶段
      * @param projectId
      * @param kanbanStageInstanceDTO
-     * @return com.ai.portal.model.common.dto.ControllerResponse
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/modifySecondStages")
     public ControllerResponse modifySecondStages(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
@@ -127,7 +127,7 @@ public class StageControllerImpl {
      * @description 删除二阶段
      * @param projectId
      * @param kanbanStageInstanceDTO
-     * @return com.ai.portal.model.common.dto.ControllerResponse
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/deleteSecondStages")
     public ControllerResponse deleteSecondStages(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
@@ -150,7 +150,7 @@ public class StageControllerImpl {
      * @description 排序二阶段
      * @param projectId
      * @param instanceIds
-     * @return com.ai.portal.model.common.dto.ControllerResponse
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/sortSecondStages")
     public ControllerResponse sortSecondStages(@RequestHeader("projectId") Long projectId, @RequestBody List<KanbanStageInstanceDTO> instanceIds) {

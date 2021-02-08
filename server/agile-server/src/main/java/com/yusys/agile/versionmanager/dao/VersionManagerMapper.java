@@ -54,7 +54,7 @@ public interface VersionManagerMapper {
      * @Description 根据需求名称及客户需求编号获取版本计划
      * @param projectId
      * @param versionName
-     * @Return java.util.List<com.ai.req.agile.versionmanager.domain.VersionManager>
+     * @Return java.util.List<com.yusys.agile.versionmanager.domain.VersionManager>
      */
     List<VersionManager> selectVersionByBizNumAndTitle(@Param("projectId") Long projectId,@Param("versionName") String versionName,
                                                        @Param("bizBacklogIds")List<Long> bizBacklogIds);

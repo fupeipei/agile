@@ -152,7 +152,7 @@ public interface SprintService {
      *    maxp
      * @Date 2020/5/12
      * @Description 根据迭代id获取迭代中人员信息
-     * @Return java.util.List<com.ai.portal.model.sso.entity.SsoUser>
+     * @Return java.util.List<com.yusys.portal.model.facade.entity.SsoUser>
      */
     List<SsoUser> listUsersBySprintId(Long projectId, Long sprintId);
 

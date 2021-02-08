@@ -32,7 +32,7 @@ public interface VersionIssueRelateService {
       * @param pageNum
       * @param idOrTitle
       * @param securityDTO
-      * @return java.util.List<com.ai.req.agile.issue.dto.IssueDTO>
+      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
 
 
@@ -100,7 +100,7 @@ public interface VersionIssueRelateService {
       * @author wangsh9
       * @date 2020/10/19
       * @param issueId
-      * @return com.ai.req.agile.versionmanager.domain.VersionIssueRelate
+      * @return com.yusys.agile.versionmanager.domain.VersionIssueRelate
      */
     VersionIssueRelate queryVersionIssueRelate( Long issueId);
 

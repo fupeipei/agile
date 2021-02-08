@@ -181,7 +181,7 @@ public interface FaultService {
      * 目前确认人员都是项目中 如果发现用户数据很多不是来自项目，就采用查询三次的方式，把create、fix、test用户信息拉过来
      *
      * @param projectId
-     * @return java.util.Map<java.lang.Long, com.ai.portal.model.sso.entity.SsoUser>
+     * @return java.util.Map<java.lang.Long, com.yusys.portal.model.facade.entity.SsoUser>
      *     
      * @date 2020/4/14
      */
@@ -190,7 +190,7 @@ public interface FaultService {
     /**
      * 功能描述: 根据用户集合获取所有的用户数据
      * @param UserIdList
-     * @return java.util.Map<java.lang.Long, com.ai.portal.model.sso.entity.SsoUser>
+     * @return java.util.Map<java.lang.Long, com.yusys.portal.model.facade.entity.SsoUser>
      *
      * @date 2020/10/21
      */

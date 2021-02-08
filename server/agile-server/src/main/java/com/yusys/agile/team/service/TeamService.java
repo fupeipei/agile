@@ -29,7 +29,7 @@ public interface TeamService {
      * @Description 获取项目中的人员信息
       * @param subjectId
      * @param userRelateType
-     * @Return java.util.List<com.ai.portal.model.sso.entity.SsoUser>
+     * @Return java.util.List<com.yusys.portal.model.facade.entity.SsoUser>
      */
     List<SsoUser> listMemberUsers(Long subjectId, Integer userRelateType);
 
