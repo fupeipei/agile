@@ -87,7 +87,7 @@ public class VersionManagerController {
 
 
 
-    @PostMapping("/version/plan/reqApprovalResult")
+    @PostMapping("/version/plan/agileApprovalResult")
     public JSONObject receiveVersionPlanReqApprovalResult(@RequestBody JSONObject jsonObject) {
         if (jsonObject == null) {
             return versionManagerService.createFailedResult("返回的响应内容不是JSON格式,YuDO无法解析");
