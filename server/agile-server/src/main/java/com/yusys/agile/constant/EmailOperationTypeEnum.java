@@ -3,7 +3,7 @@ package com.yusys.agile.constant;
 /**
  * @ClassName EmailOperationTypeEnum
  * @Description 工作项操作类型
- * @Date 2020/2/1
+ * @Date 2021/2/1
  * @Version 1.0
  */
 public enum EmailOperationTypeEnum {

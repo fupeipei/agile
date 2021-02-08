@@ -97,7 +97,6 @@ public class MailSendUtil {
 
 
     /**
-     *
      * @param issue
      * @param operationType 0 新增 1修改 2删除 3拖拽
      * @param securityDTO
@@ -432,7 +431,7 @@ public class MailSendUtil {
                     Long issueId = issue.getIssueId();
                     String title = issue.getTitle();
 
-                    //【编码：1】-【标题：需求导入】-【要求上线日期:2020-03-07，超期/停留：103天】-【处理人：ZQJ】
+                    //【编码：1】-【标题：需求导入】-【要求上线日期:2020-03-07，超期/停留：103天】-【处理人：】
                     Integer staysDays = 0;
                     Date endDate = issue.getEndDate();
                     String endDateStr  = "未设置日期";

@@ -3,7 +3,7 @@ package com.yusys.agile.constant;
 /**
  * 数字常量
  *
- * @create 2020/2/1
+ * @create 2021/2/1
  */
 public class NumberConstant {
 

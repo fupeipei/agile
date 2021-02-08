@@ -3,7 +3,7 @@ package com.yusys.agile.constant;
 /**
  * 字符串常量类
  *
- * @create 2020/2/1
+ * @create 2021/2/1
  */
 public class StringConstant {
     public static final String FIXED = "fixed";

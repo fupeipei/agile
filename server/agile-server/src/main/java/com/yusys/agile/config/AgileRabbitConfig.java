@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @ClassName RabbitConfig
  * @Description 消息配置
- * @Date 2020/2/1
+ * @Date 2021/2/1
  * @Version 1.0
  **/
 @Configuration

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 /**
  * @Description 超期工作项邮件发送
  * @Class IssueOverDueTask
- *    zqj
  */
 @Component
 @JobHandler(ScheduleConstant.TaskHandler.ISSUE_OVERDUE)

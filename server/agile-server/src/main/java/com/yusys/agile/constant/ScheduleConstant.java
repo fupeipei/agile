@@ -4,7 +4,7 @@ public class ScheduleConstant {
     public interface TaskHandler {
 
         /**
-         * @Date: 2020/2/1
+         * @Date: 2021/2/1
          * @Description: 每日燃尽图
          * @Param: * @param null
          * @Return:
@@ -27,7 +27,7 @@ public class ScheduleConstant {
         String FAULT_RESOLVED_RECOUP = "faultResolved";
 
         /**
-         * @Date 2020/2/1
+         * @Date 2021/2/1
          * @Description 迭代修改状态，未开始修改为进行中
          * @param null
          * @Return

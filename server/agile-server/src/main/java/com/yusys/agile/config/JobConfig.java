@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @ClassName JobConfig
  * @Description 定时任务配置
- * @Date 2020/2/1
+ * @Date 2021/2/1
  * @Version 1.0
  **/
 @Configuration

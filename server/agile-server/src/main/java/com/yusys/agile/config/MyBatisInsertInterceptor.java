@@ -23,7 +23,7 @@ import java.util.Properties;
 /**
  * @ClassName: MyBatisInsertInterceptor
  * @Description: 使用mybatis执行数据库insert操作时候，自动设置主键，需要在mapper.xml中设置useGeneratorKey=true
- * @CreateDate: 2020/2/1
+ * @CreateDate: 2021/2/1
  * @Version 1.0
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
@@ -142,7 +142,7 @@ public class MyBatisInsertInterceptor implements Interceptor {
      * @param parameter
      * @param fieldName
      * @return java.lang.Boolean
-     * @date 2020/2/1
+     * @date 2021/2/1
      */
     private static Boolean isyuItFault(Object parameter, String fieldName) {
         //   yuIt同步且新增缺陷时
@@ -164,7 +164,7 @@ public class MyBatisInsertInterceptor implements Interceptor {
     }
 
   /**
-   * @Date: 2020/2/1
+   * @Date: 2021/2/1
    * @Description: 校验创建人ID是否为空
    * @Param: * @param parameter
   * @param fieldName

@@ -3,7 +3,7 @@ package com.yusys.agile.consumer.constant;
 /**
  * @ClassName AgileConstant
  * @Description 敏捷模块消息队列
- * @Date 2020/2/1
+ * @Date 2021/2/1
  * @Version 1.0
  */
 public class AgileConstant {

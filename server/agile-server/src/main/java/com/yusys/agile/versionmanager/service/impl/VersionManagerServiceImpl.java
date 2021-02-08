@@ -9,7 +9,6 @@ import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
-import com.yusys.agile.issue.domain.IssueSystemRelp;
 import com.yusys.agile.issue.service.FeatureService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.IssueSystemRelpService;
@@ -53,7 +52,6 @@ import java.util.stream.Collectors;
 /**
  * @ClassName VersionManagerServiceImpl
  * @Description
- * @Author hanke
  * @Date 2020/8/18 16:17
  * @Version 1.0
  */
@@ -467,7 +465,6 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      * @param issueId
      * @return
      * @description 根据工作项编号查询工作项
-     * @author
      */
     private List<Issue> getIssueList(Long issueId) {
         IssueExample example = new IssueExample();

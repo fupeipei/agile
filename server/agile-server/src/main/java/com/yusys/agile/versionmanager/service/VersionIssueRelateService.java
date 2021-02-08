@@ -20,7 +20,7 @@ public interface VersionIssueRelateService {
 
     /**
       *功能描述  根据工作项类型或者迭代ID获取为关联版本计划的工作项
-      * @author wangsh9
+      *
       * @date 2020/10/21
       * @param versionId 版本ID
       * @param issueType 工作项类型
@@ -59,7 +59,7 @@ public interface VersionIssueRelateService {
 
     /**
       *功能描述 移除已关联的工作项
-      * @author wangsh9
+      *
       * @date 2020/8/28
       * @param issueIds
      * @param securityDTO
@@ -68,7 +68,7 @@ public interface VersionIssueRelateService {
     void removeVersionRelateIssues(Long oldVersionId,Long newVersionId ,List<Long> issueIds, SecurityDTO securityDTO);
     /**   根据版本移除已关联的工作项
       *功能描述
-      * @author wangsh9
+      *
       * @date 2020/8/31
       * @param versionId
       * @return void
@@ -97,7 +97,7 @@ public interface VersionIssueRelateService {
 
     /**
       *功能描述  根据工作项Id查询版本计划ID
-      * @author wangsh9
+      *
       * @date 2020/10/19
       * @param issueId
       * @return com.yusys.agile.versionmanager.domain.VersionIssueRelate

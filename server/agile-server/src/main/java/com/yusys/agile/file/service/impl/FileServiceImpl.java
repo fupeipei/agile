@@ -332,7 +332,6 @@ public class FileServiceImpl implements FileService {
      * @param remoteName
      * @param response
      * @return void
-     *    wangsh
      * @date 2020/06/13
      */
     private void nasDownload(String fileName, String remoteName, HttpServletRequest request, HttpServletResponse response) throws Exception {

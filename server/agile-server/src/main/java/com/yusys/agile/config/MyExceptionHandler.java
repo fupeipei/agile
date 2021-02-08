@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 全局异常处理
  *
- * @create 2020/2/1
+ * @create 2021/2/1
  */
 @ControllerAdvice
 public class MyExceptionHandler {
@@ -24,7 +24,7 @@ public class MyExceptionHandler {
      *
      * @param e
      * @return
-     * @date 2020/2/1
+     * @date 2021/2/1
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody

@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 
 /**
  * @description 代办控制类
- * @date 2020/2/1
+ * @date 2021/2/1
  */
 @RestController
 @RequestMapping("/commission")
@@ -25,7 +25,7 @@ public class CommissionController {
 
     /**
      * @description 根据代办标题分页查询代办列表
-     * @date 2020/2/1
+     * @date 2021/2/1
      * @param title
      * @param pageNum
      * @param pageSize
@@ -46,7 +46,7 @@ public class CommissionController {
 
     /**
      * @description 根据代办id查询代办信息
-     * @date 2020/2/1
+     * @date 2021/2/1
      * @param commissionId
      * @return
      */
@@ -62,7 +62,7 @@ public class CommissionController {
 
     /**
      * @description 更新代办信息
-     * @date 2020/2/1
+     * @date 2021/2/1
      * @param commissionDTO
      * @return
      */

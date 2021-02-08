@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 
 /**
  * @description 代码提交控制类
- * @date 2020/2/1
+ * @date 2021/2/1
  */
 @RequestMapping("/commit")
 @RestController
@@ -24,7 +24,7 @@ public class CommitRecordController {
 
     /**
      * @description 查询人员提交记录
-     * @date 2020/2/1
+     * @date 2021/2/1
      * @param projectId
      * @param commitDTO
      * @return
@@ -42,7 +42,7 @@ public class CommitRecordController {
 
     /**
      * @description 查询工作项提交记录
-     * @date 2020/2/1
+     * @date 2021/2/1
      * @param issueId
      * @return
      */
