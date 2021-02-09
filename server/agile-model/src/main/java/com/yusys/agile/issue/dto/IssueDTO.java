@@ -27,7 +27,6 @@ public class IssueDTO {
 
     private Integer order;
     /**
-     *
      * @Date: 11:14
      * @Description: 需求满意度
      * @Return:
@@ -152,7 +151,7 @@ public class IssueDTO {
     }
 
     /**
-     *功能描述  在版本中的需求id
+     * 功能描述  在版本中的需求id
      *
      * @date 2021/2/2
      * @return
@@ -168,7 +167,7 @@ public class IssueDTO {
     }
 
     /**
-     *功能描述 扩展表中需求id
+     * 功能描述 扩展表中需求id
      *
      * @date 2021/2/2
      * @return
@@ -277,21 +276,18 @@ public class IssueDTO {
     private Long bizBacklogId;
 
     /**
-     *
      * @Date: 2021/2/9 10:31
      * @Description: 阶段数组
      */
     private Long[] stages;
 
     /**
-     *
      * @Date: 9:28
      * @Description: 关联子工作项ID列表
      */
     private List<Long> listIssueIds;
 
     /**
-     *
      * @Date: 2021/2/13 9:41
      * @Description: 系统列表
      */
@@ -316,7 +312,6 @@ public class IssueDTO {
     }
 
     /**
-     *
      * @Date: 2021/2/124  15:39
      * @Description: 模块列表
      */
@@ -326,7 +321,7 @@ public class IssueDTO {
      */
     private String fieldList;
     /**
-     *功能描述  是否有child
+     * 功能描述  是否有child
      *
      * @date 2020/4/16
      * @param null
@@ -560,7 +555,6 @@ public class IssueDTO {
     public void setCompletion(String completion) {
         this.completion = completion;
     }
-
 
 
     public String getStageName() {

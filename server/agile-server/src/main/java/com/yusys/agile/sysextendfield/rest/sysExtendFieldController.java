@@ -19,7 +19,7 @@ public class sysExtendFieldController {
     private SysExtendFieldService sysExtendFieldService;
 
     @GetMapping("/field/{issueType}")
-    public ControllerResponse getField(@PathVariable("issueType") Byte issueType){
+    public ControllerResponse getField(@PathVariable("issueType") Byte issueType) {
         return ControllerResponse.success(sysExtendFieldService.getField(issueType));
 
     }

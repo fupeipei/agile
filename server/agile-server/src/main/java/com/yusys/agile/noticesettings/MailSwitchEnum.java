@@ -4,7 +4,7 @@ package com.yusys.agile.noticesettings;
 /**
  * @ClassName: MailSwitchServiceImpl
  * @Description: 邮件模版枚举
- *   :
+ * :
  * @CreateDate: 2020/06/16 17:28
  * @Version 1.0
  */
@@ -13,13 +13,13 @@ public enum MailSwitchEnum {
     /**
      * 通知设置业务类型
      */
-    EPIC((byte)1,(byte)1,(byte)0,"业务需求变更通知",(byte)0,"仅接收与自身有关的邮件"),
-    FEATURE((byte)1,(byte)2,(byte)0,"研发需求变更通知",(byte)0,"仅接收与自身有关的邮件"),
-    STORY((byte)1,(byte)3,(byte)0,"用户故事变更通知",(byte)0,"仅接收与自身有关的邮件"),
-    TASK((byte)1,(byte)4,(byte)0,"任务变更通知",(byte)0,"仅接收与自身有关的邮件"),
-    BUG((byte)1,(byte)5,(byte)0,"测试缺陷变更通知",(byte)0,"仅接收与自身有关的邮件"),
-    OVERDUE((byte)2,(byte)6,(byte)0,"超期",(byte)0,"仅接收与自身有关的邮件"),
-    OVERTIME((byte)2,(byte)7,(byte)0,"超时",(byte)0,"仅接收与自身有关的邮件");
+    EPIC((byte) 1, (byte) 1, (byte) 0, "业务需求变更通知", (byte) 0, "仅接收与自身有关的邮件"),
+    FEATURE((byte) 1, (byte) 2, (byte) 0, "研发需求变更通知", (byte) 0, "仅接收与自身有关的邮件"),
+    STORY((byte) 1, (byte) 3, (byte) 0, "用户故事变更通知", (byte) 0, "仅接收与自身有关的邮件"),
+    TASK((byte) 1, (byte) 4, (byte) 0, "任务变更通知", (byte) 0, "仅接收与自身有关的邮件"),
+    BUG((byte) 1, (byte) 5, (byte) 0, "测试缺陷变更通知", (byte) 0, "仅接收与自身有关的邮件"),
+    OVERDUE((byte) 2, (byte) 6, (byte) 0, "超期", (byte) 0, "仅接收与自身有关的邮件"),
+    OVERTIME((byte) 2, (byte) 7, (byte) 0, "超时", (byte) 0, "仅接收与自身有关的邮件");
 
     /**
      * 设置类型：1邮件设置 2工作项每日提醒
@@ -98,7 +98,7 @@ public enum MailSwitchEnum {
         this.subMailSwitchName = subMailSwitchName;
     }
 
-    MailSwitchEnum(Byte type,Byte mailType, Byte mailSwitch, String mailSwitchName, Byte subMailSwitch, String subMailSwitchName){
+    MailSwitchEnum(Byte type, Byte mailType, Byte mailSwitch, String mailSwitchName, Byte subMailSwitch, String subMailSwitchName) {
         this.type = type;
         this.mailType = mailType;
         this.mailSwitch = mailSwitch;
@@ -111,7 +111,7 @@ public enum MailSwitchEnum {
     // 普通方法
     public static MailSwitchEnum getByCode(String code) {
         for (MailSwitchEnum switchEnum : MailSwitchEnum.values()) {
-            if (switchEnum.mailType.equals( code)) {
+            if (switchEnum.mailType.equals(code)) {
                 return switchEnum;
             }
         }

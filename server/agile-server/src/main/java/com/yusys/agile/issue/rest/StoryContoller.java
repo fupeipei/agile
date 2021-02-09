@@ -74,12 +74,12 @@ public class StoryContoller {
     }
 
     private boolean checkHasServerAnalysManager(JSONObject jsonObject) {
-        for(String str:jsonObject.keySet()){
-           if(VersionConstants.SysExtendFiledConstant.SERVERANALYSTMANAGER.equals(str)){
-               if(!Strings.isBlank((String)jsonObject.get(str))){
-                   return true;
-               }
-           }
+        for (String str : jsonObject.keySet()) {
+            if (VersionConstants.SysExtendFiledConstant.SERVERANALYSTMANAGER.equals(str)) {
+                if (!Strings.isBlank((String) jsonObject.get(str))) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -119,7 +119,7 @@ public class StoryContoller {
 
     @PostMapping("/issue/editStory")
     public ControllerResponse editStory(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
-        try{
+        try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
@@ -128,7 +128,7 @@ public class StoryContoller {
             issueDTO.setIssueType(new Byte("3"));
             issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueDTO.getIssueId());
-        }catch (Exception e){
+        } catch (Exception e) {
             /*if(e instanceof BaseBusinessException){
                 return ControllerResponse.fail2(e.getMessage());
             }*/
@@ -153,7 +153,6 @@ public class StoryContoller {
      * @param pageNum
      * @param pageSize
      * @param title
-     *
      * @Date: 2021/2/9 9:44
      * @Description: 查询未关联业务需求的研发需求
      * @Param: * @param projectId
@@ -182,7 +181,6 @@ public class StoryContoller {
     /**
      * @param projectId
      * @param issueDTO
-
      * @Date 2021/2/12
      * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -196,7 +194,6 @@ public class StoryContoller {
     /**
      * @param issueDTO
      * @param projectId
-
      * @Date 2021/2/27
      * @Description 看板编辑故事状态和任务卡片阻塞状态
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -213,7 +210,6 @@ public class StoryContoller {
     /**
      * @param issueDTO
      * @param projectId
-
      * @Date 2021/2/1
      * @Description 迭代评审获取故事及故事验收标准信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -226,7 +222,6 @@ public class StoryContoller {
 
     /**
      * @param issueDTO
-
      * @Date 2021/2/1
      * @Description 编辑故事评审状态及备注
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -245,7 +240,6 @@ public class StoryContoller {
      * @param pageNum
      * @param pageSize
      * @param title
-     *
      * @Date: 2021/2/9 9:44
      * @Description: 查询所有符合条件的研发需求
      * @Param: * @param projectId
@@ -273,7 +267,6 @@ public class StoryContoller {
 
     /**
      * @param epicId
-     *
      * @Date: 2021/2/9 9:47
      * @Description: 查询业务需求下的所有用户故事
      * @Param: * @param projectId
@@ -293,7 +286,6 @@ public class StoryContoller {
 
     /**
      * @param featureId
-     *
      * @Date: 2021/2/9 9:47
      * @Description: 查询研发需求下的所有用户故事
      * @Param: * @param projectId
@@ -313,7 +305,6 @@ public class StoryContoller {
 
     /**
      * @param sprintId
-     *
      * @Date 2020/8/7
      * @Description 获取迭代中未完成故事
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -331,7 +322,6 @@ public class StoryContoller {
      * @param pageNum
      * @param pageSize
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/8/19
      */
     @GetMapping("/issue/listUnFinisherStorysByProjectId")
@@ -370,16 +360,16 @@ public class StoryContoller {
     }
 
     /**
-     *功能描述  查询故事下的开发负责人
+     * 功能描述  查询故事下的开发负责人
      *
-     * @date 2020/10/26
-      * @param storyId
+     * @param storyId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2020/10/26
      */
     @GetMapping("/issue/getDevlopManager/{storyId}")
     public ControllerResponse getDevlopManager(@RequestParam("storyId") Long storyId) {
         try {
-            Map<Long,String> mapDevlopManager = storyService.getDevlopManager(storyId);
+            Map<Long, String> mapDevlopManager = storyService.getDevlopManager(storyId);
             return ControllerResponse.success(mapDevlopManager);
         } catch (Exception e) {
             LOGGER.error("查询故事下开发负责人异常,异常信息:{}", e.getMessage());

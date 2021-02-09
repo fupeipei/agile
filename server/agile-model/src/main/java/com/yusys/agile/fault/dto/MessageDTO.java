@@ -3,7 +3,6 @@ package com.yusys.agile.fault.dto;
 /**
  * itc返回message对象
  *
- *
  * @create 2020-10-15 11:09
  */
 public class MessageDTO {

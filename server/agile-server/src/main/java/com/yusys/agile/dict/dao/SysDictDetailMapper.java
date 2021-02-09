@@ -2,7 +2,9 @@ package com.yusys.agile.dict.dao;
 
 import com.yusys.agile.dict.domain.SysDictDetail;
 import com.yusys.agile.dict.domain.SysDictDetailExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface SysDictDetailMapper {

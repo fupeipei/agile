@@ -6,12 +6,13 @@ import com.yusys.agile.utils.page.PageQuery;
 import java.util.List;
 
 /**
- *    赵英东
+ * 赵英东
  */
 public interface LeanKanbanMapper {
 
     /**
      * 根据条件查询泳道卡片，分页展示
+     *
      * @param query
      * @return
      */

@@ -2,7 +2,9 @@ package com.yusys.agile.versionmanager.dao;
 
 import com.yusys.agile.versionmanager.domain.VersionManager;
 import com.yusys.agile.versionmanager.domain.VersionManagerExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface VersionManagerMapper {
@@ -29,10 +31,10 @@ public interface VersionManagerMapper {
     int updateByPrimaryKey(VersionManager record);
 
     /**
-     *
      * 更新版本计划交付个数
-     * @Date:2020-09-16
+     *
      * @param versionPlanData
+     * @Date:2020-09-16
      */
     void updatePlanDeliveryNumber(VersionManager versionPlanData);
 
@@ -41,22 +43,21 @@ public interface VersionManagerMapper {
     /**
      * 根据项目id获取版本计划
      *
-     * @date 2021/3/30
      * @param projectId
      * @return
+     * @date 2021/3/30
      */
     List<VersionManager> selectGroupVersion(@Param("projectId") Long projectId);
 
 
     /**
-     *
-     * @Date 2021/2/18
-     * @Description 根据需求名称及客户需求编号获取版本计划
      * @param projectId
      * @param versionName
+     * @Date 2021/2/18
+     * @Description 根据需求名称及客户需求编号获取版本计划
      * @Return java.util.List<com.yusys.agile.versionmanager.domain.VersionManager>
      */
-    List<VersionManager> selectVersionByBizNumAndTitle(@Param("projectId") Long projectId,@Param("versionName") String versionName,
-                                                       @Param("bizBacklogIds")List<Long> bizBacklogIds);
+    List<VersionManager> selectVersionByBizNumAndTitle(@Param("projectId") Long projectId, @Param("versionName") String versionName,
+                                                       @Param("bizBacklogIds") List<Long> bizBacklogIds);
 
 }

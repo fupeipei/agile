@@ -2959,6 +2959,7 @@ public class IssueExample {
             addCriterion("reopen_times not between", value1, value2, "reopenTimes");
             return (Criteria) this;
         }
+
         public Criteria andAssessIsPassIsNull() {
             addCriterion("assess_is_pass is null");
             return (Criteria) this;
@@ -3018,6 +3019,7 @@ public class IssueExample {
             addCriterion("assess_is_pass not between", value1, value2, "assessIsPass");
             return (Criteria) this;
         }
+
         public Criteria andAssessRemarksIsNull() {
             addCriterion("assess_remarks is null");
             return (Criteria) this;

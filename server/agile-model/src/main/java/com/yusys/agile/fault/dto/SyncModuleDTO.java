@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * 同步itc模块需求对象
  *
- *
  * @create 2020-10-12 15:27
  */
 public class SyncModuleDTO {
@@ -65,7 +64,7 @@ public class SyncModuleDTO {
      */
     private Integer operateType;
 
-    private  String bossRequirementCode;
+    private String bossRequirementCode;
 
     public Long getExternalModuleId() {
         return externalModuleId;

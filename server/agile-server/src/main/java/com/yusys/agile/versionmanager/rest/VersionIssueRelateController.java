@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * @ClassName VersionIssueRelateController
  * @Description 版本与工作项关联控制类
- *
  * @Date 2020/8/21 20:30
  * @Version 1.0
  */
@@ -25,7 +24,7 @@ import java.util.List;
 @RequestMapping("/version/issue/relate")
 public class VersionIssueRelateController {
     private static final Logger log = LoggerFactory.getLogger(VersionIssueRelateController.class);
-    private String province="yusys";
+    private String province = "yusys";
     @Resource
     private VersionIssueRelateService versionIssueRelateService;
 
@@ -68,7 +67,7 @@ public class VersionIssueRelateController {
      */
     @PostMapping("/bind")
     public ControllerResponse bindVersionRelateIssues(@RequestBody List<VersionIssueRelate> issueRelates, SecurityDTO securityDTO) {
-            versionIssueRelateService.bindVersionRelateIssues(issueRelates, securityDTO, province);
-            return ControllerResponse.success("版本计划关联工作项成功");
+        versionIssueRelateService.bindVersionRelateIssues(issueRelates, securityDTO, province);
+        return ControllerResponse.success("版本计划关联工作项成功");
     }
 }

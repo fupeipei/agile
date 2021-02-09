@@ -34,7 +34,6 @@ import java.util.List;
 
 /**
  * @description 特定工作项业务类
- *  
  * @date 2020/08/18
  */
 @Service
@@ -61,11 +60,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     private SysExtendFieldDetailMapper sysExtendFieldDetailMapper;
 
     /**
-     * @description 查询关联的工作项信息
-     *  
-     * @date 2020/08/18
      * @param issueIds
      * @return
+     * @description 查询关联的工作项信息
+     * @date 2020/08/18
      */
     @Override
     public List<CustomizeIssueDTO> getRelatedIssues(List<Long> issueIds) {
@@ -78,11 +76,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理任务关联的工作项
-     *  
-     * @date 2020/08/18
      * @param issueIds
      * @return
+     * @description 处理任务关联的工作项
+     * @date 2020/08/18
      */
     private void dealRelatedIssues(List<CustomizeIssueDTO> issueList, List<Long> issueIds) {
         for (Long issueId : issueIds) {
@@ -94,11 +91,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 拆分工作项
-     *  
-     * @date 2020/09/18
      * @param issueId
      * @return
+     * @description 拆分工作项
+     * @date 2020/09/18
      */
     private CustomizeIssueDTO splitCustomizeIssueByIssueId(Long issueId) {
         CustomizeIssueDTO customizeIssue = new CustomizeIssueDTO();
@@ -108,7 +104,7 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
             if (issueType.byteValue() == IssueTypeEnum.TYPE_TASK.CODE) {
                 customizeIssue.setTaskId(issueId);
                 dealTaskIssue(issueId, customizeIssue);
-            } else if (issueType.byteValue() == IssueTypeEnum.TYPE_FAULT.CODE){
+            } else if (issueType.byteValue() == IssueTypeEnum.TYPE_FAULT.CODE) {
                 //供cmp使用
                 customizeIssue.setFaultId(issueId);
                 dealFaultIssue(issueId, customizeIssue);
@@ -129,11 +125,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 根据工作项id查询工作项类型
-     *  
-     * @date 2020/08/18
      * @param issueId
      * @return
+     * @description 根据工作项id查询工作项类型
+     * @date 2020/08/18
      */
     private Byte getIssueType(Long issueId) {
         Byte issueType = null;
@@ -148,11 +143,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理任务工作项
-     *  
-     * @date 2020/08/18
      * @param taskId
      * @param customizeIssue
+     * @description 处理任务工作项
+     * @date 2020/08/18
      */
     private void dealTaskIssue(Long taskId, CustomizeIssueDTO customizeIssue) {
         Issue task = issueService.selectIssueInfo(taskId, IssueTypeEnum.TYPE_TASK.CODE);
@@ -176,13 +170,12 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理缺陷工作项
-     *  
-     * @date 2020/09/18
      * @param faultId
      * @param customizeIssue
+     * @description 处理缺陷工作项
+     * @date 2020/09/18
      */
-    private void dealFaultIssue(Long faultId, CustomizeIssueDTO customizeIssue){
+    private void dealFaultIssue(Long faultId, CustomizeIssueDTO customizeIssue) {
         Issue fault = issueService.selectIssueInfo(faultId, IssueTypeEnum.TYPE_FAULT.CODE);
         if (null != fault) {
             customizeIssue.setFaultName(fault.getTitle());
@@ -191,7 +184,7 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
             if (null != stageId) {
                 customizeIssue.setFaultStageName(FaultStatusEnum.getMsg(stageId));
             }
-            Long handler =  fault.getHandler();
+            Long handler = fault.getHandler();
             dealReceiver(customizeIssue, handler, IssueTypeEnum.TYPE_FAULT.CODE);
             Long storyId = fault.getParentId();
             if (null != storyId) {
@@ -201,11 +194,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理人员信息
-     *  
-     * @date 2020/08/18
      * @param customizeIssue
      * @param handler
+     * @description 处理人员信息
+     * @date 2020/08/18
      */
     private void dealReceiver(CustomizeIssueDTO customizeIssue, Long handler, Byte issueType) {
         if (null != handler) {
@@ -222,13 +214,12 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理阶段信息
-     *  
-     * @date 2020/08/28
      * @param customizeIssue
      * @param projectId
      * @param stageId
      * @param type
+     * @description 处理阶段信息
+     * @date 2020/08/28
      */
     private void dealStage(CustomizeIssueDTO customizeIssue, Long projectId, Long stageId, int type) {
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
@@ -247,11 +238,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理故事工作项
-     *  
-     * @date 2020/08/18
      * @param storyId
      * @param customizeIssue
+     * @description 处理故事工作项
+     * @date 2020/08/18
      */
     private void dealStoryIssue(Long storyId, CustomizeIssueDTO customizeIssue) {
         Issue story = issueService.selectIssueInfo(storyId, IssueTypeEnum.TYPE_STORY.CODE);
@@ -268,11 +258,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理迭代信息
-     *  
-     * @date 2020/08/18
      * @param story
      * @param customizeIssue
+     * @description 处理迭代信息
+     * @date 2020/08/18
      */
     private void dealSprintInfo(Issue story, CustomizeIssueDTO customizeIssue) {
         Long sprintId = story.getSprintId();
@@ -294,11 +283,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理研发需求工作项
-     *  
-     * @date 2020/08/18
      * @param featureId
      * @param customizeIssue
+     * @description 处理研发需求工作项
+     * @date 2020/08/18
      */
     private void dealFeatureIssue(Long featureId, CustomizeIssueDTO customizeIssue) {
         Issue feature = issueService.selectIssueInfo(featureId, IssueTypeEnum.TYPE_FEATURE.CODE);
@@ -313,11 +301,10 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 处理业务需求工作项
-     *  
-     * @date 2020/08/18
      * @param epicId
      * @param customizeIssue
+     * @description 处理业务需求工作项
+     * @date 2020/08/18
      */
     private void dealEpicIssue(Long epicId, CustomizeIssueDTO customizeIssue) {
         Issue epic = issueService.selectIssueInfo(epicId, IssueTypeEnum.TYPE_EPIC.CODE);
@@ -335,10 +322,9 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     }
 
     /**
-     * @description 拼接系统扩展字段详情对象
-     *  
-     * @date 2020/09/21
      * @return
+     * @description 拼接系统扩展字段详情对象
+     * @date 2020/09/21
      */
     private SysExtendFieldDetail getSysExtendFieldDetailExample(Long issueId) {
         SysExtendFieldDetail fieldDetail = null;
@@ -346,18 +332,17 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
         example.setOrderByClause("id asc");
         example.createCriteria().andIssueIdEqualTo(issueId).andFieldIdEqualTo("bizNum");
         List<SysExtendFieldDetail> details = sysExtendFieldDetailMapper.selectByExample(example);
-        if (CollectionUtils.isNotEmpty(details)){
+        if (CollectionUtils.isNotEmpty(details)) {
             fieldDetail = details.get(0);
         }
         return fieldDetail;
     }
 
     /**
-     * @description 根据任务或缺陷编号查询feature
-     *  
-     * @date 2020/09/17
      * @param issueId
      * @return
+     * @description 根据任务或缺陷编号查询feature
+     * @date 2020/09/17
      */
     @Override
     public CustomizeIssueDTO getFeatureByTaskOrFaultId(Long issueId) {

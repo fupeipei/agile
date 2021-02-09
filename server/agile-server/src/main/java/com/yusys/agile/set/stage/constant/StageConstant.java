@@ -1,7 +1,6 @@
 package com.yusys.agile.set.stage.constant;
 
 /**
- *  
  * @description 阶段常量类
  * @date 2020/05/15
  */

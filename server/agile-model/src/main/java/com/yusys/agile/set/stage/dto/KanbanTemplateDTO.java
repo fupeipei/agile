@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * @description 看板模板实体类
- *  
  * @date 2020/07/28
  */
 public class KanbanTemplateDTO implements Serializable {

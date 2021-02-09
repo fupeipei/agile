@@ -1,7 +1,6 @@
 package com.yusys.agile.issue.dto;
 
 /**
-
  * @Date: 2021/2/19
  */
 public class IssueStageIdCountDTO {

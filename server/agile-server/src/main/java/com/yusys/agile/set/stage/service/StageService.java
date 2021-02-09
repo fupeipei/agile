@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * @description 阶段业务接口
- *  
  * @create 2020-04-10 16:28
  */
 public interface StageService {
@@ -19,7 +18,7 @@ public interface StageService {
 
     public KanbanStageInstance getStageInfo(Long projectId, Long stateId);
 
-    public  List<KanbanStageInstance> getAllStageInfo(Long projectId);
+    public List<KanbanStageInstance> getAllStageInfo(Long projectId);
 
     public int configFirstStages(List<KanbanStageInstanceDTO> stageInstanceDTOList);
 
@@ -42,10 +41,10 @@ public interface StageService {
     /**
      * 功能描述: 根据项目id和一阶段id、二阶段名查询二阶段信息
      *
-     * @date 2020/10/28
      * @param projectId
      * @param firstStageId
      * @return java.util.List<com.yusys.agile.set.stage.domain.KanbanStageInstance>
+     * @date 2020/10/28
      */
-    Long getSecondStageIdByFirstStageIdAndSecondName(Long projectId,Long firstStageId,String secondName);
+    Long getSecondStageIdByFirstStageIdAndSecondName(Long projectId, Long firstStageId, String secondName);
 }

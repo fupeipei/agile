@@ -21,6 +21,7 @@ public interface IssueHistoryRecordMapper {
     List<IssueHistoryRecord> selectByExample(IssueHistoryRecordExample example);
 
     List<IssueHistoryRecordDTO> selectByExampleDTO(IssueHistoryRecordExample example);
+
     IssueHistoryRecord selectByPrimaryKey(Long recordId);
 
     int updateByExampleSelective(@Param("record") IssueHistoryRecord record, @Param("example") IssueHistoryRecordExample example);

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- *
  * @description
  * @date 2021/3/18
  */
@@ -16,19 +15,19 @@ public class SytExtendFieldDetailFactory {
     @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
 
-    public int insertOrUpdateIssueExtendFieldDetail(Long bizBacklogId,String filedId,String fieldName,String value) {
+    public int insertOrUpdateIssueExtendFieldDetail(Long bizBacklogId, String filedId, String fieldName, String value) {
         int result;
         SysExtendFieldDetail sysExtendFieldDetail = sysExtendFieldDetailService.getSysExtendFieldDetail(bizBacklogId, filedId);
-        if(null == sysExtendFieldDetail){
+        if (null == sysExtendFieldDetail) {
             sysExtendFieldDetail = new SysExtendFieldDetail();
             sysExtendFieldDetail.setFieldId(filedId);
-            if(null != fieldName){
+            if (null != fieldName) {
                 sysExtendFieldDetail.setFieldName(fieldName);
             }
             sysExtendFieldDetail.setIssueId(bizBacklogId);
             sysExtendFieldDetail.setValue(value);
             result = sysExtendFieldDetailService.save(sysExtendFieldDetail);
-        }else{
+        } else {
             sysExtendFieldDetail.setValue(value);
             result = sysExtendFieldDetailService.update(sysExtendFieldDetail);
         }

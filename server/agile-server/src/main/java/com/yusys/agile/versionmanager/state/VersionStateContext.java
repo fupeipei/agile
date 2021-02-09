@@ -2,14 +2,16 @@ package com.yusys.agile.versionmanager.state;
 
 import com.yusys.agile.versionmanager.dto.RequirementUnbindDTO;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
+
 import java.util.List;
 
 /**
- *   : rock
+ * : rock
+ *
  * @description: 版本状态上下文
  * @date:Create：in 2020/4/4
  */
-public class VersionStateContext implements IState{
+public class VersionStateContext implements IState {
     public static final IState UNCONFIRMED_STATE = new UnConfirmedState();
     public static final IState APPROVAL_REJECT_STATE = new ApprovalRejectState();
     public static final IState CONFIRMED_STATE = new ConfirmedState();

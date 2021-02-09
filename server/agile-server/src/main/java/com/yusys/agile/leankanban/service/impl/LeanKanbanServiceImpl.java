@@ -47,7 +47,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- *    赵英东
+ * 赵英东
  */
 @Service
 public class LeanKanbanServiceImpl implements LeanKanbanService {
@@ -82,32 +82,32 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
     public List<KanbanStageInstanceDTO> selectKanbanStageInstanceDTOList(Long projectId, List<PageQuery<Long>> queries) {
         List<KanbanStageInstanceDTO> kanbanStageInstanceDTOS = Lists.newArrayList();
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
-        kanbanStageInstanceExample.createCriteria().andProjectIdEqualTo(projectId).andLevelEqualTo((byte)1);
+        kanbanStageInstanceExample.createCriteria().andProjectIdEqualTo(projectId).andLevelEqualTo((byte) 1);
         kanbanStageInstanceExample.setOrderByClause("order_id asc");
         //一级阶段
         List<KanbanStageInstance> firstInstanceList = kanbanStageInstanceMapper.selectByExample(kanbanStageInstanceExample);
-        if(!firstInstanceList.isEmpty()){
+        if (!firstInstanceList.isEmpty()) {
             //懒加载泳道下卡片信息
-            for(KanbanStageInstance kanbanStageInstance:firstInstanceList){
-                for(PageQuery<Long> query:queries){
-                    if(query != null && query.getQuery().equals(kanbanStageInstance.getStageId())){
-                            KanbanStageInstanceDTO kanbanStageInstanceDTO =
-                                    ReflectUtil.copyProperties(kanbanStageInstance, KanbanStageInstanceDTO.class);
-                            IssueExample issueExample = new IssueExample();
-                            issueExample.createCriteria().andStageIdEqualTo(kanbanStageInstance.getStageId());
-                            //计算总记录数
-                            long total = issueMapper.countByExample(issueExample);
-                            issueExample.setStartRow(query.getFrom());
-                            issueExample.setPageSize(query.getPageSize());
-                            issueExample.setOrderByClause("priority asc");
-                            List<Issue> issues = issueMapper.selectByExample(issueExample);
-                            int count = query.getFrom() + query.getPageSize();
-                            kanbanStageInstanceDTO.setHasNext(total >= count ? true:false);
-                            List<IssueDTO> issueDTOS = Lists.newArrayList();
-                            ReflectUtil.copyProperties(issues,issueDTOS);
-                            kanbanStageInstanceDTO.setIssueDTOS(issueDTOS);
-                            kanbanStageInstanceDTOS.add(kanbanStageInstanceDTO);
-                            break;
+            for (KanbanStageInstance kanbanStageInstance : firstInstanceList) {
+                for (PageQuery<Long> query : queries) {
+                    if (query != null && query.getQuery().equals(kanbanStageInstance.getStageId())) {
+                        KanbanStageInstanceDTO kanbanStageInstanceDTO =
+                                ReflectUtil.copyProperties(kanbanStageInstance, KanbanStageInstanceDTO.class);
+                        IssueExample issueExample = new IssueExample();
+                        issueExample.createCriteria().andStageIdEqualTo(kanbanStageInstance.getStageId());
+                        //计算总记录数
+                        long total = issueMapper.countByExample(issueExample);
+                        issueExample.setStartRow(query.getFrom());
+                        issueExample.setPageSize(query.getPageSize());
+                        issueExample.setOrderByClause("priority asc");
+                        List<Issue> issues = issueMapper.selectByExample(issueExample);
+                        int count = query.getFrom() + query.getPageSize();
+                        kanbanStageInstanceDTO.setHasNext(total >= count ? true : false);
+                        List<IssueDTO> issueDTOS = Lists.newArrayList();
+                        ReflectUtil.copyProperties(issues, issueDTOS);
+                        kanbanStageInstanceDTO.setIssueDTOS(issueDTOS);
+                        kanbanStageInstanceDTOS.add(kanbanStageInstanceDTO);
+                        break;
                     }
                 }
             }
@@ -117,7 +117,7 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int moveIssue(Long issueId, Long toStageId,Long toLaneId) {
+    public int moveIssue(Long issueId, Long toStageId, Long toLaneId) {
 
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long stageId = issue.getStageId();
@@ -126,15 +126,15 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
         Long projectId = issue.getProjectId();
 
         /** 判断工作项流转规则是否允许 */
-        if(!ruleFactory.getIssueRulesCheckFlag(issueType,issue.getStageId(),issue.getLaneId(),toStageId,toLaneId,projectId)){
+        if (!ruleFactory.getIssueRulesCheckFlag(issueType, issue.getStageId(), issue.getLaneId(), toStageId, toLaneId, projectId)) {
             throw new BusinessException("该工作项不允许流转到目标阶段！");
         }
         /** 拖拽卡片验证制品数是否超过预定值*/
         issueRichTextFactory.dealStagesProductLimit(toStageId, toLaneId, issue.getProjectId(), issueType);
 
         //校验故事下有未完成任务或未修复缺陷不允许改为完成阶段
-        if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) && StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(toStageId)){
-            if(storyService.checkHasUnfinishOrNotRepairIssue(issueId)){
+        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) && StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(toStageId)) {
+            if (storyService.checkHasUnfinishOrNotRepairIssue(issueId)) {
                 throw new BusinessException("故事下有未完成任务或未修复缺陷不允许改为完成阶段！");
             }
         }
@@ -146,14 +146,14 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
 
         //计算oldValue 如果泳道为Null，则取阶段ID
         String oldValue = stageId.toString();
-        if(Optional.ofNullable(laneId).isPresent()){
-            oldValue = oldValue+ "-"+ laneId;
+        if (Optional.ofNullable(laneId).isPresent()) {
+            oldValue = oldValue + "-" + laneId;
         }
         //计算新值,如果toLaneId不为空，则取值toLaneId。
         //如果toLaneId为空， 则判断toStageId
         String newValue = toStageId.toString();
-        if(Optional.ofNullable(toLaneId).isPresent()){
-            newValue = newValue+ "-"+ toLaneId;
+        if (Optional.ofNullable(toLaneId).isPresent()) {
+            newValue = newValue + "-" + toLaneId;
         }
 
         IssueHistoryRecordExample example = new IssueHistoryRecordExample();
@@ -162,10 +162,10 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
         example.setOrderByClause(CREATE_TIME_DESC);
         List<IssueHistoryRecord> issueHistoryRecords = issueHistoryRecordMapper.selectByExample(example);
         //更新工作项上一阶段的停留天数
-        if(CollectionUtils.isNotEmpty(issueHistoryRecords)){
+        if (CollectionUtils.isNotEmpty(issueHistoryRecords)) {
             IssueHistoryRecord historyRecord = issueHistoryRecords.get(0);
             Date createTime = historyRecord.getCreateTime();
-            Long days = (System.currentTimeMillis()-createTime.getTime())/(24*60*60*1000);
+            Long days = (System.currentTimeMillis() - createTime.getTime()) / (24 * 60 * 60 * 1000);
             historyRecord.setStayDays(days.intValue());
             issueHistoryRecordMapper.updateByPrimaryKeyWithBLOBs(historyRecord);
         }
@@ -197,12 +197,12 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
     @Override
     public List<IssueResultDTO> selectIssueViewInfo(Long projectId,
                                                     List<PageResultDTO> pageResultDTOList,
-                                                    Map<String,Object> map) throws Exception {
-        IssueStringDTO issueStringDTO =  JSON.parseObject(JSON.toJSONString(map),IssueStringDTO.class);
+                                                    Map<String, Object> map) throws Exception {
+        IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(map), IssueStringDTO.class);
         List<IssueResultDTO> issueResultDTOList = Lists.newArrayList();
         String stageIds = issueStringDTO.getStageId();
 
-        if(stageIds != null && stageIds.contains("9999")){
+        if (stageIds != null && stageIds.contains("9999")) {
             PageResultDTO pageResultDTO = new PageResultDTO();
             pageResultDTO.setStageId(9999L);
             pageResultDTO.setStageType((byte) 1);
@@ -211,28 +211,28 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
             pageResultDTOList.add(pageResultDTO);
         }
 
-        if(CollectionUtils.isNotEmpty(pageResultDTOList)){
-            for(PageResultDTO pageResultDTO:pageResultDTOList){
+        if (CollectionUtils.isNotEmpty(pageResultDTOList)) {
+            for (PageResultDTO pageResultDTO : pageResultDTOList) {
                 Long stageId = pageResultDTO.getStageId();
                 IssueResultDTO resultDTO = new IssueResultDTO();
                 List<Issue> issues = Lists.newArrayList();
-                List<Issue> issueTotal =  Lists.newArrayList();
-                    if((stageIds!=null&&stageIds.contains(stageId.toString()))||stageIds==null){
-                        map.put("stageId",stageId.toString());
-                        map.put("queryFlag","leankanban");
-                        //计算总记录数
-                        issues = issueService.queryIssueList(map,projectId);
-                        map.put("pageNum",null);
-                        map.put("pageSize",null);
-                        issueTotal = issueService.queryIssueList(map,projectId);
-                    }
+                List<Issue> issueTotal = Lists.newArrayList();
+                if ((stageIds != null && stageIds.contains(stageId.toString())) || stageIds == null) {
+                    map.put("stageId", stageId.toString());
+                    map.put("queryFlag", "leankanban");
+                    //计算总记录数
+                    issues = issueService.queryIssueList(map, projectId);
+                    map.put("pageNum", null);
+                    map.put("pageSize", null);
+                    issueTotal = issueService.queryIssueList(map, projectId);
+                }
                 int count = pageResultDTO.getFrom() + pageResultDTO.getPageSize();
-                resultDTO.setHasNext(issueTotal.size() >= count ? true:false);
+                resultDTO.setHasNext(issueTotal.size() >= count ? true : false);
                 List<IssueDTO> issueDTOS = ReflectUtil.copyProperties4List(issues, IssueDTO.class);
                 //处理 handlerNaem
                 Map<Long, String> userMap = getUserMap(issueDTOS);
-                if(CollectionUtils.isNotEmpty(issueDTOS)){
-                    for(IssueDTO issueDTO:issueDTOS){
+                if (CollectionUtils.isNotEmpty(issueDTOS)) {
+                    for (IssueDTO issueDTO : issueDTOS) {
                         //计算卡片停留天数
                         issueDTO.setStayDays(calueCardStayDays(issueDTO));
 
@@ -244,8 +244,8 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
                         List<IssueDTO> children = ReflectUtil.copyProperties4List(issueList, IssueDTO.class);
                         issueDTO.setChildren(children);
                         //查询故事，获取迭代信息
-                        if(issueStringDTO.getIssueType().equals(IssueTypeEnum.TYPE_STORY.CODE)){
-                            if(issueDTO.getSprintId() != null){
+                        if (issueStringDTO.getIssueType().equals(IssueTypeEnum.TYPE_STORY.CODE)) {
+                            if (issueDTO.getSprintId() != null) {
                                 SprintWithBLOBs sprintWithBLOBs = sprintMapper.selectByPrimaryKey(issueDTO.getSprintId());
                                 SprintDTO sprintDTO = ReflectUtil.copyProperties(sprintWithBLOBs, SprintDTO.class);
                                 issueDTO.setSprintName(sprintWithBLOBs.getSprintName());
@@ -265,7 +265,7 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
     }
 
 
-    private Integer calueCardStayDays(IssueDTO issueDTO){
+    private Integer calueCardStayDays(IssueDTO issueDTO) {
         Integer stayDays = 0;
         Long stageId = issueDTO.getStageId();
         Long laneId = issueDTO.getLaneId();
@@ -275,16 +275,16 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
 
         IssueHistoryRecordExample example = new IssueHistoryRecordExample();
         IssueHistoryRecordExample.Criteria criteria = example.createCriteria();
-        criteria.andIssueIdEqualTo(issueId).andNewValueEqualTo(operationField +"");
+        criteria.andIssueIdEqualTo(issueId).andNewValueEqualTo(operationField + "");
         example.setOrderByClause(CREATE_TIME_DESC);
         List<IssueHistoryRecord> issueHistoryRecords = issueHistoryRecordMapper.selectByExample(example);
 
-        if(CollectionUtils.isNotEmpty(issueHistoryRecords)){
+        if (CollectionUtils.isNotEmpty(issueHistoryRecords)) {
             IssueHistoryRecord issueHistoryRecord = issueHistoryRecords.get(0);
             Date createTime = issueHistoryRecord.getCreateTime();
-            Long days = (System.currentTimeMillis()-createTime.getTime())/(24*60*60*1000);
+            Long days = (System.currentTimeMillis() - createTime.getTime()) / (24 * 60 * 60 * 1000);
             stayDays = days.intValue();
-            for(IssueHistoryRecord historyRecord:issueHistoryRecords){
+            for (IssueHistoryRecord historyRecord : issueHistoryRecords) {
                 stayDays = stayDays + Optional.ofNullable(historyRecord.getStayDays()).orElse(0);
             }
         }
@@ -292,20 +292,20 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
         return stayDays;
     }
 
-    private Map<Long,String> getUserMap(List<IssueDTO> issueDTOS){
+    private Map<Long, String> getUserMap(List<IssueDTO> issueDTOS) {
         List<Long> userIds = Lists.newArrayList();
-        if(CollectionUtils.isNotEmpty(issueDTOS)){
+        if (CollectionUtils.isNotEmpty(issueDTOS)) {
             issueDTOS.forEach(issueDTO -> {
-                if(issueDTO.getHandler() != null){
+                if (issueDTO.getHandler() != null) {
                     userIds.add(issueDTO.getHandler());
                 }
             });
         }
-        Map<Long,String> userMap = new HashMap<>();
-        if(!userIds.isEmpty()){
+        Map<Long, String> userMap = new HashMap<>();
+        if (!userIds.isEmpty()) {
             List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
             ssoUsers.forEach(ssoUser -> {
-                userMap.put(ssoUser.getUserId(),ssoUser.getUserName());
+                userMap.put(ssoUser.getUserId(), ssoUser.getUserName());
             });
         }
         return userMap;

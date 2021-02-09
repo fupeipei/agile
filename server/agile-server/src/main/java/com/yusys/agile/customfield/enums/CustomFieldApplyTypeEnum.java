@@ -8,7 +8,7 @@ package com.yusys.agile.customfield.enums;
 public enum CustomFieldApplyTypeEnum {
     PRODUCT("6", "产品"),
     PROJECT("7", "项目"),
-    
+
     EPIC("1", "业务需求"),
     FEATURE("2", "研发需求"),
     STORY("3", "故事"),

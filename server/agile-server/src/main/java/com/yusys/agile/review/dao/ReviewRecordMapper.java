@@ -2,6 +2,7 @@ package com.yusys.agile.review.dao;
 
 import com.yusys.agile.review.domain.ReviewRecord;
 import com.yusys.agile.review.domain.ReviewRecordExample;
+
 import java.util.List;
 
 import com.yusys.agile.review.dto.ReviewRecordDTO;
@@ -33,9 +34,9 @@ public interface ReviewRecordMapper {
     /**
      * 功能描述: 查询返回dto
      *
-     * @date 2021/3/9
      * @param example
      * @return java.util.List<com.yusys.agile.review.dto.ReviewRecordDTO>
+     * @date 2021/3/9
      */
     List<ReviewRecordDTO> selectDTOByExample(ReviewRecordExample example);
 }

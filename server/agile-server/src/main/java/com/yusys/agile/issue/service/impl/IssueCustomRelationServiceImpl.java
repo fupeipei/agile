@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/2/31
  * @Description: TODO
  */
@@ -48,7 +49,6 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      * @param projectId
      * @param issueType
      * @return java.util.List<com.yusys.agile.issue.domain.IssueCustomRelation>
-     *
      * @date 2021/2/31
      */
     @Override
@@ -59,16 +59,16 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         IssueCustomRelationExample issueCustomRelationExample = new IssueCustomRelationExample();
         IssueCustomRelationExample.Criteria criteria = issueCustomRelationExample.createCriteria();
         criteria.andProjectIdEqualTo(projectId);
-        if(issueType!=null){
+        if (issueType != null) {
             criteria.andIssueTypeEqualTo(issueType);
-         }
+        }
         issueCustomRelationExample.setOrderByClause("sort asc");
         result = issueCustomRelationMapper.selectByExampleWithBLOBs(issueCustomRelationExample);
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             return result;
         }
         for (IssueCustomRelation issueCustomRelation : result) {
-            if(listMap.containsKey(issueCustomRelation.getFieldId())){
+            if (listMap.containsKey(issueCustomRelation.getFieldId())) {
                 CustomFieldDTO customFieldDTO = listMap.get(issueCustomRelation.getFieldId()).get(0);
                 issueCustomRelation.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
                 issueCustomRelation.setFieldContent(customFieldDTO.getFieldContent());
@@ -83,7 +83,6 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      *
      * @param id
      * @return
-     *
      * @date 2021/2/31
      */
     @Override
@@ -103,7 +102,6 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      * @param securityDTO
      * @param idList
      * @return void
-     *
      * @date 2020/8/3
      */
     @Override
@@ -113,20 +111,19 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
             issueTemplateService.editIssueCustomRelation(securityDTO, idList.getIssueTemplate());
         }
         //应用字段保存
-        List<Long> longList =  issueCustomRelationMapper.getAppliedByissueType(securityDTO.getProjectId(),idList.getIssueType());
+        List<Long> longList = issueCustomRelationMapper.getAppliedByissueType(securityDTO.getProjectId(), idList.getIssueType());
         if (idList.getIssueCustomRelationList() != null && idList.getIssueCustomRelationList().size() > 0) {
             for (int i = 0; i < idList.getIssueCustomRelationList().size(); i++) {
                 IssueCustomRelation issueCustomRelation = idList.getIssueCustomRelationList().get(i);
                 issueCustomRelation.setIssueType(idList.getIssueType());
                 issueCustomRelation.setProjectId(securityDTO.getProjectId());
-                issueCustomRelation.setSort(i+longList.size()+1);
-                if(!longList.contains(issueCustomRelation.getFieldId())){
+                issueCustomRelation.setSort(i + longList.size() + 1);
+                if (!longList.contains(issueCustomRelation.getFieldId())) {
                     issueCustomRelationMapper.insertSelective(issueCustomRelation);
                     //保存到列头表中
                     headerFieldService.saveCustomFieldByFieldId(securityDTO.getProjectId(), issueCustomRelation.getId(), idList.getIssueType());
-                }
-                else{
-                    issueCustomRelation.setSort(i+1);
+                } else {
+                    issueCustomRelation.setSort(i + 1);
                     issueCustomRelationMapper.updateByPrimaryKeySelective(issueCustomRelation);
                 }
             }
@@ -140,7 +137,6 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      * @param issueType
      * @param fieldName
      * @return java.util.List<com.yusys.agile.issue.domain.IssueCustomRelation>
-     *
      * @date 2020/8/3
      */
     @Override

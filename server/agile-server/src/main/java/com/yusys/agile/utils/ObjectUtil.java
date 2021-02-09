@@ -1,18 +1,18 @@
 package com.yusys.agile.utils;
 
 public class ObjectUtil {
-    private ObjectUtil(){
+    private ObjectUtil() {
 
     }
 
-    public static boolean equals(Object a,Object b){
-        if(a==null&&b==null){
+    public static boolean equals(Object a, Object b) {
+        if (a == null && b == null) {
             return true;
-        }else if(a==null&&b!=null){
+        } else if (a == null && b != null) {
             return false;
-        }else if (a!=null&&b==null){
+        } else if (a != null && b == null) {
             return false;
-        }else {
+        } else {
             return a.equals(b);
         }
     }

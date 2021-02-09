@@ -5,7 +5,6 @@ import java.util.Date;
 /**
  * 缺陷DTO
  *
-  
  * @create 2020-04-10 16:24
  */
 public class FaultDTO {
@@ -86,10 +85,6 @@ public class FaultDTO {
     private String storyName;
 
     private String sprintName;
-
-
-
-
 
 
     public Long getFaultId() {

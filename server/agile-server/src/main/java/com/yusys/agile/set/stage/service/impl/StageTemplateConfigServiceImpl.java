@@ -17,7 +17,6 @@ import java.util.List;
 
 /**
  * @description 阶段模板配置业务类
- *  
  * @date 2020/08/06
  */
 @Service
@@ -29,14 +28,13 @@ public class StageTemplateConfigServiceImpl implements StageTemplateConfigServic
     private StageTemplateConfigMapper stageTemplateConfigMapper;
 
     /**
-     * @description 取阶段模板配置列表
-     *  
-     * @date 2020/08/05
      * @return
+     * @description 取阶段模板配置列表
+     * @date 2020/08/05
      */
     @Override
     public List<StageTemplateConfig> getStageTemplateConfigList() {
-        List<StageTemplateConfig> firstStages = getStageConfigListByLevel((byte)1);
+        List<StageTemplateConfig> firstStages = getStageConfigListByLevel((byte) 1);
         /*if (CollectionUtils.isNotEmpty(firstStages)) {
             for (StageTemplateConfig firstStage : firstStages) {
                 Long parentId = firstStage.getStageId();
@@ -90,7 +88,7 @@ public class StageTemplateConfigServiceImpl implements StageTemplateConfigServic
         StageTemplateConfigDTO stageTemplateConfigDTO = null;
         StageTemplateConfigExample example = new StageTemplateConfigExample();
         example.setOrderByClause("stage_id desc");
-        example.createCriteria().andLevelEqualTo((byte)2);
+        example.createCriteria().andLevelEqualTo((byte) 2);
         List<StageTemplateConfig> list = stageTemplateConfigMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(list)) {
             stageTemplateConfigDTO = ReflectObjectUtil.copyProperties(list.get(0), StageTemplateConfigDTO.class);

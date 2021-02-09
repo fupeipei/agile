@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
-
  * @Date: 2021/2/18
  */
 @Component
@@ -20,7 +19,7 @@ public class SprintChangeStatusTask extends IJobHandler {
     private SprintService sprintService;
 
     @Override
-    public ReturnT<String> execute(String s){
+    public ReturnT<String> execute(String s) {
         sprintService.changeStatusDaily();
         return ReturnT.SUCCESS;
     }

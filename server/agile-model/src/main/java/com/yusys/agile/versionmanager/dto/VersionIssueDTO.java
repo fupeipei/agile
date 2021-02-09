@@ -3,7 +3,6 @@ package com.yusys.agile.versionmanager.dto;
 import java.io.Serializable;
 
 /**
-
  * @Date 2021/2/11
  * @Description 导出版本关联工作项信息
  * @Return
@@ -103,7 +102,7 @@ public class VersionIssueDTO implements Serializable {
     /**
      * 是否移除
      */
-    private String  versionIsRemove;
+    private String versionIsRemove;
 
     /**
      * CRM-实际完成时间

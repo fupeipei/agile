@@ -8,6 +8,7 @@ public interface IssueFilterService {
 
     /**
      * 过滤器保存
+     *
      * @param issueFilterDTO
      * @param securityDTO
      * @return
@@ -15,14 +16,16 @@ public interface IssueFilterService {
     ControllerResponse saveIssueFilter(IssueFilterDTO issueFilterDTO, SecurityDTO securityDTO);
 
     /**
-     *根据filterId删除过滤器
+     * 根据filterId删除过滤器
+     *
      * @param filterId 过滤器主键ID
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
-    ControllerResponse deleteIssueFilter(Long filterId,Byte category);
+    ControllerResponse deleteIssueFilter(Long filterId, Byte category);
 
     /**
      * 根据项目ID和登录人员的ID获取过滤器列表数据。
+     *
      * @param securityDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
@@ -30,7 +33,8 @@ public interface IssueFilterService {
 
     /**
      * 更新为当前过滤器ID为默认选中状态
-     * @param filterId  过滤器ID
+     *
+     * @param filterId 过滤器ID
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     ControllerResponse putFilterCheckStatus(Long filterId, Byte category, SecurityDTO securityDTO);

@@ -51,29 +51,29 @@ public class CommitServiceImpl implements CommitService {
     private IssueMapper issueMapper;
 
     /**
-     * @description 查询成员提交记录
-     * @date 2021/2/1
      * @param commitDTO
      * @return
+     * @description 查询成员提交记录
+     * @date 2021/2/1
      */
     @Override
     public CommitDTO getMemberCommitRecord(CommitDTO commitDTO) {
         LOGGER.info("getMemberCommitRecord param commitDTO:{}", commitDTO);
-        List<Long> memberIdList= commitDTO.getMemberIdList();
+        List<Long> memberIdList = commitDTO.getMemberIdList();
         if (CollectionUtils.isEmpty(memberIdList)) {
             throw new RuntimeException("用户编号不能为空");
         }
         //查询指定项目下用户任务总记录数
         long total = issueService.getProjectMemberTaskTotal(commitDTO);
         if (total > ALLOW_QUERY_TASK_MAX) {
-            Map<String,List<String>> memberTasksMap = Maps.newHashMap();
+            Map<String, List<String>> memberTasksMap = Maps.newHashMap();
             long pages = total % QUERY_TASK_BATCH_SIZE == 0 ? total / QUERY_TASK_BATCH_SIZE : total / QUERY_TASK_BATCH_SIZE + 1;
             for (long i = 0; i < pages; i++) {
                 long startIndex = i * QUERY_TASK_BATCH_SIZE;
                 List<Issue> issues = issueService.getProjectMemberTaskList(commitDTO, startIndex, QUERY_TASK_BATCH_SIZE);
                 Map<String, List<String>> memberTaskMap = dealIssueTasks(issues);
                 if (MapUtils.isNotEmpty(memberTaskMap)) {
-                    for (Map.Entry<String, List<String>> memberTaskEntry : memberTaskMap.entrySet()){
+                    for (Map.Entry<String, List<String>> memberTaskEntry : memberTaskMap.entrySet()) {
                         String key = memberTaskEntry.getKey();
                         List<String> value = memberTaskEntry.getValue();
                         if (memberTasksMap.containsKey(key)) {
@@ -96,10 +96,10 @@ public class CommitServiceImpl implements CommitService {
     }
 
     /**
-     * @description 处理代码提交数据
-     * @date 2021/2/1
      * @param commitDTO
      * @param issues
+     * @description 处理代码提交数据
+     * @date 2021/2/1
      */
     private void dealCodeCommitData(CommitDTO commitDTO, List<Issue> issues) {
         if (CollectionUtils.isNotEmpty(issues)) {
@@ -107,11 +107,12 @@ public class CommitServiceImpl implements CommitService {
             calculateCodeCommitData(commitDTO, memberTaskMap);
         }
     }
+
     /**
-     * @description 根据用户id分组任务
-     * @date 2021/2/1
      * @param issues
      * @return
+     * @description 根据用户id分组任务
+     * @date 2021/2/1
      */
     private Map<String, List<String>> dealIssueTasks(List<Issue> issues) {
         Map<String, List<String>> memberTaskMap = Maps.newHashMap();
@@ -131,11 +132,11 @@ public class CommitServiceImpl implements CommitService {
     }
 
     /**
-     * @description 计算代码提交数据
-     * @date 2021/2/1
      * @param commitDTO
      * @param memberTaskMap
      * @return
+     * @description 计算代码提交数据
+     * @date 2021/2/1
      */
     private void calculateCodeCommitData(CommitDTO commitDTO, Map<String, List<String>> memberTaskMap) {
         //提交次数
@@ -145,7 +146,7 @@ public class CommitServiceImpl implements CommitService {
         //删除行数
         List<Map<String, Integer>> deleteLinesList = Lists.newArrayList();
         if (MapUtils.isNotEmpty(memberTaskMap)) {
-            for (Map.Entry<String, List<String>> entry : memberTaskMap.entrySet()){
+            for (Map.Entry<String, List<String>> entry : memberTaskMap.entrySet()) {
                 int commitTimes = 0;
                 int addLines = 0;
                 int deleteLines = 0;

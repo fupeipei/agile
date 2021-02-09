@@ -780,7 +780,7 @@ public class ExcelServiceImpl implements ExcelService {
             cellVal = ExcelUtil.getStringData(cell);
             if (cell != null && StringUtils.isNotBlank(cellVal)
                     && (!CellType.NUMERIC.equals(cell.getCellTypeEnum()) || !StringUtil.isPureDigital(cellVal) || !checkServiceValue(cell.getNumericCellValue()))
-                    ) {
+            ) {
                 mistakeDesc.append("业务价值" + MistakeDesc.FUNCTIONSCALFORMATHINT);
             }
             addAndReversMistake(mistakes, mistake, mistakeDesc);
@@ -1061,9 +1061,9 @@ public class ExcelServiceImpl implements ExcelService {
             createColumnHeadField(workbook, sheet, headerFieldList);
             List<Issue> issueList = null;
             //选中数据导出
-            String  ageSize = getIssueMaxPageSize(MAX_ISSUE_EXPORT_THRESHOLD_KEY);
-            if (null !=  ageSize) {
-                mapStr.put("pageSize",  ageSize);
+            String ageSize = getIssueMaxPageSize(MAX_ISSUE_EXPORT_THRESHOLD_KEY);
+            if (null != ageSize) {
+                mapStr.put("pageSize", ageSize);
             }
             IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(mapStr), IssueStringDTO.class);
             List<Long> issueIdList = issueStringDTO.getIssueIds();
@@ -1217,13 +1217,13 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     /**
-     * @description 处理对象字段值
-     * @date 2021/2/1
      * @param fieldName
      * @param value
      * @param type
      * @param fieldType
      * @return
+     * @description 处理对象字段值
+     * @date 2021/2/1
      */
     private String dealObjectFieldValue(String fieldName, Object value, Type type, Byte fieldType) {
         String result = "";
@@ -1245,11 +1245,11 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     /**
-     * @description 处理日期对象类型转换
-     * @date 2021/2/2
      * @param value
      * @param fieldType
      * @return
+     * @description 处理日期对象类型转换
+     * @date 2021/2/2
      */
     private String dealDateObjectTypeConvert(Object value, Byte fieldType) {
         String result = "";
@@ -1269,11 +1269,11 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     /**
-     * @description 过滤字段枚举值
-     * @date 2021/2/2
      * @param fieldName
      * @param result
      * @return
+     * @description 过滤字段枚举值
+     * @date 2021/2/2
      */
     private String filterFieldEnumValue(String fieldName, String result) {
         //过滤根据id查名称字段
@@ -1343,11 +1343,11 @@ public class ExcelServiceImpl implements ExcelService {
     }
 
     /**
-     * @description 获取版本名称
-     * @date 2021/2/2
      * @param issue
      * @param issueType
      * @return
+     * @description 获取版本名称
+     * @date 2021/2/2
      */
     private Map<String, String> getVersionNameMap(IssueListDTO issue, Byte issueType) {
         Map<String, String> versionNameMap = Maps.newHashMap();
@@ -1446,7 +1446,7 @@ public class ExcelServiceImpl implements ExcelService {
                 result = dealDateObjectTypeConvert(value, fieldType);
             }
         } catch (Exception e) {
-           LOGGER.error("dealCustomdefineFieldValue fieldName:{},value:{},exception,message:{}", fieldName, value, e.getMessage());
+            LOGGER.error("dealCustomdefineFieldValue fieldName:{},value:{},exception,message:{}", fieldName, value, e.getMessage());
         }
         if (StringUtils.isEmpty(result) || "null".equals(result)) {
             result = "";

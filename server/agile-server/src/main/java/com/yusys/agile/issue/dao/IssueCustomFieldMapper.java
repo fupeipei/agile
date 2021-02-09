@@ -23,7 +23,6 @@ public interface IssueCustomFieldMapper {
     int updateByExample(@Param("record") IssueCustomField record, @Param("example") IssueCustomFieldExample example);
 
     /**
-     *
      * @Date: 18:10
      * @Description: 根据工作项ID查询自定义字段信息
      * @Param: * @param issueId
@@ -32,7 +31,6 @@ public interface IssueCustomFieldMapper {
     List<IssueCustomFieldDTO> listCustomField(Long issueId);
 
     /**
-     *
      * @Date: 18:10
      * @Description: 批量新增工作项信息
      * @Param: * @param fields
@@ -41,11 +39,10 @@ public interface IssueCustomFieldMapper {
     int createBatch(@Param("fields") List<IssueCustomField> fields);
 
     /**
-     *
+     * @param issueId
      * @Date: 18:10
      * @Description: 批量删除工作项自定义字段值
      * @Param: * @param fieldIds
-    * @param issueId
      * @Return: void
      */
     void deleteInFieldIdList4Issus(@Param("fieldIds") List<Long> fieldIds, @Param("issueId") Long issueId);
@@ -54,18 +51,15 @@ public interface IssueCustomFieldMapper {
 
     /**
      * 功能描述: 修改自定义字段明细值是允许为空
-
-     * @date 2021/2/22
+     *
      * @param record
      * @param example
      * @return int
+     * @date 2021/2/22
      */
     int updateByExampleSelectiveWithNull(@Param("record") IssueCustomField record, @Param("example") IssueCustomFieldExample example);
 
     void deleteInFieldIdListByFieldIds(@Param("fieldId") Long fieldId);
-
-
-
 
 
 }

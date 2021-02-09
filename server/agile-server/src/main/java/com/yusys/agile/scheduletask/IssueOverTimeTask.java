@@ -14,12 +14,11 @@ import org.springframework.stereotype.Component;
 /**
  * @ClassName IssueOverTimeTask
  * @Description 超时工作项邮件发送
- *
  * @Date 2021/2/18 17:04
  * @Version 1.0
  */
 @Component
-@JobHandler( ScheduleConstant.TaskHandler.ISSUE_OVERTIME)
+@JobHandler(ScheduleConstant.TaskHandler.ISSUE_OVERTIME)
 public class IssueOverTimeTask extends IJobHandler {
     private static final Logger log = LoggerFactory.getLogger(IssueOverTimeTask.class);
     @Autowired
@@ -27,7 +26,7 @@ public class IssueOverTimeTask extends IJobHandler {
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
-        log.info("工作项超时定时任务触发Start，定时任务名称：{}",ScheduleConstant.TaskHandler.ISSUE_OVERDUE);
+        log.info("工作项超时定时任务触发Start，定时任务名称：{}", ScheduleConstant.TaskHandler.ISSUE_OVERDUE);
         byte mailType = MailSwitchEnum.OVERTIME.getMailType();
         mailSendUtil.sendOverDueMail(mailType);
         log.info("工作项超时定时任务触发End");

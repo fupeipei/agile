@@ -8,7 +8,6 @@ import java.util.List;
 /**
  * @ClassName IssueRuleService
  * @Description TODO
- *
  * @Date 2021/2/8 11:03
  * @Version 1.0
  */
@@ -16,6 +15,7 @@ public interface IssueRuleService {
 
     /**
      * 获取工作项阶段状态流转规则列表数据
+     *
      * @param securityDTO
      * @return
      */
@@ -23,6 +23,7 @@ public interface IssueRuleService {
 
     /**
      * 更新工作项阶段状态流转规则
+     *
      * @param issueRule
      * @return
      */

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *    赵英东
+ * 赵英东
  */
 public class LeanKanbanDTO {
 
@@ -14,7 +14,7 @@ public class LeanKanbanDTO {
 
     private String target;
 
-    private Map<String,Object> issueStringDTO;
+    private Map<String, Object> issueStringDTO;
 
     public Byte getSelectType() {
         return selectType;

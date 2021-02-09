@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *功能描述 fastdfs文件上传
+ * 功能描述 fastdfs文件上传
  *
  * @date 2020/10/19
  * @return
@@ -63,48 +63,48 @@ public class UploadController {
         MultipartFile file = multiRequest.getFile("file");
         long fileSize = file.getSize();
         String realFileName = file.getOriginalFilename();
-        check(realFileName,fileSize);
+        check(realFileName, fileSize);
         int suffixIndex = realFileName.lastIndexOf('.');
         String[] result;
         String suffix;
-        if(suffixIndex!=-1){
+        if (suffixIndex != -1) {
             suffix = realFileName.substring(realFileName.lastIndexOf('.') + 1, realFileName.length());
-            try{
+            try {
                 result = storageClient.upload_file(file.getBytes(), suffix, null);
                 LOG.info("单文件上传成功1");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 LOG.error("上传文件失败1：{}", e.getMessage());
                 result = storageClient.upload_file(file.getBytes(), suffix, null);
             }
-        }else{
-            try{
+        } else {
+            try {
                 result = storageClient.upload_file(file.getBytes(), null, null);
                 LOG.info("单文件上传成功2");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 LOG.error("上传文件失败2：{}", e.getMessage());
                 result = storageClient.upload_file(file.getBytes(), null, null);
             }
         }
         String remoteName = result[0] + "/" + result[1];
-        FileInfo uploadFileInfo = new FileInfo(realFileName,remoteName,fileSize,null,this.fileServer);
+        FileInfo uploadFileInfo = new FileInfo(realFileName, remoteName, fileSize, null, this.fileServer);
         //保存附件和issue关系
         saveIssueAttachment(formalReqCode, uploadFileInfo);
         return FileResult.success(uploadFileInfo);
     }
 
     private void saveIssueAttachment(String formalReqCode, FileInfo uploadFileInfo) {
-        if(StringUtils.isBlank(formalReqCode)){
-            LOG.error("接收的局方需求编号为：{}",formalReqCode);
+        if (StringUtils.isBlank(formalReqCode)) {
+            LOG.error("接收的局方需求编号为：{}", formalReqCode);
             throw new BusinessException("接收的局方需求编号为空!");
         }
         List<IssueAttachment> issueAttachmentArrayList = Lists.newArrayList();
         IssueAttachment issueAttachment;
-        try{
-            List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetailByProp("formalReqCode",formalReqCode);
-            if(CollectionUtils.isNotEmpty(sysExtendFieldDetailList)){
+        try {
+            List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetailByProp("formalReqCode", formalReqCode);
+            if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
                 List<Long> issueIdList = sysExtendFieldDetailList.stream().map(SysExtendFieldDetail::getIssueId).collect(Collectors.toList());
                 Issue issue = issueService.selectIssueByIssueId(issueIdList.get(0));
-                for(Long issueId : issueIdList){
+                for (Long issueId : issueIdList) {
                     issueAttachmentService.deleteAttachmentByIssueId(issueId);
                     issueAttachment = new IssueAttachment();
                     issueAttachment.setIssueId(issueId);
@@ -114,19 +114,19 @@ public class UploadController {
                     issueAttachmentArrayList.add(issueAttachment);
                 }
                 issueAttachmentService.createBatchAttachment(issueAttachmentArrayList);
-            }else{
+            } else {
                 LOG.error("formalReqCode:{}在系统中没有对应的EPIC信息", formalReqCode);
-                throw new BusinessException("formalReqCode:"+formalReqCode+"在系统中没有对应的EPIC信息");
+                throw new BusinessException("formalReqCode:" + formalReqCode + "在系统中没有对应的EPIC信息");
             }
-        }catch(Exception e){
-            LOG.error("操作附件表失败！，错误信息：{}",e);
+        } catch (Exception e) {
+            LOG.error("操作附件表失败！，错误信息：{}", e);
             throw new BusinessException("操作附件表失败!");
         }
     }
 
     @RequestMapping(value = "/upload/official/business/files", method = RequestMethod.POST)
     @ResponseBody
-    public FileResult uploadOfficialBusinessFiles(@RequestParam("formalReqCode") String formalReqCode,@RequestPart("files") MultipartFile[] files) throws IOException, MyException {
+    public FileResult uploadOfficialBusinessFiles(@RequestParam("formalReqCode") String formalReqCode, @RequestPart("files") MultipartFile[] files) throws IOException, MyException {
         LOG.info("进入多文件上传接口");
         MultipartFile file = null;
         List<FileInfo> fileInfos = Lists.newArrayList();
@@ -134,7 +134,7 @@ public class UploadController {
             file = files[i];
             long fileSize = file.getSize();
             String realFileName = file.getOriginalFilename();
-            check(realFileName,fileSize);
+            check(realFileName, fileSize);
         }
         for (int i = 0; i < files.length; ++i) {
             file = files[i];
@@ -142,23 +142,23 @@ public class UploadController {
             String realFileName = file.getOriginalFilename();
             String suffix = realFileName.substring(realFileName.lastIndexOf('.') + 1, realFileName.length());
             String[] result = null;
-            try{
+            try {
                 result = storageClient.upload_file(file.getBytes(), suffix, null);
                 LOG.info("多文件上传成功");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 LOG.error("上传文件失败3：{}", e.getMessage());
                 result = storageClient.upload_file(file.getBytes(), suffix, null);
             }
-            String remoteName = result[0]+"/"+result[1];
-            fileInfos.add(new FileInfo(realFileName,remoteName,fileSize,suffix,this.fileServer));
+            String remoteName = result[0] + "/" + result[1];
+            fileInfos.add(new FileInfo(realFileName, remoteName, fileSize, suffix, this.fileServer));
         }
         return FileResult.success(fileInfos);
     }
 
-    private void check(String fileName,long fileSize) {
-        if(fileSize>maxSize*1024*1024){
+    private void check(String fileName, long fileSize) {
+        if (fileSize > maxSize * 1024 * 1024) {
             throw new OssException(OverSizeError.get(fileName, maxSize));
-        }else if(fileSize==0){
+        } else if (fileSize == 0) {
             new OssException(EmptyFileError.get(fileName));
         }
     }

@@ -3,7 +3,6 @@ package com.yusys.agile.issue.dto;
 import java.util.List;
 
 /**
- *
  * @description
  * @date 2020/10/23
  */
@@ -98,6 +97,7 @@ public class PanoramasEpicDTO {
 
     private String formalReqCode;
     private String responsiblePerson;
+
     public String getVersionName() {
         return versionName;
     }

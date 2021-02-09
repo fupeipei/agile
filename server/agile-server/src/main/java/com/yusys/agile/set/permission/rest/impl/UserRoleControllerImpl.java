@@ -22,10 +22,9 @@ public class UserRoleControllerImpl {
     private UserRoleService userRoleService;
 
     /**
-     * @description 查询项目级角色列表
-     *  
-     * @date 2020/05/20
      * @return
+     * @description 查询项目级角色列表
+     * @date 2020/05/20
      */
     @GetMapping("/queryProjectRoleList")
     public ControllerResponse queryProjectRoleList(@RequestParam(name = "pageNum") Integer pageNum, @RequestParam(name = "pageSize") Integer pageSize) {

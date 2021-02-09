@@ -2,7 +2,9 @@ package com.yusys.agile.user.dao;
 
 import com.yusys.agile.user.domain.ReqUserRlat;
 import com.yusys.agile.user.domain.ReqUserRlatExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ReqUserRlatMapper {
@@ -31,9 +33,9 @@ public interface ReqUserRlatMapper {
     /**
      * 功能描述: 批量插入用户关系
      *
-     * @date 2020/8/12
      * @param reqUserRlats
      * @return void
+     * @date 2020/8/12
      */
     void insertBatch(@Param("collection") List<ReqUserRlat> reqUserRlats);
 }

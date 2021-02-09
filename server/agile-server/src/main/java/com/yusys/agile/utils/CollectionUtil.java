@@ -12,14 +12,15 @@ public class CollectionUtil {
     }
 
     /**
-     *  将集合类型转换
+     * 将集合类型转换
+     *
      * @param strs
      * @return
      */
-    public static List<Integer> transformType(List<String> strs){
+    public static List<Integer> transformType(List<String> strs) {
         List<Integer> result = new ArrayList<>();
-        for(String str : strs){
-            if(!str.matches("^([0-9])+$")){
+        for (String str : strs) {
+            if (!str.matches("^([0-9])+$")) {
                 continue;
             }
             result.add(Integer.parseInt(str));
@@ -29,18 +30,16 @@ public class CollectionUtil {
 
     /**
      * 将Object转换为集合
+     *
      * @param obj
      * @param clazz
      * @param <T>
      * @return 转换后的集合结果
      */
-    public static <T> List<T> castToList(Object obj, Class<T> clazz)
-    {
+    public static <T> List<T> castToList(Object obj, Class<T> clazz) {
         List<T> result = new ArrayList<T>();
-        if(obj instanceof List<?>)
-        {
-            for (Object o : (List<?>) obj)
-            {
+        if (obj instanceof List<?>) {
+            for (Object o : (List<?>) obj) {
                 result.add(clazz.cast(o));
             }
             return result;
@@ -50,11 +49,12 @@ public class CollectionUtil {
 
     /**
      * 比较两个集合是否相等
+     *
      * @param l0
      * @param l1
      * @return
      */
-    public static boolean isListEqual(List l0, List l1){
+    public static boolean isListEqual(List l0, List l1) {
         if (l0 == l1)
             return true;
         if (l0 == null && l1 == null)

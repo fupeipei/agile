@@ -1,8 +1,8 @@
 package com.yusys.agile.businesskanban.dto;
 
 import java.util.List;
+
 /**
- *
  * @Date: 2021/2/8
  * @Description: 事务视图
  */

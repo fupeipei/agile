@@ -30,7 +30,6 @@ public interface IssueAttachmentMapper {
     int updateByPrimaryKey(IssueAttachment record);
 
     /**
-     *
      * @Date: 18:10
      * @Description: 批量新增缺陷
      * @Param: * @param newAttachment

@@ -3,7 +3,6 @@ package com.yusys.agile.issue.domain;
 import java.util.Date;
 
 /**
-
  * @Date 2021/2/4
  * @Description 项目中的工作项状态个数统计
  */

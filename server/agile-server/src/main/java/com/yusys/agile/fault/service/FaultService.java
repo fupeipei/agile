@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * 缺陷service
  *
-
  * @create 2020-04-10 16:27
  */
 public interface FaultService {
@@ -22,7 +21,6 @@ public interface FaultService {
      *
      * @param issueDTO 缺陷dto
      * @return void
-
      * @date 2020/4/11
      */
     void addFault(IssueDTO issueDTO);
@@ -32,7 +30,6 @@ public interface FaultService {
      *
      * @param issueId 缺陷id
      * @return void
-
      * @date 2020/4/11
      */
     void deleteFault(Long issueId);
@@ -43,7 +40,6 @@ public interface FaultService {
      *
      * @param issueId
      * @return com.yusys.agile.issue.dto.IssueDTO
-
      * @date 2020/4/15
      */
     IssueDTO getFault(Long issueId);
@@ -53,7 +49,6 @@ public interface FaultService {
      *
      * @param faultDTO
      * @return void
-
      * @date 2020/4/13
      */
     void updateFault(IssueDTO faultDTO) throws Exception;
@@ -63,7 +58,6 @@ public interface FaultService {
      *
      * @param
      * @return java.util.List<com.yusys.agile.fault.domain.FaultLevel>
-
      * @date 2020/4/11
      */
     List<FaultLevel> listAllFaultLevel();
@@ -73,7 +67,6 @@ public interface FaultService {
      *
      * @param
      * @return java.util.List<com.yusys.agile.fault.domain.FaultType>
-
      * @date 2020/4/11
      */
     List<FaultType> listAllFaultType();
@@ -83,7 +76,6 @@ public interface FaultService {
      *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2020/4/14
      */
     List<UserDTO> listAllCreateUsers(Long projectId);
@@ -93,7 +85,6 @@ public interface FaultService {
      *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2020/4/14
      */
     List<UserDTO> listAllFixedUsers(Long projectId);
@@ -103,7 +94,6 @@ public interface FaultService {
      *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2020/4/14
      */
     List<UserDTO> listAllTestUsers(Long projectId);
@@ -122,7 +112,6 @@ public interface FaultService {
      * @param pageNum    每页数量
      * @param pageSize   页数
      * @return IssueDTO
-
      * @date 2020/4/14
      */
     List<IssueDTO> listFaults(String idOrName, Long faultLevel, Long faultType, Long stageId, Long sprintId, Long createUid, String createDate, Long fixedUid, Long testUid, Long projectId, Integer pageNum, Integer pageSize) throws Exception;
@@ -136,7 +125,6 @@ public interface FaultService {
      * @param pageNum
      * @param pageSize
      * @return java.util.List<IssueDTO>
-
      * @date 2020/4/14
      */
     List<IssueDTO> listFaultsOrStorysNotLinkSprint(String filter, Byte issueType, Long projectId, Integer pageNum, Integer pageSize);
@@ -146,7 +134,6 @@ public interface FaultService {
      *
      * @param
      * @return List
-
      * @date 2020/4/15
      */
     List<FaultStatusDTO> listAllStatus();
@@ -156,9 +143,7 @@ public interface FaultService {
      * 功能描述: 拖动缺陷卡片
      *
      * @param issueDTO
-
      * @return void
-
      * @date 2020/4/26
      */
     void dragFault(IssueDTO issueDTO) throws Exception;
@@ -182,45 +167,42 @@ public interface FaultService {
      *
      * @param projectId
      * @return java.util.Map<java.lang.Long, com.yusys.portal.model.facade.entity.SsoUser>
-
      * @date 2020/4/14
      */
-     Map<Long, String> getUserMapByProjectId(Long projectId) ;
+    Map<Long, String> getUserMapByProjectId(Long projectId);
 
     /**
      * 功能描述: 根据用户集合获取所有的用户数据
+     *
      * @param UserIdList
      * @return java.util.Map<java.lang.Long, com.yusys.portal.model.facade.entity.SsoUser>
-     *
      * @date 2020/10/21
      */
-    Map<Long, String> getUserMapByUserIdList(List<Long> UserIdList) ;
+    Map<Long, String> getUserMapByUserIdList(List<Long> UserIdList);
 
-     /**
-      * 功能描述: 缺陷设置阻塞状态
-
-      * @date 2021/2/1
-      * @param issueDTO
-      * @return void
-      */
+    /**
+     * 功能描述: 缺陷设置阻塞状态
+     *
+     * @param issueDTO
+     * @return void
+     * @date 2021/2/1
+     */
     void editBlockState(IssueDTO issueDTO);
 
     /**
-     * @description 查询未绑定故事且状态未关闭的迭代下缺陷
-     *  
-     * @date 2020/08/31
      * @param projectId
      * @param sprintId
      * @return
+     * @description 查询未绑定故事且状态未关闭的迭代下缺陷
+     * @date 2020/08/31
      */
     List<IssueDTO> getUnBindStoryAndUnFinishedFaultList(Long projectId, Long sprintId);
 
     /**
-     * @description 统计缺陷待修复个数，修复中个数，已修复个数，已关闭个数，总数，修复率
-     *  
-     * @date 2020/09/07
      * @param projectId
      * @return
+     * @description 统计缺陷待修复个数，修复中个数，已修复个数，已关闭个数，总数，修复率
+     * @date 2020/09/07
      */
     Map<String, Object> statisticFaults(Long projectId);
 }

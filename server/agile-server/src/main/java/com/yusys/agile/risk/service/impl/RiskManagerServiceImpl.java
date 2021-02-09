@@ -28,7 +28,6 @@ import java.util.Optional;
 /**
  * @ClassName RiskManagerServiceImpl
  * @Description 风险管理实现类
- *
  * @Date 2020/8/11 12:06
  * @Version 1.0
  */
@@ -42,18 +41,18 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
     @Override
-    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus,Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
-        if(Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()){
+    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
+        if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
             PageHelper.startPage(pageNum, pageSize);
         }
 
         RiskManagerExample riskManagerExample = new RiskManagerExample();
         RiskManagerExample.Criteria criteria = riskManagerExample.createCriteria();
         criteria.andProjectIdEqualTo(securityDTO.getProjectId());
-        if(StringUtils.isNotEmpty(title)){
-            criteria.andTitleLike(StringUtils.join(StringConstant.PERCENT_SIGN,title, StringConstant.PERCENT_SIGN));
+        if (StringUtils.isNotEmpty(title)) {
+            criteria.andTitleLike(StringUtils.join(StringConstant.PERCENT_SIGN, title, StringConstant.PERCENT_SIGN));
         }
-        if(Optional.ofNullable(riskStatus).isPresent()){
+        if (Optional.ofNullable(riskStatus).isPresent()) {
             criteria.andRiskStatusEqualTo(riskStatus);
         }
         riskManagerExample.setOrderByClause(CREATE_TIME_DESC);
@@ -63,11 +62,11 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     @Override
     public void create(RiskManagerDTO riskManagerDTO, SecurityDTO securityDTO) {
         RiskManager riskManager = ReflectUtil.copyProperties(riskManagerDTO, RiskManager.class);
-        if(Optional.ofNullable(riskManager.getRiskId()).isPresent()){
+        if (Optional.ofNullable(riskManager.getRiskId()).isPresent()) {
             RiskManager riskManager1 = riskManagerMapper.selectByPrimaryKey(riskManager.getRiskId());
-            Optional.ofNullable(riskManager1).orElseThrow(()-> new BusinessException("更新的风险信息不存在"));
+            Optional.ofNullable(riskManager1).orElseThrow(() -> new BusinessException("更新的风险信息不存在"));
             riskManagerMapper.updateByPrimaryKeySelective(riskManager);
-        }else{
+        } else {
             riskManager.setCreateName(securityDTO.getUserName());
             riskManager.setProjectId(securityDTO.getProjectId());
             riskManagerMapper.insert(riskManager);
@@ -85,9 +84,9 @@ public class RiskManagerServiceImpl implements RiskManagerService {
         Optional.ofNullable(riskManager).orElseThrow(() -> new BusinessException("风险信息不存在!"));
         RiskManagerDTO riskManagerDTO = ReflectUtil.copyProperties(riskManager, RiskManagerDTO.class);
         Long systemId = riskManagerDTO.getSystemId();
-        if(Optional.ofNullable(systemId).isPresent()){
+        if (Optional.ofNullable(systemId).isPresent()) {
             SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
-            if(Optional.ofNullable(ssoSystem).isPresent()){
+            if (Optional.ofNullable(ssoSystem).isPresent()) {
                 riskManagerDTO.setSystemName(ssoSystem.getSystemName());
             }
         }
@@ -109,10 +108,10 @@ public class RiskManagerServiceImpl implements RiskManagerService {
         criteria1.andProjectIdEqualTo(projectId);
         criteria1.andRiskStatusEqualTo(RiskStatusEnum.DOING.CODE);
         List<RiskManager> riskManagersDoing = riskManagerMapper.selectByExample(riskManagerExample1);
-        if(CollectionUtils.isNotEmpty(riskManagers)){
+        if (CollectionUtils.isNotEmpty(riskManagers)) {
             jsonObject.put("total", riskManagers.size());
         }
-        if(CollectionUtils.isNotEmpty(riskManagersDoing)){
+        if (CollectionUtils.isNotEmpty(riskManagersDoing)) {
             jsonObject.put("count", riskManagersDoing.size());
         }
 
@@ -120,12 +119,12 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     }
 
     @Override
-    public List<RiskManagerDTO> getRisksColl(Date riskStartTime, Date riskEndTime,SecurityDTO securityDTO) {
+    public List<RiskManagerDTO> getRisksColl(Date riskStartTime, Date riskEndTime, SecurityDTO securityDTO) {
         RiskManagerExample riskManagerExample = new RiskManagerExample();
         RiskManagerExample.Criteria criteria = riskManagerExample.createCriteria();
         criteria.andProjectIdEqualTo(securityDTO.getProjectId());
 
-        if(Optional.ofNullable(riskStartTime).isPresent() && Optional.ofNullable(riskEndTime).isPresent()){
+        if (Optional.ofNullable(riskStartTime).isPresent() && Optional.ofNullable(riskEndTime).isPresent()) {
             criteria.andRiskStartTimeGreaterThan(riskStartTime);
             criteria.andRiskStartTimeLessThan(riskEndTime);
         }
@@ -135,18 +134,18 @@ public class RiskManagerServiceImpl implements RiskManagerService {
 
     private List<RiskManagerDTO> getRiskManagerDTOS(RiskManagerExample riskManagerExample) {
         List<RiskManagerDTO> riskManagers = riskManagerMapper.selectByExampleWithDTO(riskManagerExample);
-        if(CollectionUtils.isNotEmpty(riskManagers)){
-            riskManagers.forEach(riskManager ->{
-                if(Optional.ofNullable(riskManager.getRiskLevel()).isPresent()){
+        if (CollectionUtils.isNotEmpty(riskManagers)) {
+            riskManagers.forEach(riskManager -> {
+                if (Optional.ofNullable(riskManager.getRiskLevel()).isPresent()) {
                     riskManager.setRiskLevelName(RiskLevelEnum.getName(riskManager.getRiskLevel()));
                 }
-                if(Optional.ofNullable(riskManager.getRiskStatus()).isPresent()){
+                if (Optional.ofNullable(riskManager.getRiskStatus()).isPresent()) {
                     riskManager.setRiskStatusName(RiskStatusEnum.getName(riskManager.getRiskStatus()));
                 }
                 Long systemId = riskManager.getSystemId();
-                if(Optional.ofNullable(systemId).isPresent()){
+                if (Optional.ofNullable(systemId).isPresent()) {
                     SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
-                    if(Optional.ofNullable(ssoSystem).isPresent()){
+                    if (Optional.ofNullable(ssoSystem).isPresent()) {
                         riskManager.setSystemName(ssoSystem.getSystemName());
                     }
                 }

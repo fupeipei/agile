@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * @description 业务需求详情信息实体类
- *  
  * @date 2020/12/07
  */
 public class EpicDetailInfoDTO extends EpicInfoDTO implements Serializable {

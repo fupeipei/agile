@@ -2,7 +2,9 @@ package com.yusys.agile.fault.dao;
 
 import com.yusys.agile.fault.domain.FaultLevel;
 import com.yusys.agile.fault.domain.FaultLevelExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface FaultLevelMapper {

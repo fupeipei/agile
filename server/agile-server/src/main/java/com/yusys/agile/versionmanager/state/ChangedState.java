@@ -6,7 +6,8 @@ import com.yusys.agile.versionmanager.enums.VersionStateEnum;
 import java.util.List;
 
 /**
- *   : rock
+ * : rock
+ *
  * @description: 有变更状态
  * @date:Create：in 2020/4/4
  */
@@ -18,7 +19,7 @@ public class ChangedState extends AbstractState {
         // 生成要发送的审批数据
         List<VersionManagerDTO> addedRequestData = convertToVersionPlanApprovalRequestData(versionPlanAddedRequirements,
                 VersionStateEnum.VERSION_STATE_CHANGED.CODE);
-        for(VersionManagerDTO versionManagerDTO : versionPlanDeletedRequirements){
+        for (VersionManagerDTO versionManagerDTO : versionPlanDeletedRequirements) {
             generateSendRMSReqDeleteData(versionManagerDTO);
         }
         List<VersionManagerDTO> requestData = mergeRequestData(addedRequestData, versionPlanDeletedRequirements);

@@ -132,10 +132,11 @@ public class CustomFieldPoolController {
 
     /**
      * 功能描述: 根据项目和类型查询展示的自定义字段
-     * @date 2021/2/1
+     *
      * @param issueType
      * @param projectId
      * @return
+     * @date 2021/2/1
      */
     @GetMapping("/listCustomFieldsByIssueType")
     public ControllerResponse listCustomFieldsByIssueType(@RequestParam(name = "issueType") Byte issueType, @RequestHeader(name = "projectId") Long projectId, @RequestParam(name = "projectId", required = false) Long paramProjectId) {
@@ -148,7 +149,7 @@ public class CustomFieldPoolController {
         // 某类型的工作项展示的的自定义字段
         List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldDTO(finalProjectId, issueType);
         Map map = new HashMap<>();
-        map.put("list",customFieldDTOList);
+        map.put("list", customFieldDTOList);
         return ControllerResponse.success(map);
 
     }

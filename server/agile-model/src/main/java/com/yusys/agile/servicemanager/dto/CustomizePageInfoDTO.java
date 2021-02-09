@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * @description 服务治理平台分页实体类
- *  
  * @date 2020/10/27
  */
 public class CustomizePageInfoDTO<T> implements Serializable {

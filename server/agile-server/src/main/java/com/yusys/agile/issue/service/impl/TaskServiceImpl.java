@@ -35,7 +35,6 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
- *
  * @Date: 13:33
  */
 @Service
@@ -297,7 +296,6 @@ public class TaskServiceImpl implements TaskService {
      * @param from
      * @param to
      * @param task
-
      * @Date 2021/2/15
      * @Description 任务卡片拖动增加历史记录
      * @Return java.util.List<com.yusys.agile.issue.domain.IssueHistoryRecord>

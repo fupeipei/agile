@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Date 2021/2/1
  * @Version 1.0
  */
-@FeignClient( name = "cicd-cms" )
+@FeignClient(name = "cicd-cms")
 public interface ICmsChangeClient {
     /**
      * 根据工作项ID获取构建记录
+     *
      * @param taskId
      * @param pageNum
      * @param pageSize
@@ -26,6 +27,7 @@ public interface ICmsChangeClient {
 
     /**
      * 根据工作项ID获取部署记录
+     *
      * @param taskId
      * @param pageNum
      * @param pageSize

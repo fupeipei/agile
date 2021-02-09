@@ -6,17 +6,15 @@ import java.util.List;
 
 public interface IssueSystemRelpService {
     /**
-     *
+     * @param systemIds
      * @Date: 2021/2/13 11:04
      * @Description: 批量插入工作项和系统关联关系
      * @Param: issueId
-     * @param systemIds
      * @Return: void
      */
-    void batchInsert(Long issueId,List<Long> systemIds);
+    void batchInsert(Long issueId, List<Long> systemIds);
 
     /**
-     *
      * @Date: 2021/2/13 18:09
      * @Description: 查询工作项关联的系统列表
      * @Param: * @param issueId
@@ -25,7 +23,6 @@ public interface IssueSystemRelpService {
     List<IssueSystemRelp> listIssueSystemRelp(Long issueId);
 
     /**
-     *
      * @Date: 2021/2/13 18:11
      * @Description: 删除工作项关联的系统
      * @Param: * @param issueId
@@ -35,7 +32,6 @@ public interface IssueSystemRelpService {
 
 
     /**
-     *
      * @Date: 2021/2/13 18:09
      * @Description: 查询工作项关联的系统列表
      * @Param: * @param issueId

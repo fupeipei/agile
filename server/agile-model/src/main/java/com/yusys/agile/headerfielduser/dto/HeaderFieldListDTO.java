@@ -7,9 +7,9 @@ import java.util.List;
  * @Description: TODO
  */
 public class HeaderFieldListDTO {
-   private  List<Long> updateList;
-   private  Byte category;
-   private  Byte isFilter;
+    private List<Long> updateList;
+    private Byte category;
+    private Byte isFilter;
     private String tenantCode;
 
     public List<Long> getUpdateList() {

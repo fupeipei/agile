@@ -1,7 +1,7 @@
 package com.yusys.agile.leankanban.dto;
 
 /**
- *    赵英东
+ * 赵英东
  */
 public class PageResultDTO {
 
@@ -43,8 +43,8 @@ public class PageResultDTO {
     }
 
     public int getFrom() {
-        this.page = page==null?1:page;
-        this.pageSize = pageSize==null?10:pageSize;
+        this.page = page == null ? 1 : page;
+        this.pageSize = pageSize == null ? 10 : pageSize;
         return pageSize * (page - 1);
     }
 }

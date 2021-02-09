@@ -13,5 +13,5 @@ public interface IssueProjectStatusMapper {
 
     Integer update(IssueProjectStatus status);
 
-    IssueProjectStatus getByProjectAndDate(@Param("projectId") Long projectId, @Param("calculateDate") Date calculateDate, @Param("issueType")Byte issueType);
+    IssueProjectStatus getByProjectAndDate(@Param("projectId") Long projectId, @Param("calculateDate") Date calculateDate, @Param("issueType") Byte issueType);
 }

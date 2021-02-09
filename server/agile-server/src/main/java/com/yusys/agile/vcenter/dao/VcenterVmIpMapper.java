@@ -2,7 +2,9 @@ package com.yusys.agile.vcenter.dao;
 
 import com.yusys.agile.vcenter.domain.VcenterVmIp;
 import com.yusys.agile.vcenter.domain.VcenterVmIpExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface VcenterVmIpMapper {
@@ -28,5 +30,5 @@ public interface VcenterVmIpMapper {
 
     int updateByPrimaryKey(VcenterVmIp record);
 
-    int updateByIp(String  Ip);
+    int updateByIp(String Ip);
 }

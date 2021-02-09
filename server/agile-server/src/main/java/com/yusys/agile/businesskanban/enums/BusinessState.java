@@ -5,14 +5,14 @@ import java.util.Map;
 
 public enum BusinessState {
     //事务状态 0:待领取、 1：待处理、2：处理中，4：完成
-    UNCLAIMED((byte)0, "未领取"),
-    PENDING((byte)1, "已领取"),
-    PROCESSING((byte)2, "进行中"),
-    COMPLETE((byte)3, "已完成");
+    UNCLAIMED((byte) 0, "未领取"),
+    PENDING((byte) 1, "已领取"),
+    PROCESSING((byte) 2, "进行中"),
+    COMPLETE((byte) 3, "已完成");
 
-    public static Map<Byte,String> getBusinessStateMap(){
-        Map<Byte,String> businessStateMap = new HashMap<>();
-        for(BusinessState type : BusinessState.values()){
+    public static Map<Byte, String> getBusinessStateMap() {
+        Map<Byte, String> businessStateMap = new HashMap<>();
+        for (BusinessState type : BusinessState.values()) {
             businessStateMap.put(
                     type.getNodeCode(),
                     type.getNodeMsg());

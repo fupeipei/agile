@@ -19,9 +19,9 @@ public interface ReasonClassifyDao {
     int updateByPrimaryKey(ReasonClassify record);
 
     /**
-     *  custom method start
+     * custom method start
      *
-     * @date  2021/2/5
+     * @date 2021/2/5
      */
     List<ReasonClassify> selectAllReasonClassify();
 }

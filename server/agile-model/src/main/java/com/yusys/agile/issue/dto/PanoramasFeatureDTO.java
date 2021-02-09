@@ -3,7 +3,6 @@ package com.yusys.agile.issue.dto;
 import java.util.List;
 
 /**
- *
  * @description
  * @date 2020/10/23
  */
@@ -57,8 +56,8 @@ public class PanoramasFeatureDTO {
     }
 
     private Long issueId;
-    private String  systemName;
-    private String  handler;
+    private String systemName;
+    private String handler;
     private String featureStatus;
     private String sysTester;
     private String sysTestStatus;

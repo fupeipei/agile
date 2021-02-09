@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * @description 项目关联类
- *  
  * @date 2020/10/14
  */
 public class ProjectRelation implements Serializable {

@@ -1,10 +1,12 @@
 package com.yusys.agile.versionmanager.state;
 
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
+
 import java.util.List;
 
 /**
- *   : rock
+ * : rock
+ *
  * @description:
  * @date:Create：in 2020/4/4
  */

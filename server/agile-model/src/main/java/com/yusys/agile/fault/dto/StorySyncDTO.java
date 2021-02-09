@@ -3,7 +3,6 @@ package com.yusys.agile.fault.dto;
 /**
  * 同步故事DTO
  *
- *
  * @create 2020-04-28 14:51
  */
 public class StorySyncDTO {

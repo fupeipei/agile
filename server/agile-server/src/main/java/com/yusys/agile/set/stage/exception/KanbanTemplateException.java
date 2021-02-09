@@ -2,7 +2,6 @@ package com.yusys.agile.set.stage.exception;
 
 /**
  * @description 看板模板异常类
- *  
  * @date 2020/08/21
  */
 public class KanbanTemplateException extends RuntimeException {

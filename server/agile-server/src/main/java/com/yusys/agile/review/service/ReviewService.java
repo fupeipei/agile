@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * 评审service
  *
-
  * @create 2020-09-08 09:55
  */
 public interface ReviewService {
@@ -19,7 +18,6 @@ public interface ReviewService {
      *
      * @param reviewDTO
      * @return void
-
      * @date 2021/3/8
      */
     void addReview(ReviewDTO reviewDTO);
@@ -29,7 +27,6 @@ public interface ReviewService {
      *
      * @param reviewId
      * @return void
-
      * @date 2021/3/8
      */
     void cancelReview(Long reviewId, Long operatorId);
@@ -39,7 +36,6 @@ public interface ReviewService {
      *
      * @param reviewRecordDTO
      * @return void
-
      * @date 2021/3/8
      */
     void executeReview(ReviewRecordDTO reviewRecordDTO, Long operatorId);
@@ -49,7 +45,6 @@ public interface ReviewService {
      *
      * @param issueId
      * @return java.util.List<com.yusys.agile.review.dto.ReviewDTO>
-
      * @date 2021/3/8
      */
     List<ReviewDTO> listReview(Long issueId);
@@ -59,7 +54,6 @@ public interface ReviewService {
      *
      * @param reviewId
      * @return com.yusys.agile.review.dto.ReviewDTO
-
      * @date 2021/3/9
      */
     ReviewDTO getReview(Long reviewId);
@@ -69,27 +63,26 @@ public interface ReviewService {
      *
      * @param storyId
      * @return java.lang.Boolean
-
      * @date 2021/3/9
      */
     StoryCheckResultDTO allowStoryInSprint(Long storyId, Long projectId);
 
     /**
      * 功能描述: 获取项目下某类型工作项的评审设置
-
-     * @date 2021/3/11
+     *
      * @param projectId
      * @param issueType
      * @return com.yusys.agile.review.dto.ReviewSetDTO
+     * @date 2021/3/11
      */
     ReviewSetDTO getReviewSetDTO(Long projectId, Byte issueType);
 
     /**
      * 功能描述: 根据评审id获取工作项集合
+     *
      * @param reviewIds
      * @return java.util.List<Long>
-     *
      * @date 2020/12/1
      */
-    List<Long> listByListReviewId(List<Long> reviewIds,String tenantCode);
+    List<Long> listByListReviewId(List<Long> reviewIds, String tenantCode);
 }

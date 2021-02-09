@@ -13,17 +13,18 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"com.yusys","com.yusys.portal.facade"})
+@EnableFeignClients(basePackages = {"com.yusys", "com.yusys.portal.facade"})
 @ComponentScan({"com.yusys.agile", "com.yusys.portal"})
-@MapperScan(basePackages = {"com.yusys.agile.**.dao","com.yusys.portal.**.dao"})
+@MapperScan(basePackages = {"com.yusys.agile.**.dao", "com.yusys.portal.**.dao"})
 public class AgileApplication {
-	public static void main(String[] args) {
-		// 发Email时，禁止附件文件名过长被截断
-		System.setProperty("mail.mime.splitlongparameters", "false");
+    public static void main(String[] args) {
+        // 发Email时，禁止附件文件名过长被截断
+        System.setProperty("mail.mime.splitlongparameters", "false");
 
-		SpringApplication.run(AgileApplication.class, args);
-	}
-	@Bean
+        SpringApplication.run(AgileApplication.class, args);
+    }
+
+    @Bean
     MeterRegistryCustomizer<MeterRegistry> configurer(
             @Value("${spring.application.name}") String applicationName) {
         return (registry) -> registry.config().commonTags("application", applicationName);

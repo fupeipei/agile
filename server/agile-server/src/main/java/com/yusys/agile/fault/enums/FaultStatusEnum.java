@@ -27,7 +27,6 @@ public enum FaultStatusEnum {
     }
 
 
-
     FaultStatusEnum(Long CODE, String MSG) {
         this.CODE = CODE;
         this.MSG = MSG;

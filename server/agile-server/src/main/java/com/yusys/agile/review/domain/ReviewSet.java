@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @description 评审设置类
- *  
  * @date 2020/09/08
  */
 public class ReviewSet implements Serializable {

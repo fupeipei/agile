@@ -88,7 +88,7 @@ public class EpicController {
 
     @PostMapping("/issue/editEpic")
     public ControllerResponse editEpic(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
-        try{
+        try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
@@ -96,7 +96,7 @@ public class EpicController {
             //批量新增或者批量更新扩展字段值
             issueDTO.setIssueType(new Byte("1"));
             issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
            /* if(e instanceof BaseBusinessException){
                 return ControllerResponse.fail2(e.getMessage());
             }*/
@@ -144,7 +144,6 @@ public class EpicController {
      * @param id   业需或研需id
      * @param type 1 业务需求 2研发需求
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2021/2/22
      */
     @GetMapping("/issue/queryStroyIds")
@@ -157,7 +156,6 @@ public class EpicController {
      *
      * @param projectId 项目id
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2021/3/30
      */
     @GetMapping("/issue/queryAllEpicCountByVersionId")
@@ -178,7 +176,6 @@ public class EpicController {
      * @param epicId
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/10/13
      */
     @GetMapping("/issue/queryFeatureIdsByEpicId/{epicId}")

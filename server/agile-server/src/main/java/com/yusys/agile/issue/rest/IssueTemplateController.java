@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/2/20
  * @Description: TODO
  */
@@ -28,81 +29,80 @@ public class IssueTemplateController {
     IssueCustomRelationService issueCustomRelationService;
 
 
-
     /**
-     *功能描述  工作项与模板初始化查询接口
-     *   
-     * @date 2020/8/3
+     * 功能描述  工作项与模板初始化查询接口
+     *
      * @param issueType
      * @param securityDTO
      * @return java.util.Map
+     * @date 2020/8/3
      */
     @GetMapping("/issueTemplate/query")
-    public ControllerResponse query(Byte  issueType, SecurityDTO securityDTO){
-        return  ControllerResponse.success(issueTemplateService.query(issueType,securityDTO));
+    public ControllerResponse query(Byte issueType, SecurityDTO securityDTO) {
+        return ControllerResponse.success(issueTemplateService.query(issueType, securityDTO));
     }
+
     /**
-     *功能描述  移除应用的自定义字段
-     *   
-     * @date 2021/2/31
+     * 功能描述  移除应用的自定义字段
+     *
      * @param id
      * @return
+     * @date 2021/2/31
      */
     @DeleteMapping("/issueCustomRelation/delete/{id}")
-    public  ControllerResponse deleteIssueCustomRelation(@PathVariable("id")long id,SecurityDTO securityDTO){
-       try{
-           issueCustomRelationService.deleteIssueCustomRelation(id);
-       }
-       catch (Exception e){
-           logger.error(e.getMessage());
-           return ControllerResponse.fail(e.getMessage());
-       }
-        return  ControllerResponse.success();
-    }
-    /**
-     *功能描述  应用的自定义字段保存接口
-     *   
-     * @date 2020/8/3
-     * @param securityDTO
-     * @param idList
-     * @return void
-     */
-    @PostMapping("/issueCustomRelation/save")
-    public ControllerResponse saveIssueCustomRelation(SecurityDTO securityDTO, @RequestBody IssueCustomRelationList idList){
-        try{
-            issueCustomRelationService.saveIssueCustomRelation(securityDTO,idList);
-        }
-        catch (Exception e){
+    public ControllerResponse deleteIssueCustomRelation(@PathVariable("id") long id, SecurityDTO securityDTO) {
+        try {
+            issueCustomRelationService.deleteIssueCustomRelation(id);
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return ControllerResponse.fail(e.getMessage());
         }
-        return  ControllerResponse.success();
+        return ControllerResponse.success();
     }
+
     /**
-      *功能描述 分页查询未应用的自定义字段
-      *   
-      * @date 2020/8/3
-      * @param securityDTO
+     * 功能描述  应用的自定义字段保存接口
+     *
+     * @param securityDTO
+     * @param idList
+     * @return void
+     * @date 2020/8/3
+     */
+    @PostMapping("/issueCustomRelation/save")
+    public ControllerResponse saveIssueCustomRelation(SecurityDTO securityDTO, @RequestBody IssueCustomRelationList idList) {
+        try {
+            issueCustomRelationService.saveIssueCustomRelation(securityDTO, idList);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ControllerResponse.fail(e.getMessage());
+        }
+        return ControllerResponse.success();
+    }
+
+    /**
+     * 功能描述 分页查询未应用的自定义字段
+     *
+     * @param securityDTO
      * @param issueType
      * @param fieldName
-      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2020/8/3
      */
     @GetMapping("/issueCustomRelation/getUnApplied")
-    public ControllerResponse getUnApplied(SecurityDTO securityDTO,Byte issueType,String fieldName){
-        return ControllerResponse.success(issueCustomRelationService.getUnApplied(securityDTO,issueType,fieldName));
+    public ControllerResponse getUnApplied(SecurityDTO securityDTO, Byte issueType, String fieldName) {
+        return ControllerResponse.success(issueCustomRelationService.getUnApplied(securityDTO, issueType, fieldName));
     }
 
 
     @GetMapping("/issueTemplate/init")
-    public ControllerResponse initIssueTemplate(Long projectId){
-        try{
+    public ControllerResponse initIssueTemplate(Long projectId) {
+        try {
             issueTemplateService.initIssueTemplate(projectId);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return ControllerResponse.fail(e.getMessage());
         }
-        return  ControllerResponse.success();
+        return ControllerResponse.success();
 
     }
 

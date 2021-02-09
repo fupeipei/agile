@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/3/10
  * @Description:
  */
@@ -50,7 +51,7 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
 
     @Override
     public List<SysExtendFieldDetail> getIssueExtendDetailList(List<Long> issueIds) {
-        if(issueIds==null||(issueIds.isEmpty())){
+        if (issueIds == null || (issueIds.isEmpty())) {
             return Lists.newArrayList();
         }
         SysExtendFieldDetailExample example = new SysExtendFieldDetailExample();
@@ -66,7 +67,7 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
 
     @Override
     public void updateApprovalStatusByBizNums(List<String> bizNumList, Byte approveFailedStatus) {
-        sysExtendFieldDetailMapper.updateApprovalStatusByBizNums(bizNumList,approveFailedStatus);
+        sysExtendFieldDetailMapper.updateApprovalStatusByBizNums(bizNumList, approveFailedStatus);
     }
 
     @Override
@@ -95,22 +96,24 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
         criteria.andIssueIdEqualTo(bizBacklogId);
         criteria.andFieldIdEqualTo(fieldId);
         List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailMapper.selectByExample(example);
-        if(CollectionUtils.isNotEmpty(sysExtendFieldDetailList)){
+        if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
             return sysExtendFieldDetailList.get(0);
         }
         return null;
     }
+
     @Override
     public List<SysExtendFieldDetail> getSysExtendFieldDetails(List<Long> bizBacklogId, String fieldId) {
         SysExtendFieldDetailExample example = new SysExtendFieldDetailExample();
         SysExtendFieldDetailExample.Criteria criteria = example.createCriteria();
         criteria.andIssueIdIn(bizBacklogId);
-        if(fieldId!=null){
+        if (fieldId != null) {
             criteria.andFieldIdEqualTo(fieldId);
         }
 
         return sysExtendFieldDetailMapper.selectByExample(example);
     }
+
     @Override
     public int update(SysExtendFieldDetail sysExtendFieldDetail) {
         return sysExtendFieldDetailMapper.updateByPrimaryKeySelectiveWithNull(sysExtendFieldDetail);
@@ -119,10 +122,10 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
     @Override
     public int updateApproveResultByPKs(List<Long> notUnbindingApprovalFailedBizBacklogIds, String approveFailed) {
         int result = 0;
-        for(Long issueId : notUnbindingApprovalFailedBizBacklogIds){
+        for (Long issueId : notUnbindingApprovalFailedBizBacklogIds) {
             result += sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT, VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT_NAME
-                    ,approveFailed);
+                    , approveFailed);
         }
         return result;
     }
@@ -130,7 +133,7 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateApprovalEndTime(List<Long> failedBizBacklogIds, Date date) {
-        for(Long issueId : failedBizBacklogIds){
+        for (Long issueId : failedBizBacklogIds) {
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_END_TIME, VersionConstants.SysExtendFiledConstant.APPROVAL_END_TIME_NAME
                     , DateUtil.formatDateToStr(new Date()));
@@ -142,55 +145,55 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
 
     @Override
     public void resetActualAskLineTimeByPKs(List<Long> approvalSuccessUnbindingBizBacklogIds) {
-        for(Long issueId : approvalSuccessUnbindingBizBacklogIds){
+        for (Long issueId : approvalSuccessUnbindingBizBacklogIds) {
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.ACTUAL_ASK_LINE_TIME, VersionConstants.SysExtendFiledConstant.ACTUAL_ASK_LINE_TIME_NAME
-                    ,null);
+                    , null);
         }
     }
 
     @Override
     public void resetApprovalAllByPKs(List<Long> bindingBizBacklogIds) {
-        for(Long issueId : bindingBizBacklogIds){
+        for (Long issueId : bindingBizBacklogIds) {
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT, VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT_NAME
-                    ,null);
+                    , null);
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_START_TIME, VersionConstants.SysExtendFiledConstant.APPROVAL_START_TIME_NAME
-                    ,null);
+                    , null);
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_END_TIME, VersionConstants.SysExtendFiledConstant.APPROVAL_END_TIME_NAME
-                    ,null);
+                    , null);
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.ACTUAL_ASK_LINE_TIME, VersionConstants.SysExtendFiledConstant.ACTUAL_ASK_LINE_TIME_NAME
-                    ,null);
+                    , null);
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS, VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS_NAME
-                    ,IssueApproveStatusEnum.NOT_APPROVE.CODE);
+                    , IssueApproveStatusEnum.NOT_APPROVE.CODE);
         }
     }
 
     @Override
     public int updateSuccessBizBacklogDeployType(Byte deployType, List<Long> successBizBacklogIds) {
-        return sysExtendFieldDetailMapper.updateSuccessBizBacklogDeployType(deployType,successBizBacklogIds);
+        return sysExtendFieldDetailMapper.updateSuccessBizBacklogDeployType(deployType, successBizBacklogIds);
     }
 
     @Override
     public void resetUnbindingBizBacklogByPk(Long unbindingBizBacklogId) {
         sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(unbindingBizBacklogId,
                 VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS, VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS_NAME
-                ,IssueApproveStatusEnum.NOT_APPROVE.CODE);
+                , IssueApproveStatusEnum.NOT_APPROVE.CODE);
     }
 
     @Override
-    public void updateApproveStartTimeAndApproveState(List<Long> reviewingBizBacklogIds,String startTime) {
-        for(Long issueId : reviewingBizBacklogIds){
+    public void updateApproveStartTimeAndApproveState(List<Long> reviewingBizBacklogIds, String startTime) {
+        for (Long issueId : reviewingBizBacklogIds) {
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_START_TIME, VersionConstants.SysExtendFiledConstant.APPROVAL_START_TIME_NAME
-                    ,startTime);
+                    , startTime);
             sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(issueId,
                     VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS, VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS_NAME
-                    ,IssueApproveStatusEnum.APPROVING.CODE);
+                    , IssueApproveStatusEnum.APPROVING.CODE);
         }
     }
 
@@ -209,8 +212,8 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
     }
 
     @Override
-    public List<Long> getSysExtendFieldDetailByIds(List<Long> bizBacklogIds, List<SysExtendFieldDetail>  sysExtendFieldDetails) {
-        return sysExtendFieldDetailMapper.getSysExtendFieldDetailByIds(bizBacklogIds,sysExtendFieldDetails);
+    public List<Long> getSysExtendFieldDetailByIds(List<Long> bizBacklogIds, List<SysExtendFieldDetail> sysExtendFieldDetails) {
+        return sysExtendFieldDetailMapper.getSysExtendFieldDetailByIds(bizBacklogIds, sysExtendFieldDetails);
 
     }
 
@@ -257,7 +260,7 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
     @Override
     public List<String> getPlanDeployDateListByFormalReqCode(String formalReqCode) {
         List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailMapper.getPlanDeployDateListByFormalReqCode(formalReqCode);
-        if(CollectionUtils.isEmpty(sysExtendFieldDetailList)){
+        if (CollectionUtils.isEmpty(sysExtendFieldDetailList)) {
             throw new BusinessException("异常数据，没有部署批次【planDeployDate】！");
         }
         return sysExtendFieldDetailList.stream().map(SysExtendFieldDetail::getValue).collect(Collectors.toList());
@@ -266,8 +269,8 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
     @Override
     public List<String> getBizNumListByFormalReqCode(String formalReqCode) {
         List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailMapper.getBizNumListByFormalReqCode(formalReqCode);
-        if(CollectionUtils.isEmpty(sysExtendFieldDetailList)){
-            throw new BusinessException("异常数据，局方需求编号："+formalReqCode+",没有拆分任务客户需求！");
+        if (CollectionUtils.isEmpty(sysExtendFieldDetailList)) {
+            throw new BusinessException("异常数据，局方需求编号：" + formalReqCode + ",没有拆分任务客户需求！");
         }
         return sysExtendFieldDetailList.stream().map(SysExtendFieldDetail::getValue).collect(Collectors.toList());
     }
@@ -309,7 +312,7 @@ public class SysExtendFieldDetailServiceImpl implements SysExtendFieldDetailServ
 
     @Override
     public List<SysExtendFieldDetail> getNoDeployAndToBePublish(String fieldId, String fieldValue) {
-        return sysExtendFieldDetailMapper.getNoDeployAndToBePublish(fieldId,fieldValue);
+        return sysExtendFieldDetailMapper.getNoDeployAndToBePublish(fieldId, fieldValue);
     }
 
 }

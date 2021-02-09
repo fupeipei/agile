@@ -3,7 +3,6 @@ package com.yusys.agile.issue.dto;
 import java.util.Date;
 
 /**
-
  * @Date: 2021/2/1
  */
 public class IssueAcceptanceDTO {

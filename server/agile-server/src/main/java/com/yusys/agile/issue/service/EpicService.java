@@ -8,7 +8,6 @@ import java.util.List;
 public interface EpicService {
 
     /**
-     *
      * @Date: 18:03
      * @Description: 创建业务需求
      * @Param: * @param issueDTO
@@ -18,7 +17,6 @@ public interface EpicService {
 
     /**
      * @param deleteChild
-     *
      * @Date: 18:03
      * @Description: 删除业务需求
      * @Param: * @param issueId
@@ -27,7 +25,6 @@ public interface EpicService {
     void deleteEpic(Long issueId, Boolean deleteChild);
 
     /**
-     *
      * @Date: 18:03
      * @Description: 查询业务需求
      * @Param: * @param issueId
@@ -39,7 +36,6 @@ public interface EpicService {
 
     /**
      * @param
-     *
      * @Date: 18:02
      * @Description: 编辑业务需求
      * @Param: * @param issueDTO
@@ -49,7 +45,6 @@ public interface EpicService {
 
     /**
      * @param projectId
-     *
      * @Date: 9:30
      * @Description: 复制业务需求
      * @Param: * @param epicId
@@ -61,7 +56,6 @@ public interface EpicService {
      * @param pageNum
      * @param pageSize
      * @param title
-     *
      * @Date: 2021/2/3 14:56
      * @Description: 分页查询所有业务需求
      * @Param: * @param projectId
@@ -70,8 +64,7 @@ public interface EpicService {
     List<IssueDTO> queryAllEpic(Long projectId, Integer pageNum, Integer pageSize, String title);
 
     /**
-     * @param projectId
-     *   :
+     * @param projectId :
      * @Date: 2021/3/29
      * @Description: 按版本统计系统各个阶段需求个数
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueStageIdCountDTO>
@@ -83,11 +76,9 @@ public interface EpicService {
      *
      * @param epicId
      * @return java.util.List<java.lang.Long>
-
      * @date 2020/10/13
      */
     List<Long> queryFeatureIdsByEpicId(Long epicId);
-
 
 
 }

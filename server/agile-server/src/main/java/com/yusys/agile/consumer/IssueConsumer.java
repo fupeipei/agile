@@ -38,30 +38,30 @@ public class IssueConsumer {
     private String flagRegular;
 
     @RabbitListener(queues = AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE)
-    public void receiveRegular(Long issueId){
+    public void receiveRegular(Long issueId) {
 
-        if(Optional.ofNullable(issueId).isPresent() && Boolean.valueOf(flagRegular)){
+        if (Optional.ofNullable(issueId).isPresent() && Boolean.valueOf(flagRegular)) {
             try {
                 //延迟1000毫秒，保证拖拽向上规则状态修改正确，不可删除
-                log.info("接收到工作项向上规整队列命令,工作项ID:{},issueId",issueId);
+                log.info("接收到工作项向上规整队列命令,工作项ID:{},issueId", issueId);
                 regularFactory.commonIssueUpRegular(issueId);
-            }catch (Exception e){
-                log.error("工作项向上规则异常:{}",e);
+            } catch (Exception e) {
+                log.error("工作项向上规则异常:{}", e);
             }
         }
     }
 
     @RabbitListener(queues = AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE)
-    public void receive(IssueMailSendDto issueMailSendDto){
-        if(Optional.ofNullable(issueMailSendDto).isPresent()){
+    public void receive(IssueMailSendDto issueMailSendDto) {
+        if (Optional.ofNullable(issueMailSendDto).isPresent()) {
             try {
                 Issue issue = issueMailSendDto.getIssue();
                 Integer operationType = issueMailSendDto.getOperationType();
                 SecurityDTO securityDTO = issueMailSendDto.getSecurityDTO();
-                log.info("接收到工作项邮件发送队列命令,工作项ID:{},操作类型:{}",issue.getIssueId(), EmailOperationTypeEnum.getName(operationType));
+                log.info("接收到工作项邮件发送队列命令,工作项ID:{},操作类型:{}", issue.getIssueId(), EmailOperationTypeEnum.getName(operationType));
                 mailSendUtil.sendMailContent(issue, operationType, securityDTO);
-            }catch (Exception e){
-                log.error("敏捷模块工作项邮件发送异常:{}",e);
+            } catch (Exception e) {
+                log.error("敏捷模块工作项邮件发送异常:{}", e);
             }
         }
     }

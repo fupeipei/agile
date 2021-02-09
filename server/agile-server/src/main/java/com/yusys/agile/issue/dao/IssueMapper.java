@@ -43,7 +43,6 @@ public interface IssueMapper {
     int updateByPrimaryKey(Issue record);
 
     /**
-     *
      * @Date: 18:11
      * @Description: 解除关联子工作项
      * @Param: * @param issueId
@@ -58,7 +57,6 @@ public interface IssueMapper {
     List<Long> listAllTestUsers(Long projectId);
 
     /**
-     *
      * @Date: 18:11
      * @Description: 获取迭代下的故事列表
      * @Param: * @param sprintId
@@ -68,7 +66,6 @@ public interface IssueMapper {
 
 
     /**
-     *
      * @Date: 18:11
      * @Description: 统计迭代下的所有故事数
      * @Param: * @param sprintId
@@ -77,7 +74,6 @@ public interface IssueMapper {
     Integer countStories4Sprint(Long sprintId);
 
     /**
-     *
      * @Date: 18:12
      * @Description: 统计在迭代中的故事数
      * @Param: * @param sprintId
@@ -86,7 +82,6 @@ public interface IssueMapper {
     int countInsprintBySprint(Long sprintId);
 
     /**
-     *
      * @Date: 18:13
      * @Description: 统计迭代的所有任务+缺陷数
      * @Param: * @param sprintId
@@ -95,7 +90,6 @@ public interface IssueMapper {
     Integer countTasks4Sprint(Long sprintId);
 
     /**
-     *
      * @Date: 18:13
      * @Description: 统计迭代下未完成的任务+缺陷数
      * @Param: * @param sprintId
@@ -105,7 +99,6 @@ public interface IssueMapper {
 
     /**
      * @param issueId
-     *
      * @Date: 18:29
      * @Description: 删除关联关系
      * @Param: * @param parentId
@@ -116,7 +109,6 @@ public interface IssueMapper {
     /**
      * @param issueId
      * @param sprintId
-
      * @Date 2020/4/17
      * @Description 让故事下的任务关联迭代
      * @Return int
@@ -125,7 +117,6 @@ public interface IssueMapper {
 
     /**
      * @param issueIds
-
      * @Date 2020/4/20
      * @Description 通过主键id查询无效故事（做判断）
      * @Return int
@@ -134,7 +125,6 @@ public interface IssueMapper {
 
     /**
      * @param storyId
-
      * @Date 2020/4/20 16:55
      * @Description 通过故事id将任务移出迭代
      * @Return int
@@ -142,7 +132,6 @@ public interface IssueMapper {
     int updateStatusByParentId(Long storyId);
 
     /**
-     *
      * @Date: 21:56
      * @Description: 获取迭代下的所有任务和缺陷列表
      * @Param: * @param sprintId
@@ -152,7 +141,6 @@ public interface IssueMapper {
 
     /**
      * @param listIssueId
-     *
      * @Date: 9:10
      * @Description: 批量建立关联关系
      * @Param: * @param parentId
@@ -161,7 +149,6 @@ public interface IssueMapper {
     void createBatchRelation(@Param("listIssueId") List<Long> listIssueId, @Param("sprintId") Long sprintId, @Param("parentId") Long parentId, @Param("updateUid") Long updateUid);
 
     /**
-     *
      * @Date: 13:30
      * @Description: 查询未关联的工作项
      * @Param: * @param example
@@ -170,7 +157,6 @@ public interface IssueMapper {
     List<IssueDTO> selectByExampleDTO(IssueExample example);
 
     /**
-     *
      * @Date: 16:33
      * @Description: 解除所有子工作项关联关系
      * @Param: * @param issueId
@@ -188,7 +174,6 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-
      * @Date 2021/2/14
      * @Description 统计迭代下所有的任务数
      * @Return java.lang.Integer
@@ -197,7 +182,6 @@ public interface IssueMapper {
 
     /**
      * @param sprintId
-
      * @Date 2021/2/14
      * @Description 统计迭代下完成的任务数
      * @Return int
@@ -237,7 +221,6 @@ public interface IssueMapper {
     Integer sumRemainWorkload4Sprint(Long sprintId);
 
     /**
-     *
      * @Date: 2021/2/21 11:20
      * @Description: 更新迭代id
      * @Param: * @param issue
@@ -255,7 +238,6 @@ public interface IssueMapper {
     int updateFaultByPrimaryKeySelectiveWithNull(Issue record);
 
     /**
-     *
      * @Date: 2021/2/26 17:06
      * @Description: 更新处理人
      * @Param: * @param issue
@@ -274,7 +256,6 @@ public interface IssueMapper {
 
     /**
      * @param issueId
-     *
      * @Date: 2021/2/3 10:22
      * @Description: 详情显示工作项关联关系列表
      * @Param: projectId
@@ -286,7 +267,6 @@ public interface IssueMapper {
 
     /**
      * @param epicId
-     *
      * @Date: 2021/2/9 10:00
      * @Description: 查询业务需求下的所有用户故事
      * @Param: * @param projectId
@@ -296,7 +276,6 @@ public interface IssueMapper {
 
     /**
      * @param issueType
-     *
      * @Date: 2021/2/10 10:20
      * @Description: 查询模板父工作项列表
      * @Param: projectId
@@ -317,7 +296,6 @@ public interface IssueMapper {
      *
      * @param issueRecord
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
-     *   
      * @date 2021/2/16
      */
     List<Issue> queryIssueList(@Param("issueRecord") IssueRecord issueRecord, @Param("customFieldJsonTypeList") List<CustomFieldJsonType> customFieldJsonTypeList);
@@ -332,236 +310,225 @@ public interface IssueMapper {
     int updateBySprintId(@Param("issueId") Long issueId, @Param("sprintId") Long sprintId);
 
     /**
-
+     * @param projectId
+     * @param systemId
+     * @param issueType
      * @Date 2021/2/22
      * @Description 根据项目id和系统id获取工作项信息
-     * @param projectId
-     * @param systemId
-     * @param issueType
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> selectBySystemId(@Param("projectId") Long projectId,@Param("systemId")Long systemId,@Param("issueType") Byte issueType);
+    List<IssueDTO> selectBySystemId(@Param("projectId") Long projectId, @Param("systemId") Long systemId, @Param("issueType") Byte issueType);
 
 
     /**
-     *
+     * @param projectId
+     * @param systemId
+     * @param issueType
      * @Date 2021/3/30
      * @Description 根据项目id、系统id、版本号获取工作项信息
-     * @param projectId
-     * @param systemId
-     * @param issueType
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> selectBySystemIdAndVersion(@Param("projectId") Long projectId,@Param("systemId")Long systemId,@Param("versionId")Long versionId,@Param("issueType") Byte issueType);
+    List<IssueDTO> selectBySystemIdAndVersion(@Param("projectId") Long projectId, @Param("systemId") Long systemId, @Param("versionId") Long versionId, @Param("issueType") Byte issueType);
 
     /**
+     * @param projectId
+     * @param userId
      * @Date 2021/2/6
      * @Description 统计人员的任务数
-     * @param projectId
-     * @param userId
      * @Return int
      */
-    int sumTaskByHandler(@Param("projectId") Long projectId,@Param("userId")Long userId);
+    int sumTaskByHandler(@Param("projectId") Long projectId, @Param("userId") Long userId);
 
     /**
+     * @param projectId
+     * @param userId
      * @Date 2021/2/6
      * @Description 统计人员的工时数
-     * @param projectId
-     * @param userId
      * @Return int
      */
-    int sumWorkloadByUser(@Param("projectId") Long projectId,@Param("userId")Long userId);
+    int sumWorkloadByUser(@Param("projectId") Long projectId, @Param("userId") Long userId);
 
     /**
-     * @descirption 分页查询成员任务
      * @param projectId
      * @param sprintId
      * @param memberIdList
      * @param startIndex
      * @param pageSize
      * @return
+     * @descirption 分页查询成员任务
      */
     List<Issue> getProjectMemberTaskList(@Param("projectId") Long projectId, @Param("sprintId") Long sprintId,
                                          @Param("memberIdList") List<Long> memberIdList, @Param("startIndex") long startIndex, @Param("pageSize") long pageSize);
 
     /**
      * 功能描述:
-     * @date 2021/2/22
+     *
      * @param id
      * @return java.util.List<java.lang.Long>
+     * @date 2021/2/22
      */
     List<Long> getStoryIdsByEpic(@Param("id") Long id);
 
     /**
      * 功能描述:
-
-     * @date 2021/2/22
+     *
      * @param id
      * @return java.util.List<java.lang.Long>
+     * @date 2021/2/22
      */
     List<Long> getStroyIdsByFeature(@Param("id") Long id);
+
     /**
      * 功能描述:查询故事下为完成任务或未关闭缺陷
      *
-     * @date 2020/8/7
      * @param storyId
-     * @return  int
+     * @return int
+     * @date 2020/8/7
      */
     int countUnfinishOrNotRepairIssue(Long storyId);
 
 
-    List<Long> selectIssueIdByProjectId(@Param("projectId") Long projectId,@Param("title") String title);
+    List<Long> selectIssueIdByProjectId(@Param("projectId") Long projectId, @Param("title") String title);
 
     /**
-     * @description 根据工作项id和类型查询工作项信息
-     *  
-     * @date 2021/3/18
      * @param issueId
      * @param type
      * @return
+     * @description 根据工作项id和类型查询工作项信息
+     * @date 2021/3/18
      */
     Issue selectIssueInfo(@Param("issueId") Long issueId, @Param("type") int type);
 
     /**
-     * @description 查询研发需求、故事、任务父工作项
-     *  
-     * @date 2020/08/26
      * @param projectId
      * @param issueType
      * @return
+     * @description 查询研发需求、故事、任务父工作项
+     * @date 2020/08/26
      */
     List<Issue> getIssueTemplateParentList(@Param("projectId") Long projectId, @Param("issueType") Byte issueType);
 
     /**
-     * @description 分页查询缺陷工作项
-     *  
-     * @date 2020/09/08
      * @param projectId
      * @param offset
      * @param rows
      * @return
+     * @description 分页查询缺陷工作项
+     * @date 2020/09/08
      */
     List<Issue> getFaultIssuesByPage(@Param("projectId") Long projectId, @Param("offset") int offset, @Param("rows") int rows);
 
     List<Issue> getEpioByBizNums(List<String> bizNumList);
 
-    List<Issue> getIssueByBizNums(@Param("bizNumList")List<String> bizNumList,@Param("issueType")Byte issueType);
+    List<Issue> getIssueByBizNums(@Param("bizNumList") List<String> bizNumList, @Param("issueType") Byte issueType);
 
     /**
-     * @description 更新feature同步状态
-     *  
-     * @date 2020/09/29
      * @param featureId
      * @param cmpSyncResult
      * @return
+     * @description 更新feature同步状态
+     * @date 2020/09/29
      */
     int updateIssueFeatureSyncResult(@Param("featureId") Long featureId, @Param("cmpSyncResult") Byte cmpSyncResult);
 
     /**
-     * @description 查询epic
-     *  
-     * @date 2020/09/30
      * @param issueId
      * @return
+     * @description 查询epic
+     * @date 2020/09/30
      */
     Issue getIssue(@Param("issueId") Long issueId);
 
     /**
-     * @description 批量更新工作项阶段状态
-     *  
-     * @date 2020/10/2
      * @param issueIdList
      * @param stageId
      * @return
+     * @description 批量更新工作项阶段状态
+     * @date 2020/10/2
      */
     int batchUpdateIssueStageStatus(@Param("issueIdList") List<Long> issueIdList, @Param("stageId") Long stageId, @Param("laneId") Long laneId);
 
     /**
-     * @description 分页查询工作项列表
-     *  
-     * @date 2020/10/20
      * @param startIndex
      * @param pageSize
      * @param issueType
      * @return
+     * @description 分页查询工作项列表
+     * @date 2020/10/20
      */
-    List<Issue> selectIssueList(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize, @Param("issueType")Byte issueType);
+    List<Issue> selectIssueList(@Param("startIndex") int startIndex, @Param("pageSize") int pageSize, @Param("issueType") Byte issueType);
 
     /**
-     * @description 批量更新工作项下cmp
-     *  
-     * @date 2020/10/12
      * @param issueIdList
      * @param cmpSyncResult
      * @return
+     * @description 批量更新工作项下cmp
+     * @date 2020/10/12
      */
     int batchUpdateIssueCmpSyncResult(@Param("issueIdList") List<Long> issueIdList, @Param("cmpSyncResult") Byte cmpSyncResult);
 
     /**
-     * @description 根据工作项id和类型查询工作项信息
-     *  
-     * @date 2020/10/28
      * @param startIndex
      * @param serviceManageIssueDTO
      * @return
+     * @description 根据工作项id和类型查询工作项信息
+     * @date 2020/10/28
      */
     List<Issue> selectServiceManageIssueList(@Param("startIndex") int startIndex, @Param("serviceManage") ServiceManageIssueDTO serviceManageIssueDTO);
 
     List<IssueDTO> selectIssueForVersion(IssueDTO issueExample);
 
     /**
-
+     * @param sprintId
+     * @param issueType
      * @Date 2021/2/4
      * @Description 项目及迭代中已完成工作项个数
-     * @param sprintId
-     * @param issueType
      * @Return int
      */
-    int countAchievedIssues4Sprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId,@Param("issueType")Byte issueType);
+    int countAchievedIssues4Sprint(@Param("sprintId") Long sprintId, @Param("projectId") Long projectId, @Param("issueType") Byte issueType);
+
     /**
+     * @param sprintId
+     * @param issueType
      * @Date 2021/2/4
      * @Description 项目及迭代中进行中工作项个数
-     * @param sprintId
-     * @param issueType
      * @Return int
      */
-    int countInsprintIssuesBySprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId,@Param("issueType")Byte issueType);
+    int countInsprintIssuesBySprint(@Param("sprintId") Long sprintId, @Param("projectId") Long projectId, @Param("issueType") Byte issueType);
+
     /**
+     * @param sprintId
+     * @param issueType
      * @Date 2021/2/4
      * @Description 项目及迭代中未完成工作项个数
-     * @param sprintId
-     * @param issueType
      * @Return int
      */
-    int countNotStartIssuesBySprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId,@Param("issueType")Byte issueType);
+    int countNotStartIssuesBySprint(@Param("sprintId") Long sprintId, @Param("projectId") Long projectId, @Param("issueType") Byte issueType);
 
     /**
-
+     * @param sprintId
      * @Date 2021/2/4
      * @Description 项目及迭代中未完成任务个数
-     * @param sprintId
      * @Return int
      */
-    int countInsprintTaskBySprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId);
+    int countInsprintTaskBySprint(@Param("sprintId") Long sprintId, @Param("projectId") Long projectId);
 
     /**
-
+     * @param sprintId
      * @Date 2021/2/4
      * @Description 项目及迭代中未完成任务个数
-     * @param sprintId
      * @Return int
      */
-    int countNotStartTaskBySprint(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId);
+    int countNotStartTaskBySprint(@Param("sprintId") Long sprintId, @Param("projectId") Long projectId);
 
 
     /**
      * @param sprintId
-
      * @Date 2021/2/14
      * @Description 统计项目及迭代下完成的任务数
      * @Return int
      */
-    int countFinishedTasks4Project(@Param("sprintId") Long sprintId,@Param("projectId") Long projectId);
+    int countFinishedTasks4Project(@Param("sprintId") Long sprintId, @Param("projectId") Long projectId);
 
 
     List<Long> listAllIssueId(@Param("issueId") List<Long> issueIdList);
@@ -569,11 +536,11 @@ public interface IssueMapper {
 
     List<Long> listLevelIssueIdforEpic(@Param("issueIds") List<Long> issueIdList);
 
-    List<Long> listLevelIssueIdforFeature(@Param("issueIds") List<Long> issueIdList,@Param("issueEpicIds") List<Long> issueEpicIds);
+    List<Long> listLevelIssueIdforFeature(@Param("issueIds") List<Long> issueIdList, @Param("issueEpicIds") List<Long> issueEpicIds);
 
-    List<Long> listLevelIssueIdforStory(@Param("issueIds") List<Long> issueIdList,@Param("issueFeatureIds") List<Long> issueFeatureIds);
+    List<Long> listLevelIssueIdforStory(@Param("issueIds") List<Long> issueIdList, @Param("issueFeatureIds") List<Long> issueFeatureIds);
 
-    List<Long> listLevelIssueIdforTask(@Param("issueIds") List<Long> issueIdList,@Param("issueStoryIds") List<Long> issueStoryIds);
+    List<Long> listLevelIssueIdforTask(@Param("issueIds") List<Long> issueIdList, @Param("issueStoryIds") List<Long> issueStoryIds);
 
 
     int insertTmp(Issue record);
@@ -584,12 +551,13 @@ public interface IssueMapper {
      * 根据parentId查询子工作项列表，
      * 主要关联kanban_stage_instance表，
      * 根据kanban_stage_instance中的order_id对issue列表升序排序
+     *
      * @param parentId
      * @return
      */
     List<Issue> selectIssueListByParentId(@Param("parentId") Long parentId, @Param("projectId") Long projectId);
 
-    List<Long> getNotCanceledAndOnlineIssueByIssueIdList(@Param("issueIdList")List<Long> issueIdList);
+    List<Long> getNotCanceledAndOnlineIssueByIssueIdList(@Param("issueIdList") List<Long> issueIdList);
 
     List<Long> getNotOnlineEpic();
 
@@ -598,11 +566,10 @@ public interface IssueMapper {
     List<String> getAllTaskFunTester(Long epicId);
 
     /**
-     * @description 查询父工作项信息
-     *  
-     * @date 2020/12/15
      * @param issueId
      * @return
+     * @description 查询父工作项信息
+     * @date 2020/12/15
      */
     Issue getParentIssue(Long issueId);
 }

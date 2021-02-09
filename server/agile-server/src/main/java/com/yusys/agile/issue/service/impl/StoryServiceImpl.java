@@ -53,7 +53,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- *
  * @Date: 13:34
  */
 @Service
@@ -87,7 +86,6 @@ public class StoryServiceImpl implements StoryService {
 
     /**
      * 功能描述 百分号
-     *
      *
      * @date 2021/2/01
      * @return
@@ -155,7 +153,6 @@ public class StoryServiceImpl implements StoryService {
     }
 
     /**
-     *
      * @Date: 2021/2/21 10:42
      * @Description: 更新故事对应任务上面的迭代ID
      * @Param: * @param issueDTO
@@ -284,7 +281,6 @@ public class StoryServiceImpl implements StoryService {
      * @param projectId
      * @param sprintId
      * @param issueDTOS
-
      * @Date 2021/2/12
      * @Description 获取故事下的任务
      * @Return void
@@ -397,7 +393,6 @@ public class StoryServiceImpl implements StoryService {
      * @param end
      * @param planWorkload
      * @param workHours
-
      * @Date 2020/4/30
      * @Description 设置是否超时
      * @Return boolean
@@ -454,7 +449,6 @@ public class StoryServiceImpl implements StoryService {
      * @param oldSprintId
      * @param sprintId
      * @return void
-     *
      * @date 2020/8/31
      */
     @Transactional(rollbackFor = Exception.class)
@@ -489,7 +483,6 @@ public class StoryServiceImpl implements StoryService {
     /**
      * @param storyId
      * @param sprintId
-
      * @Date 2020/4/26
      * @Description 将故事下的任务加入迭代, 状态初始化为未领取，处理人为null
      * @Return void
@@ -530,7 +523,6 @@ public class StoryServiceImpl implements StoryService {
      * @param storyId
      * @param sprintId
      * @return void
-     *
      * @date 2020/8/31
      */
     private void switchTaskAndFaultToSprint(Long storyId, Long sprintId) {
@@ -714,7 +706,6 @@ public class StoryServiceImpl implements StoryService {
      * @param oldSprintId
      * @param sprintId
      * @return void
-     *
      * @date 2020/8/31
      */
     @Override
@@ -730,7 +721,6 @@ public class StoryServiceImpl implements StoryService {
      * @param oldSprintId
      * @param sprintId
      * @return void
-     *
      * @date 2020/8/31
      */
     @Override
@@ -764,7 +754,6 @@ public class StoryServiceImpl implements StoryService {
      * @param pageSize
      * @param
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
-     *
      * @date 2021/3/8
      */
     @Override
@@ -819,7 +808,6 @@ public class StoryServiceImpl implements StoryService {
      * @param issueType
      * @param code
      * @return java.lang.Boolean
-     *
      * @date 2020/8/31
      */
     private Boolean hasUnfinishedTaskOrFault(Long storyId, Byte issueType, Long code) {
@@ -845,7 +833,6 @@ public class StoryServiceImpl implements StoryService {
 
     /**
      * @param issueDTO
-
      * @Date 2021/2/1
      * @Description 编辑故事评审状态及备注
      * @Return int

@@ -2,9 +2,9 @@ package com.yusys.agile.versionmanager.enums;
 
 public enum SyncResultEnum {
 
-    UNSYNCHRONIZE((byte)-1, "未同步"),
-    SYNCHRONIZE_FAILED((byte)0, "同步失败"),
-    SYNCHRONIZED_SUCCESS((byte)1, "同步成功");
+    UNSYNCHRONIZE((byte) -1, "未同步"),
+    SYNCHRONIZE_FAILED((byte) 0, "同步失败"),
+    SYNCHRONIZED_SUCCESS((byte) 1, "同步成功");
 
     private Byte id;
     private String name;

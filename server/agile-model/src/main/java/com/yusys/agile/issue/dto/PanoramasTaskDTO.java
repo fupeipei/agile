@@ -1,7 +1,6 @@
 package com.yusys.agile.issue.dto;
 
 /**
- *
  * @description
  * @date 2020/10/23
  */

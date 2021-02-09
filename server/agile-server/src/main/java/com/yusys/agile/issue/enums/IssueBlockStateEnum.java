@@ -1,7 +1,6 @@
 package com.yusys.agile.issue.enums;
 
 /**
-
  * @Date 2021/2/11
  * @Description 任务和缺陷阻塞状态枚举
  */

@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 /**
  * @description 服务治理类
- *  
  * @date 2020/10/27
  */
 public class ServiceManageIssue implements Serializable {

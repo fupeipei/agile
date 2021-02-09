@@ -900,6 +900,7 @@ public class IssueCustomRelationExample {
             addCriterion("tenant_code between", value1, value2, "tenantCode");
             return (Criteria) this;
         }
+
         public Criteria andTenantCodeNotBetween(String value1, String value2) {
             addCriterion("tenant_code not between", value1, value2, "tenantCode");
             return (Criteria) this;

@@ -54,7 +54,6 @@ public class FaultController {
      *
      * @param issueId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/11
      */
 
@@ -73,12 +72,11 @@ public class FaultController {
      *
      * @param issueId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/13
      */
 
     @GetMapping("/getFault/{issueId}")
-    public ControllerResponse getFault(@PathVariable Long issueId,@RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse getFault(@PathVariable Long issueId, @RequestHeader(name = "projectId") Long projectId) {
         return ControllerResponse.success(faultService.getFault(issueId));
     }
 
@@ -87,7 +85,6 @@ public class FaultController {
      *
      * @param faultDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/13
      */
 
@@ -110,7 +107,6 @@ public class FaultController {
      *
      * @param
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/11
      */
 
@@ -124,7 +120,6 @@ public class FaultController {
      *
      * @param
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/11
      */
 
@@ -137,7 +132,6 @@ public class FaultController {
      * 功能描述: 查询项目下所有bug的提出人，用于过滤条件
      *
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/14
      */
     @GetMapping("/listAllCreateUsers")
@@ -149,7 +143,6 @@ public class FaultController {
      * 功能描述: 查询项目的所有状态
      *
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/14
      */
 
@@ -163,7 +156,6 @@ public class FaultController {
      * 功能描述: 查询项目下所有bug的提出人，用于过滤条件
      *
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/14
      */
 
@@ -177,7 +169,6 @@ public class FaultController {
      * 功能描述: 查询项目下所有bug的提出人，用于过滤条件
      *
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/14
      */
 
@@ -202,7 +193,6 @@ public class FaultController {
      * @param pageNum    每页数量
      * @param pageSize   页数
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/14
      */
 
@@ -238,7 +228,6 @@ public class FaultController {
      * @param pageNum
      * @param pageSize
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/14
      */
 
@@ -257,9 +246,7 @@ public class FaultController {
      * 功能描述: 拖拽卡片改变缺陷状态，itc则增加调用通知
      *
      * @param issueDTO
-
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/26
      */
     @PostMapping("/drag")
@@ -275,9 +262,9 @@ public class FaultController {
     /**
      * 功能描述: 缺陷设置阻塞状态
      *
-     * @date 2021/2/1
      * @param issueDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2021/2/1
      */
     @PostMapping("/editBlock")
     public ControllerResponse editBlockState(@RequestBody IssueDTO issueDTO) {
@@ -290,14 +277,13 @@ public class FaultController {
     }
 
     /**
-     * @description 统计缺陷待修复个数，修复中个数，已修复个数，已关闭个数，总数，修复率
-     *  
-     * @date 2020/09/07
      * @param projectId
      * @return
+     * @description 统计缺陷待修复个数，修复中个数，已修复个数，已关闭个数，总数，修复率
+     * @date 2020/09/07
      */
     @GetMapping("/statisticFaults")
-    public ControllerResponse statisticFaults(@RequestHeader Long projectId){
+    public ControllerResponse statisticFaults(@RequestHeader Long projectId) {
         try {
             return ControllerResponse.success(faultService.statisticFaults(projectId));
         } catch (Exception e) {

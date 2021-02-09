@@ -2,7 +2,9 @@ package com.yusys.agile.businesskanban.dao;
 
 import com.yusys.agile.businesskanban.domain.BusinessKanbanMembers;
 import com.yusys.agile.businesskanban.domain.BusinessKanbanMembersExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface BusinessKanbanMembersMapper {
@@ -29,12 +31,10 @@ public interface BusinessKanbanMembersMapper {
     int updateByPrimaryKey(BusinessKanbanMembers record);
 
     /**
-     *
      * @Date: 2020/4/30
      * @Description: 批量创建看板成员
      * @Param: [businessKanbanMembers]
      * @Return: int
-     *
      */
     int batchCreate(@Param("collection") List<BusinessKanbanMembers> businessKanbanMembers);
 

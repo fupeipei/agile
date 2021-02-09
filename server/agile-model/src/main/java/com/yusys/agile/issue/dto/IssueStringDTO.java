@@ -23,7 +23,6 @@ public class IssueStringDTO implements Serializable {
     private String systemId;
 
     /**
-     *
      * @Date: 11:14
      * @Description: 需求满意度
      * @Return:

@@ -23,12 +23,13 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/2/25
  * @Description: TODO
  */
 @Service
-public class VCenterServiceImpl  implements VCenterService {
+public class VCenterServiceImpl implements VCenterService {
 
     private static final Logger log = LoggerFactory.getLogger(VCenterServiceImpl.class);
     @Resource
@@ -38,19 +39,19 @@ public class VCenterServiceImpl  implements VCenterService {
     @Resource
     private VcenterApplicationMapper vcenterApplicationMapper;
 
-    static String  VirtualMachine = "VirtualMachine";
-    static String  error = " 查询数据中心异常";
-    static String  ClusterComputeResource = "ClusterComputeResource";
+    static String VirtualMachine = "VirtualMachine";
+    static String error = " 查询数据中心异常";
+    static String ClusterComputeResource = "ClusterComputeResource";
 
 
     @Override
     public List<VcenterDev> getDev() {
-        try{
+        try {
             VcenterDevExample example = new VcenterDevExample();
             example.createCriteria().andStateEqualTo(Byte.parseByte("0"));
             return vcenterDevMapper.selectByExample(example);
-        }catch (Exception e){
-            log.error("查询环境异常"+e);
+        } catch (Exception e) {
+            log.error("查询环境异常" + e);
         }
         return null;
     }
@@ -60,10 +61,10 @@ public class VCenterServiceImpl  implements VCenterService {
 
         ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                 serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 InventoryNavigator inventoryNavigator = new InventoryNavigator(serviceInstance.getRootFolder());
                 try {
                     ManagedEntity[] template = (ManagedEntity[]) inventoryNavigator.searchManagedEntities(VirtualMachine);
@@ -73,18 +74,18 @@ public class VCenterServiceImpl  implements VCenterService {
                             Map map = new HashMap();
                             map.put("name", vm.getConfig().getName());
                             map.put("guestName", vm.getConfig().getGuestFullName());
-                            map.put("code",i);
+                            map.put("code", i);
                             result.add(map);
                         }
                     }
                 } catch (RemoteException e) {
-                    log.error("查询集群中心异常"+e);
+                    log.error("查询集群中心异常" + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error("查询模板异常"+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error("查询模板异常" + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -96,28 +97,28 @@ public class VCenterServiceImpl  implements VCenterService {
 
         ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 InventoryNavigator inventoryNavigator = new InventoryNavigator(serviceInstance.getRootFolder());
                 try {
                     ManagedEntity[] datacenters = inventoryNavigator.searchManagedEntities("Datacenter");
-                    for(int i=0;i<datacenters.length;i++){
-                        Datacenter datacenter = (Datacenter)datacenters[i];
+                    for (int i = 0; i < datacenters.length; i++) {
+                        Datacenter datacenter = (Datacenter) datacenters[i];
                         Map map = new HashMap();
-                        map.put("name",datacenter.getName());
-                        map.put("code",i);
+                        map.put("name", datacenter.getName());
+                        map.put("code", i);
                         result.add(map);
                     }
                 } catch (RemoteException e) {
-                    log.error(error+e);
+                    log.error(error + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error(error+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -128,30 +129,30 @@ public class VCenterServiceImpl  implements VCenterService {
     @Override
     public List<Map> getClusterComputeResource(Integer devId) {
 
-       ServiceInstance serviceInstance = null;
+        ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 InventoryNavigator inventoryNavigator = new InventoryNavigator(serviceInstance.getRootFolder());
                 try {
                     ManagedEntity[] clusterComputeResources = inventoryNavigator.searchManagedEntities(ClusterComputeResource);
-                    for(int i=0;i<clusterComputeResources.length;i++){
-                        ClusterComputeResource cluster = (ClusterComputeResource)clusterComputeResources[i];
+                    for (int i = 0; i < clusterComputeResources.length; i++) {
+                        ClusterComputeResource cluster = (ClusterComputeResource) clusterComputeResources[i];
                         Map map = new HashMap();
-                        map.put("name",cluster.getName());
-                        map.put("code",i);
+                        map.put("name", cluster.getName());
+                        map.put("code", i);
                         result.add(map);
                     }
                 } catch (RemoteException e) {
-                    log.error("查询集群异常"+e);
+                    log.error("查询集群异常" + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error(error+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -164,35 +165,35 @@ public class VCenterServiceImpl  implements VCenterService {
 
         ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 InventoryNavigator inventoryNavigator = new InventoryNavigator(serviceInstance.getRootFolder());
                 try {
                     ManagedEntity[] clusterComputeResources = inventoryNavigator.searchManagedEntities(ClusterComputeResource);
-                    for(int i=0;i<clusterComputeResources.length;i++){
-                        ClusterComputeResource cluster = (ClusterComputeResource)clusterComputeResources[i];
-                        if(clusterComputeResourceName.equals(cluster.getName())){
-                            HostSystem[] hostSystems=cluster.getHosts();
-                            if(hostSystems!=null && hostSystems.length>0){
-                                for(int j=0;j<hostSystems.length;j++){
+                    for (int i = 0; i < clusterComputeResources.length; i++) {
+                        ClusterComputeResource cluster = (ClusterComputeResource) clusterComputeResources[i];
+                        if (clusterComputeResourceName.equals(cluster.getName())) {
+                            HostSystem[] hostSystems = cluster.getHosts();
+                            if (hostSystems != null && hostSystems.length > 0) {
+                                for (int j = 0; j < hostSystems.length; j++) {
                                     Map map = new HashMap();
-                                    map.put("name",hostSystems[j].getName());
-                                    map.put("code",j);
+                                    map.put("name", hostSystems[j].getName());
+                                    map.put("code", j);
                                     result.add(map);
                                 }
                             }
                         }
                     }
                 } catch (RemoteException e) {
-                    log.error("查询主机异常"+e);
+                    log.error("查询主机异常" + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error(error+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -204,22 +205,22 @@ public class VCenterServiceImpl  implements VCenterService {
 
         ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 InventoryNavigator inventoryNavigator = new InventoryNavigator(serviceInstance.getRootFolder());
                 try {
                     ManagedEntity[] folders = inventoryNavigator.searchManagedEntities("Folder");
                     result = dealData(folders);
                 } catch (RemoteException e) {
-                    log.error("查询存放位置异常"+e);
+                    log.error("查询存放位置异常" + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error(error+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -229,28 +230,28 @@ public class VCenterServiceImpl  implements VCenterService {
 
     @Override
     public List<Map> getCustomizationSpec(Integer devId) {
-       ServiceInstance serviceInstance = null;
+        ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 try {
-                    CustomizationSpecInfo[] infos=serviceInstance.getCustomizationSpecManager().getInfo();
-                    for(int i=0;i<infos.length;i++){
+                    CustomizationSpecInfo[] infos = serviceInstance.getCustomizationSpecManager().getInfo();
+                    for (int i = 0; i < infos.length; i++) {
                         Map map = new HashMap();
-                        map.put("name",infos[i].getName());
-                        map.put("code",i);
+                        map.put("name", infos[i].getName());
+                        map.put("code", i);
                         result.add(map);
                     }
                 } catch (Exception e) {
-                    log.error("查询自定义规范异常"+e);
+                    log.error("查询自定义规范异常" + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error(error+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -259,34 +260,34 @@ public class VCenterServiceImpl  implements VCenterService {
     }
 
     @Override
-    public List<Map> getDatastore(Integer devId,String clusterComputeResourceName) {
+    public List<Map> getDatastore(Integer devId, String clusterComputeResourceName) {
 
         ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
 
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 try {
                     Folder rootFolder = serviceInstance.getRootFolder();
                     InventoryNavigator inventoryNavigator = new InventoryNavigator(rootFolder);
                     ManagedEntity[] clusterComputeResources = inventoryNavigator.searchManagedEntities(ClusterComputeResource);
-                    for(int i=0;i<clusterComputeResources.length;i++){
-                        ClusterComputeResource cluster = (ClusterComputeResource)clusterComputeResources[i];
-                        if(cluster.getName().equals(clusterComputeResourceName)){
-                            Datastore[] datastores=cluster.getDatastores();
+                    for (int i = 0; i < clusterComputeResources.length; i++) {
+                        ClusterComputeResource cluster = (ClusterComputeResource) clusterComputeResources[i];
+                        if (cluster.getName().equals(clusterComputeResourceName)) {
+                            Datastore[] datastores = cluster.getDatastores();
                             result = dealData(datastores);
                         }
                     }
                 } catch (Exception e) {
-                    log.error("查询存储器异常"+e);
+                    log.error("查询存储器异常" + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error(error+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -299,23 +300,23 @@ public class VCenterServiceImpl  implements VCenterService {
 
         ServiceInstance serviceInstance = null;
         List result = Lists.newArrayList();
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
-            if(vcenterDev!=null){
-                serviceInstance= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(Long.parseLong(devId.toString()));
+            if (vcenterDev != null) {
+                serviceInstance = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
                 Folder rootFolder = serviceInstance.getRootFolder();
                 InventoryNavigator inventoryNavigator = new InventoryNavigator(rootFolder);
                 try {
                     ManagedEntity[] resourcePools = inventoryNavigator.searchManagedEntities("ResourcePool");
                     result = dealData(resourcePools);
                 } catch (Exception e) {
-                    log.error("资源池异常"+e);
+                    log.error("资源池异常" + e);
                 }
             }
-        }catch (Exception  e ){
-            log.error(error+e);
-        }finally {
-            if(serviceInstance!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();
             }
         }
@@ -328,18 +329,18 @@ public class VCenterServiceImpl  implements VCenterService {
         VcenterVmIpExample example = new VcenterVmIpExample();
         VcenterVmIpExample.Criteria criteria = example.createCriteria();
         criteria.andDevIdEqualTo(devId).andStateEqualTo(Byte.parseByte("0"));
-        return  vcenterVmIpMapper.selectByExample(example);
+        return vcenterVmIpMapper.selectByExample(example);
     }
 
     @Override
     public List<VcenterApplication> getList(VcenterApplication vcenterApplication) {
         // 不传page信息时查全部数据
         if (null != vcenterApplication.getPageNum() && null != vcenterApplication.getPageSize()) {
-            PageHelper.startPage(vcenterApplication.getPageNum(),  vcenterApplication.getPageSize());
+            PageHelper.startPage(vcenterApplication.getPageNum(), vcenterApplication.getPageSize());
         }
         VcenterApplicationExample vcenterApplicationExample = new VcenterApplicationExample();
-        VcenterApplicationExample.Criteria  criteria =  vcenterApplicationExample.createCriteria();
-        if(vcenterApplication.getVirtualMachineName()!=null&&!vcenterApplication.getVirtualMachineName().equals("")){
+        VcenterApplicationExample.Criteria criteria = vcenterApplicationExample.createCriteria();
+        if (vcenterApplication.getVirtualMachineName() != null && !vcenterApplication.getVirtualMachineName().equals("")) {
             criteria.andVirtualMachineNameLike(vcenterApplication.getVirtualMachineName());
         }
         return vcenterApplicationMapper.selectByExample(vcenterApplicationExample);
@@ -349,40 +350,40 @@ public class VCenterServiceImpl  implements VCenterService {
     @Transactional
     public void CreateVMByTemplate(CreateVMDTO createVMDTO) {
         ServiceInstance si = null;
-        try{
-            VcenterDev vcenterDev =  vcenterDevMapper.selectByPrimaryKey(createVMDTO.getDevId());
-            if(vcenterDev!=null){
-                    si= Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
-                    Folder rootFolder = si.getRootFolder();
-                    InventoryNavigator inventoryNavigator = new InventoryNavigator(rootFolder);
-                    try {
+        try {
+            VcenterDev vcenterDev = vcenterDevMapper.selectByPrimaryKey(createVMDTO.getDevId());
+            if (vcenterDev != null) {
+                si = Session.getInstance(vcenterDev.getHostUrl(), vcenterDev.getUserName(), vcenterDev.getPassword());
+                Folder rootFolder = si.getRootFolder();
+                InventoryNavigator inventoryNavigator = new InventoryNavigator(rootFolder);
+                try {
                     //虚拟机模板name
                     String templateVMName = createVMDTO.getTemplateVMName();
                     VirtualMachine templateVM = null;
-                    String poolName="";
+                    String poolName = "";
                     ResourcePool pool = null;
                     ComputeResource computerResource = null;
                     String datastoreName = createVMDTO.getDatastoreName();
-                    Datastore   datastore = null;
-                    String customizationSpecName =createVMDTO.getCustomizationSpecName();
-                    String  folderName= createVMDTO.getFolderName();
+                    Datastore datastore = null;
+                    String customizationSpecName = createVMDTO.getCustomizationSpecName();
+                    String folderName = createVMDTO.getFolderName();
                     Folder folder = null;
                     ManagedEntity[] clusterComputeResources = inventoryNavigator.searchManagedEntities(ClusterComputeResource);
-                    for(int i=0;i<clusterComputeResources.length;i++){
-                        ClusterComputeResource cluster = (ClusterComputeResource)clusterComputeResources[i];
+                    for (int i = 0; i < clusterComputeResources.length; i++) {
+                        ClusterComputeResource cluster = (ClusterComputeResource) clusterComputeResources[i];
                         //集群关联DataStore
-                        Map<String,Long> dsMap=new HashMap<String,Long>();
-                        Datastore[] datastores=cluster.getDatastores();
-                        if(datastores!=null && datastores.length>0){
-                            for(int k=0;k<datastores.length;k++){
+                        Map<String, Long> dsMap = new HashMap<String, Long>();
+                        Datastore[] datastores = cluster.getDatastores();
+                        if (datastores != null && datastores.length > 0) {
+                            for (int k = 0; k < datastores.length; k++) {
                                 //寻找存储器
-                                if(datastoreName.equals(datastores[k].getName())){
-                                    datastore=datastores[k];
+                                if (datastoreName.equals(datastores[k].getName())) {
+                                    datastore = datastores[k];
                                 }
                             }
                         }
                     }
-                    for(int i =0;i<createVMDTO.getVcenterApplicationList().size();i++){
+                    for (int i = 0; i < createVMDTO.getVcenterApplicationList().size(); i++) {
                         VcenterApplication vcenterApplication = createVMDTO.getVcenterApplicationList().get(i);
                         String vmName = vcenterApplication.getVirtualMachineName();
                         vcenterApplication.setDataCenter(createVMDTO.getDatacenterName());
@@ -411,8 +412,8 @@ public class VCenterServiceImpl  implements VCenterService {
                             computerResource = (ComputeResource) inventoryNavigator.searchManagedEntity("ComputeResource",
                                     createVMDTO.getClusterComputeResourceName());
                             virtualMachineRelocateSpec.setPool(computerResource.getResourcePool().getMOR());
-                            for (int k=0;k<computerResource.getHosts().length;k++){
-                                if(createVMDTO.getHostName().equals(computerResource.getHosts()[k].getName())){
+                            for (int k = 0; k < computerResource.getHosts().length; k++) {
+                                if (createVMDTO.getHostName().equals(computerResource.getHosts()[k].getName())) {
                                     virtualMachineRelocateSpec.setHost(computerResource.getHosts()[k].getMOR());
                                 }
                             }
@@ -422,14 +423,14 @@ public class VCenterServiceImpl  implements VCenterService {
                                     .searchManagedEntity("Folder",
                                             folderName);
                         } catch (Exception e) {
-                            log.info("Folder查询失败"+e.getMessage());
+                            log.info("Folder查询失败" + e.getMessage());
                         }
                         VirtualMachineCloneSpec cloneSpec = new VirtualMachineCloneSpec();
                         cloneSpec.setLocation(virtualMachineRelocateSpec);
                         cloneSpec.setPowerOn(true);
                         cloneSpec.setTemplate(false);
                         cloneSpec.setConfig(configSpec);
-                        cloneSpec.setCustomization(setCustomizationSpec(si,vcenterApplication));
+                        cloneSpec.setCustomization(setCustomizationSpec(si, vcenterApplication));
                         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
                         String userName = UserThreadLocalUtil.getUserInfo().getUserName();
                         vcenterApplication.setCreateUid(userId);
@@ -440,35 +441,35 @@ public class VCenterServiceImpl  implements VCenterService {
                                 folder,
                                 vmName,
                                 cloneSpec);
-                            log.info("Launching the VM clone task. " +
+                        log.info("Launching the VM clone task. " +
                                 "Please wait ...");
                         String result = task.waitForTask();
                         if (result.equals(Task.SUCCESS)) {
                             log.info("VM got cloned successfully.");
-                           if(Ping.ping(vcenterApplication.getIpAddress())){
-                               vcenterApplication.setState(Byte.parseByte("1"));
-                               vcenterApplication.setUpdateTime(new Date());
-                               vcenterApplicationMapper.updateByPrimaryKeySelective(vcenterApplication);
-                               vcenterVmIpMapper.updateByIp(vcenterApplication.getIpAddress());
-                           }
+                            if (Ping.ping(vcenterApplication.getIpAddress())) {
+                                vcenterApplication.setState(Byte.parseByte("1"));
+                                vcenterApplication.setUpdateTime(new Date());
+                                vcenterApplicationMapper.updateByPrimaryKeySelective(vcenterApplication);
+                                vcenterVmIpMapper.updateByIp(vcenterApplication.getIpAddress());
+                            }
                             VirtualMachine vm = (VirtualMachine) new InventoryNavigator(si.getRootFolder()).searchManagedEntity(VirtualMachine, vmName);
                             if (vm == null) {
-                              log.info("Not found vm:" + vmName);
+                                log.info("Not found vm:" + vmName);
                             }
                         } else {
                             log.error(result);
                             log.error("Failure -: VM cannot be cloned");
                         }
-                     }
-                    } catch (Exception e) {
-                            log.error("资源池异常"+e);
-                        }
                     }
+                } catch (Exception e) {
+                    log.error("资源池异常" + e);
+                }
+            }
 
-        }catch (Exception  e ){
-                    log.error(error+e);
-        }finally {
-            if(si!=null){
+        } catch (Exception e) {
+            log.error(error + e);
+        } finally {
+            if (si != null) {
                 si.getServerConnection().logout();
             }
         }
@@ -476,7 +477,7 @@ public class VCenterServiceImpl  implements VCenterService {
 
 
     // 获取虚拟机磁盘管理的controlerkey
-    public  int getcontrollerkey(VirtualMachine vm) {
+    public int getcontrollerkey(VirtualMachine vm) {
         int controllerkey = 0;
         if (vm != null) {
             VirtualDevice[] devices = vm.getConfig().getHardware().getDevice();
@@ -491,8 +492,9 @@ public class VCenterServiceImpl  implements VCenterService {
         }
         return controllerkey;
     }
+
     // 获取虚拟机已生成key
-    public  int getkey(VirtualMachine vm) {
+    public int getkey(VirtualMachine vm) {
         int key = 0;
         if (vm != null) {
             VirtualDevice[] devices = vm.getConfig().getHardware().getDevice();
@@ -508,8 +510,9 @@ public class VCenterServiceImpl  implements VCenterService {
         key = key + 1;
         return key;
     }
+
     // 获取虚拟机已生成UnitNumber
-    public  int getUnitNumber(VirtualMachine vm) {
+    public int getUnitNumber(VirtualMachine vm) {
         int UnitNumber = 0;
         if (vm != null) {
             VirtualDevice[] devices = vm.getConfig().getHardware().getDevice();
@@ -525,7 +528,8 @@ public class VCenterServiceImpl  implements VCenterService {
         UnitNumber = UnitNumber + 1;
         return UnitNumber;
     }
-    public  String randomString(int strLength) {
+
+    public String randomString(int strLength) {
         Random rnd = ThreadLocalRandom.current();
         StringBuilder ret = new StringBuilder();
         for (int i = 0; i < strLength; i++) {
@@ -539,20 +543,21 @@ public class VCenterServiceImpl  implements VCenterService {
         }
         return ret.toString();
     }
+
     //查询用户已经创建的自定义规范
-    public  CustomizationSpec getCustomizationSpec( ServiceInstance instance,String customizationName){
-        CustomizationSpec customizationSpec=null;
-        CustomizationSpecItem customizationSpecItem=null;
-        CustomizationSpecManager manager=instance.getCustomizationSpecManager();
-        CustomizationSpecInfo[] infos=manager.getInfo();
-        if(infos!=null && infos.length>0){
-            for(CustomizationSpecInfo info:infos){
-                if(info.getName().equalsIgnoreCase(customizationName)){
-                    try{
-                        customizationSpecItem=manager.getCustomizationSpec(customizationName);
-                        customizationSpec=customizationSpecItem.getSpec();
-                    }catch (Exception e){
-                        log.error( e.getMessage());
+    public CustomizationSpec getCustomizationSpec(ServiceInstance instance, String customizationName) {
+        CustomizationSpec customizationSpec = null;
+        CustomizationSpecItem customizationSpecItem = null;
+        CustomizationSpecManager manager = instance.getCustomizationSpecManager();
+        CustomizationSpecInfo[] infos = manager.getInfo();
+        if (infos != null && infos.length > 0) {
+            for (CustomizationSpecInfo info : infos) {
+                if (info.getName().equalsIgnoreCase(customizationName)) {
+                    try {
+                        customizationSpecItem = manager.getCustomizationSpec(customizationName);
+                        customizationSpec = customizationSpecItem.getSpec();
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
                     }
 
                 }
@@ -561,17 +566,17 @@ public class VCenterServiceImpl  implements VCenterService {
         return customizationSpec;
     }
 
-    public  CustomizationSpec setCustomizationSpec(ServiceInstance si,VcenterApplication vcenterApplication ){
+    public CustomizationSpec setCustomizationSpec(ServiceInstance si, VcenterApplication vcenterApplication) {
         String ip = vcenterApplication.getIpAddress();
-        VcenterVmIpExample vcenterVmIpExample = new VcenterVmIpExample() ;
+        VcenterVmIpExample vcenterVmIpExample = new VcenterVmIpExample();
         vcenterVmIpExample.createCriteria().andIpAddressEqualTo(vcenterApplication.getIpAddress());
-        List<VcenterVmIp>  vcenterVmIps =  vcenterVmIpMapper.selectByExample(vcenterVmIpExample);
+        List<VcenterVmIp> vcenterVmIps = vcenterVmIpMapper.selectByExample(vcenterVmIpExample);
         String subnetMask = vcenterVmIps.get(0).getSubnetMask();
-        String[] gateway =  new String[]{vcenterVmIps.get(0).getGateway()};
-        String[] dnsServer =  new String[]{vcenterVmIps.get(0).getDns()};
+        String[] gateway = new String[]{vcenterVmIps.get(0).getGateway()};
+        String[] dnsServer = new String[]{vcenterVmIps.get(0).getDns()};
         String domain = vcenterVmIps.get(0).getDomain();
 
-        CustomizationSpec customizationSpec=  getCustomizationSpec(si,vcenterApplication.getVirtualMachineName());
+        CustomizationSpec customizationSpec = getCustomizationSpec(si, vcenterApplication.getVirtualMachineName());
         CustomizationFixedIp fixedIp = new CustomizationFixedIp();
         fixedIp.setIpAddress(ip);
         CustomizationIPSettings customizationIPSettings = new CustomizationIPSettings();
@@ -584,19 +589,19 @@ public class VCenterServiceImpl  implements VCenterService {
         customizationAdapterMappings.setAdapter(customizationIPSettings);
         customizationSpec.setNicSettingMap(new CustomizationAdapterMapping[]{customizationAdapterMappings});
 
-        if(!vcenterApplication.getCustomizationSpecName().contains("Linux")){
+        if (!vcenterApplication.getCustomizationSpecName().contains("Linux")) {
             CustomizationWinOptions options = new CustomizationWinOptions();
             options.setChangeSID(true);
             options.setDeleteAccounts(false);
             customizationSpec.setOptions(options);
-            CustomizationSysprep sysprep=new CustomizationSysprep();
-            CustomizationGuiUnattended unattended=new CustomizationGuiUnattended();
+            CustomizationSysprep sysprep = new CustomizationSysprep();
+            CustomizationGuiUnattended unattended = new CustomizationGuiUnattended();
             unattended.setTimeZone(4);
             unattended.setAutoLogon(false);
             unattended.setAutoLogonCount(0);
             sysprep.setGuiUnattended(unattended);
 
-            CustomizationUserData userData=new CustomizationUserData();
+            CustomizationUserData userData = new CustomizationUserData();
             CustomizationFixedName fixedName = new CustomizationFixedName();
             fixedName.setName(vcenterApplication.getVirtualMachineName());
             userData.setComputerName(fixedName);
@@ -604,8 +609,7 @@ public class VCenterServiceImpl  implements VCenterService {
             userData.setOrgName(domain);
             sysprep.setUserData(userData);
             customizationSpec.setIdentity(sysprep);
-        }
-        else{
+        } else {
             CustomizationLinuxPrep linuxPrep = new CustomizationLinuxPrep();
             linuxPrep.setDomain(domain);
             CustomizationFixedName fixedName = new CustomizationFixedName();
@@ -615,41 +619,43 @@ public class VCenterServiceImpl  implements VCenterService {
         }
         return customizationSpec;
     }
+
     /**
-      *功能描述  处理代码逻辑
-      *   
-      * @date 2021/2/13
-      * @param managedEntities
-      * @return java.util.List<java.util.Map>
+     * 功能描述  处理代码逻辑
+     *
+     * @param managedEntities
+     * @return java.util.List<java.util.Map>
+     * @date 2021/2/13
      */
 
-    List<Map> dealData(ManagedEntity[] managedEntities){
+    List<Map> dealData(ManagedEntity[] managedEntities) {
         List result = Lists.newArrayList();
-        if(managedEntities!=null && managedEntities.length>0){
-            for(int k=0;k<managedEntities.length;k++){
+        if (managedEntities != null && managedEntities.length > 0) {
+            for (int k = 0; k < managedEntities.length; k++) {
                 Map map = new HashMap();
-                map.put("name",managedEntities[k].getName());
-                map.put("code",k);
+                map.put("name", managedEntities[k].getName());
+                map.put("code", k);
                 result.add(map);
             }
         }
-        return  result;
+        return result;
     }
-/**
-  *功能描述  前后端联调测试数据
-  *   
-  * @date 2021/2/14
-  * @param name
-  * @return java.util.List<java.util.Map>
- */
-        List<Map> testData(String name){
-            List result = Lists.newArrayList();
-            for(int i= 0;i<6;i++){
-                Map<String, String> map = new HashMap<>();
-                map.put("name", name+"1");
-                map.put("code", String.valueOf(i));
-                result.add(map);
-            }
-            return result;
+
+    /**
+     * 功能描述  前后端联调测试数据
+     *
+     * @param name
+     * @return java.util.List<java.util.Map>
+     * @date 2021/2/14
+     */
+    List<Map> testData(String name) {
+        List result = Lists.newArrayList();
+        for (int i = 0; i < 6; i++) {
+            Map<String, String> map = new HashMap<>();
+            map.put("name", name + "1");
+            map.put("code", String.valueOf(i));
+            result.add(map);
         }
+        return result;
+    }
 }

@@ -47,7 +47,7 @@ public class ExcelController {
     public void download(@PathVariable Byte excelType, @RequestParam(name = "projectId") Long projectId,
                          @RequestParam(name = "sprintId", required = false) Long sprintId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            excelService.downloadTemplateByExcelType(excelType, projectId,sprintId, request, response);
+            excelService.downloadTemplateByExcelType(excelType, projectId, sprintId, request, response);
         } catch (Exception e) {
             LOGGER.error("excel模版下载失败：{}", e);
         }
@@ -69,7 +69,7 @@ public class ExcelController {
     public ControllerResponse importExcel(@PathVariable Byte excelType, @RequestHeader(name = "projectId") Long projectId,
                                           @RequestParam(name = "sprintId", required = false) Long sprintId, MultipartHttpServletRequest multiReq, HttpServletRequest request, HttpServletResponse response) {
         try {
-            return excelService.importExcel(excelType, projectId,sprintId, multiReq, request, response);
+            return excelService.importExcel(excelType, projectId, sprintId, multiReq, request, response);
         } catch (Exception e) {
             LOGGER.error("导入excel失败：{}", e);
             return ControllerResponse.fail("导入excel失败！");
@@ -86,7 +86,7 @@ public class ExcelController {
      * @date 2021/2/1
      */
     @PostMapping("/export/issueDatas/{issueType}")
-    public void exportIssueDatas(@PathVariable("issueType") Byte issueType, @RequestHeader("projectId") Long projectId, @RequestBody Map<String,Object> map, HttpServletResponse response) {
+    public void exportIssueDatas(@PathVariable("issueType") Byte issueType, @RequestHeader("projectId") Long projectId, @RequestBody Map<String, Object> map, HttpServletResponse response) {
         try {
             Workbook workbook = excelService.exportIssueDatas(issueType, projectId, map);
             ExcelUtil.writeOutStream(response, UUID.randomUUID() + ".xlsx", workbook);

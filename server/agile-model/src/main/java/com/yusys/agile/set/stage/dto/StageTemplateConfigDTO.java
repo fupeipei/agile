@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * @description 阶段模板配置类
- *  
  * @date 2020/08/25
  */
 public class StageTemplateConfigDTO implements Serializable {

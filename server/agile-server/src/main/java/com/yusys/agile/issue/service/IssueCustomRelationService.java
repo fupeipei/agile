@@ -10,16 +10,16 @@ import java.util.List;
 public interface IssueCustomRelationService {
 
 
-      List<IssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType);
+    List<IssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType);
 
-      void  deleteIssueCustomRelation(Long id);
+    void deleteIssueCustomRelation(Long id);
 
-      void saveIssueCustomRelation(SecurityDTO securityDTO, IssueCustomRelationList idList);
+    void saveIssueCustomRelation(SecurityDTO securityDTO, IssueCustomRelationList idList);
 
-      List<IssueCustomRelation> getUnApplied(SecurityDTO securityDTO, Byte issueType,String fieldName);
+    List<IssueCustomRelation> getUnApplied(SecurityDTO securityDTO, Byte issueType, String fieldName);
 
-      List<CustomFieldDTO>  getCustomFieldDTO(Long projectId,Byte issueType);
+    List<CustomFieldDTO> getCustomFieldDTO(Long projectId, Byte issueType);
 
-      void  deleteIssueCustomRelationByFieldId(Long fieldId);
+    void deleteIssueCustomRelationByFieldId(Long fieldId);
 
 }

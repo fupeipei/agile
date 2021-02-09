@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @description 看板模板类
- *  
  * @date 2020/08/24
  */
 public class KanbanTemplate implements Serializable {

@@ -54,7 +54,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
-
  * @Date 2020/4/10
  */
 @Service("sprintService")
@@ -128,7 +127,6 @@ public class SprintServiceImpl implements SprintService {
     /**
      * @param sprintDTO
      * @param sprint
-
      * @Date 2020/4/24
      * @Description 时间戳排序，结束时间取最后日期后一天
      * @Return java.util.Date
@@ -149,7 +147,6 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintId
      * @param userId
      * @param projectId
-
      * @Date 2020/4/26
      * @Description 新建团队，创建迭代人员
      * @Return java.lang.Long
@@ -195,7 +192,6 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintDTO
      * @param sprintId
      * @param userId
-
      * @Date 2020/4/26 16:23
      * @Description 创建迭代人员
      * @Return void
@@ -248,7 +244,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-
      * @Date 2021/2/14
      * @Description 统计迭代的已完成工作量和剩余工作量
      * @Return void
@@ -265,7 +260,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-
      * @Date 2021/2/14
      * @Description 统计项目中的缺陷总数和已完成数
      * @Return void
@@ -281,7 +275,6 @@ public class SprintServiceImpl implements SprintService {
     /**
      * @param projectId
      * @param sprintId
-
      * @Date 2020/4/26 16:24
      * @Description 获取团队以及团队中人员信息
      * @Return java.util.List<com.yusys.agile.team.dto.TeamDTO>
@@ -400,7 +393,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-
      * @Date 2021/2/16
      * @Description 判断版本号只能是英文数字_.常用字符
      * @Return void
@@ -416,7 +408,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-
      * @Date 2020/4/27
      * @Description 检查版本号是否重复
      * @Return boolean
@@ -443,7 +434,6 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintDTO
      * @param projectId
      * @param sprint
-
      * @Date 2021/2/21
      * @Description 确定版本编号与哪个项目重复
      * @Return void
@@ -461,7 +451,6 @@ public class SprintServiceImpl implements SprintService {
     /**
      * @param teamName
      * @param projectId
-
      * @Date 2020/4/27
      * @Description 检查团队名称是否重复
      * @Return boolean
@@ -567,7 +556,7 @@ public class SprintServiceImpl implements SprintService {
             for (Long issueId : issueIds) {
 
                 // 评审拦截
-                if(IssueTypeEnum.TYPE_STORY.CODE.equals(sprintDTO.getIssueType())){
+                if (IssueTypeEnum.TYPE_STORY.CODE.equals(sprintDTO.getIssueType())) {
                     StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issueId, sprintDTO.getProjectId());
                     if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
                         LOGGER.info("由于未通过评审，迭代关联故事失败！storyId = {}", issueId);
@@ -677,7 +666,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-
      * @Date 2021/2/7
      * @Description 统计迭代中的故事总数和已完成数以及任务总数和已完成数
      * @Return void
@@ -698,7 +686,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param sprintDTO
-
      * @Date 2021/2/4
      * @Description 获取团队名称
      * @Return void
@@ -715,7 +702,6 @@ public class SprintServiceImpl implements SprintService {
      * @param sprintExample
      * @param criteria
      * @param criteria2
-
      * @Date 2020/4/28
      * @Description 判断传来的参数是id还是name
      * @Return void
@@ -739,7 +725,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param issueIds
-
      * @Date 2020/4/27
      * @Description 通过工作项id判断数据是否有效
      * @Return boolean
@@ -750,7 +735,6 @@ public class SprintServiceImpl implements SprintService {
 
     /**
      * @param teamId
-
      * @Date 2020/4/26 16:28
      * @Description 把没迭代的原始团队数据设置无效
      * @Return void
@@ -796,19 +780,19 @@ public class SprintServiceImpl implements SprintService {
     public List<SprintDTO> selectSprint(Long sprintId, Long projectId) {
         List<SprintDTO> sprintDTOS = Lists.newArrayList();
         SprintExample sprintExample = new SprintExample();
-       SprintExample.Criteria c =  sprintExample.createCriteria() ;
-        if(sprintId!=null){
+        SprintExample.Criteria c = sprintExample.createCriteria();
+        if (sprintId != null) {
             c.andProjectIdEqualTo(sprintId);
         }
         c.andProjectIdEqualTo(projectId);
-       List<SprintWithBLOBs>  sprintWithBLOBs = sprintMapper.selectByExampleWithBLOBs(sprintExample);
-       try{
-           sprintDTOS = ReflectUtil.copyProperties4List(sprintWithBLOBs, SprintDTO.class);
+        List<SprintWithBLOBs> sprintWithBLOBs = sprintMapper.selectByExampleWithBLOBs(sprintExample);
+        try {
+            sprintDTOS = ReflectUtil.copyProperties4List(sprintWithBLOBs, SprintDTO.class);
 
-       }catch (Exception e){
-           LOGGER.info( e.getMessage());
-       }
-     return sprintDTOS;
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+        }
+        return sprintDTOS;
     }
 
     /**
@@ -816,30 +800,29 @@ public class SprintServiceImpl implements SprintService {
      *
      * @param sprintIds
      * @return com.yusys.agile.sprint.dto.SprintDTO
-     *
      * @date 2020/10/21
      */
     @Override
     public List<SprintDTO> selectSprintsBySprintIdList(List<Long> sprintIds) {
         List<SprintDTO> sprintDTOS = Lists.newArrayList();
         SprintExample sprintExample = new SprintExample();
-        SprintExample.Criteria c =  sprintExample.createCriteria() ;
-        if(CollectionUtils.isNotEmpty(sprintIds)){
+        SprintExample.Criteria c = sprintExample.createCriteria();
+        if (CollectionUtils.isNotEmpty(sprintIds)) {
             c.andSprintIdIn(sprintIds);
         }
-        List<SprintWithBLOBs>  sprintWithBLOBs = sprintMapper.selectByExampleWithBLOBs(sprintExample);
-        try{
+        List<SprintWithBLOBs> sprintWithBLOBs = sprintMapper.selectByExampleWithBLOBs(sprintExample);
+        try {
             sprintDTOS = ReflectUtil.copyProperties4List(sprintWithBLOBs, SprintDTO.class);
 
-        }catch (Exception e){
-            LOGGER.info( e.getMessage());
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
         }
         return sprintDTOS;
     }
 
     @Override
     public int completeSprint(Long projectId, Long sprintId) {
-        LOGGER.info("关闭迭代入参projectId={},sprintId={}",projectId,sprintId);
+        LOGGER.info("关闭迭代入参projectId={},sprintId={}", projectId, sprintId);
         Sprint sprint = sprintMapper.selectByPrimaryKey(sprintId);
         if (!projectId.equals(sprint.getProjectId())) {
             LOGGER.info("当前项目与当前迭代项目不一致!");
@@ -852,7 +835,7 @@ public class SprintServiceImpl implements SprintService {
         Integer countFinishedTasks4Sprint = issueMapper.countFinishedTasks4SprintId(sprintId);
         if (null != countTasks4Sprint && null != countFinishedTasks4Sprint) {
             if (countTasks4Sprint - countFinishedTasks4Sprint != 0) {
-                LOGGER.info("迭代下任务数大于已完成的任务数！countTasks4Sprint={},countFinishedTasks4Sprint={}",countTasks4Sprint,countFinishedTasks4Sprint);
+                LOGGER.info("迭代下任务数大于已完成的任务数！countTasks4Sprint={},countFinishedTasks4Sprint={}", countTasks4Sprint, countFinishedTasks4Sprint);
                 return -1;
             }
         }
@@ -860,7 +843,7 @@ public class SprintServiceImpl implements SprintService {
         Integer countFinishedFaults4Sprint = issueMapper.countFinishedFaults4SprintId(sprintId);
         if (null != countFaults4Sprint && null != countFinishedFaults4Sprint) {
             if (countFaults4Sprint - countFinishedFaults4Sprint != 0) {
-                LOGGER.info("迭代下缺陷数大于已完成的缺陷数！countFaults4Sprint={},countFinishedFaults4Sprint={}",countFaults4Sprint,countFinishedFaults4Sprint);
+                LOGGER.info("迭代下缺陷数大于已完成的缺陷数！countFaults4Sprint={},countFinishedFaults4Sprint={}", countFaults4Sprint, countFinishedFaults4Sprint);
                 return -1;
             }
         }
@@ -879,7 +862,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public PageInfo sprintUserInfo(Long projectId, Long sprintId, Integer pageNum, Integer pageSize) {
         List<SsoUser> ssoUserList = listUsersBySprintId(projectId, sprintId);
-        return projectUserService.commitUserInfo(projectId,sprintId, pageNum, pageSize, ssoUserList);
+        return projectUserService.commitUserInfo(projectId, sprintId, pageNum, pageSize, ssoUserList);
     }
 
     @Override
@@ -896,25 +879,24 @@ public class SprintServiceImpl implements SprintService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void distributeStorys(List<Long> listStorys, Long projectId,Long oldSprintId, Long sprintId) {
+    public void distributeStorys(List<Long> listStorys, Long projectId, Long oldSprintId, Long sprintId) {
         burnDownChartDao.cancelByStorys(oldSprintId, listStorys);
         burnDownChartStoryDao.cancelByStorys(oldSprintId, listStorys);
         //storyService.distributeSprints(listStorys, sprintId);
-        storyService.distributeStoryAndTaskAndFaultToSprint(listStorys, projectId,oldSprintId,sprintId);
+        storyService.distributeStoryAndTaskAndFaultToSprint(listStorys, projectId, oldSprintId, sprintId);
 
         // 处理只关联迭代的缺陷
-        List<Issue> faults = storyService.dealFaultsOnlyInSprint(oldSprintId,sprintId);
+        List<Issue> faults = storyService.dealFaultsOnlyInSprint(oldSprintId, sprintId);
         //处理燃尽图表里面的缺陷
         dealFaultsOnlyInBurnDownChart(faults, oldSprintId);
-        completeSprint(projectId,oldSprintId);
+        completeSprint(projectId, oldSprintId);
     }
 
     /**
-     * @description 处理燃尽图中迭代关联的缺陷
-     *  
-     * @date 2020/09/01
      * @param faults
      * @param oldSprintId
+     * @description 处理燃尽图中迭代关联的缺陷
+     * @date 2020/09/01
      */
     private void dealFaultsOnlyInBurnDownChart(List<Issue> faults, Long oldSprintId) {
         if (CollectionUtils.isNotEmpty(faults)) {
@@ -929,12 +911,12 @@ public class SprintServiceImpl implements SprintService {
     /**
      * 功能描述:提供cicd接口，根据项目id查询迭代信息
      *
-     * @date 2020/8/19
      * @param projectId
      * @return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
+     * @date 2020/8/19
      */
     @Override
-    public List<SprintDTO> listUnFinisherSprintsByProjectId(Long projectId, String name,Integer pageNum, Integer pageSize) {
+    public List<SprintDTO> listUnFinisherSprintsByProjectId(Long projectId, String name, Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
@@ -949,22 +931,22 @@ public class SprintServiceImpl implements SprintService {
         criteria.andProjectIdEqualTo(projectId).andStateEqualTo(StateEnum.U.getValue()).
                 andStatusIn(notFinishedSprint);
 
-        if(StringUtils.isNotBlank(name)){
-            criteria.andSprintNameLike("%"+name+"%");
+        if (StringUtils.isNotBlank(name)) {
+            criteria.andSprintNameLike("%" + name + "%");
         }
 
         List<SprintDTO> sprintDTOS = sprintMapper.selectByExampleDTO(sprintExample);
 
-        return  sprintDTOS;
+        return sprintDTOS;
     }
 
     /**
      * 功能描述:根据项目id查询所有的迭代信息
      *
-     * @date 2021/2/5
      * @param projectId
      * @param
      * @return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
+     * @date 2021/2/5
      */
     @Override
     public List<SprintDTO> listAllSprintsByProjectId(Long projectId, String sprintName) {

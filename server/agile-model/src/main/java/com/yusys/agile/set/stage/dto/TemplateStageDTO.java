@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @descrition 看板阶段类
- *  
  * @date 2020/05/15
  */
 public class TemplateStageDTO implements Serializable {

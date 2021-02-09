@@ -15,7 +15,7 @@ public class VersionIssueSysExtendFieldDetailDTO implements Serializable {
     /**
      * Feature需求业务状态
      */
-    private String bizStatus ;
+    private String bizStatus;
     /**
      * 系统名称
      */

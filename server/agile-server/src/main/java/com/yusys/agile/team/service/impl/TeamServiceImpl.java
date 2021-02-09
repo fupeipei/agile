@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-
+ *
  */
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -85,8 +85,8 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public List<SsoUser> listMemberUsers(Long subjectId, Integer userRelateType) {
         List<SsoUser> ssoUserList = iFacadeUserApi.ListMemberUsers(subjectId, userRelateType);
-        if(CollectionUtils.isNotEmpty(ssoUserList)){
-            for(SsoUser ssoUser : ssoUserList){
+        if (CollectionUtils.isNotEmpty(ssoUserList)) {
+            for (SsoUser ssoUser : ssoUserList) {
                 ssoUser.setUserPassword(null);
             }
         }

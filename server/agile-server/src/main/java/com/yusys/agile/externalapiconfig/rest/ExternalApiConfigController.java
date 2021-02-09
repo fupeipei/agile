@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 @RestController
 public class ExternalApiConfigController {
     @Resource
-    private  ExternalApiConfigUtil externalApiConfigUtil;
+    private ExternalApiConfigUtil externalApiConfigUtil;
 
 
     /**

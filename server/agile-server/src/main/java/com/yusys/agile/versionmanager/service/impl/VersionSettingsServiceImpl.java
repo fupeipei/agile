@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * @ClassName VersionSettingsServiceImpl
  * @Description TODO
- *
  * @Date 2020/8/19 17:12
  * @Version 1.0
  */
@@ -25,6 +24,7 @@ public class VersionSettingsServiceImpl implements VersionSettingsService {
 
     @Resource
     private VersionSettingsMapper settingsMapper;
+
     @Override
     public List<VersionSettings> getVersionSettings(SecurityDTO securityDTO) {
         VersionSettingsExample settingsExample = new VersionSettingsExample();
@@ -36,7 +36,7 @@ public class VersionSettingsServiceImpl implements VersionSettingsService {
     }
 
     @Override
-    public void pushVersionSetting(VersionSettings versionSettings,SecurityDTO securityDTO) {
+    public void pushVersionSetting(VersionSettings versionSettings, SecurityDTO securityDTO) {
         settingsMapper.updateByPrimaryKey(versionSettings);
     }
 
@@ -50,7 +50,7 @@ public class VersionSettingsServiceImpl implements VersionSettingsService {
                     .andProjectIdEqualTo(projectId)
                     .andIssueTypeEqualTo(issueType);
             List<VersionSettings> versionSettingsList = settingsMapper.selectByExample(settingsExample);
-            if(CollectionUtils.isEmpty(versionSettingsList)){
+            if (CollectionUtils.isEmpty(versionSettingsList)) {
                 VersionSettings settings = new VersionSettings();
                 settings.setProjectId(projectId);
                 settings.setIssueType(issueType);

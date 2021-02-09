@@ -64,7 +64,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- *
  * @Date: 13:34
  */
 @Component
@@ -283,7 +282,6 @@ public class IssueFactory {
      * @param issueDTO
      * @param issueType
      * @param issueId
-
      * @Date 2021/2/1
      * @Description 新增故事验收标准
      * @Return void
@@ -327,7 +325,6 @@ public class IssueFactory {
     /**
      * @param issue
      * @description 处理代办创建业务
-     *  
      * @date 2020/07/09
      */
     private void dealCommissionCreate(Issue issue) {
@@ -339,7 +336,6 @@ public class IssueFactory {
      * @param issue
      * @return
      * @description 组装代办对象
-     *  
      * @date 2020/07/09
      */
     public CommissionDTO assembleCommissionObject(Issue issue) {
@@ -560,7 +556,6 @@ public class IssueFactory {
     /**
      * @param issueId
      * @description 处理代办编辑
-     *  
      * @date 2020/07/09
      */
     public void dealCommissionEdit(Long issueId) {
@@ -628,7 +623,7 @@ public class IssueFactory {
                     ba.setIssueId(issueId);
                     ba.setUploadUid(1L);
                     newAttachment.add(ba);
-                }else{
+                } else {
                     updateAttachments.add(ba);
                 }
             }
@@ -702,7 +697,7 @@ public class IssueFactory {
         commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
 
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
-        
+
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
@@ -718,8 +713,7 @@ public class IssueFactory {
     /**
      * @param issue
      * @description 保存epic和feature删除的数据到需求分支同步表
-     *  
-     * @date  2021/2/7
+     * @date 2021/2/7
      */
     private void dealEpicFeatureData(Issue issue) {
         Byte issueType = issue.getIssueType();
@@ -794,7 +788,7 @@ public class IssueFactory {
             issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
             //查询故事验收标准信息
             getAcceptanceList(issueId, issueDTO);
-            
+
         }
         return issueDTO;
     }
@@ -802,7 +796,6 @@ public class IssueFactory {
     /**
      * @param issueId
      * @param issueDTO
-
      * @Date 2021/2/1
      * @Description 查询故事验收标准信息
      * @Return void
@@ -981,7 +974,6 @@ public class IssueFactory {
     }
 
     /**
-     *
      * @Date: 10:12
      * @Description: 删除子任务
      * @Param: * @param issueId
@@ -1058,7 +1050,6 @@ public class IssueFactory {
 
 
     /**
-     *
      * @Date: 9:42
      * @Description: 复制工作项
      * @Param: * @param epicId
@@ -1086,21 +1077,21 @@ public class IssueFactory {
         issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
 
         //查询工作项和产品关系表并保存
-        List<IssueSystemRelp>  issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
-        if(CollectionUtils.isNotEmpty(issueSystemRelpList)){
+        List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
+        if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
             issueDTO.setSystemIds(issueSystemRelpList.stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList()));
         }
 
         Long newIssueId = createIssue(issueDTO, checkErrMsg, newMsg, issueType);
         //处理扩展字段
-        dealSysExtendFieldDetail(issueId, newIssueId,issueType);
+        dealSysExtendFieldDetail(issueId, newIssueId, issueType);
         return newIssueId;
     }
 
-    private void dealSysExtendFieldDetail(Long issueId, Long newIssueId,Byte issueType) {
+    private void dealSysExtendFieldDetail(Long issueId, Long newIssueId, Byte issueType) {
         List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetail(issueId);
         if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
-            boolean hasReqScheduling =false;
+            boolean hasReqScheduling = false;
             boolean hasPlanStates = false;
             for (SysExtendFieldDetail sysExtendFieldDetail : sysExtendFieldDetailList) {
                 sysExtendFieldDetail.setIssueId(newIssueId);
@@ -1110,43 +1101,42 @@ public class IssueFactory {
                     sysExtendFieldDetail.setValue(bizNum);
                 }
 
-                    if (VersionConstants.SysExtendFiledConstant.PLANSTATES.equals(sysExtendFieldDetail.getFieldId())) {
-                        hasPlanStates = false;
-                        sysExtendFieldDetail.setValue(PlanStatesEnum.ON_TIME.CODE);
-                    }
-
-                    if(VersionConstants.SysExtendFiledConstant.ACTUAL_ONLINE_TIME.equals(sysExtendFieldDetail.getFieldId())){
-                        sysExtendFieldDetail.setValue("");
-                    }
-
-                    if(VersionConstants.SysExtendFiledConstant.RELATEDSYSTEM.equals(sysExtendFieldDetail.getFieldId())){
-                        sysExtendFieldDetail.setValue("");
-                    }
-
-                    if(VersionConstants.SysExtendFiledConstant.APPROVAL_START_TIME.equals(sysExtendFieldDetail.getFieldId())){
-                        sysExtendFieldDetail.setValue("");
-                    }
-
-                    if(VersionConstants.SysExtendFiledConstant.APPROVAL_END_TIME.equals(sysExtendFieldDetail.getFieldId())){
-                        sysExtendFieldDetail.setValue("");
-                    }
-
-                    if(VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS.equals(sysExtendFieldDetail.getFieldId())){
-                        sysExtendFieldDetail.setValue("");
-                    }
-
-                    if(VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT.equals(sysExtendFieldDetail.getFieldId())){
-                        sysExtendFieldDetail.setValue("");
-                    }
-
-
+                if (VersionConstants.SysExtendFiledConstant.PLANSTATES.equals(sysExtendFieldDetail.getFieldId())) {
+                    hasPlanStates = false;
+                    sysExtendFieldDetail.setValue(PlanStatesEnum.ON_TIME.CODE);
                 }
+
+                if (VersionConstants.SysExtendFiledConstant.ACTUAL_ONLINE_TIME.equals(sysExtendFieldDetail.getFieldId())) {
+                    sysExtendFieldDetail.setValue("");
+                }
+
+                if (VersionConstants.SysExtendFiledConstant.RELATEDSYSTEM.equals(sysExtendFieldDetail.getFieldId())) {
+                    sysExtendFieldDetail.setValue("");
+                }
+
+                if (VersionConstants.SysExtendFiledConstant.APPROVAL_START_TIME.equals(sysExtendFieldDetail.getFieldId())) {
+                    sysExtendFieldDetail.setValue("");
+                }
+
+                if (VersionConstants.SysExtendFiledConstant.APPROVAL_END_TIME.equals(sysExtendFieldDetail.getFieldId())) {
+                    sysExtendFieldDetail.setValue("");
+                }
+
+                if (VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS.equals(sysExtendFieldDetail.getFieldId())) {
+                    sysExtendFieldDetail.setValue("");
+                }
+
+                if (VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT.equals(sysExtendFieldDetail.getFieldId())) {
+                    sysExtendFieldDetail.setValue("");
+                }
+
+
             }
-            sysExtendFieldDetailService.batchSave(sysExtendFieldDetailList);
+        }
+        sysExtendFieldDetailService.batchSave(sysExtendFieldDetailList);
     }
 
     /**
-     *
      * @Date: 13:24
      * @Description: 查询未关联的子工作项
      * @Param: * @param projectId
@@ -1161,7 +1151,6 @@ public class IssueFactory {
      * @param pageNum
      * @param pageSize
      * @param parentId
-     *
      * @Date: 2021/2/3 14:59
      * @Description: 查询所有子工作项
      * @Param: * @param projectId
@@ -1208,7 +1197,6 @@ public class IssueFactory {
     /**
      * @param handlers
      * @param issueType
-     *
      * @Date: 2021/2/4 16:11
      * @Description: 设置处理人id列表及状态名称
      * @Param: * @param issueDTOList
@@ -1236,7 +1224,6 @@ public class IssueFactory {
 
     /**
      * @param issueDTOList
-     *
      * @Date: 2021/2/3 14:10
      * @Description: 处理人名称设置
      * @Param: * @param handlers
@@ -1261,7 +1248,6 @@ public class IssueFactory {
      * @param id   业需或研需id
      * @param type 1 业务需求 2研发需求
      * @return java.lang.Object
-     *
      * @date 2021/2/22
      */
     public List<Long> queryStroyIds(Long id, Byte type) {
@@ -1275,6 +1261,7 @@ public class IssueFactory {
 
     /**
      * 根据工作项id查询项目id
+     *
      * @param issueId
      * @return
      */
@@ -1356,10 +1343,10 @@ public class IssueFactory {
     }
 
     /**
-     * @param issueId   工作项ID
-     * @param updateListMap 工作项Old数据
-     * @param sysExtendFieldDetailList  更新的工作项New数据
-     * @param recordHistory 历史记录
+     * @param issueId                  工作项ID
+     * @param updateListMap            工作项Old数据
+     * @param sysExtendFieldDetailList 更新的工作项New数据
+     * @param recordHistory            历史记录
      */
     private void dealIssueSysExtendFieldDetailHistory(Long issueId, Map<String, List<SysExtendFieldDetail>> updateListMap, List<SysExtendFieldDetail> sysExtendFieldDetailList, List<IssueHistoryRecord> recordHistory) {
         sysExtendFieldDetailList.forEach(sysExtendFieldDetail -> {
@@ -1381,7 +1368,7 @@ public class IssueFactory {
             SysExtendFieldDetail sysExt = sysExtendFieldDetailsMap.get(0);
             oldValue = sysExt.getValue();
         }
-        if(!ObjectUtil.equals(oldValue, newValue)){
+        if (!ObjectUtil.equals(oldValue, newValue)) {
             IssueHistoryRecord sysExtHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, fieldDesc);
             sysExtHistory.setOldValue(oldValue);
             sysExtHistory.setNewValue(newValue);
@@ -1397,7 +1384,6 @@ public class IssueFactory {
      * @param featureId
      * @param epicId
      * @return boolean
-     *
      * @date 2020/10/27
      */
     public boolean checkFeatureInVersion(Long[] stages, Long featureId, Long epicId) {
@@ -1482,7 +1468,6 @@ public class IssueFactory {
     }
 
     /**
-     *
      * @Date: 9:42
      * @Description: 复制工作项
      * @Param: * @param epicId
@@ -1510,8 +1495,8 @@ public class IssueFactory {
         issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
 
         //查询工作项和产品关系表并保存
-        List<IssueSystemRelp>  issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
-        if(CollectionUtils.isNotEmpty(issueSystemRelpList)){
+        List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
+        if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
             issueDTO.setSystemIds(issueSystemRelpList.stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList()));
         }
 

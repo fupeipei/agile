@@ -3,7 +3,6 @@ package com.yusys.agile.cases.dto;
 /**
  * 测试用例返回DTO
  *
- *
  * @create 2020-07-02 17:32
  */
 public class Case {

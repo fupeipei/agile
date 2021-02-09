@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * @description 需求评审结果
- *  
  * @date 2020/12/09
  */
 public class EpicReviewResultDTO implements Serializable {

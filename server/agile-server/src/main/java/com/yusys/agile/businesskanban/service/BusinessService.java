@@ -16,12 +16,11 @@ import java.util.List;
 public interface BusinessService {
 
     /**
+     * @return
      * @Date: 2021/2/1
      * @Description: 创建事务
      * @Param: [businessDTO]
      * @Return: int
-     *
-     * @return
      */
     BusinessDTO createBusiness(BusinessDTO businessDTO);
 
@@ -30,7 +29,6 @@ public interface BusinessService {
      * @Description: 删除事务
      * @Param: [businessId]
      * @Return: int
-     *
      */
     int deleteBusiness(Long businessId);
 
@@ -39,7 +37,6 @@ public interface BusinessService {
      * @Description: 修改事务
      * @Param: [businessDTO]
      * @Return: int
-     *
      */
     BusinessWithBLOBs updateBusiness(BusinessDTO businessDTO) throws Exception;
 
@@ -48,7 +45,6 @@ public interface BusinessService {
      * @Description: 根据事务id获取历史记录
      * @Param: [businessId]
      * @Return: java.util.List<com.yusys.agile.businesskanban.dto.BusinessHistoryRecordDTO>
-     *
      */
     List<BusinessHistoryRecordDTO> getByBusinessId(Long businessId, Integer pageNum, Integer pageSize);
 
@@ -57,7 +53,6 @@ public interface BusinessService {
      * @Description: 查询事务信息
      * @Param: [businessDTO]
      * @Return: com.alibaba.fastjson.JSONObject
-     *
      */
     List<BusinessResultDTO> getBusinessInfo(BusinessDTO businessDTO) throws Exception;
 
@@ -66,7 +61,6 @@ public interface BusinessService {
      * @Description: 列表形式展示
      * @Param: [businessDTO]
      * @Return: java.util.List<com.yusys.agile.businesskanban.dto.BusinessDTO>
-     *
      */
     List<BusinessDTO> getBusinessInfList(BusinessDTO businessDTO);
 
@@ -76,7 +70,6 @@ public interface BusinessService {
      * @Description: 获取事务的相关枚举
      * @Param: []
      * @Return: com.alibaba.fastjson.JSONObject
-     *
      */
     JSONObject getFixedIterms();
 

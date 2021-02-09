@@ -75,7 +75,7 @@ public class DashBoardServiceImpl implements DashBoardService {
             //创建业务需求状况
             //createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_EPIC.CODE);
             //创建研发需求状况
-           // createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_FEATURE.CODE);
+            // createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_FEATURE.CODE);
             //创建故事状况
             createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_STORY.CODE);
             //创建任务状况
@@ -92,13 +92,13 @@ public class DashBoardServiceImpl implements DashBoardService {
         Integer insprint = 0;
         Integer notStarted = 0;
         if (issueType.equals(IssueTypeEnum.TYPE_TASK.CODE)) {
-            finished = issueMapper.countFinishedTasks4Project(sprintId,projectId);
-            insprint = issueMapper.countInsprintTaskBySprint(sprintId,projectId);
-            notStarted = issueMapper.countNotStartTaskBySprint(sprintId,projectId);
+            finished = issueMapper.countFinishedTasks4Project(sprintId, projectId);
+            insprint = issueMapper.countInsprintTaskBySprint(sprintId, projectId);
+            notStarted = issueMapper.countNotStartTaskBySprint(sprintId, projectId);
         } else {
-            finished = issueMapper.countAchievedIssues4Sprint(sprintId,projectId, issueType);
-            insprint = issueMapper.countInsprintIssuesBySprint(sprintId,projectId, issueType);
-            notStarted = issueMapper.countNotStartIssuesBySprint(sprintId,projectId, issueType);
+            finished = issueMapper.countAchievedIssues4Sprint(sprintId, projectId, issueType);
+            insprint = issueMapper.countInsprintIssuesBySprint(sprintId, projectId, issueType);
+            notStarted = issueMapper.countNotStartIssuesBySprint(sprintId, projectId, issueType);
         }
         IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
         if (currentStatus == null) {
@@ -138,13 +138,13 @@ public class DashBoardServiceImpl implements DashBoardService {
     private void calculateProjectStatus(Long projectId) {
         Date target = DateUtil.currentDay();
         //创建业务需求状况
-        createIssueProjectStatus(projectId,target,IssueTypeEnum.TYPE_EPIC.CODE);
+        createIssueProjectStatus(projectId, target, IssueTypeEnum.TYPE_EPIC.CODE);
         //创建研发需求状况
-         createIssueProjectStatus(projectId,target, IssueTypeEnum.TYPE_FEATURE.CODE);
+        createIssueProjectStatus(projectId, target, IssueTypeEnum.TYPE_FEATURE.CODE);
         //创建故事状况
-        createIssueProjectStatus(projectId,target,IssueTypeEnum.TYPE_STORY.CODE);
+        createIssueProjectStatus(projectId, target, IssueTypeEnum.TYPE_STORY.CODE);
         //创建任务状况
-        createIssueProjectStatus(projectId,target,IssueTypeEnum.TYPE_TASK.CODE);
+        createIssueProjectStatus(projectId, target, IssueTypeEnum.TYPE_TASK.CODE);
     }
 
 
@@ -156,13 +156,13 @@ public class DashBoardServiceImpl implements DashBoardService {
         Integer insprint = 0;
         Integer notStarted = 0;
         if (issueType.equals(IssueTypeEnum.TYPE_TASK.CODE)) {
-            finished = issueMapper.countFinishedTasks4Project(null,projectId);
-            insprint = issueMapper.countInsprintTaskBySprint(null,projectId);
-            notStarted = issueMapper.countNotStartTaskBySprint(null,projectId);
+            finished = issueMapper.countFinishedTasks4Project(null, projectId);
+            insprint = issueMapper.countInsprintTaskBySprint(null, projectId);
+            notStarted = issueMapper.countNotStartTaskBySprint(null, projectId);
         } else {
-            finished = issueMapper.countAchievedIssues4Sprint(null,projectId, issueType);
-            insprint = issueMapper.countInsprintIssuesBySprint(null,projectId, issueType);
-            notStarted = issueMapper.countNotStartIssuesBySprint(null,projectId, issueType);
+            finished = issueMapper.countAchievedIssues4Sprint(null, projectId, issueType);
+            insprint = issueMapper.countInsprintIssuesBySprint(null, projectId, issueType);
+            notStarted = issueMapper.countNotStartIssuesBySprint(null, projectId, issueType);
         }
         IssueProjectStatus currentStatus = issueProjectStatusService.getByProjectAndDate(projectId, target, issueType);
         if (currentStatus == null) {

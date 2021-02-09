@@ -14,19 +14,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith( SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class ModuleServiceImplTest {
 
     private final static Logger log = LoggerFactory.getLogger(ModuleServiceImplTest.class);
     @Autowired
     private ModuleService moduleService;
+
     @Test
     public void listModuleBySystemIds() {
         List<Long> systemIds = new ArrayList<>();
         systemIds.add(711877419501215744L);
         JSONObject jsonObject = moduleService.listModuleBySystemIds(systemIds);
-        log.info("log: {}" ,jsonObject.toString());
+        log.info("log: {}", jsonObject.toString());
 
     }
 }

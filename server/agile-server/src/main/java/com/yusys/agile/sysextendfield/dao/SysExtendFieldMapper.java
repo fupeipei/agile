@@ -2,7 +2,9 @@ package com.yusys.agile.sysextendfield.dao;
 
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface SysExtendFieldMapper {

@@ -26,7 +26,6 @@ import java.util.List;
 
 /**
  * @description 看板模板业务类
- *  
  * @date 2020/07/28
  */
 @Service
@@ -67,14 +66,13 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     private TemplateStageMapper templateStageMapper;
 
     /**
-     * @description 查询看板模板列表
-     *  
-     * @date 2020/07/28
      * @param tenantCode
      * @param templateName
      * @param pageNum
      * @param pageSize
      * @return
+     * @description 查询看板模板列表
+     * @date 2020/07/28
      */
     @Override
     public PageInfo<List<KanbanTemplate>> getKanbanTemplateList(String tenantCode, String templateName, Integer pageNum, Integer pageSize) {
@@ -85,20 +83,19 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
         kanbanTemplateExample.setOrderByClause("default_template desc,template_id asc");
         KanbanTemplateExample.Criteria criteria = kanbanTemplateExample.createCriteria();
         criteria.andTenantCodeEqualTo(tenantCode)
-                    .andStateEqualTo(StateEnum.U.getValue());
+                .andStateEqualTo(StateEnum.U.getValue());
         if (StringUtils.isNotBlank(templateName)) {
-            criteria.andTemplateNameLike("%"+templateName+"%");
+            criteria.andTemplateNameLike("%" + templateName + "%");
         }
         List<KanbanTemplate> kanbanTemplates = kanbanTemplateMapper.selectByExample(kanbanTemplateExample);
         return new PageInfo(kanbanTemplates);
     }
 
     /**
-     * @description 创建项目模板
-     *  
-     * @date 2020/07/26
      * @param kanbanTemplateDTO
      * @return
+     * @description 创建项目模板
+     * @date 2020/07/26
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -122,11 +119,10 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     }
 
     /**
-     * @description 校验看板模板是否重复
-     *  
-     * @date 2020/07/28
      * @param kanbanTemplateDTO
      * @return
+     * @description 校验看板模板是否重复
+     * @date 2020/07/28
      */
     private void validateKanbanTemplateNameDuplicate(KanbanTemplateDTO kanbanTemplateDTO) {
         String templateName = kanbanTemplateDTO.getTemplateName();
@@ -137,7 +133,7 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
         KanbanTemplateExample kanbanTemplateExample = new KanbanTemplateExample();
         KanbanTemplateExample.Criteria criteria = kanbanTemplateExample.createCriteria();
         criteria.andTemplateNameEqualTo(templateName)
-            .andTenantCodeEqualTo(tenantCode)
+                .andTenantCodeEqualTo(tenantCode)
                 .andStateEqualTo(StateEnum.U.getValue());
         Long templateId = kanbanTemplateDTO.getTemplateId();
         if (null != templateId) {
@@ -150,10 +146,9 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     }
 
     /**
-     * @description 校验默认看板模板是否重复
-     *  
-     * @date 2020/07/28
      * @param kanbanTemplateDTO
+     * @description 校验默认看板模板是否重复
+     * @date 2020/07/28
      */
     private void validateKanbanTemplateDuplicate(KanbanTemplateDTO kanbanTemplateDTO) {
         validateKanbanTemplateNameDuplicate(kanbanTemplateDTO);
@@ -163,9 +158,9 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
             if (1 == defaultTemplate) {
                 KanbanTemplateExample kanbanTemplateExample = new KanbanTemplateExample();
                 kanbanTemplateExample.createCriteria()
-                    .andDefaultTemplateEqualTo(defaultTemplate)
+                        .andDefaultTemplateEqualTo(defaultTemplate)
                         .andTenantCodeEqualTo(kanbanTemplateDTO.getTenantCode())
-                            .andStateEqualTo(StateEnum.U.getValue());
+                        .andStateEqualTo(StateEnum.U.getValue());
                 long count = kanbanTemplateMapper.countByExample(kanbanTemplateExample);
                 if (count != 0) {
                     throw new KanbanTemplateException("当前租户下已存在默认模板");
@@ -175,12 +170,12 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
             throw new KanbanTemplateException("是否默认模板参数必填");
         }
     }
+
     /**
-     * @description 构造看板模板
-     *  
      * @param kanbanTemplateDTO
      * @param type
      * @return
+     * @description 构造看板模板
      */
     private KanbanTemplate constructKanbanTemplate(KanbanTemplateDTO kanbanTemplateDTO, int type) {
         KanbanTemplate kanbanTemplate = ReflectUtil.copyProperties(kanbanTemplateDTO, KanbanTemplate.class);
@@ -203,11 +198,10 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     }
 
     /**
-     * @description 构造模板阶段
-     *  
      * @param kanbanTemplateDTO
      * @param type
      * @return
+     * @description 构造模板阶段
      */
     private List<TemplateStage> constructTemplateStage(KanbanTemplateDTO kanbanTemplateDTO, int type) {
         List<Long> checkedStageIdList = kanbanTemplateDTO.getCheckedStageIdList();
@@ -215,7 +209,7 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
             throw new KanbanTemplateException("模板一级阶段必选");
         }
         //查询一阶段模板配置信息
-        List<StageTemplateConfig> stageTemplateConfigList = stageTemplateConfigService.getStageTemplateConfigListByLevel((byte)1);
+        List<StageTemplateConfig> stageTemplateConfigList = stageTemplateConfigService.getStageTemplateConfigListByLevel((byte) 1);
         if (CollectionUtils.isEmpty(stageTemplateConfigList)) {
             throw new KanbanTemplateException("阶段模板配置表无一阶段数据");
         }
@@ -229,9 +223,9 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
                 }
                 Long templateStageId = templateStage.getStageId();
                 if (checkedStageIdList.contains(templateStageId)) {
-                    templateStage.setIsShow((byte)0);
+                    templateStage.setIsShow((byte) 0);
                 } else {
-                    templateStage.setIsShow((byte)1);
+                    templateStage.setIsShow((byte) 1);
                 }
                 if (type == CREATE_TYPE) {
                     templateStage.setCreateUid(UserThreadLocalUtil.getUserInfo().getUserId());
@@ -257,11 +251,10 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     }
 
     /**
-     * @description 编辑看板模板
-     *  
-     * @date 2020/08/14
      * @param kanbanTemplateDTO
      * @return
+     * @description 编辑看板模板
+     * @date 2020/08/14
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -289,32 +282,31 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     }
 
     /**
-     * @description 根据模板编号查询模板
-     *  
-     * @date 2020/08/24
      * @param templateId
      * @return
+     * @description 根据模板编号查询模板
+     * @date 2020/08/24
      */
-    private KanbanTemplate getKanbanTemplateByPrimaryKey(Long templateId, Byte defaultTemplate){
+    private KanbanTemplate getKanbanTemplateByPrimaryKey(Long templateId, Byte defaultTemplate) {
         KanbanTemplate kanbanTemplate = null;
         KanbanTemplateExample kanbanTemplateExample = new KanbanTemplateExample();
         kanbanTemplateExample.createCriteria()
-            .andTemplateIdEqualTo(templateId)
+                .andTemplateIdEqualTo(templateId)
                 .andDefaultTemplateEqualTo(defaultTemplate)
-                    .andStateEqualTo(StateEnum.U.getValue());
+                .andStateEqualTo(StateEnum.U.getValue());
         List<KanbanTemplate> kanbanTemplates = kanbanTemplateMapper.selectByExample(kanbanTemplateExample);
         if (CollectionUtils.isNotEmpty(kanbanTemplates)) {
             kanbanTemplate = kanbanTemplates.get(0);
         }
         return kanbanTemplate;
     }
+
     /**
-     * @description 删除看板模板
-     *  
-     * @date 2020/08/14
      * @param templateId
      * @param defaultTemplate
      * @return
+     * @description 删除看板模板
+     * @date 2020/08/14
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -354,20 +346,19 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     }
 
     /**
-     * @description 根据租户编码查询默认看板模板
-     *  
-     * @date 2020/08/24
      * @param tenantCode
      * @return
+     * @description 根据租户编码查询默认看板模板
+     * @date 2020/08/24
      */
     @Override
     public KanbanTemplateDTO getDefaultKanbanTemplateByTenantCode(String tenantCode) {
         KanbanTemplateDTO kanbanTemplateDTO = null;
         KanbanTemplateExample kanbanTemplateExample = new KanbanTemplateExample();
         kanbanTemplateExample.createCriteria()
-            .andTenantCodeEqualTo(tenantCode)
-                .andDefaultTemplateEqualTo((byte)1)
-                    .andStateEqualTo(StateEnum.U.getValue());
+                .andTenantCodeEqualTo(tenantCode)
+                .andDefaultTemplateEqualTo((byte) 1)
+                .andStateEqualTo(StateEnum.U.getValue());
         List<KanbanTemplate> kanbanTemplates = kanbanTemplateMapper.selectByExample(kanbanTemplateExample);
         if (CollectionUtils.isNotEmpty(kanbanTemplates)) {
             KanbanTemplate kanbanTemplate = kanbanTemplates.get(0);

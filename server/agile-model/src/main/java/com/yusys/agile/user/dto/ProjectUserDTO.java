@@ -2,7 +2,6 @@ package com.yusys.agile.user.dto;
 
 
 /**
-
  * @Date: 2021/2/6
  */
 public class ProjectUserDTO {

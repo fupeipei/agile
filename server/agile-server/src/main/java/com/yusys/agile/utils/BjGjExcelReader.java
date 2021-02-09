@@ -14,15 +14,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/** cmp_sync_result
+/**
+ * cmp_sync_result
  * 需要导入两张表
  * 1. issue 表
- *    该表中需要插入的字段：issue_id, title (需求主题)，issue_type (值为10)，state （值为 U），project_id （766673668150255616），create_uid （999988886666），
- *    cmp_sync_result （值为1），is_archive （值为1）
+ * 该表中需要插入的字段：issue_id, title (需求主题)，issue_type (值为10)，state （值为 U），project_id （766673668150255616），create_uid （999988886666），
+ * cmp_sync_result （值为1），is_archive （值为1）
  * 2. sys_extend_field_detail 表
- *    该表中需要插入的字段：formalReqCode(局方需求编号) ,bjSource(需求类型), status(需求状态), topic(需求主题), ifKey (是否重点需求),
- *    relatedSystem (系统相关性) , planDeployDate （批次上线时间）该字段有可能为空，type （部署类型），planStates （需求计划状态），ifGroup （是否集团需求）
- *    groupAskLatestDevTime （集团要求最晚开发时间），groupAskLatestTestTime （集团要求最晚联调时间），groupAskLatestOnlineTime （集团要求最晚上线时间）
+ * 该表中需要插入的字段：formalReqCode(局方需求编号) ,bjSource(需求类型), status(需求状态), topic(需求主题), ifKey (是否重点需求),
+ * relatedSystem (系统相关性) , planDeployDate （批次上线时间）该字段有可能为空，type （部署类型），planStates （需求计划状态），ifGroup （是否集团需求）
+ * groupAskLatestDevTime （集团要求最晚开发时间），groupAskLatestTestTime （集团要求最晚联调时间），groupAskLatestOnlineTime （集团要求最晚上线时间）
  */
 public class BjGjExcelReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(BjGjExcelReader.class);
@@ -85,7 +86,7 @@ public class BjGjExcelReader {
     private static final String beginTransactionSql = "START TRANSACTION;";
     private static final String commitTransactionSql = "COMMIT;";
 
-    public void  doRead(String excelPath) {
+    public void doRead(String excelPath) {
         SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         String sqlFileName = outputPath + dataFormat.format(new Date()) + ".sql";
         try {
@@ -95,12 +96,12 @@ public class BjGjExcelReader {
                 String[] split = excel.getName().split("\\.");  //.是特殊字符，需要转义！！！！！
                 Workbook wb;
                 //根据文件后缀（xls/xlsx）进行判断
-                if ( "xls".equals(split[1])){
+                if ("xls".equals(split[1])) {
                     FileInputStream fis = new FileInputStream(excel);   //文件流对象
                     wb = new HSSFWorkbook(fis);
-                }else if ("xlsx".equals(split[1])){
+                } else if ("xlsx".equals(split[1])) {
                     wb = new XSSFWorkbook(excel);
-                }else {
+                } else {
                     LOGGER.info("文件类型错误!");
                     return;
                 }
@@ -108,15 +109,15 @@ public class BjGjExcelReader {
                 //开始解析
                 Sheet sheet = wb.getSheetAt(0);     //读取sheet 0
 
-                int firstRowIndex = sheet.getFirstRowNum()+1;   //第一行是列名，所以不读
+                int firstRowIndex = sheet.getFirstRowNum() + 1;   //第一行是列名，所以不读
                 int lastRowIndex = sheet.getLastRowNum();
-                LOGGER.info("firstRowIndex: "+firstRowIndex);
-                LOGGER.info("lastRowIndex: "+lastRowIndex);
+                LOGGER.info("firstRowIndex: " + firstRowIndex);
+                LOGGER.info("lastRowIndex: " + lastRowIndex);
 
-                for(int rIndex = firstRowIndex; rIndex <= lastRowIndex; rIndex++) {   //遍历行
+                for (int rIndex = firstRowIndex; rIndex <= lastRowIndex; rIndex++) {   //遍历行
                     // 增加事务拼接语句
-                    if ( (rIndex - 1) % batchSize == 0) {
-                        writeFileContent(sqlFileName,beginTransactionSql);
+                    if ((rIndex - 1) % batchSize == 0) {
+                        writeFileContent(sqlFileName, beginTransactionSql);
                     }
                     Row row = sheet.getRow(rIndex);
                     if (row != null) {
@@ -151,49 +152,49 @@ public class BjGjExcelReader {
                                 } else {
                                     issueEpicBuilder.append("NULL").append(",");
                                 }
-                            }else {
+                            } else {
                                 Cell cell = row.getCell(cIndex);
                                 if (cell != null) {
                                     sysExtendFieldBuilder.append(issue_id).append(",");
                                     // 生成系统扩展字段插入语句
                                     if (cIndex == formalReqCodeIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,formalReqCode,formalReqCodeName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, formalReqCode, formalReqCodeName, cellValue, sqlFileName);
                                     } else if (cIndex == bjSourceIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,bjSource,bjSourceName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, bjSource, bjSourceName, cellValue, sqlFileName);
                                     } else if (cIndex == statusIndex) {
                                         Double cellValue = cell.getNumericCellValue();
                                         String statusValue = String.valueOf(cellValue.intValue());
-                                        writeSqlFile(sysExtendFieldBuilder,status, statusName,statusValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, status, statusName, statusValue, sqlFileName);
                                     } else if (cIndex == ifKeyIndex) {
                                         Double cellValue = cell.getNumericCellValue();
                                         String ifKeyValue = String.valueOf(cellValue.intValue());
-                                        writeSqlFile(sysExtendFieldBuilder,ifKey,ifKeyName,ifKeyValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, ifKey, ifKeyName, ifKeyValue, sqlFileName);
                                     } else if (cIndex == relatedSystemIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,relatedSystem,relatedSystemName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, relatedSystem, relatedSystemName, cellValue, sqlFileName);
                                     } else if (cIndex == planDeployDateIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,planDeployDate,planDeployDateName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, planDeployDate, planDeployDateName, cellValue, sqlFileName);
                                     } else if (cIndex == typeIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,type,typeName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, type, typeName, cellValue, sqlFileName);
                                     } else if (cIndex == planStatesIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,planStates,planStatesName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, planStates, planStatesName, cellValue, sqlFileName);
                                     } else if (cIndex == ifGroupIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,ifGroup,ifGroupName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, ifGroup, ifGroupName, cellValue, sqlFileName);
                                     } else if (cIndex == groupAskLatestDevTimeIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,groupAskLatestDevTime,groupAskLatestDevTimeName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, groupAskLatestDevTime, groupAskLatestDevTimeName, cellValue, sqlFileName);
                                     } else if (cIndex == groupAskLatestTestTimeIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,groupAskLatestTestTime,groupAskLatestTestTimeName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, groupAskLatestTestTime, groupAskLatestTestTimeName, cellValue, sqlFileName);
                                     } else if (cIndex == groupAskLatestOnlineTimeIndex) {
                                         String cellValue = cell.getStringCellValue();
-                                        writeSqlFile(sysExtendFieldBuilder,groupAskLatestOnlineTime,groupAskLatestOnlineTimeName,cellValue,sqlFileName);
+                                        writeSqlFile(sysExtendFieldBuilder, groupAskLatestOnlineTime, groupAskLatestOnlineTimeName, cellValue, sqlFileName);
                                     }
                                 }
                             }
@@ -206,15 +207,15 @@ public class BjGjExcelReader {
                         issueEpicBuilder.append(1).append(","); // cmp_sync_result
                         issueEpicBuilder.append(1).append(");"); // is_archive
                         String insertEpicSql = issueEpicBuilder.toString();
-                        writeFileContent(sqlFileName,insertEpicSql);
+                        writeFileContent(sqlFileName, insertEpicSql);
                         if (rIndex % batchSize == 0) {
-                            writeFileContent(sqlFileName,commitTransactionSql);
+                            writeFileContent(sqlFileName, commitTransactionSql);
                         }
                     }
                 }
-                writeFileContent(sqlFileName,commitTransactionSql);
+                writeFileContent(sqlFileName, commitTransactionSql);
             } else {
-                LOGGER.info("找不到指定的文件: " +  excelPath);
+                LOGGER.info("找不到指定的文件: " + excelPath);
                 return;
             }
         } catch (Exception e) {
@@ -224,8 +225,8 @@ public class BjGjExcelReader {
     }
 
     private void writeSqlFile(StringBuilder sysExtendFieldBuilder, String fieldId, String fieldName, String value, String sqlFileName) {
-        String insertSysExtendFieldSql = createSysExtendFieldSqlContent(sysExtendFieldBuilder,fieldId,fieldName,value);
-        writeFileContent(sqlFileName,insertSysExtendFieldSql);
+        String insertSysExtendFieldSql = createSysExtendFieldSqlContent(sysExtendFieldBuilder, fieldId, fieldName, value);
+        writeFileContent(sqlFileName, insertSysExtendFieldSql);
     }
 
     private String createSysExtendFieldSqlContent(StringBuilder sysExtendFieldBuilder, String fieldId, String fieldName, String value) {
@@ -240,11 +241,11 @@ public class BjGjExcelReader {
     private void writeFileContent(String file, String content) {
         BufferedWriter out = null;
         try {
-            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,true)));
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true)));
             out.write(content + "\r\n");
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.info(e.getMessage());
-        }finally {
+        } finally {
             if (out != null) {
                 try {
                     out.close();

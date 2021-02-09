@@ -91,7 +91,7 @@ public class FeatureController {
 
     @PostMapping("/issue/editFeature")
     public ControllerResponse editFeature(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
-        try{
+        try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
@@ -100,7 +100,7 @@ public class FeatureController {
             issueDTO.setIssueType(new Byte("2"));
             issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueDTO.getIssueId());
-        }catch (Exception e){
+        } catch (Exception e) {
             /*if(e instanceof BaseBusinessException){
                 return ControllerResponse.fail2(e.getMessage());
             }*/
@@ -162,7 +162,6 @@ public class FeatureController {
 
     /**
      * @param epicId
-     *
      * @Date: 2021/2/9 9:47
      * @Description: 查询业务需求下的所有研发需求
      * @Param: * @param projectId

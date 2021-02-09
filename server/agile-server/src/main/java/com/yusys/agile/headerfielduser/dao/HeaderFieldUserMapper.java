@@ -2,6 +2,7 @@ package com.yusys.agile.headerfielduser.dao;
 
 import com.yusys.agile.headerfielduser.domain.HeaderFieldUser;
 import com.yusys.agile.headerfielduser.domain.HeaderFieldUserExample;
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;

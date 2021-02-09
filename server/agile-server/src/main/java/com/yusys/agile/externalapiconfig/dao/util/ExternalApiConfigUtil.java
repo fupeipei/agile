@@ -15,11 +15,11 @@ import java.util.List;
  * @date 2021/2/2
  */
 @Component
-public class ExternalApiConfigUtil{
+public class ExternalApiConfigUtil {
     @Resource
     private ExternalApiConfigMapper externalApiConfigMapper;
 
-    public String getPropValue(String key){
+    public String getPropValue(String key) {
         ExternalApiConfigExample externalApiConfigExample = new ExternalApiConfigExample();
         ExternalApiConfigExample.Criteria criteria = externalApiConfigExample.createCriteria().andFieldNameEqualTo(key);
         List<ExternalApiConfig> configs = externalApiConfigMapper.selectByExample(externalApiConfigExample);

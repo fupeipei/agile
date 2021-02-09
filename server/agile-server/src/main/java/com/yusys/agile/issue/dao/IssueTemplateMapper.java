@@ -35,5 +35,5 @@ public interface IssueTemplateMapper {
 
     int updateByPrimaryKey(IssueTemplate record);
 
-    IssueTemplate getTemplateByProjectAndType(@Param("projectId")Long projectId, @Param("issueType")Byte issueType);
+    IssueTemplate getTemplateByProjectAndType(@Param("projectId") Long projectId, @Param("issueType") Byte issueType);
 }

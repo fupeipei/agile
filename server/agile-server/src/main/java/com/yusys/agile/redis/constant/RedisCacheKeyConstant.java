@@ -2,7 +2,6 @@ package com.yusys.agile.redis.constant;
 
 /**
  * @descrition reids缓存常量类
- *  
  * @date 2020/04/26
  */
 public class RedisCacheKeyConstant {

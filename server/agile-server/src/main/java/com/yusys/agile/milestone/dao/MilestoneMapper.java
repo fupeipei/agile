@@ -2,6 +2,7 @@ package com.yusys.agile.milestone.dao;
 
 import com.yusys.agile.milestone.domain.Milestone;
 import com.yusys.agile.milestone.domain.MilestoneExample;
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -28,15 +29,14 @@ public interface MilestoneMapper {
     int updateByPrimaryKeySelective(Milestone record);
 
 
-
     int updateByPrimaryKey(Milestone record);
 
     /**
      * 功能描述:修改里程碑时实际完成时间必须要带进去
-
-     * @date   2021/2/5
+     *
      * @param record
      * @return int
+     * @date 2021/2/5
      */
     int updateByPrimaryKeySelectiveWithNull(Milestone record);
 }

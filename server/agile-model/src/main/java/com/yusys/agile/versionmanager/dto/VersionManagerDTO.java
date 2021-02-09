@@ -9,8 +9,7 @@ import java.util.List;
 /**
  * @ClassName VersionManagerDTO
  * @Description 版本管理DTO工具类
- *
- * @Date   2021/2/5 16:28
+ * @Date 2021/2/5 16:28
  * @Version 1.0
  */
 public class VersionManagerDTO implements Serializable {

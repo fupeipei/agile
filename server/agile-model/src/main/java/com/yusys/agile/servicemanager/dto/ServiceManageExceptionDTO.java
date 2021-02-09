@@ -2,7 +2,6 @@ package com.yusys.agile.servicemanager.dto;
 
 /**
  * @description 服务治理平台异常类
- *  
  * @date 2021/2/02
  */
 public class ServiceManageExceptionDTO extends RuntimeException {

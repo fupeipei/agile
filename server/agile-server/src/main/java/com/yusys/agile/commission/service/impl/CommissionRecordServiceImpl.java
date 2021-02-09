@@ -41,9 +41,9 @@ public class CommissionRecordServiceImpl implements CommissionRecordService {
     }
 
     /**
-     * @description 处理代办记录数据
      * @param commission
      * @return
+     * @description 处理代办记录数据
      */
     private CommissionRecord dealCommissionRecordData(Commission commission) {
         CommissionRecord commissionRecord = new CommissionRecord();

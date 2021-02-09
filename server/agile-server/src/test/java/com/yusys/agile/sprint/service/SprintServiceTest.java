@@ -23,7 +23,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 
-@RunWith( SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class SprintServiceTest {
     @Autowired
@@ -34,32 +34,32 @@ public class SprintServiceTest {
     private SprintMapper sprintMapper;
 
     @Before
-    public void setup(){
+    public void setup() {
         iFacadeProjectApi = spy(IFacadeProjectApi.class);
         sprintMapper = spy(SprintMapper.class);
     }
 
     // iFacadeProjectApi返回的对象 此对象用来验证是否存在对应的数据，测试create流程，此对象projectId不能等于projectId
-    private void setup_checkDuplicateTeamName_equals(long projectId){
+    private void setup_checkDuplicateTeamName_equals(long projectId) {
         SsoProject ssoProject = new SsoProject();
         ssoProject.setProjectId(projectId);
-        ssoProject.setProjectName("JUNIT"+ssoProject.getProjectId());
+        ssoProject.setProjectName("JUNIT" + ssoProject.getProjectId());
         doReturn(ssoProject).when(iFacadeProjectApi).getProjectInfoById(Mockito.anyLong());
 
         ReflectionTestUtils.setField(sprintService, "iFacadeProjectApi", iFacadeProjectApi);
     }
 
-    private void setup_checkDuplicateTeamName_not_equals(long projectId, long otherProjectId){
+    private void setup_checkDuplicateTeamName_not_equals(long projectId, long otherProjectId) {
         assert (projectId != otherProjectId);
         SsoProject ssoProject = new SsoProject();
         ssoProject.setProjectId(otherProjectId);
-        ssoProject.setProjectName("JUNIT"+ssoProject.getProjectId());
+        ssoProject.setProjectName("JUNIT" + ssoProject.getProjectId());
         doReturn(ssoProject).when(iFacadeProjectApi).getProjectInfoById(Mockito.anyLong());
 
         ReflectionTestUtils.setField(sprintService, "iFacadeProjectApi", iFacadeProjectApi);
     }
 
-    private SprintDTO buildSprintDTO(long projectId, long sprintId, String status){
+    private SprintDTO buildSprintDTO(long projectId, long sprintId, String status) {
         SprintDTO sprintDTO = new SprintDTO();
 
         sprintDTO.setCreateUid(11L);
@@ -99,7 +99,7 @@ public class SprintServiceTest {
         return sprintDTO;
     }
 
-    private void buildSprit_dayList(SprintDTO sprintDTO){
+    private void buildSprit_dayList(SprintDTO sprintDTO) {
         // spritDayList不能为空, 且必须有值
         List<Date> spritDayList = Lists.newArrayList();
         spritDayList.add(new Date());
@@ -107,16 +107,16 @@ public class SprintServiceTest {
         sprintDTO.setSprintDayList(spritDayList);
     }
 
-    private void setup_insertSelective_return_0(){
+    private void setup_insertSelective_return_0() {
         doReturn(0).when(sprintMapper).insertSelective(Mockito.any());
         ReflectionTestUtils.setField(sprintService, "sprintMapper", sprintMapper);
     }
 
-    private void setup_versionNum_equals_with_projectId_not_equals(long projectId, long otherProjectId){
+    private void setup_versionNum_equals_with_projectId_not_equals(long projectId, long otherProjectId) {
         assert (projectId != otherProjectId);
         SsoProject ssoProject = new SsoProject();
         ssoProject.setProjectId(otherProjectId);
-        ssoProject.setProjectName("JUNIT"+ssoProject.getProjectId());
+        ssoProject.setProjectName("JUNIT" + ssoProject.getProjectId());
 
         doReturn(ssoProject).when(iFacadeProjectApi).getProjectInfoById(Mockito.anyLong());
         ReflectionTestUtils.setField(sprintService, "iFacadeProjectApi", iFacadeProjectApi);
@@ -124,7 +124,7 @@ public class SprintServiceTest {
 
     /***
      * springMapper.insertSelective 返回0 插入失败,返回异常
-         强制insertSelective返回0,未调用实际方法
+     强制insertSelective返回0,未调用实际方法
      *
      * @param
      * @return {}
@@ -133,7 +133,7 @@ public class SprintServiceTest {
      * @date 2020-05-14 09:47
      */
     @Test(expected = BusinessException.class)
-    public void test_BusinessException_insertSelective_failed_CreateSprint(){
+    public void test_BusinessException_insertSelective_failed_CreateSprint() {
         long projectId = 1L;
         long otherProjectId = 1000000L;
         long sprintId = 5001L;
@@ -157,7 +157,7 @@ public class SprintServiceTest {
      * @date 2020-05-14 09:48
      */
     @Test(expected = BusinessException.class)
-    public void test_BusinessException_equals_versionNum_CreateSprint(){
+    public void test_BusinessException_equals_versionNum_CreateSprint() {
         long projectId = 1L;
         long otherProjectId = 1000000L;
         long sprintId = 5001L;
@@ -179,7 +179,7 @@ public class SprintServiceTest {
      * @date 2020-05-14 09:48
      */
     @Test(expected = BusinessException.class)
-    public void test_BusinessException_equals_projectId_CreateSprint(){
+    public void test_BusinessException_equals_projectId_CreateSprint() {
         long projectId = 1L;
         long otherProjectId = 1000000L;
         long sprintId = 5001L;
@@ -192,8 +192,8 @@ public class SprintServiceTest {
     }
 
 
-//    @Test()
-    public void testCreateSprint(){
+    //    @Test()
+    public void testCreateSprint() {
         long projectId = 1L;
         long otherProjectId = 1000000L;
         long sprintId = 5001L;
@@ -204,10 +204,10 @@ public class SprintServiceTest {
         List<SprintDTO> sprintDTOList = sprintService.queryUnFinishedByProjectId(String.valueOf(sprintId), projectId, 0, 10);
 
         SprintDTO sprintDTO;
-        if (sprintDTOList.size() == 1){
+        if (sprintDTOList.size() == 1) {
             sprintDTO = sprintDTOList.get(0);
             buildSprit_dayList(sprintDTO);
-        }else {
+        } else {
             sprintDTO = buildSprintDTO(projectId, sprintId, status);
             sprintService.createSprint(sprintDTO, projectId);
         }
@@ -221,8 +221,8 @@ public class SprintServiceTest {
         assert (!sprintDTO.getState().equals(updateSprintDTO.getState()));
     }
 
-//    @Test()
-    public void testUpdateSprint(){
+    //    @Test()
+    public void testUpdateSprint() {
 //        SprintService sprintService = new SprintServiceImpl();
         long projectId = 1L;
         long sprintId = 5001L;
@@ -238,10 +238,10 @@ public class SprintServiceTest {
         ssoProject.setProjectId(projectId);
 
         SprintDTO sprintDTO;
-        if (sprintDTOList.size() == 1){
+        if (sprintDTOList.size() == 1) {
             sprintDTO = sprintDTOList.get(0);
             sprintDTO.setSprintDayList(spritDayList);
-        }else {
+        } else {
             sprintDTO = new SprintDTO();
 
             sprintDTO.setCreateUid(11L);

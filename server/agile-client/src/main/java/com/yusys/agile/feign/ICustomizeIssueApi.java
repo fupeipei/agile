@@ -13,10 +13,9 @@ import java.util.List;
 
 /**
  * @description 提供cmp工作项有关接口
- *  
  * @date 2020/09/17
  */
-@FeignClient(name="agile-server")
+@FeignClient(name = "agile-server")
 public interface ICustomizeIssueApi {
 
     @PostMapping("/agile/customizeIssue/task/getRelatedIssues")

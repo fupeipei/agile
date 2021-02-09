@@ -33,7 +33,7 @@ public class IssueCustomFieldDTO {
      */
     private Long detailId;
     /**
-     *  对应issueId
+     * 对应issueId
      */
     private Long subjectId;
 
@@ -81,7 +81,6 @@ public class IssueCustomFieldDTO {
     public void setTenantCode(String tenantCode) {
         this.tenantCode = tenantCode;
     }
-
 
 
     public String getFieldContent() {

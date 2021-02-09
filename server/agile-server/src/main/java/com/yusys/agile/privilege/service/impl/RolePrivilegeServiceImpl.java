@@ -10,14 +10,14 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *
  * @description
- * @date  2021/2/8
+ * @date 2021/2/8
  */
 @Service
 public class RolePrivilegeServiceImpl implements RolePrivilegeService {
     @Resource
     private RolePrivilegeMapper rolePrivilegeMapper;
+
     @Override
     public List<RolePrivilege> getPrivilegesByRoleIdList(List<Long> roleList) {
         RolePrivilegeExample rolePrivilegeExample = new RolePrivilegeExample();

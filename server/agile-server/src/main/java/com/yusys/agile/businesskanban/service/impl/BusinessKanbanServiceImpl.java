@@ -49,11 +49,11 @@ public class BusinessKanbanServiceImpl implements BusinessKanbanService {
     public int createBusinessKanban(BusinessKanbanDTO businessKanbanDTO) {
         //创建事务看板
         BusinessKanban businessKanban = new BusinessKanban();
-        ReflectUtil.copyProperties(businessKanbanDTO,businessKanban);
+        ReflectUtil.copyProperties(businessKanbanDTO, businessKanban);
         int i = businessKanbanMapper.insert(businessKanban);
         //如果人员不为空，插入看板成员
         List<Long> userIds = businessKanbanDTO.getUserIds();
-        if(CollectionUtils.isNotEmpty(userIds)){
+        if (CollectionUtils.isNotEmpty(userIds)) {
             batchCreateKanbanMembers(businessKanban, userIds);
         }
         return i;
@@ -63,14 +63,14 @@ public class BusinessKanbanServiceImpl implements BusinessKanbanService {
     @Transactional(rollbackFor = Exception.class)
     public int deleteBusinessKanban(Long kanbanId) {
         BusinessKanban businessKanban = businessKanbanMapper.selectByPrimaryKey(kanbanId);
-        Optional.ofNullable(businessKanban).orElseThrow(()->new BusinessException("事务看板ID不存在,删除事务看板失败"));
+        Optional.ofNullable(businessKanban).orElseThrow(() -> new BusinessException("事务看板ID不存在,删除事务看板失败"));
         businessKanban.setState(StateEnum.E.getValue());
         int i = 0;
         try {
-             i = businessKanbanMapper.updateByPrimaryKey(businessKanban);
-        }catch (Exception e){
+            i = businessKanbanMapper.updateByPrimaryKey(businessKanban);
+        } catch (Exception e) {
             i = -1;
-            loggr.info("BusinessKanbanServiceImpl deleteBusinessKanban error:{}",e.getMessage());
+            loggr.info("BusinessKanbanServiceImpl deleteBusinessKanban error:{}", e.getMessage());
         }
         return i;
     }
@@ -79,7 +79,7 @@ public class BusinessKanbanServiceImpl implements BusinessKanbanService {
     @Transactional(rollbackFor = Exception.class)
     public int updateBusinessKanban(BusinessKanbanDTO businessKanbanDTO) {
         BusinessKanban businessKanban = new BusinessKanban();
-        ReflectUtil.copyProperties(businessKanbanDTO,businessKanban);
+        ReflectUtil.copyProperties(businessKanbanDTO, businessKanban);
         List<Long> userIds = businessKanbanDTO.getUserIds();
 
         //删除事务看板成员
@@ -88,23 +88,23 @@ public class BusinessKanbanServiceImpl implements BusinessKanbanService {
         /** 判断删除的人员是否有未完成的事务卡片*/
         List<BusinessKanbanMembers> businessKanbanMembers = businessKanbanMembersMapper.selectByExample(example);
         List<Long> oldUserIds = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(businessKanbanMembers)){
-            businessKanbanMembers.forEach(member->oldUserIds.add(member.getUserId()));
+        if (CollectionUtils.isNotEmpty(businessKanbanMembers)) {
+            businessKanbanMembers.forEach(member -> oldUserIds.add(member.getUserId()));
         }
         List<Long> listC = oldUserIds.stream().filter(item -> !userIds.contains(item)).collect(Collectors.toList());
-        if(CollectionUtils.isNotEmpty(listC)){
+        if (CollectionUtils.isNotEmpty(listC)) {
             BusinessExample businessExample = new BusinessExample();
             businessExample.createCriteria().andStateEqualTo(StateEnum.U.toString())
                     .andBusinessStateNotEqualTo(BusinessState.COMPLETE.getNodeCode().byteValue())
                     .andBusinessOwnerIn(listC);
             List<Business> businesses = businessMapper.selectByExample(businessExample);
-            if(CollectionUtils.isNotEmpty(businesses)){
+            if (CollectionUtils.isNotEmpty(businesses)) {
                 throw new BusinessException("删除的人员下有未处理的事务卡片!");
             }
         }
 
         businessKanbanMembersMapper.deleteByExample(example);
-        if(CollectionUtils.isNotEmpty(userIds)){
+        if (CollectionUtils.isNotEmpty(userIds)) {
             batchCreateKanbanMembers(businessKanban, userIds);
         }
         return businessKanbanMapper.updateByPrimaryKey(businessKanban);
@@ -112,7 +112,7 @@ public class BusinessKanbanServiceImpl implements BusinessKanbanService {
 
     private void batchCreateKanbanMembers(BusinessKanban businessKanban, List<Long> userIds) {
         List<BusinessKanbanMembers> members = Lists.newArrayList();
-        for(Long userId:userIds){
+        for (Long userId : userIds) {
             BusinessKanbanMembers member = new BusinessKanbanMembers();
             member.setKanbanId(businessKanban.getKanbanId());
             member.setUserId(userId);

@@ -10,10 +10,11 @@ import java.util.List;
 public class VersionPlanTool {
     /**
      * 功能描述
-     * @date 2020/4/21
-     * @description 获得版本计划中已经绑定的业务需求的ID
+     *
      * @param versionPlanList
      * @return java.util.List<java.lang.Long>
+     * @date 2020/4/21
+     * @description 获得版本计划中已经绑定的业务需求的ID
      **/
     public static List<Long> getVersionPlanBindingRequirementIds(List<VersionManagerDTO> versionPlanList) {
         List<Long> requirementIds = new ArrayList<>();

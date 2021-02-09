@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * 阶段controller实现类
- *  
+ *
  * @create 2020-04-10 16:28
  */
 @RestController
@@ -29,13 +29,13 @@ public class StageControllerImpl {
     private StageService stageService;
 
     /**
-     * @description 根据项目id查询阶段列表
      * @param projectId
      * @param paramProjectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @description 根据项目id查询阶段列表
      */
     @GetMapping("/getStageList")
-    public ControllerResponse queryStageList(@RequestHeader("projectId") Long projectId, @RequestParam(name = "projectId",required = false) Long paramProjectId) {
+    public ControllerResponse queryStageList(@RequestHeader("projectId") Long projectId, @RequestParam(name = "projectId", required = false) Long paramProjectId) {
         try {
             Long stageProjectId = null;
             if (null != paramProjectId) {
@@ -55,9 +55,9 @@ public class StageControllerImpl {
     }
 
     /**
-     * @description 编辑一阶段
      * @param stageInstanceDTOList
      * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @description 编辑一阶段
      */
     @PostMapping("/configFirstStages")
     public ControllerResponse configFirstStages(@RequestBody List<KanbanStageInstanceDTO> stageInstanceDTOList) {
@@ -77,14 +77,14 @@ public class StageControllerImpl {
     }
 
     /**
-     * @description 新增二阶段
      * @param projectId
      * @param kanbanStageInstanceDTO
      * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @description 新增二阶段
      */
     @PostMapping("/addSecondStages")
     public ControllerResponse addSecondStages(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
-        LOGGER.info("addSecondStages methods Params: {}",kanbanStageInstanceDTO.toString());
+        LOGGER.info("addSecondStages methods Params: {}", kanbanStageInstanceDTO.toString());
         try {
             int count = stageService.addSecondStage(projectId, kanbanStageInstanceDTO);
             if (count > 0) {
@@ -101,10 +101,10 @@ public class StageControllerImpl {
     }
 
     /**
-     * @description 修改二阶段
      * @param projectId
      * @param kanbanStageInstanceDTO
      * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @description 修改二阶段
      */
     @PostMapping("/modifySecondStages")
     public ControllerResponse modifySecondStages(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
@@ -124,10 +124,10 @@ public class StageControllerImpl {
     }
 
     /**
-     * @description 删除二阶段
      * @param projectId
      * @param kanbanStageInstanceDTO
      * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @description 删除二阶段
      */
     @PostMapping("/deleteSecondStages")
     public ControllerResponse deleteSecondStages(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
@@ -147,10 +147,10 @@ public class StageControllerImpl {
     }
 
     /**
-     * @description 排序二阶段
      * @param projectId
      * @param instanceIds
      * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @description 排序二阶段
      */
     @PostMapping("/sortSecondStages")
     public ControllerResponse sortSecondStages(@RequestHeader("projectId") Long projectId, @RequestBody List<KanbanStageInstanceDTO> instanceIds) {
@@ -177,11 +177,10 @@ public class StageControllerImpl {
     }
 
     /**
-     * @description 初始化阶段模板数据
-     *  
-     * @date 2020/05/18
      * @param kanbanStageInstances
      * @return
+     * @description 初始化阶段模板数据
+     * @date 2020/05/18
      */
     @PostMapping("/initKanbanStageTemplateDatas")
     public int initKanbanStageTemplateDatas(@RequestBody List<KanbanStageInstanceDTO> kanbanStageInstances) {
@@ -189,36 +188,34 @@ public class StageControllerImpl {
         try {
             count = stageService.initKanbanStageList(kanbanStageInstances);
         } catch (Exception e) {
-            LOGGER.error("initKanbanStageList method occur exception, message:{}",e.getMessage());
+            LOGGER.error("initKanbanStageList method occur exception, message:{}", e.getMessage());
         }
         return count;
     }
 
     /**
-     * @description 新增超时天数、最大制品数、准入规则字段
-     *  
-     * @date 2020/06/01
      * @param projectId
      * @param kanbanStageInstanceDTO
      * @return
+     * @description 新增超时天数、最大制品数、准入规则字段
+     * @date 2020/06/01
      */
     @PostMapping("/addStagePopUpInfos")
     public ControllerResponse addStagePopUpInfos(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
         try {
             stageService.addStagePopUpInfos(projectId, kanbanStageInstanceDTO);
             return ControllerResponse.success("阶段弹框信息设置成功");
-        } catch (Exception e){
-            LOGGER.error("addStagePopUpInfos method occur exception, message:{}",e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("addStagePopUpInfos method occur exception, message:{}", e.getMessage());
             return ControllerResponse.fail("阶段弹框信息设置异常");
         }
     }
 
     /**
-     * @description 更新超时天数、最大制品数、准入规则字段
-     *  
-     * @date 2020/06/01
      * @param kanbanStageInstanceDTO
      * @return
+     * @description 更新超时天数、最大制品数、准入规则字段
+     * @date 2020/06/01
      */
     @PostMapping("/modifyStagePopUpInfos")
     public ControllerResponse modifyStagePopUpInfos(@RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
@@ -226,16 +223,16 @@ public class StageControllerImpl {
             stageService.modifyStagePopUpInfos(kanbanStageInstanceDTO);
             return ControllerResponse.success("阶段弹框信息修改成功");
         } catch (Exception e) {
-            LOGGER.error("modifyStagePopUpInfos method occur exception, message:{}",e.getMessage());
+            LOGGER.error("modifyStagePopUpInfos method occur exception, message:{}", e.getMessage());
             return ControllerResponse.fail("阶段弹框信息修改异常");
         }
     }
 
     /**
-     * @description 修改一阶段责任人
      * @param instanceId
      * @param handler
      * @return
+     * @description 修改一阶段责任人
      */
     @PutMapping("/modifyFirstStageHandler")
     public ControllerResponse modifyFirstStageHandler(Long instanceId, Long handler) {

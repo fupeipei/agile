@@ -14,7 +14,6 @@ import java.util.List;
 
 /**
  * @description 模板阶段控制类
- *  
  * @date 2020/05/15
  */
 @RestController
@@ -27,15 +26,14 @@ public class TemplateStageControllerImpl {
     private TemplateStageService templateStageService;
 
     /**
-     * @description 根据租户编码和模板编号查询模板阶段列表
-     *  
-     * @date 2020/05/15
      * @param tenantCode
      * @param templateId
      * @return
+     * @description 根据租户编码和模板编号查询模板阶段列表
+     * @date 2020/05/15
      */
     @GetMapping("/queryTemplateStagesByTemplateId")
-    public List<TemplateStageDTO> queryTemplateStagesByTemplateId(@RequestParam("tenantCode") String tenantCode, @RequestParam("templateId") Long templateId){
+    public List<TemplateStageDTO> queryTemplateStagesByTemplateId(@RequestParam("tenantCode") String tenantCode, @RequestParam("templateId") Long templateId) {
         LOGGER.info("queryTemplateStagesByTemplateId param tenantCode:{}, templateId:{}", tenantCode, templateId);
         return templateStageService.queryTemplateStagesByTemplateId(tenantCode, templateId);
     }

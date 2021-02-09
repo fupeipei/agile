@@ -10,27 +10,28 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2020/4/15
  */
 @RestController
 @RequestMapping("/headerFieldUser")
-public class HeaderFieldUserController  {
+public class HeaderFieldUserController {
 
     private static final Logger log = LoggerFactory.getLogger(HeaderFieldUserController.class);
     @Resource
     HeaderFieldUserService headerFieldUserService;
 
     /**
-      *功能描述
-      *
-      * @date 2020/4/15
-      * @param headerFieldListDTO
+     * 功能描述
+     *
+     * @param headerFieldListDTO
      * @param projectId
-      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2020/4/15
      */
     @PostMapping("/updateList")
-    public ControllerResponse updateHeaderFieldUserList(@RequestBody HeaderFieldListDTO headerFieldListDTO, @RequestHeader(name = "projectId") Long  projectId) {
-            return ControllerResponse.success(headerFieldUserService.updateHeaderFieldUserList(headerFieldListDTO,projectId));
+    public ControllerResponse updateHeaderFieldUserList(@RequestBody HeaderFieldListDTO headerFieldListDTO, @RequestHeader(name = "projectId") Long projectId) {
+        return ControllerResponse.success(headerFieldUserService.updateHeaderFieldUserList(headerFieldListDTO, projectId));
     }
 }

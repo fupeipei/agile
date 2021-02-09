@@ -15,7 +15,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/3/10
  * @Description: TODO
  */
@@ -32,9 +33,9 @@ public class SysExtendFieldServiceImpl implements SysExtendFieldService {
     @Override
     public List<SysExtendField> getAllSysExtendField(Byte issueType) {
         SysExtendFieldExample example = new SysExtendFieldExample();
-        SysExtendFieldExample.Criteria  criteria = example.createCriteria();
+        SysExtendFieldExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
-        if(issueType!=null){
+        if (issueType != null) {
             criteria.andExtendTypeEqualTo(issueType);
         }
         return sysExtendFieldMapper.selectByExample(example);
@@ -45,8 +46,8 @@ public class SysExtendFieldServiceImpl implements SysExtendFieldService {
         List<SysExtendField> sysExtendFieldList = Lists.newArrayList();
 
         List<SysField> sysFields = sysFieldService.getAllSysField(issueType);
-        if(sysFields.size()>0){
-            List<SysExtendField> sysExtendFieldList1 = ReflectObjectUtil.copyProperties4List(sysFields,SysExtendField.class);
+        if (sysFields.size() > 0) {
+            List<SysExtendField> sysExtendFieldList1 = ReflectObjectUtil.copyProperties4List(sysFields, SysExtendField.class);
             sysExtendFieldList.addAll(sysExtendFieldList1);
         }
         return sysExtendFieldList;

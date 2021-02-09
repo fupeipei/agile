@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @description 版本同步数据
- *  
  * @date 2020/09/22
  */
 public class VersionSyncData implements Serializable {

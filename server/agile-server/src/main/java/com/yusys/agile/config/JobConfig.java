@@ -43,8 +43,8 @@ public class JobConfig {
     private int logRetentionDays;
 
     /**
-     * @Description 初始化cmpjob
      * @return
+     * @Description 初始化cmpjob
      */
     @Bean(initMethod = "start", destroyMethod = "destroy")
     public XxlJobExecutor xxlJobExecutor() {

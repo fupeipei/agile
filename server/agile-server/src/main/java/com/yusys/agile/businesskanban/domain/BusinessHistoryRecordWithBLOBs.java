@@ -9,13 +9,14 @@ public class BusinessHistoryRecordWithBLOBs extends BusinessHistoryRecord implem
 
     private static final long serialVersionUID = 1L;
 
-    public BusinessHistoryRecordWithBLOBs(){}
+    public BusinessHistoryRecordWithBLOBs() {
+    }
 
     public BusinessHistoryRecordWithBLOBs(String operationField,
                                           Long businessId,
                                           Long createUid,
-                                          Byte recordType){
-       super(operationField,businessId,createUid,recordType);
+                                          Byte recordType) {
+        super(operationField, businessId, createUid, recordType);
     }
 
     public String getOldValue() {

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 /**
@@ -157,7 +158,6 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
      *
      * @param fieldId
      * @return com.yusys.agile.customfield.dto.CustomFieldDTO
-
      * @date 2021/2/31
      */
     @Override

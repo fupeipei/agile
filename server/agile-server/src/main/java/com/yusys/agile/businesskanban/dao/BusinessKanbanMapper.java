@@ -33,27 +33,22 @@ public interface BusinessKanbanMapper {
 
 
     /**
-     *
      * @Date: 2021/2/6
      * @Description: 按条件查询看板信息
      * @Param: [query]
      * @Return: java.util.List<com.yusys.agile.businesskanban.domain.BusinessKanban>
-     *
      */
     List<BusinessKanban> selectByProjectId(PageQuery<BusinessKanbanDTO> query);
 
     /**
-     *
      * @Date: 2021/2/6
      * @Description: 查询总记录数
      * @Param: [query]
      * @Return: int
-     *
      */
     int countBusinessKanbanList(PageQuery<BusinessKanbanDTO> query);
 
     /**
-     *
      * @Date: 2021/2/16 17:26
      * @Description: 获取看板列表（无分页）
      * @Param: * @param query

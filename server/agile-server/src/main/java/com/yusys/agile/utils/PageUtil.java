@@ -4,14 +4,15 @@ import java.util.List;
 
 /**
  * 自定义List分页工具
- *    hanwl
+ * hanwl
  */
 public class PageUtil {
 
     /**
      * 开始分页
+     *
      * @param list
-     * @param pageNum 页码
+     * @param pageNum  页码
      * @param pageSize 每页多少条数据
      * @return
      */

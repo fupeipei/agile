@@ -32,15 +32,15 @@ public class BuildDeployServiceImpl implements BuildDeployService {
     private IssueMapper issueMapper;
 
     /**
-     * @description 查询流水线构建记录
      * @param issueId
      * @param pageNum
      * @param pageSize
      * @return
+     * @description 查询流水线构建记录
      */
     @Override
     public PageInfo queryBuildRecord(Long issueId, Integer pageNum, Integer pageSize) {
-        Assert.notNull(issueId,"issueId不能为空");
+        Assert.notNull(issueId, "issueId不能为空");
         LOGGER.info("queryBuildRecord param issueId:{}, pageNum:{}, pageSize:{}", issueId, pageNum, pageSize);
         PageInfo pageInfo = null;
         pageNum = null == pageNum ? 1 : pageNum;
@@ -64,15 +64,15 @@ public class BuildDeployServiceImpl implements BuildDeployService {
     }
 
     /**
-     * @description 查询流水线部署记录
      * @param issueId
      * @param pageNum
      * @param pageSize
      * @return
+     * @description 查询流水线部署记录
      */
     @Override
     public PageInfo queryDeployRecord(Long issueId, Integer pageNum, Integer pageSize) {
-        Assert.notNull(issueId,"issueId不能为空");
+        Assert.notNull(issueId, "issueId不能为空");
         LOGGER.info("queryDeployRecord param issueId:{}, pageNum:{}, pageSize:{}", issueId, pageNum, pageSize);
         PageInfo pageInfo = null;
         pageNum = null == pageNum ? 1 : pageNum;
@@ -96,10 +96,10 @@ public class BuildDeployServiceImpl implements BuildDeployService {
     }
 
     /**
-     * @description 根据issueId查询issue
-     * @date 2021/2/1
      * @param issueId
      * @return
+     * @description 根据issueId查询issue
+     * @date 2021/2/1
      */
     private Issue getIssueByPrimaryKey(Long issueId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
@@ -110,17 +110,17 @@ public class BuildDeployServiceImpl implements BuildDeployService {
     }
 
     /**
-     * @description 根据故事id查询故事下所有任务id
-     * @date 2021/2/1
      * @param storyId
      * @return
+     * @description 根据故事id查询故事下所有任务id
+     * @date 2021/2/1
      */
     private List<String> getTaskIds(Long storyId) {
         List<String> taskIds = Lists.newArrayList();
         IssueExample example = new IssueExample();
         example.createCriteria()
                 .andParentIdEqualTo(storyId)
-                    .andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE);
+                .andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE);
         List<Issue> issueList = issueMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(issueList)) {
             issueList.forEach(task -> {

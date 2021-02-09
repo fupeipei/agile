@@ -2,6 +2,7 @@ package com.yusys.agile.externalapiconfig.dao;
 
 import com.yusys.agile.fault.domain.ExternalApiConfig;
 import com.yusys.agile.fault.domain.ExternalApiConfigExample;
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;

@@ -12,7 +12,6 @@ public enum FieldTypeEnum {
     TEXTAREA(Byte.parseByte("6"), "textarea");
 
 
-
     private Byte value;
 
     private String name;

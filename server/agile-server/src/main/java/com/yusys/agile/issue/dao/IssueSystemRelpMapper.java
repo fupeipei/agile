@@ -30,13 +30,12 @@ public interface IssueSystemRelpMapper {
     int updateByPrimaryKey(IssueSystemRelp record);
 
     /**
-     *
      * @Date: 2021/2/13 11:07
      * @Description: 批量插入
      * @Param: * @param systemIds
      * @Return: void
      */
-    void batchInsert(@Param("systemIds") List<IssueSystemRelp> systemIds,@Param("issueId") Long issueId);
+    void batchInsert(@Param("systemIds") List<IssueSystemRelp> systemIds, @Param("issueId") Long issueId);
 
     void deleteByIssueId(Long issueId);
 }

@@ -23,14 +23,14 @@ public class CommitRecordController {
     private CommitService commitService;
 
     /**
-     * @description 查询人员提交记录
-     * @date 2021/2/1
      * @param projectId
      * @param commitDTO
      * @return
+     * @description 查询人员提交记录
+     * @date 2021/2/1
      */
     @PostMapping("/queryMemberCommitRecord")
-    public ControllerResponse queryMemberCommitRecord(@RequestHeader Long projectId, @RequestBody CommitDTO commitDTO){
+    public ControllerResponse queryMemberCommitRecord(@RequestHeader Long projectId, @RequestBody CommitDTO commitDTO) {
         commitDTO.setProjectId(projectId);
         try {
             return ControllerResponse.success(commitService.getMemberCommitRecord(commitDTO));
@@ -41,19 +41,19 @@ public class CommitRecordController {
     }
 
     /**
-     * @description 查询工作项提交记录
-     * @date 2021/2/1
      * @param issueId
      * @return
+     * @description 查询工作项提交记录
+     * @date 2021/2/1
      */
     @GetMapping("/queryIssueCommitRecord")
     public ControllerResponse queryIssueCommitRecord(@RequestParam("issueId") Long issueId, @RequestParam("issueType") Byte issueType, Integer pageNumber, Integer pageSize) {
         try {
-           // return ControllerResponse.success(commitService.getIssueCommitRecord(issueId, issueType, pageNumber, pageSize));
+            // return ControllerResponse.success(commitService.getIssueCommitRecord(issueId, issueType, pageNumber, pageSize));
         } catch (Exception e) {
             LOGGER.error("queryIssueCommitRecord method occur exception, message:{}", e.getMessage());
             return ControllerResponse.fail("查询工作项提交记录数据异常");
         }
-        return  null;
+        return null;
     }
 }

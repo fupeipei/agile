@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
-
  * @Date 2020/4/10
  */
 @RestController
@@ -37,7 +36,6 @@ public class SprintController {
     /**
      * @param sprintDTO
      * @param projectId
-
      * @Date 2020/4/10
      * @Description新增迭代
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -55,7 +53,6 @@ public class SprintController {
 
     /**
      * @param sprintDTO
-
      * @Date 2021/2/2
      * @Description 对传来的参数做判断
      * @Return void
@@ -74,7 +71,6 @@ public class SprintController {
     /**
      * @param projectId
      * @param sprintId
-
      * @Date 2020/4/10
      * @Description查看迭代编辑页面
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -87,7 +83,6 @@ public class SprintController {
     /**
      * @param projectId
      * @param sprintDTO
-
      * @Date 2020/4/10
      * @Description编辑迭代详情
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -111,7 +106,6 @@ public class SprintController {
      * @param sprintName
      * @param pageNum
      * @param pageSize
-
      * @Date 2020/4/13
      * @Description 通过团队id获取迭代信息以及通过迭代名称查询
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -128,7 +122,6 @@ public class SprintController {
     /**
      * @param sprintId
      * @param projectId
-
      * @Date 2020/4/16
      * @Description 删除迭代信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -144,7 +137,6 @@ public class SprintController {
     /**
      * @param sprintId
      * @param issueId
-
      * @Date 2020/4/17 17:43
      * @Description 通过迭代id和故事id将故事移出迭代
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -159,7 +151,6 @@ public class SprintController {
 
     /**
      * @param sprintDTO
-
      * @Date 2020/4/17 21:08
      * @Description 迭代添加工作项（故事或缺陷）
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -178,7 +169,6 @@ public class SprintController {
      * @param pageNum
      * @param pageSize
      * @param projectId
-
      * @Date 2020/4/28
      * @Description 根据迭代id或迭代名称分页查询迭代列表
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -188,7 +178,7 @@ public class SprintController {
                                                          @RequestParam(name = "pageNum") Integer pageNum,
                                                          @RequestParam(name = "pageSize") Integer pageSize,
                                                          @RequestHeader(name = "projectId") Long projectId,
-                                                         @RequestParam(name = "projectId",required = false) Long paramProjectId) {
+                                                         @RequestParam(name = "projectId", required = false) Long paramProjectId) {
         Long sprintProjectId = null;
         if (null != paramProjectId) {
             sprintProjectId = paramProjectId;
@@ -202,14 +192,13 @@ public class SprintController {
     /**
      * @param sprintDTO
      * @param projectId
-
      * @Date 2021/2/7
      * @Description 获取项目中所有迭代
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @PostMapping("/listSprint")
     public ControllerResponse viewSprints(@RequestBody SprintDTO sprintDTO, @RequestHeader(name = "projectId") Long projectId) {
-        List<SprintDTO> result = sprintService.viewSprints(sprintDTO.getSprintName(), sprintDTO.getSprintType(),sprintDTO.getVersionNumber(),
+        List<SprintDTO> result = sprintService.viewSprints(sprintDTO.getSprintName(), sprintDTO.getSprintType(), sprintDTO.getVersionNumber(),
                 projectId, sprintDTO.getPageNum(), sprintDTO.getPageSize());
         return ControllerResponse.success(new PageInfo<>(result));
     }
@@ -217,7 +206,6 @@ public class SprintController {
     /**
      * @param projectId
      * @param sprintId
-
      * @Date 2021/2/12
      * @Description 根据迭代id获取迭代中人员信息
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -236,8 +224,7 @@ public class SprintController {
 
     /**
      * @param projectId
-     * @param sprintId
-       编辑迭代为已完成状态
+     * @param sprintId  编辑迭代为已完成状态
      * @Date 2021/2/9
      * @Description
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -245,25 +232,24 @@ public class SprintController {
     @PutMapping("/editComplete/{sprintId}")
     public ControllerResponse completeSprint(@RequestHeader(name = "projectId") Long projectId, @PathVariable Long sprintId) {
         int i = sprintService.completeSprint(projectId, sprintId);
-        if(i > 0){
+        if (i > 0) {
             return ControllerResponse.success("迭代已完成！");
-        }else if(i == -1){
-            Map<String,List> map = new HashMap(2);
+        } else if (i == -1) {
+            Map<String, List> map = new HashMap(2);
             List<IssueDTO> unfinishedStoryList = storyService.getUnfinishedStoryList(sprintId);
-            map.put("unfinishedStoryList",unfinishedStoryList);
+            map.put("unfinishedStoryList", unfinishedStoryList);
             List<SprintDTO> notStartedSprintList = sprintService.getNotStartedSprint(projectId);
-            map.put("notStartedSprintList",notStartedSprintList);
+            map.put("notStartedSprintList", notStartedSprintList);
             List<IssueDTO> unfinishedFaultList = faultService.getUnBindStoryAndUnFinishedFaultList(projectId, sprintId);
             map.put("unfinishedFaultList", unfinishedFaultList);
-            return ControllerResponse.success(ResposeCodeEnum.HAS_UNFINISHED_STORY,map);
-        }else{
-            return ControllerResponse.fail(ResposeCodeEnum.FAILURE,"当前项目与当前迭代项目不一致！");
+            return ControllerResponse.success(ResposeCodeEnum.HAS_UNFINISHED_STORY, map);
+        } else {
+            return ControllerResponse.fail(ResposeCodeEnum.FAILURE, "当前项目与当前迭代项目不一致！");
         }
     }
 
     /**
      * @param
-
      * @Date 2021/2/18
      * @Description 根据现在时间，把所有迭代未开始状态改为进行中
      * @Return void
@@ -275,27 +261,25 @@ public class SprintController {
     }
 
     /**
-
-     * @Date 2021/2/16
-     * @Description 获取迭代中人员代码提交次数
      * @param projectId
      * @param sprintId
      * @param pageNum
      * @param pageSize
+     * @Date 2021/2/16
+     * @Description 获取迭代中人员代码提交次数
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/userInfo/{sprintId}")
     public ControllerResponse sprintUserInfo(@RequestHeader(name = "projectId") Long projectId, @PathVariable Long sprintId,
                                              Integer pageNum, Integer pageSize) {
-        return ControllerResponse.success(sprintService.sprintUserInfo(projectId,sprintId,pageNum,pageSize));
+        return ControllerResponse.success(sprintService.sprintUserInfo(projectId, sprintId, pageNum, pageSize));
     }
 
     /**
-     *
-     * @Date 2020/8/7
-     * @Description 获取项目下未开始的迭代
      * @param projectId
      * @return
+     * @Date 2020/8/7
+     * @Description 获取项目下未开始的迭代
      */
     @GetMapping("/getNotStartedSprint")
     public ControllerResponse getNotStartedSprint(@RequestHeader(name = "projectId") Long projectId) {
@@ -303,48 +287,47 @@ public class SprintController {
     }
 
     /**
-     *
-     * @Date 2020/8/10
-     * @Description 迭代完成-未完成故事转移到下一个迭代（连带下面的任务和缺陷）
      * @param sprintDTO
      * @param projectId
      * @param oldSprintId
      * @param sprintId
      * @return
+     * @Date 2020/8/10
+     * @Description 迭代完成-未完成故事转移到下一个迭代（连带下面的任务和缺陷）
      */
     @PostMapping("/distributeStorys/{sprintId}/{oldSprintId}")
-    public ControllerResponse distributeStorys(@RequestBody SprintDTO sprintDTO,@RequestHeader(name = "projectId") Long projectId,@PathVariable Long sprintId,@PathVariable Long oldSprintId){
-        sprintService.distributeStorys(sprintDTO.getListStorys(),projectId,oldSprintId,sprintId);
+    public ControllerResponse distributeStorys(@RequestBody SprintDTO sprintDTO, @RequestHeader(name = "projectId") Long projectId, @PathVariable Long sprintId, @PathVariable Long oldSprintId) {
+        sprintService.distributeStorys(sprintDTO.getListStorys(), projectId, oldSprintId, sprintId);
         return ControllerResponse.success("迭代完成-未完成故事转移到下一个迭代成功");
     }
 
     /**
      * 功能描述: 提供cicd接口：根据项目id查询下面未完成的迭代
      *
-     * @date 2020/8/19
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2020/8/19
      */
     @GetMapping("/listUnFinisherSprintsByProjectId")
-    public ControllerResponse listSprintsByProjectId(@RequestParam("projectId") Long  projectId,
-                                                     @RequestParam(name = "name",required = false) String name,
-                                                     @RequestParam(name = "pageNum",required = false) Integer pageNum,
-                                                     @RequestParam(name = "pageSize",required = false) Integer pageSize){
-        List<SprintDTO> list = sprintService.listUnFinisherSprintsByProjectId(projectId,name,pageNum,pageSize);
+    public ControllerResponse listSprintsByProjectId(@RequestParam("projectId") Long projectId,
+                                                     @RequestParam(name = "name", required = false) String name,
+                                                     @RequestParam(name = "pageNum", required = false) Integer pageNum,
+                                                     @RequestParam(name = "pageSize", required = false) Integer pageSize) {
+        List<SprintDTO> list = sprintService.listUnFinisherSprintsByProjectId(projectId, name, pageNum, pageSize);
         return ControllerResponse.success(new PageInfo<>(list));
     }
 
     /**
      * 功能描述: 提供cicd接口：根据项目id查询项目下面所有的迭代
      *
-     * @date 2020/8/19
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2020/8/19
      */
     @GetMapping("/listAllSprintsByProjectId")
-    public ControllerResponse listAllSprintsByProjectId(@RequestParam("projectId") Long  projectId,
-                                                     @RequestParam(name = "name",required = false) String name){
-        List<SprintDTO> list = sprintService.listAllSprintsByProjectId(projectId,name);
+    public ControllerResponse listAllSprintsByProjectId(@RequestParam("projectId") Long projectId,
+                                                        @RequestParam(name = "name", required = false) String name) {
+        List<SprintDTO> list = sprintService.listAllSprintsByProjectId(projectId, name);
         return ControllerResponse.success(new PageInfo<>(list));
     }
 

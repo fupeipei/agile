@@ -22,7 +22,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *
  * @Date: 9:22
  */
 @Service
@@ -50,7 +49,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         //List<IssueCustomFieldDTO> issueCustomFieldDTOList  = issueCustomFieldMapper.listCustomField(issueId);
         //List<HeaderFieldDTO> headerFieldDTOS = customFieldPoolService.listAllCustomFields(null, issueType.toString(), StateEnum.U.getValue(), null, null, projectId);
         // 某类型的工作项展示的的自定义字段
-        List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldDTO(projectId,issueType);
+        List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldDTO(projectId, issueType);
         List<IssueCustomFieldDTO> issueCustomFieldDTOList = Lists.newArrayList();
         for (CustomFieldDTO customFieldDTO : customFieldDTOList) {
             IssueCustomFieldDTO issueCustomFieldDTO = assembleIssueCustomFieldDTO(customFieldDTO, issueId);
@@ -65,7 +64,6 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
      *
      * @param customFieldDTO
      * @return com.yusys.agile.issue.dto.IssueCustomFieldDTO
-
      * @date 2021/2/21
      */
     private IssueCustomFieldDTO assembleIssueCustomFieldDTO(CustomFieldDTO customFieldDTO, Long issueId) {
@@ -107,23 +105,23 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     /**
      * 功能描述: 修改自定义字段
      * 如果有externId主键走修改，没有走新增
-
-     * @date 2021/2/21
+     *
      * @param fieldsAfterEdit
      * @return void
+     * @date 2021/2/21
      */
     @Override
     public void editCustomFields(List<IssueCustomField> fieldsAfterEdit) {
         List<IssueCustomField> addCustomFieldList = Lists.newArrayList();
-        for(IssueCustomField tempIssueCustomField : fieldsAfterEdit){
+        for (IssueCustomField tempIssueCustomField : fieldsAfterEdit) {
             // 修改
-            if(null != tempIssueCustomField.getExtendId()){
+            if (null != tempIssueCustomField.getExtendId()) {
                 IssueCustomFieldExample example = new IssueCustomFieldExample();
                 example.createCriteria().andExtendIdEqualTo(tempIssueCustomField.getExtendId());
-                issueCustomFieldMapper.updateByExampleSelective(tempIssueCustomField,example);
-            }else{
+                issueCustomFieldMapper.updateByExampleSelective(tempIssueCustomField, example);
+            } else {
                 // 新增时必须要填写实际值，修改时可以允许把值去掉
-                if(StringUtils.isBlank(tempIssueCustomField.getFieldValue())){
+                if (StringUtils.isBlank(tempIssueCustomField.getFieldValue())) {
                     continue;
                 }
                 addCustomFieldList.add(tempIssueCustomField);
@@ -131,7 +129,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         }
 
         // 新增
-        if(CollectionUtils.isNotEmpty(addCustomFieldList)){
+        if (CollectionUtils.isNotEmpty(addCustomFieldList)) {
             createBatch(addCustomFieldList);
         }
 
@@ -145,14 +143,14 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
 
     @Override
     public List<IssueCustomField> selectIssueIdByProjectId(Long projectId) {
-        List<Long> issueIds = issueService.selectIssueIdByProjectId(projectId,null);
-        if(issueIds.isEmpty()){
+        List<Long> issueIds = issueService.selectIssueIdByProjectId(projectId, null);
+        if (issueIds.isEmpty()) {
             return Lists.newArrayList();
         }
         IssueCustomFieldExample issueCustomFieldExample = new IssueCustomFieldExample();
         issueCustomFieldExample.createCriteria()
                 .andIssueIdIn(issueIds);
-       return issueCustomFieldMapper.selectByExample(issueCustomFieldExample);
+        return issueCustomFieldMapper.selectByExample(issueCustomFieldExample);
 
     }
 }

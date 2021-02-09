@@ -16,6 +16,7 @@ import org.apache.ibatis.plugin.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -88,7 +89,7 @@ public class MyBatisInsertInterceptor implements Interceptor {
                 ReflectUtil.setFieldValue(parameter, CREATE_TIME_STR, new Date());
             }
             if (!isyuItFault(parameter, CREATE_UID_STR)) {
-                if(!checkCreateUidIsNotNull(parameter,CREATE_UID_STR)){
+                if (!checkCreateUidIsNotNull(parameter, CREATE_UID_STR)) {
                     ReflectUtil.setFieldValue(parameter, CREATE_UID_STR, UserThreadLocalUtil.getUserInfo().getUserId());
                 }
             }
@@ -163,18 +164,18 @@ public class MyBatisInsertInterceptor implements Interceptor {
 
     }
 
-  /**
-   * @Date: 2021/2/1
-   * @Description: 校验创建人ID是否为空
-   * @Param: * @param parameter
-  * @param fieldName
-   * @Return: java.lang.Boolean
-   */
-    private  Boolean checkCreateUidIsNotNull(Object parameter, String fieldName) {
+    /**
+     * @param fieldName
+     * @Date: 2021/2/1
+     * @Description: 校验创建人ID是否为空
+     * @Param: * @param parameter
+     * @Return: java.lang.Boolean
+     */
+    private Boolean checkCreateUidIsNotNull(Object parameter, String fieldName) {
         if (parameter instanceof Issue) {
             try {
-                Long  createUid = (Long) ReflectUtil.getFieldValue(parameter, fieldName);
-                if(null!= createUid){
+                Long createUid = (Long) ReflectUtil.getFieldValue(parameter, fieldName);
+                if (null != createUid) {
                     return true;
                 }
             } catch (Exception e) {

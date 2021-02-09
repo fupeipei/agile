@@ -2,7 +2,9 @@ package com.yusys.agile.issue.dao;
 
 import com.yusys.agile.issue.domain.IssueCustomRelation;
 import com.yusys.agile.issue.domain.IssueCustomRelationExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface IssueCustomRelationMapper {
@@ -34,8 +36,8 @@ public interface IssueCustomRelationMapper {
 
     int updateByPrimaryKey(IssueCustomRelation record);
 
-    int deleteByProjectIdAndIssueType(@Param("projectId")Long projectId,@Param("issueType")Byte issueType);
+    int deleteByProjectIdAndIssueType(@Param("projectId") Long projectId, @Param("issueType") Byte issueType);
 
-    List<Long> getAppliedByissueType(@Param("projectId")Long projectId,@Param("issueType")Byte issueType);
+    List<Long> getAppliedByissueType(@Param("projectId") Long projectId, @Param("issueType") Byte issueType);
 
 }

@@ -3,7 +3,8 @@ package com.yusys.agile.issue.domain;
 import java.util.List;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/2/16
  * @Description: 高级搜索   paramter
  */
@@ -50,9 +51,9 @@ public class IssueRecord {
     }
 
     private String queryFlag;
-    private Integer pageNum ;
-    private Integer pageSize ;
-    private Integer form ;
+    private Integer pageNum;
+    private Integer pageSize;
+    private Integer form;
     private List<Long> issueIds;
 
     //任务查询加上“阻塞中”状态   start

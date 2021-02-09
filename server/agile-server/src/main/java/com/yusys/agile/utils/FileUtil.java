@@ -6,25 +6,26 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class FileUtil {
-	private FileUtil(){}
-	
-	public static String getFileName(HttpServletRequest request, String fileName) throws IOException{
-		if (isIE(request)) {
-			fileName = java.net.URLEncoder.encode(fileName, "UTF8");
-		} else if (request.getHeader("USER-AGENT") != null
-				&& request.getHeader("USER-AGENT").toLowerCase().indexOf("firefox") > 0) {
-			fileName = "=?UTF-8?B?" + (new String(Base64.byteArrayToBase64(fileName.getBytes("utf-8"))))
-					+ "?=";
-		} else {
-			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-		}
-		return fileName;
-	}
-	
-	private static boolean isIE(HttpServletRequest request){
-		return (request.getHeader("USER-AGENT").toLowerCase().indexOf("msie") > 0
+    private FileUtil() {
+    }
+
+    public static String getFileName(HttpServletRequest request, String fileName) throws IOException {
+        if (isIE(request)) {
+            fileName = java.net.URLEncoder.encode(fileName, "UTF8");
+        } else if (request.getHeader("USER-AGENT") != null
+                && request.getHeader("USER-AGENT").toLowerCase().indexOf("firefox") > 0) {
+            fileName = "=?UTF-8?B?" + (new String(Base64.byteArrayToBase64(fileName.getBytes("utf-8"))))
+                    + "?=";
+        } else {
+            fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+        }
+        return fileName;
+    }
+
+    private static boolean isIE(HttpServletRequest request) {
+        return (request.getHeader("USER-AGENT").toLowerCase().indexOf("msie") > 0
                 || request.getHeader("USER-AGENT").toLowerCase().indexOf("rv:11.0") > 0
                 || request.getHeader("USER-AGENT").toLowerCase().indexOf("edge") > 0) ? true
-                    : false;
-	}
+                : false;
+    }
 }

@@ -7,12 +7,13 @@ import java.util.List;
 public interface SysDictService {
 
     /**
-     *功能描述 查询局方负责人
-     * @date 2021/2/1
-      * @param pageNum
+     * 功能描述 查询局方负责人
+     *
+     * @param pageNum
      * @param pageSize
      * @param detailName
      * @return java.util.List<com.yusys.agile.dict.domain.SysDictDetail>
+     * @date 2021/2/1
      */
     List<SysDictDetail> getResponsiblePerson(Integer pageNum, Integer pageSize, String detailName);
 }

@@ -24,7 +24,7 @@ public class IssueProjectStatusServiceImpl implements IssueProjectStatusService 
 
     @Override
     public IssueProjectStatus getByProjectAndDate(Long projectId, Date calculateDate, Byte issueType) {
-        return issueProjectStatusMapper.getByProjectAndDate(projectId,calculateDate,issueType);
+        return issueProjectStatusMapper.getByProjectAndDate(projectId, calculateDate, issueType);
     }
 
     @Override

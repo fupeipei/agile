@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *  
  * @description xml工具类
  */
 public class XmlUtils {
@@ -40,9 +39,10 @@ public class XmlUtils {
 
     /**
      * 将xml转换成对象
-     * @param xml xml文本
+     *
+     * @param xml        xml文本
      * @param expression XPath Expressions
-     * @param clazz 转换成的类
+     * @param clazz      转换成的类
      * @param <T>
      * @return
      */
@@ -65,6 +65,7 @@ public class XmlUtils {
 
     /**
      * 根据xml创建文档对象
+     *
      * @param xml
      * @return
      * @throws ParserConfigurationException
@@ -80,6 +81,7 @@ public class XmlUtils {
 
     /**
      * 将节点转换成字符串
+     *
      * @param node
      * @return
      */
@@ -100,6 +102,7 @@ public class XmlUtils {
 
     /**
      * 查询单节点对象
+     *
      * @param document
      * @param expression
      * @return
@@ -118,6 +121,7 @@ public class XmlUtils {
 
     /**
      * 查询多节点对象
+     *
      * @param document
      * @param expression
      * @param nsContext
@@ -140,6 +144,7 @@ public class XmlUtils {
 
     /**
      * 查询节点值
+     *
      * @param document
      * @param expression
      * @return
@@ -158,6 +163,7 @@ public class XmlUtils {
 
     /**
      * 将xml转换成对象集合
+     *
      * @param xml
      * @param expression
      * @param clazz

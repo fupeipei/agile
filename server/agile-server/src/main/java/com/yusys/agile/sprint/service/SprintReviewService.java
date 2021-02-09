@@ -8,13 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
-
  * @Date 2021/2/25
  */
 public interface SprintReviewService {
     /**
      * @param sprintReviewDTO
-
      * @Date 2021/2/25
      * @Description 新增迭代回顾信息
      * @Return int
@@ -23,7 +21,6 @@ public interface SprintReviewService {
 
     /**
      * @param sprintId
-
      * @Date 2021/2/25
      * @Description 获取迭代回顾信息列表
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintReviewDTO>
@@ -32,7 +29,6 @@ public interface SprintReviewService {
 
     /**
      * @param sprintReviewDTO
-
      * @Date 2021/2/25
      * @Description 编辑迭代回顾信息
      * @Return int
@@ -41,7 +37,6 @@ public interface SprintReviewService {
 
     /**
      * @param reviewId
-
      * @Date 2021/2/25
      * @Description 删除迭代回顾信息
      * @Return int
@@ -51,7 +46,6 @@ public interface SprintReviewService {
     /**
      * @param file
      * @param sprintId
-
      * @Date 2021/2/26
      * @Description 迭代回顾附件信息上传及保存
      * @Return int
@@ -59,17 +53,15 @@ public interface SprintReviewService {
     SprintAttachment uploadAttachment(MultipartFile file, Long sprintId);
 
     /**
-
+     * @param sprintId
      * @Date 2021/2/26
      * @Description 通过迭代id删除迭代附件
-     * @param sprintId
      * @Return void
      */
     void deleteAttachmentBySprintId(Long sprintId);
 
     /**
      * @param sprintId
-
      * @Date 2021/2/26
      * @Description 获取迭代回顾附件信息
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintAttachmentDTO>
@@ -77,19 +69,17 @@ public interface SprintReviewService {
     List<SprintAttachmentDTO> getSprintAttachmentList(Long sprintId);
 
     /**
-
+     * @param sprintId
      * @Date 2021/2/26
      * @Description 通过迭代id删除迭代回顾信息
-     * @param sprintId
      * @Return void
      */
     void deleteSprintReviewBySprintId(Long sprintId);
 
     /**
-
+     * @param attachmentId
      * @Date 2021/2/27
      * @Description 通过附件id删除附件
-     * @param attachmentId
      * @Return int
      */
     int deleteAttachment(Long attachmentId);

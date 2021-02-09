@@ -8,24 +8,25 @@ import java.util.List;
 import java.util.Map;
 
 public interface HeaderFieldUserService {
-/**
-  *功能描述
-  *   
-  * @date 2020/4/17
-  * @param securityDTO
- * @param category
-  * @return java.util.List<com.yusys.agile.headerfielduser.domain.HeaderFieldUser>
- */
+    /**
+     * 功能描述
+     *
+     * @param securityDTO
+     * @param category
+     * @return java.util.List<com.yusys.agile.headerfielduser.domain.HeaderFieldUser>
+     * @date 2020/4/17
+     */
     List<HeaderFieldUser> queryVisibleHeaderFields(SecurityDTO securityDTO, Byte category, Byte isFilter);
-/**
-  *功能描述
-  *   
-  * @date 2020/4/17
-  * @param headerFieldListDTO
- * @param projectId
-  * @return java.util.Map
- */
-    Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO, Long  projectId);
+
+    /**
+     * 功能描述
+     *
+     * @param headerFieldListDTO
+     * @param projectId
+     * @return java.util.Map
+     * @date 2020/4/17
+     */
+    Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO, Long projectId);
 
 
     Integer deleteCustomField(Long fieldId);

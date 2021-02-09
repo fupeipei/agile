@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)//字段注解 , 用于描述方法
 @Retention(RetentionPolicy.RUNTIME)//在运行期保留注解信息
-public  @interface IsItcSync {
+public @interface IsItcSync {
     String name() default "";
 }

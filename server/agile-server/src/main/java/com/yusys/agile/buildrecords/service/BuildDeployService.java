@@ -9,20 +9,20 @@ import com.github.pagehelper.PageInfo;
 public interface BuildDeployService {
 
     /**
-     * @description 查询流水线构建记录
      * @param issueId
      * @param pageNum
      * @param pageSize
      * @return
+     * @description 查询流水线构建记录
      */
     PageInfo queryBuildRecord(Long issueId, Integer pageNum, Integer pageSize);
 
     /**
-     * @description 查询流水线部署记录
      * @param issueId
      * @param pageNum
      * @param pageSize
      * @return
+     * @description 查询流水线部署记录
      */
     PageInfo queryDeployRecord(Long issueId, Integer pageNum, Integer pageSize);
 }

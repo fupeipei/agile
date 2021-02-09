@@ -28,7 +28,6 @@ import java.net.URLEncoder;
 /**
  * 文件上传下载
  *
- *
  * @create 2020-04-17 14:26
  */
 @Service("fileService")
@@ -78,7 +77,7 @@ public class FileServiceImpl implements FileService {
             return linuxUpload(file, fileInfo);
         } else if (StringUtils.equalsIgnoreCase(type, STR_FASTDFS)) {
             return fastdfsUpload(file, fileInfo);
-        }else if (StringUtils.equalsIgnoreCase(type, STR_NAS)) {
+        } else if (StringUtils.equalsIgnoreCase(type, STR_NAS)) {
             return linuxNasUpload(file, fileInfo);
         }
         return fileInfo;
@@ -89,7 +88,6 @@ public class FileServiceImpl implements FileService {
      *
      * @param file
      * @return void
-     *
      * @date 2020/4/21
      */
     private void checkFile(MultipartFile file) throws Exception {
@@ -111,7 +109,6 @@ public class FileServiceImpl implements FileService {
      * @param file
      * @param fileInfo
      * @return com.yusys.agile.file.domain.FileInfo
-     *
      * @date 2020/4/21
      */
     private FileInfo fastdfsUpload(MultipartFile file, FileInfo fileInfo) throws Exception {
@@ -136,7 +133,6 @@ public class FileServiceImpl implements FileService {
      * @param file
      * @param fileInfo
      * @return com.yusys.agile.file.domain.FileInfo
-     *
      * @date 2020/4/21
      */
     private FileInfo linuxUpload(MultipartFile file, FileInfo fileInfo) throws Exception {
@@ -173,7 +169,6 @@ public class FileServiceImpl implements FileService {
      * @param request
      * @param response
      * @return com.yusys.agile.file.domain.FileInfo
-     *
      * @date 2020/4/20
      */
     @Override
@@ -192,7 +187,7 @@ public class FileServiceImpl implements FileService {
             sftpDownload(fileName, remoteName, request, response);
         } else if (StringUtils.equalsIgnoreCase(type, STR_FASTDFS)) {
             fastdfsDownload(fileName, remoteName, request, response);
-        }else if (StringUtils.equalsIgnoreCase(type, STR_NAS)) {
+        } else if (StringUtils.equalsIgnoreCase(type, STR_NAS)) {
             nasDownload(fileName, remoteName, request, response);
         }
 
@@ -205,7 +200,6 @@ public class FileServiceImpl implements FileService {
      * @param remoteName
      * @param response
      * @return void
-     *
      * @date 2020/4/21
      */
     private void fastdfsDownload(String fileName, String remoteName, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -237,7 +231,6 @@ public class FileServiceImpl implements FileService {
      * @param request
      * @param response
      * @return void
-     *
      * @date 2020/4/21
      */
     private void sftpDownload(String fileName, String remoteName, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -285,39 +278,39 @@ public class FileServiceImpl implements FileService {
 
         }
     }
+
     /**
      * 功能描述: linux服务器上传(NAS)
      *
      * @param file
      * @param fileInfo
      * @return com.yusys.agile.file.domain.FileInfo
-     *
      * @date 2020/4/21
      */
     private FileInfo linuxNasUpload(MultipartFile file, FileInfo fileInfo) throws Exception {
         try {
-        // 原文件名
-        String originalFilename = file.getOriginalFilename();
-        LOGGER.info("原文件名：" + originalFilename);
-        // 远程文件名用时间戳生成
-        String remoteFileName = System.currentTimeMillis() + "." + StringUtils.substringAfterLast(originalFilename,
-                ".");
-        LOGGER.info("新文件名：" + remoteFileName);
+            // 原文件名
+            String originalFilename = file.getOriginalFilename();
+            LOGGER.info("原文件名：" + originalFilename);
+            // 远程文件名用时间戳生成
+            String remoteFileName = System.currentTimeMillis() + "." + StringUtils.substringAfterLast(originalFilename,
+                    ".");
+            LOGGER.info("新文件名：" + remoteFileName);
 
-        //上传文件
-        String filePath  = remoteDir;//nas路径
-        String path = filePath + remoteFileName;
-        File filetmp = new File(path);
-        // 检测是否存在目录
-        if (!filetmp.getParentFile().exists()) {
-            filetmp.getParentFile().mkdirs();
-        }
-        file.transferTo(filetmp);// 文件写入
+            //上传文件
+            String filePath = remoteDir;//nas路径
+            String path = filePath + remoteFileName;
+            File filetmp = new File(path);
+            // 检测是否存在目录
+            if (!filetmp.getParentFile().exists()) {
+                filetmp.getParentFile().mkdirs();
+            }
+            file.transferTo(filetmp);// 文件写入
 
-        fileInfo.setSize(file.getSize());
-        fileInfo.setFileName(originalFilename);
-        fileInfo.setRemoteName(remoteFileName);
-        fileInfo.setFileUri(StringConstant.DOWNLOAD_STR1 + remoteFileName + StringConstant.DOWNLOAD_STR2 + originalFilename);
+            fileInfo.setSize(file.getSize());
+            fileInfo.setFileName(originalFilename);
+            fileInfo.setRemoteName(remoteFileName);
+            fileInfo.setFileUri(StringConstant.DOWNLOAD_STR1 + remoteFileName + StringConstant.DOWNLOAD_STR2 + originalFilename);
 
         } catch (IllegalStateException e) {
             LOGGER.error("context", e.getMessage());
@@ -326,6 +319,7 @@ public class FileServiceImpl implements FileService {
         }
         return fileInfo;
     }
+
     /**
      * 功能描述: 下载
      *
@@ -339,47 +333,47 @@ public class FileServiceImpl implements FileService {
         //fileName = FileUtil.getFileName(request, fileName);
         //response.setHeader("content-type", "application/octet-stream");
         response.setContentType("application/octet-stream");
-        response.addHeader("Content-Disposition", "attachment; filename*=utf-8''" + URLEncoder.encode(fileName,"UTF-8"));
+        response.addHeader("Content-Disposition", "attachment; filename*=utf-8''" + URLEncoder.encode(fileName, "UTF-8"));
         if (remoteName.startsWith("/")) {
             remoteName = remoteName.substring(remoteName.indexOf("/") + 1);
         }
         String realRemoteName = remoteName.substring(remoteName.indexOf("/") + 1);
 
-            //设置文件路径
-            String realPath = remoteDir;
-            File file = new File(realPath , realRemoteName);
-            if (file.exists()) {
-                byte[] buffer = new byte[1024];
-                FileInputStream fis = null;
-                BufferedInputStream bis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    bis = new BufferedInputStream(fis);
-                    OutputStream os = response.getOutputStream();
-                    int i = bis.read(buffer);
-                    while (i != -1) {
-                        os.write(buffer, 0, i);
-                        i = bis.read(buffer);
+        //设置文件路径
+        String realPath = remoteDir;
+        File file = new File(realPath, realRemoteName);
+        if (file.exists()) {
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(file);
+                bis = new BufferedInputStream(fis);
+                OutputStream os = response.getOutputStream();
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer, 0, i);
+                    i = bis.read(buffer);
+                }
+                LOGGER.debug("下载成功");
+            } catch (Exception e) {
+                LOGGER.error("error", e.getMessage());
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        LOGGER.error("context", e.getMessage());
                     }
-                    LOGGER.debug("下载成功");
-                } catch (Exception e) {
-                    LOGGER.error("error", e.getMessage());
-                } finally {
-                    if (bis != null) {
-                        try {
-                            bis.close();
-                        } catch (IOException e) {
-                            LOGGER.error("context", e.getMessage());
-                        }
-                    }
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            LOGGER.error("context", e.getMessage());
-                        }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        LOGGER.error("context", e.getMessage());
                     }
                 }
             }
+        }
     }
 }

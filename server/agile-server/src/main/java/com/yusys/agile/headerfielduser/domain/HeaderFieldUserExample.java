@@ -583,6 +583,7 @@ public class HeaderFieldUserExample {
             addCriterion("category not between", value1, value2, "category");
             return (Criteria) this;
         }
+
         public Criteria andIsFilterIsNull() {
             addCriterion("is_filter is null");
             return (Criteria) this;

@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-@RunWith( SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class IssueRuleRunnerTest {
 
@@ -28,7 +28,7 @@ public class IssueRuleRunnerTest {
     private static final Logger logger = LoggerFactory.getLogger(IssueRuleRunnerTest.class);
 
     @Test
-    public void testRunFault(){
+    public void testRunFault() {
         Byte category = IssueTypeEnum.TYPE_FAULT.CODE;
         SecurityDTO securityDTO = new SecurityDTO();
         securityDTO.setUserId(9999L);
@@ -37,8 +37,9 @@ public class IssueRuleRunnerTest {
         List<IssueRule> issueRules = ruleService.getIssueRules(category, securityDTO);
         logger.info("工作项规则流转:{}", issueRules.size());
     }
+
     @Test
-    public void testRunTask(){
+    public void testRunTask() {
 
         Byte category = IssueTypeEnum.TYPE_TASK.CODE;
         SecurityDTO securityDTO = new SecurityDTO();
@@ -50,7 +51,7 @@ public class IssueRuleRunnerTest {
     }
 
     @Test
-    public void testRunEpic(){
+    public void testRunEpic() {
 
         Byte category = IssueTypeEnum.TYPE_FEATURE.CODE;
         SecurityDTO securityDTO = new SecurityDTO();
@@ -60,19 +61,21 @@ public class IssueRuleRunnerTest {
         List<IssueRule> issueRules = ruleService.getIssueRules(category, securityDTO);
         logger.info("工作项规则流转:{}", issueRules.size());
     }
+
     @Test
-    public void testAddStageInstace(){
+    public void testAddStageInstace() {
         Long firstStageId = 3L;
         Long secondStageId = 195L;
         Long projectId = 718135708161531904L;
-        ruleFactory.addStageIdToIssueRule( firstStageId,  secondStageId, projectId);
+        ruleFactory.addStageIdToIssueRule(firstStageId, secondStageId, projectId);
     }
+
     @Test
-    public void testDelStageIdToIssueRule(){
+    public void testDelStageIdToIssueRule() {
         Long firstStageId = 2L;
         Long secondStageId = 999L;
         Long projectId = 718135708161531904L;
-        ruleFactory.delStageIdToIssueRule(firstStageId,  secondStageId, projectId);
+        ruleFactory.delStageIdToIssueRule(firstStageId, secondStageId, projectId);
     }
 
 }

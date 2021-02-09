@@ -28,6 +28,7 @@ public interface VersionIssueRelateMapper {
     int updateByPrimaryKeySelective(VersionIssueRelate record);
 
     int updateByPrimaryKey(VersionIssueRelate record);
-//根据工作项Id查询版本与计划的信息
+
+    //根据工作项Id查询版本与计划的信息
     VersionIssueRelate selectVersionIssueRelateByIssueId(Long issueId);
 }

@@ -1,7 +1,8 @@
 package com.yusys.agile.headerfield.util;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/2/25
  * @Description: 静态属性
  */

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 里程碑
  *
-
  * @create 2020-08-12 15:38
  */
 @RestController
@@ -29,7 +28,6 @@ public class MilestoneController {
      * @param milestoneDTO
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2020/8/12
      */
     @PostMapping("/addMilestone")
@@ -46,7 +44,6 @@ public class MilestoneController {
      *
      * @param milestoneId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2020/8/12
      */
     @DeleteMapping("/deleteMilestone/{milestoneId}")
@@ -62,7 +59,6 @@ public class MilestoneController {
      * @param milestoneDTO
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2020/8/13
      */
     @PostMapping("/editMilestone")
@@ -83,7 +79,6 @@ public class MilestoneController {
      *
      * @param milestoneId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2020/8/13
      */
     @GetMapping("/getMilestone/{milestoneId}")
@@ -93,13 +88,13 @@ public class MilestoneController {
 
     /**
      * 功能描述: 按时间顺序展示里程碑
-
-     * @date 2020/8/17
+     *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2020/8/17
      */
     @GetMapping("/listMilestones")
-    public ControllerResponse listMilestones( @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse listMilestones(@RequestHeader(name = "projectId") Long projectId) {
         return ControllerResponse.success(milestoneService.listMilestones(projectId));
     }
 

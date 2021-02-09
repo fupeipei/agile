@@ -1,7 +1,6 @@
 package com.yusys.agile.versionmanager.dto;
 
 /**
- *
  * @description
  * @date 2021/3/28
  */

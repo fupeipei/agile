@@ -9,12 +9,12 @@ import com.yusys.portal.util.code.ReflectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @Date: 9:20
  */
 @Service
@@ -24,6 +24,7 @@ public class IssueAttachmentServiceImpl implements IssueAttachmentService {
 
     @Resource
     private IssueAttachmentMapper issueAttachmentMapper;
+
     @Override
     public List<IssueAttachmentDTO> listIssueAttachment(Long issueId) {
         List<IssueAttachmentDTO> issueAttachmentDTOList = new ArrayList<>();
@@ -32,10 +33,10 @@ public class IssueAttachmentServiceImpl implements IssueAttachmentService {
         criteria.andIssueIdEqualTo(issueId);
         List<IssueAttachment> issueAttachmentList = issueAttachmentMapper.selectByExample(example);
 
-        try{
-            issueAttachmentDTOList = ReflectUtil.copyProperties4List(issueAttachmentList,IssueAttachmentDTO.class);
-        }catch(Exception e){
-            log.error("列表转换出错{}",e.getMessage());
+        try {
+            issueAttachmentDTOList = ReflectUtil.copyProperties4List(issueAttachmentList, IssueAttachmentDTO.class);
+        } catch (Exception e) {
+            log.error("列表转换出错{}", e.getMessage());
         }
         return issueAttachmentDTOList;
     }

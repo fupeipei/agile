@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @description 看板阶段实例类
- *  
  * @create 2020-04-10 16:28
  */
 public class KanbanStageInstance implements Serializable {

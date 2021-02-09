@@ -22,14 +22,14 @@ public class BusinessHistoryRecord implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public BusinessHistoryRecord(String operationField, Long businessId, Long createUid,Byte recordType){
+    public BusinessHistoryRecord(String operationField, Long businessId, Long createUid, Byte recordType) {
         this.operationField = operationField;
         this.createUid = createUid;
         this.businessId = businessId;
         this.recordType = recordType;
     }
 
-    public BusinessHistoryRecord(){
+    public BusinessHistoryRecord() {
 
     }
 

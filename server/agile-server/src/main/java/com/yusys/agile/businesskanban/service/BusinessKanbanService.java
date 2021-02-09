@@ -17,7 +17,6 @@ public interface BusinessKanbanService {
      * @Description: 创建事务看板
      * @Param: [businessKanbanDTO]
      * @Return: int
-     *
      */
     int createBusinessKanban(BusinessKanbanDTO businessKanbanDTO);
 
@@ -26,7 +25,6 @@ public interface BusinessKanbanService {
      * @Description: 删除事务看板
      * @Param: [kanbanId]
      * @Return: int
-     *
      */
     int deleteBusinessKanban(Long kanbanId);
 
@@ -35,7 +33,6 @@ public interface BusinessKanbanService {
      * @Description: 更新事务看板
      * @Param: [businessKanbanDTO]
      * @Return: int
-     *
      */
     int updateBusinessKanban(BusinessKanbanDTO businessKanbanDTO);
 
@@ -44,7 +41,6 @@ public interface BusinessKanbanService {
      * @Description: 查询看板列表
      * @Param: [query]
      * @Return: java.util.List<com.yusys.agile.businesskanban.dto.BusinessKanbanDTO>
-     *
      */
     List<BusinessKanbanDTO> getBusinessKanbanList(PageQuery<BusinessKanbanDTO> query) throws Exception;
 
@@ -61,7 +57,6 @@ public interface BusinessKanbanService {
      * @Description:
      * @Param: [query]
      * @Return: int
-     *
      */
     int countBusinessKanbanList(PageQuery<BusinessKanbanDTO> query);
 

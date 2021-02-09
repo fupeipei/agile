@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @description 阶段业务实现类
- *  
  * @create 2020-04-10 16:28
  */
 @Service
@@ -62,9 +61,9 @@ public class StageServiceImpl implements StageService {
 
 
     /**
-     * @description 根据项目id查询阶段列表
      * @param projectId
      * @return java.util.List
+     * @description 根据项目id查询阶段列表
      */
     @Override
     public List<StageInstance> getStageList(Long projectId) {
@@ -78,9 +77,9 @@ public class StageServiceImpl implements StageService {
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
         kanbanStageInstanceExample.createCriteria()
                 .andProjectIdEqualTo(projectId)
-                    .andParentIdEqualTo(StageConstant.PARENT_STAGE_ID)
-                        .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
-                            .andStateEqualTo(StageConstant.STATE_VALIDATE);
+                .andParentIdEqualTo(StageConstant.PARENT_STAGE_ID)
+                .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE);
         kanbanStageInstanceExample.setOrderByClause("order_id asc");
         //一级阶段
         List<KanbanStageInstance> firstStageInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
@@ -100,6 +99,7 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 批量处理二级状态数据
+     *
      * @param projectId
      * @param stageInstanceList
      */
@@ -112,7 +112,7 @@ public class StageServiceImpl implements StageService {
         List<KanbanStageInstance> secondStageList = kanbanStageInstanceMapper.selectBatchSecondStages(projectId, firstStageIdList);
         if (CollectionUtils.isNotEmpty(secondStageList)) {
             //二级状态集合
-            Map<Long,List<KanbanStageInstance>> map = Maps.newHashMap();
+            Map<Long, List<KanbanStageInstance>> map = Maps.newHashMap();
             for (KanbanStageInstance kanbanStageInstance : secondStageList) {
                 Long parentId = kanbanStageInstance.getParentId();
                 if (MapUtils.isNotEmpty(map)) {
@@ -142,9 +142,9 @@ public class StageServiceImpl implements StageService {
                         IssueExample issueExample = new IssueExample();
                         issueExample.createCriteria()
                                 .andProjectIdEqualTo(projectId)
-                                    .andStageIdEqualTo(stageId)
-                                        .andLaneIdEqualTo(laneId)
-                                            .andStateEqualTo(StageConstant.STATE_VALIDATE);
+                                .andStageIdEqualTo(stageId)
+                                .andLaneIdEqualTo(laneId)
+                                .andStateEqualTo(StageConstant.STATE_VALIDATE);
                         List<Issue> issues = issueMapper.selectByExample(issueExample);
                         if (CollectionUtils.isNotEmpty(issues)) {
                             enableCancel = 1;
@@ -163,9 +163,9 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 根据项目id查询第一个阶段及该阶段下第一个泳道
      * @param projectId
      * @return java.util.List
+     * @description 根据项目id查询第一个阶段及该阶段下第一个泳道
      */
     @Override
     public List<StageInstance> getFirstStageFirstLane(Long projectId) {
@@ -177,8 +177,8 @@ public class StageServiceImpl implements StageService {
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
         kanbanStageInstanceExample.createCriteria()
                 .andProjectIdEqualTo(projectId)
-                    .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
-                        .andStateEqualTo(StageConstant.STATE_VALIDATE);
+                .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE);
         kanbanStageInstanceExample.setOrderByClause("order_id asc");
         //一级阶段
         List<KanbanStageInstance> firstStageInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
@@ -194,17 +194,17 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 处理二级状态下第一个泳道
      * @param stageInstance 一级阶段
+     * @description 处理二级状态下第一个泳道
      */
-    private void dealSecondStageFirstInstance(StageInstance stageInstance){
+    private void dealSecondStageFirstInstance(StageInstance stageInstance) {
         Long parentStateId = stageInstance.getStageId();
         KanbanStageInstanceExample secondKanbanStageInstanceExample = new KanbanStageInstanceExample();
         secondKanbanStageInstanceExample.createCriteria()
-            .andProjectIdEqualTo(stageInstance.getProjectId())
+                .andProjectIdEqualTo(stageInstance.getProjectId())
                 .andParentIdEqualTo(parentStateId)
-                    .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
-                        .andStateEqualTo(StageConstant.STATE_VALIDATE);//.andIsShowEqualTo((byte)0)
+                .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE);//.andIsShowEqualTo((byte)0)
         secondKanbanStageInstanceExample.setOrderByClause("order_id asc");
         List<KanbanStageInstance> secondInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(secondKanbanStageInstanceExample);
         if (CollectionUtils.isNotEmpty(secondInstanceList)) {
@@ -216,9 +216,9 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 根据项目id和阶段id查询阶段信息
      * @param projectId
      * @return
+     * @description 根据项目id和阶段id查询阶段信息
      */
     @Override
     public KanbanStageInstance getStageInfo(Long projectId, Long stageId) {
@@ -228,7 +228,7 @@ public class StageServiceImpl implements StageService {
         KanbanStageInstance stageInstance = null;
         KanbanStageInstanceExample stageInstanceExample = new KanbanStageInstanceExample();
         stageInstanceExample.createCriteria()
-            .andProjectIdEqualTo(projectId).andStageIdEqualTo(stageId)
+                .andProjectIdEqualTo(projectId).andStageIdEqualTo(stageId)
                 .andStateEqualTo(StageConstant.STATE_VALIDATE);//.andIsShowEqualTo((byte)0)
         List<KanbanStageInstance> stageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(stageInstanceExample);
         if (CollectionUtils.isNotEmpty(stageInstances)) {
@@ -236,13 +236,14 @@ public class StageServiceImpl implements StageService {
         }
         return stageInstance;
     }
+
     /**
-     * @description 根据项目id查询阶段信息
      * @param projectId
      * @return
+     * @description 根据项目id查询阶段信息
      */
     @Override
-    public  List<KanbanStageInstance> getAllStageInfo(Long projectId) {
+    public List<KanbanStageInstance> getAllStageInfo(Long projectId) {
 
         KanbanStageInstanceExample stageInstanceExample = new KanbanStageInstanceExample();
         stageInstanceExample.createCriteria()
@@ -253,9 +254,9 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 配置一阶段
      * @param stageInstanceDTOList
      * @return
+     * @description 配置一阶段
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -311,12 +312,11 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 校验一阶段能否取消
-     *  
-     * @date 2020/07/23
      * @param projectId
      * @param stageId
      * @return
+     * @description 校验一阶段能否取消
+     * @date 2020/07/23
      */
     private Boolean validateEnableCancelFirstStages(Long projectId, Long stageId) {
         Boolean enableCancel = null;
@@ -335,10 +335,10 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 新增二阶段
      * @param projectId
      * @param kanbanStageInstanceDTO
      * @return
+     * @description 新增二阶段
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -358,7 +358,7 @@ public class StageServiceImpl implements StageService {
                     Thread.sleep(10);
                 }
             }
-            if (result){
+            if (result) {
                 //阶段序值
                 Long stageId = kanbanStageInstanceMapper.selectMaxStateId();
                 stageId++;
@@ -412,12 +412,13 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 判断二阶段是否存在
-     * @param projectId 项目id
+     *
+     * @param projectId              项目id
      * @param kanbanStageInstanceDTO 二阶段对象
      * @return
      */
     private int validateSecondStageExists(Long projectId, KanbanStageInstanceDTO kanbanStageInstanceDTO) {
-        Assert.notNull(kanbanStageInstanceDTO,"二级状态参数不能为空");
+        Assert.notNull(kanbanStageInstanceDTO, "二级状态参数不能为空");
         //根据项目id、父阶段id和二阶段名判断二阶段是否存在
         KanbanStageInstance kanbanStageInstance = new KanbanStageInstance();
         kanbanStageInstance.setProjectId(projectId);
@@ -431,6 +432,7 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 查询二级状态为空的项目集
+     *
      * @param projectId
      * @param stageId
      * @return
@@ -442,6 +444,7 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 批量更新工作项泳道
+     *
      * @param issues
      * @param laneId
      */
@@ -454,7 +457,7 @@ public class StageServiceImpl implements StageService {
             if (issueIdList.size() == PER_PAGE_SIZE || i == issues.size() - 1) {
                 int count = issueMapper.batchUpdateIssueLaneId(issueIdList, projectId, stageId, laneId);
                 if (count < 1) {
-                    throw new RuntimeException("批量更新工作项泳道[项目id:{"+projectId+"},一阶段状态id:{"+stageId+"},二级状态id:{"+laneId+"},工作项idList:{"+StringUtils.join(issueIdList,",")+"}]失败");
+                    throw new RuntimeException("批量更新工作项泳道[项目id:{" + projectId + "},一阶段状态id:{" + stageId + "},二级状态id:{" + laneId + "},工作项idList:{" + StringUtils.join(issueIdList, ",") + "}]失败");
                 }
                 issueIdList.clear();
             }
@@ -463,6 +466,7 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 将一阶段弹框信息转移到二级状态
+     *
      * @param projectId
      * @param parentStageId
      * @param secondInstanceId
@@ -500,10 +504,10 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 修改二级状态
      * @param projectId
      * @param kanbanStageInstanceDTO
      * @return
+     * @description 修改二级状态
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -543,28 +547,28 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
+     * @param projectId
+     * @param kanbanStageInstanceDTO
+     * @return
      * @description 删除二阶段
      * 删除条件:
      * 1、一阶段下仅有一个二阶段
      * 2、一阶段下包含多个二阶段并且当前二阶段工作项为空
-     * @param projectId
-     * @param kanbanStageInstanceDTO
-     * @return
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteSecondStage(Long projectId, KanbanStageInstanceDTO kanbanStageInstanceDTO) {
-        Assert.notNull(kanbanStageInstanceDTO,"二级状态入参对象不能为空");
+        Assert.notNull(kanbanStageInstanceDTO, "二级状态入参对象不能为空");
         LOGGER.info("deleteSecondStage method param kanbanStageInstanceDTO:{}", kanbanStageInstanceDTO);
         Long instanceId = kanbanStageInstanceDTO.getInstanceId();
         Long stageId = kanbanStageInstanceDTO.getStageId();
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
         kanbanStageInstanceExample.createCriteria()
-            .andProjectIdEqualTo(projectId)
+                .andProjectIdEqualTo(projectId)
                 .andInstanceIdEqualTo(instanceId)
-                    .andStageIdEqualTo(stageId)
-                        .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
-                            .andStateEqualTo(StageConstant.STATE_VALIDATE);
+                .andStageIdEqualTo(stageId)
+                .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE);
         List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExample(kanbanStageInstanceExample);
         if (CollectionUtils.isEmpty(kanbanStageInstances)) {
             throw new StageException("该二级状态不存在");
@@ -574,10 +578,10 @@ public class StageServiceImpl implements StageService {
         Long parentStageId = kanbanStageInstanceDTO.getParentId();
         kanbanStageInstanceExample = new KanbanStageInstanceExample();
         kanbanStageInstanceExample.createCriteria()
-            .andProjectIdEqualTo(projectId)
+                .andProjectIdEqualTo(projectId)
                 .andParentIdEqualTo(parentStageId).
-                    andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
-                        .andStateEqualTo(StageConstant.STATE_VALIDATE);//andIsShowEqualTo((byte)0);
+                andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE);//andIsShowEqualTo((byte)0);
         kanbanStageInstances = kanbanStageInstanceMapper.selectByExample(kanbanStageInstanceExample);
         if (CollectionUtils.isNotEmpty(kanbanStageInstances)) {
             KanbanStageInstance record = new KanbanStageInstance();
@@ -633,6 +637,7 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 修改工作项状态
+     *
      * @param projectId
      * @param stageId
      * @param laneId
@@ -649,12 +654,11 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 将二级状态弹框信息转移到一阶段
-     *  
-     * @date 2020/06/02
      * @param projectId
      * @param parentStageId
      * @param secondKanbanStageInstance
+     * @description 将二级状态弹框信息转移到一阶段
+     * @date 2020/06/02
      */
     private int transferSecondStatePopUpInfoToFirstStage(Long projectId, Long parentStageId, KanbanStageInstance secondKanbanStageInstance) {
         int count = 0;
@@ -663,10 +667,10 @@ public class StageServiceImpl implements StageService {
         String admittanceRule = secondKanbanStageInstance.getAdmittanceRule();
         KanbanStageInstanceExample firstStageInstanceExample = new KanbanStageInstanceExample();
         firstStageInstanceExample.createCriteria()
-            .andProjectIdEqualTo(projectId)
+                .andProjectIdEqualTo(projectId)
                 .andStageIdEqualTo(parentStageId)
-                    .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
-                        .andStateEqualTo(StageConstant.STATE_VALIDATE);
+                .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE);
         List<KanbanStageInstance> firstStageInstanceList = kanbanStageInstanceMapper.selectByExample(firstStageInstanceExample);
         if (CollectionUtils.isNotEmpty(firstStageInstanceList)) {
             KanbanStageInstance firstStageInstance = firstStageInstanceList.get(0);
@@ -683,6 +687,7 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 排序二阶段状态
+     *
      * @param projectId
      * @param instanceIds
      * @return
@@ -719,6 +724,7 @@ public class StageServiceImpl implements StageService {
 
     /**
      * 获取二阶段序值列表
+     *
      * @param instanceIds
      * @return
      */
@@ -728,11 +734,10 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 初始化看板阶段
-     *  
-     * @date 2020/05/18
      * @param kanbanStageInstanceDTOList
      * @return
+     * @description 初始化看板阶段
+     * @date 2020/05/18
      */
     @Override
     public int initKanbanStageList(List<KanbanStageInstanceDTO> kanbanStageInstanceDTOList) {
@@ -750,12 +755,11 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 新增超时天数、最大制品数、准入规则字段
-     *  
-     * @date 2020/06/01
      * @param projectId
      * @param kanbanStageInstanceDTO
      * @return
+     * @description 新增超时天数、最大制品数、准入规则字段
+     * @date 2020/06/01
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -775,10 +779,10 @@ public class StageServiceImpl implements StageService {
             Long parentId = kanbanStageInstance.getStageId();
             KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
             kanbanStageInstanceExample.createCriteria()
-                .andProjectIdEqualTo(projectId)
+                    .andProjectIdEqualTo(projectId)
                     .andParentIdEqualTo(parentId)
-                        .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
-                            .andStateEqualTo(StageConstant.STATE_VALIDATE);
+                    .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
+                    .andStateEqualTo(StageConstant.STATE_VALIDATE);
             kanbanStageInstanceExample.setOrderByClause("order_id asc");
             List<KanbanStageInstance> kanbanStageInstanceList = kanbanStageInstanceMapper.selectByExample(kanbanStageInstanceExample);
             if (CollectionUtils.isNotEmpty(kanbanStageInstanceList)) {
@@ -821,11 +825,10 @@ public class StageServiceImpl implements StageService {
     }
 
     /**
-     * @description 更新超时天数、最大制品数、准入规则字段
-     *  
-     * @date 2020/06/01
      * @param kanbanStageInstanceDTO
      * @return
+     * @description 更新超时天数、最大制品数、准入规则字段
+     * @date 2020/06/01
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -849,14 +852,14 @@ public class StageServiceImpl implements StageService {
     /**
      * 功能描述:
      *
-     * @date 2020/10/28
      * @param projectId
      * @param firstStageId
      * @param secondName
      * @return java.lang.Long
+     * @date 2020/10/28
      */
     @Override
-    public Long getSecondStageIdByFirstStageIdAndSecondName(Long projectId, Long firstStageId,String secondName) {
+    public Long getSecondStageIdByFirstStageIdAndSecondName(Long projectId, Long firstStageId, String secondName) {
         // 查询二阶
         KanbanStageInstanceExample kanbanStageInstanceExample2 = new KanbanStageInstanceExample();
         kanbanStageInstanceExample2.createCriteria()
@@ -864,7 +867,7 @@ public class StageServiceImpl implements StageService {
                 .andStateEqualTo(StateEnum.U.getValue());
         List<KanbanStageInstance> secondStageInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample2);
         Long laneId = null;
-        if(CollectionUtils.isEmpty(secondStageInstanceList)){
+        if (CollectionUtils.isEmpty(secondStageInstanceList)) {
             return laneId;
         }
         for (KanbanStageInstance temp : secondStageInstanceList) {

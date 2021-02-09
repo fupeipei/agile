@@ -40,18 +40,19 @@ public class BoardServiceTest {
         //这句话执行以后，bookDao等bookService依赖的bean会自动注入到abcService中。
         MockitoAnnotations.initMocks(this);
     }
+
     @Test
     public void getStoryWithTaskTest() {
-        try{
+        try {
             BoardStoryParam storyParam = new BoardStoryParam();
             storyParam.setSprintId(89L);
             SprintWithBLOBs sprint = new SprintWithBLOBs();
             sprint.setWorkHours(0);
             Mockito.when(sprintMapper.selectByPrimaryKey(Mockito.anyLong())).thenReturn(sprint);
             List<IssueDTO> storyWithTasks = boardServicePy.getStoryWithTask(storyParam);
-            log.info("Junit测试--查询看板搜索故事和任务成功：{}",storyWithTasks);
-        }catch (Exception e){
-            log.info("Junit测试--查询看板搜索故事和任务异常：{}",e);
+            log.info("Junit测试--查询看板搜索故事和任务成功：{}", storyWithTasks);
+        } catch (Exception e) {
+            log.info("Junit测试--查询看板搜索故事和任务异常：{}", e);
         }
 
     }

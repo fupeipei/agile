@@ -30,7 +30,6 @@ import java.util.List;
 /**
  * 里程碑业务类
  *
-
  * @create 2020-08-12 15:49
  */
 @Service("mileStoneService")
@@ -56,7 +55,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneDTO
      * @return void
-
      * @date 2020/8/12
      */
     @Override
@@ -87,7 +85,7 @@ public class MileStoneServiceImpl implements MilestoneService {
 
         // 处理用户
         List<Long> userIds = milestoneDTO.getUserIds();
-        if(CollectionUtils.isNotEmpty(userIds) && userIds.size() > 0){
+        if (CollectionUtils.isNotEmpty(userIds) && userIds.size() > 0) {
             List<ReqUserRlat> reqUserRlats = assembleReqUserRlats(userIds, milestone);
             reqUserRlatService.insertBatch(reqUserRlats);
         }
@@ -103,7 +101,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      * @param userIds
      * @param milestone
      * @return java.util.List<com.yusys.agile.user.domain.ReqUserRlat>
-
      * @date 2020/8/13
      */
     private List<ReqUserRlat> assembleReqUserRlats(List<Long> userIds, Milestone milestone) {
@@ -127,7 +124,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneId
      * @return void
-
      * @date 2020/8/12
      */
     @Override
@@ -146,7 +142,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneDTO
      * @return void
-
      * @date 2020/8/13
      */
     @Override
@@ -176,7 +171,7 @@ public class MileStoneServiceImpl implements MilestoneService {
         // 删除关联用户关系
         reqUserRlatService.deleteRlatsBySubjectId(milestoneDTO.getMilestoneId());
         Milestone milestone = ReflectUtil.copyProperties(milestoneDTO, Milestone.class);
-        if(CollectionUtils.isNotEmpty(userIds) && userIds.size() > 0){
+        if (CollectionUtils.isNotEmpty(userIds) && userIds.size() > 0) {
             List<ReqUserRlat> reqUserRlats = assembleReqUserRlats(userIds, milestone);
             reqUserRlatService.insertBatch(reqUserRlats);
         }
@@ -188,7 +183,7 @@ public class MileStoneServiceImpl implements MilestoneService {
         }
 
         // 里程碑修改成未完成时，必须要将实际完成时间清掉
-        if(NumberConstant.ZERO.equals(record.getMilestoneStatus())){
+        if (NumberConstant.ZERO.equals(record.getMilestoneStatus())) {
             record.setRealFinishTime(null);
         }
 
@@ -204,7 +199,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param milestoneId
      * @return com.yusys.agile.milestone.dto.MilestoneDTO
-
      * @date 2020/8/13
      */
     @Override
@@ -213,7 +207,7 @@ public class MileStoneServiceImpl implements MilestoneService {
         MilestoneDTO milestoneDTO = ReflectUtil.copyProperties(milestone, MilestoneDTO.class);
 
         // 查询用户信息
-        List<ReqUserRlat> rlats = reqUserRlatService.listRlatsBySubjectId(milestoneDTO.getMilestoneId(),AgileUserRlatEnum.MILESTONE.CODE, 1);
+        List<ReqUserRlat> rlats = reqUserRlatService.listRlatsBySubjectId(milestoneDTO.getMilestoneId(), AgileUserRlatEnum.MILESTONE.CODE, 1);
 
         List<UserDTO> userDTOS = assembleUserDTOs(rlats);
         milestoneDTO.setUsers(userDTOS);
@@ -225,7 +219,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.milestone.dto.MilestoneDTO>
-
      * @date 2020/8/17
      */
     @Override
@@ -242,7 +235,7 @@ public class MileStoneServiceImpl implements MilestoneService {
         for (Milestone milestone : records) {
             MilestoneDTO milestoneDTO = ReflectUtil.copyProperties(milestone, MilestoneDTO.class);
             // 查询用户信息
-            List<ReqUserRlat> rlats = reqUserRlatService.listRlatsBySubjectId(milestoneDTO.getMilestoneId(), AgileUserRlatEnum.MILESTONE.CODE,1);
+            List<ReqUserRlat> rlats = reqUserRlatService.listRlatsBySubjectId(milestoneDTO.getMilestoneId(), AgileUserRlatEnum.MILESTONE.CODE, 1);
             List<UserDTO> userDTOS = assembleUserDTOs(rlats);
             milestoneDTO.setUsers(userDTOS);
             // 是否超时 0未超时 1超时
@@ -258,7 +251,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      *
      * @param rlats
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-
      * @date 2020/8/13
      */
     private List<UserDTO> assembleUserDTOs(List<ReqUserRlat> rlats) {
@@ -288,7 +280,6 @@ public class MileStoneServiceImpl implements MilestoneService {
      * @param projectId
      * @param id
      * @return boolean
-
      * @date 2020/8/12
      */
     private boolean checkSameName(String milestoneName, Long projectId, Long id) {

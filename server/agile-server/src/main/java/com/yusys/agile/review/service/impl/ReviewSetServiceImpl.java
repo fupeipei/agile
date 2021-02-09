@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * @description 评论设置业务类
- *  
  * @date 2020/09/08
  */
 @Service
@@ -43,12 +42,11 @@ public class ReviewSetServiceImpl implements ReviewSetService {
     private ReviewSetMapper reviewSetMapper;
 
     /**
-     * @description 查询评审设置信息
-     *  
-     * @date 2020/09/09
      * @param projectId
      * @param issueType
      * @return
+     * @description 查询评审设置信息
+     * @date 2020/09/09
      */
     @Override
     public ReviewSetDTO getReviewSetInfo(Long projectId, Byte issueType) {
@@ -70,12 +68,11 @@ public class ReviewSetServiceImpl implements ReviewSetService {
     }
 
     /**
-     * @description 拼接评审设置信息Key
-     *  
-     * @date 2020/09/09
      * @param projectId
      * @param issueType
      * @return
+     * @description 拼接评审设置信息Key
+     * @date 2020/09/09
      */
     private String splitReviewRedisKey(Long projectId, Byte issueType) {
         StringBuilder key = new StringBuilder();
@@ -84,29 +81,27 @@ public class ReviewSetServiceImpl implements ReviewSetService {
     }
 
     /**
-     * @description 拼接评审设置信息Example
-     *  
-     * @date 2020/09/09
      * @param projectId
      * @param issueType
      * @return
+     * @description 拼接评审设置信息Example
+     * @date 2020/09/09
      */
     private ReviewSetExample splitReviewSetExample(Long projectId, Byte issueType) {
         ReviewSetExample reviewSetExample = new ReviewSetExample();
         reviewSetExample.setOrderByClause("id asc");
         reviewSetExample.createCriteria()
-            .andProjectIdEqualTo(projectId)
+                .andProjectIdEqualTo(projectId)
                 .andIssueTypeEqualTo(issueType)
-                    .andStateEqualTo(StateEnum.U.getValue());
+                .andStateEqualTo(StateEnum.U.getValue());
         return reviewSetExample;
     }
 
     /**
-     * @description 编辑评审设置信息
-     *  
-     * @date 2020/09/09
      * @param reviewSetDTO
      * @return
+     * @description 编辑评审设置信息
+     * @date 2020/09/09
      */
     @Transactional(rollbackFor = Exception.class)
     @Override

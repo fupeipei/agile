@@ -3,7 +3,9 @@ package com.yusys.agile.businesskanban.dao;
 import com.yusys.agile.businesskanban.domain.BusinessHistoryRecord;
 import com.yusys.agile.businesskanban.domain.BusinessHistoryRecordExample;
 import com.yusys.agile.businesskanban.domain.BusinessHistoryRecordWithBLOBs;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface BusinessHistoryRecordMapper {
@@ -36,12 +38,10 @@ public interface BusinessHistoryRecordMapper {
     int updateByPrimaryKey(BusinessHistoryRecord record);
 
     /**
-     *
      * @Date: 2021/2/7
      * @Description: 批量创建历史记录
      * @Param: [records]
      * @Return: int
-     *
      */
     void batchCreate(@Param("collection") List<BusinessHistoryRecordWithBLOBs> records);
 

@@ -2,7 +2,9 @@ package com.yusys.agile.versionmanager.dao;
 
 import com.yusys.agile.versionmanager.domain.VersionIssueSyncData;
 import com.yusys.agile.versionmanager.domain.VersionIssueSyncDataExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface VersionIssueSyncDataMapper {

@@ -31,7 +31,7 @@ public class VersionIssueExcelServiceImpl implements VersionIssueExcelService {
 
     @Override
     public void exportIssueDatas(VersionIssue versionIssue, HttpServletResponse response) throws Exception {
-        if(null == versionIssue.getVersionIdList()){
+        if (null == versionIssue.getVersionIdList()) {
             return;
         }
         List<VersionIssueDTO> versionIssueDTOS = versionIssueSysExtendMapper.selectEpicIssueByVersionId(versionIssue.getVersionIdList());
@@ -55,8 +55,8 @@ public class VersionIssueExcelServiceImpl implements VersionIssueExcelService {
                     String actualFinishTime = sysExtendFieldDetailDTO.getActualFinishTime();
                     String debugActualFinishTime = sysExtendFieldDetailDTO.getDebugActualFinishTime();
                     String deployIllustration = sysExtendFieldDetailDTO.getDeployIllustration();
-                    if(StringUtils.isNotEmpty(deployIllustration)){
-                        deployIllustration = deployIllustration.replace("[","").replace("]","").replace("\"","");
+                    if (StringUtils.isNotEmpty(deployIllustration)) {
+                        deployIllustration = deployIllustration.replace("[", "").replace("]", "").replace("\"", "");
                     }
                     if (issueDTOMap.containsKey(parentId)) {
                         VersionIssueDTO issueDTO = issueDTOMap.get(parentId);
@@ -69,10 +69,10 @@ public class VersionIssueExcelServiceImpl implements VersionIssueExcelService {
                                     issueDTO.setBossActualFinishTime(actualFinishTime);
                                     issueDTO.setBossDebugActualFinishTime(debugActualFinishTime);
                                     List<String> deploys = new ArrayList<>();
-                                    if(StringUtils.isNotEmpty(deployIllustration)){
+                                    if (StringUtils.isNotEmpty(deployIllustration)) {
                                         String[] deployDescList = deployIllustration.split(",");
-                                        Arrays.stream(deployDescList).forEach(code ->deploys.add(DeployDescEnum.getDesc(code)));
-                                        issueDTO.setBossDeployDesc(String.join("",deploys));
+                                        Arrays.stream(deployDescList).forEach(code -> deploys.add(DeployDescEnum.getDesc(code)));
+                                        issueDTO.setBossDeployDesc(String.join("", deploys));
                                     }
                                     break;
                                 case "NGCRM":

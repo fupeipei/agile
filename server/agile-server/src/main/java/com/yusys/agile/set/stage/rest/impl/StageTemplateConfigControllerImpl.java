@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * @description 阶段模板配置控制器
- *  
  * @date 2020/08/06
  */
 @RestController
@@ -28,10 +27,9 @@ public class StageTemplateConfigControllerImpl {
     private StageTemplateConfigService stageTemplateConfigService;
 
     /**
-     * @description 查询阶段模板配置数据
-     *  
-     * @date 2020/08/05
      * @return
+     * @description 查询阶段模板配置数据
+     * @date 2020/08/05
      */
     @GetMapping("/getStageTemplateConfigList")
     public ControllerResponse getStageTemplateConfigList() {
@@ -44,11 +42,10 @@ public class StageTemplateConfigControllerImpl {
     }
 
     /**
-     * @description 查询默认阶段模板配置列表
-     *  
-     * @date 2020/08/25
      * @param level
      * @return
+     * @description 查询默认阶段模板配置列表
+     * @date 2020/08/25
      */
     @GetMapping("/getStageTemplateConfigListByLevel")
     public List<StageTemplateConfigDTO> getDefaultStageTemplateConfigListByLevel(@RequestParam Byte level) {

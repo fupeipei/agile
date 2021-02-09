@@ -17,7 +17,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/3/15
  * @Description: TODO
  */
@@ -31,9 +32,9 @@ public class SysFieldServiceImpl implements SysFieldService {
     public List<SysField> getAllSysField(Byte issueType) {
 
         SysFieldExample sysFieldExample = new SysFieldExample();
-        SysFieldExample.Criteria criteria =  sysFieldExample.createCriteria();
+        SysFieldExample.Criteria criteria = sysFieldExample.createCriteria();
         criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
-        if(issueType!=null){
+        if (issueType != null) {
             criteria.andExtendTypeEqualTo(issueType);
         }
         return sysFieldMapper.selectByExample(sysFieldExample);

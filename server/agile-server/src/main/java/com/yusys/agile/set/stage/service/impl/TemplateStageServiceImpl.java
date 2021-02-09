@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * @description 模板阶段业务实现类
- *  
  * @date 2020/05/15
  */
 @Service
@@ -40,11 +39,10 @@ public class TemplateStageServiceImpl implements TemplateStageService {
     private StageTemplateConfigService stageTemplateConfigService;
 
     /**
-     * @description 根据租户编码和模板编号查询模板阶段
-     *  
-     * @date 2020/05/15
      * @param templateId
      * @return
+     * @description 根据租户编码和模板编号查询模板阶段
+     * @date 2020/05/15
      */
     @Override
     public List<TemplateStageDTO> queryTemplateStagesByTemplateId(String tenantCode, Long templateId) {
@@ -53,8 +51,8 @@ public class TemplateStageServiceImpl implements TemplateStageService {
         templateStageExample.setOrderByClause("config_id asc");
         TemplateStageExample.Criteria criteria = templateStageExample.createCriteria();
         criteria.andTemplateIdEqualTo(templateId)
-                    .andTenantCodeEqualTo(tenantCode)
-                        .andStateEqualTo("U");
+                .andTenantCodeEqualTo(tenantCode)
+                .andStateEqualTo("U");
         List<TemplateStage> templateStageList = templateStageMapper.selectByExample(templateStageExample);
         if (CollectionUtils.isNotEmpty(templateStageList)) {
             try {
@@ -67,12 +65,11 @@ public class TemplateStageServiceImpl implements TemplateStageService {
     }
 
     /**
-     * @description 创建模板阶段
-     *  
-     * @date 2020/08/06
      * @param templateId
      * @param templateStages
      * @return
+     * @description 创建模板阶段
+     * @date 2020/08/06
      */
     @Override
     public int createTemplateStages(Long templateId, List<TemplateStage> templateStages) {
@@ -88,12 +85,11 @@ public class TemplateStageServiceImpl implements TemplateStageService {
     }
 
     /**
-     * @description 处理模板阶段
-     *  
-     * @date 2020/08/10
      * @param templateId
      * @param templateStages
      * @return
+     * @description 处理模板阶段
+     * @date 2020/08/10
      */
     private List<TemplateStage> dealTemplateStages(Long templateId, List<TemplateStage> templateStages) {
         //模板阶段集合
@@ -109,11 +105,11 @@ public class TemplateStageServiceImpl implements TemplateStageService {
                 parentStageIdList.add(stageId);
             }
             templateStage = new TemplateStage();
-            templateStage = spliceTemplateStage(templateId, tenantCode, StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue(),null, template, templateStage);
+            templateStage = spliceTemplateStage(templateId, tenantCode, StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue(), null, template, templateStage);
             templateStageList.add(templateStage);
         }
         //查询二阶段模板数据
-        List<StageTemplateConfig> secondStageTemplateList = stageTemplateConfigService.getStageTemplateConfigListByLevel((byte)2);
+        List<StageTemplateConfig> secondStageTemplateList = stageTemplateConfigService.getStageTemplateConfigListByLevel((byte) 2);
         if (CollectionUtils.isNotEmpty(parentStageIdList) && CollectionUtils.isNotEmpty(secondStageTemplateList)) {
             StageTemplateConfigDTO maxStageTemplateConfigDTO = stageTemplateConfigService.getMaxSecondStageTemplateConfigData();
             Long maxStageTemplateConfigStageId = maxStageTemplateConfigDTO.getStageId();
@@ -144,7 +140,6 @@ public class TemplateStageServiceImpl implements TemplateStageService {
     }
 
     /**
-     * @description 拼装模板阶段
      * @param templateId
      * @param tenantCode
      * @param level
@@ -152,6 +147,7 @@ public class TemplateStageServiceImpl implements TemplateStageService {
      * @param template
      * @param templateStage
      * @return
+     * @description 拼装模板阶段
      */
     private TemplateStage spliceTemplateStage(Long templateId, String tenantCode, int level, Long parentStageId, TemplateStage template, TemplateStage templateStage) {
         templateStage.setTemplateId(templateId);
@@ -161,14 +157,14 @@ public class TemplateStageServiceImpl implements TemplateStageService {
             templateStage.setParentId(-1L);
             Byte selected = template.getIsShow();
             if (0 == selected) {
-                templateStage.setIsShow((byte)0);
+                templateStage.setIsShow((byte) 0);
             } else {
-                templateStage.setIsShow((byte)1);
+                templateStage.setIsShow((byte) 1);
             }
         } else if (level == 2) {
             templateStage.setParentId(parentStageId);
         }
-        templateStage.setLevel((byte)level);
+        templateStage.setLevel((byte) level);
         templateStage.setOrderId(template.getOrderId());
         templateStage.setState(StateEnum.U.getValue());
         templateStage.setTenantCode(tenantCode);
@@ -178,11 +174,10 @@ public class TemplateStageServiceImpl implements TemplateStageService {
     }
 
     /**
-     * @description 编辑看板模板阶段
-     *  
-     * @date 2020/08/14
      * @param templateStages
      * @return
+     * @description 编辑看板模板阶段
+     * @date 2020/08/14
      */
     @Override
     public int alterTempalteStages(List<TemplateStage> templateStages) {
@@ -204,11 +199,10 @@ public class TemplateStageServiceImpl implements TemplateStageService {
     }
 
     /**
-     * @description 根据模板编号删除模板阶段
-     *  
-     * @date 2020/08/21
      * @param templateStage
      * @return
+     * @description 根据模板编号删除模板阶段
+     * @date 2020/08/21
      */
     @Override
     public int delTemplateStagesByTemplateId(TemplateStage templateStage) {

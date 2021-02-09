@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * @description 看板阶段实例高级搜索类
- *  
  * @create 2020-04-10 16:28
  */
 public class KanbanStageInstanceExample {

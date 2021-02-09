@@ -42,7 +42,6 @@ public interface SprintMapper {
 
     /**
      * @param example
-
      * @Date 2021/2/4
      * @Description 查询未关联故事或任务的迭代
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
@@ -62,7 +61,6 @@ public interface SprintMapper {
     Integer getPlanWorkload(Long sprintId);
 
     /**
-     *
      * @Date: 18:43
      * @Description: 获取剩余工作量
      * @Param: * @param sprintId
@@ -71,7 +69,6 @@ public interface SprintMapper {
     int getRemainWorkload(Long sprintId);
 
     /**
-     *
      * @Date: 18:43
      * @Description: 获取项目下的所有迭代列表
      * @Param: * @param projectId
@@ -81,7 +78,6 @@ public interface SprintMapper {
 
     /**
      * @param now
-
      * @Date 2021/2/18
      * @Description 根据当前时间获取迭代id
      * @Return java.util.List<java.lang.Long>
@@ -90,7 +86,6 @@ public interface SprintMapper {
 
     /**
      * @param sprintIds
-
      * @Date 2021/2/18
      * @Description 根据迭代id将迭代未开始状态改为进行中
      * @Return int
@@ -99,7 +94,6 @@ public interface SprintMapper {
 
     /**
      * @param sprintId
-
      * @Date 2021/2/21
      * @Description 获取迭代信息去掉文本
      * @Return com.yusys.agile.sprint.domain.SprintWithBLOBs
@@ -108,7 +102,6 @@ public interface SprintMapper {
 
     /**
      * @param sprintId
-
      * @Date 2021/2/23
      * @Description 编辑迭代为已完成状态
      * @Return int

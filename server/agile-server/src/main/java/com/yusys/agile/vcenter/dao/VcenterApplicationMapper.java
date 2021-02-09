@@ -2,7 +2,9 @@ package com.yusys.agile.vcenter.dao;
 
 import com.yusys.agile.vcenter.domain.VcenterApplication;
 import com.yusys.agile.vcenter.domain.VcenterApplicationExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface VcenterApplicationMapper {

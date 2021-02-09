@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- *  工作项富文本处理
- *
+ * 工作项富文本处理
  */
 @Component
 public class IssueRichTextFactory {
@@ -39,27 +38,29 @@ public class IssueRichTextFactory {
 
     @Resource
     private KanbanStageInstanceMapper kanbanStageInstanceMapper;
+
     /**
      * 保存工作项富文本内容
+     *
      * @param issueId
      * @param description
      */
-    public void dealIssueRichText(Long issueId, String description,String tenantCode){
+    public void dealIssueRichText(Long issueId, String description, String tenantCode) {
         IssueRichtextExample example = new IssueRichtextExample();
         example.createCriteria().andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.toString());
         List<IssueRichtext> issueRichTexts = richtextMapper.selectByExampleWithBLOBs(example);
-        if(CollectionUtils.isNotEmpty(issueRichTexts)){
+        if (CollectionUtils.isNotEmpty(issueRichTexts)) {
             IssueRichtext richText = issueRichTexts.get(0);
             richText.setDescription(description);
             richText.setCreateTime(new Date());
             richtextMapper.updateByPrimaryKeyWithBLOBs(richText);
-        }else{
+        } else {
             IssueRichtext richText = new IssueRichtext();
             richText.setIssueId(issueId);
             richText.setDescription(description);
             richText.setCreateTime(new Date());
             richText.setState(StateEnum.U.toString());
-            if(StringUtils.isNotBlank(tenantCode)){
+            if (StringUtils.isNotBlank(tenantCode)) {
                 richText.setTenantCode(tenantCode);
             }
             richtextMapper.insert(richText);
@@ -68,6 +69,7 @@ public class IssueRichTextFactory {
 
     /**
      * 查询issue的富文本,赋值给IssueDTO
+     *
      * @param issueDTO
      */
     public void queryIssueRichText(IssueDTO issueDTO) {
@@ -75,9 +77,9 @@ public class IssueRichTextFactory {
         IssueRichtextExample example = new IssueRichtextExample();
         example.createCriteria().andStateEqualTo(StateEnum.U.toString()).andIssueIdEqualTo(issueId);
         List<IssueRichtext> issueRichtexts = richtextMapper.selectByExampleWithBLOBs(example);
-        if(CollectionUtils.isNotEmpty(issueRichtexts)){
+        if (CollectionUtils.isNotEmpty(issueRichtexts)) {
             IssueRichtext richtext = issueRichtexts.get(0);
-            if(Optional.ofNullable(richtext).isPresent()){
+            if (Optional.ofNullable(richtext).isPresent()) {
                 issueDTO.setDescription(richtext.getDescription());
             }
         }
@@ -85,6 +87,7 @@ public class IssueRichTextFactory {
 
     /**
      * 验证工作项所处目标阶段状态下制品数限制，超过则抛出异常
+     *
      * @param stageId   一级阶段ID
      * @param landId    二级阶段ID
      * @param projectId 项目ID
@@ -97,26 +100,26 @@ public class IssueRichTextFactory {
                 .andProjectIdEqualTo(projectId)
                 .andIssueTypeEqualTo(issueType)
                 .andStateEqualTo(StateEnum.U.toString());
-        if(Optional.ofNullable(landId).isPresent()){
+        if (Optional.ofNullable(landId).isPresent()) {
             criteria.andLaneIdEqualTo(landId);
         }
         List<Issue> issues = issueMapper.selectByExample(issueExample);
-        if(CollectionUtils.isEmpty(issues)){
+        if (CollectionUtils.isEmpty(issues)) {
             return;
         }
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
         KanbanStageInstanceExample.Criteria criteria1 = kanbanStageInstanceExample.createCriteria();
-        if(Optional.ofNullable(landId).isPresent()){
+        if (Optional.ofNullable(landId).isPresent()) {
             criteria1.andProjectIdEqualTo(projectId).andParentIdEqualTo(stageId).andStageIdEqualTo(landId).andStateEqualTo(StateEnum.U.toString());
-        }else{
+        } else {
             criteria1.andProjectIdEqualTo(projectId).andStageIdEqualTo(stageId).andStateEqualTo(StateEnum.U.toString());
         }
 
         List<KanbanStageInstance> stageInstances = kanbanStageInstanceMapper.selectByExample(kanbanStageInstanceExample);
-        if(CollectionUtils.isNotEmpty(stageInstances) && stageInstances.size() == 1){
+        if (CollectionUtils.isNotEmpty(stageInstances) && stageInstances.size() == 1) {
             Integer issueSize = issues.size();
             Integer maxNumbers = Optional.ofNullable(stageInstances.get(0).getMaxNumbers()).orElse(0);
-            if((issueSize >= maxNumbers) && maxNumbers> 0 ){
+            if ((issueSize >= maxNumbers) && maxNumbers > 0) {
                 throw new BusinessException("目标工作项制品个数超过最大制品数!");
             }
         }
@@ -124,15 +127,16 @@ public class IssueRichTextFactory {
 
     /**
      * 根据工作项ID查询富文本信息
-     * @param issueId   工作项ID
+     *
+     * @param issueId 工作项ID
      * @return
      */
-    public IssueRichtext getIssueRichText(Long issueId){
-        IssueRichtext richtext =  null;
+    public IssueRichtext getIssueRichText(Long issueId) {
+        IssueRichtext richtext = null;
         IssueRichtextExample richtextExample = new IssueRichtextExample();
         richtextExample.createCriteria().andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.toString());
         List<IssueRichtext> issueRichtexts = richtextMapper.selectByExampleWithBLOBs(richtextExample);
-        if(CollectionUtils.isNotEmpty(issueRichtexts)){
+        if (CollectionUtils.isNotEmpty(issueRichtexts)) {
             richtext = issueRichtexts.get(0);
         }
         return richtext;

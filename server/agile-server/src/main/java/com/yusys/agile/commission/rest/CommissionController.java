@@ -8,6 +8,7 @@ import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 
 /**
@@ -24,17 +25,17 @@ public class CommissionController {
     private CommissionService commissionService;
 
     /**
-     * @description 根据代办标题分页查询代办列表
-     * @date 2021/2/1
      * @param title
      * @param pageNum
      * @param pageSize
      * @return
+     * @description 根据代办标题分页查询代办列表
+     * @date 2021/2/1
      */
     @GetMapping("/queryCommissionByUserId")
-    public ControllerResponse queryCommissionByUserId(@RequestParam(name="title",required = false)String title,
-                                                      @RequestParam(name="pageNum")Integer pageNum,
-                                                      @RequestParam(name="pageSize")Integer pageSize) {
+    public ControllerResponse queryCommissionByUserId(@RequestParam(name = "title", required = false) String title,
+                                                      @RequestParam(name = "pageNum") Integer pageNum,
+                                                      @RequestParam(name = "pageSize") Integer pageSize) {
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
         try {
             return ControllerResponse.success(commissionService.getCommissionList(userId, title, pageNum, pageSize));
@@ -45,10 +46,10 @@ public class CommissionController {
     }
 
     /**
-     * @description 根据代办id查询代办信息
-     * @date 2021/2/1
      * @param commissionId
      * @return
+     * @description 根据代办id查询代办信息
+     * @date 2021/2/1
      */
     @GetMapping("/queryCommissionById/{commissionId}")
     public ControllerResponse queryCommissionById(@PathVariable Long commissionId) {
@@ -61,10 +62,10 @@ public class CommissionController {
     }
 
     /**
-     * @description 更新代办信息
-     * @date 2021/2/1
      * @param commissionDTO
      * @return
+     * @description 更新代办信息
+     * @date 2021/2/1
      */
     @PostMapping("/modifyCommission")
     public ControllerResponse modifyCommission(@RequestBody CommissionDTO commissionDTO) {

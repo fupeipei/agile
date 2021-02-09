@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- *
  * @Date: 2021/2/8 10:47
  * @Description:
  */
@@ -21,7 +20,7 @@ public class BurnDownTask extends IJobHandler {
     private BurnDownChartService burnDownChartService;
 
     @Override
-    public ReturnT<String> execute(String s){
+    public ReturnT<String> execute(String s) {
         burnDownChartService.calculateWorkload();
         burnDownChartService.calculateStorys();
         return ReturnT.SUCCESS;

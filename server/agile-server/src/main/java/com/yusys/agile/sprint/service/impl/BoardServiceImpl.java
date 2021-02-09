@@ -24,7 +24,6 @@ import javax.annotation.Resource;
 import java.util.*;
 
 /**
-
  * @Date 2020/4/30
  * @Description
  */
@@ -42,7 +41,7 @@ public class BoardServiceImpl implements BoardService {
     public List<IssueDTO> getStoryWithTask(BoardStoryParam param) {
         Long sprintId = param.getSprintId();
         SprintWithBLOBs sprint = sprintMapper.selectByPrimaryKey(sprintId);
-        Optional.ofNullable(sprint).orElseThrow(()-> new BusinessException("迭代计划不存在"));
+        Optional.ofNullable(sprint).orElseThrow(() -> new BusinessException("迭代计划不存在"));
         int workHours = sprint.getWorkHours();
         String storyKeyWord = param.getStoryKeyWord();
         String taskKeyWord = param.getTaskKeyWord();
@@ -64,14 +63,14 @@ public class BoardServiceImpl implements BoardService {
                 storyDTOMap.put(item.getStoryId(), storyDTO);
                 //增加缺陷数量和用例数量
             }
-                if (null != item.getTaskId()) {
-                    //补全部分task信息
-                    IssueDTO taskDTO = generateTaskDTO(workHours, ownerIds, item);
-                    taskDTOS.add(taskDTO);
-                    storyDTOMap.get(item.getStoryId()).getChildren().add(taskDTO);
-                }
+            if (null != item.getTaskId()) {
+                //补全部分task信息
+                IssueDTO taskDTO = generateTaskDTO(workHours, ownerIds, item);
+                taskDTOS.add(taskDTO);
+                storyDTOMap.get(item.getStoryId()).getChildren().add(taskDTO);
+            }
             //根据人搜索或者任务搜索，并且没有任何任务则剔除对应的故事
-            if ((null != userIds || StringUtils.isNotEmpty(taskKeyWord) || null != taskTypeIds)){
+            if ((null != userIds || StringUtils.isNotEmpty(taskKeyWord) || null != taskTypeIds)) {
                 removeEmptyTasksStory(storyDTOMap);
             }
             if (!ownerIds.isEmpty()) {
@@ -98,7 +97,8 @@ public class BoardServiceImpl implements BoardService {
             }
         }
         //故事排序
-        List<IssueDTO> storyDTOS =createTimeSort(prioritySort(storyDTOMap)); ;
+        List<IssueDTO> storyDTOS = createTimeSort(prioritySort(storyDTOMap));
+        ;
         return storyDTOS;
     }
 
@@ -124,7 +124,7 @@ public class BoardServiceImpl implements BoardService {
         //设置是否超时
         Date start = taskDTO.getBeginDate();
         Date end = taskDTO.getEndDate();
-        if(null != start){
+        if (null != start) {
             taskDTO.setOverTime(isTaskOverTime(start, end, taskDTO.getPlanWorkload(), workHours));
         }
         if (null != ownerId) {
@@ -149,10 +149,9 @@ public class BoardServiceImpl implements BoardService {
     }
 
     /**
-
+     * @param storyDTOMap
      * @Date 2020/4/30
      * @Description 故事优先级排序
-      * @param storyDTOMap
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
     private List<IssueDTO> prioritySort(Map<Long, IssueDTO> storyDTOMap) {
@@ -171,10 +170,9 @@ public class BoardServiceImpl implements BoardService {
     }
 
     /**
-
+     * @param storyDTOS
      * @Date 2021/2/11
      * @Description 按照故事创建时间排序
-      * @param storyDTOS
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
     private List<IssueDTO> createTimeSort(List<IssueDTO> storyDTOS) {
@@ -195,18 +193,17 @@ public class BoardServiceImpl implements BoardService {
                 return 0;
             }
         });
-    return storyDTOS;
+        return storyDTOS;
     }
 
 
     /**
-
-     * @Date 2020/4/30
-     * @Description 设置是否超时
      * @param start
      * @param end
      * @param planWorkload
      * @param workHours
+     * @Date 2020/4/30
+     * @Description 设置是否超时
      * @Return boolean
      */
     private boolean isTaskOverTime(Date start, Date end, int planWorkload, int workHours) {
@@ -215,10 +212,9 @@ public class BoardServiceImpl implements BoardService {
     }
 
     /**
-
+     * @param storyDTOMap
      * @Date 2020/4/30
      * @Description 删除掉没有任务的故事
-      * @param storyDTOMap
      * @Return void
      */
     private void removeEmptyTasksStory(Map<Long, IssueDTO> storyDTOMap) {

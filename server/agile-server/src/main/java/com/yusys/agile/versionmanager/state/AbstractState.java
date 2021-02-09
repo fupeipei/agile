@@ -17,33 +17,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
 /**
- *   : rock
+ * : rock
+ *
  * @description:
  * @date:Create：in 2020/4/4
  */
-public abstract class AbstractState implements IState{
+public abstract class AbstractState implements IState {
     private static final Logger log = LoggerFactory.getLogger(AbstractState.class);
 
 
     public abstract List<VersionManagerDTO> getVersionPlanData(List<VersionManagerDTO> versionPlanAddedRequirements,
-                                                              List<VersionManagerDTO> versionPlanDeletedRequirements);
+                                                               List<VersionManagerDTO> versionPlanDeletedRequirements);
 
     public List<VersionManagerDTO> convertToVersionPlanApprovalRequestData(List<VersionManagerDTO> versionPlanList, String versionState) {
         for (VersionManagerDTO versionManagerDTO : versionPlanList) {
-            generateSendRMSReqData(versionState,versionManagerDTO);
+            generateSendRMSReqData(versionState, versionManagerDTO);
         }
         return versionPlanList;
     }
 
-    private void generateSendRMSReqData(String versionState, VersionManagerDTO versionManagerDTO ) {
+    private void generateSendRMSReqData(String versionState, VersionManagerDTO versionManagerDTO) {
         List<SendRMSRequestDTO> sendRMSRequestDTOList = Lists.newArrayList();
-        List<IssueDTO>  relateIssueList = versionManagerDTO.getRelateIssueList();
+        List<IssueDTO> relateIssueList = versionManagerDTO.getRelateIssueList();
         SendRMSRequestDTO sendRMSRequestDTO;
         OperateTypeEnum operateTypeEnum = OperateTypeEnum.OPERATE_TYPE_ADD;
         for (IssueDTO issueDTO : relateIssueList) {
             sendRMSRequestDTO = new SendRMSRequestDTO();
-            setSendRMSRequestData(issueDTO,sendRMSRequestDTO,versionManagerDTO.getChangeReason(),operateTypeEnum,null);
+            setSendRMSRequestData(issueDTO, sendRMSRequestDTO, versionManagerDTO.getChangeReason(), operateTypeEnum, null);
             sendRMSRequestDTOList.add(sendRMSRequestDTO);
         }
         if (VersionStateEnum.VERSION_STATE_UNCONFIRMED.CODE.equals(versionState)) {
@@ -54,7 +56,7 @@ public abstract class AbstractState implements IState{
         versionManagerDTO.setRelatedRequirementList(sendRMSRequestDTOList);
     }
 
-    private void setSendRMSRequestData(IssueDTO issueDTO,SendRMSRequestDTO sendRMSRequestDTO,String reason,OperateTypeEnum operateTypeEnum,Byte versionDeployType) {
+    private void setSendRMSRequestData(IssueDTO issueDTO, SendRMSRequestDTO sendRMSRequestDTO, String reason, OperateTypeEnum operateTypeEnum, Byte versionDeployType) {
         List<SysExtendFieldDetailDTO> sysExtendFieldDetailDTOList = issueDTO.getSysExtendFieldDetailDTOList();
         sendRMSRequestDTO.setOperateType(operateTypeEnum.VALUE);
         sendRMSRequestDTO.setBizId(issueDTO.getIssueId());
@@ -67,48 +69,48 @@ public abstract class AbstractState implements IState{
         sendRMSRequestDTO.setBizName(issueDTO.getTitle());
         sendRMSRequestDTO.setReason(reason);
         sendRMSRequestDTO.setAnalyst(issueDTO.getHandlerName());
-        if(!DeployTypeEnum.OTHER.getCode().equals(versionDeployType)){
+        if (!DeployTypeEnum.OTHER.getCode().equals(versionDeployType)) {
             sendRMSRequestDTO.setMoveToVersionPlanId(issueDTO.getMoveToVersionPlanId());
         }
-        for(SysExtendFieldDetailDTO sysExtendFieldDetailDTO : sysExtendFieldDetailDTOList){
-            if(VersionConstants.SysExtendFiledConstant.BIZNUM.equals(sysExtendFieldDetailDTO.getFieldId())){
+        for (SysExtendFieldDetailDTO sysExtendFieldDetailDTO : sysExtendFieldDetailDTOList) {
+            if (VersionConstants.SysExtendFiledConstant.BIZNUM.equals(sysExtendFieldDetailDTO.getFieldId())) {
                 sendRMSRequestDTO.setBizNum(sysExtendFieldDetailDTO.getValue());
             }
-            if(VersionConstants.SysExtendFiledConstant.PLANSTATES.equals(sysExtendFieldDetailDTO.getFieldId())){
-                if(StringUtils.isNotBlank(sysExtendFieldDetailDTO.getValue())){
+            if (VersionConstants.SysExtendFiledConstant.PLANSTATES.equals(sysExtendFieldDetailDTO.getFieldId())) {
+                if (StringUtils.isNotBlank(sysExtendFieldDetailDTO.getValue())) {
                     sendRMSRequestDTO.setBizPlanStatus(Long.valueOf(sysExtendFieldDetailDTO.getValue()));
                 }
             }
-            if(VersionConstants.SysExtendFiledConstant.REQSCHEDULING.equals(sysExtendFieldDetailDTO.getFieldId())){
+            if (VersionConstants.SysExtendFiledConstant.REQSCHEDULING.equals(sysExtendFieldDetailDTO.getFieldId())) {
                 sendRMSRequestDTO.setBizScheduling(sysExtendFieldDetailDTO.getValue());
             }
-            if(VersionConstants.SysExtendFiledConstant.SOURCE.equals(sysExtendFieldDetailDTO.getFieldId())){
+            if (VersionConstants.SysExtendFiledConstant.SOURCE.equals(sysExtendFieldDetailDTO.getFieldId())) {
                 sendRMSRequestDTO.setBizSource(sysExtendFieldDetailDTO.getValue());
             }
-            if(VersionConstants.SysExtendFiledConstant.MAKESECONDARYDEP.equals(sysExtendFieldDetailDTO.getFieldId())){
+            if (VersionConstants.SysExtendFiledConstant.MAKESECONDARYDEP.equals(sysExtendFieldDetailDTO.getFieldId())) {
                 sendRMSRequestDTO.setMakeDepart(sysExtendFieldDetailDTO.getValue());
             }
-            if(VersionConstants.SysExtendFiledConstant.MAKEMAN.equals(sysExtendFieldDetailDTO.getFieldId())){
+            if (VersionConstants.SysExtendFiledConstant.MAKEMAN.equals(sysExtendFieldDetailDTO.getFieldId())) {
                 sendRMSRequestDTO.setMakeMan(sysExtendFieldDetailDTO.getValue());
             }
-            if(VersionConstants.SysExtendFiledConstant.REQGROUP.equals(sysExtendFieldDetailDTO.getFieldId())){
+            if (VersionConstants.SysExtendFiledConstant.REQGROUP.equals(sysExtendFieldDetailDTO.getFieldId())) {
                 sendRMSRequestDTO.setOfficialPrescriptionGroup(ReqGroupEnum.getName(sysExtendFieldDetailDTO.getValue()));
             }
-            if(VersionConstants.SysExtendFiledConstant.FORMALREQCODE.equals(sysExtendFieldDetailDTO.getFieldId())){
+            if (VersionConstants.SysExtendFiledConstant.FORMALREQCODE.equals(sysExtendFieldDetailDTO.getFieldId())) {
                 sendRMSRequestDTO.setPartaReqnum(sysExtendFieldDetailDTO.getValue());
             }
-            if(VersionConstants.SysExtendFiledConstant.ASK_LINE_TIME.equals(sysExtendFieldDetailDTO.getFieldId())){
-                try{
+            if (VersionConstants.SysExtendFiledConstant.ASK_LINE_TIME.equals(sysExtendFieldDetailDTO.getFieldId())) {
+                try {
                     sendRMSRequestDTO.setAskLineTime(DateUtil.formatStrToDate(sysExtendFieldDetailDTO.getValue()));
-                }catch(Exception e){
-                    log.error("setSendRMSRequestData setAskLineTime error:{}",e.getMessage());
+                } catch (Exception e) {
+                    log.error("setSendRMSRequestData setAskLineTime error:{}", e.getMessage());
                 }
             }
-            if(VersionConstants.SysExtendFiledConstant.ACTUAL_ASK_LINE_TIME.equals(sysExtendFieldDetailDTO.getFieldId())){
-                try{
+            if (VersionConstants.SysExtendFiledConstant.ACTUAL_ASK_LINE_TIME.equals(sysExtendFieldDetailDTO.getFieldId())) {
+                try {
                     sendRMSRequestDTO.setActualAskLineTime(DateUtil.formatStrToDate(sysExtendFieldDetailDTO.getValue()));
-                }catch(Exception e){
-                    log.error("setSendRMSRequestData setAskLineTime error:{}",e.getMessage());
+                } catch (Exception e) {
+                    log.error("setSendRMSRequestData setAskLineTime error:{}", e.getMessage());
                 }
             }
         }
@@ -126,7 +128,7 @@ public abstract class AbstractState implements IState{
             }
             return addedRequestData;
         } else {
-            if(CollectionUtils.isEmpty(addedRequestData)){
+            if (CollectionUtils.isEmpty(addedRequestData)) {
                 return deletedRequestData;
             }
             addedRequestData.addAll(deletedRequestData);
@@ -134,13 +136,13 @@ public abstract class AbstractState implements IState{
         }
     }
 
-    public void generateSendRMSReqDeleteData(VersionManagerDTO versionManagerDTO ) {
+    public void generateSendRMSReqDeleteData(VersionManagerDTO versionManagerDTO) {
         List<SendRMSRequestDTO> sendRMSRequestDTOList = Lists.newArrayList();
-        List<IssueDTO>  relateIssueList = versionManagerDTO.getRelateIssueList();
+        List<IssueDTO> relateIssueList = versionManagerDTO.getRelateIssueList();
         OperateTypeEnum operateTypeEnum = OperateTypeEnum.OPERATE_TYPE_DELETE;
         SendRMSRequestDTO sendRMSRequestDTO = new SendRMSRequestDTO();
         for (IssueDTO issueDTO : relateIssueList) {
-            setSendRMSRequestData(issueDTO,sendRMSRequestDTO,versionManagerDTO.getChangeReason(),operateTypeEnum,versionManagerDTO.getMoveToDeployType());
+            setSendRMSRequestData(issueDTO, sendRMSRequestDTO, versionManagerDTO.getChangeReason(), operateTypeEnum, versionManagerDTO.getMoveToDeployType());
             sendRMSRequestDTOList.add(sendRMSRequestDTO);
         }
         versionManagerDTO.setRelatedRequirementList(sendRMSRequestDTOList);

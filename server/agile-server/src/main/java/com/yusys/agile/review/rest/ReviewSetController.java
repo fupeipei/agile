@@ -19,12 +19,11 @@ public class ReviewSetController {
     private ReviewSetService reviewSetService;
 
     /**
-     * @description 查询评审设置信息
-     *  
-     * @date 2020/09/09
      * @param projectId
      * @param issueType
      * @return
+     * @description 查询评审设置信息
+     * @date 2020/09/09
      */
     @GetMapping("/getReviewSetInfo/{issueType}")
     public ControllerResponse getReviewSetInfo(@RequestHeader Long projectId, @PathVariable Byte issueType) {
@@ -37,9 +36,9 @@ public class ReviewSetController {
     }
 
     /**
-     * @description 编辑评审设置信息
      * @param reviewSetDTO
      * @return
+     * @description 编辑评审设置信息
      */
     @PostMapping("/editReviewSetInfo")
     public ControllerResponse editReviewSetInfo(@RequestBody ReviewSetDTO reviewSetDTO) {

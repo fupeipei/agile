@@ -5,7 +5,6 @@ import java.util.List;
 
 /**
  * @description 阶段模板配置类
- *  
  * @date 2020/08/24
  */
 public class StageTemplateConfig implements Serializable {

@@ -23,9 +23,10 @@ public class IssueOverDueTask extends IJobHandler {
 
     @Autowired
     private MailSendUtil mailSendUtil;
+
     @Override
     public ReturnT<String> execute(String s) throws Exception {
-        log.info("工作项超期定时任务触发Start，定时任务名称：{}",ScheduleConstant.TaskHandler.ISSUE_OVERDUE);
+        log.info("工作项超期定时任务触发Start，定时任务名称：{}", ScheduleConstant.TaskHandler.ISSUE_OVERDUE);
         byte mailType = MailSwitchEnum.OVERDUE.getMailType();
         mailSendUtil.sendOverDueMail(mailType);
         log.info("工作项超期定时任务触发End");

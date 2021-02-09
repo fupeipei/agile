@@ -8,16 +8,14 @@ import java.util.List;
 public interface IssueCustomFieldService {
 
     /**
-     *
      * @Date: 18:06
      * @Description: 获取工作项相关的自定义字段列表
      * @Param: * @param issueId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>
      */
-    List<IssueCustomFieldDTO> listCustomField(Long issueId,Byte issueType,Long projectId);
+    List<IssueCustomFieldDTO> listCustomField(Long issueId, Byte issueType, Long projectId);
 
     /**
-     *
      * @Date: 18:06
      * @Description: 批量新增自定义字段
      * @Param: * @param fields
@@ -26,11 +24,10 @@ public interface IssueCustomFieldService {
     int createBatch(List<IssueCustomField> fields);
 
     /**
-     *
+     * @param issueId
      * @Date: 18:06
      * @Description: 批量删除工作项自定义字段值
      * @Param: * @param fieldIds
-    * @param issueId
      * @Return: void
      */
     void deleteInFieldIdList4Issus(List<Long> fieldIds, Long issueId);
@@ -39,10 +36,10 @@ public interface IssueCustomFieldService {
 
     /**
      * 功能描述: 修改自定义字段
-
-     * @date 2021/2/21
+     *
      * @param fieldsAfterEdit
      * @return void
+     * @date 2021/2/21
      */
     void editCustomFields(List<IssueCustomField> fieldsAfterEdit);
 
@@ -50,11 +47,11 @@ public interface IssueCustomFieldService {
 
 
     /**
-      *功能描述 查询当前项目的所有自定义字段数据值
-      *   
-      * @date 2020/8/10
-      * @param projectId
-      * @return java.util.List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>
+     * 功能描述 查询当前项目的所有自定义字段数据值
+     *
+     * @param projectId
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>
+     * @date 2020/8/10
      */
 
     List<IssueCustomField> selectIssueIdByProjectId(Long projectId);

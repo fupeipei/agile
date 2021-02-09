@@ -18,7 +18,6 @@ import java.util.List;
 
 /**
  * @description redis配置类
- *  
  * @date 2020/04/26
  */
 @Configuration
@@ -33,8 +32,8 @@ public class RedisCacheConfiguration {
     @ConditionalOnClass({Redisson.class})
     protected class RedissonConfiguration {
         /**
-         * @description redisson哨兵模式客户端
          * @return org.redisson.api.RedissonClient
+         * @description redisson哨兵模式客户端
          */
         @Bean
         RedissonClient redissonSentinel() {
@@ -44,9 +43,9 @@ public class RedisCacheConfiguration {
             addressList.toArray(addresses);
             Config config = new Config();
             SentinelServersConfig sentinelServersConfig = config.useSentinelServers()
-                .setMasterName(redisProperties.getSentinel().getMaster())
-                .addSentinelAddress(addresses)
-                .setTimeout(Integer.parseInt(String.valueOf(redisProperties.getTimeout().toMillis())));//Redis server response timeout
+                    .setMasterName(redisProperties.getSentinel().getMaster())
+                    .addSentinelAddress(addresses)
+                    .setTimeout(Integer.parseInt(String.valueOf(redisProperties.getTimeout().toMillis())));//Redis server response timeout
             String password = redisProperties.getPassword();
             if (StringUtils.isNotBlank(password)) {
                 sentinelServersConfig.setPassword(password);
@@ -77,9 +76,9 @@ public class RedisCacheConfiguration {
     }
 
     /**
-     * @description 查询节点
      * @param nodes
      * @return java.util.List
+     * @description 查询节点
      */
     private List<String> getNodeAddresses(List<String> nodes) {
         List<String> addressList = Lists.newArrayList();

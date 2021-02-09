@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 评审controller
  *
-
  * @create 2020-09-08 09:51
  */
 @RestController
@@ -31,7 +30,6 @@ public class ReviewController {
      * @param reviewDTO
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2021/3/8
      */
     @PostMapping("/addReview")
@@ -47,7 +45,6 @@ public class ReviewController {
      *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2021/3/8
      */
     @GetMapping("/cancelReview/{reviewId}")
@@ -63,7 +60,6 @@ public class ReviewController {
      *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2021/3/8
      */
     @PostMapping("/executeReview")
@@ -80,7 +76,6 @@ public class ReviewController {
      *
      * @param issueId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2021/3/9
      */
     @GetMapping("/listReview/{issueId}")
@@ -92,7 +87,6 @@ public class ReviewController {
      * 功能描述:查询评审信息
      *
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-
      * @date 2021/3/9
      */
     @GetMapping("/getReview/{reviewId}")
@@ -103,11 +97,11 @@ public class ReviewController {
 
     /**
      * 功能描述: 判断是否可以将故事加进迭代
-
-     * @date 2021/3/10
+     *
      * @param storyId
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2021/3/10
      */
     @GetMapping("/allowStoryInSprint/{storyId}")
     public ControllerResponse allowStoryInSprint(@PathVariable("storyId") Long storyId, @RequestHeader(name = "projectId") Long projectId) {

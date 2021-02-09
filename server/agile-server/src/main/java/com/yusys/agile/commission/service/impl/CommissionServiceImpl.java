@@ -78,9 +78,9 @@ public class CommissionServiceImpl implements CommissionService {
     }
 
     /**
+     * @param commission
      * @description 保存代办记录
      * @date 2021/2/1
-     * @param commission
      */
     private void saveCommissionRecord(Commission commission) {
         //保存代办记录
@@ -151,20 +151,20 @@ public class CommissionServiceImpl implements CommissionService {
     }
 
     /**
-     * @description 处理代办列表
-     * @date 2021/2/1
      * @param commissionDTOList
      * @param currentHandler
      * @param projectIdSet
+     * @description 处理代办列表
+     * @date 2021/2/1
      */
     private void dealCommissionList(List<CommissionDTO> commissionDTOList, Long currentHandler, Set<Long> projectIdSet) {
         //根据用户id查询用户名称
         SsoUser ssoUser = iFacadeUserApi.queryUserById(currentHandler);
-       //批量查询项目名称
+        //批量查询项目名称
         List<Long> projectIdList = Lists.newArrayList(projectIdSet);
         List<SsoProject> ssoProjectList = iFacadeProjectApi.getProjectListByProjectIds(projectIdList);
         if (CollectionUtils.isNotEmpty(ssoProjectList)) {
-            Map<Long,String> projectMap = Maps.newHashMap();
+            Map<Long, String> projectMap = Maps.newHashMap();
             ssoProjectList.forEach(project -> {
                 projectMap.put(project.getProjectId(), project.getProjectName());
             });
@@ -241,10 +241,10 @@ public class CommissionServiceImpl implements CommissionService {
     }
 
     /**
-     * @description 保存代办记录
-     * @date 2021/2/1
      * @param issueId
      * @return
+     * @description 保存代办记录
+     * @date 2021/2/1
      */
     private int saveCommissionRecord(Long issueId) {
         int count = 0;
@@ -257,7 +257,7 @@ public class CommissionServiceImpl implements CommissionService {
             if (null != issue) {
                 Commission commission = commissionList.get(0);
                 CommissionRecord commissionRecord = generateCommission(issueId, issue, commission);
-                count =  commissionRecordMapper.insert(commissionRecord);
+                count = commissionRecordMapper.insert(commissionRecord);
             }
         }
         return count;
@@ -284,10 +284,10 @@ public class CommissionServiceImpl implements CommissionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateCommissionState(Long issueId, String state) {
-        LOGGER.info("updateCommissionState param issueId:{},state:{}",issueId, state);
+        LOGGER.info("updateCommissionState param issueId:{},state:{}", issueId, state);
         //关闭代办
         Commission commission = getCommissionByIssueId(issueId);
-        if (null != commission){
+        if (null != commission) {
             commission = new Commission();
             commission.setIssueId(issueId);
             Issue issue = issueMapper.selectByPrimaryKey(issueId);
@@ -302,7 +302,7 @@ public class CommissionServiceImpl implements CommissionService {
             int count = commissionMapper.updateByIssueIdSelective(commission);
             LOGGER.info("updateCommissionState param issueId:{}, state:{}, affect row:{}", count);
             if (count != 1) {
-                throw new RuntimeException("updateCommissionState issueId: "+issueId+" state: "+state+"异常");
+                throw new RuntimeException("updateCommissionState issueId: " + issueId + " state: " + state + "异常");
             }
         }
     }

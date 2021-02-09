@@ -3,7 +3,6 @@ package com.yusys.agile.fault.dto;
 /**
  * 用户信息封装DTO
  *
- *
  * @create 2020-04-14 14:01
  */
 public class UserDTO {

@@ -27,7 +27,7 @@ public class BaselineState extends AbstractState {
     public List<VersionManagerDTO> convertToVersionPlanApprovalRequestData(List<VersionManagerDTO> versionPlanList, String versionState) {
         for (VersionManagerDTO versionManagerDTO : versionPlanList) {
             List<IssueDTO> epicIssueList = versionManagerDTO.getRelateIssueList();
-            for (IssueDTO dmpBizBacklogDTO  : epicIssueList) {
+            for (IssueDTO dmpBizBacklogDTO : epicIssueList) {
                 dmpBizBacklogDTO.setOperateType(OperateTypeEnum.OPERATE_TYPE_ADD.VALUE);
             }
             versionManagerDTO.setOperateType(OperateTypeEnum.OPERATE_TYPE_MODIFY.VALUE);

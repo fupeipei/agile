@@ -2,6 +2,7 @@ package com.yusys.agile.privilege.dao;
 
 import com.yusys.agile.privilege.domain.RolePrivilege;
 import com.yusys.agile.privilege.domain.RolePrivilegeExample;
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;

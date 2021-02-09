@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @description 代办类
- *  
  * @date 2020/07/06
  */
 public class CommissionDTO implements Serializable {

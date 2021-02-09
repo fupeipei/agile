@@ -103,10 +103,10 @@ public class VersionManagerServiceImpl implements VersionManagerService {
         List<Long> issueIds = Lists.newArrayList();
         if (StringUtils.isNotEmpty(issueName) || StringUtils.isNotEmpty(bizNum) || StringUtils.isNotEmpty(approvalStatus)) {
             //增加需求扩展字段查询======start
-            if (StringUtils.isNotEmpty(issueName)){
+            if (StringUtils.isNotEmpty(issueName)) {
                 issueIds = issueService.selectIssueIdByProjectId(projectId, issueName);
             }
-            if(issueIds.size() > 0){
+            if (issueIds.size() > 0) {
                 issueIdList.addAll(issueIds);
             }
             List<SysExtendFieldDetail> sysExtendFieldDetails = Lists.newArrayList();
@@ -124,7 +124,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
             }
             if (sysExtendFieldDetails.size() > 0) {
                 List<Long> longList;
-                    longList = sysExtendFieldDetailService.getSysExtendFieldDetailByIds(null, sysExtendFieldDetails);
+                longList = sysExtendFieldDetailService.getSysExtendFieldDetailByIds(null, sysExtendFieldDetails);
                 if (longList.size() == 0) {
                     return Lists.newArrayList();
                 }
@@ -283,17 +283,6 @@ public class VersionManagerServiceImpl implements VersionManagerService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public String getVersionStateById(Long versionPlanId) {
         VersionManager versionPlan = versionManagerMapper.selectByPrimaryKey(versionPlanId);
@@ -330,7 +319,6 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      * @param projectId   项目id
      * @return
      * @Description:根据项目id获取版本信息
-     *
      * @date 2021/3/18
      */
     @Override
@@ -448,7 +436,6 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      *
      * @param projectId
      * @return
-     *
      * @date 2021/3/30
      */
     @Override
@@ -479,7 +466,6 @@ public class VersionManagerServiceImpl implements VersionManagerService {
      * @param parentIdList
      * @return
      * @description 根据父工作项编号查询子工作项
-     *
      */
     private List<Issue> getChildIssueList(List<Long> parentIdList) {
         IssueExample example = new IssueExample();
@@ -493,7 +479,6 @@ public class VersionManagerServiceImpl implements VersionManagerService {
     /**
      * @param issueIdList
      * @description 更新工作项上线状态
-     *
      */
     private int updateIssueOnlineStatus(List<Long> issueIdList) {
         int row = 0;
@@ -544,7 +529,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
         // 增加state状态过滤
         example.createCriteria().andStateEqualTo(StateEnum.U.getValue());
         List<VersionManager> versionManagerList = versionManagerMapper.selectByExample(example);
-        if(CollectionUtils.isNotEmpty(versionManagerList)){
+        if (CollectionUtils.isNotEmpty(versionManagerList)) {
             versionIdList = versionManagerList.stream().map(VersionManager::getId).collect(Collectors.toList());
         }
         return versionIdList;
@@ -559,7 +544,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
         //增加state状态过滤
         criteria.andVersionStateNotEqualTo(VersionStateEnum.VERSION_STATE_RELEASED.CODE).andStateEqualTo(StateEnum.U.getValue());
         List<VersionManager> versionManagerList = versionManagerMapper.selectByExample(example);
-        if(CollectionUtils.isNotEmpty(versionManagerList)){
+        if (CollectionUtils.isNotEmpty(versionManagerList)) {
             versionIdList = versionManagerList.stream().map(VersionManager::getId).collect(Collectors.toList());
         }
         return versionIdList;
@@ -574,24 +559,24 @@ public class VersionManagerServiceImpl implements VersionManagerService {
 
     @Override
     public Map<String, Integer> countIssue(Long versionPlanId) {
-        Map<String,Integer> countMap = new HashMap();
+        Map<String, Integer> countMap = new HashMap();
         countMap.put("epicCount", 0);
         countMap.put("bossCount", 0);
         countMap.put("crmCount", 0);
-        countMap.put("eCommerceCount",0 );
+        countMap.put("eCommerceCount", 0);
         String ISSUE_COUNT_CONFIG = externalApiConfigUtil.getPropValue("ISSUE_COUNT_CONFIG");
-        Map<Long,String> systemIdMap = new HashMap<>();
-        if(StringUtils.isNotBlank(ISSUE_COUNT_CONFIG)){
-           dealSystemMap(systemIdMap,ISSUE_COUNT_CONFIG);
+        Map<Long, String> systemIdMap = new HashMap<>();
+        if (StringUtils.isNotBlank(ISSUE_COUNT_CONFIG)) {
+            dealSystemMap(systemIdMap, ISSUE_COUNT_CONFIG);
         }
         return countMap;
     }
 
     private void dealSystemMap(Map<Long, String> systemIdMap, String issue_count_config) {
         String[] systemIdAndName = issue_count_config.split(",");
-        for(int i = 0; i < systemIdAndName.length; i++){
+        for (int i = 0; i < systemIdAndName.length; i++) {
             String[] tempStr = systemIdAndName[i].split(":");
-            systemIdMap.put(Long.valueOf(tempStr[1]),tempStr[0]);
+            systemIdMap.put(Long.valueOf(tempStr[1]), tempStr[0]);
         }
     }
 }

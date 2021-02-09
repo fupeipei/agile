@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
-
  * @Date 2020/4/30
  * @Description 任务类型枚举
  */
@@ -53,7 +52,6 @@ public enum TaskTypeEnum {
      *
      * @param name
      * @return java.lang.Integer
-
      * @date 2021/2/17
      */
     public static Integer getCode(String name) {
@@ -80,7 +78,6 @@ public enum TaskTypeEnum {
      *
      * @param
      * @return java.lang.String[]
-
      * @date 2021/2/17
      */
     public static String[] getNames() {
@@ -96,7 +93,7 @@ public enum TaskTypeEnum {
         return null;
     }
 
-    public static Map<Integer,String> getTaskAllTypes(){
+    public static Map<Integer, String> getTaskAllTypes() {
         Map<Integer, String> taskAll = new LinkedHashMap<>();
         for (TaskTypeEnum taskType : TaskTypeEnum.values()) {
             Integer code = taskType.CODE;

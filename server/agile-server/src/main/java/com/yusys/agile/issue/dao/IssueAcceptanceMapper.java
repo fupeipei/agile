@@ -2,7 +2,9 @@ package com.yusys.agile.issue.dao;
 
 import com.yusys.agile.issue.domain.IssueAcceptance;
 import com.yusys.agile.issue.domain.IssueAcceptanceExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface IssueAcceptanceMapper {

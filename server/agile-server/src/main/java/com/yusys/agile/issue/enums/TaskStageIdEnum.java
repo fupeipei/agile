@@ -4,16 +4,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
-
  * @Date 2021/2/8
  * @Description 任务状态枚举
  */
 public enum TaskStageIdEnum {
-    TYPE_ADD_STATE("未领取",100L),
-    TYPE_RECEIVED_STATE("已领取",101L),
-    TYPE_MODIFYING_STATE("进行中",102L),
-    TYPE_BLOCKING_STATE("阻塞中",9999L),
-    TYPE_CLOSED_STATE("已完成",103L);
+    TYPE_ADD_STATE("未领取", 100L),
+    TYPE_RECEIVED_STATE("已领取", 101L),
+    TYPE_MODIFYING_STATE("进行中", 102L),
+    TYPE_BLOCKING_STATE("阻塞中", 9999L),
+    TYPE_CLOSED_STATE("已完成", 103L);
 
     public Long CODE;
     public String NAME;
@@ -43,7 +42,8 @@ public enum TaskStageIdEnum {
         }
         return null;
     }
-    public static Map<Long,String> getTaskAllStageId(){
+
+    public static Map<Long, String> getTaskAllStageId() {
         Map<Long, String> taskAll = new LinkedHashMap<>();
         for (TaskStageIdEnum taskStage : TaskStageIdEnum.values()) {
             Long code = taskStage.CODE;

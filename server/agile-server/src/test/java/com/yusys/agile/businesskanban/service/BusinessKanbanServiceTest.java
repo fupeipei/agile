@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-@RunWith( SpringRunner.class )
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class BusinessKanbanServiceTest {
 
@@ -26,7 +26,7 @@ public class BusinessKanbanServiceTest {
     @Test
     @Transactional
     public void createBusinessKanban() {
-        try{
+        try {
             BusinessKanbanDTO kanbanDTO = new BusinessKanbanDTO();
             kanbanDTO.setKanbanName("事务看板Test");
             kanbanDTO.setKanbanDesc("事务看板Test");
@@ -35,43 +35,43 @@ public class BusinessKanbanServiceTest {
             kanbanDTO.setCreateUid(9999L);
             kanbanDTO.setStatus(0L);
             int businessKanban = kanbanService.createBusinessKanban(kanbanDTO);
-            log.info("Junit测试--创建事务看板成功：{}",businessKanban);
-        }catch (Exception e){
-            log.info("Junit测试--创建事务看板失败：{}",e);
+            log.info("Junit测试--创建事务看板成功：{}", businessKanban);
+        } catch (Exception e) {
+            log.info("Junit测试--创建事务看板失败：{}", e);
         }
     }
 
     @Test
     @Transactional
     public void deleteBusinessKanban() {
-        try{
+        try {
             Long kanbanId = 3L;
             int businessKanban = kanbanService.deleteBusinessKanban(kanbanId);
-            log.info("Junit测试--事务看板删除成功：{}",businessKanban);
-        }catch (Exception e){
-            log.info("Junit测试--事务看板删除失败：{}",e);
+            log.info("Junit测试--事务看板删除成功：{}", businessKanban);
+        } catch (Exception e) {
+            log.info("Junit测试--事务看板删除失败：{}", e);
         }
     }
 
     @Test
     @Transactional
     public void updateBusinessKanban() {
-        try{
+        try {
             BusinessKanbanDTO kanbanDTO = new BusinessKanbanDTO();
             kanbanDTO.setKanbanId(3L);
             kanbanDTO.setKanbanName("JunitTest");
             kanbanDTO.setKanbanDesc("编辑事务看板TEST");
             kanbanDTO.setProjectId(681553543076634624L);
             int businessKanban = kanbanService.updateBusinessKanban(kanbanDTO);
-            log.info("Junit测试--编辑事务看板成功：{}",businessKanban);
-        }catch (Exception e){
-            log.info("Junit测试--编辑事务看板失败：{}",e);
+            log.info("Junit测试--编辑事务看板成功：{}", businessKanban);
+        } catch (Exception e) {
+            log.info("Junit测试--编辑事务看板失败：{}", e);
         }
     }
 
     @Test
     public void getBusinessKanbanList() {
-        try{
+        try {
             PageQuery<BusinessKanbanDTO> query = new PageQuery<>();
             BusinessKanbanDTO businessKanbanDTO = new BusinessKanbanDTO();
             businessKanbanDTO.setProjectId(681553543076634624L);
@@ -82,9 +82,9 @@ public class BusinessKanbanServiceTest {
 
             List<BusinessKanbanDTO> businessKanbanList = kanbanService.getBusinessKanbanList(query);
             int countNum = kanbanService.countBusinessKanbanList(query);
-            log.info("Junit测试--查询事务看板列表成功：\n{},\n 总条数：{}",businessKanbanList,countNum);
-        }catch (Exception e){
-            log.info("Junit测试--查询事务看板列表失败：{}",e);
+            log.info("Junit测试--查询事务看板列表成功：\n{},\n 总条数：{}", businessKanbanList, countNum);
+        } catch (Exception e) {
+            log.info("Junit测试--查询事务看板列表失败：{}", e);
         }
     }
 

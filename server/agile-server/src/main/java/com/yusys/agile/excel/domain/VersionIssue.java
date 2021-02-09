@@ -103,7 +103,7 @@ public class VersionIssue implements Serializable {
     /**
      * 是否移除
      */
-    private String  versionIsRemove;
+    private String versionIsRemove;
 
     private List<Long> versionIdList;
 

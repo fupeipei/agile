@@ -1,7 +1,8 @@
 package com.yusys.agile.headerfield.dto;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2020/4/13
  * @Description: TODO
  */
@@ -51,8 +52,6 @@ public class HeaderFieldDTO {
      * 应用类型名称
      */
     private String applyTypeName;
-
-
 
 
     public Long getFieldId() {

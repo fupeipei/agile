@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * @Date: 2021/2/1
- * @Description: 
+ * @Description:
  */
 public class BusinessKanbanDTO {
     private Long kanbanId;
@@ -30,7 +30,7 @@ public class BusinessKanbanDTO {
 
     private List<Long> userIds;
 
-    private List<BusinessKanbanMembersDTO>  membersDTOS;
+    private List<BusinessKanbanMembersDTO> membersDTOS;
 
     private String tenantCode;
 

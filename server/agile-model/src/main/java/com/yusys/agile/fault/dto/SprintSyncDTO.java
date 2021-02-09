@@ -3,7 +3,6 @@ package com.yusys.agile.fault.dto;
 /**
  * 迭代同步itc数据DTO
  *
- *
  * @create 2020-04-28 11:11
  */
 public class SprintSyncDTO {
@@ -33,7 +32,6 @@ public class SprintSyncDTO {
      * 完成时间
      */
     private String planReleaseDate;
-
 
 
     /**

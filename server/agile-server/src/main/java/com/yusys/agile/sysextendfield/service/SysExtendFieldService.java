@@ -8,5 +8,5 @@ public interface SysExtendFieldService {
 
     List<SysExtendField> getAllSysExtendField(Byte issueType);
 
-    List<SysExtendField>  getField(Byte issueType);
+    List<SysExtendField> getField(Byte issueType);
 }

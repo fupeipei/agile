@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 public class StringTool {
 
     public static boolean isChanged(String newVal, String oldVal) {
-        if (StringUtils.isNotBlank(newVal) && !StringUtils.equals(newVal,oldVal)) {
+        if (StringUtils.isNotBlank(newVal) && !StringUtils.equals(newVal, oldVal)) {
             return true;
         }
         return false;

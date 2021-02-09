@@ -185,6 +185,7 @@ public class SendRMSRequestDTO {
     }
 
     private Date actualAskLineTime;
+
     public Date getAskLineTime() {
         return askLineTime;
     }

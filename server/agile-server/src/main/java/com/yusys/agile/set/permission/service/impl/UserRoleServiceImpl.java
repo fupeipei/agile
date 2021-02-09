@@ -20,13 +20,12 @@ public class UserRoleServiceImpl implements UserRoleService {
     private IFacadeRoleApi iFacadeRoleApi;
 
     /**
-     * @description 查询项目级角色列表
-     *  
      * @param roleType
      * @param pageNum
      * @param pageSize
-     * @date 2020/05/20
      * @return
+     * @description 查询项目级角色列表
+     * @date 2020/05/20
      */
     @Override
     public List<SsoRole> queryProjectRoleList(Integer roleType, Integer pageNum, Integer pageSize) {

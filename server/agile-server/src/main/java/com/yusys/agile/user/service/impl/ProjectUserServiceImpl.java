@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
-
  * @Date: 2021/2/6
  */
 @Service
@@ -41,12 +40,12 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     @Override
     public PageInfo projectUserInfo(Long projectId, Integer pageNum, Integer pageSize) {
         List<SsoUser> ssoUserList = teamService.listMemberUsers(projectId, UserRelateTypeEnum.PROJECT.getValue());
-        PageInfo result = commitUserInfo(projectId,null, pageNum, pageSize, ssoUserList);
+        PageInfo result = commitUserInfo(projectId, null, pageNum, pageSize, ssoUserList);
         return result;
     }
 
     @Override
-    public PageInfo commitUserInfo(Long projectId,Long sprintId, Integer pageNum, Integer pageSize, List<SsoUser> ssoUserList) {
+    public PageInfo commitUserInfo(Long projectId, Long sprintId, Integer pageNum, Integer pageSize, List<SsoUser> ssoUserList) {
         Page page = new Page(pageNum, pageSize);
         List<ProjectUserDTO> projectUserDTOS = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(ssoUserList)) {
@@ -56,7 +55,7 @@ public class ProjectUserServiceImpl implements ProjectUserService {
             commitDTO.setMemberIdList(userIds);
             commitDTO.setSprintId(sprintId);
             CommitDTO result = commitService.getMemberCommitRecord(commitDTO);
-            LOGGER.info("invoke getMemberCommitRecord method param commitDTO:{},return result:{}",commitDTO, result);
+            LOGGER.info("invoke getMemberCommitRecord method param commitDTO:{},return result:{}", commitDTO, result);
             //提交次数
             List<Map<String, Integer>> commitTimes = result.getCommitTimes();
             //新增行数
@@ -71,8 +70,8 @@ public class ProjectUserServiceImpl implements ProjectUserService {
                 Integer taskNum = issueMapper.sumTaskByHandler(projectId, ssoUser.getUserId());
                 Integer hourNum = issueMapper.sumWorkloadByUser(projectId, ssoUser.getUserId());
                 getSubmitOnceNum(commitTimes, ssoUser, projectUserDTO);
-                getAddLinesList(addLinesList,ssoUser,projectUserDTO);
-                getDeleteLinesList(deleteLinesList,ssoUser,projectUserDTO);
+                getAddLinesList(addLinesList, ssoUser, projectUserDTO);
+                getDeleteLinesList(deleteLinesList, ssoUser, projectUserDTO);
                 projectUserDTO.setTaskNum(taskNum);
                 projectUserDTO.setHourNum(hourNum);
                 projectUserDTOS.add(projectUserDTO);
@@ -85,7 +84,6 @@ public class ProjectUserServiceImpl implements ProjectUserService {
      * @param commitTimes
      * @param ssoUser
      * @param projectUserDTO
-
      * @Date 2021/2/16
      * @Description 获取代码提交次数
      * @Return void
@@ -111,12 +109,11 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     }
 
     /**
-
-     * @Date 2021/2/20
-     * @Description 获取代码提交行数
      * @param addLinesList
      * @param ssoUser
      * @param projectUserDTO
+     * @Date 2021/2/20
+     * @Description 获取代码提交行数
      * @Return void
      */
     private void getAddLinesList(List<Map<String, Integer>> addLinesList, SsoUser ssoUser, ProjectUserDTO projectUserDTO) {
@@ -138,12 +135,11 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     }
 
     /**
-
-     * @Date 2021/2/20
-     * @Description 获取代码减少行数
      * @param deleteLinesList
      * @param ssoUser
      * @param projectUserDTO
+     * @Date 2021/2/20
+     * @Description 获取代码减少行数
      * @Return void
      */
     private void getDeleteLinesList(List<Map<String, Integer>> deleteLinesList, SsoUser ssoUser, ProjectUserDTO projectUserDTO) {
@@ -169,7 +165,6 @@ public class ProjectUserServiceImpl implements ProjectUserService {
      * @param pageSize
      * @param page
      * @param projectUserDTOS
-
      * @Date 2021/2/10
      * @Description 为处理好的list增加分页
      * @Return com.github.pagehelper.PageInfo

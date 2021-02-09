@@ -15,19 +15,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-@RunWith( SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class TeamServiceImplTest {
     private static final Logger LOG = LoggerFactory.getLogger(TeamServiceImplTest.class);
     @Autowired
     private TeamService teamService;
+
     @Test
     public void getListTeam() {
-        try{
+        try {
             Long projectId = 999999L;
             List<TeamDTO> listTeam = teamService.getListTeam(projectId);
             LOG.info("Junit测试--根据项目Id获取团队列表成功：{}", listTeam.toString());
-        }catch (Exception e){
+        } catch (Exception e) {
             LOG.error("Junit测试--根据项目Id获取团队列表异常：{}", e);
         }
     }

@@ -6,72 +6,71 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @description redisson业务接口类
- *  
  * @date 2020/04/26
  */
 public interface RedissonService {
 
     /**
-     * @description 获取锁
      * @param name
      * @return
+     * @description 获取锁
      */
     RLock getLock(String name);
 
     /**
-     * @description 获取锁
      * @param name
      * @return
+     * @description 获取锁
      */
     RLock lock(String name);
 
     /**
-     * @description 获取锁
      * @param name
      * @param leaseTime
      * @return
+     * @description 获取锁
      */
     RLock lock(String name, long leaseTime);
 
     /**
-     * @description 获取锁
      * @param name
      * @param leaseTime
      * @param unit
      * @return
+     * @description 获取锁
      */
     RLock lock(String name, long leaseTime, TimeUnit unit);
 
     /**
-     * @description 获取锁
      * @param name
      * @param waitTime
      * @param leaseTime
      * @param unit
      * @return
+     * @description 获取锁
      */
     boolean tryLock(String name, long waitTime, long leaseTime, TimeUnit unit);
 
     /**
-     * @description 获取锁
      * @param name
      * @param waitTime
      * @param leaseTime
      * @param unit
      * @param retryTimes
      * @return
+     * @description 获取锁
      */
     boolean tryLock(String name, long waitTime, long leaseTime, TimeUnit unit, int retryTimes);
 
     /**
-     * @description 释放锁
      * @param name
+     * @description 释放锁
      */
     void unlock(String name);
 
     /**
-     * @description 释放锁
      * @param rLock
+     * @description 释放锁
      */
     void unlock(RLock rLock);
 

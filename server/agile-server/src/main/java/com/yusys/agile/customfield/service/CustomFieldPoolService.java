@@ -39,21 +39,23 @@ public interface CustomFieldPoolService {
 
     /**
      * 功能描述: 列表查询自定义字段
-     * @date 2021/2/1
+     *
      * @param fieldName
      * @param pageNum
      * @param pageSize
      * @param projectId
      * @return java.util.List<com.yusys.agile.customfield.dto.CustomFieldDTO>
+     * @date 2021/2/1
      */
     List<CustomFieldDTO> listAllCustomFields(String fieldName, Integer pageNum, Integer pageSize, Long projectId);
 
 
     /**
      * 功能描述: 查询自定义字段
-     * @date 2021/2/1
+     *
      * @param fieldId
      * @return com.yusys.agile.customfield.dto.CustomFieldDTO
+     * @date 2021/2/1
      */
     CustomFieldDTO getCustomField(Long fieldId);
 }

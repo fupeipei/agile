@@ -1,22 +1,22 @@
 package com.yusys.agile.issue.enums;
 
 public enum IssueStatusEnum {
-    TYPE_VALID("Epic",new Byte("0")),
-    TYPE_INVALID("Feature",new Byte("1"));
+    TYPE_VALID("Epic", new Byte("0")),
+    TYPE_INVALID("Feature", new Byte("1"));
 
     public Byte CODE;
     public String NAME;
 
 
-    private IssueStatusEnum(String name, Byte code){
-        this.CODE=code;
-        this.NAME=name;
+    private IssueStatusEnum(String name, Byte code) {
+        this.CODE = code;
+        this.NAME = name;
     }
 
     // 普通方法
     public static String getName(Byte code) {
         for (IssueStatusEnum stateType : IssueStatusEnum.values()) {
-            if (stateType.CODE.equals( code)) {
+            if (stateType.CODE.equals(code)) {
                 return stateType.NAME;
             }
         }
@@ -26,7 +26,7 @@ public enum IssueStatusEnum {
     // 普通方法
     public static IssueStatusEnum getByCode(Byte code) {
         for (IssueStatusEnum stateType : IssueStatusEnum.values()) {
-            if (stateType.CODE.equals( code)) {
+            if (stateType.CODE.equals(code)) {
                 return stateType;
             }
         }

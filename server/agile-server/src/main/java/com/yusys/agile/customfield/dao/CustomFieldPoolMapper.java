@@ -2,6 +2,7 @@ package com.yusys.agile.customfield.dao;
 
 import com.yusys.agile.customfield.domain.CustomFieldPool;
 import com.yusys.agile.customfield.domain.CustomFieldPoolExample;
+
 import java.util.List;
 
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
@@ -38,10 +39,10 @@ public interface CustomFieldPoolMapper {
 
     /**
      * 功能描述: 分页查询
-
-     * @date 2021/2/31
+     *
      * @param example
      * @return java.util.List<com.yusys.agile.customfield.dto.CustomFieldDTO>
+     * @date 2021/2/31
      */
     List<CustomFieldDTO> selectDTOByExampleWithBLOBs(CustomFieldPoolExample example);
 }

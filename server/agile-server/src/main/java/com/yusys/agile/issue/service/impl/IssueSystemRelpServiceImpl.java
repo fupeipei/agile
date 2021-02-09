@@ -19,17 +19,17 @@ public class IssueSystemRelpServiceImpl implements IssueSystemRelpService {
     private IssueSystemRelpMapper issueSystemRelpMapper;
 
     @Override
-    public void batchInsert(Long issueId,List<Long> systemIds) {
+    public void batchInsert(Long issueId, List<Long> systemIds) {
         List<IssueSystemRelp> issueSystemRelpList = new ArrayList<>();
         IssueSystemRelp issueSystemRelp;
-        for(Long systemId : systemIds){
+        for (Long systemId : systemIds) {
             issueSystemRelp = new IssueSystemRelp();
             issueSystemRelp.setIssueId(issueId);
             issueSystemRelp.setSystemId(systemId);
             issueSystemRelpList.add(issueSystemRelp);
         }
-        if(CollectionUtils.isNotEmpty(issueSystemRelpList)){
-            issueSystemRelpMapper.batchInsert(issueSystemRelpList,issueId);
+        if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
+            issueSystemRelpMapper.batchInsert(issueSystemRelpList, issueId);
         }
     }
 
@@ -48,7 +48,7 @@ public class IssueSystemRelpServiceImpl implements IssueSystemRelpService {
 
     @Override
     public List<IssueSystemRelp> listIssueSystemRelpByProjectId(List<Long> issueIds) {
-        if(issueIds==null||(issueIds.isEmpty())){
+        if (issueIds == null || (issueIds.isEmpty())) {
             return Lists.newArrayList();
         }
         IssueSystemRelpExample example = new IssueSystemRelpExample();

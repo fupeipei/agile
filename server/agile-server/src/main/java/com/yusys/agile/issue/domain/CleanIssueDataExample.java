@@ -1173,7 +1173,6 @@ public class CleanIssueDataExample {
         }
 
 
-
         public Criteria andCloseTimeIsNull() {
             addCriterion("close_time is null");
             return (Criteria) this;

@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 
 /**
  * @description 看板模板控制器
- *  
  * @date 2020/08/14
  */
 @RequestMapping("/kanbanTemplate")
@@ -25,17 +24,16 @@ public class KanbanTemplateControllerImpl {
     private KanbanTemplateService kanbanTemplateService;
 
     /**
-     * @description 分页查询看板模板列表
-     *  
-     * @date 2020/07/26
      * @param templateName
      * @param pageNum
      * @param pageSize
      * @return
+     * @description 分页查询看板模板列表
+     * @date 2020/07/26
      */
     @GetMapping("/getKanbanTemplateList")
     public ControllerResponse getKanbanTemplateList(@RequestHeader("tenantCode") String tenantCode, @RequestParam(name = "templateName", required = false) String templateName,
-                                                        @RequestParam(name = "pageNum", required = false) Integer pageNum, @RequestParam(name = "pageSize", required = false) Integer pageSize) {
+                                                    @RequestParam(name = "pageNum", required = false) Integer pageNum, @RequestParam(name = "pageSize", required = false) Integer pageSize) {
         try {
             return ControllerResponse.success(kanbanTemplateService.getKanbanTemplateList(tenantCode, templateName, pageNum, pageSize));
         } catch (Exception e) {
@@ -45,9 +43,9 @@ public class KanbanTemplateControllerImpl {
     }
 
     /**
-     * @description 创建看板模板
      * @param kanbanTemplateDTO
      * @return
+     * @description 创建看板模板
      */
     @PostMapping("/createKanbanTemplate")
     public ControllerResponse createKanbanTemplate(@RequestHeader("tenantCode") String tenantCode, @RequestBody KanbanTemplateDTO kanbanTemplateDTO) {
@@ -69,14 +67,13 @@ public class KanbanTemplateControllerImpl {
     }
 
     /**
-     * @description 编辑看板模板
-     *  
-     * @date 2020/08/14
      * @param kanbanTemplateDTO
      * @return
+     * @description 编辑看板模板
+     * @date 2020/08/14
      */
     @PostMapping("/editKanbanTemplate")
-    public ControllerResponse editKanbanTemplate(@RequestHeader("tenantCode") String tenantCode,@RequestBody KanbanTemplateDTO kanbanTemplateDTO) {
+    public ControllerResponse editKanbanTemplate(@RequestHeader("tenantCode") String tenantCode, @RequestBody KanbanTemplateDTO kanbanTemplateDTO) {
         try {
             kanbanTemplateDTO.setTenantCode(tenantCode);
             int result = kanbanTemplateService.editKanbanTemplate(kanbanTemplateDTO);
@@ -94,11 +91,10 @@ public class KanbanTemplateControllerImpl {
     }
 
     /**
-     * @description 删除看板模板
-     *  
-     * @date 2020/08/25
      * @param templateId
      * @return
+     * @description 删除看板模板
+     * @date 2020/08/25
      */
     @DeleteMapping("/deleteKanbanTemplate/{templateId}/{defaultTemplate}")
     public ControllerResponse deleteKanbanTemplate(@PathVariable Long templateId, @PathVariable Byte defaultTemplate) {
@@ -118,11 +114,10 @@ public class KanbanTemplateControllerImpl {
     }
 
     /**
-     * @description 查询默认看板模板
-     *  
-     * @date 2020/08/25
      * @param tenantCode
      * @return
+     * @description 查询默认看板模板
+     * @date 2020/08/25
      */
     @GetMapping("/getDefaultKanbanTemplate")
     public KanbanTemplateDTO getDefaultKanbanTemplateByTenantCode(@RequestParam("tenantCode") String tenantCode) {
@@ -136,14 +131,13 @@ public class KanbanTemplateControllerImpl {
     }
 
     /**
-     * @description 创建默认看板
-     *  
-     * @date 2020/08/25
      * @param kanbanTemplateDTO
      * @return
+     * @description 创建默认看板
+     * @date 2020/08/25
      */
     @PostMapping("/createDefaultKanbanTemplate")
-    public Long createDefaultKanbanTemplate(@RequestBody KanbanTemplateDTO kanbanTemplateDTO){
+    public Long createDefaultKanbanTemplate(@RequestBody KanbanTemplateDTO kanbanTemplateDTO) {
         Long kanbanTemplateId = null;
         try {
             kanbanTemplateId = kanbanTemplateService.createKanbanTemplate(kanbanTemplateDTO);

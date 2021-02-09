@@ -21,6 +21,7 @@ public class DashBoardControllerImpl implements DashBoardController {
 
     @Resource
     private DashBoardService dashBoardService;
+
     /**
      * 仪表盘-迭代-工作项状态个数统计
      */

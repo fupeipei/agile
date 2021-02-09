@@ -6,7 +6,7 @@ import java.util.List;
 public class CustomFieldJsonType {
 
 
-    private  Long fieldId;
+    private Long fieldId;
 
     private Byte fieldType;
 

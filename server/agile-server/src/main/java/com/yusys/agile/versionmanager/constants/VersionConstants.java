@@ -5,7 +5,7 @@ public class VersionConstants {
     //每页记录条数
     public static final int PAGE_SIZE = 100;
 
-    public  static  class VersionManagerConstant{
+    public static class VersionManagerConstant {
         public static final String DATE_FORMAT = "yyyy-MM-dd";
         public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -67,7 +67,7 @@ public class VersionConstants {
         public static final Byte HOT_DEPLOY_TYPE = 2; // 热部署
     }
 
-    public  static  class SysExtendFiledConstant{
+    public static class SysExtendFiledConstant {
         public static final String RESPONSIBLEPERSON = "responsiblePerson";
         public static final String BIZNUM = "bizNum";
         public static final String PLANSTATES = "planStates";
@@ -108,7 +108,7 @@ public class VersionConstants {
 
     }
 
-    public static class VersionHistoryConstant{
+    public static class VersionHistoryConstant {
         public static final int BINDING_TYPE = 1; // 版本绑定需求操作
         public static final int UNBINDING_TYPE = 2; // 版本解绑需求操作
         public static final int REQ_CHANGE_RECORD_TYPE = 1; // 需求变更记录类型
@@ -129,7 +129,7 @@ public class VersionConstants {
         public static final Byte SYNC_SUCCESS = 1;
     }
 
-    public static class RequirememtSendConstants{
+    public static class RequirememtSendConstants {
         public static final String PLANSTATES_NO_DEPLOY = "8884";
     }
 }

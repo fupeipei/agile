@@ -17,7 +17,6 @@ import java.util.List;
 public class VersionApproveResultServiceImpl implements VersionApproveResultService {
 
 
-
     @Override
     public List<BjVersionApproveResultDTO> getAllRecordsByPaging(PageQuery<BjVersionApproveResultDTO> query) {
         List<BjVersionApproveResultDTO> resultList = new ArrayList<>();

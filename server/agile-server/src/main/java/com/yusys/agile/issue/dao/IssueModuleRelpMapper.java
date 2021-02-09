@@ -3,6 +3,7 @@ package com.yusys.agile.issue.dao;
 import com.yusys.agile.issue.domain.IssueModuleRelp;
 import com.yusys.agile.issue.domain.IssueModuleRelpExample;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface IssueModuleRelpMapper {
@@ -29,19 +30,17 @@ public interface IssueModuleRelpMapper {
     int updateByPrimaryKey(IssueModuleRelp record);
 
     /**
-     *
-     * @Date 2020-06-24
-     * @Description 批量插入工作项和模块关联关系
      * @param issueId
      * @param moduleIds
+     * @Date 2020-06-24
+     * @Description 批量插入工作项和模块关联关系
      */
     void batchInsert(@Param("moduleIds") List<IssueModuleRelp> moduleIds, @Param("issueId") Long issueId);
 
     /**
-     *
+     * @param issueId
      * @Date 2020-06-24
      * @Description 删除工作项相关模块信息
-     * @param issueId
      */
     void deleteByIssueId(Long issueId);
 }

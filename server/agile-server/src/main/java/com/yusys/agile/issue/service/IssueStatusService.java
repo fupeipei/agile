@@ -10,7 +10,7 @@ public interface IssueStatusService {
 
     Integer create(IssueStatus storyStatus);
 
-    IssueStatus getBySprintAndDate(Long sprintId, Date sprintDate,Byte issueType);
+    IssueStatus getBySprintAndDate(Long sprintId, Date sprintDate, Byte issueType);
 
 
     Integer update(IssueStatus storyStatus);

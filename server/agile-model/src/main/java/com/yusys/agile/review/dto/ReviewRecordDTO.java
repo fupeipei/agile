@@ -5,7 +5,6 @@ import java.util.Date;
 /**
  * 评审记录DTO
  *
- *
  * @create 2020-09-08 10:14
  */
 public class ReviewRecordDTO {

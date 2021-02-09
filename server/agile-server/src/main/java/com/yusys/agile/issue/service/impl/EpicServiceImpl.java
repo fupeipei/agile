@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @Date: 15:57
  */
 @Service
@@ -46,13 +45,13 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     public Long createEpic(IssueDTO issueDTO) {
-        return issueFactory.createIssue(issueDTO,"业务需求名称已存在！","新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
+        return issueFactory.createIssue(issueDTO, "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteEpic(Long issueId,Boolean deleteChild) {
-         issueFactory.deleteIssue(issueId,deleteChild);
+    public void deleteEpic(Long issueId, Boolean deleteChild) {
+        issueFactory.deleteIssue(issueId, deleteChild);
     }
 
     /*@Override
@@ -63,7 +62,7 @@ public class EpicServiceImpl implements EpicService {
     @Override
     public IssueDTO queryEpic(Long issueId) {
         Long projectId = issueFactory.getProjectIdByIssueId(issueId);
-        return issueFactory.queryIssue(issueId,projectId);
+        return issueFactory.queryIssue(issueId, projectId);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class EpicServiceImpl implements EpicService {
     public void editEpic(IssueDTO issueDTO) {
         Issue oldEpic = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         Long projectId = oldEpic.getProjectId();
-        Issue epic = issueFactory.editIssue(issueDTO,oldEpic, projectId);
+        Issue epic = issueFactory.editIssue(issueDTO, oldEpic, projectId);
         int count;
         count = issueMapper.updateByPrimaryKeySelectiveWithNull(epic);
         if (count != 1) {
@@ -81,19 +80,20 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     public Long copyEpic(Long epicId, Long projectId) {
-        return issueFactory.copyIssue(epicId,projectId,"该复制的业务需求已失效！","业务需求名称已存在！","新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
+        return issueFactory.copyIssue(epicId, projectId, "该复制的业务需求已失效！", "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
     }
 
     @Override
-    public List<IssueDTO> queryAllEpic(Long projectId, Integer pageNum, Integer pageSize,String title) {
-        return issueFactory.queryAllIssue(projectId, IssueTypeEnum.TYPE_EPIC.CODE, pageNum, pageSize,title,null);
+    public List<IssueDTO> queryAllEpic(Long projectId, Integer pageNum, Integer pageSize, String title) {
+        return issueFactory.queryAllIssue(projectId, IssueTypeEnum.TYPE_EPIC.CODE, pageNum, pageSize, title, null);
     }
 
     /**
-     *   :
+     * :
+     *
+     * @param projectId
      * @Date: 2021/3/30
      * @Description: 按版本统计系统各个阶段需求个数
-     * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueStageIdCountDTO>
      */
     @Override
@@ -103,12 +103,12 @@ public class EpicServiceImpl implements EpicService {
         List<IssueStageIdCountDTO> issueStageIdCountDTOS = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(ssoSystems) && CollectionUtils.isNotEmpty(versionManagerDTOs)) {
             for (SsoSystem ssoSystem : ssoSystems) {
-                for(VersionManagerDTO versionManagerDTO : versionManagerDTOs){
+                for (VersionManagerDTO versionManagerDTO : versionManagerDTOs) {
                     IssueStageIdCountDTO stageIdCountDTO = new IssueStageIdCountDTO();
-                    List<IssueDTO> epicDTOS = issueMapper.selectBySystemIdAndVersion(projectId, ssoSystem.getSystemId(),versionManagerDTO.getId(), IssueTypeEnum.TYPE_EPIC.CODE);
-                    countStageId(projectId, ssoSystem, versionManagerDTO,stageIdCountDTO, epicDTOS);
+                    List<IssueDTO> epicDTOS = issueMapper.selectBySystemIdAndVersion(projectId, ssoSystem.getSystemId(), versionManagerDTO.getId(), IssueTypeEnum.TYPE_EPIC.CODE);
+                    countStageId(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO, epicDTOS);
                     if (CollectionUtils.isEmpty(epicDTOS)) {
-                        setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO,stageIdCountDTO, 0, 0, 0, 0, 0, 0, 0);
+                        setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO, 0, 0, 0, 0, 0, 0, 0);
                     }
                     issueStageIdCountDTOS.add(stageIdCountDTO);
                 }
@@ -119,10 +119,10 @@ public class EpicServiceImpl implements EpicService {
 
     /**
      * 功能描述:根据epicId查询下面所有的featureId
-
-     * @date 2020/10/13
+     *
      * @param epicId
      * @return java.util.List<java.lang.Long>
+     * @date 2020/10/13
      */
     @Override
     public List<Long> queryFeatureIdsByEpicId(Long epicId) {
@@ -134,8 +134,8 @@ public class EpicServiceImpl implements EpicService {
                 .andIssueTypeEqualTo(IssueTypeEnum.TYPE_FEATURE.CODE).andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_FALSE.CODE);
         List<Issue> features = issueMapper.selectByExample(example);
 
-        if(CollectionUtils.isNotEmpty(features)){
-            for(Issue feature:features){
+        if (CollectionUtils.isNotEmpty(features)) {
+            for (Issue feature : features) {
                 featureIds.add(feature.getIssueId());
             }
         }
@@ -149,12 +149,11 @@ public class EpicServiceImpl implements EpicService {
      * @param stageIdCountDTO
      * @param issueDTOS
      * @param versionManagerDTO
-     *
      * @Date 2021/3/30
      * @Description 统计需求各个阶段的个数
      * @Return void
      */
-    private void countStageId(Long projectId, SsoSystem ssoSystem,VersionManagerDTO versionManagerDTO, IssueStageIdCountDTO stageIdCountDTO, List<IssueDTO> issueDTOS) {
+    private void countStageId(Long projectId, SsoSystem ssoSystem, VersionManagerDTO versionManagerDTO, IssueStageIdCountDTO stageIdCountDTO, List<IssueDTO> issueDTOS) {
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             int readyStageNum = 0;
             int analysisStageNum = 0;
@@ -179,7 +178,7 @@ public class EpicServiceImpl implements EpicService {
                 } else if (issueDTO.getStageId().equals(StageConstant.FirstStageEnum.FINISH_STAGE.getValue())) {
                     finishStageNum++;
                 }
-                setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO,stageIdCountDTO, readyStageNum, analysisStageNum, designStageNum, developStageNum, testStageNum, onlineStageNum, finishStageNum);
+                setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO, readyStageNum, analysisStageNum, designStageNum, developStageNum, testStageNum, onlineStageNum, finishStageNum);
             }
         }
     }
@@ -190,12 +189,11 @@ public class EpicServiceImpl implements EpicService {
      * @param stageIdCountDTO
      * @param versionManagerDTO
      * @param i，i2，i3，i4，i5，i5，i7
-     *
      * @Date 2021/3/30
      * @Description 各阶段个数赋值
      * @Return void
      */
-    private void setStageIdCountDTO(Long projectId, SsoSystem ssoSystem, VersionManagerDTO versionManagerDTO,IssueStageIdCountDTO stageIdCountDTO,
+    private void setStageIdCountDTO(Long projectId, SsoSystem ssoSystem, VersionManagerDTO versionManagerDTO, IssueStageIdCountDTO stageIdCountDTO,
                                     int i, int i2, int i3, int i4, int i5, int i6, int i7) {
         stageIdCountDTO.setProjectId(projectId);
         stageIdCountDTO.setSystemId(ssoSystem.getSystemId());

@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @description 模板阶段类
- *  
  * @date 2020/07/26
  */
 public class TemplateStage implements Serializable {

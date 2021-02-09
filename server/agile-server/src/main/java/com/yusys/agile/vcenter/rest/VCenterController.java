@@ -21,131 +21,151 @@ import javax.annotation.Resource;
 public class VCenterController {
     @Resource
     private VCenterService vCenterService;
-/**
-  *功能描述  查询环境信息
-  * @date 2021/2/25
-  * @param
-  * @return import com.yusys.portal.model.common.dto.ControllerResponse;
- */
+
+    /**
+     * 功能描述  查询环境信息
+     *
+     * @param
+     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2021/2/25
+     */
     @GetMapping("/getDev")
-    public ControllerResponse getDev(){
-            return ControllerResponse.success(vCenterService.getDev());
+    public ControllerResponse getDev() {
+        return ControllerResponse.success(vCenterService.getDev());
     }
 
     /**
-     *功能描述  获取所有的模板
-     * @date 2021/2/25
+     * 功能描述  获取所有的模板
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getTemplateName")
-    public ControllerResponse getTemplateName(Integer devId){
-            return ControllerResponse.success(vCenterService.getTemplateName(devId));
+    public ControllerResponse getTemplateName(Integer devId) {
+        return ControllerResponse.success(vCenterService.getTemplateName(devId));
     }
 
     /**
-     *功能描述  获取所有的数据中心
-     * @date 2021/2/25
+     * 功能描述  获取所有的数据中心
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getDatacenter")
-    public ControllerResponse getDatacenter(Integer devId){
+    public ControllerResponse getDatacenter(Integer devId) {
         return ControllerResponse.success(vCenterService.getDatacenter(devId));
     }
+
     /**
-     *功能描述  获取所有的集群名
-     * @date 2021/2/25
+     * 功能描述  获取所有的集群名
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getClusterComputeResource")
-    public ControllerResponse getClusterComputeResource(Integer devId){
+    public ControllerResponse getClusterComputeResource(Integer devId) {
         return ControllerResponse.success(vCenterService.getClusterComputeResource(devId));
     }
 
     /**
-     *功能描述  获取主机名称
-     * @date 2021/2/25
+     * 功能描述  获取主机名称
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getHost")
-    public ControllerResponse getHost(Integer devId,String clusterComputeResourceName){
-        return ControllerResponse.success(vCenterService.getHost(devId,clusterComputeResourceName));
+    public ControllerResponse getHost(Integer devId, String clusterComputeResourceName) {
+        return ControllerResponse.success(vCenterService.getHost(devId, clusterComputeResourceName));
     }
 
     /**
-     *功能描述  获取所有的集群名
-     * @date 2021/2/25
+     * 功能描述  获取所有的集群名
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getFolder")
-    public ControllerResponse getFolder(Integer devId){
+    public ControllerResponse getFolder(Integer devId) {
         return ControllerResponse.success(vCenterService.getFolder(devId));
     }
+
     /**
-     *功能描述  选择自定义规范
-     * @date 2021/2/25
+     * 功能描述  选择自定义规范
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getCustomizationSpec")
-    public ControllerResponse getCustomizationSpec(Integer devId){
+    public ControllerResponse getCustomizationSpec(Integer devId) {
         return ControllerResponse.success(vCenterService.getCustomizationSpec(devId));
     }
+
     /**
-     *功能描述  选择存储器
-     * @date 2021/2/25
+     * 功能描述  选择存储器
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getDatastore")
-    public ControllerResponse getDatastore(Integer devId,String clusterComputeResourceName){
-        return ControllerResponse.success(vCenterService.getDatastore(devId,clusterComputeResourceName));
+    public ControllerResponse getDatastore(Integer devId, String clusterComputeResourceName) {
+        return ControllerResponse.success(vCenterService.getDatastore(devId, clusterComputeResourceName));
     }
+
     /**
-     *功能描述  选择资源池
-     * @date 2021/2/25
+     * 功能描述  选择资源池
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getPoolName")
-    public ControllerResponse getPoolName(Integer devId){
+    public ControllerResponse getPoolName(Integer devId) {
         return ControllerResponse.success(vCenterService.getPoolName(devId));
     }
+
     /**
-     *功能描述  选择ip
-     * @date 2021/2/25
+     * 功能描述  选择ip
+     *
      * @param devId
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getIP")
-    public ControllerResponse getIP(Long devId){
+    public ControllerResponse getIP(Long devId) {
         return ControllerResponse.success(vCenterService.getIP(devId));
     }
+
     /**
-     *功能描述  获取申清单列表
-     * @date 2021/2/25
+     * 功能描述  获取申清单列表
+     *
      * @param vcenterApplication
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @GetMapping("/getList")
-    public ControllerResponse getList(VcenterApplication vcenterApplication){
+    public ControllerResponse getList(VcenterApplication vcenterApplication) {
         return ControllerResponse.success(new PageInfo<>(vCenterService.getList(vcenterApplication)));
     }
+
     /**
-     *功能描述  根据模板创建虚拟机
-     * @date 2021/2/25
+     * 功能描述  根据模板创建虚拟机
+     *
      * @param createVMDTO
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/25
      */
     @PostMapping("/CreateVMByTemplate")
-    public ControllerResponse CreateVMByTemplate(CreateVMDTO createVMDTO){
-        try{
+    public ControllerResponse CreateVMByTemplate(CreateVMDTO createVMDTO) {
+        try {
             vCenterService.CreateVMByTemplate(createVMDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             ControllerResponse.fail("虚拟机申请失败！");
         }
         return ControllerResponse.success();

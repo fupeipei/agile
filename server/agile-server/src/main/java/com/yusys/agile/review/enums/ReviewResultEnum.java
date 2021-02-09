@@ -5,7 +5,6 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 /**
  * 评审记录中的结果枚举
  *
-
  * @create 2020-09-08 14:24
  */
 public enum ReviewResultEnum {

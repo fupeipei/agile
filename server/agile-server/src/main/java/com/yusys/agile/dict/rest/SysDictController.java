@@ -21,12 +21,13 @@ public class SysDictController {
 
     @Resource
     private SysDictService sysDictService;
+
     @RequestMapping("/getResponsiblePerson")
-    public ControllerResponse getResponsiblePerson(Integer pageNum, Integer pageSize, String detailName, @RequestParam(value = "projectId", required = false) String projectId){
+    public ControllerResponse getResponsiblePerson(Integer pageNum, Integer pageSize, String detailName, @RequestParam(value = "projectId", required = false) String projectId) {
         List<SysDictDetail> sysDictDetailList;
         try {
-            sysDictDetailList = sysDictService.getResponsiblePerson(pageNum,pageSize,detailName);
-        }catch (Exception e){
+            sysDictDetailList = sysDictService.getResponsiblePerson(pageNum, pageSize, detailName);
+        } catch (Exception e) {
             return ControllerResponse.fail("获取分页局方负责人列表数据异常");
         }
         return ControllerResponse.success(new PageInfo<>(sysDictDetailList));

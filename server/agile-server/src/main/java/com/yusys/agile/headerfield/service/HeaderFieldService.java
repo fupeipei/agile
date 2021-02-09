@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2020/4/13
  */
 public interface HeaderFieldService {
@@ -29,52 +30,50 @@ public interface HeaderFieldService {
      * 描述: 组织工作项自定义字段历史数据
      */
     List<IssueHistoryRecord> generateHistory(List<IssueCustomField> newFieldList, List<IssueCustomFieldDTO> oldFieldList, Byte issueType, Long issueId, Long projectId);
+
     /**
-      *功能描述  根据key获取列头数据
-      *
-      * @date 2020/4/15
-      * @param updateList
-      * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
+     * 功能描述  根据key获取列头数据
+     *
+     * @param updateList
+     * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
+     * @date 2020/4/15
      */
     List<HeaderField> getAllHeaderField(List<Long> updateList);
 
 
     /**
-      *功能描述  初始化列头数据,高级搜索条件
-      *
-      * @date 2020/4/16
-      * @param securityDTO
-     * @param category
-     * * @param isFilter
-      * @return java.util.Map
+     * 功能描述  初始化列头数据,高级搜索条件
+     *
+     * @param securityDTO
+     * @param category    * @param isFilter
+     * @return java.util.Map
+     * @date 2020/4/16
      */
-    Map queryHeaderFields(SecurityDTO securityDTO, Byte category,Byte isFilter);
+    Map queryHeaderFields(SecurityDTO securityDTO, Byte category, Byte isFilter);
 
     Integer deleteCustomFieldByFieldId(Long fieldId);
 
-    Integer saveCustomFieldByFieldId(Long projectId,Long fieldId,Byte issueType);
+    Integer saveCustomFieldByFieldId(Long projectId, Long fieldId, Byte issueType);
 
 
     /**
-     *功能描述  列头下的ContentList
+     * 功能描述  列头下的ContentList
      *
-     * @date 2020/4/15
      * @param
      * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
+     * @date 2020/4/15
      */
-   Map getAllHeaderFieldContNotNull();
+    Map getAllHeaderFieldContNotNull();
 
 
     /**
-     *功能描述  当前项目的列头信息
+     * 功能描述  当前项目的列头信息
      *
-     * @date 2020/4/15
      * @param projectId
      * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
+     * @date 2020/4/15
      */
     List<HeaderField> getAllHeaderFieldByProjectId(Long projectId);
-
-
 
 
 }

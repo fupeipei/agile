@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-@RunWith( SpringRunner.class )
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class BusinessServiceTest {
 
@@ -32,10 +32,10 @@ public class BusinessServiceTest {
     @Test
     @Transactional
     public void createBusinessTest() {
-        try{
+        try {
             BusinessDTO kanbanDTO = new BusinessDTO();
             kanbanDTO.setKanbanId(3L);
-            kanbanDTO.setIsVisible((byte)0);
+            kanbanDTO.setIsVisible((byte) 0);
             kanbanDTO.setBusinessType(BusinessType.STUDY.getNodeCode());
             kanbanDTO.setBusinessState(BusinessState.PENDING.getNodeCode().byteValue());
             kanbanDTO.setBusinessLevel(BusinessLevel.HIGH.getKey().byteValue());
@@ -48,32 +48,32 @@ public class BusinessServiceTest {
             kanbanDTO.setStartTime(new Date());
             kanbanDTO.setEndTime(new Date());
             kanbanDTO.setCreateUid(9999L);
-            kanbanDTO.setStatus((byte)0);
+            kanbanDTO.setStatus((byte) 0);
             kanbanDTO.setDescText("事务看板卡片0000");
             BusinessDTO business = businessService.createBusiness(kanbanDTO);
-            log.info("Junit测试--创建事务卡片成功：{}",business);
-        }catch (Exception e){
-            log.info("Junit测试--创建事务卡片失败：{}",e);
+            log.info("Junit测试--创建事务卡片成功：{}", business);
+        } catch (Exception e) {
+            log.info("Junit测试--创建事务卡片失败：{}", e);
         }
     }
 
     @Test
     @Transactional
     public void deleteBusinessTest() {
-        try{
+        try {
             Long businessId = 1L;
             int num = businessService.deleteBusiness(businessId);
-            log.info("Junit测试--删除事务卡片成功：{}",num);
-        }catch (Exception e){
-            log.info("Junit测试--删除事务卡片失败：{}",e);
+            log.info("Junit测试--删除事务卡片成功：{}", num);
+        } catch (Exception e) {
+            log.info("Junit测试--删除事务卡片失败：{}", e);
         }
     }
 
     @Test
     @Transactional
     public void updateBusinessTest() {
-        try{
-            String str ="{\n" +
+        try {
+            String str = "{\n" +
                     "\"actualWorkload\": 10,\n" +
                     "\"businessDesc\": \"miaoshu\",\n" +
                     "\"businessId\": 16,\n" +
@@ -107,31 +107,31 @@ public class BusinessServiceTest {
                     "}";
             BusinessDTO kanbanDTO = JSONObject.parseObject(str, BusinessDTO.class);
             BusinessWithBLOBs businessWithBLOBs = businessService.updateBusiness(kanbanDTO);
-            log.info("Junit测试--编辑事务卡片成功：{}",businessWithBLOBs.toString());
-        }catch (Exception e){
-            log.info("Junit测试--编辑事务卡片失败：{}",e);
+            log.info("Junit测试--编辑事务卡片成功：{}", businessWithBLOBs.toString());
+        } catch (Exception e) {
+            log.info("Junit测试--编辑事务卡片失败：{}", e);
         }
     }
 
     @Test
     public void getByBusinessIdTest() {
-        try{
+        try {
             Long businessId = 1L;
             List<BusinessHistoryRecordDTO> businessList = businessService.getByBusinessId(businessId, 1, 30);
-            log.info("Junit测试--根据事务卡片ID查询卡片历史数据成功：{}",businessList.toString());
-        }catch (Exception e){
-            log.info("Junit测试--根据事务卡片ID查询卡片历史数据失败：{}",e);
+            log.info("Junit测试--根据事务卡片ID查询卡片历史数据成功：{}", businessList.toString());
+        } catch (Exception e) {
+            log.info("Junit测试--根据事务卡片ID查询卡片历史数据失败：{}", e);
         }
     }
 
     @Test
     public void getBusinessInfoTest() {
-        try{
+        try {
             Long businessId = 1L;
             BusinessDTO kanbanDTO = new BusinessDTO();
             kanbanDTO.setBusinessId(businessId);
             kanbanDTO.setKanbanId(3L);
-            kanbanDTO.setIsVisible((byte)0);
+            kanbanDTO.setIsVisible((byte) 0);
             kanbanDTO.setBusinessType(BusinessType.STUDY.getNodeCode());
             kanbanDTO.setBusinessState(BusinessState.PENDING.getNodeCode().byteValue());
             kanbanDTO.setBusinessLevel(BusinessLevel.HIGH.getKey().byteValue());
@@ -144,23 +144,23 @@ public class BusinessServiceTest {
             kanbanDTO.setStartTime(new Date());
             kanbanDTO.setEndTime(new Date());
             kanbanDTO.setCreateUid(9999L);
-            kanbanDTO.setStatus((byte)0);
+            kanbanDTO.setStatus((byte) 0);
             kanbanDTO.setDescText("事务看板卡片0000");
             List<BusinessResultDTO> businessInfos = businessService.getBusinessInfo(kanbanDTO);
-            log.info("Junit测试--根据事务卡片条件查询卡片列表数据成功：{}",businessInfos.toString());
-        }catch (Exception e){
-            log.info("Junit测试--根据事务卡片条件查询卡片列表数据失败：{}",e);
+            log.info("Junit测试--根据事务卡片条件查询卡片列表数据成功：{}", businessInfos.toString());
+        } catch (Exception e) {
+            log.info("Junit测试--根据事务卡片条件查询卡片列表数据失败：{}", e);
         }
     }
 
     @Test
     public void getBusinessInfListTest() {
-        try{
+        try {
             Long businessId = 1L;
             BusinessDTO kanbanDTO = new BusinessDTO();
             kanbanDTO.setBusinessId(businessId);
             kanbanDTO.setKanbanId(3L);
-            kanbanDTO.setIsVisible((byte)0);
+            kanbanDTO.setIsVisible((byte) 0);
             kanbanDTO.setBusinessType(BusinessType.STUDY.getNodeCode());
             kanbanDTO.setBusinessState(BusinessState.PENDING.getNodeCode().byteValue());
             kanbanDTO.setBusinessLevel(BusinessLevel.HIGH.getKey().byteValue());
@@ -173,12 +173,12 @@ public class BusinessServiceTest {
             kanbanDTO.setStartTime(new Date());
             kanbanDTO.setEndTime(new Date());
             kanbanDTO.setCreateUid(9999L);
-            kanbanDTO.setStatus((byte)0);
+            kanbanDTO.setStatus((byte) 0);
             kanbanDTO.setDescText("事务看板卡片0000");
             List<BusinessDTO> businessInfList = businessService.getBusinessInfList(kanbanDTO);
-            log.info("Junit测试--根据事务卡片条件查询卡片列表形式数据成功：{}",businessInfList.toString());
-        }catch (Exception e){
-            log.info("Junit测试--根据事务卡片条件查询卡片列表形式数据失败：{}",e);
+            log.info("Junit测试--根据事务卡片条件查询卡片列表形式数据成功：{}", businessInfList.toString());
+        } catch (Exception e) {
+            log.info("Junit测试--根据事务卡片条件查询卡片列表形式数据失败：{}", e);
         }
     }
 }

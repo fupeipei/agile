@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @ClassName: MailSwitchServiceImpl
  * @Description: 通知设置Service Impl
- *   :
+ * :
  * @CreateDate: 2020/06/16 17:28
  * @Version 1.0
  */
@@ -47,7 +47,7 @@ public class MailSwitchServiceImpl implements MailSwitchService {
         return ControllerResponse.success(mailSwitches);
     }
 
-    private void initNoticeSettings(List<MailSwitch> mailSwitchList ,SecurityDTO securityDTO) {
+    private void initNoticeSettings(List<MailSwitch> mailSwitchList, SecurityDTO securityDTO) {
         Long userId = securityDTO.getUserId();
         Long projectId = securityDTO.getProjectId();
         for (MailSwitchEnum switchEnum : MailSwitchEnum.values()) {
@@ -62,7 +62,7 @@ public class MailSwitchServiceImpl implements MailSwitchService {
                     .andProjectIdEqualTo(projectId)
                     .andMailTypeEqualTo(mailType);
             List<MailSwitch> mailSwitches = mailSwitchMapper.selectByExample(switchExample);
-            if(CollectionUtils.isEmpty(mailSwitches)){
+            if (CollectionUtils.isEmpty(mailSwitches)) {
                 MailSwitch mailSwitchClass = new MailSwitch();
                 mailSwitchClass.setUserId(userId);
                 mailSwitchClass.setProjectId(projectId);

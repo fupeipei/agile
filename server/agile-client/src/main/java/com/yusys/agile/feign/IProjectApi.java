@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * 功能描述: 提供cicd接口
  *
- *
  * @date 2020/8/19
  * @return
  */
@@ -26,7 +25,6 @@ public interface IProjectApi {
      *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;<java.util.List < com.yusys.agile.sprint.dto.SprintDTO>>
-     *
      * @date 2020/8/19
      */
     @GetMapping("/agile/sprint/listUnFinisherSprintsByProjectId")
@@ -42,7 +40,6 @@ public interface IProjectApi {
      * @param projectId
      * @param name
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2021/2/5
      */
     @GetMapping("/agile/sprint/listAllSprintsByProjectId")
@@ -54,7 +51,6 @@ public interface IProjectApi {
      *
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;<java.util.List < com.yusys.agile.sprint.dto.SprintDTO>>
-     *
      * @date 2020/8/19
      */
     @GetMapping("/agile/issue/listStorysByProjectId")
@@ -81,7 +77,6 @@ public interface IProjectApi {
      *
      * @param caseParamDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2021/2/10
      */
     @PostMapping("/agile/case/listCaseByStoryIds")
@@ -91,9 +86,9 @@ public interface IProjectApi {
     /**
      * 功能描述:cicd接口-根据taskId查用例信息
      *
-     * @date  2021/2/8
      * @param caseParamDTO
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2021/2/8
      */
     @PostMapping("/agile/case/listCaseByTaskIds")
     public ControllerResponse listCaseByTaskIds(@RequestBody CaseParamDTO caseParamDTO);
@@ -101,10 +96,10 @@ public interface IProjectApi {
     /**
      * 功能描述:提供cicd接口-根据任务id查询故事id
      *
-     * @date  2021/2/8
      * @param taskIds
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2021/2/8
      */
     @PostMapping("/issue/task/listStoryIdsByTaskIds")
-    public ControllerResponse listStoryIdsByTaskIds(@RequestBody List<Long> taskIds) ;
+    public ControllerResponse listStoryIdsByTaskIds(@RequestBody List<Long> taskIds);
 }

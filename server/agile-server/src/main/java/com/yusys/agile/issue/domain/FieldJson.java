@@ -4,7 +4,6 @@ public class FieldJson {
     private Long fieldId;
     private String fieldValue;
     /**
-     *
      * @Description: 0:查询全部;1:根据value查询;2:查询为null的记录
      */
     private Integer queryType;

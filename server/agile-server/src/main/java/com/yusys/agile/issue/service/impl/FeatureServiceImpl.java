@@ -23,7 +23,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *
  * @Date: 13:33
  */
 @Service
@@ -57,7 +56,6 @@ public class FeatureServiceImpl implements FeatureService {
     /**
      * @param featureId
      * @description 处理需求下分支删除
-     *  
      * @date 2020/10/1
      */
     private void dealEpicFeatureSync(Long featureId) {
@@ -90,7 +88,7 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void editFeature(IssueDTO issueDTO) {
-        if(issueFactory.checkFeatureInVersion(issueDTO.getStages(),issueDTO.getIssueId(),issueDTO.getParentId())){
+        if (issueFactory.checkFeatureInVersion(issueDTO.getStages(), issueDTO.getIssueId(), issueDTO.getParentId())) {
             throw new BusinessException("当前feature未绑定任何版本，不允许变更为需求分析完成状态！");
         }
         Issue oldFeature = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());

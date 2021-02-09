@@ -220,8 +220,8 @@ public class IssueListDTO {
      */
     private String fieldList;
     /**
-     *功能描述  是否有child
-     *   
+     * 功能描述  是否有child
+     *
      * @date 2020/4/16
      * @param null
      * @return
@@ -239,7 +239,6 @@ public class IssueListDTO {
     public void setOrder(Integer order) {
         this.order = order;
     }
-
 
 
     public List<IssueHistoryRecordDTO> getRecords() {
@@ -280,6 +279,7 @@ public class IssueListDTO {
     private Map versionIsRemove;
     //版本计划名称
     private Map versionName;
+
     public Map getVersionName() {
         return versionName;
     }
@@ -287,7 +287,9 @@ public class IssueListDTO {
     public void setVersionName(Map versionName) {
         this.versionName = versionName;
     }
+
     private List<SysExtendFieldDetailDTO> sysExtendFieldDetailList;
+
     public Map getVersionIsRemove() {
         return versionIsRemove;
     }

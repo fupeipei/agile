@@ -3,7 +3,6 @@ package com.yusys.agile.fault.dto;
 /**
  * 从itc获取创建或重新打开bug的参数DTO
  *
-  
  * @create 2020-10-20 09:50
  */
 public class GetBugFromItcTimeDTO {

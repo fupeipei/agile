@@ -1,7 +1,7 @@
 package com.yusys.agile.utils;
 
 /**
- * 
+ *
  */
 public class MailContent {
     /**
@@ -97,7 +97,6 @@ public class MailContent {
 //
 //    public static final String ROLE_CHANGE_SUBJECT_FOR_PM = "【YUDO】项目[projectName]用户权限变更";
 //    public static final String ROLE_CHANGE_CONTENT_FOR_PM = "尊敬的用户PM，YUDO项目管理员 admin 把 userName 在 [项目]projectName 中的角色设定为 roleName,请知悉";
-
 
 
 }

@@ -32,6 +32,7 @@ public class BuildRecordsController {
 
     /**
      * 根据工作项ID，获取流水线构建分页数据
+     *
      * @param issueId
      * @param pageNum
      * @param pageSize
@@ -40,7 +41,7 @@ public class BuildRecordsController {
     @GetMapping("/build")
     public ControllerResponse getIssueBuildRecords(@RequestParam("issueId") Long issueId,
                                                    @RequestParam("pageNum") Integer pageNum,
-                                                   @RequestParam("pageSize") Integer pageSize){
+                                                   @RequestParam("pageSize") Integer pageSize) {
         //PageInfo pageInfo = iCmsChangeClient.queryBuildInstanceByTaskId(issueId.toString(), pageNum, pageSize);
         //return ControllerResponse.success(pageInfo);
         try {
@@ -54,6 +55,7 @@ public class BuildRecordsController {
 
     /**
      * 根据工作项ID，获取流水线部署分页数据
+     *
      * @param issueId
      * @param pageNum
      * @param pageSize
@@ -62,7 +64,7 @@ public class BuildRecordsController {
     @GetMapping("/deploy")
     public ControllerResponse getIssueDeployRecords(@RequestParam("issueId") Long issueId,
                                                     @RequestParam("pageNum") Integer pageNum,
-                                                    @RequestParam("pageSize") Integer pageSize){
+                                                    @RequestParam("pageSize") Integer pageSize) {
         //PageInfo pageInfo = iCmsChangeClient.queryDeployInstanceByTaskId(issueId.toString(), pageNum, pageSize);
         //return ControllerResponse.success(pageInfo);
         try {

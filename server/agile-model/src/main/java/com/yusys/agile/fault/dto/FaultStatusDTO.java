@@ -3,7 +3,6 @@ package com.yusys.agile.fault.dto;
 /**
  * 缺陷状态DTO
  *
-
  * @create 2020-04-21 16:19
  */
 public class FaultStatusDTO {

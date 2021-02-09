@@ -2,7 +2,6 @@ package com.yusys.agile.set.stage.exception;
 
 /**
  * @description 阶段异常类
- *  
  * @date 2020/05/07
  */
 public class StageException extends RuntimeException {

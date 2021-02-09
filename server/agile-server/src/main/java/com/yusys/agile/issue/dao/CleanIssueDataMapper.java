@@ -23,19 +23,22 @@ public interface CleanIssueDataMapper {
 
     /**
      * 根绝排期年份获取所有的需求列表
+     *
      * @param year
      * @return
      */
     List<CleanIssueData> getAllIssue(@Param("year") String year);
 
     /**
-     *根据year年份排期模糊删除数据
+     * 根据year年份排期模糊删除数据
+     *
      * @param year
      */
-    void deleteCleanIssueByBizScheduling(@Param("bizPlanStatus") String bizPlanStatus,@Param("year") String year);
+    void deleteCleanIssueByBizScheduling(@Param("bizPlanStatus") String bizPlanStatus, @Param("year") String year);
 
     /**
-     *批量插入数据
+     * 批量插入数据
+     *
      * @param issues
      */
     void batchInsert(@Param("issues") List<CleanIssueData> issues);

@@ -18,7 +18,6 @@ import java.util.Optional;
 /**
  * @ClassName IssueRuleServiceImpl
  * @Description TODO
- *
  * @Date 2021/2/8 11:03
  * @Version 1.0
  */
@@ -34,13 +33,13 @@ public class IssueRuleServiceImpl implements IssueRuleService {
         Long projectId = securityDTO.getProjectId();
         IssueRuleExample ruleExample = new IssueRuleExample();
         ruleExample.createCriteria().andProjectIdEqualTo(projectId)
-                                    .andCategoryEqualTo(category);
+                .andCategoryEqualTo(category);
         List<IssueRule> issueRules = issueRuleMapper.selectByExample(ruleExample);
-        if(CollectionUtils.isEmpty(issueRules)){
-            if(IssueTypeEnum.TYPE_TASK.CODE.equals(category) || IssueTypeEnum.TYPE_FAULT.CODE.equals(category)){
-                ruleFactory.initTaskAndFaultRules(category,projectId);
-            }else{
-                ruleFactory.initDemandRules(category,projectId);
+        if (CollectionUtils.isEmpty(issueRules)) {
+            if (IssueTypeEnum.TYPE_TASK.CODE.equals(category) || IssueTypeEnum.TYPE_FAULT.CODE.equals(category)) {
+                ruleFactory.initTaskAndFaultRules(category, projectId);
+            } else {
+                ruleFactory.initDemandRules(category, projectId);
             }
             issueRules = issueRuleMapper.selectByExample(ruleExample);
         }
@@ -51,9 +50,9 @@ public class IssueRuleServiceImpl implements IssueRuleService {
     @Transactional(rollbackFor = Exception.class)
     public void pushRules(IssueRule issueRule) {
         Long ruleId = issueRule.getRuleId();
-        if(Optional.ofNullable(ruleId).isPresent()){
+        if (Optional.ofNullable(ruleId).isPresent()) {
             issueRuleMapper.updateByPrimaryKey(issueRule);
-        }else{
+        } else {
             issueRuleMapper.insert(issueRule);
         }
     }

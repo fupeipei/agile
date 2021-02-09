@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2021/2/6
  * @Description: TODO
  */
@@ -62,9 +63,9 @@ public class StringUtil {
     /**
      * 功能描述:判断字符串是否是正整数
      *
-     * @date 2021/2/10
      * @param string
      * @return boolean
+     * @date 2021/2/10
      */
     public static boolean isPureDigital(String string) {
         if (StringUtils.isBlank(string)) {
@@ -84,24 +85,23 @@ public class StringUtil {
     }
 
     /**
-     * @description 判断字符串是否修改
      * @param newVal
      * @param oldVal
      * @return boolean
+     * @description 判断字符串是否修改
      * @date 2021/3/30
      **/
     public static boolean isChanged(String newVal, String oldVal) {
-        if (org.apache.commons.lang.StringUtils.isNotBlank(newVal) && !org.apache.commons.lang.StringUtils.equals(newVal,oldVal)) {
+        if (org.apache.commons.lang.StringUtils.isNotBlank(newVal) && !org.apache.commons.lang.StringUtils.equals(newVal, oldVal)) {
             return true;
         }
         return false;
     }
 
     /**
-     * @description 将集合转换成字符串，字符串之间逗号间隔
      * @param collection
      * @return java.lang.String
-     *
+     * @description 将集合转换成字符串，字符串之间逗号间隔
      * @date 2021/3/30
      **/
     public static String convertCollectionToString(Collection<?> collection) {
@@ -118,6 +118,7 @@ public class StringUtil {
 //    public static void main(String[] args){
 //        System.out.println(isPureDigital("0"));
 //    }
+
     /**
      * String字符串转成List<Byte>数据格式
      * String str = "1,2,3,4,5,6" -> List<Long> listLong [1,2,3,4,5,6];
@@ -126,22 +127,25 @@ public class StringUtil {
      * @returnstrArr
      */
     public static List<Byte> stringToByteList(List<String> stringList) {
-        return   stringList.stream()
+        return stringList.stream()
                 .map(s -> Byte.parseByte(s.trim()))
                 .collect(Collectors.toList());
     }
+
     public static List<Date> stringToDateList(List<String> stringList) {
-        return  stringList.stream()
+        return stringList.stream()
                 .map(s -> new Date(s.trim()))
                 .collect(Collectors.toList());
     }
+
     public static List<Integer> stringToIntegerList(List<String> stringList) {
-        return  stringList.stream()
+        return stringList.stream()
                 .map(s -> Integer.parseInt(s.trim()))
                 .collect(Collectors.toList());
     }
+
     public static List<Long> stringToLongrList(List<String> stringList) {
-        return  stringList.stream()
+        return stringList.stream()
                 .map(s -> Long.parseLong(s.trim()))
                 .collect(Collectors.toList());
     }
@@ -150,14 +154,14 @@ public class StringUtil {
      * 判断某个字符串是否存在于数组中
      *
      * @param stringArray 原数组
-     * @param source 查找的字符串
+     * @param source      查找的字符串
      * @return 是否找到
      */
     public static boolean contains(String[] stringArray, String source) {
         // 转换为list
         List<String> tempList = Arrays.asList(stringArray);
         // 利用list的包含方法,进行判断
-        if(tempList.contains(source)){
+        if (tempList.contains(source)) {
             return true;
         } else {
             return false;
@@ -168,7 +172,7 @@ public class StringUtil {
      * 删除数组中某个字符串
      *
      * @param substring 某字符串
-     * @param source 源字符串数组
+     * @param source    源字符串数组
      * @return 包含则返回true，否则返回false
      */
     public static List<String> removeNULL(String substring, String[] source) {

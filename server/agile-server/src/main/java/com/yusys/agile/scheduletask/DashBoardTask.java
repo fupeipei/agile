@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
-
  * @Date: 2021/2/4
  */
 @Component
@@ -20,7 +19,7 @@ public class DashBoardTask extends IJobHandler {
     private DashBoardService dashBoardService;
 
     @Override
-    public ReturnT<String> execute(String s){
+    public ReturnT<String> execute(String s) {
         dashBoardService.calculateIssueStatus();
         dashBoardService.calculateProjectStatus();
         return ReturnT.SUCCESS;

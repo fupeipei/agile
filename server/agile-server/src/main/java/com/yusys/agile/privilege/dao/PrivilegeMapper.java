@@ -2,7 +2,9 @@ package com.yusys.agile.privilege.dao;
 
 import com.yusys.agile.privilege.domain.Privilege;
 import com.yusys.agile.privilege.domain.PrivilegeExample;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface PrivilegeMapper {

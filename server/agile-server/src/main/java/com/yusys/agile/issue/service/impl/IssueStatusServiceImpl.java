@@ -23,8 +23,8 @@ public class IssueStatusServiceImpl implements IssueStatusService {
     }
 
     @Override
-    public IssueStatus getBySprintAndDate(Long sprintId, Date sprintDate,Byte issueType) {
-        return issueStatusDao.getBySprintAndDate(sprintId,sprintDate,issueType);
+    public IssueStatus getBySprintAndDate(Long sprintId, Date sprintDate, Byte issueType) {
+        return issueStatusDao.getBySprintAndDate(sprintId, sprintDate, issueType);
     }
 
     @Override

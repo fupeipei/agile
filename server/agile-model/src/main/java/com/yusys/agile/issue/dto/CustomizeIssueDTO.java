@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * @description 工作项定制对象
- *  
  * @date 2020/08/17
  */
 public class CustomizeIssueDTO implements Serializable {

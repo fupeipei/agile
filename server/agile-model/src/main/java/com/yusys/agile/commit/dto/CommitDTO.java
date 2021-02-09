@@ -6,9 +6,7 @@ import java.util.Map;
 
 /**
  * @descripton 人员代码提交实体类
- *  
  * @date 2020/07/14
- *
  */
 public class CommitDTO implements Serializable {
 

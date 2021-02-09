@@ -20,11 +20,10 @@ public class CustomizeIssueController {
     private CustomizeIssueService customizeIssueService;
 
     /**
-     * @description 查询工作项信息
-     *  
-     * @date 2020/08/18
      * @param issueIds
      * @return
+     * @description 查询工作项信息
+     * @date 2020/08/18
      */
     @PostMapping("/task/getRelatedIssues")
     public ControllerResponse<List<CustomizeIssueDTO>> getRelatedIssues(@RequestBody List<Long> issueIds) {
@@ -37,14 +36,13 @@ public class CustomizeIssueController {
     }
 
     /**
-     * @description 根据任务或缺陷编号查询feature
-     *  
-     * @date 2020/09/17
      * @param issueId
      * @return
+     * @description 根据任务或缺陷编号查询feature
+     * @date 2020/09/17
      */
     @GetMapping("/feature/getFeatureByTaskOrFaultId")
-    public ControllerResponse<CustomizeIssueDTO> getFeatureByTaskOrFaultId(@RequestParam("issueId") Long issueId){
+    public ControllerResponse<CustomizeIssueDTO> getFeatureByTaskOrFaultId(@RequestParam("issueId") Long issueId) {
         try {
             return ControllerResponse.success(customizeIssueService.getFeatureByTaskOrFaultId(issueId));
         } catch (Exception e) {

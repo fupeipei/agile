@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * @ClassName RiskManagerController
  * @Description 风险管理控制类
- *
  * @Date 2020/8/11 11:34
  * @Version 1.0
  */
@@ -29,10 +28,11 @@ public class RiskManagerController {
     private RiskManagerService riskManagerService;
 
     /**
-     *  获取风险管理分页列表
-     * @param title     标题
-     * @param pageNum   分页数
-     * @param pageSize  分页条数
+     * 获取风险管理分页列表
+     *
+     * @param title       标题
+     * @param pageNum     分页数
+     * @param pageSize    分页条数
      * @param securityDTO
      * @return
      */
@@ -41,76 +41,82 @@ public class RiskManagerController {
                                            @RequestParam(value = "riskStatus", required = false) Byte riskStatus,
                                            @RequestParam(value = "pageNum", required = false) Integer pageNum,
                                            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                           SecurityDTO securityDTO){
-        List<RiskManagerDTO> list = riskManagerService.getRiskPages(title,riskStatus,pageNum, pageSize,securityDTO);
+                                           SecurityDTO securityDTO) {
+        List<RiskManagerDTO> list = riskManagerService.getRiskPages(title, riskStatus, pageNum, pageSize, securityDTO);
         return ControllerResponse.success(new PageInfo<>(list));
     }
 
     /**
-     *  创建/更新风险管理
+     * 创建/更新风险管理
+     *
      * @param riskManagerDTO
      * @param securityDTO
      * @return
      */
     @PostMapping("/createOrUpdate")
-    public ControllerResponse create(@RequestBody RiskManagerDTO riskManagerDTO, SecurityDTO securityDTO){
+    public ControllerResponse create(@RequestBody RiskManagerDTO riskManagerDTO, SecurityDTO securityDTO) {
         riskManagerService.create(riskManagerDTO, securityDTO);
         return ControllerResponse.success("风险管理保存成功");
     }
 
     /**
-     *
      * @param riskId
      * @return
      */
     @DeleteMapping("/delete/{riskId}")
-    public ControllerResponse delete(@PathVariable Long riskId){
+    public ControllerResponse delete(@PathVariable Long riskId) {
         riskManagerService.delete(riskId);
         return ControllerResponse.success("风险管理删除成功");
     }
 
     /**
      * 获取所有的风险等级枚举列表
+     *
      * @return
      */
     @GetMapping("/level")
-    public ControllerResponse getALLRiskLevel(){
+    public ControllerResponse getALLRiskLevel() {
         return ControllerResponse.success(RiskLevelEnum.getAllRiskLevel());
     }
 
     /**
      * 获取所有的风险状态枚举列表
+     *
      * @return
      */
     @GetMapping("/status")
-    public ControllerResponse getALLRiskStatus(){
+    public ControllerResponse getALLRiskStatus() {
         return ControllerResponse.success(RiskStatusEnum.getAllRiskStatus());
     }
 
     /**
      * 根据风险主键ID查询风险详情
+     *
      * @param riskId
      * @return
      */
     @GetMapping("/{riskId}")
-    public ControllerResponse getRiskInfo(@PathVariable Long riskId){
+    public ControllerResponse getRiskInfo(@PathVariable Long riskId) {
         RiskManagerDTO riskManagerDTO = riskManagerService.getRiskInfo(riskId);
         return ControllerResponse.success(riskManagerDTO);
     }
 
     /**
      * 根据项目ID查询风险总条数和风险待处理条数
+     *
      * @param securityDTO
      * @return
      */
     @GetMapping("/analysis/count")
-    public ControllerResponse getRiskAnalysisCount(SecurityDTO securityDTO){
+    public ControllerResponse getRiskAnalysisCount(SecurityDTO securityDTO) {
         Long projectId = securityDTO.getProjectId();
         JSONObject riskAnalysisCount = riskManagerService.getRiskAnalysisCount(projectId);
         return ControllerResponse.success(riskAnalysisCount);
     }
+
     /**
-     *  获取风险管理列表
+     * 获取风险管理列表
+     *
      * @param riskStartTime 风险开始时间
      * @param securityDTO
      * @return
@@ -118,8 +124,8 @@ public class RiskManagerController {
     @GetMapping("/collection")
     public ControllerResponse getRisksColl(@RequestParam(value = "riskStartTime", required = false) Date riskStartTime,
                                            @RequestParam(value = "riskEndTime", required = false) Date riskEndTime,
-                                           SecurityDTO securityDTO){
-        List<RiskManagerDTO> list = riskManagerService.getRisksColl(riskStartTime,riskEndTime,securityDTO);
+                                           SecurityDTO securityDTO) {
+        List<RiskManagerDTO> list = riskManagerService.getRisksColl(riskStartTime, riskEndTime, securityDTO);
         return ControllerResponse.success(list);
     }
 }

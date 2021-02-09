@@ -9,13 +9,13 @@ import com.yusys.portal.util.code.ReflectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- *
  * @Date: 9:19
  */
 @Service
@@ -34,10 +34,10 @@ public class IssueHistoryRecordServiceImpl implements IssueHistoryRecordService 
         criteria.andIssueIdEqualTo(issueId);
         List<IssueHistoryRecord> issueHistoryRecordList = issueHistoryRecordMapper.selectByExample(example);
 
-        try{
-            issueHistoryRecordDTOList = ReflectUtil.copyProperties4List(issueHistoryRecordList,IssueHistoryRecordDTO.class);
-        }catch(Exception e){
-            log.error("列表转换出错{}",e.getMessage());
+        try {
+            issueHistoryRecordDTOList = ReflectUtil.copyProperties4List(issueHistoryRecordList, IssueHistoryRecordDTO.class);
+        } catch (Exception e) {
+            log.error("列表转换出错{}", e.getMessage());
         }
         return issueHistoryRecordDTOList;
     }

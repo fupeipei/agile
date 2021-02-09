@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith( SpringRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class MailSendUtilTest {
 
@@ -35,24 +35,26 @@ public class MailSendUtilTest {
         securityDTO.setUserId(9999L);
         securityDTO.setUserName("admin");
         securityDTO.setProjectId(issue.getProjectId());
-        mailSendUtil.sendMailContent(issue, NumberConstant.ZERO,securityDTO);
+        mailSendUtil.sendMailContent(issue, NumberConstant.ZERO, securityDTO);
     }
 
     @Test
-    public void sendOverDueMail(){
+    public void sendOverDueMail() {
         byte mailType = MailSwitchEnum.OVERDUE.getMailType();
         mailType = MailSwitchEnum.OVERTIME.getMailType();
         mailSendUtil.sendOverDueMail(mailType);
 
     }
+
     @Test
-    public void testSendBusinessOverDueMail(){
+    public void testSendBusinessOverDueMail() {
         byte mailType = MailSwitchEnum.OVERDUE.getMailType();
         mailSendUtil.sendBusinessOverDueMail(mailType);
 
     }
+
     @Test
-    public void testComm(){
+    public void testComm() {
         Long issueId = 507234L;
         regularFactory.commonIssueUpRegular(issueId);
     }

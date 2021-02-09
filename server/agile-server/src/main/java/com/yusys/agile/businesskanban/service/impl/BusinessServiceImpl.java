@@ -54,14 +54,14 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BusinessDTO createBusiness(BusinessDTO businessDTO) {
-        BusinessWithBLOBs business = ReflectUtil.copyProperties(businessDTO,BusinessWithBLOBs.class);
+        BusinessWithBLOBs business = ReflectUtil.copyProperties(businessDTO, BusinessWithBLOBs.class);
         int result = businessMapper.insert(business);
-        loggr.info("BusinessServiceImpl method createBusiness count :{}",result);
+        loggr.info("BusinessServiceImpl method createBusiness count :{}", result);
         //上传附件
         List<BusinessAttachmentDTO> attachmentDtos = businessDTO.getAttachmentDTOS();
         if (attachmentDtos != null && !attachmentDtos.isEmpty()) {
             List<BusinessAttachment> attachments = Lists.newArrayList();
-            ReflectUtil.copyProperties(attachmentDtos,attachments);
+            ReflectUtil.copyProperties(attachmentDtos, attachments);
             for (BusinessAttachment attachment : attachments) {
                 attachment.setBusinessId(business.getBusinessId());
             }
@@ -76,7 +76,7 @@ public class BusinessServiceImpl implements BusinessService {
     @Transactional(rollbackFor = Exception.class)
     public int deleteBusiness(Long businessId) {
         BusinessWithBLOBs bloBs = businessMapper.selectByPrimaryKey(businessId);
-        if(bloBs == null){
+        if (bloBs == null) {
             return -1;
         }
         bloBs.setState(StateEnum.E.getValue());
@@ -98,18 +98,18 @@ public class BusinessServiceImpl implements BusinessService {
     public BusinessWithBLOBs updateBusiness(BusinessDTO businessDTO) throws Exception {
         BusinessWithBLOBs oldBusinessWithBLOBs = businessMapper.selectByPrimaryKey(businessDTO.getBusinessId());
         BusinessDTO oldBusinessDTO = new BusinessDTO();
-        ReflectUtil.copyProperties(oldBusinessWithBLOBs,oldBusinessDTO);
+        ReflectUtil.copyProperties(oldBusinessWithBLOBs, oldBusinessDTO);
         List<BusinessHistoryRecordWithBLOBs> historic;
         try {
             historic = generateHistory(businessDTO, oldBusinessDTO);
-        }catch (Exception e){
-            loggr.error("BusinessServiceImpl method updateBusiness generate history error :{}",e.getMessage());
+        } catch (Exception e) {
+            loggr.error("BusinessServiceImpl method updateBusiness generate history error :{}", e.getMessage());
             throw new BusinessException("生成历史记录过程中异常!");
         }
         // attachment
         boolean isEdit = false;
         List<BusinessAttachmentDTO> attachmentDTOS = businessDTO.getAttachmentDTOS();
-        if(CollectionUtils.isNotEmpty(attachmentDTOS)){
+        if (CollectionUtils.isNotEmpty(attachmentDTOS)) {
             List<BusinessAttachment> attachments = ReflectUtil.copyProperties4List(attachmentDTOS, BusinessAttachment.class);
 
             BusinessAttachmentExample attachmentExample = new BusinessAttachmentExample();
@@ -140,36 +140,36 @@ public class BusinessServiceImpl implements BusinessService {
                 }
             }
             if (isEdit) {
-                BusinessHistoryRecordWithBLOBs attachmentRecord = new BusinessHistoryRecordWithBLOBs("附件", businessDTO.getBusinessId(),UserThreadLocalUtil.getUserInfo().getUserId(), (byte)0);
+                BusinessHistoryRecordWithBLOBs attachmentRecord = new BusinessHistoryRecordWithBLOBs("附件", businessDTO.getBusinessId(), UserThreadLocalUtil.getUserInfo().getUserId(), (byte) 0);
                 attachmentRecord.setNewValue(JSON.toJSONString(attachments));
                 attachmentRecord.setOldValue(JSON.toJSONString(oldAttachments));
                 historic.add(attachmentRecord);
             }
         }
-        if(CollectionUtils.isNotEmpty(historic)){
+        if (CollectionUtils.isNotEmpty(historic)) {
             businessHistoryRecordMapper.batchCreate(historic);
         }
         //更新事务
-        BusinessWithBLOBs businessWithBLOBs = ReflectUtil.copyProperties(businessDTO,BusinessWithBLOBs.class);
+        BusinessWithBLOBs businessWithBLOBs = ReflectUtil.copyProperties(businessDTO, BusinessWithBLOBs.class);
         businessWithBLOBs.setState(StateEnum.U.getValue());
         Long businessOwner = businessWithBLOBs.getBusinessOwner();
         Byte businessState = businessWithBLOBs.getBusinessState();
         Date startTime = oldBusinessWithBLOBs.getStartTime();
         //1、判断实际开始日期为空且事务状态不等于未领取，则设置实际开始日期
-        if(!Optional.ofNullable(startTime).isPresent()
-                && !Byte.valueOf(BusinessState.UNCLAIMED.getNodeCode().toString()).equals(businessState)){
+        if (!Optional.ofNullable(startTime).isPresent()
+                && !Byte.valueOf(BusinessState.UNCLAIMED.getNodeCode().toString()).equals(businessState)) {
             businessWithBLOBs.setStartTime(new Date());
         }
 
         //判断到已完成状态，如果实际开始结束则等于当前日期
-        if(Optional.ofNullable(businessOwner).isPresent() && Byte.valueOf(BusinessState.COMPLETE.getNodeCode().toString()).equals(businessState)){
+        if (Optional.ofNullable(businessOwner).isPresent() && Byte.valueOf(BusinessState.COMPLETE.getNodeCode().toString()).equals(businessState)) {
             businessWithBLOBs.setEndTime(new Date());
-        }else{
+        } else {
             //回退到未领取状态，清空开始时间和结束时间
-            if(Byte.valueOf(BusinessState.UNCLAIMED.getNodeCode().toString()).equals(businessState)){
+            if (Byte.valueOf(BusinessState.UNCLAIMED.getNodeCode().toString()).equals(businessState)) {
                 businessWithBLOBs.setStartTime(null);
                 businessWithBLOBs.setEndTime(null);
-            }else{
+            } else {
                 //回退到已完成外状态，清空结束时间
                 businessWithBLOBs.setEndTime(null);
             }
@@ -195,11 +195,10 @@ public class BusinessServiceImpl implements BusinessService {
      * @Description: 修改事务成历史记录
      * @Param: [businessDTO, oldBusinessDTO]
      * @Return: java.util.List<com.yusys.agile.businesskanban.domain.BusinessHistoryRecordWithBLOBs>
-     *
      */
     private List<BusinessHistoryRecordWithBLOBs> generateHistory(BusinessDTO businessDTO, BusinessDTO oldBusinessDTO) {
         List<BusinessHistoryRecordWithBLOBs> records = Lists.newArrayList();
-        if(null == businessDTO || null == oldBusinessDTO){
+        if (null == businessDTO || null == oldBusinessDTO) {
             return records;
         }
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
@@ -208,7 +207,7 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getBusinessName(), oldBusinessDTO.getBusinessName())) {
             BusinessHistoryRecordWithBLOBs nameHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.BUSINESSNAME.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.BUSINESSNAME.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             nameHistory.setOldValue(oldBusinessDTO.getBusinessName());
             nameHistory.setNewValue(businessDTO.getBusinessName());
             records.add(nameHistory);
@@ -218,29 +217,29 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getBusinessDesc(), oldBusinessDTO.getBusinessDesc())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.BUSINESSDESC.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.BUSINESSDESC.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(oldBusinessDTO.getBusinessDesc());
             descHistory.setNewValue(businessDTO.getBusinessDesc());
             records.add(descHistory);
         }
 
         //类型
-        Map<Long,String> businessTypeMap = BusinessType.getBusinessTypeMap();
+        Map<Long, String> businessTypeMap = BusinessType.getBusinessTypeMap();
         if (!ObjectUtil.equals(businessDTO.getBusinessType(), oldBusinessDTO.getBusinessType())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.BUSINESSTYPE.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.BUSINESSTYPE.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(businessTypeMap.get(oldBusinessDTO.getBusinessType()));
             descHistory.setNewValue(businessTypeMap.get(businessDTO.getBusinessType()));
             records.add(descHistory);
         }
 
         //状态
-        Map<Byte,String> businessStateMap = BusinessState.getBusinessStateMap();
+        Map<Byte, String> businessStateMap = BusinessState.getBusinessStateMap();
         if (!ObjectUtil.equals(businessDTO.getBusinessState(), oldBusinessDTO.getBusinessState())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.BUSINESSTATE.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.BUSINESSTATE.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(businessStateMap.get(oldBusinessDTO.getBusinessState()));
             descHistory.setNewValue(businessStateMap.get(businessDTO.getBusinessState()));
             records.add(descHistory);
@@ -250,29 +249,29 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getBusinessOwnerName(), oldBusinessDTO.getBusinessOwnerName())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.BUSINESSOWNER.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.BUSINESSOWNER.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(oldBusinessDTO.getBusinessOwnerName());
             descHistory.setNewValue(businessDTO.getBusinessOwnerName());
             records.add(descHistory);
         }
 
         //优先级
-        Map<Byte,String> levelMap = BusinessLevel.getBusinessLevelMap();
+        Map<Byte, String> levelMap = BusinessLevel.getBusinessLevelMap();
         if (!ObjectUtil.equals(businessDTO.getBusinessLevel(), oldBusinessDTO.getBusinessLevel())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.BUSINESSLEVEL.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.BUSINESSLEVEL.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(levelMap.get(oldBusinessDTO.getBusinessLevel()));
             descHistory.setNewValue(levelMap.get(businessDTO.getBusinessLevel()));
             records.add(descHistory);
         }
 
         //重要程度
-        Map<Byte,String> importanceMap = BusinessImportance.getBusinessImportanceMap();
+        Map<Byte, String> importanceMap = BusinessImportance.getBusinessImportanceMap();
         if (!ObjectUtil.equals(businessDTO.getBusinessImportance(), oldBusinessDTO.getBusinessImportance())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.IMPORTANCE.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.IMPORTANCE.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(importanceMap.get(oldBusinessDTO.getBusinessImportance()));
             descHistory.setNewValue(importanceMap.get(businessDTO.getBusinessImportance()));
             records.add(descHistory);
@@ -282,11 +281,11 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getStartTime(), oldBusinessDTO.getStartTime())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.STARTTIME.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.STARTTIME.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(oldBusinessDTO.getStartTime() == null ?
-                    null:format.format(oldBusinessDTO.getStartTime()));
-            descHistory.setNewValue(businessDTO.getStartTime() == null?
-                    null:format.format(businessDTO.getStartTime()));
+                    null : format.format(oldBusinessDTO.getStartTime()));
+            descHistory.setNewValue(businessDTO.getStartTime() == null ?
+                    null : format.format(businessDTO.getStartTime()));
             records.add(descHistory);
         }
 
@@ -294,11 +293,11 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getEndTime(), oldBusinessDTO.getEndTime())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.ENDTIME.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.ENDTIME.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(oldBusinessDTO.getEndTime() == null ?
-                    null:format.format(oldBusinessDTO.getEndTime()));
-            descHistory.setNewValue(businessDTO.getEndTime() == null?
-                    null:format.format(businessDTO.getEndTime()));
+                    null : format.format(oldBusinessDTO.getEndTime()));
+            descHistory.setNewValue(businessDTO.getEndTime() == null ?
+                    null : format.format(businessDTO.getEndTime()));
             records.add(descHistory);
         }
 
@@ -306,7 +305,7 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getPlanWorkload(), oldBusinessDTO.getPlanWorkload())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.PLANWORKLOAD.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.PLANWORKLOAD.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(oldBusinessDTO.getPlanWorkload() == null ? "0" : oldBusinessDTO.getPlanWorkload().toString());
             descHistory.setNewValue(businessDTO.getPlanWorkload() == null ? "0" : businessDTO.getPlanWorkload().toString());
             records.add(descHistory);
@@ -316,9 +315,9 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getActualWorkload(), oldBusinessDTO.getActualWorkload())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.ACTUALWORKLOAD.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
-            descHistory.setOldValue(oldBusinessDTO.getActualWorkload() == null? "0":oldBusinessDTO.getActualWorkload().toString());
-            descHistory.setNewValue(businessDTO.getActualWorkload() == null ? "0":businessDTO.getActualWorkload().toString());
+                            BusinessField.ACTUALWORKLOAD.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
+            descHistory.setOldValue(oldBusinessDTO.getActualWorkload() == null ? "0" : oldBusinessDTO.getActualWorkload().toString());
+            descHistory.setNewValue(businessDTO.getActualWorkload() == null ? "0" : businessDTO.getActualWorkload().toString());
             records.add(descHistory);
         }
 
@@ -326,11 +325,11 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getPlanStartTime(), oldBusinessDTO.getPlanStartTime())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.PLANSTARTTIME.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.PLANSTARTTIME.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(oldBusinessDTO.getPlanStartTime() == null ?
-                    null:format.format(oldBusinessDTO.getPlanStartTime()));
-            descHistory.setNewValue(businessDTO.getPlanStartTime() == null?
-                    null:format.format(businessDTO.getPlanStartTime()));
+                    null : format.format(oldBusinessDTO.getPlanStartTime()));
+            descHistory.setNewValue(businessDTO.getPlanStartTime() == null ?
+                    null : format.format(businessDTO.getPlanStartTime()));
             records.add(descHistory);
         }
 
@@ -338,11 +337,11 @@ public class BusinessServiceImpl implements BusinessService {
         if (!ObjectUtil.equals(businessDTO.getPlanEndTime(), oldBusinessDTO.getPlanEndTime())) {
             BusinessHistoryRecordWithBLOBs descHistory =
                     new BusinessHistoryRecordWithBLOBs(
-                            BusinessField.PLANENDTIME.getDesc(),businessDTO.getBusinessId(),userId,(byte) 0);
+                            BusinessField.PLANENDTIME.getDesc(), businessDTO.getBusinessId(), userId, (byte) 0);
             descHistory.setOldValue(oldBusinessDTO.getPlanEndTime() == null ?
-                    null:format.format(oldBusinessDTO.getPlanEndTime()));
-            descHistory.setNewValue(businessDTO.getPlanEndTime() == null?
-                    null:format.format(businessDTO.getPlanEndTime()));
+                    null : format.format(oldBusinessDTO.getPlanEndTime()));
+            descHistory.setNewValue(businessDTO.getPlanEndTime() == null ?
+                    null : format.format(businessDTO.getPlanEndTime()));
             records.add(descHistory);
         }
         return records;
@@ -352,16 +351,16 @@ public class BusinessServiceImpl implements BusinessService {
     public List<BusinessHistoryRecordDTO> getByBusinessId(Long businessId, Integer pageNum, Integer pageSize) {
 
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum,pageSize);
+            PageHelper.startPage(pageNum, pageSize);
         }
         List<BusinessHistoryRecordDTO> historyRecordDTOS = Lists.newArrayList();
-        BusinessHistoryRecordExample  historyRecordExample = new BusinessHistoryRecordExample();
+        BusinessHistoryRecordExample historyRecordExample = new BusinessHistoryRecordExample();
         historyRecordExample.createCriteria().andBusinessIdEqualTo(businessId);
         List<BusinessHistoryRecordWithBLOBs> businessHistoryRecordWithBLOBs = businessHistoryRecordMapper.selectByExampleWithBLOBs(historyRecordExample);
-        if(businessHistoryRecordWithBLOBs.isEmpty()){
+        if (businessHistoryRecordWithBLOBs.isEmpty()) {
             return historyRecordDTOS;
         }
-        ReflectUtil.copyProperties(businessHistoryRecordWithBLOBs,historyRecordDTOS);
+        ReflectUtil.copyProperties(businessHistoryRecordWithBLOBs, historyRecordDTOS);
         return historyRecordDTOS;
     }
 
@@ -371,79 +370,79 @@ public class BusinessServiceImpl implements BusinessService {
         BusinessExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.getValue());
 
-        if(null != businessDTO.getKanbanId()){
+        if (null != businessDTO.getKanbanId()) {
             criteria.andKanbanIdEqualTo(businessDTO.getKanbanId());
         }
 
-        if(businessDTO.getBusinessName() != null){
+        if (businessDTO.getBusinessName() != null) {
             criteria.andBusinessNameEqualTo(businessDTO.getBusinessName());
         }
-        if(businessDTO.getBusinessType() != null){
+        if (businessDTO.getBusinessType() != null) {
             criteria.andBusinessTypeEqualTo(businessDTO.getBusinessType());
         }
-        if(businessDTO.getBusinessState() != null){
+        if (businessDTO.getBusinessState() != null) {
             criteria.andBusinessStateEqualTo(businessDTO.getBusinessState());
         }
-        if(businessDTO.getBusinessOwner() != null){
+        if (businessDTO.getBusinessOwner() != null) {
             criteria.andBusinessOwnerEqualTo(businessDTO.getBusinessOwner());
         }
-        if(businessDTO.getPlanStartTime() != null && businessDTO.getPlanStartTimeEnd() != null){
+        if (businessDTO.getPlanStartTime() != null && businessDTO.getPlanStartTimeEnd() != null) {
             criteria.andPlanStartTimeBetween(businessDTO.getPlanStartTime(), businessDTO.getPlanStartTimeEnd());
         }
-        if(businessDTO.getPlanEndTime() != null && businessDTO.getPlanEndTimeEnd() != null){
+        if (businessDTO.getPlanEndTime() != null && businessDTO.getPlanEndTimeEnd() != null) {
             criteria.andPlanEndTimeBetween(businessDTO.getPlanEndTime(), businessDTO.getPlanEndTimeEnd());
         }
 
         example.setOrderByClause("update_time desc,create_time desc");
         List<BusinessWithBLOBs> business = businessMapper.selectByExampleWithBLOBs(example);
         List<BusinessResultDTO> array = Lists.newArrayList();
-        if(CollectionUtils.isEmpty(business)){
+        if (CollectionUtils.isEmpty(business)) {
             return array;
         }
         //处理人员
         List<Long> userIds = Lists.newArrayList();
-        business.forEach(bloBs->{
-            if(bloBs.getBusinessOwner() != null){
-                if(!userIds.contains(bloBs.getBusinessOwner())){
+        business.forEach(bloBs -> {
+            if (bloBs.getBusinessOwner() != null) {
+                if (!userIds.contains(bloBs.getBusinessOwner())) {
                     userIds.add(bloBs.getBusinessOwner());
                 }
             }
         });
-        Map<Long,String> userMap = new HashMap<>();
-        if(CollectionUtils.isNotEmpty(userIds)){
+        Map<Long, String> userMap = new HashMap<>();
+        if (CollectionUtils.isNotEmpty(userIds)) {
             Collections.sort(userIds);
             List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
-            ssoUsers.forEach(user->{
-                userMap.put(user.getUserId(),user.getUserName());
+            ssoUsers.forEach(user -> {
+                userMap.put(user.getUserId(), user.getUserName());
             });
         }
         //拼装数据
         //如果按照类型排序
-        if(businessDTO.getSelectType()==0){
+        if (businessDTO.getSelectType() == 0) {
             BusinessType[] values = BusinessType.values();
-            for(BusinessType type:values){
-                List<BusinessWithBLOBs>  bsList = new ArrayList<>();
+            for (BusinessType type : values) {
+                List<BusinessWithBLOBs> bsList = new ArrayList<>();
                 BusinessResultDTO result = new BusinessResultDTO();
-                for(BusinessWithBLOBs bloBs: business){
-                    if(type.getNodeCode().equals(bloBs.getBusinessType())){
+                for (BusinessWithBLOBs bloBs : business) {
+                    if (type.getNodeCode().equals(bloBs.getBusinessType())) {
                         bloBs.setBusinessOwnerName(userMap.get(bloBs.getBusinessOwner()));
                         bsList.add(bloBs);
                     }
                 }
-                if(CollectionUtils.isNotEmpty(bsList)){
+                if (CollectionUtils.isNotEmpty(bsList)) {
                     result.setId(type.getNodeCode());
                     result.setTitle(type.getNodeMsg());
-                    List<BusinessDTO> businessDTOs = ReflectUtil.copyProperties4List(bsList,BusinessDTO.class);
+                    List<BusinessDTO> businessDTOs = ReflectUtil.copyProperties4List(bsList, BusinessDTO.class);
                     result.setChildren(businessDTOs);
                     array.add(result);
                 }
             }
             //根据人员
-        }else if(businessDTO.getSelectType()==1){
+        } else if (businessDTO.getSelectType() == 1) {
             //找到未领取的事务
             List<BusinessWithBLOBs> unclaimed = new ArrayList<>();
-            for(BusinessWithBLOBs bloBs:business){
-                if(bloBs.getBusinessOwner() == null || bloBs.getBusinessOwner() == -1){
+            for (BusinessWithBLOBs bloBs : business) {
+                if (bloBs.getBusinessOwner() == null || bloBs.getBusinessOwner() == -1) {
                     unclaimed.add(bloBs);
                 }
             }
@@ -451,28 +450,28 @@ public class BusinessServiceImpl implements BusinessService {
             result.setId(-1L);
             result.setTitle(BusinessState.UNCLAIMED.getNodeMsg());
             List<BusinessDTO> businessDTOs = Lists.newArrayList();
-            ReflectUtil.copyProperties(unclaimed,businessDTOs);
+            ReflectUtil.copyProperties(unclaimed, businessDTOs);
             result.setChildren(businessDTOs);
             array.add(result);
-            if(unclaimed.size() == business.size()){
+            if (unclaimed.size() == business.size()) {
                 return array;
             }
             //根据人员排事务
             //已领取的事务
-            for(Long userId : userIds){
+            for (Long userId : userIds) {
                 List<BusinessWithBLOBs> claimed = Lists.newArrayList();
-                for(BusinessWithBLOBs bloBs:business){
-                    if(userId.equals(bloBs.getBusinessOwner())){
+                for (BusinessWithBLOBs bloBs : business) {
+                    if (userId.equals(bloBs.getBusinessOwner())) {
                         bloBs.setBusinessOwnerName(userMap.get(userId));
                         claimed.add(bloBs);
                     }
                 }
-                if(CollectionUtils.isNotEmpty(claimed)){
+                if (CollectionUtils.isNotEmpty(claimed)) {
                     String userName = userMap.get(userId);
                     BusinessResultDTO businessResultDTO = new BusinessResultDTO();
                     businessResultDTO.setId(userId);
                     businessResultDTO.setTitle(userName);
-                    List<BusinessDTO> businessDTOS = ReflectUtil.copyProperties4List(claimed,BusinessDTO.class);
+                    List<BusinessDTO> businessDTOS = ReflectUtil.copyProperties4List(claimed, BusinessDTO.class);
                     businessResultDTO.setChildren(businessDTOS);
                     array.add(businessResultDTO);
                 }
@@ -485,41 +484,41 @@ public class BusinessServiceImpl implements BusinessService {
     public List<BusinessDTO> getBusinessInfList(BusinessDTO businessDTO) {
 
         if (null != businessDTO.getPageNum() && null != businessDTO.getPageSize()) {
-            PageHelper.startPage(businessDTO.getPageNum(),businessDTO.getPageSize());
+            PageHelper.startPage(businessDTO.getPageNum(), businessDTO.getPageSize());
         }
         BusinessExample example = new BusinessExample();
         BusinessExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.getValue());
-        if(null != businessDTO.getBusinessName()){
+        if (null != businessDTO.getBusinessName()) {
             criteria.andBusinessNameEqualTo(businessDTO.getBusinessName());
         }
-        if(null != businessDTO.getBusinessType()){
+        if (null != businessDTO.getBusinessType()) {
             criteria.andBusinessTypeEqualTo(businessDTO.getBusinessType());
         }
-        if(null != businessDTO.getBusinessState()){
+        if (null != businessDTO.getBusinessState()) {
             criteria.andBusinessStateEqualTo(businessDTO.getBusinessState());
         }
-        if(null != businessDTO.getBusinessOwner()){
+        if (null != businessDTO.getBusinessOwner()) {
             criteria.andBusinessOwnerEqualTo(businessDTO.getBusinessOwner());
         }
-        if(null != businessDTO.getPlanStartTime() && null != businessDTO.getPlanStartTimeEnd()){
+        if (null != businessDTO.getPlanStartTime() && null != businessDTO.getPlanStartTimeEnd()) {
             criteria.andPlanStartTimeBetween(businessDTO.getPlanStartTime(), businessDTO.getPlanStartTimeEnd());
         }
-        if(null != businessDTO.getPlanEndTime() &&  null != businessDTO.getPlanEndTimeEnd()){
+        if (null != businessDTO.getPlanEndTime() && null != businessDTO.getPlanEndTimeEnd()) {
             criteria.andPlanEndTimeBetween(businessDTO.getPlanEndTime(), businessDTO.getPlanEndTimeEnd());
         }
 
-        if(null != businessDTO.getKanbanId()){
+        if (null != businessDTO.getKanbanId()) {
             criteria.andKanbanIdEqualTo(businessDTO.getKanbanId());
         }
 
         example.setOrderByClause("create_time desc");
         List<BusinessWithBLOBs> business = businessMapper.selectByExampleWithBLOBs(example);
         List<BusinessDTO> businessDTOList = Lists.newArrayList();
-        try{
-            businessDTOList = ReflectUtil.copyProperties4List(business,BusinessDTO.class);
-        }catch(Exception e){
-            loggr.error("事务属性拷贝失败！{}",e.getMessage());
+        try {
+            businessDTOList = ReflectUtil.copyProperties4List(business, BusinessDTO.class);
+        } catch (Exception e) {
+            loggr.error("事务属性拷贝失败！{}", e.getMessage());
             throw new BusinessException("事务属性拷贝失败！");
         }
         return businessDTOList;
@@ -527,11 +526,11 @@ public class BusinessServiceImpl implements BusinessService {
 
     @Override
     public JSONObject getFixedIterms() {
-        JSONObject jsonResult = new  JSONObject();
-        jsonResult.put("importance",dealMap(BusinessImportance.getBusinessImportanceMap(),null));
-        jsonResult.put("level",dealMap(BusinessLevel.getBusinessLevelMap(),null));
-        jsonResult.put("state",dealMap(BusinessState.getBusinessStateMap(),null));
-        jsonResult.put("type",dealMap(null,BusinessType.getBusinessTypeMap()));
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("importance", dealMap(BusinessImportance.getBusinessImportanceMap(), null));
+        jsonResult.put("level", dealMap(BusinessLevel.getBusinessLevelMap(), null));
+        jsonResult.put("state", dealMap(BusinessState.getBusinessStateMap(), null));
+        jsonResult.put("type", dealMap(null, BusinessType.getBusinessTypeMap()));
         return jsonResult;
     }
 
@@ -553,26 +552,26 @@ public class BusinessServiceImpl implements BusinessService {
         BusinessExample example = new BusinessExample();
         BusinessExample.Criteria criteria = example.createCriteria();
         criteria.andBusinessOwnerEqualTo(userId).andStateEqualTo(StateEnum.U.getValue());
-        if(tenantCode != null && !tenantCode.isEmpty()){
+        if (tenantCode != null && !tenantCode.isEmpty()) {
             example.createCriteria().andTenantCodeEqualTo(tenantCode);
         }
         example.setOrderByClause("create_time desc");
 
         List<BusinessWithBLOBs> business = businessMapper.selectByExampleWithBLOBs(example);
         List<BusinessDTO> businessDTOList = Lists.newArrayList();
-        try{
-            if(CollectionUtils.isNotEmpty(business)){
-                for (BusinessWithBLOBs businessWithBLOBs : business){
+        try {
+            if (CollectionUtils.isNotEmpty(business)) {
+                for (BusinessWithBLOBs businessWithBLOBs : business) {
                     Map businessTypeMap = new HashMap<String, String>();
-                    BusinessDTO businessDTO = ReflectUtil.copyProperties(businessWithBLOBs,BusinessDTO.class);
-                    businessTypeMap.put("name",BusinessType.getNodeMsg(businessDTO.getBusinessType()));
-                    businessTypeMap.put("id",businessDTO.getBusinessType());
+                    BusinessDTO businessDTO = ReflectUtil.copyProperties(businessWithBLOBs, BusinessDTO.class);
+                    businessTypeMap.put("name", BusinessType.getNodeMsg(businessDTO.getBusinessType()));
+                    businessTypeMap.put("id", businessDTO.getBusinessType());
                     businessDTO.setBusinessTypeMap(businessTypeMap);
                     businessDTOList.add(businessDTO);
                 }
             }
-        }catch(Exception e){
-            loggr.error("事务属性拷贝失败！{}",e.getMessage());
+        } catch (Exception e) {
+            loggr.error("事务属性拷贝失败！{}", e.getMessage());
             throw new BusinessException("事务属性拷贝失败！");
         }
 
@@ -585,37 +584,37 @@ public class BusinessServiceImpl implements BusinessService {
      * @Description 获取iness枚举的名称
      * @Return IssueListDTO
      */
-    private BusinessDTO getBusinessTypeEnumName(BusinessWithBLOBs businessWithBLOBs,BusinessDTO businessDTO){
-        return null ;
+    private BusinessDTO getBusinessTypeEnumName(BusinessWithBLOBs businessWithBLOBs, BusinessDTO businessDTO) {
+        return null;
     }
 
 
-    public JSONArray dealMap (Map<Byte,String> byteMap,Map<Long,String> longMap){
-        return getObjects(byteMap,longMap);
+    public JSONArray dealMap(Map<Byte, String> byteMap, Map<Long, String> longMap) {
+        return getObjects(byteMap, longMap);
     }
 
-    public static JSONArray getObjects(Map<Byte,String> byteMap,Map<Long,String> longMap) {
+    public static JSONArray getObjects(Map<Byte, String> byteMap, Map<Long, String> longMap) {
         JSONArray jsonArray = new JSONArray();
-        if(null == byteMap && null == longMap){
+        if (null == byteMap && null == longMap) {
             return jsonArray;
         }
-        if(null != byteMap){
-            for (Byte key:byteMap.keySet()) {
+        if (null != byteMap) {
+            for (Byte key : byteMap.keySet()) {
                 JSONObject jsonObject1 = new JSONObject();
-                jsonObject1.put("key",key);
-                jsonObject1.put("value",byteMap.get(key));
+                jsonObject1.put("key", key);
+                jsonObject1.put("value", byteMap.get(key));
                 jsonArray.add(jsonObject1);
             }
         }
-        if(null != longMap){
-            for (Long key:longMap.keySet()) {
+        if (null != longMap) {
+            for (Long key : longMap.keySet()) {
                 JSONObject jsonObject1 = new JSONObject();
-                jsonObject1.put("key",key);
-                jsonObject1.put("value",longMap.get(key));
+                jsonObject1.put("key", key);
+                jsonObject1.put("value", longMap.get(key));
                 jsonArray.add(jsonObject1);
             }
         }
-        return  jsonArray;
+        return jsonArray;
     }
 
 

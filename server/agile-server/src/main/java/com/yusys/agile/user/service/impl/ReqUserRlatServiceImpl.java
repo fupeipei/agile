@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * 敏捷业务用户关系实现类
  *
- *
  * @create 2020-08-12 16:35
  */
 @Service("reqUserRlatService")
@@ -37,7 +36,6 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
      *
      * @param reqUserRlats
      * @return void
-     *
      * @date 2020/8/12
      */
     @Override
@@ -51,7 +49,6 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
      *
      * @param subjectId
      * @return void
-     *
      * @date 2020/8/12
      */
     @Override
@@ -66,7 +63,6 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
      *
      * @param subjectId
      * @return java.util.List<com.yusys.agile.user.domain.ReqUserRlat>
-     *
      * @date 2020/8/13
      */
     @Override
@@ -85,7 +81,6 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
      *
      * @param rlats
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-     *
      * @date 2021/3/9
      */
     @Override
@@ -110,12 +105,12 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
     /**
      * 功能描述: 根据用户id获取业务主键
      *
-     * @date 2020/12/1
      * @param userId
      * @return java.util.List<Long>
+     * @date 2020/12/1
      */
     @Override
-    public List<Long> listReqUserRlatByUserId(Long userId,String tenantCode) {
+    public List<Long> listReqUserRlatByUserId(Long userId, String tenantCode) {
         ReqUserRlatExample example = new ReqUserRlatExample();
         ReqUserRlatExample.Criteria criteria = example.createCriteria();
         criteria.andUserIdEqualTo(userId).andStateEqualTo(StateEnum.U.getValue()).andUserRelateTypeEqualTo(AgileUserRlatEnum.REVIEW.CODE);

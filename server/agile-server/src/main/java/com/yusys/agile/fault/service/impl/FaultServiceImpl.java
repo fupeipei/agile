@@ -72,7 +72,6 @@ import java.util.*;
 /**
  * 缺陷service实现类
  *
-
  * @create 2020-04-10 16:28
  */
 @Service("faultService")
@@ -159,8 +158,8 @@ public class FaultServiceImpl implements FaultService {
 
         //邮件发送
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
-        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue,NumberConstant.ZERO, userInfo);
-        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE,issueMailSendDto);
+        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.ZERO, userInfo);
+        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
 
     }
 
@@ -169,7 +168,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueId
      * @return void
-
      * @date 2020/4/11
      */
     @Override
@@ -185,8 +183,8 @@ public class FaultServiceImpl implements FaultService {
         commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
         //邮件发送
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
-        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue,NumberConstant.TWO, userInfo);
-        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE,issueMailSendDto);
+        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
+        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
     }
 
 
@@ -195,7 +193,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueId
      * @return com.yusys.agile.fault.dto.FaultDTO
-
      * @date 2020/4/11
      */
     @Override
@@ -268,7 +265,6 @@ public class FaultServiceImpl implements FaultService {
      * @param key
      * @param fieldCode
      * @return java.lang.String
-
      * @date 2021/2/25
      */
     private String getOperationValue(Long key, String fieldCode) {
@@ -294,7 +290,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param userId
      * @return java.lang.String
-
      * @date 2020/4/13
      */
     private String getUserName(Long userId) {
@@ -314,7 +309,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param faultDTO
      * @return void
-
      * @date 2020/4/13
      */
     @Override
@@ -373,7 +367,7 @@ public class FaultServiceImpl implements FaultService {
                 issueMapper.updateByPrimaryKeySelective(reallyWorkLoadFault);
             } else {
                 // 修改迭代的话后台直接要把修改人清掉，状态改为待修复
-                if (null != faultDTO.getSprintId() && null != oldFault.getSprintId()&& !faultDTO.getSprintId().equals(oldFault.getSprintId())
+                if (null != faultDTO.getSprintId() && null != oldFault.getSprintId() && !faultDTO.getSprintId().equals(oldFault.getSprintId())
                         && (!FaultStatusEnum.NEW.CODE.equals(stageId) || null != handler)) {
                     stageId = FaultStatusEnum.NEW.CODE;
                     fault.setStageId(stageId);
@@ -427,8 +421,8 @@ public class FaultServiceImpl implements FaultService {
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
-        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(fault,NumberConstant.ONE, userInfo);
-        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE,issueMailSendDto);
+        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(fault, NumberConstant.ONE, userInfo);
+        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
     }
 
 
@@ -439,7 +433,6 @@ public class FaultServiceImpl implements FaultService {
      * @param to
      * @param handler
      * @return com.yusys.agile.issue.domain.Issue
-
      * @date 2021/2/25
      */
     private Issue generateFaultByStageId(Issue fault, Long to, Long handler, Issue oldFault) {
@@ -483,7 +476,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param
      * @return java.util.List<com.yusys.agile.fault.domain.FaultLevel>
-
      * @date 2020/4/11
      */
     @Override
@@ -498,7 +490,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param
      * @return java.util.List<com.yusys.agile.fault.domain.FaultType>
-
      * @date 2020/4/11
      */
     @Override
@@ -513,7 +504,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-
      * @date 2020/4/14
      */
     @Override
@@ -528,7 +518,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-
      * @date 2020/4/14
      */
     @Override
@@ -542,7 +531,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-
      * @date 2020/4/14
      */
     @Override
@@ -566,7 +554,6 @@ public class FaultServiceImpl implements FaultService {
      * @param pageNum    每页数量
      * @param pageSize   页数
      * @return java.util.List<com.yusys.agile.fault.dto.FaultDTO>
-
      * @date 2020/4/14
      * * @param faultId     缺陷id
      * * @param faultName   缺陷名称
@@ -653,7 +640,6 @@ public class FaultServiceImpl implements FaultService {
      * @param pageNum
      * @param pageSize
      * @return java.util.List<IssueDTO>
-
      * @date 2020/4/14
      */
     @Override
@@ -715,7 +701,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueDTO
      * @return void
-
      * @date 2020/4/26
      */
     @Override
@@ -764,7 +749,7 @@ public class FaultServiceImpl implements FaultService {
             // 工时设置，在拖拽中时，不涉及到工时的设置，拖拽已完成时，如果实际工时为0那么将实际工时=预计工时
             if (FaultStatusEnum.FIXED.CODE.equals(to)) {
                 Integer planWorkload = oldFault.getPlanWorkload();
-                if (null == oldFault.getReallyWorkload()  || 0 == oldFault.getReallyWorkload()) {
+                if (null == oldFault.getReallyWorkload() || 0 == oldFault.getReallyWorkload()) {
                     record.setReallyWorkload(planWorkload);
                 }
                 // 拖到已修复时要把剩余时长设为0
@@ -788,8 +773,8 @@ public class FaultServiceImpl implements FaultService {
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
-        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(record,NumberConstant.THREE, userInfo);
-        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE,issueMailSendDto);
+        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(record, NumberConstant.THREE, userInfo);
+        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
     }
 
     /**
@@ -799,7 +784,6 @@ public class FaultServiceImpl implements FaultService {
      * @param bugId   yuIt id
      * @param handler 处理人
      * @return void
-
      * @date 2021/2/22
      */
     private void syncFixedFault(Long issueId, Long bugId, Long handler) throws Exception {
@@ -822,7 +806,6 @@ public class FaultServiceImpl implements FaultService {
      * @param faultList
      * @param projectId
      * @return java.util.List<com.yusys.agile.fault.dto.FaultDTO>
-
      * @date 2020/4/14
      */
     private List<IssueDTO> assembleFaultDTOs(List<IssueDTO> faultList, Long projectId) {
@@ -873,7 +856,6 @@ public class FaultServiceImpl implements FaultService {
      * @param userMap
      * @param userId
      * @return java.lang.String
-
      * @date 2021/2/1
      */
     private String getUserNameById(Map<Long, String> userMap, Long userId) {
@@ -903,7 +885,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param projectId
      * @return java.util.Map<java.lang.Long, com.yusys.portal.model.facade.entity.SsoUser>
-
      * @date 2020/4/14
      */
     @Override
@@ -919,9 +900,9 @@ public class FaultServiceImpl implements FaultService {
 
     /**
      * 功能描述: 根据用户集合获取所有的用户数据
+     *
      * @param UserIdList
      * @return java.util.Map<java.lang.Long, com.yusys.portal.model.facade.entity.SsoUser>
-     *
      * @date 2020/10/21
      */
     @Override
@@ -940,7 +921,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param issueDTO
      * @return void
-
      * @date 2021/2/1
      */
     @Override
@@ -962,7 +942,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param createUserIds
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-
      * @date 2020/4/14
      */
     private List<UserDTO> getUserDTOS(List<Long> createUserIds) {
@@ -982,7 +961,6 @@ public class FaultServiceImpl implements FaultService {
      *
      * @param users
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>
-
      * @date 2020/4/14
      */
     private List<UserDTO> assembleUserDTOs(List<SsoUser> users) {
@@ -996,24 +974,23 @@ public class FaultServiceImpl implements FaultService {
     }
 
     /**
-     * @description 查询未绑定故事且状态是未关闭的缺陷
-     *  
-     * @date 2020/08/31
      * @param projectId
      * @param sprintId
      * @return
+     * @description 查询未绑定故事且状态是未关闭的缺陷
+     * @date 2020/08/31
      */
     @Override
     public List<IssueDTO> getUnBindStoryAndUnFinishedFaultList(Long projectId, Long sprintId) {
         List<IssueDTO> issueList = null;
         IssueExample issueExample = new IssueExample();
         issueExample.createCriteria()
-            .andProjectIdEqualTo(projectId)
+                .andProjectIdEqualTo(projectId)
                 .andSprintIdEqualTo(sprintId)
-                    .andIssueTypeEqualTo(IssueTypeEnum.TYPE_FAULT.CODE)
-                        .andStateEqualTo(StateEnum.U.getValue())
-                            .andStageIdNotEqualTo(FaultStatusEnum.CLOSED.CODE)
-                                .andParentIdIsNull();
+                .andIssueTypeEqualTo(IssueTypeEnum.TYPE_FAULT.CODE)
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andStageIdNotEqualTo(FaultStatusEnum.CLOSED.CODE)
+                .andParentIdIsNull();
         List<Issue> issues = issueMapper.selectByExample(issueExample);
         if (CollectionUtils.isNotEmpty(issues)) {
             try {
@@ -1038,13 +1015,13 @@ public class FaultServiceImpl implements FaultService {
             //返回结果集
             if (count <= THRESHOLD) {
                 List<Issue> issues = issueMapper.selectByExample(issueExample);
-                Map<String,List<Object>> faultMapList = Maps.newHashMap();
+                Map<String, List<Object>> faultMapList = Maps.newHashMap();
                 dealFaultList(faultMapList, issues);
                 result = calculateFaultResult(faultMapList, (int) count);
             } else {
-                Map<String,List<Object>> faultMapList = Maps.newHashMap();
+                Map<String, List<Object>> faultMapList = Maps.newHashMap();
                 int page = (int) ((int) count % THRESHOLD == 0 ? count / THRESHOLD : count / THRESHOLD + 1);
-                for (int i = 0; i < page; i++){
+                for (int i = 0; i < page; i++) {
                     int start = i * THRESHOLD;
                     List<Issue> issues = issueMapper.getFaultIssuesByPage(projectId, start, THRESHOLD);
                     dealFaultList(faultMapList, issues);
@@ -1056,31 +1033,29 @@ public class FaultServiceImpl implements FaultService {
     }
 
     /**
-     * @description 组装缺陷查询条件
-     *  
-     * @date 2020/09/07
      * @param projectId
      * @return
+     * @description 组装缺陷查询条件
+     * @date 2020/09/07
      */
     private IssueExample assembleFaultConditions(Long projectId) {
         IssueExample issueExample = new IssueExample();
         issueExample.setOrderByClause("issue_id asc");
         issueExample.createCriteria()
-            .andProjectIdEqualTo(projectId)
+                .andProjectIdEqualTo(projectId)
                 .andIssueTypeEqualTo(IssueTypeEnum.TYPE_FAULT.CODE)
-                    .andStateEqualTo(StateEnum.U.getValue());
+                .andStateEqualTo(StateEnum.U.getValue());
         return issueExample;
     }
 
     /**
-     * @description 处理缺陷集合
-     *  
-     * @date 2020/09/08
      * @param faultMap
      * @param issues
      * @return
+     * @description 处理缺陷集合
+     * @date 2020/09/08
      */
-    private Map<String,List<Object>> dealFaultList(Map<String,List<Object>> faultMap, List<Issue> issues) {
+    private Map<String, List<Object>> dealFaultList(Map<String, List<Object>> faultMap, List<Issue> issues) {
         if (CollectionUtils.isNotEmpty(issues)) {
             for (Issue issue : issues) {
                 Long issueId = issue.getIssueId();
@@ -1090,7 +1065,7 @@ public class FaultServiceImpl implements FaultService {
                     String faultState = String.valueOf(stageId);
                     if (FaultStatusEnum.NEW.CODE.equals(stageId)) {
                         dealFaultMap(faultMap, faultState, issueId);
-                    } else if (FaultStatusEnum.PROCESSING.CODE.equals(stageId)){
+                    } else if (FaultStatusEnum.PROCESSING.CODE.equals(stageId)) {
                         dealFaultMap(faultMap, faultState, issueId);
                     } else if (FaultStatusEnum.FIXED.CODE.equals(stageId)) {
                         dealFaultMap(faultMap, faultState, issueId);
@@ -1106,14 +1081,13 @@ public class FaultServiceImpl implements FaultService {
     }
 
     /**
-     * @description 处理缺陷Map
-     *  
-     * @date 2020/09/08
      * @param faultMap
      * @param faultState
      * @param issueId
+     * @description 处理缺陷Map
+     * @date 2020/09/08
      */
-    private void dealFaultMap(Map<String,List<Object>> faultMap, String faultState, Long issueId) {
+    private void dealFaultMap(Map<String, List<Object>> faultMap, String faultState, Long issueId) {
         LOGGER.info("dealFaultMap before param faultMap:{}, faultState:{},issueId:{}", faultMap, faultState, issueId);
         if (faultMap.containsKey(faultState)) {
             List<Object> faultList = faultMap.get(faultState);
@@ -1127,18 +1101,17 @@ public class FaultServiceImpl implements FaultService {
     }
 
     /**
-     * @description 计算缺陷结果
-     *  
-     * @date 2020/09/08
      * @param faultMapList
      * @param size
      * @return
+     * @description 计算缺陷结果
+     * @date 2020/09/08
      */
-    private Map<String,Object> calculateFaultResult(Map<String,List<Object>> faultMapList, int size) {
-        Map<String,Object> result = new HashMap<>();
+    private Map<String, Object> calculateFaultResult(Map<String, List<Object>> faultMapList, int size) {
+        Map<String, Object> result = new HashMap<>();
         result.put(TOTAL, size);
         if (MapUtils.isNotEmpty(faultMapList)) {
-            for (Map.Entry<String, List<Object>> entry : faultMapList.entrySet()){
+            for (Map.Entry<String, List<Object>> entry : faultMapList.entrySet()) {
                 String key = entry.getKey();
                 List<Object> value = entry.getValue();
                 LOGGER.info("calculateFaultResult key:{},value:{}", key, value);
@@ -1159,31 +1132,30 @@ public class FaultServiceImpl implements FaultService {
     }
 
     /**
-     * @description 补全字段为空的值为0
-     *  
-     * @date 2020/09/09
      * @param result
+     * @description 补全字段为空的值为0
+     * @date 2020/09/09
      */
-    private void completeResultMap(Map<String,Object> result) {
+    private void completeResultMap(Map<String, Object> result) {
         if (!result.containsKey(String.valueOf(FaultStatusEnum.NEW.CODE))) {
             result.put(String.valueOf(FaultStatusEnum.NEW.CODE), DEFAULT_NUMBER_ZERO);
         }
-        if (!result.containsKey(String.valueOf(FaultStatusEnum.PROCESSING.CODE))){
+        if (!result.containsKey(String.valueOf(FaultStatusEnum.PROCESSING.CODE))) {
             result.put(String.valueOf(FaultStatusEnum.PROCESSING.CODE), DEFAULT_NUMBER_ZERO);
         }
-        if (!result.containsKey(String.valueOf(FaultStatusEnum.FIXED.CODE))){
+        if (!result.containsKey(String.valueOf(FaultStatusEnum.FIXED.CODE))) {
             result.put(String.valueOf(FaultStatusEnum.FIXED.CODE), DEFAULT_NUMBER_ZERO);
         }
-        if (!result.containsKey(String.valueOf(FaultStatusEnum.CHECK.CODE))){
+        if (!result.containsKey(String.valueOf(FaultStatusEnum.CHECK.CODE))) {
             result.put(String.valueOf(FaultStatusEnum.CHECK.CODE), DEFAULT_NUMBER_ZERO);
         }
-        if (!result.containsKey(String.valueOf(FaultStatusEnum.CLOSED.CODE))){
+        if (!result.containsKey(String.valueOf(FaultStatusEnum.CLOSED.CODE))) {
             result.put(String.valueOf(FaultStatusEnum.CLOSED.CODE), DEFAULT_NUMBER_ZERO);
         }
-        if (!result.containsKey(TOTAL)){
+        if (!result.containsKey(TOTAL)) {
             result.put(TOTAL, DEFAULT_NUMBER_ZERO);
         }
-        if (!result.containsKey(REPAIR_RATE)){
+        if (!result.containsKey(REPAIR_RATE)) {
             result.put(REPAIR_RATE, String.valueOf(DEFAULT_NUMBER_ZERO));
         }
     }

@@ -6,22 +6,20 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
-
  * @Date 2020/4/30
  * @Description 看板故事及任务信息查询
  */
 public interface TaskBoardMapper {
 
     /**
-
-     * @Date 2020/4/30
-     * @Description 看板故事及任务信息查询
-     * @param sprintId 迭代id
-     * @param storyKeyWord  故事id或名称
+     * @param sprintId     迭代id
+     * @param storyKeyWord 故事id或名称
      * @param moduleIds    模块
      * @param taskKeyWord  任务id或名称
      * @param userIds      用户id
      * @param taskTypeIds  任务类型
+     * @Date 2020/4/30
+     * @Description 看板故事及任务信息查询
      * @Return java.util.List<com.yusys.agile.board.domain.TaskBoardUnionItem>
      */
     List<TaskBoardUnionItem> search(@Param("sprintId") Long sprintId, @Param("storyKeyWord") String storyKeyWord,

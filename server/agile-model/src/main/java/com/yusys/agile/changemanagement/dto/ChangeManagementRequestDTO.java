@@ -3,7 +3,6 @@ package com.yusys.agile.changemanagement.dto;
 /**
  * 变更请求DTO
  *
- *
  * @create 2020-11-30 10:01
  */
 public class ChangeManagementRequestDTO {

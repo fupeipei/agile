@@ -3,7 +3,6 @@ package com.yusys.agile.review.dto;
 /**
  * 校验故事能否加入迭代结果DTO
  *
- *
  * @create 2020-09-10 15:35
  */
 public class StoryCheckResultDTO {

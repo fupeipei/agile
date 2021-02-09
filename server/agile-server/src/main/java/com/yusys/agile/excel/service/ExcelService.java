@@ -17,33 +17,36 @@ public interface ExcelService {
 
     /**
      * 功能描述: 下载模版
-     * @date 2021/2/2
+     *
      * @param excelType
      * @param projectId
      * @param request
      * @param response
      * @return void
+     * @date 2021/2/2
      */
-    void downloadTemplateByExcelType(Byte excelType, Long projectId, Long sprintId,HttpServletRequest request, HttpServletResponse response) throws Exception;
+    void downloadTemplateByExcelType(Byte excelType, Long projectId, Long sprintId, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     /**
      * 功能描述: 导入excel
-     * @date 2021/2/2
+     *
      * @param excelType
      * @param projectId
      * @param request
      * @param response
      * @return void
+     * @date 2021/2/2
      */
     ControllerResponse importExcel(Byte excelType, Long projectId, Long sprintId, MultipartHttpServletRequest multiReq, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     /**
      * 功能描述: 导出工作项数据
-     * @date 2021/2/2
+     *
      * @param issueType
      * @param projectId
      * @param map
      * @return Workbook
+     * @date 2021/2/2
      */
-    Workbook exportIssueDatas(Byte issueType, Long projectId,  Map<String,Object> map) throws Exception;
+    Workbook exportIssueDatas(Byte issueType, Long projectId, Map<String, Object> map) throws Exception;
 }

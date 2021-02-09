@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * 迭代DTO
  *
-
  * @create 2020-04-10 17:24
  */
 public class SprintDTO {
@@ -104,7 +103,7 @@ public class SprintDTO {
      */
     private String sprintType;
     /**
-     *迭代下关联的故事IDS
+     * 迭代下关联的故事IDS
      */
     private List<Long> storyIds;
 

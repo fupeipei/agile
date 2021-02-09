@@ -3,7 +3,6 @@ package com.yusys.agile.issue.dto;
 import java.util.List;
 
 /**
- *
  * @description
  * @date 2020/10/23
  */

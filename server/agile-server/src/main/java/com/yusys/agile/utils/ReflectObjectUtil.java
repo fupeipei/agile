@@ -9,15 +9,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *   : wsh
+ * : wsh
+ *
  * @Description: 反射工具类
  * @modefy 添加属性类型的判断
  */
 public class ReflectObjectUtil {
 
-    private ReflectObjectUtil(){
+    private ReflectObjectUtil() {
 
     }
+
     /**
      * 获取类的属性，包含父类中的属性
      *
@@ -33,7 +35,6 @@ public class ReflectObjectUtil {
         Field[] fields = new Field[result.size()];
         return result.toArray(fields);
     }
-
 
 
     /**
@@ -84,8 +85,7 @@ public class ReflectObjectUtil {
                     for (Field item : sourceDeclaredFields) {
                         if (!StringUtils.equals(fieldName, item.getName()) || !typeName.equals(item.getType().getName())) {
                             continue;
-                        }
-                        else {
+                        } else {
                             item.setAccessible(true);
                             each.set(destination, item.get(source));
                         }
@@ -100,7 +100,7 @@ public class ReflectObjectUtil {
     }
 
 
-    public static <S, D> List<D> copyProperties4List(List<S> source, Class<D> clazz)  {
+    public static <S, D> List<D> copyProperties4List(List<S> source, Class<D> clazz) {
         List<D> result = Lists.newArrayList();
         for (S each : source) {
             result.add(copyProperties(each, clazz));

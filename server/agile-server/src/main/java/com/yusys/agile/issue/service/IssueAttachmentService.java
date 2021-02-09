@@ -8,7 +8,6 @@ import java.util.List;
 public interface IssueAttachmentService {
 
     /**
-     *
      * @Date: 18:04
      * @Description: 获取工作项相关的附件列表
      * @Param: * @param issueId
@@ -17,7 +16,6 @@ public interface IssueAttachmentService {
     List<IssueAttachmentDTO> listIssueAttachment(Long issueId);
 
     /**
-     *
      * @Date: 18:05
      * @Description: 删除单个附件
      * @Param: * @param attachmentId
@@ -26,7 +24,6 @@ public interface IssueAttachmentService {
     int deleteAttach(Long attachmentId);
 
     /**
-     *
      * @Date: 18:05
      * @Description: 创建工作项附件
      * @Param: * @param newAttachment
@@ -35,7 +32,6 @@ public interface IssueAttachmentService {
     int createBatchAttachment(List<IssueAttachment> newAttachment);
 
     /**
-     *
      * @Date: 18:05
      * @Description: 删除工作项下所有附件
      * @Param: * @param issueId

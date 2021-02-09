@@ -40,17 +40,17 @@ public interface SysExtendFieldDetailMapper {
 
     int countApprovalFailedBizBacklog(@Param("bizBacklogIds") List<Long> bizBacklogIds);
 
-    int updateSuccessBizBacklogDeployType(@Param("deployType")Byte deployType,@Param("successBizBacklogIds") List<Long> successBizBacklogIds);
+    int updateSuccessBizBacklogDeployType(@Param("deployType") Byte deployType, @Param("successBizBacklogIds") List<Long> successBizBacklogIds);
 
     int updateByPrimaryKeySelectiveWithNull(SysExtendFieldDetail sysExtendFieldDetail);
 
     int batchUpdate(@Param(value = "list") List<SysExtendFieldDetail> sysExtendFieldDetailListUpdate);
 
-    List<Long> getSysExtendFieldDetailByIds(@Param("bizBacklogIds")List<Long> bizBacklogIds, @Param("sysExtendFieldDetails") List<SysExtendFieldDetail>  sysExtendFieldDetails);
+    List<Long> getSysExtendFieldDetailByIds(@Param("bizBacklogIds") List<Long> bizBacklogIds, @Param("sysExtendFieldDetails") List<SysExtendFieldDetail> sysExtendFieldDetails);
 
     List<Map> getSysExtendFieldMap(Long issueId);
 
-    List<Long> getSysExtendFieldDetail(@Param("map")Map<String, Object> map,@Param("issueIds") List<Long> issueIds);
+    List<Long> getSysExtendFieldDetail(@Param("map") Map<String, Object> map, @Param("issueIds") List<Long> issueIds);
 
     List<SysExtendFieldDetail> getTmpSysExtendFieldMap();
 
@@ -59,37 +59,35 @@ public interface SysExtendFieldDetailMapper {
     List<SysExtendFieldDetail> getBizNumListByFormalReqCode(String formalReqCode);
 
     /**
-     * @description 批量删除需求实际上线时间
-     *  
-     * @date 2021/2/7
      * @param epicIdList
+     * @description 批量删除需求实际上线时间
+     * @date 2021/2/7
      */
     int batchDelEpicActualOnlineTime(List<Long> epicIdList);
 
     /**
-     * @description 批量保存需求实际上线时间
-     *  
-     * @date 2021/2/7
      * @param sysExtendFieldDetails
+     * @description 批量保存需求实际上线时间
+     * @date 2021/2/7
      */
-    int batchInsertEpicActualOnlineTime(List<SysExtendFieldDetail>  sysExtendFieldDetails);
+    int batchInsertEpicActualOnlineTime(List<SysExtendFieldDetail> sysExtendFieldDetails);
 
-    void batchUpdateReqSchedulingByIssueIdList(@Param("notCanceledAndOnlineIssueIdList")List<Long> notCanceledAndOnlineIssueIdList, @Param("reqScheduling")String reqScheduling);
+    void batchUpdateReqSchedulingByIssueIdList(@Param("notCanceledAndOnlineIssueIdList") List<Long> notCanceledAndOnlineIssueIdList, @Param("reqScheduling") String reqScheduling);
 
     List<SysExtendFieldDetail> getSysExtendFieldDetailByBizNum(String bizNum);
 
     List<SysExtendFieldDetail> checkEpicIsNotAllOnline(@Param("formalReqCode") String formalReqCode);
 
     /**
-     *功能描述 根据局方需求编号加上其他扩展属性查询扩展属性表
+     * 功能描述 根据局方需求编号加上其他扩展属性查询扩展属性表
      *
-     * @date 2020/12/15
-      * @param formalReqCode
+     * @param formalReqCode
      * @param fieldId
      * @param fieldValue
      * @return java.util.List<com.yusys.agile.requirement.domain.SysExtendFieldDetail>
+     * @date 2020/12/15
      */
-    List<SysExtendFieldDetail> getSysExtendFieldDetailByFormalReqCodeAndProp(@Param("formalReqCode")String formalReqCode, @Param("fieldId")String fieldId,@Param("fieldValue")String fieldValue);
+    List<SysExtendFieldDetail> getSysExtendFieldDetailByFormalReqCodeAndProp(@Param("formalReqCode") String formalReqCode, @Param("fieldId") String fieldId, @Param("fieldValue") String fieldValue);
 
     List<SysExtendFieldDetail> getNoDeployAndToBePublish(String fieldId, String fieldValue);
 }

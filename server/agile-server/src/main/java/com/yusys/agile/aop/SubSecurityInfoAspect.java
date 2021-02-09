@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 @EnableAspectJAutoProxy
-public class SubSecurityInfoAspect   {
+public class SubSecurityInfoAspect {
     private final static Logger log = LoggerFactory.getLogger(SubSecurityInfoAspect.class);
 
 
@@ -47,7 +47,7 @@ public class SubSecurityInfoAspect   {
                         ReflectUtil.setFieldValue(each, "userName", userInfo.getUserName());
                         ReflectUtil.setFieldValue(each, "userAcct", userInfo.getUserAcct());
                         ReflectUtil.setFieldValue(each, "userId", userInfo.getUserId());
-                        ReflectUtil.setFieldValue(each,"tenantCode",userInfo.getTenantCode());
+                        ReflectUtil.setFieldValue(each, "tenantCode", userInfo.getTenantCode());
                         ReflectUtil.setFieldValue(each, "projectId", userInfo.getProjectId());
                         ReflectUtil.setFieldValue(each, "roleIds", userInfo.getRoleIds());
 

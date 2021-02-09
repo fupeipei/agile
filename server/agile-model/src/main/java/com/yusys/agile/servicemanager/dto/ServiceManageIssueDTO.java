@@ -5,7 +5,6 @@ import java.util.Date;
 
 /**
  * @description服务治理平台类
- *  
  * @date 2020/10/26
  */
 public class ServiceManageIssueDTO implements Serializable {

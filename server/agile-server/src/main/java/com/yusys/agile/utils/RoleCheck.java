@@ -16,22 +16,22 @@ public class RoleCheck {
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
 
-    public Boolean checkPoRole(Long userId){
+    public Boolean checkPoRole(Long userId) {
         Boolean flag = false;
         //SsoUserDTO ssoUser = iFacadeUserApi.queryUserById(userId);
         SsoUserDTO ssoUser = new SsoUserDTO();
-        if(Optional.ofNullable(ssoUser).isPresent()){
+        if (Optional.ofNullable(ssoUser).isPresent()) {
             List<SsoRole> ssoRoles = ssoUser.getRoles();
-            if(CollectionUtils.isNotEmpty(ssoRoles)){
-                for(SsoRole ssoRole:ssoRoles){
-                    if(RoleCodeEnum.PROJECT_ADMIN.getRoleCode().equals(ssoRole.getRoleCode())){
+            if (CollectionUtils.isNotEmpty(ssoRoles)) {
+                for (SsoRole ssoRole : ssoRoles) {
+                    if (RoleCodeEnum.PROJECT_ADMIN.getRoleCode().equals(ssoRole.getRoleCode())) {
                         flag = true;
                         break;
                     }
                 }
             }
         }
-        return  flag;
+        return flag;
     }
 
 }

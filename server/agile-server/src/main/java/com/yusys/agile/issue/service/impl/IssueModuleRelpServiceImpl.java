@@ -21,14 +21,14 @@ public class IssueModuleRelpServiceImpl implements IssueModuleRelpService {
     public void batchInsert(Long issueId, List<Long> moduleIds) {
         List<IssueModuleRelp> issueModuleRelpList = new ArrayList<>();
         IssueModuleRelp issueModuleRelp;
-        for(Long moduleId : moduleIds){
+        for (Long moduleId : moduleIds) {
             issueModuleRelp = new IssueModuleRelp();
             issueModuleRelp.setIssueId(issueId);
             issueModuleRelp.setModuleId(moduleId);
             issueModuleRelpList.add(issueModuleRelp);
         }
-        if(CollectionUtils.isNotEmpty(issueModuleRelpList)){
-            issueModuleRelpMapper.batchInsert(issueModuleRelpList,issueId);
+        if (CollectionUtils.isNotEmpty(issueModuleRelpList)) {
+            issueModuleRelpMapper.batchInsert(issueModuleRelpList, issueId);
         }
     }
 

@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * @description 需求文档类
- *  
  * @date 2020/12/10
  */
 public class EpicDocumentDTO implements Serializable {

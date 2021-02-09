@@ -26,8 +26,8 @@ public class SysDictServiceImpl implements SysDictService {
         SysDictDetailExample sysDictDetailExample = new SysDictDetailExample();
         SysDictDetailExample.Criteria criteria = sysDictDetailExample.createCriteria();
         criteria.andDictCodeEqualTo("responsiblePerson");
-        if(StringUtil.isNotBlank(detailName)){
-            criteria.andDetailNameLike("%"+detailName+"%");
+        if (StringUtil.isNotBlank(detailName)) {
+            criteria.andDetailNameLike("%" + detailName + "%");
         }
         return sysDictDetailMapper.selectByExample(sysDictDetailExample);
     }

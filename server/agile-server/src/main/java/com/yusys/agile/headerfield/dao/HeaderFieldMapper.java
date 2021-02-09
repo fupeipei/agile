@@ -2,6 +2,7 @@ package com.yusys.agile.headerfield.dao;
 
 import com.yusys.agile.headerfield.domain.HeaderField;
 import com.yusys.agile.headerfield.domain.HeaderFieldExample;
+
 import java.util.List;
 
 import com.yusys.agile.headerfield.dto.HeaderFieldDTO;
@@ -38,10 +39,10 @@ public interface HeaderFieldMapper {
 
     /**
      * 功能描述: 分页查询自定义字段
-
-     * @date 2021/2/16
+     *
      * @param example
      * @return java.util.List<com.yusys.agile.headerfield.dto.HeaderFieldDTO>
+     * @date 2021/2/16
      */
     List<HeaderFieldDTO> selectDTOByExampleWithBLOBs(HeaderFieldExample example);
 }
