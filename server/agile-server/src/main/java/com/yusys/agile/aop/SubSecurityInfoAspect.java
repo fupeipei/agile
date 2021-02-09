@@ -26,7 +26,7 @@ public class SubSecurityInfoAspect   {
     private final static Logger log = LoggerFactory.getLogger(SubSecurityInfoAspect.class);
 
 
-    @Pointcut("execution(* com.yusys.*.*.*.rest.*.*(..))")
+    @Pointcut("execution(* com.yusys.*.*.rest.*.*(..))")
     private void securityAspect() {
 
     }
