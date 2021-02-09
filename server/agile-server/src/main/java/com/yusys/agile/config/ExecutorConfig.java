@@ -19,7 +19,7 @@ public class ExecutorConfig {
     @Value("${async.executor.thread.core_pool_size}")
     private int corePoolSize;
     @Value("${async.executor.thread.max_pool_size}")
-    private int  oolSize;
+    private int  maxPoolSize;
     @Value("${async.executor.thread.queue_capacity}")
     private int queueCapacity;
     @Value("${async.executor.thread.name.prefix}")
@@ -32,7 +32,7 @@ public class ExecutorConfig {
         //配置核心线程数
         executor.setCorePoolSize(corePoolSize);
         //配置最大线程数
-        executor.set oolSize( oolSize);
+        executor.setMaxPoolSize(maxPoolSize);
         //配置队列大小
         executor.setQueueCapacity(queueCapacity);
         //配置线程池中的线程的名称前缀

@@ -1061,7 +1061,7 @@ public class ExcelServiceImpl implements ExcelService {
             createColumnHeadField(workbook, sheet, headerFieldList);
             List<Issue> issueList = null;
             //选中数据导出
-            String  ageSize = getIssue ageSize(MAX_ISSUE_EXPORT_THRESHOLD_KEY);
+            String  ageSize = getIssueMaxPageSize(MAX_ISSUE_EXPORT_THRESHOLD_KEY);
             if (null !=  ageSize) {
                 mapStr.put("pageSize",  ageSize);
             }
@@ -1709,7 +1709,7 @@ public class ExcelServiceImpl implements ExcelService {
      * @description 查询工作项每页显示最大记录数
      * @date 2021/2/2
      */
-    private String getIssue ageSize(String fieldName) {
+    private String getIssueMaxPageSize(String fieldName) {
         String issuePageSizeThreshold = null;
         ExternalApiConfigExample example = new ExternalApiConfigExample();
         example.createCriteria().andFieldNameEqualTo(fieldName);
