@@ -25,15 +25,13 @@ public interface IssueService {
      * @param map
      * @param projectId
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
-     *
      * @date 2020/4/16
      */
 
-    PageInfo getIssueList(Map<String,Object> map, Long projectId);
+    PageInfo getIssueList(Map<String, Object> map, Long projectId);
 
     /**
      * @param issueId
-     *
      * @Date: 18:22
      * @Description: 建立关联关系
      * @Param: * @param parentId
@@ -43,7 +41,6 @@ public interface IssueService {
 
     /**
      * @param issueId
-     *
      * @Date: 18:22
      * @Description: 删除关联关系
      * @Param: * @param parentId
@@ -57,22 +54,21 @@ public interface IssueService {
      * @param issueId
      * @param projectId
      * @param issueQuery 1:不查询child，2：查询child
-     * @param noLogin 免登录标识，"true"标识免登录调用，other非免登录调用
-     * @return   com.yusys.agile.requirement.SysExtendFieldDetailDTO;
-     *
+     * @param noLogin    免登录标识，"true"标识免登录调用，other非免登录调用
+     * @return com.yusys.agile.requirement.SysExtendFieldDetailDTO;
      * @date 2020/4/21
      */
-    IssueListDTO getIssue(Long issueId, Long projectId, Byte issueQuery,String noLogin) throws  Exception;
+    IssueListDTO getIssue(Long issueId, Long projectId, Byte issueQuery, String noLogin) throws Exception;
 
     /**
      * 功能描述  根据issueId查询当前Issue
+     *
      * @param issueId
      * @param projectId
      * @return Map
-     *
      * @date 2020/10/15
      */
-    Map getIssueByIssueId(Long issueId, Long projectId) throws  Exception;
+    Map getIssueByIssueId(Long issueId, Long projectId) throws Exception;
 
     /**
      * 功能描述  添加、取消Issue的收藏
@@ -80,14 +76,12 @@ public interface IssueService {
      * @param issueId
      * @param isCollect 0：非收藏 1：收藏
      * @return void
-     *
      * @date 2020/4/22
      */
     void isCollect(Long issueId, Byte isCollect, SecurityDTO securityDTO);
 
     /**
      * @param listIssueId
-     *
      * @Date: 9:08
      * @Description: 批量建立关联关系
      * @Param: * @param parentId
@@ -96,7 +90,6 @@ public interface IssueService {
     void createBatchRelation(Long parentId, List<Long> listIssueId, Long userId);
 
     /**
-     *
      * @Date: 10:52
      * @Description: 批量建立工作项
      * @Param: * @param listIssue
@@ -108,18 +101,16 @@ public interface IssueService {
      * 功能描述
      *
      * @param rootIds
-     * @return java.util.List<  com.yusys.agile.requirement.SysExtendFieldDetailDTO;>
-     *
+     * @return java.util.List<com.yusys.agile.requirement.SysExtendFieldDetailDTO ;>
      * @date 2020/4/30
      */
-    List<IssueListDTO> issueListByIds(String rootIds, Long projectId)throws  Exception;
+    List<IssueListDTO> issueListByIds(String rootIds, Long projectId) throws Exception;
 
 
-    Map getOptionList(String filedCodeValue, String filedCode,Map<String , HashMap<String,String>>  hashMapMap);
+    Map getOptionList(String filedCodeValue, String filedCode, Map<String, HashMap<String, String>> hashMapMap);
 
     /**
      * @param handler
-     *
      * @Date: 2021/2/26 16:28
      * @Description: 更新处理人
      * @Param: * @param issueId
@@ -132,7 +123,7 @@ public interface IssueService {
      * @param pageNum  分页页数
      * @param pageSize 分页条数
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *   :
+     * :
      * @Date:2021/2/1 11:05
      * @Description:根据issueId，查询操作历史分页数据
      */
@@ -143,7 +134,6 @@ public interface IssueService {
     /**
      * @param issueId
      * @param issueType
-     *
      * @Date: 2021/2/3 10:20
      * @Description: 详情显示工作项关联关系列表
      * @Param: projectId
@@ -154,7 +144,6 @@ public interface IssueService {
 
     /**
      * @param issueType
-     *
      * @Date: 2021/2/10 10:20
      * @Description: 查询模板父工作项列表
      * @Param: projectId
@@ -170,24 +159,23 @@ public interface IssueService {
      * @param map
      * @param projectId
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
-     *
      * @date 2020/06/15
      */
 
-    List<Issue> queryIssueList(Map<String,Object> map, Long projectId) throws Exception;
+    List<Issue> queryIssueList(Map<String, Object> map, Long projectId) throws Exception;
 
     /**
-
+     * @param projectId
      * @Date 2021/2/22
      * @Description 项目概览页面统计各个阶段的需求个数
-     * @param projectId
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueStageIdCountDTO>
      */
-    PageInfo countIssueByStageId(Long projectId,Integer pageNum, Integer pageSize);
+    PageInfo countIssueByStageId(Long projectId, Integer pageNum, Integer pageSize);
 
     /**
      * 需求规划获取列表数据
-     * @param title 标题
+     *
+     * @param title  标题
      * @param stages 阶段ID
      * @return DemandPlanDTO
      */
@@ -195,138 +183,134 @@ public interface IssueService {
 
     /**
      * 需求规划中卡片拖拽。可修改迭代编码，父工作项编码
-     * @param issueId   工作项ID
-     * @param sprintId  迭代编号
-     * @param parentId  父工作项编码
+     *
+     * @param issueId  工作项ID
+     * @param sprintId 迭代编号
+     * @param parentId 父工作项编码
      * @return
      */
-    void dragDemand(Long issueId, Long sprintId, Long parentId,Long projectId);
+    void dragDemand(Long issueId, Long sprintId, Long parentId, Long projectId);
 
     /**
-     * @description 查询项目下成员任务总数
      * @param commitDTO
      * @return
+     * @description 查询项目下成员任务总数
      */
     long getProjectMemberTaskTotal(CommitDTO commitDTO);
 
     /**
-     * @description 查询项目下成员任务列表
-     *  
      * @param commitDTO
      * @return
+     * @description 查询项目下成员任务列表
      */
     List<Issue> getProjectMemberTaskList(CommitDTO commitDTO);
 
     /**
-     * @description 查询项目下人员任务列表
-     *  
      * @param commitDTO
      * @param startIndex 起始下标
-     * @param pageSize 每页记录数
+     * @param pageSize   每页记录数
      * @return
+     * @description 查询项目下人员任务列表
      */
     List<Issue> getProjectMemberTaskList(CommitDTO commitDTO, long startIndex, long pageSize);
 
     /**
-     * @description 查询迭代下提交任务列表
-     *  
      * @param projectId
      * @param sprintId
      * @param queryStr
      * @param pageNumber
      * @param pageSize
      * @return
+     * @description 查询迭代下提交任务列表
      */
     PageInfo<List<Issue>> getSprintRelatedCommitTaskList(Long projectId, Long sprintId, String queryStr, Integer pageNumber, Integer pageSize);
 
-    List<Long> selectIssueIdByProjectId(Long projectId,String title);
+    List<Long> selectIssueIdByProjectId(Long projectId, String title);
 
     Issue selectIssueInfo(Long issueId, int type);
 
     /**
-     *功能描述
-      * @param projrctId
-     * @param noLogin 免登录标识，"true"标识免登录调用，other非免登录调用
+     * 功能描述
+     *
+     * @param projrctId
+     * @param noLogin   免登录标识，"true"标识免登录调用，other非免登录调用
      * @return java.util.Map
      */
-     Map IssueMap(Long projrctId,String noLogin);
+    Map IssueMap(Long projrctId, String noLogin);
 
-     IssueListDTO arrangeIssueListDTO(Issue issue, IssueListDTO issueListDTO, Map<String, Map> mapMap);
+    IssueListDTO arrangeIssueListDTO(Issue issue, IssueListDTO issueListDTO, Map<String, Map> mapMap);
 
 
     void sortIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
-    /**
 
-     * @Date 2021/2/16
-     * @Description 功能描述  版本管理中递归查找Issue的children
+    /**
      * @param queryType
      * @param rootIds
      * @param issueListDTO
      * @param mapMap
+     * @Date 2021/2/16
+     * @Description 功能描述  版本管理中递归查找Issue的children
      * @Return void
      */
     void sortVersionIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
 
     /**
-     *功能描述 根据bizNum获取需求信息
+     * 功能描述 根据bizNum获取需求信息
      *
-     * @date 2021/3/18
-      * @param bizNums
+     * @param bizNums
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     * @date 2021/3/18
      */
-    List<Issue> getIssueByBizNums(List<String> bizNums,Byte issueType);
+    List<Issue> getIssueByBizNums(List<String> bizNums, Byte issueType);
 
     /**
-     *功能描述 获取基础和扩展信息
+     * 功能描述 获取基础和扩展信息
      *
-     * @date 2021/3/23
-      * @param bizBacklogId
+     * @param bizBacklogId
      * @return com.yusys.agile.issue.dto.IssueDTO
+     * @date 2021/3/23
      */
     IssueDTO selectIssueAndExtends(Long bizBacklogId);
 
     List<IssueDTO> selectIssueAndExtendsByIssueIds(List<Long> duplicatedBindingReqIds);
 
     /**
-     *功能描述
+     * 功能描述
      *
-     * @date 2021/3/19
-      * @param issueIdList
-     *  @param getChildren 是否获取子工作项
+     * @param issueIdList
+     * @param getChildren 是否获取子工作项
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     * @date 2021/3/19
      */
-    List<IssueDTO> getIssueListByIssueIds(List<Long> issueIdList,boolean getChildren);
+    List<IssueDTO> getIssueListByIssueIds(List<Long> issueIdList, boolean getChildren);
 
     /**
-     *功能描述 查询issue信息
+     * 功能描述 查询issue信息
      *
-     * @date  2021/2/5
-      * @param issueId
+     * @param issueId
      * @return com.yusys.agile.issue.domain.Issue
+     * @date 2021/2/5
      */
     Issue selectIssueByIssueId(Long issueId);
 
     /**
-     * @description 查询子工作项待上线状态
-     *  
-     * @date 2020/10/09
      * @param parentId
      * @return
+     * @description 查询子工作项待上线状态
+     * @date 2020/10/09
      */
     Map<Boolean, List<Long>> getChildIssueWaitOnlineState(Long parentId);
 
     /**
-     * @description 更新工作项上线状态
-     *  
-     * @date 2020/10/09
      * @param issueId
      * @param issueType
      * @return
+     * @description 更新工作项上线状态
+     * @date 2020/10/09
      */
     void updateIssueLaunchState(Long issueId, Byte issueType);
 
     /**
-     *
      * @Date 2020/10/21
      * @Description 根据登入用户获取代办事项
      * @Return PageInfo
@@ -334,114 +318,111 @@ public interface IssueService {
     PageInfo getIssueCommissionByHandler(Integer pageNum, Integer pageSize);
 
     /**
-     *功能描述 显示全景图
+     * 功能描述 显示全景图
      *
-     * @date 2020/10/28
-      * @param issueId
+     * @param issueId
      * @param noLogin
      * @return com.yusys.agile.issue.dto.PanoramasEpicDTO
+     * @date 2020/10/28
      */
-    PanoramasEpicDTO getIssuePanoramas(String issueId,String planDeployDate,String noLogin)  throws Exception;
+    PanoramasEpicDTO getIssuePanoramas(String issueId, String planDeployDate, String noLogin) throws Exception;
 
     /**
-     * @description 服务治理平台查询接口
-     *  
-     * @date 2020/10/26
      * @param serviceManageIssueDTO
      * @return
+     * @description 服务治理平台查询接口
+     * @date 2020/10/26
      */
     CustomizePageInfoDTO queryIssueList(ServiceManageIssueDTO serviceManageIssueDTO);
 
 
-
     /**
-      *功能描述   翻译扩展字段对应的名称
-      *
-      * @date 2021/2/16
+     * 功能描述   翻译扩展字段对应的名称
+     *
      * @param fieldId
      * @param value
-      * @return java.lang.String
+     * @return java.lang.String
+     * @date 2021/2/16
      */
 
 
-    String  translateExtendFieldMap(String fieldId,String value);
+    String translateExtendFieldMap(String fieldId, String value);
 
 
     Map queryIssueEpic(Long issueId, Byte issueType);
 
     /**
-     *功能描述  根据局方需求编号获取分期【planDeployDate】
+     * 功能描述  根据局方需求编号获取分期【planDeployDate】
      *
-     * @date 2021/2/18
-      * @param formalReqCode
+     * @param formalReqCode
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/18
      */
     List<String> queryPlanDeployDate(String formalReqCode);
 
     /**
-     *功能描述 根据局方需求编号获取客户需求编号
+     * 功能描述 根据局方需求编号获取客户需求编号
      *
-     * @date 2021/2/7
-      * @param formalReqCode
+     * @param formalReqCode
      * @return java.util.List<java.lang.String>
+     * @date 2021/2/7
      */
     List<String> queryBizNumList(String formalReqCode);
 
     /**
-     *功能描述 根据IssueIdList查询出未取消的需求
+     * 功能描述 根据IssueIdList查询出未取消的需求
      *
-     * @date 2021/2/20
-      * @param issueIdList
+     * @param issueIdList
      * @return java.util.List<java.lang.Long>
+     * @date 2021/2/20
      */
     List<Long> getNotCanceledAndOnlineIssueByIssueIdList(List<Long> issueIdList);
 
     /**
-     * @description 更新工作项已上线状态带时间(临时方法)
-     *  
-     * @date 2021/2/20
      * @param issueId
      * @param issueType
      * @param actualOnlineTime
+     * @description 更新工作项已上线状态带时间(临时方法)
+     * @date 2021/2/20
      */
-    void updateIssueLaunchStateWithDate( Long issueId, Byte issueType, String actualOnlineTime);
+    void updateIssueLaunchStateWithDate(Long issueId, Byte issueType, String actualOnlineTime);
 
     /**
-     *功能描述 查询未上线的Epic
+     * 功能描述 查询未上线的Epic
      *
-     * @date 2020/12/8
-      * @param
+     * @param
      * @return java.util.List<java.lang.Long>
+     * @date 2020/12/8
      */
 
     List<Long> getNotOnlineEpic();
 
     /**
-     *功能描述 获取没有需求排期或需求排期为空或需求排期为null的Epic信息
+     * 功能描述 获取没有需求排期或需求排期为空或需求排期为null的Epic信息
      *
-     * @date 2020/12/8
-      * @param
+     * @param
      * @return java.util.List<java.lang.Long>
+     * @date 2020/12/8
      */
     List<Long> noReqSchedulingEpicIdList();
 
     /**
-     *功能描述  根据epicId查询所有故事上的功能测试负责人
+     * 功能描述  根据epicId查询所有故事上的功能测试负责人
      *
-     * @date 2020/12/11
-      * @param epicId
+     * @param epicId
      * @return void
+     * @date 2020/12/11
      */
     List<String> getAllTaskFunTester(Long epicId);
 
     void noDeployChangeStage();
 
     /**
-     *功能描述 根据工作项ID列表获取有效状态的工作项列表
+     * 功能描述 根据工作项ID列表获取有效状态的工作项列表
      *
-     * @date 2020/12/30
-      * @param epicIdList
+     * @param epicIdList
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     * @date 2020/12/30
      */
     List<Issue> getValidIssue(List<Long> epicIdList);
 }

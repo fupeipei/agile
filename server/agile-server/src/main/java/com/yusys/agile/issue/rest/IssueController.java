@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *   :
+ * :
+ *
  * @Date: 2020/4/16
  * @Description: TODO
  */
@@ -39,7 +40,6 @@ public class IssueController {
      * @param map
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
@@ -86,14 +86,13 @@ public class IssueController {
      * @param projectId
      * @param issueQuery 1:不查询子，2：查询子
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/21
      */
     @GetMapping("/issue/{issueId}")
     public ControllerResponse getIssue(@PathVariable(name = "issueId") Long issueId, @RequestHeader(name = "projectId") Long projectId, Byte issueQuery) {
         IssueListDTO issueListDTO;
         try {
-            issueListDTO = issueService.getIssue(issueId, projectId, issueQuery,null);
+            issueListDTO = issueService.getIssue(issueId, projectId, issueQuery, null);
         } catch (Exception e) {
             LOGGER.error("查询异常：{}", e);
             return ControllerResponse.fail("查询异常：" + e.getMessage());
@@ -103,17 +102,17 @@ public class IssueController {
 
     /**
      * 功能描述  根据issueId查询当前Issue
+     *
      * @param issueId
      * @param projectId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/10/15
      */
     @GetMapping("/issue/getIssueByIssueId/{issueId}")
     public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "projectId") Long projectId) {
         Map map = new HashMap<>();
         boolean b = StringUtil.isNumeric(issueId);
-        if(b){
+        if (b) {
             try {
                 map = issueService.getIssueByIssueId(Long.parseLong(issueId), projectId);
             } catch (Exception e) {
@@ -130,7 +129,6 @@ public class IssueController {
      * @param issueId
      * @param isCollect 0：非收藏 1：收藏
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/22
      */
     @GetMapping("/issue/isCollect/{issueId}/{isCollect}")
@@ -146,7 +144,6 @@ public class IssueController {
 
     /**
      * @param issueDTO
-     *
      * @Date: 9:06
      * @Description: 批量建立关联关系
      * @Param: * @param parentId
@@ -168,7 +165,6 @@ public class IssueController {
      *
      * @param rootIds
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *
      * @date 2020/4/29
      */
     @PostMapping("/issueListByIds")
@@ -184,7 +180,6 @@ public class IssueController {
     }
 
     /**
-     *
      * @Date: 10:49
      * @Description: 批量创建工作项
      * @Param: * @param listIssue
@@ -203,7 +198,6 @@ public class IssueController {
 
     /**
      * @param handler
-     *
      * @Date: 2021/2/26 16:28
      * @Description: 更新处理人
      * @Param: * @param issueId
@@ -225,7 +219,7 @@ public class IssueController {
      * @param pageNum  分页页数
      * @param pageSize 分页条数
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
-     *   :
+     * :
      * @Date:2021/2/1 11:05
      * @Description:根据issueId，查询操作历史分页数据
      */
@@ -239,8 +233,7 @@ public class IssueController {
 
     /**
      * @param recordId 历史操作主键ID
-     * @return
-     *   :
+     * @return :
      * @Date:2021/2/2 11:05
      * @Description:根据recordId，查询富文本内容
      */
@@ -250,7 +243,6 @@ public class IssueController {
     }
 
     /**
-     *
      * @Date: 2021/2/3 10:15
      * @Description: 详情显示工作项关联关系列表
      * @Param: * @param issueId
@@ -302,7 +294,7 @@ public class IssueController {
                                          @RequestParam(value = "parentId") Long parentId,
                                          @RequestHeader(name = "projectId") Long projectId) {
         try {
-            issueService.dragDemand(issueId, sprintId, parentId,projectId);
+            issueService.dragDemand(issueId, sprintId, parentId, projectId);
         } catch (Exception e) {
             LOGGER.error("卡片拖拽异常：{}", e);
             return ControllerResponse.fail("卡片拖拽异常");
@@ -317,7 +309,6 @@ public class IssueController {
      * @param pageSize
      * @return
      * @description 查询迭代下关联的提交工作项
-     *  
      * @date 2020/08/04
      */
     @RequestMapping("/issue/querySprintRelatedCommitTaskList")
@@ -332,7 +323,6 @@ public class IssueController {
 
     /**
      * @param projectId
-     *
      * @Date 2020/8/26
      * @Description 项目概览页面统计各个阶段的需求个数
      * 看这个产品是否关联了故事，关联了故事就统计故事数，没有故事就统计关联的研发需求数，
@@ -345,54 +335,51 @@ public class IssueController {
     }
 
     /**
-     * @description 更新工作项上线状态
-     *  
-     * @date  2021/2/7
      * @param issueId
      * @return
+     * @description 更新工作项上线状态
+     * @date 2021/2/7
      */
     @PutMapping("/issue/updateIssueLaunchState/{issueId}/{issueType}")
     public ControllerResponse updateIssueLaunchState(@PathVariable Long issueId, @PathVariable Byte issueType) {
         try {
             issueService.updateIssueLaunchState(issueId, issueType);
-            LOGGER.info("更新工作项"+issueId+"已上线状态成功");
-            return ControllerResponse.success("更新工作项"+issueId+"已上线状态成功");
+            LOGGER.info("更新工作项" + issueId + "已上线状态成功");
+            return ControllerResponse.success("更新工作项" + issueId + "已上线状态成功");
         } catch (Exception e) {
             LOGGER.error("updateIssueLaunchState occur exception, message:{}", e.getMessage());
-            return ControllerResponse.fail("更新工作项"+issueId+"已上线状态异常");
+            return ControllerResponse.fail("更新工作项" + issueId + "已上线状态异常");
         }
     }
 
     /**
-     *
      * @Date 2020/10/21
      * @Description 根据登入用户获取代办事项
      * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/issue/getIssueCommissionByHandler")
-    public ControllerResponse getIssueCommissionByHandler(Integer pageNum,Integer pageSize) {
+    public ControllerResponse getIssueCommissionByHandler(Integer pageNum, Integer pageSize) {
         return ControllerResponse.success(issueService.getIssueCommissionByHandler(pageNum, pageSize));
     }
 
     /**
-     *功能描述 全景图
+     * 功能描述 全景图
      *
-     * @date 2020/10/22
-      * @param issueId
-     * @param noLogin  免登录标识，"true"标识免登录调用，other非免登录调用
+     * @param issueId
+     * @param noLogin 免登录标识，"true"标识免登录调用，other非免登录调用
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2020/10/22
      */
     @GetMapping("/issue/getIssuePanoramas")
-    public ControllerResponse getIssuePanoramas(String issueId,@RequestParam(name = "bizNum",required = false) String bizNum,@RequestHeader(name = "noLogin",required = false) String noLogin)  throws Exception{
-        return ControllerResponse.success(issueService.getIssuePanoramas(issueId,bizNum,noLogin));
+    public ControllerResponse getIssuePanoramas(String issueId, @RequestParam(name = "bizNum", required = false) String bizNum, @RequestHeader(name = "noLogin", required = false) String noLogin) throws Exception {
+        return ControllerResponse.success(issueService.getIssuePanoramas(issueId, bizNum, noLogin));
     }
 
     /**
-     * @description 服务治理平台查询接口
-     *  
-     * @date 2020/10/26
      * @param serviceManageIssueDTO
      * @return
+     * @description 服务治理平台查询接口
+     * @date 2020/10/26
      */
     @PostMapping("/issue/queryIssueList")
     public ControllerResponse queryIssueList(@RequestBody ServiceManageIssueDTO serviceManageIssueDTO) {
@@ -406,19 +393,20 @@ public class IssueController {
             return ControllerResponse.fail("服务治理平台查询需求接口失败");
         }
     }
+
     /**
-      *功能描述  根据当前issueId 和 issueType查询Epic
-      *
-      * @date  2021/2/8
-      * @param issueId
-      * @param issueType
-      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * 功能描述  根据当前issueId 和 issueType查询Epic
+     *
+     * @param issueId
+     * @param issueType
+     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2021/2/8
      */
 
     @GetMapping("/issue/queryIssueEpic")
-    public ControllerResponse queryIssueEpic(Long issueId,Byte issueType) {
+    public ControllerResponse queryIssueEpic(Long issueId, Byte issueType) {
         try {
-            return ControllerResponse.success(issueService.queryIssueEpic(issueId,issueType));
+            return ControllerResponse.success(issueService.queryIssueEpic(issueId, issueType));
         } catch (Exception e) {
             LOGGER.info("根据当前issueId 和 issueType查询Epic:{}", e.getMessage());
             if (e instanceof ServiceManageExceptionDTO) {
@@ -429,11 +417,11 @@ public class IssueController {
     }
 
     /**
-     *功能描述  根据当前issueId查询客户需求编号
+     * 功能描述  根据当前issueId查询客户需求编号
      *
-     * @date 2021/2/18
      * @param issueId
      * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @date 2021/2/18
      */
 
     @GetMapping("/issue/queryPlanDeployDate")
@@ -441,7 +429,7 @@ public class IssueController {
         try {
             return ControllerResponse.success(issueService.queryBizNumList(issueId));
         } catch (Exception e) {
-            LOGGER.info("根据"+issueId+"查询客户需求编号列表失败:{}", e.getMessage());
+            LOGGER.info("根据" + issueId + "查询客户需求编号列表失败:{}", e.getMessage());
             if (e instanceof ServiceManageExceptionDTO) {
                 return ControllerResponse.fail(e.getMessage());
             }
@@ -450,21 +438,20 @@ public class IssueController {
     }
 
     /**
-     * @description 更新工作项上线状态
-     *  
-     * @date  2021/2/7
      * @param issueId
      * @return
+     * @description 更新工作项上线状态
+     * @date 2021/2/7
      */
     @PutMapping("/issue/updateIssueLaunchStateWithDate/{issueId}/{issueType}/{actualOnlineTime}")
     public ControllerResponse updateIssueLaunchStateWithDate(@PathVariable Long issueId, @PathVariable Byte issueType, @PathVariable String actualOnlineTime) {
         try {
             issueService.updateIssueLaunchStateWithDate(issueId, issueType, actualOnlineTime);
-            LOGGER.info("更新工作项"+issueId+"已上线状态成功");
-            return ControllerResponse.success("更新工作项"+issueId+"已上线状态成功");
+            LOGGER.info("更新工作项" + issueId + "已上线状态成功");
+            return ControllerResponse.success("更新工作项" + issueId + "已上线状态成功");
         } catch (Exception e) {
             LOGGER.error("updateIssueLaunchStateWithDate occur exception, message:{}", e.getMessage());
-            return ControllerResponse.fail("更新工作项"+issueId+"已上线状态异常");
+            return ControllerResponse.fail("更新工作项" + issueId + "已上线状态异常");
         }
     }
 }
