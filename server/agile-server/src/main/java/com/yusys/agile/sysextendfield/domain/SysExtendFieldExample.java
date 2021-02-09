@@ -1,17 +1,17 @@
-package com.yusys.agile.requirement.domain;
+package com.yusys.agile.sysextendfield.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SysExtendFieldDetailExample {
+public class SysExtendFieldExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public SysExtendFieldDetailExample() {
+    public SysExtendFieldExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -165,66 +165,6 @@ public class SysExtendFieldDetailExample {
             return (Criteria) this;
         }
 
-        public Criteria andIssueIdIsNull() {
-            addCriterion("issue_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdIsNotNull() {
-            addCriterion("issue_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdEqualTo(Long value) {
-            addCriterion("issue_id =", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotEqualTo(Long value) {
-            addCriterion("issue_id <>", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdGreaterThan(Long value) {
-            addCriterion("issue_id >", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("issue_id >=", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdLessThan(Long value) {
-            addCriterion("issue_id <", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdLessThanOrEqualTo(Long value) {
-            addCriterion("issue_id <=", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdIn(List<Long> values) {
-            addCriterion("issue_id in", values, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotIn(List<Long> values) {
-            addCriterion("issue_id not in", values, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdBetween(Long value1, Long value2) {
-            addCriterion("issue_id between", value1, value2, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotBetween(Long value1, Long value2) {
-            addCriterion("issue_id not between", value1, value2, "issueId");
-            return (Criteria) this;
-        }
-
         public Criteria andFieldIdIsNull() {
             addCriterion("field_id is null");
             return (Criteria) this;
@@ -365,76 +305,6 @@ public class SysExtendFieldDetailExample {
             return (Criteria) this;
         }
 
-        public Criteria andValueIsNull() {
-            addCriterion("value is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueIsNotNull() {
-            addCriterion("value is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueEqualTo(String value) {
-            addCriterion("value =", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueNotEqualTo(String value) {
-            addCriterion("value <>", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueGreaterThan(String value) {
-            addCriterion("value >", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueGreaterThanOrEqualTo(String value) {
-            addCriterion("value >=", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueLessThan(String value) {
-            addCriterion("value <", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueLessThanOrEqualTo(String value) {
-            addCriterion("value <=", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueLike(String value) {
-            addCriterion("value like", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueNotLike(String value) {
-            addCriterion("value not like", value, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueIn(List<String> values) {
-            addCriterion("value in", values, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueNotIn(List<String> values) {
-            addCriterion("value not in", values, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueBetween(String value1, String value2) {
-            addCriterion("value between", value1, value2, "value");
-            return (Criteria) this;
-        }
-
-        public Criteria andValueNotBetween(String value1, String value2) {
-            addCriterion("value not between", value1, value2, "value");
-            return (Criteria) this;
-        }
-
         public Criteria andStateIsNull() {
             addCriterion("state is null");
             return (Criteria) this;
@@ -502,6 +372,246 @@ public class SysExtendFieldDetailExample {
 
         public Criteria andStateNotBetween(String value1, String value2) {
             addCriterion("state not between", value1, value2, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayIsNull() {
+            addCriterion("is_display is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayIsNotNull() {
+            addCriterion("is_display is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayEqualTo(Byte value) {
+            addCriterion("is_display =", value, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayNotEqualTo(Byte value) {
+            addCriterion("is_display <>", value, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayGreaterThan(Byte value) {
+            addCriterion("is_display >", value, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayGreaterThanOrEqualTo(Byte value) {
+            addCriterion("is_display >=", value, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayLessThan(Byte value) {
+            addCriterion("is_display <", value, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayLessThanOrEqualTo(Byte value) {
+            addCriterion("is_display <=", value, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayIn(List<Byte> values) {
+            addCriterion("is_display in", values, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayNotIn(List<Byte> values) {
+            addCriterion("is_display not in", values, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayBetween(Byte value1, Byte value2) {
+            addCriterion("is_display between", value1, value2, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsDisplayNotBetween(Byte value1, Byte value2) {
+            addCriterion("is_display not between", value1, value2, "isDisplay");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditIsNull() {
+            addCriterion("is_edit is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditIsNotNull() {
+            addCriterion("is_edit is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditEqualTo(Byte value) {
+            addCriterion("is_edit =", value, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditNotEqualTo(Byte value) {
+            addCriterion("is_edit <>", value, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditGreaterThan(Byte value) {
+            addCriterion("is_edit >", value, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditGreaterThanOrEqualTo(Byte value) {
+            addCriterion("is_edit >=", value, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditLessThan(Byte value) {
+            addCriterion("is_edit <", value, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditLessThanOrEqualTo(Byte value) {
+            addCriterion("is_edit <=", value, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditIn(List<Byte> values) {
+            addCriterion("is_edit in", values, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditNotIn(List<Byte> values) {
+            addCriterion("is_edit not in", values, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditBetween(Byte value1, Byte value2) {
+            addCriterion("is_edit between", value1, value2, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsEditNotBetween(Byte value1, Byte value2) {
+            addCriterion("is_edit not between", value1, value2, "isEdit");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredIsNull() {
+            addCriterion("is_required is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredIsNotNull() {
+            addCriterion("is_required is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredEqualTo(Byte value) {
+            addCriterion("is_required =", value, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredNotEqualTo(Byte value) {
+            addCriterion("is_required <>", value, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredGreaterThan(Byte value) {
+            addCriterion("is_required >", value, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredGreaterThanOrEqualTo(Byte value) {
+            addCriterion("is_required >=", value, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredLessThan(Byte value) {
+            addCriterion("is_required <", value, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredLessThanOrEqualTo(Byte value) {
+            addCriterion("is_required <=", value, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredIn(List<Byte> values) {
+            addCriterion("is_required in", values, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredNotIn(List<Byte> values) {
+            addCriterion("is_required not in", values, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredBetween(Byte value1, Byte value2) {
+            addCriterion("is_required between", value1, value2, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRequiredNotBetween(Byte value1, Byte value2) {
+            addCriterion("is_required not between", value1, value2, "isRequired");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeIsNull() {
+            addCriterion("extend_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeIsNotNull() {
+            addCriterion("extend_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeEqualTo(Byte value) {
+            addCriterion("extend_type =", value, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeNotEqualTo(Byte value) {
+            addCriterion("extend_type <>", value, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeGreaterThan(Byte value) {
+            addCriterion("extend_type >", value, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeGreaterThanOrEqualTo(Byte value) {
+            addCriterion("extend_type >=", value, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeLessThan(Byte value) {
+            addCriterion("extend_type <", value, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeLessThanOrEqualTo(Byte value) {
+            addCriterion("extend_type <=", value, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeIn(List<Byte> values) {
+            addCriterion("extend_type in", values, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeNotIn(List<Byte> values) {
+            addCriterion("extend_type not in", values, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeBetween(Byte value1, Byte value2) {
+            addCriterion("extend_type between", value1, value2, "extendType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendTypeNotBetween(Byte value1, Byte value2) {
+            addCriterion("extend_type not between", value1, value2, "extendType");
             return (Criteria) this;
         }
 

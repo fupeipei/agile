@@ -1,9 +1,8 @@
 package com.yusys.agile.issue.dto;
 
-import com.yusys.agile.requirement.SysExtendFieldDetailDTO;
+import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
-import com.yusys.portal.model.facade.entity.SsoUser;
 
 import java.util.ArrayList;
 import java.util.Date;

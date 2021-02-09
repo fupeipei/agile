@@ -1,9 +1,9 @@
-package com.yusys.agile.requirement.domain;
+package com.yusys.agile.sysextendfield.domain;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class SysField implements Serializable {
+public class SysExtendField implements Serializable {
     private Long id;
 
     private String fieldId;

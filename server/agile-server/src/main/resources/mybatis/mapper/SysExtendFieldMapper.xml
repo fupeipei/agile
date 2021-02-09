@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.requirement.dao.SysExtendFieldMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.requirement.domain.SysExtendField">
+<mapper namespace="com.yusys.agile.sysextendfield.dao.SysExtendFieldMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.sysextendfield.domain.SysExtendField">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="field_id" jdbcType="VARCHAR" property="fieldId" />
     <result column="field_name" jdbcType="VARCHAR" property="fieldName" />
@@ -78,7 +78,7 @@
     id, field_id, field_name, state, is_display, is_edit, is_required, extend_type, create_uid, 
     create_time, update_uid, update_time, tenant_code
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -102,13 +102,13 @@
     delete from sys_extend_field
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldExample">
+  <delete id="deleteByExample" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldExample">
     delete from sys_extend_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.requirement.domain.SysExtendField">
+  <insert id="insert" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendField">
     insert into sys_extend_field (id, field_id, field_name, 
       state, is_display, is_edit, 
       is_required, extend_type, create_uid, 
@@ -120,7 +120,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.requirement.domain.SysExtendField">
+  <insert id="insertSelective" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendField">
     insert into sys_extend_field
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -205,7 +205,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.requirement.domain.SysExtendFieldExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldExample" resultType="java.lang.Long">
     select count(*) from sys_extend_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -277,7 +277,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.requirement.domain.SysExtendField">
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendField">
     update sys_extend_field
     <set>
       <if test="fieldId != null">
@@ -319,7 +319,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.requirement.domain.SysExtendField">
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendField">
     update sys_extend_field
     set field_id = #{fieldId,jdbcType=VARCHAR},
       field_name = #{fieldName,jdbcType=VARCHAR},

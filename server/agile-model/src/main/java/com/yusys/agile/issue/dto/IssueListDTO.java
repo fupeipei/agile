@@ -1,6 +1,6 @@
 package com.yusys.agile.issue.dto;
 
-import com.yusys.agile.requirement.SysExtendFieldDetailDTO;
+import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
 
 import java.util.ArrayList;
 import java.util.Date;

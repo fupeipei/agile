@@ -1,7 +1,7 @@
-package com.yusys.agile.requirement.dao;
+package com.yusys.agile.sysextendfield.dao;
 
-import com.yusys.agile.requirement.domain.SysExtendFieldDetail;
-import com.yusys.agile.requirement.domain.SysExtendFieldDetailExample;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

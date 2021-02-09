@@ -1,17 +1,17 @@
-package com.yusys.agile.requirement.domain;
+package com.yusys.agile.sysextendfield.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SysExtendFieldExample {
+public class SysFieldExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public SysExtendFieldExample() {
+    public SysFieldExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 

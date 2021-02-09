@@ -1,24 +1,19 @@
-package com.yusys.agile.requirement.domain;
+package com.yusys.agile.sysextendfield;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class SysExtendField implements Serializable {
+public class SysExtendFieldDetailDTO {
     private Long id;
+
+    private Long issueId;
 
     private String fieldId;
 
     private String fieldName;
 
+    private String value;
+
     private String state;
-
-    private Byte isDisplay;
-
-    private Byte isEdit;
-
-    private Byte isRequired;
-
-    private Byte extendType;
 
     private Long createUid;
 
@@ -40,6 +35,14 @@ public class SysExtendField implements Serializable {
         this.id = id;
     }
 
+    public Long getIssueId() {
+        return issueId;
+    }
+
+    public void setIssueId(Long issueId) {
+        this.issueId = issueId;
+    }
+
     public String getFieldId() {
         return fieldId;
     }
@@ -56,44 +59,20 @@ public class SysExtendField implements Serializable {
         this.fieldName = fieldName == null ? null : fieldName.trim();
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value == null ? null : value.trim();
+    }
+
     public String getState() {
         return state;
     }
 
     public void setState(String state) {
         this.state = state == null ? null : state.trim();
-    }
-
-    public Byte getIsDisplay() {
-        return isDisplay;
-    }
-
-    public void setIsDisplay(Byte isDisplay) {
-        this.isDisplay = isDisplay;
-    }
-
-    public Byte getIsEdit() {
-        return isEdit;
-    }
-
-    public void setIsEdit(Byte isEdit) {
-        this.isEdit = isEdit;
-    }
-
-    public Byte getIsRequired() {
-        return isRequired;
-    }
-
-    public void setIsRequired(Byte isRequired) {
-        this.isRequired = isRequired;
-    }
-
-    public Byte getExtendType() {
-        return extendType;
-    }
-
-    public void setExtendType(Byte extendType) {
-        this.extendType = extendType;
     }
 
     public Long getCreateUid() {

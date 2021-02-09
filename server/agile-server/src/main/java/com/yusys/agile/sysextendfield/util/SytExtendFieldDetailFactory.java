@@ -1,7 +1,7 @@
-package com.yusys.agile.requirement.util;
+package com.yusys.agile.sysextendfield.util;
 
-import com.yusys.agile.requirement.domain.SysExtendFieldDetail;
-import com.yusys.agile.requirement.service.SysExtendFieldDetailService;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
+import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

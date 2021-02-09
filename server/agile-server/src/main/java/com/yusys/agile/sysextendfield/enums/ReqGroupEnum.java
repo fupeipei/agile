@@ -1,4 +1,4 @@
-package com.yusys.agile.requirement.enums;
+package com.yusys.agile.sysextendfield.enums;
 
 public enum ReqGroupEnum {
     PERSONAL_BUSINESS_GROUP("个人业务组","001"),

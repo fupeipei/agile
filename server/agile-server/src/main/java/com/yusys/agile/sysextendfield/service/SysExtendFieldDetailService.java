@@ -1,6 +1,6 @@
-package com.yusys.agile.requirement.service;
+package com.yusys.agile.sysextendfield.service;
 
-import com.yusys.agile.requirement.domain.SysExtendFieldDetail;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;

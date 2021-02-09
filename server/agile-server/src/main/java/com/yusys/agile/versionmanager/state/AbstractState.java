@@ -1,8 +1,8 @@
 package com.yusys.agile.versionmanager.state;
 
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.requirement.SysExtendFieldDetailDTO;
-import com.yusys.agile.requirement.enums.ReqGroupEnum;
+import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
+import com.yusys.agile.sysextendfield.enums.ReqGroupEnum;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.yusys.agile.versionmanager.dto.SendRMSRequestDTO;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;

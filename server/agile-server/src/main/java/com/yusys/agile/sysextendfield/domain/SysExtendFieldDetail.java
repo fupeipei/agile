@@ -1,8 +1,9 @@
-package com.yusys.agile.requirement;
+package com.yusys.agile.sysextendfield.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysExtendFieldDetailDTO {
+public class SysExtendFieldDetail implements Serializable {
     private Long id;
 
     private Long issueId;

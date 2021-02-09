@@ -1,17 +1,10 @@
 package com.yusys.agile.versionmanager.utils;
 
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.requirement.domain.SysExtendFieldDetail;
-import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
-import com.yusys.agile.versionmanager.enums.OperateTypeEnum;
-import com.yusys.agile.versionmanager.enums.SyncResultEnum;
-import com.yusys.portal.util.date.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class VersionPlanTool {

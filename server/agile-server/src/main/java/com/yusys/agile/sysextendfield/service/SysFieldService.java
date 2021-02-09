@@ -1,6 +1,6 @@
-package com.yusys.agile.requirement.service;
+package com.yusys.agile.sysextendfield.service;
 
-import com.yusys.agile.requirement.domain.SysField;
+import com.yusys.agile.sysextendfield.domain.SysField;
 
 import java.util.List;
 
@@ -12,4 +12,5 @@ import java.util.List;
 public interface  SysFieldService {
 
     List<SysField> getAllSysField(Byte issueType);
+
 }

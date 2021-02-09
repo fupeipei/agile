@@ -11,7 +11,6 @@ import com.yusys.agile.leankanban.dto.IssueResultDTO;
 import com.yusys.agile.leankanban.dto.LeanKanbanDTO;
 import com.yusys.agile.leankanban.dto.PageResultDTO;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
-import com.yusys.agile.requirement.service.SysExtendFieldDetailService;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.utils.page.PageQuery;
 import com.google.common.collect.Lists;

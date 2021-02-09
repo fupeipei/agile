@@ -1,11 +1,11 @@
-package com.yusys.agile.requirement.service.impl;
+package com.yusys.agile.sysextendfield.service.impl;
 
 import com.yusys.agile.issue.service.IssueService;
-import com.yusys.agile.requirement.dao.SysExtendFieldDetailMapper;
-import com.yusys.agile.requirement.domain.SysExtendFieldDetail;
-import com.yusys.agile.requirement.domain.SysExtendFieldDetailExample;
-import com.yusys.agile.requirement.service.SysExtendFieldDetailService;
-import com.yusys.agile.requirement.util.SytExtendFieldDetailFactory;
+import com.yusys.agile.sysextendfield.dao.SysExtendFieldDetailMapper;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample;
+import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
+import com.yusys.agile.sysextendfield.util.SytExtendFieldDetailFactory;
 import com.yusys.agile.utils.DateTools;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.yusys.agile.versionmanager.enums.IssueApproveStatusEnum;
