@@ -1129,11 +1129,10 @@ public class IssueFactory {
                 if (VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT.equals(sysExtendFieldDetail.getFieldId())) {
                     sysExtendFieldDetail.setValue("");
                 }
-
-
             }
+            sysExtendFieldDetailService.batchSave(sysExtendFieldDetailList);
         }
-        sysExtendFieldDetailService.batchSave(sysExtendFieldDetailList);
+
     }
 
     /**
