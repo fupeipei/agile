@@ -22,7 +22,7 @@ public interface IFaultSyncApi {
      * 功能描述: 从itc同步删除缺陷
      *
      * @param bugId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/24
      */
     ControllerResponse deleteFaultFromITC(Long bugId);
@@ -31,7 +31,7 @@ public interface IFaultSyncApi {
      * 功能描述: 从itc同步关闭缺陷
      *
      * @param jsonObject
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/24
      */
     ControllerResponse closeFaultFromITC(JSONObject jsonObject);
@@ -40,7 +40,7 @@ public interface IFaultSyncApi {
      * 功能描述: 从itc同步重新打开缺陷
      *
      * @param jsonObject
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/26
      */
     ControllerResponse reopenFaultFromITC(JSONObject jsonObject);
@@ -51,7 +51,7 @@ public interface IFaultSyncApi {
      *
      * @param bugId
      * @param storyId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/27
      */
     ControllerResponse associateStoryFromITC(Long bugId, Long storyId);

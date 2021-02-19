@@ -29,7 +29,7 @@ public class HeaderFieldController {
      * 功能描述 列头初始化查询接口
      *
      * @param securityDTO
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/13
      */
     @GetMapping("/queryHeaderFields")

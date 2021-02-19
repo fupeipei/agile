@@ -26,7 +26,7 @@ public class VCenterController {
      * 功能描述  查询环境信息
      *
      * @param
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/25
      */
     @GetMapping("/getDev")

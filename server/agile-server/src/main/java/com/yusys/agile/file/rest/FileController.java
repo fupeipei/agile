@@ -30,7 +30,7 @@ public class FileController {
      * 功能描述: 文件上传
      *
      * @param file
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
     //@CrossOrigin
@@ -52,7 +52,7 @@ public class FileController {
      *
      * @param request
      * @param response
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
     //@CrossOrigin

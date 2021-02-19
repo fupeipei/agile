@@ -22,7 +22,7 @@ public class SprintReviewController {
      * @param sprintReviewDTO
      * @Date 2021/2/25
      * @Description 新增迭代回顾信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/createSprintReview")
     public ControllerResponse createSprintReview(@RequestBody SprintReviewDTO sprintReviewDTO) {
@@ -38,7 +38,7 @@ public class SprintReviewController {
      * @param sprintId
      * @Date 2021/2/25
      * @Description 根据迭代id获取迭代回顾信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/listSprintReview/{sprintId}")
     public ControllerResponse getSprintReviewList(@PathVariable Long sprintId) {
@@ -49,7 +49,7 @@ public class SprintReviewController {
      * @param sprintReviewDTO
      * @Date 2021/2/25
      * @Description 编辑迭代回顾信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/updateSprintReview")
     public ControllerResponse editSprintReview(@RequestBody SprintReviewDTO sprintReviewDTO) {
@@ -65,7 +65,7 @@ public class SprintReviewController {
      * @param reviewId
      * @Date 2021/2/25
      * @Description 删除迭代回顾信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @DeleteMapping("/deleteSprintReview/{reviewId}")
     public ControllerResponse deleteSprintReview(@PathVariable Long reviewId) {
@@ -81,7 +81,7 @@ public class SprintReviewController {
      * @param sprintId
      * @Date 2021/2/26
      * @Description 迭代回顾附件信息上传及保存
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/uploadAttachment/{sprintId}")
     public ControllerResponse uploadAttachment(@RequestParam("file") MultipartFile file, @PathVariable Long sprintId) {
@@ -92,7 +92,7 @@ public class SprintReviewController {
      * @param sprintId
      * @Date 2021/2/26
      * @Description 获取迭代回顾附件信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/listSprintAttachment/{sprintId}")
     public ControllerResponse getAttachmentList(@PathVariable Long sprintId) {
@@ -103,7 +103,7 @@ public class SprintReviewController {
      * @param attachmentId
      * @Date 2021/2/27
      * @Description 通过附件id删除附件
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @DeleteMapping("/deleteAttachment/{attachmentId}")
     public ControllerResponse deleteAttachment(@PathVariable Long attachmentId) {

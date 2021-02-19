@@ -27,7 +27,7 @@ public class HeaderFieldUserController {
      *
      * @param headerFieldListDTO
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/15
      */
     @PostMapping("/updateList")

@@ -27,7 +27,7 @@ public class MilestoneController {
      *
      * @param milestoneDTO
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/12
      */
     @PostMapping("/addMilestone")
@@ -43,7 +43,7 @@ public class MilestoneController {
      * 功能描述: 删除里程碑
      *
      * @param milestoneId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/12
      */
     @DeleteMapping("/deleteMilestone/{milestoneId}")
@@ -58,7 +58,7 @@ public class MilestoneController {
      *
      * @param milestoneDTO
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/13
      */
     @PostMapping("/editMilestone")
@@ -78,7 +78,7 @@ public class MilestoneController {
      * 功能描述:  查询里程碑
      *
      * @param milestoneId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/13
      */
     @GetMapping("/getMilestone/{milestoneId}")
@@ -90,7 +90,7 @@ public class MilestoneController {
      * 功能描述: 按时间顺序展示里程碑
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/17
      */
     @GetMapping("/listMilestones")

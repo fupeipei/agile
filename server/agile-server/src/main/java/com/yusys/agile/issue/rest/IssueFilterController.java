@@ -36,7 +36,7 @@ public class IssueFilterController {
      * 根据filterId删除过滤器
      *
      * @param filterId 过滤器主键ID
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @DeleteMapping("/{filterId}/{category}")
     public ControllerResponse deleteIssueFilter(@PathVariable("filterId") Long filterId, @PathVariable("category") Byte category) {
@@ -48,7 +48,7 @@ public class IssueFilterController {
      * 根据项目ID和登录人员的ID获取过滤器列表数据
      *
      * @param securityDTO
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/list")
     public ControllerResponse getIssueFilters(@RequestParam("category") Byte category, SecurityDTO securityDTO) {
@@ -59,7 +59,7 @@ public class IssueFilterController {
      * 更新为当前过滤器ID为默认选中状态
      *
      * @param filterId 过滤器ID
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/update/{filterId}/{category}")
     public ControllerResponse putFilterCheckStatus(@PathVariable("filterId") Long filterId, @PathVariable("category") Byte category, SecurityDTO securityDTO) {

@@ -105,7 +105,7 @@ public class VersionManagerController {
      * @param pageNum     当前页码
      * @param pageSize    每页条数
      * @param projectId   项目id
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @Description:根据项目id获取版本信息
      * @date 2021/3/18
      */

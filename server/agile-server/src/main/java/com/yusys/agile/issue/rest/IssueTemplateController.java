@@ -85,7 +85,7 @@ public class IssueTemplateController {
      * @param securityDTO
      * @param issueType
      * @param fieldName
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/3
      */
     @GetMapping("/issueCustomRelation/getUnApplied")

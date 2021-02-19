@@ -22,7 +22,7 @@ public class ProjectUserController {
      * @param pageSize
      * @Date 2021/2/6
      * @Description 项目概览中获取人员信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/project/userInfo")
     public ControllerResponse projectUserInfo(@RequestHeader(name = "projectId") Long projectId, Integer pageNum, Integer pageSize) {

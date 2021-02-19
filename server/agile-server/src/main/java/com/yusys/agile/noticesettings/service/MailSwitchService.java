@@ -17,7 +17,7 @@ public interface MailSwitchService {
      *
      * @param mailSwitchDTO
      * @param securityDTO
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     ControllerResponse pushNoticeSettings(MailSwitchDTO mailSwitchDTO, SecurityDTO securityDTO);
 
@@ -25,7 +25,7 @@ public interface MailSwitchService {
      * 根据用户ID和项目编码查询邮箱设置
      *
      * @param securityDTO
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     ControllerResponse pullNoticeSettings(SecurityDTO securityDTO);
 

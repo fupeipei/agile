@@ -38,7 +38,7 @@ public class VersionIssueRelateController {
      * @param pageSize
      * @param pageNum
      * @param securityDTO
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/2
      */
     @GetMapping("")

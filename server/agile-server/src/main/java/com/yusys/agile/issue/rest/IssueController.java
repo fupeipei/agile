@@ -39,7 +39,7 @@ public class IssueController {
      *
      * @param map
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
@@ -85,7 +85,7 @@ public class IssueController {
      * @param issueId
      * @param projectId
      * @param issueQuery 1:不查询子，2：查询子
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
     @GetMapping("/issue/{issueId}")
@@ -105,7 +105,7 @@ public class IssueController {
      *
      * @param issueId
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/10/15
      */
     @GetMapping("/issue/getIssueByIssueId/{issueId}")
@@ -128,7 +128,7 @@ public class IssueController {
      *
      * @param issueId
      * @param isCollect 0：非收藏 1：收藏
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/22
      */
     @GetMapping("/issue/isCollect/{issueId}/{isCollect}")
@@ -164,7 +164,7 @@ public class IssueController {
      * 功能描述 根据Id查询所有的Issue以及其children
      *
      * @param rootIds
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/29
      */
     @PostMapping("/issueListByIds")
@@ -218,7 +218,7 @@ public class IssueController {
      * @param issueId
      * @param pageNum  分页页数
      * @param pageSize 分页条数
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * :
      * @Date:2021/2/1 11:05
      * @Description:根据issueId，查询操作历史分页数据
@@ -260,7 +260,7 @@ public class IssueController {
      * @Description 项目概览页面统计各个阶段的需求个数
      * 看这个产品是否关联了故事，关联了故事就统计故事数，没有故事就统计关联的研发需求数，
      * 没有研发需求就统计关联的业务需求数，都没有关联该产品就为0了，最子到故事
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/stage/count")
     public ControllerResponse countIssueByStageId(@RequestHeader(name = "projectId") Long projectId, Integer pageNum, Integer pageSize) {
@@ -327,7 +327,7 @@ public class IssueController {
      * @Description 项目概览页面统计各个阶段的需求个数
      * 看这个产品是否关联了故事，关联了故事就统计故事数，没有故事就统计关联的研发需求数，
      * 没有研发需求就统计关联的业务需求数，都没有关联该产品就为0了，最子到故事
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/stage/countForSso")
     public List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam(name = "projectId") Long projectId) {
@@ -355,7 +355,7 @@ public class IssueController {
     /**
      * @Date 2020/10/21
      * @Description 根据登入用户获取代办事项
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/getIssueCommissionByHandler")
     public ControllerResponse getIssueCommissionByHandler(Integer pageNum, Integer pageSize) {
@@ -367,7 +367,7 @@ public class IssueController {
      *
      * @param issueId
      * @param noLogin 免登录标识，"true"标识免登录调用，other非免登录调用
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/10/22
      */
     @GetMapping("/issue/getIssuePanoramas")
@@ -399,7 +399,7 @@ public class IssueController {
      *
      * @param issueId
      * @param issueType
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/8
      */
 
@@ -420,7 +420,7 @@ public class IssueController {
      * 功能描述  根据当前issueId查询客户需求编号
      *
      * @param issueId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/18
      */
 

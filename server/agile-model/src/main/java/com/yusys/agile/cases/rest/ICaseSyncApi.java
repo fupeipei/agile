@@ -15,7 +15,7 @@ public interface ICaseSyncApi {
      * 功能描述: 从itc同步测试用例
      *
      * @param jsonObject
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/22
      */
     ControllerResponse syncCaseFromITC(JSONObject jsonObject);
@@ -25,7 +25,7 @@ public interface ICaseSyncApi {
      * 功能描述: 从itc修改测试用例
      *
      * @param jsonObject
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/22
      */
     ControllerResponse editCaseFromITC(JSONObject jsonObject);
@@ -34,7 +34,7 @@ public interface ICaseSyncApi {
      * 功能描述: 从itc删除测试用例
      *
      * @param caseId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/22
      */
     ControllerResponse deleteCaseFromITC(Long caseId);
@@ -43,7 +43,7 @@ public interface ICaseSyncApi {
      * 功能描述: 从itc同步用例执行情况
      *
      * @param jsonObject
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/22
      */
     ControllerResponse syncCaseExecuteFromITC(JSONObject jsonObject);

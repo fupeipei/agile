@@ -122,7 +122,7 @@ public interface IssueService {
      * @param issueId
      * @param pageNum  分页页数
      * @param pageSize 分页条数
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * :
      * @Date:2021/2/1 11:05
      * @Description:根据issueId，查询操作历史分页数据

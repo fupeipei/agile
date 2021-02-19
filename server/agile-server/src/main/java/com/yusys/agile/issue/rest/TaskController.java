@@ -105,7 +105,7 @@ public class TaskController {
      * @param to
      * @Date 2021/2/8
      * @Description 任务卡片拖拽
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/task/stageId/{issueId}/{from}/{to}")
     public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to) {
@@ -203,7 +203,7 @@ public class TaskController {
      * 功能描述:提供cicd接口-根据任务id信息查询上层故事id集合
      *
      * @param taskIds
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/8
      */
     @PostMapping("/issue/task/listStoryIdsByTaskIds")

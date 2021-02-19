@@ -143,7 +143,7 @@ public class EpicController {
      *
      * @param id   业需或研需id
      * @param type 1 业务需求 2研发需求
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/22
      */
     @GetMapping("/issue/queryStroyIds")
@@ -155,7 +155,7 @@ public class EpicController {
      * 功能描述: 按版本统计系统各个阶段需求个数
      *
      * @param projectId 项目id
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/30
      */
     @GetMapping("/issue/queryAllEpicCountByVersionId")
@@ -175,7 +175,7 @@ public class EpicController {
      *
      * @param epicId
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/10/13
      */
     @GetMapping("/issue/queryFeatureIdsByEpicId/{epicId}")

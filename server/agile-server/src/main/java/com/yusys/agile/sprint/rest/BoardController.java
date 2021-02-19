@@ -23,7 +23,7 @@ public class BoardController {
      * @param param
      * @Date 2020/4/30
      * @Description 看板搜索故事和任务
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/board/searchStorysAndTasks")
     public ControllerResponse getStorysAndTasks(@RequestBody BoardStoryParam param) {

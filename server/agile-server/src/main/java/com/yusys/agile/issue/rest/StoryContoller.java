@@ -183,7 +183,7 @@ public class StoryContoller {
      * @param issueDTO
      * @Date 2021/2/12
      * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/issue/listStorysAndTasks")
     public ControllerResponse listStorysAndTasks(@RequestHeader(name = "projectId") Long projectId, @RequestBody IssueDTO issueDTO) {
@@ -196,7 +196,7 @@ public class StoryContoller {
      * @param projectId
      * @Date 2021/2/27
      * @Description 看板编辑故事状态和任务卡片阻塞状态
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/issue/editStoryOrTask")
     public ControllerResponse editStoryOrTask(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId") Long projectId) {
@@ -212,7 +212,7 @@ public class StoryContoller {
      * @param projectId
      * @Date 2021/2/1
      * @Description 迭代评审获取故事及故事验收标准信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/issue/story/listStoryAcceptance")
     public ControllerResponse listStoryAcceptance(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId") Long projectId) {
@@ -224,7 +224,7 @@ public class StoryContoller {
      * @param issueDTO
      * @Date 2021/2/1
      * @Description 编辑故事评审状态及备注
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/issue/story/editStoryAssess")
     public ControllerResponse editStoryAssess(@RequestBody IssueDTO issueDTO) {
@@ -307,7 +307,7 @@ public class StoryContoller {
      * @param sprintId
      * @Date 2020/8/7
      * @Description 获取迭代中未完成故事
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/unfinishedStory/{sprintId}")
     public ControllerResponse getUnfinishedStoryList(@PathVariable Long sprintId) {
@@ -321,7 +321,7 @@ public class StoryContoller {
      * @param projectId
      * @param pageNum
      * @param pageSize
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/19
      */
     @GetMapping("/issue/listUnFinisherStorysByProjectId")
@@ -363,7 +363,7 @@ public class StoryContoller {
      * 功能描述  查询故事下的开发负责人
      *
      * @param storyId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/10/26
      */
     @GetMapping("/issue/getDevlopManager/{storyId}")

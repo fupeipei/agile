@@ -118,7 +118,7 @@ public class BusinessController {
     /**
      * @Date 2021/2/1
      * @Description 根据登入用户获取代办事项
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/business/getBusinessCommissionOwner")
     public ControllerResponse getBusinessCommissionOwner(Integer pageNum, Integer pageSize) {

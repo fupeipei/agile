@@ -75,7 +75,7 @@ public interface FaultService {
      * 功能描述: 查询项目下所有的缺陷提出人
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/14
      */
     List<UserDTO> listAllCreateUsers(Long projectId);
@@ -84,7 +84,7 @@ public interface FaultService {
      * 功能描述: 查询项目下所有的缺陷修复人
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/14
      */
     List<UserDTO> listAllFixedUsers(Long projectId);
@@ -93,7 +93,7 @@ public interface FaultService {
      * 功能描述: 查询项目下所有的缺陷验收人
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/14
      */
     List<UserDTO> listAllTestUsers(Long projectId);

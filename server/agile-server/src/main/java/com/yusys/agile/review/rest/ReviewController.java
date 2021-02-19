@@ -29,7 +29,7 @@ public class ReviewController {
      *
      * @param reviewDTO
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/8
      */
     @PostMapping("/addReview")
@@ -44,7 +44,7 @@ public class ReviewController {
      * 功能描述: 取消评审
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/8
      */
     @GetMapping("/cancelReview/{reviewId}")
@@ -59,7 +59,7 @@ public class ReviewController {
      * 功能描述: 进行评审
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/8
      */
     @PostMapping("/executeReview")
@@ -75,7 +75,7 @@ public class ReviewController {
      * 功能描述: 查询评审的列表
      *
      * @param issueId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/9
      */
     @GetMapping("/listReview/{issueId}")
@@ -86,7 +86,7 @@ public class ReviewController {
     /**
      * 功能描述:查询评审信息
      *
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/9
      */
     @GetMapping("/getReview/{reviewId}")
@@ -100,7 +100,7 @@ public class ReviewController {
      *
      * @param storyId
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/10
      */
     @GetMapping("/allowStoryInSprint/{storyId}")

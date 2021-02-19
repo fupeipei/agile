@@ -38,7 +38,7 @@ public class SprintController {
      * @param projectId
      * @Date 2020/4/10
      * @Description新增迭代
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/insertSprint")
     public ControllerResponse createSprint(@RequestBody SprintDTO sprintDTO, @RequestHeader(name = "projectId") Long projectId) {
@@ -73,7 +73,7 @@ public class SprintController {
      * @param sprintId
      * @Date 2020/4/10
      * @Description查看迭代编辑页面
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/getSprint/{sprintId}")
     public ControllerResponse viewEdit(@PathVariable Long sprintId, @RequestHeader(name = "projectId") Long projectId) {
@@ -85,7 +85,7 @@ public class SprintController {
      * @param sprintDTO
      * @Date 2020/4/10
      * @Description编辑迭代详情
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/updateSprint")
     public ControllerResponse editSprint(@RequestBody SprintDTO sprintDTO, @RequestHeader(name = "projectId") Long projectId) {
@@ -108,7 +108,7 @@ public class SprintController {
      * @param pageSize
      * @Date 2020/4/13
      * @Description 通过团队id获取迭代信息以及通过迭代名称查询
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/listSprint/{teamId}")
     public ControllerResponse getSprintByTeamId(@PathVariable Long teamId, @RequestParam("sprintName") String sprintName,
@@ -124,7 +124,7 @@ public class SprintController {
      * @param projectId
      * @Date 2020/4/16
      * @Description 删除迭代信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @DeleteMapping("/deleteSprint/{sprintId}")
     public ControllerResponse deleteSprint(@PathVariable Long sprintId, @RequestHeader(name = "projectId") Long projectId) {
@@ -139,7 +139,7 @@ public class SprintController {
      * @param issueId
      * @Date 2020/4/17 17:43
      * @Description 通过迭代id和故事id将故事移出迭代
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PutMapping("/issues/{sprintId}/{issueId}")
     public ControllerResponse removeIssue4Sprint(@PathVariable Long sprintId, @PathVariable Long issueId) {
@@ -153,7 +153,7 @@ public class SprintController {
      * @param sprintDTO
      * @Date 2020/4/17 21:08
      * @Description 迭代添加工作项（故事或缺陷）
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/relation/issue")
     public ControllerResponse arrangeIssue(@RequestBody SprintDTO sprintDTO, @RequestHeader(name = "projectId") Long projectId) {
@@ -171,7 +171,7 @@ public class SprintController {
      * @param projectId
      * @Date 2020/4/28
      * @Description 根据迭代id或迭代名称分页查询迭代列表
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/listUnFinishedSprint")
     public ControllerResponse queryUnFinishedByProjectId(@RequestParam(name = "filter", required = false) String filter,
@@ -194,7 +194,7 @@ public class SprintController {
      * @param projectId
      * @Date 2021/2/7
      * @Description 获取项目中所有迭代
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/listSprint")
     public ControllerResponse viewSprints(@RequestBody SprintDTO sprintDTO, @RequestHeader(name = "projectId") Long projectId) {
@@ -208,7 +208,7 @@ public class SprintController {
      * @param sprintId
      * @Date 2021/2/12
      * @Description 根据迭代id获取迭代中人员信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/listUsers/{sprintId}")
     public ControllerResponse listUsersBySprintId(@RequestHeader(name = "projectId") Long projectId, @PathVariable Long sprintId,
@@ -227,7 +227,7 @@ public class SprintController {
      * @param sprintId  编辑迭代为已完成状态
      * @Date 2021/2/9
      * @Description
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PutMapping("/editComplete/{sprintId}")
     public ControllerResponse completeSprint(@RequestHeader(name = "projectId") Long projectId, @PathVariable Long sprintId) {
@@ -267,7 +267,7 @@ public class SprintController {
      * @param pageSize
      * @Date 2021/2/16
      * @Description 获取迭代中人员代码提交次数
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/userInfo/{sprintId}")
     public ControllerResponse sprintUserInfo(@RequestHeader(name = "projectId") Long projectId, @PathVariable Long sprintId,
@@ -305,7 +305,7 @@ public class SprintController {
      * 功能描述: 提供cicd接口：根据项目id查询下面未完成的迭代
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/19
      */
     @GetMapping("/listUnFinisherSprintsByProjectId")
@@ -321,7 +321,7 @@ public class SprintController {
      * 功能描述: 提供cicd接口：根据项目id查询项目下面所有的迭代
      *
      * @param projectId
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/19
      */
     @GetMapping("/listAllSprintsByProjectId")

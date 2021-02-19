@@ -20,7 +20,7 @@ public class ExternalApiConfigController {
     /**
      * 功能描述：当前是系统所属地
      *
-     * @return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse;
      * @date 2021/2/2
      */
 

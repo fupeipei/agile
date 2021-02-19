@@ -18,7 +18,7 @@ public class TeamController {
      * @param projectId
      * @Date 2020/4/13
      * @Description 获取项目下所有团队
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/team/listTeam")
     public ControllerResponse getListTeam(@RequestHeader(name = "projectId") Long projectId) {
@@ -29,7 +29,7 @@ public class TeamController {
      * @param projectId
      * @Date 2020/4/14
      * @Description 获取项目中的人员信息
-     * @Return import com.yusys.portal.model.common.dto.ControllerResponse;
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/user/listMemberUsers")
     public ControllerResponse listMemberUsers(@RequestHeader(name = "projectId") Long projectId) {
