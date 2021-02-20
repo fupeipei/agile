@@ -1,7 +1,7 @@
 version: "2"
 services:
   agile:
-    image: 192.168.48.2:5002/agile/agile-impl:latest
+    image: 192.168.48.2:5002/agile/agile-server:latest
     build:
       context: .
       dockerfile: docker/Dockerfile_agile
