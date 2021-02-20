@@ -10,6 +10,6 @@ ENV MEMORY=3072
 ENV TZ=Asia/Shanghai
 ENV NAME=agile
 
-COPY target/${NAME}-server.jar /home/app/${NAME}.jar
+COPY agile-server/target/${NAME}-server.jar /home/app/${NAME}.jar
 
 CMD java -Djava.security.egd=file:/dev/./urandom -Dfile.encoding=UTF-8 -jar -Xms${MEMORY}M -Xmx${MEMORY}M -XX:+UseParNewGC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/logs/gc/ -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -XX:+PrintGCDateStamps /home/app/${NAME}.jar --spring.profiles.active=prod
