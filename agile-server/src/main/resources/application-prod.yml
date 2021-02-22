@@ -94,6 +94,6 @@ graylog:
 env: ${ENV:test}
 
 YuDO:
-  url: ${YuDO_URL:192.168.48.1:8300}
+  url: ${YuDO_URL:192.168.48.4:9300}
 project:
   location: ${PROJECT_LOCATION:devops}
