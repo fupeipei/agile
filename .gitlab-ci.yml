@@ -34,7 +34,7 @@ deploy_dev:
   script:
     - tag=`cat docker-tag`
     - echo $tag
-    - ssh -p 22022 devops@192.168.48.1 "sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose.yaml stop agile-server && docker-compose -f docker-compose.yaml  up -d agile-server"
+    - ssh -p 22022 devops@10.19.83.76 "sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile  "
     - ssh -p 22022 devops@192.168.48.1 "docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
   only:
     - master
