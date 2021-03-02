@@ -41,15 +41,15 @@ frame:
       maxOpenPreparedStatements: 50
     ds:
       master:
-        url: jdbc:mysql://192.168.48.1:3306/req?serverTimezone=Asia/Shanghai&allowMultiQueries=true
-        username: root
-        password: root+654321
+        url: jdbc:mysql://${MYSQL_IP}:${MYSQL_PORT}/req?serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        username: ${MYSQL_USER:root}
+        password: ${MYSQL_ROOT_PASSWD}
         driverClassName: com.mysql.cj.jdbc.Driver
-        base:
-          url: jdbc:mysql://192.168.48.1:3306/base?serverTimezone=Asia/Shanghai
-          username: root
-          password: root+654321
-          driverClassName: com.mysql.cj.jdbc.Driver
+      base:
+        url: jdbc:mysql://${MYSQL_IP}:${MYSQL_PORT}/base?serverTimezone=Asia/Shanghai
+        username: ${MYSQL_USER:root}
+        password: ${MYSQL_ROOT_PASSWD}
+        driverClassName: com.mysql.cj.jdbc.Driver
 uuidFlag: ${UUID_FLAG:""}
 xxl:
   job:
