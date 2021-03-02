@@ -323,7 +323,7 @@ public class SprintController {
      *
      * @param projectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/8/19
+     * @date 2021/3/2
      */
     @GetMapping("/listAllSprintsByProjectId")
     public ControllerResponse listAllSprintsByProjectId(@RequestParam("projectId") Long projectId,
