@@ -54,7 +54,7 @@ uuidFlag: ${UUID_FLAG:""}
 xxl:
   job:
     admin:
-      addresses: http://${JOB_ADDRESS:cicd-job}:8025/job
+      addresses: http://${JOB_ADDRESS:cicd-job}:9025/job
     executor:
       appname: agile-server
       ip:
