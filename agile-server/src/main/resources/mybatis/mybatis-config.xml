@@ -17,7 +17,7 @@
 													header_field,issue_filter,external_api_config,fault_level,fault_type" />
 			<property name="tenantSwitch" value="false"/>
 		</plugin>
-		<plugin interceptor="com.yusys.agile.config.MyBatisInsertInterceptor">
+		<plugin interceptor="com.yusys.portal.common.interceptor.MyBatisInsertInterceptor">
 			<property name="workerId" value="30" />
 			<property name="dataCenterId" value="30" />
 		</plugin>
