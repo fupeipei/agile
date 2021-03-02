@@ -123,7 +123,7 @@ public class SprintController {
      * @param sprintId
      * @param projectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @Date 2020/4/16
+     * @Date 2021/4/16
      * @Description 删除迭代信息
      */
     @DeleteMapping("/deleteSprint/{sprintId}")
@@ -131,6 +131,7 @@ public class SprintController {
         if (sprintService.deleteSprint(sprintId, projectId)) {
             return ControllerResponse.success("删除迭代信息成功!");
         }
+
         return ControllerResponse.fail("删除迭代信息失败! ");
     }
 
