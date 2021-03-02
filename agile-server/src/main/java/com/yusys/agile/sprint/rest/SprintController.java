@@ -139,7 +139,7 @@ public class SprintController {
      * @param sprintId
      * @param issueId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @Date 2020/4/17 17:43
+     * @Date 2020/3/2 17:43
      * @Description 通过迭代id和故事id将故事移出迭代
      */
     @PutMapping("/issues/{sprintId}/{issueId}")
@@ -331,5 +331,4 @@ public class SprintController {
         List<SprintDTO> list = sprintService.listAllSprintsByProjectId(projectId, name);
         return ControllerResponse.success(new PageInfo<>(list));
     }
-
 }
