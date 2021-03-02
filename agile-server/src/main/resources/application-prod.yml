@@ -41,7 +41,7 @@ frame:
       maxOpenPreparedStatements: 50
     ds:
       master:
-        url: jdbc:mysql://${MYSQL_IP}:${MYSQL_PORT}/req?serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        url: jdbc:mysql://${MYSQL_IP}:${MYSQL_PORT}/agile?serverTimezone=Asia/Shanghai&allowMultiQueries=true
         username: ${MYSQL_USER:root}
         password: ${MYSQL_ROOT_PASSWD}
         driverClassName: com.mysql.cj.jdbc.Driver
