@@ -11,7 +11,7 @@
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://192.168.48.1:3306/req" userId="root"
+			connectionURL="jdbc:mysql://192.168.48.2:3306/agile" userId="root"
 			password="root+654321">
 			<property name="remarksReporting" value="true" />
 			<property name="useUnicode" value="true" />
