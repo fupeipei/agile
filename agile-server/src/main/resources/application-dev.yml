@@ -58,7 +58,7 @@ uuidFlag: ${UUID_FLAG:""}
 xxl:
   job:
     admin:
-      addresses: http://localhost:8025/job
+      addresses: http://localhost:9025/job
     executor:
       appname: agile-server
       ip:
