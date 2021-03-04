@@ -7,7 +7,6 @@
 #  - check_db_info  
 
 build_maven:
-  when: manual
   stage: build_maven
   image: maven:3.5.2-jdk-8
   script:
