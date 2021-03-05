@@ -49,6 +49,7 @@ public class SubSecurityInfoAspect {
                         ReflectUtil.setFieldValue(each, "userId", userInfo.getUserId());
                         ReflectUtil.setFieldValue(each, "tenantCode", userInfo.getTenantCode());
                         ReflectUtil.setFieldValue(each, "projectId", userInfo.getProjectId());
+                        ReflectUtil.setFieldValue(each, "systemId", userInfo.getSystemId());
                         ReflectUtil.setFieldValue(each, "roleIds", userInfo.getRoleIds());
 
                     } catch (Exception e) {
