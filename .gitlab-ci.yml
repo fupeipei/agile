@@ -10,7 +10,7 @@ build_maven:
   stage: build_maven
   image: maven:3.5.2-jdk-8
   script:
-    - mvn clean deploy -U -s "settings.xml" -f "server/pom.xml" -Dmaven.test.skip=true
+    - mvn clean deploy -U -s "settings.xml" -Dmaven.test.skip=true
     - tag=`date +%Y%m%d`-`echo $CI_BUILD_REF | cut -c 1-8`
     - echo $tag > docker-tag
     - sed -i s/latest/$tag/g docker-compose.yaml
@@ -34,8 +34,8 @@ deploy_dev:
   script:
     - tag=`cat docker-tag`
     - echo $tag
-    - ssh -p 22 root@192.168.48.2 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
-    - ssh -p 22 root@192.168.48.2 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
+    - ssh -p 22 root@192.168.48.5 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
+    - ssh -p 22 root@192.168.48.5 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
   only:
     - dev
     - master
