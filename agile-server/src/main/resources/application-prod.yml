@@ -86,7 +86,7 @@ issue:
     flag: ${ISSUE_REGULAR_FLAG:true}
 #graylog
 graylog:
-  host: ${GRAYLOG_HOST:192.168.48.2}
+  host: ${GRAYLOG_HOST:192.168.48.5}
   port: ${GRAYLOG_PORT:12201}
   appname: agile-server
   appenv: ${APP_ENV:prod}
