@@ -50,6 +50,7 @@ execute_dev_sql:
     - cd devops_sql
     - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
   only:
+    - dev
     - master
     
 deploy_test:
