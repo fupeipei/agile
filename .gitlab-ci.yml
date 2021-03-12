@@ -46,7 +46,7 @@ execute_dev_sql:
   image: 192.168.48.2:5002/library/git-mysql:alpine
   script:
     - env_name=dev
-    - git clone http://192.168.48.2:8888/yusys_devops/devops_sql.git
+    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
     - cd devops_sql
     - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
   only:
@@ -63,7 +63,7 @@ deploy_test:
   script:
     - tag=`cat docker-tag`
     - echo $tag
-    - git clone http://192.168.48.2:8888/yusys_devops/devops_sql.git
+    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
     - cd devops_sql/devops-deployment/
     - ./deploy_k8s.sh $CI_PROJECT_NAME $tag
   only:
@@ -74,7 +74,7 @@ execute_test_sql:
   image: 192.168.48.2:5002/library/git-mysql:alpine
   script:
     - env_name=test
-    - git clone http://192.168.48.2:8888/yusys_devops/devops_sql.git
+    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
     - cd devops_sql
     - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
   only:
@@ -85,7 +85,7 @@ check_db_info:
   image: 10.1.195.244:5002/library/git-mysql:alpine
   script:
     - env_name=test
-    - git clone http://192.168.48.2:8888/yusys_devops/devops_sql.git
+    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
     - cd devops_sql/mysql
     - ./checkdb.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
   only:
