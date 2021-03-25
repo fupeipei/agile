@@ -66,8 +66,9 @@
         <dependency>
             <groupId>org.csource</groupId>
             <artifactId>fastdfs-client-java</artifactId>
-            <version>1.27-SNAPSHOT</version>
+            <version>1.27</version>
         </dependency>
+
         <!--添加junit环境的jar包-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
