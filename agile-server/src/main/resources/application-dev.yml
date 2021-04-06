@@ -80,3 +80,8 @@ YuDO:
   url: ${YuDO_URL:192.168.48.1:8300 }
 project:
   location: ${PROJECT_LOCATION:devops}
+graylog:
+  host: ${GRAYLOG_HOST:192.168.48.5}
+  port: ${GRAYLOG_PORT:12201}
+  appname: agile-server
+  appenv: ${APP_ENV:dev}

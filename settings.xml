@@ -62,6 +62,17 @@
 			</pluginRepository>  
 		</pluginRepositories>  
 	</profile>
+	  <profile>
+		  <id>sonar</id>
+		  <activation>
+			  <activeByDefault>true</activeByDefault>
+		  </activation>
+		  <properties>
+			  <sonar.host.url>http://192.168.48.2:9000/</sonar.host.url>
+			  <sonar.login>admin</sonar.login>
+			  <sonar.password>123456</sonar.password>
+		  </properties>
+	  </profile>
   </profiles>
 
 </settings>
