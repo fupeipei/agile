@@ -6,7 +6,7 @@ RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main/" > /etc/apk/repositories &
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 ENV LANG=UTF-8
-ENV MEMORY=3072
+ENV MEMORY=2048
 ENV TZ=Asia/Shanghai
 ENV NAME=agile
 
