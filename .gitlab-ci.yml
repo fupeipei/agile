@@ -38,7 +38,6 @@ deploy_dev:
     - ssh -p 22 root@192.168.48.5 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
   only:
     - dev
-    - master
 
 execute_dev_sql:
   when: manual
@@ -51,7 +50,6 @@ execute_dev_sql:
     - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
   only:
     - dev
-    - master
     
 deploy_test:
   allow_failure: false
@@ -89,4 +87,4 @@ check_db_info:
     - cd devops_sql/mysql
     - ./checkdb.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
   only:
-    - master
+    - dev
