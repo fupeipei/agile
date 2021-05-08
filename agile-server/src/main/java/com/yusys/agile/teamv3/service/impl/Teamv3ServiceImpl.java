@@ -2,6 +2,8 @@ package com.yusys.agile.teamv3.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import cn.hutool.core.util.ObjectUtil;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.team.dto.TeamSystemDTO;
@@ -9,24 +11,39 @@ import com.yusys.agile.team.dto.TeanUserDTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.enums.QueryTypeEnum;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
+import com.yusys.agile.teamv3.dao.STeamSystemMapper;
+import com.yusys.agile.teamv3.dao.STeamUserMapper;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.TeamSystemv3Service;
 import com.yusys.agile.teamv3.service.TeamUserv3Service;
 import com.yusys.agile.teamv3.service.Teamv3Service;
+import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.common.id.IdGenerator;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
+import org.apache.axis.NoEndPointException;
 import org.springframework.beans.BeanUtils;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.yusys.agile.teamv3.enums.TeamRoleEnum.*;
 
 /**
  * @Author zhaofeng
@@ -36,7 +53,10 @@ import java.util.Objects;
 public class Teamv3ServiceImpl implements Teamv3Service {
     @Resource
     private STeamMapper sTeamMapper;
-
+    @Resource
+    private STeamSystemMapper teamSystemMapper;
+    @Resource
+    private STeamUserMapper teamUserMapper;
     @Autowired
     private TeamUserv3Service teamUserv3Service;
     @Autowired
@@ -245,4 +265,104 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         });
         return teams;
     }
+
+    /**
+     * 新增团队
+     *
+     * @param team 团队
+     * @return {@link String}
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String insertTeam(STeam team) {
+        if (null == team.getTeamId() ) {
+            IdGenerator idGenerator = new IdGenerator();
+            team.setTeamId(idGenerator.nextId());
+        }
+        if (sTeamMapper.teamNameNumber(team.getTeamName(), team.getTeamId()) > 0) {
+            throw new BusinessException("团队名称已存在");
+        }
+        List<Long> teamPo = team.getTeamPoS();
+        List<Long> teamSm = team.getTeamSmS();
+        List<Long> collect = teamPo.stream().filter(t -> teamSm.contains(t)).collect(Collectors.toList());
+        if (collect.size() != 0) {
+            throw new BusinessException("团队po,sm重复");
+        }
+        sTeamMapper.insertSelective(team);
+        //绑定团队系统
+        teamSystemMapper.bindingTeamAndSystem(team.getTeamId(), team.getSystemIds());
+        List<Long> teamUsers = team.getTeamUsers();
+        teamUsers.addAll(teamPo);
+        teamUsers.addAll(teamSm);
+        List<SsoUser> users = null;
+        try {
+            users = iFacadeSystemApi.queryUserList(teamUsers);
+        } catch (NullPointerException e) {
+           throw new BusinessException("/facade/user/queryUserList - 查询结果为空");
+        }
+        //绑定团队用户
+        teamUserMapper.bindingTeamAndUser(team.getTeamId(), users);
+        //用户角色，1：po，2：sm，3：普通成员
+        teamUserMapper.appointSmOrPo(team.getTeamId(), team.getTeamPoS(), TEAM_PO.getRoleCode());
+        teamUserMapper.appointSmOrPo(team.getTeamId(), team.getTeamSmS(), TEAM_SM.getRoleCode());
+        return "新建团队成功";
+    }
+
+    /**
+     * 删除团队
+     *
+     * @param teamId 团队id
+     * @return {@link String}
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String deleteTeam(long teamId) {
+        //解除团队系统绑定
+        teamSystemMapper.removeBindingTeamAndSystem(teamId);
+        //解除团队成员绑定
+        teamUserMapper.removeBindingTeamAndUser(teamId);
+        sTeamMapper.deleteByPrimaryKey(teamId);
+        return "删除团队成功";
+    }
+
+    /**
+     * 更新团队
+     *
+     * @param team 团队
+     * @return {@link String}
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String updateTeam(STeam team) {
+        deleteTeam(team.getTeamId());
+        insertTeam(team);
+        return "更新团队成功";
+    }
+
+    /**
+     * 查询团队
+     *
+     * @param teamId 团队id
+     * @return {@link QueryTeamResponse}
+     */
+    @Override
+    public QueryTeamResponse queryTeam(long teamId) {
+        STeam teamV2 = sTeamMapper.queryTeam(teamId);
+        if (ObjectUtil.isEmpty(teamV2)) {
+            throw new BusinessException("暂无该团队信息");
+        }
+
+        QueryTeamResponse queryTeamResponse = new QueryTeamResponse();
+        queryTeamResponse.setSTeam(teamV2);
+        List<Long> list = teamSystemMapper.querySystemIdByTeamId(teamId);
+        if (list.size() > 0) {
+            queryTeamResponse.setSystems(iFacadeSystemApi.querySsoSystem(list));
+        }
+        queryTeamResponse.setTeamPos(teamUserMapper.queryUserByRole(teamId, TEAM_USER.getRoleCode()));
+        queryTeamResponse.setTeamSms(teamUserMapper.queryUserByRole(teamId, TEAM_PO.getRoleCode()));
+        queryTeamResponse.setUsers(teamUserMapper.queryUserByRole(teamId, TEAM_SM.getRoleCode()));
+        return queryTeamResponse;
+    }
+
+
 }

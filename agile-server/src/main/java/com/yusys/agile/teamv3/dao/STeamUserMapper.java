@@ -3,7 +3,10 @@ package com.yusys.agile.teamv3.dao;
 import com.yusys.agile.team.dto.TeanUserDTO;
 import com.yusys.agile.teamv3.domain.STeamUser;
 import com.yusys.agile.teamv3.domain.STeamUserExample;
+
 import java.util.List;
+
+import com.yusys.portal.model.facade.entity.SsoUser;
 import org.apache.ibatis.annotations.Param;
 
 public interface STeamUserMapper {
@@ -30,4 +33,32 @@ public interface STeamUserMapper {
     int updateByPrimaryKey(STeamUser record);
 
     List<TeanUserDTO> selectByTeamIds(@Param("teamIds") List<Long> teamIds);
+
+    /**
+     * 绑定的团队和用户
+     *
+     * @param teamId 团队id
+     * @param users  用户
+     */
+    void bindingTeamAndUser(@Param("teamId") Long teamId, @Param("users") List<SsoUser> users);
+
+    /**
+     * 任命sm或
+     *
+     * @param teamId  团队id
+     * @param teamPoS 团队pos或Sms
+     * @param role    角色
+     */
+    void appointSmOrPo(@Param("teamId") Long teamId, @Param("teamPoS") List<Long> teamPoS, @Param("role") int role);
+
+    /**
+     * 删除绑定团队和用户
+     *
+     * @param teamId 团队id
+     */
+    void removeBindingTeamAndUser(Long teamId);
+
+    List<SsoUser> queryUserByRole(@Param("teamId") long teamId, @Param("role") int role);
+
+
 }

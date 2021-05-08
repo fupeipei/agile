@@ -3,7 +3,10 @@ package com.yusys.agile.teamv3.dao;
 import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.domain.STeamSystemExample;
+
 import java.util.List;
+
+import com.yusys.portal.model.facade.entity.SsoUser;
 import org.apache.ibatis.annotations.Param;
 
 public interface STeamSystemMapper {
@@ -30,4 +33,29 @@ public interface STeamSystemMapper {
     int updateByPrimaryKey(STeamSystem record);
 
     List<TeamSystemDTO> selectByTeamIds(@Param("teamIds") List<Long> teamIds);
+
+    /**
+     * 绑定团队和系统
+     *
+     * @param teamId    团队id
+     * @param systemIds ids系统
+     */
+    void bindingTeamAndSystem(@Param("teamId") Long teamId, @Param("systemIds") List<Long> systemIds);
+
+    /**
+     * 删除绑定的团队和系统
+     *
+     * @param teamId 团队id
+     */
+    void removeBindingTeamAndSystem(Long teamId);
+
+    /**
+     * 通过团队id查询系统id
+     *
+     * @param teamId 团队id
+     * @return {@link List<Long>}
+     */
+    List<Long> querySystemIdByTeamId(long teamId);
+
+
 }

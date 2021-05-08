@@ -41,7 +41,7 @@ public interface STeamMapper {
      * 查询团队
      *
      * @param teamId 团队id
-     * @return {@link TeamV2}
+     * @return {@link STeam}
      */
     STeam queryTeam(long teamId);
 
@@ -89,4 +89,13 @@ public interface STeamMapper {
      * @return
      */
     List<TeamListDTO> selectAll();
+
+    /**
+     * 团队名称数量
+     *
+     * @param teamName 团队的名字
+     * @return int
+     */
+    int teamNameNumber(@Param("teamName") String teamName, @Param("teamId") Long teamId);
+
 }

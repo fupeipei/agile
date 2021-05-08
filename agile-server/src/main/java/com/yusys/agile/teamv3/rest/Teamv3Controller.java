@@ -3,6 +3,7 @@ package com.yusys.agile.teamv3.rest;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
+import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -47,4 +48,52 @@ public class Teamv3Controller {
         List<TeamListDTO> result = teamv3Service.list();
         return ControllerResponse.success(result);
     }
+
+    /**
+     * 新增团队
+     *
+     * @param team 团队
+     * @return {@link ControllerResponse}
+     */
+    @PostMapping("/insertTeam")
+    public ControllerResponse insertTeam(STeam team) {
+        return ControllerResponse.success(teamv3Service.insertTeam(team));
+    }
+
+    /**
+     * 删除团队
+     *
+     * @param teamId 团队id
+     * @return {@link ControllerResponse}
+     */
+    @DeleteMapping("/deleteTeam")
+    public ControllerResponse deleteTeam(long teamId) {
+        return ControllerResponse.success(teamv3Service.deleteTeam(teamId));
+    }
+
+    /**
+     * 更新团队
+     *
+     * @param team 团队
+     * @return {@link ControllerResponse}
+     */
+    @PostMapping("/updateTeam")
+    public ControllerResponse updateTeam(STeam team) {
+        return ControllerResponse.success(teamv3Service.updateTeam(team));
+    }
+
+    /**
+     * 查询团队
+     *
+     * @param teamId 团队id
+     * @return {@link ControllerResponse}
+     */
+    @GetMapping("/queryTeam")
+    public ControllerResponse queryTeam(long teamId) {
+        return ControllerResponse.success(teamv3Service.queryTeam(teamId));
+    }
+
+
+
+
 }

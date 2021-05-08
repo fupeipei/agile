@@ -1,8 +1,13 @@
 package com.yusys.agile.teamv3.domain;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+@Data
 public class STeam implements Serializable {
     private Long teamId;
 
@@ -21,6 +26,31 @@ public class STeam implements Serializable {
     private String tenantCode;
 
     private String teamDesc;
+
+    /**
+     * 团队关联系统
+     */
+    @ApiModelProperty(value = "团队系统")
+    private List<Long> systemIds;
+
+    /**
+     * 团队关联成员
+     */
+    @ApiModelProperty(value = "团队成员")
+    private List<Long> teamUsers;
+
+    /**
+     * 团队po
+     */
+    @ApiModelProperty(value = "团队po")
+    private List<Long> teamPoS;
+
+    /**
+     * 团队SM
+     */
+    @ApiModelProperty(value = "团队sm")
+    private List<Long> teamSmS;
+
 
     private static final long serialVersionUID = 1L;
 
