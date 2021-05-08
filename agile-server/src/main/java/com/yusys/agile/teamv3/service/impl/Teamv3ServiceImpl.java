@@ -2,7 +2,6 @@ package com.yusys.agile.teamv3.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.team.dto.TeamSystemDTO;
@@ -27,6 +26,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author zhaofeng
@@ -118,10 +118,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             List<TeanUserDTO> poUsers = Lists.newArrayList();
             List<TeanUserDTO> smUsers = Lists.newArrayList();
             teamUsers.forEach(user -> {
-                if (item.getTeamId().equals(user.getTeamId()) && user.getUserRole().equals(TeamRoleEnum.TEAM_PO.getRoleCode())) {
+                if (Objects.equals(item.getTeamId(),user.getTeamId()) && user.getUserRole().equals(TeamRoleEnum.TEAM_PO.getRoleCode())) {
                     poUsers.add(user);
                 }
-                if (item.getTeamId().equals(user.getTeamId()) && user.getUserRole().equals(TeamRoleEnum.TEAM_SM.getRoleCode())) {
+                if (Objects.equals(item.getTeamId(),user.getTeamId()) && user.getUserRole().equals(TeamRoleEnum.TEAM_SM.getRoleCode())) {
                     smUsers.add(user);
                 }
             });
@@ -129,7 +129,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             item.setTeamSmNames(smUsers);
             //创建人
             users.forEach(user -> {
-                if (item.getCreateUid().equals(user.getUserId())) {
+                if (Objects.equals(item.getCreateUid(),user.getUserId())) {
                     SsoUserDTO userDTO = new SsoUserDTO();
                     BeanUtils.copyProperties(user, userDTO);
                     userDTO.setUserPassword("");

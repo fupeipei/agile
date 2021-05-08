@@ -22,7 +22,7 @@ public class Teamv3Controller {
     @Autowired
     private Teamv3Service teamv3Service;
 
-    /*
+    /**
      * 条件、分页查询团队列表
      * @author zhaofeng
      * @date 2021/5/8 11:15
@@ -36,7 +36,7 @@ public class Teamv3Controller {
         return ControllerResponse.success(new PageInfo<TeamListDTO>(result));
     }
 
-    /*
+    /**
      * 查询团队列表
      * @author zhaofeng
      * @date 2021/5/8 11:16
