@@ -97,7 +97,30 @@ public class Teamv3ServiceImplTest {
         List<TeamListDTO> list = teamv3Service.listTeam(dto, this.securityDTO);
         log.info("分页查询列表 list={}", list);
     }
-
+    /**
+     * 测试分页查询-team
+     * @author zhaofeng
+     * @date 2021/5/8 16:10
+     */
+    @Test
+    public void testList2(){
+        TeamQueryDTO dto = new TeamQueryDTO();
+        dto.setPageSize(10);
+        dto.setPageNum(1);
+        dto.setTeam("联");
+        List<TeamListDTO> list = teamv3Service.listTeam(dto, this.securityDTO);
+        log.info("分页查询列表 list={}", list);
+    }
+    @Test
+    public void testList3(){
+        TeamQueryDTO dto = new TeamQueryDTO();
+        dto.setPageSize(10);
+        dto.setPageNum(1);
+        dto.setTeam("联");
+        dto.setPo("zhaoydd");
+        List<TeamListDTO> list = teamv3Service.listTeam(dto, this.securityDTO);
+        log.info("分页查询列表 list={}", list);
+    }
     /**
      * 新增团队
      */

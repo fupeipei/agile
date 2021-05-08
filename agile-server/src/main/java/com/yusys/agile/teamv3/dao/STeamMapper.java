@@ -81,7 +81,7 @@ public interface STeamMapper {
      * @param params
      * @return
      */
-    List<TeamListDTO> queryAllTeam(HashMap<String, Object> params);
+    List<TeamListDTO> queryAllTeam(@Param("params") HashMap<String, Object> params);
 
     /**
      * 查询租户下团队，不条件不分页

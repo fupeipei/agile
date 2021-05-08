@@ -203,7 +203,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         //按psm姓名或账号获取userids
         String sm = dto.getSm();
-        if(!StringUtils.isEmpty(po)){
+        if(!StringUtils.isEmpty(sm)){
             List<SsoUserDTO> ssoUsers = iFacadeUserApi.queryUsersLikeNameOrAccount(sm);
             List<Long> smIds = Lists.newArrayList();
             ssoUsers.forEach(item->{
