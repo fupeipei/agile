@@ -1,9 +1,7 @@
 package com.yusys.agile.teamv3.service.impl;
 
-import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamUserMapper;
 import com.yusys.agile.teamv3.service.TeamUserv3Service;
-import com.yusys.agile.teamv3.service.Teamv3Service;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

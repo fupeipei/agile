@@ -33,7 +33,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
     private IFacadeSystemApi iFacadeSystemApi;
-    
+
     @Override
     public List<TeamListDTO> listTeam(TeamQueryDTO dto, SecurityDTO security) {
         return null;
