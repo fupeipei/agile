@@ -367,20 +367,30 @@
     </sql>
     <sql id="query_list_param">
         t.state = 'U'
-        <if test="params.teamName != null and params.teamName != ''">
-            and t.team_name like concat('%',#{params.teamName},'%')
-        </if>
-        <if test="params.teamPo != null and params.teamPo != ''">
-            and (tu.user_name like concat('%',#{params.teamPo},'%') and tu.user_role = 1)
-        </if>
-        <if test="params.teamSm != null and params.teamSm != ''">
-            and (tu.user_name like concat('%',#{params.teamSm},'%') and tu.user_role = 2)
-        </if>
-        <if test="params.systemIds != null and params.systemIds.size != 0">
-            and ts.system_name in
-            <foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
-                #{systemId}
-            </foreach>
+        <if test="params != null ">
+            <if test="params.team != null and params.team != ''">
+                and t.team_name like concat('%',#{params.team},'%')
+            </if>
+            <if test="params.po != null and params.po.size != 0">
+                and ( tu.user_id in
+                <foreach collection="params.po" item="userId" open="(" separator="," close=")">
+                    #{userId}
+                </foreach>
+                and tu.user_role = 1 )
+            </if>
+            <if test="params.sm != null and params.sm.size != 0">
+                and ( tu.user_id in
+                <foreach collection="params.sm" item="userId" open="(" separator="," close=")">
+                    #{userId}
+                </foreach>
+                and tu.user_role = 2 )
+            </if>
+            <if test="params.systemIds != null and params.systemIds.size != 0">
+                and ts.system_name in
+                <foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
+                    #{systemId}
+                </foreach>
+            </if>
         </if>
     </sql>
     <select id="queryMyJoinTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
@@ -391,7 +401,7 @@
                      left join s_team_user tu on t.team_id = tu.team_id
         <where>
             <include refid="query_list_param"/>
-            <if test="params.userId != null and params.userId != 0">
+            <if test="params.userId != null and params.userId != ''">
                 and tu.user_id = #{params.userId}
             </if>
         </where>
@@ -404,7 +414,7 @@
                      left join s_team_system ts on t.team_id = ts.team_id
         <where>
             <include refid="query_list_param"/>
-            <if test="params.userId != null and params.userId != 0">
+            <if test="params.userId != null and params.userId != ''">
                 and t.create_uid = #{params.userId}
             </if>
         </where>
@@ -418,9 +428,21 @@
                      left join s_team_user tu on t.team_id = tu.team_id
         <where>
             <include refid="query_list_param"/>
-            <if test="params.userId != null and params.userId != 0">
+            <if test="params.userId != null and params.userId != ''">
                 and (t.create_uid = #{params.userId} or tu.user_id = #{params.userId})
             </if>
+        </where>
+        order by t.create_time desc
+    </select>
+
+    <select id="queryAllTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
+        select distinct
+        <include refid="query_list_column"/>
+        from s_team t
+                     left join s_team_system ts on t.team_id = ts.team_id
+                     left join s_team_user tu on t.team_id = tu.team_id
+        <where>
+            <include refid="query_list_param"/>
         </where>
         order by t.create_time desc
     </select>
@@ -430,4 +452,5 @@
         from s_team
         where state = 'U'
     </select>
+
 </mapper>

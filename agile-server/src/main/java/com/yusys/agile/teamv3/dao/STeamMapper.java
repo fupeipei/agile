@@ -74,6 +74,14 @@ public interface STeamMapper {
      * @return
      */
     List<TeamListDTO> queryMyHiveTeam(@Param("params") HashMap<String, Object> params);
+    /**
+     * 条件查询租户下所有team
+     * @author zhaofeng
+     * @date 2021/5/8 14:39
+     * @param params
+     * @return
+     */
+    List<TeamListDTO> queryAllTeam(HashMap<String, Object> params);
 
     /**
      * 查询租户下团队，不条件不分页
