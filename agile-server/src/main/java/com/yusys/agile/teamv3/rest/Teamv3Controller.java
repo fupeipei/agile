@@ -66,8 +66,8 @@ public class Teamv3Controller {
      * @param teamId 团队id
      * @return {@link ControllerResponse}
      */
-    @DeleteMapping("/deleteTeam")
-    public ControllerResponse deleteTeam(long teamId) {
+    @DeleteMapping("/deleteTeam/{teamId}")
+    public ControllerResponse deleteTeam(@PathVariable("teamId") long teamId) {
         return ControllerResponse.success(teamv3Service.deleteTeam(teamId));
     }
 

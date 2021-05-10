@@ -1,19 +1,18 @@
 package com.yusys.agile.teamv3.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import cn.hutool.core.util.ObjectUtil;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.team.dto.TeanUserDTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.enums.QueryTypeEnum;
-import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.dao.STeamUserMapper;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.QueryTypeEnum;
+import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.TeamSystemv3Service;
 import com.yusys.agile.teamv3.service.TeamUserv3Service;
@@ -22,22 +21,18 @@ import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.common.id.IdGenerator;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
-import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
-import org.apache.axis.NoEndPointException;
 import org.springframework.beans.BeanUtils;
-import com.yusys.portal.model.facade.entity.SsoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -321,7 +316,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         teamSystemMapper.removeBindingTeamAndSystem(teamId);
         //解除团队成员绑定
         teamUserMapper.removeBindingTeamAndUser(teamId);
-        sTeamMapper.deleteByPrimaryKey(teamId);
+        //逻辑删除团队
+        sTeamMapper.updateStateById(teamId, StateEnum.E.getValue());
         return "删除团队成功";
     }
 

@@ -465,4 +465,9 @@
         where team_name = #{teamName}
     </select>
 
+    <update id="updateStateById">
+        update s_team set state = #{state}
+        where team_id = #{teamId}
+    </update>
+
 </mapper>
