@@ -82,7 +82,7 @@ check_db_info:
   stage: check_db_info
   image: 10.1.195.244:5002/library/git-mysql:alpine
   script:
-    - env_name=test
+    - env_name=dev
     - git clone git@192.168.48.2:yusys_devops/devops_sql.git
     - cd devops_sql/mysql
     - ./checkdb.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
