@@ -98,4 +98,12 @@ public interface STeamMapper {
      */
     int teamNameNumber(@Param("teamName") String teamName, @Param("teamId") Long teamId);
 
+    /**
+     * 更新团队数据类型，U：有效数据，E:无效数据
+     * @author zhaofeng
+     * @date 2021/5/10 10:01
+     * @param teamId 主键
+     * @param state  数据状态
+     */
+    void updateStateById(@Param("teamId") long teamId,@Param("state") String state);
 }

@@ -1,6 +1,5 @@
 package com.yusys.agile.team.service.impl;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
@@ -8,11 +7,8 @@ import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
-import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.common.id.IdGenerator;
-import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-import com.yusys.portal.model.facade.entity.SsoUser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,16 +17,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.yusys.agile.teamv3.enums.TeamRoleEnum.*;
 
 /**
  * 单元测试
@@ -141,8 +130,7 @@ public class Teamv3ServiceImplTest {
      */
     @Test
     public void deleteTeam() {
-        STeam team = initTeam();
-        String s = teamv3Service.deleteTeam(team.getTeamId());
+        String s = teamv3Service.deleteTeam(1);
         System.out.println(s);
         Assert.assertNotNull(s);
     }
