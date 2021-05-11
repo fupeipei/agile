@@ -1,11 +1,13 @@
 package com.yusys.agile.teamv3.dao;
 
+import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
 
 import java.util.HashMap;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface STeamMapper {
@@ -47,32 +49,37 @@ public interface STeamMapper {
 
     /**
      * 按ids查团队列表
-     * @author zhaofeng
+     *
      * @param teamIds
      * @return
+     * @author zhaofeng
      */
     List<STeam> listTeamByIds(@Param("teamIds") List<Long> teamIds);
 
     /**
      * 条件查询与我相关的团队列表
-     * @author zhaofeng
+     *
      * @param params
      * @return
+     * @author zhaofeng
      */
     List<TeamListDTO> queryMyHiveTeam(@Param("params") HashMap<String, Object> params);
+
     /**
      * 条件查询租户下所有team
-     * @author zhaofeng
-     * @date 2021/5/8 14:39
+     *
      * @param params
      * @return
+     * @author zhaofeng
+     * @date 2021/5/8 14:39
      */
     List<TeamListDTO> queryAllTeam(@Param("params") HashMap<String, Object> params);
 
     /**
      * 查询租户下团队，不条件不分页
-     * @author zhaofeng
+     *
      * @return
+     * @author zhaofeng
      */
     List<TeamListDTO> selectAll();
 
@@ -86,10 +93,16 @@ public interface STeamMapper {
 
     /**
      * 更新团队数据类型，U：有效数据，E:无效数据
-     * @author zhaofeng
-     * @date 2021/5/10 10:01
+     *
      * @param teamId 主键
      * @param state  数据状态
+     * @author zhaofeng
+     * @date 2021/5/10 10:01
      */
-    void updateStateById(@Param("teamId") long teamId,@Param("state") String state);
+    void updateStateById(@Param("teamId") long teamId, @Param("state") String state);
+
+    int teamExist(@Param("teamId") Long teamId, @Param("tenantCode") String tenantCode);
+
+
+    List<Team> getTeamsByTeamId(Long teamId);
 }

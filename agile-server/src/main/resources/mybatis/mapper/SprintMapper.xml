@@ -498,7 +498,6 @@
     where sprint_id = #{sprintId,jdbcType=BIGINT}
   </update>
 
-
   <!-- 自写sql-->
   <select id="selectByExampleDTO" resultType="com.yusys.agile.sprint.dto.SprintDTO">
     select
