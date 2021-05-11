@@ -1,6 +1,7 @@
 package com.yusys.agile.team.dto;
 
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -28,6 +29,8 @@ public class TeamDTO {
     private Long createUid;
 
     private List<UserSprintHourDTO> users;
+
+    private List<SsoSystemRestDTO> teamSystems;
 
     private String tenantCode;
 

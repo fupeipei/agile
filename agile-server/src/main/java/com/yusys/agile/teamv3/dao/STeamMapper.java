@@ -1,5 +1,6 @@
 package com.yusys.agile.teamv3.dao;
 
+import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
@@ -92,4 +93,6 @@ public interface STeamMapper {
      * @param state  数据状态
      */
     void updateStateById(@Param("teamId") long teamId,@Param("state") String state);
+
+    List<Team> getTeamsByTeamId(Long teamId);
 }

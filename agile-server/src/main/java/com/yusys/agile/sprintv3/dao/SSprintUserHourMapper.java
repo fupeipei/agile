@@ -1,5 +1,6 @@
 package com.yusys.agile.sprintv3.dao;
 
+import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintUserHourExample;
 import java.util.List;
@@ -27,4 +28,6 @@ public interface SSprintUserHourMapper {
     int updateByPrimaryKeySelective(SSprintUserHour record);
 
     int updateByPrimaryKey(SSprintUserHour record);
+
+    List<UserSprintHour> getUserIds4Sprint(Long sprintId);
 }

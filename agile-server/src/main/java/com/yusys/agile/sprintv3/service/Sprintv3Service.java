@@ -6,11 +6,23 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 
 import java.util.List;
 
+import com.yusys.agile.sprint.dto.SprintDTO;
+
 /**
  * @Author zhaofeng
  * @Date 2021/5/11 14:48
  */
 public interface Sprintv3Service {
+
+
+    /**
+     * @param sprintId
+     * @Date 2021/5/11
+     * @Description 查看迭代编辑页面
+     * @Return com.yusys.agile.sprint.dto.SprintDTO
+     */
+    SprintDTO viewEdit(Long sprintId);
+
     /**
      * 条件分页-查询列表
      * @author zhaofeng

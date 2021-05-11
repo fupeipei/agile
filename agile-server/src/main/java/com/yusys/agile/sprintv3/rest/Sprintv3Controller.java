@@ -7,10 +7,7 @@ import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +21,19 @@ public class Sprintv3Controller {
 
     @Autowired
     private Sprintv3Service sprintv3Service;
+
+    /**
+     * @param sprintId
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @Date 2021/5/10
+     * @Description查看迭代编辑页面
+     */
+    @GetMapping("/getSprint/{sprintId}")
+    public ControllerResponse viewEdit(@PathVariable Long sprintId) {
+        return ControllerResponse.success(sprintv3Service.viewEdit(sprintId));
+    }
+
+
 
     /**
      * 条件-分页查询迭代列表
