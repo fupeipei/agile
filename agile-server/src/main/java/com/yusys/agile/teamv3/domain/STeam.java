@@ -37,7 +37,7 @@ public class STeam implements Serializable {
      * 团队关联成员
      */
     @ApiModelProperty(value = "团队成员")
-    private List<Long> teamUsers;
+    private List<STeamUser> teamUsers;
 
     /**
      * 团队po

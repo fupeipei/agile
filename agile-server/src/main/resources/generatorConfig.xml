@@ -43,8 +43,8 @@
 <!--		<table tableName="s_team_po"/>-->
 <!--		<table tableName="s_team_sm"/>-->
 <!--		<table tableName="s_team_user"/>-->
-		<table tableName="s_sprint"/>
-		<table tableName="s_sprint_user_hour"/>
+<!--		<table tableName="s_sprint"/>-->
+<!--		<table tableName="s_sprint_user_hour"/>-->
 
 	</context>
 </generatorConfiguration>

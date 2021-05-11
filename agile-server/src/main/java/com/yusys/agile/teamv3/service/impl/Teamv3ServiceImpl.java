@@ -9,6 +9,7 @@ import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.dao.*;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamUser;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.TeamSystemv3Service;
 import com.yusys.agile.teamv3.service.TeamUserv3Service;
@@ -265,7 +266,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         List<Long> teamPo = team.getTeamPoS();
         List<Long> teamSm = team.getTeamSmS();
-        List<Long> teamUser = team.getTeamUsers();
+        List<STeamUser> teamUser = team.getTeamUsers();
         List<Long> collect = teamPo.stream().filter(t -> teamSm.contains(t)).collect(Collectors.toList());
         if (collect.size() != 0) {
             throw new BusinessException("团队po,sm重复");
@@ -281,8 +282,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<SsoUser> teamSmUsers = iFacadeSystemApi.queryUserList(teamSm);
         teamSmMapper.bindingTeamAndSm(team.getTeamId(), teamSmUsers);
         //绑定团队用户
-        List<SsoUser> teamUsers = iFacadeSystemApi.queryUserList(teamUser);
-        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUsers);
+        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUser);
         return "新建团队成功";
     }
 
@@ -329,7 +329,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
         List<Long> teamPo = team.getTeamPoS();
         List<Long> teamSm = team.getTeamSmS();
-        List<Long> teamUser = team.getTeamUsers();
+        List<STeamUser> teamUser = team.getTeamUsers();
         List<Long> collect = teamPo.stream().filter(t -> teamSm.contains(t)).collect(Collectors.toList());
         if (collect.size() != 0) {
             throw new BusinessException("团队po,sm重复");
@@ -345,8 +345,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<SsoUser> teamSmUsers = iFacadeSystemApi.queryUserList(teamSm);
         teamSmMapper.bindingTeamAndSm(team.getTeamId(), teamSmUsers);
         //绑定团队用户
-        List<SsoUser> teamUsers = iFacadeSystemApi.queryUserList(teamUser);
-        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUsers);
+        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUser);
         return "更新团队成功";
     }
 

@@ -14,13 +14,13 @@ public class STeamUser implements Serializable {
 
     private String userName;
 
-    private Byte userRole;
+    private Long systemId;
 
     private Long createUid;
 
     private Date createTime;
 
-    private Integer updateUid;
+    private Long updateUid;
 
     private Date updateTime;
 
@@ -68,12 +68,12 @@ public class STeamUser implements Serializable {
         this.userName = userName == null ? null : userName.trim();
     }
 
-    public Byte getUserRole() {
-        return userRole;
+    public Long getSystemId() {
+        return systemId;
     }
 
-    public void setUserRole(Byte userRole) {
-        this.userRole = userRole;
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
     }
 
     public Long getCreateUid() {
@@ -92,11 +92,11 @@ public class STeamUser implements Serializable {
         this.createTime = createTime;
     }
 
-    public Integer getUpdateUid() {
+    public Long getUpdateUid() {
         return updateUid;
     }
 
-    public void setUpdateUid(Integer updateUid) {
+    public void setUpdateUid(Long updateUid) {
         this.updateUid = updateUid;
     }
 

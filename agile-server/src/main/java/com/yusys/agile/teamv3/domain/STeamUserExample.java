@@ -425,63 +425,63 @@ public class STeamUserExample {
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleIsNull() {
-            addCriterion("user_role is null");
+        public Criteria andSystemIdIsNull() {
+            addCriterion("system_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleIsNotNull() {
-            addCriterion("user_role is not null");
+        public Criteria andSystemIdIsNotNull() {
+            addCriterion("system_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleEqualTo(Byte value) {
-            addCriterion("user_role =", value, "userRole");
+        public Criteria andSystemIdEqualTo(Long value) {
+            addCriterion("system_id =", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleNotEqualTo(Byte value) {
-            addCriterion("user_role <>", value, "userRole");
+        public Criteria andSystemIdNotEqualTo(Long value) {
+            addCriterion("system_id <>", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleGreaterThan(Byte value) {
-            addCriterion("user_role >", value, "userRole");
+        public Criteria andSystemIdGreaterThan(Long value) {
+            addCriterion("system_id >", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleGreaterThanOrEqualTo(Byte value) {
-            addCriterion("user_role >=", value, "userRole");
+        public Criteria andSystemIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("system_id >=", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleLessThan(Byte value) {
-            addCriterion("user_role <", value, "userRole");
+        public Criteria andSystemIdLessThan(Long value) {
+            addCriterion("system_id <", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleLessThanOrEqualTo(Byte value) {
-            addCriterion("user_role <=", value, "userRole");
+        public Criteria andSystemIdLessThanOrEqualTo(Long value) {
+            addCriterion("system_id <=", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleIn(List<Byte> values) {
-            addCriterion("user_role in", values, "userRole");
+        public Criteria andSystemIdIn(List<Long> values) {
+            addCriterion("system_id in", values, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleNotIn(List<Byte> values) {
-            addCriterion("user_role not in", values, "userRole");
+        public Criteria andSystemIdNotIn(List<Long> values) {
+            addCriterion("system_id not in", values, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleBetween(Byte value1, Byte value2) {
-            addCriterion("user_role between", value1, value2, "userRole");
+        public Criteria andSystemIdBetween(Long value1, Long value2) {
+            addCriterion("system_id between", value1, value2, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserRoleNotBetween(Byte value1, Byte value2) {
-            addCriterion("user_role not between", value1, value2, "userRole");
+        public Criteria andSystemIdNotBetween(Long value1, Long value2) {
+            addCriterion("system_id not between", value1, value2, "systemId");
             return (Criteria) this;
         }
 
@@ -615,52 +615,52 @@ public class STeamUserExample {
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidEqualTo(Integer value) {
+        public Criteria andUpdateUidEqualTo(Long value) {
             addCriterion("update_uid =", value, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidNotEqualTo(Integer value) {
+        public Criteria andUpdateUidNotEqualTo(Long value) {
             addCriterion("update_uid <>", value, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidGreaterThan(Integer value) {
+        public Criteria andUpdateUidGreaterThan(Long value) {
             addCriterion("update_uid >", value, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidGreaterThanOrEqualTo(Integer value) {
+        public Criteria andUpdateUidGreaterThanOrEqualTo(Long value) {
             addCriterion("update_uid >=", value, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidLessThan(Integer value) {
+        public Criteria andUpdateUidLessThan(Long value) {
             addCriterion("update_uid <", value, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidLessThanOrEqualTo(Integer value) {
+        public Criteria andUpdateUidLessThanOrEqualTo(Long value) {
             addCriterion("update_uid <=", value, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidIn(List<Integer> values) {
+        public Criteria andUpdateUidIn(List<Long> values) {
             addCriterion("update_uid in", values, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidNotIn(List<Integer> values) {
+        public Criteria andUpdateUidNotIn(List<Long> values) {
             addCriterion("update_uid not in", values, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidBetween(Integer value1, Integer value2) {
+        public Criteria andUpdateUidBetween(Long value1, Long value2) {
             addCriterion("update_uid between", value1, value2, "updateUid");
             return (Criteria) this;
         }
 
-        public Criteria andUpdateUidNotBetween(Integer value1, Integer value2) {
+        public Criteria andUpdateUidNotBetween(Long value1, Long value2) {
             addCriterion("update_uid not between", value1, value2, "updateUid");
             return (Criteria) this;
         }

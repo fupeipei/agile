@@ -19,4 +19,6 @@ public class TeamUserDTO {
     private String userAccount;
     @ApiModelProperty(value = "用户名称")
     private String userName;
+    @ApiModelProperty(value = "系统id")
+    private Integer systemId;
 }
