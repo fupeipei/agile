@@ -1,6 +1,6 @@
 package com.yusys.agile.teamv3.service.impl;
 
-import com.yusys.agile.team.dto.TeanUserDTO;
+import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.dao.STeamUserMapper;
 import com.yusys.agile.teamv3.service.TeamUserv3Service;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ public class TeamUserv3ServiceImpl implements TeamUserv3Service {
     private STeamUserMapper sTeamUserMapper;
 
     @Override
-    public List<TeanUserDTO> selectByTeamIds(List<Long> teamIds) {
-        List<TeanUserDTO> list = sTeamUserMapper.selectByTeamIds(teamIds);
+    public List<TeamUserDTO> selectByTeamIds(List<Long> teamIds) {
+        List<TeamUserDTO> list = sTeamUserMapper.selectByTeamIds(teamIds);
         return list;
     }
 }

@@ -373,83 +373,65 @@
         t.tenant_code as tenant_code
     </sql>
     <sql id="query_list_param">
-        t.state = 'U'
+        and t.team_id = tu.team_id
+        and t.team_id = tp.team_id
+        and t.team_id = ts.team_id
+        and t.team_id = tss.team_id
+        and t.state = 'U'
         <if test="params != null ">
             <if test="params.team != null and params.team != ''">
                 and t.team_name like concat('%',#{params.team},'%')
             </if>
-            <if test="params.po != null and params.po.size != 0">
-                and ( tu.user_id in
-                <foreach collection="params.po" item="userId" open="(" separator="," close=")">
-                    #{userId}
-                </foreach>
-                and tu.user_role = 1 )
+            <if test="params.po != null and params.po != ''">
+                and ( tp.user_name like concat('%',#{params.po},'%')
+                      or tp.user_account like concat('%',#{params.po},'%')
+                    )
             </if>
-            <if test="params.sm != null and params.sm.size != 0">
-                and ( tu.user_id in
-                <foreach collection="params.sm" item="userId" open="(" separator="," close=")">
-                    #{userId}
-                </foreach>
-                and tu.user_role = 2 )
+            <if test="params.sm != null and params.sm != ''">
+                and ( ts.user_name like concat('%',#{params.sm},'%')
+                      or ts.user_account like concat('%',#{params.sm},'%')
+                )
             </if>
             <if test="params.systemIds != null and params.systemIds.size != 0">
-                and ts.system_name in
+                and ( tss.system_id in
                 <foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
                     #{systemId}
                 </foreach>
+                )
             </if>
         </if>
     </sql>
-    <select id="queryMyJoinTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
+    <select id="queryAllTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
         select distinct
         <include refid="query_list_column"/>
-        from s_team t
-                     left join s_team_system ts on t.team_id = ts.team_id
-                     left join s_team_user tu on t.team_id = tu.team_id
+        from
+            s_team t,
+            s_team_po tp,
+            s_team_sm ts,
+            s_team_user tu,
+            s_team_system tss
         <where>
-            <include refid="query_list_param"/>
-            <if test="params.userId != null and params.userId != 0">
-                and tu.user_id = #{params.userId}
-            </if>
-        </where>
-        order by t.create_time desc
-    </select>
-    <select id="queryMyCreatedTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
-        select distinct
-        <include refid="query_list_column"/>
-        from s_team t
-                     left join s_team_system ts on t.team_id = ts.team_id
-        <where>
-            <include refid="query_list_param"/>
-            <if test="params.userId != null and params.userId != 0">
-                and t.create_uid = #{params.userId}
-            </if>
+            <include refid="query_list_param" />
         </where>
         order by t.create_time desc
     </select>
     <select id="queryMyHiveTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
         select distinct
         <include refid="query_list_column"/>
-        from s_team t
-                     left join s_team_system ts on t.team_id = ts.team_id
-                     left join s_team_user tu on t.team_id = tu.team_id
+        from
+            s_team t,
+            s_team_po tp,
+            s_team_sm ts,
+            s_team_user tu,
+            s_team_system tss
         <where>
-            <include refid="query_list_param"/>
+            <include refid="query_list_param" />
             <if test="params.userId != null and params.userId != ''">
-                and (t.create_uid = #{params.userId} or tu.user_id = #{params.userId})
+                and t.create_uid = #{params.userId}
+                or tu.user_id = #{params.userId}
+                or tp.user_id = #{params.userId}
+                or ts.user_id = #{params.userId}
             </if>
-        </where>
-        order by t.create_time desc
-    </select>
-
-    <select id="queryAllTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
-        select distinct
-        <include refid="query_list_column"/>
-        from s_team t
-                     left join s_team_system ts on t.team_id = ts.team_id
-                     left join s_team_user tu on t.team_id = tu.team_id
-        <where>
-            <include refid="query_list_param"/>
         </where>
         order by t.create_time desc
     </select>

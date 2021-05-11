@@ -6,13 +6,9 @@ import com.google.common.collect.Lists;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.team.dto.TeamSystemDTO;
-import com.yusys.agile.team.dto.TeanUserDTO;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
-import com.yusys.agile.teamv3.dao.STeamUserMapper;
+import com.yusys.agile.team.dto.TeamUserDTO;
+import com.yusys.agile.teamv3.dao.*;
 import com.yusys.agile.teamv3.domain.STeam;
-import com.yusys.agile.teamv3.enums.QueryTypeEnum;
-import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.TeamSystemv3Service;
 import com.yusys.agile.teamv3.service.TeamUserv3Service;
@@ -33,12 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.yusys.agile.teamv3.enums.TeamRoleEnum.*;
 
 /**
  * @Author zhaofeng
@@ -52,6 +47,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     private STeamSystemMapper teamSystemMapper;
     @Resource
     private STeamUserMapper teamUserMapper;
+    @Resource
+    private STeamPoMapper teamPoMapper;
+    @Resource
+    private STeamSmMapper teamSmMapper;
     @Autowired
     private TeamUserv3Service teamUserv3Service;
     @Autowired
@@ -73,22 +72,12 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //判断角色，如果是租户管理员，则查询租户下所有，否则按类型查询
         boolean check = iFacadeUserApi.checkIsTenantAdmin(userId);
         List<TeamListDTO> rest = Lists.newArrayList();
-        if(check){ //如果是租户管理员
+        //如果是租户管理员
+        if(check){
             rest = sTeamMapper.queryAllTeam(params);
         }else{ //不是租户管理员
-            Integer type = dto.getType();
-            if (QueryTypeEnum.join.getType().equals(type)) {
-                //查询我参与的
-                rest = sTeamMapper.queryMyJoinTeam(params);
-            } else if (QueryTypeEnum.created.getType().equals(type)) {
-                //查询我创建的
-                rest = sTeamMapper.queryMyCreatedTeam(params);
-            } else {
-                //查询与我相关的
-                rest = sTeamMapper.queryMyHiveTeam(params);
-            }
+            rest = sTeamMapper.queryMyHiveTeam(params);
         }
-
         //构建返回结果
         rest = buildResultList(rest);
         return rest;
@@ -109,8 +98,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             userIds.add(item.getCreateUid());
         });
         //按ids分别查询
-        List<TeanUserDTO> teamUsers = teamUserv3Service.selectByTeamIds(teamIds);
-        List<TeamSystemDTO> teamSystems = teamSystemv3Service.selectByTeamIds(teamIds);
+        List<TeamUserDTO> teamPoUsers = teamPoMapper.selectByTeamIds(teamIds);
+        List<TeamUserDTO> teamSmUsers = teamSmMapper.selectByTeamIds(teamIds);
+        List<TeamSystemDTO> teamSystems = teamSystemMapper.selectByTeamIds(teamIds);
         //收集得到的systemids
         List<Long> systemIds = Lists.newArrayList();
         teamSystems.forEach(teamSystem -> {
@@ -130,13 +120,15 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<SsoUser> users = iFacadeUserApi.listUsersByIds(userIds);
         rest.forEach(item -> {
             //po、sm赋值
-            List<TeanUserDTO> poUsers = Lists.newArrayList();
-            List<TeanUserDTO> smUsers = Lists.newArrayList();
-            teamUsers.forEach(user -> {
-                if (Objects.equals(item.getTeamId(),user.getTeamId()) && user.getUserRole().equals(TeamRoleEnum.TEAM_PO.getRoleCode())) {
+            List<TeamUserDTO> poUsers = Lists.newArrayList();
+            List<TeamUserDTO> smUsers = Lists.newArrayList();
+            teamPoUsers.forEach(user -> {
+                if (Objects.equals(item.getTeamId(),user.getTeamId())) {
                     poUsers.add(user);
                 }
-                if (Objects.equals(item.getTeamId(),user.getTeamId()) && user.getUserRole().equals(TeamRoleEnum.TEAM_SM.getRoleCode())) {
+            });
+            teamSmUsers.forEach(user -> {
+                if (Objects.equals(item.getTeamId(),user.getTeamId())) {
                     smUsers.add(user);
                 }
             });
@@ -177,34 +169,28 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (!StringUtils.isEmpty(system)) {
             List<SsoSystemRestDTO> systemList = iFacadeSystemApi.getSystemByLikeNameOrCode(system);
             List<Long> systemIds = Lists.newArrayList();
-            systemList.forEach(s -> {
-                systemIds.add(s.getSystemId());
-            });
-            params.put("systemIds", systemIds);
+            if(!systemList.isEmpty()){
+                systemList.forEach(s -> {
+                    systemIds.add(s.getSystemId());
+                });
+                params.put("systemIds", systemIds);
+            }else{
+                params.put("systemIds", -1L);
+            }
         } else {
             params.put("systemIds", null);
         }
-        //按po姓名或账号获取userids
+        //按po名称或账号获取poids
         String po = dto.getPo();
         if(!StringUtils.isEmpty(po)){
-            List<SsoUserDTO> ssoUsers = iFacadeUserApi.queryUsersLikeNameOrAccount(po);
-            List<Long> poIds = Lists.newArrayList();
-            ssoUsers.forEach(item->{
-                poIds.add(item.getUserId());
-            });
-            params.put("po", poIds);
+            params.put("po", po);
         }else{
             params.put("po", null);
         }
-        //按psm姓名或账号获取userids
+        //按sm名称或账号获取smids
         String sm = dto.getSm();
         if(!StringUtils.isEmpty(sm)){
-            List<SsoUserDTO> ssoUsers = iFacadeUserApi.queryUsersLikeNameOrAccount(sm);
-            List<Long> smIds = Lists.newArrayList();
-            ssoUsers.forEach(item->{
-                smIds.add(item.getUserId());
-            });
-            params.put("sm", smIds);
+            params.put("sm", sm);
         }else{
             params.put("sm", null);
         }
@@ -238,7 +224,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             });
         });
         //查询成员
-        List<TeanUserDTO> teanUsers = teamUserv3Service.selectByTeamIds(teamIds);
+        List<TeamUserDTO> teanUsers = teamUserv3Service.selectByTeamIds(teamIds);
         //结果集赋值
         teams.forEach(item -> {
             //团队
@@ -250,7 +236,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             });
             item.setSystemNames(teamSystemRest);
             //团队所有成员
-            List<TeanUserDTO> teanUserRest = Lists.newArrayList();
+            List<TeamUserDTO> teanUserRest = Lists.newArrayList();
             teanUsers.forEach(teamUser -> {
                 if (item.getTeamId().equals(teamUser.getTeamId())) {
                     teanUserRest.add(teamUser);
@@ -279,27 +265,24 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         List<Long> teamPo = team.getTeamPoS();
         List<Long> teamSm = team.getTeamSmS();
+        List<Long> teamUser = team.getTeamUsers();
         List<Long> collect = teamPo.stream().filter(t -> teamSm.contains(t)).collect(Collectors.toList());
         if (collect.size() != 0) {
             throw new BusinessException("团队po,sm重复");
         }
+        //插入团队
         sTeamMapper.insertSelective(team);
-        //绑定团队系统
+        //团队绑定系统
         teamSystemMapper.bindingTeamAndSystem(team.getTeamId(), team.getSystemIds());
-        List<Long> teamUsers = team.getTeamUsers();
-        teamUsers.addAll(teamPo);
-        teamUsers.addAll(teamSm);
-        List<SsoUser> users = null;
-        try {
-            users = iFacadeSystemApi.queryUserList(teamUsers);
-        } catch (NullPointerException e) {
-           throw new BusinessException("/facade/user/queryUserList - 查询结果为空");
-        }
+        //团队绑定po
+        List<SsoUser> teamPoUsers = iFacadeSystemApi.queryUserList(teamPo);
+        teamPoMapper.bindingTeamAndPo(team.getTeamId(), teamPoUsers);
+        //团队绑定sm
+        List<SsoUser> teamSmUsers = iFacadeSystemApi.queryUserList(teamSm);
+        teamSmMapper.bindingTeamAndSm(team.getTeamId(), teamSmUsers);
         //绑定团队用户
-        teamUserMapper.bindingTeamAndUser(team.getTeamId(), users);
-        //用户角色，1：po，2：sm，3：普通成员
-        teamUserMapper.appointSmOrPo(team.getTeamId(), team.getTeamPoS(), TEAM_PO.getRoleCode());
-        teamUserMapper.appointSmOrPo(team.getTeamId(), team.getTeamSmS(), TEAM_SM.getRoleCode());
+        List<SsoUser> teamUsers = iFacadeSystemApi.queryUserList(teamUser);
+        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUsers);
         return "新建团队成功";
     }
 
@@ -314,6 +297,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     public String deleteTeam(long teamId) {
         //解除团队系统绑定
         teamSystemMapper.removeBindingTeamAndSystem(teamId);
+        //解除团队po绑定
+        teamPoMapper.removeBindingTeamAndUser(teamId);
+        //解除团队sm绑定
+        teamSmMapper.removeBindingTeamAndUser(teamId);
         //解除团队成员绑定
         teamUserMapper.removeBindingTeamAndUser(teamId);
         //逻辑删除团队
@@ -330,8 +317,36 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String updateTeam(STeam team) {
-        deleteTeam(team.getTeamId());
-        insertTeam(team);
+        Long teamId = team.getTeamId();
+        //解除团队系统绑定
+        teamSystemMapper.removeBindingTeamAndSystem(teamId);
+        //解除团队po绑定
+        teamPoMapper.removeBindingTeamAndUser(teamId);
+        //解除团队sm绑定
+        teamSmMapper.removeBindingTeamAndUser(teamId);
+        //解除团队成员绑定
+        teamUserMapper.removeBindingTeamAndUser(teamId);
+
+        List<Long> teamPo = team.getTeamPoS();
+        List<Long> teamSm = team.getTeamSmS();
+        List<Long> teamUser = team.getTeamUsers();
+        List<Long> collect = teamPo.stream().filter(t -> teamSm.contains(t)).collect(Collectors.toList());
+        if (collect.size() != 0) {
+            throw new BusinessException("团队po,sm重复");
+        }
+        //插入团队
+        sTeamMapper.updateByPrimaryKeySelective(team);
+        //团队绑定系统
+        teamSystemMapper.bindingTeamAndSystem(team.getTeamId(), team.getSystemIds());
+        //团队绑定po
+        List<SsoUser> teamPoUsers = iFacadeSystemApi.queryUserList(teamPo);
+        teamPoMapper.bindingTeamAndPo(team.getTeamId(), teamPoUsers);
+        //团队绑定sm
+        List<SsoUser> teamSmUsers = iFacadeSystemApi.queryUserList(teamSm);
+        teamSmMapper.bindingTeamAndSm(team.getTeamId(), teamSmUsers);
+        //绑定团队用户
+        List<SsoUser> teamUsers = iFacadeSystemApi.queryUserList(teamUser);
+        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUsers);
         return "更新团队成功";
     }
 
@@ -347,16 +362,16 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (ObjectUtil.isEmpty(teamV2)) {
             throw new BusinessException("暂无该团队信息");
         }
-
+        //构建返回值
         QueryTeamResponse queryTeamResponse = new QueryTeamResponse();
         queryTeamResponse.setSTeam(teamV2);
         List<Long> list = teamSystemMapper.querySystemIdByTeamId(teamId);
         if (list.size() > 0) {
             queryTeamResponse.setSystems(iFacadeSystemApi.querySsoSystem(list));
         }
-        queryTeamResponse.setTeamPos(teamUserMapper.queryUserByRole(teamId, TEAM_USER.getRoleCode()));
-        queryTeamResponse.setTeamSms(teamUserMapper.queryUserByRole(teamId, TEAM_PO.getRoleCode()));
-        queryTeamResponse.setUsers(teamUserMapper.queryUserByRole(teamId, TEAM_SM.getRoleCode()));
+        queryTeamResponse.setTeamPos(teamPoMapper.selectByTeamIds(Arrays.asList(teamId)));
+        queryTeamResponse.setTeamSms(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
+        queryTeamResponse.setUsers(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
         return queryTeamResponse;
     }
 

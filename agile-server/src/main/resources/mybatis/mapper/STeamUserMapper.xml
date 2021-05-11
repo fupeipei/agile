@@ -319,13 +319,12 @@
             tenant_code  = #{tenantCode,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <select id="selectByTeamIds" resultType="com.yusys.agile.team.dto.TeanUserDTO">
+    <select id="selectByTeamIds" resultType="com.yusys.agile.team.dto.TeamUserDTO">
         select id,
                team_id,
                user_id,
                user_account,
-               user_name,
-               user_role
+               user_name
         from s_team_user
                 where
         <choose>
@@ -342,12 +341,11 @@
     </select>
 
     <insert id="bindingTeamAndUser">
-        <!--@mbg.generated-->
-        insert into s_team_user(team_id, user_id, user_account, user_name, user_role, create_uid, create_time,
+        insert into s_team_user(team_id, user_id, user_account, user_name, create_uid, create_time,
                                 update_uid, update_time, tenant_code)
                 values
         <foreach collection="users" item="item" separator=",">
-            (#{teamId}, #{item.userId}, #{item.userAccount}, #{item.userName}, '3', create_uid, create_time, update_uid,
+            (#{teamId}, #{item.userId}, #{item.userAccount}, #{item.userName}, create_uid, create_time, update_uid,
              update_time, tenant_code)
         </foreach>
     </insert>

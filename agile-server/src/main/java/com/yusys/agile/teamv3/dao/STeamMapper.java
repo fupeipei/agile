@@ -54,20 +54,6 @@ public interface STeamMapper {
     List<STeam> listTeamByIds(@Param("teamIds") List<Long> teamIds);
 
     /**
-     * 条件查询我参与的团队列表
-     * @author zhaofeng
-     * @param params
-     * @return
-     */
-    List<TeamListDTO> queryMyJoinTeam(@Param("params") HashMap<String, Object> params);
-    /**
-     * 条件查询我创建的团队列表
-     * @author zhaofeng
-     * @param params
-     * @return
-     */
-    List<TeamListDTO> queryMyCreatedTeam(@Param("params") HashMap<String, Object> params);
-    /**
      * 条件查询与我相关的团队列表
      * @author zhaofeng
      * @param params

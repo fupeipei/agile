@@ -88,8 +88,8 @@ public class Teamv3Controller {
      * @param teamId 团队id
      * @return {@link ControllerResponse}
      */
-    @GetMapping("/queryTeam")
-    public ControllerResponse queryTeam(long teamId) {
+    @GetMapping("/queryTeam/{teamId}")
+    public ControllerResponse queryTeam(@PathVariable("teamId") long teamId) {
         return ControllerResponse.success(teamv3Service.queryTeam(teamId));
     }
 

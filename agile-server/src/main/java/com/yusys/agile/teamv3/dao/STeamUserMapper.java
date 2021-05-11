@@ -1,6 +1,6 @@
 package com.yusys.agile.teamv3.dao;
 
-import com.yusys.agile.team.dto.TeanUserDTO;
+import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.domain.STeamUser;
 import com.yusys.agile.teamv3.domain.STeamUserExample;
 
@@ -32,7 +32,7 @@ public interface STeamUserMapper {
 
     int updateByPrimaryKey(STeamUser record);
 
-    List<TeanUserDTO> selectByTeamIds(@Param("teamIds") List<Long> teamIds);
+    List<TeamUserDTO> selectByTeamIds(@Param("teamIds") List<Long> teamIds);
 
     /**
      * 绑定的团队和用户
