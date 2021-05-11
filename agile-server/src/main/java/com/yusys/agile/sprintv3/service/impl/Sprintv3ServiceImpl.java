@@ -15,9 +15,9 @@ import javax.annotation.Resource;
 public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Resource
-    private SSprintMapper sprintMapper;
+    private SSprintMapper ssprintMapper;
     @Resource
-    private SSprintUserHourMapper sprintUserHourMapper;
+    private SSprintUserHourMapper ssprintUserHourMapper;
 
 
 }
