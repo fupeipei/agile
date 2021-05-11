@@ -1,6 +1,5 @@
 package com.yusys.agile.team.dto;
 
-import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,11 +25,11 @@ public class TeamListDTO {
     @ApiModelProperty("创建人")
     private SsoUserDTO createUser;
     @ApiModelProperty("团队po集合")
-    private List<TeanUserDTO> teamPoNames;
+    private List<TeamUserDTO> teamPoNames;
     @ApiModelProperty("团队sm集合")
-    private List<TeanUserDTO> teamSmNames;
+    private List<TeamUserDTO> teamSmNames;
     @ApiModelProperty("系统集合")
     private List<TeamSystemDTO> systemNames;
     @ApiModelProperty("团队所有人员")
-    private List<TeanUserDTO> teamUsers;
+    private List<TeamUserDTO> teamUsers;
 }

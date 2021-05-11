@@ -1,6 +1,6 @@
 package com.yusys.agile.teamv3.service;
 
-import com.yusys.agile.team.dto.TeanUserDTO;
+import com.yusys.agile.team.dto.TeamUserDTO;
 
 import java.util.List;
 
@@ -16,5 +16,5 @@ public interface TeamUserv3Service {
      * @param teamIds
      * @return java.util.List<com.yusys.agile.team.dto.TeanUserDTO>
      */
-    List<TeanUserDTO> selectByTeamIds(List<Long> teamIds);
+    List<TeamUserDTO> selectByTeamIds(List<Long> teamIds);
 }

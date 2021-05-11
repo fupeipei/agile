@@ -1,19 +1,18 @@
 package com.yusys.agile.teamv3.domain;
 
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-@Data
-public class STeam implements Serializable {
+public class STeamPo implements Serializable {
+    private Long id;
+
     private Long teamId;
 
-    private String teamName;
+    private Long userId;
 
-    private String state;
+    private String userAccount;
+
+    private String userName;
 
     private Long createUid;
 
@@ -25,34 +24,15 @@ public class STeam implements Serializable {
 
     private String tenantCode;
 
-    private String teamDesc;
-
-    /**
-     * 团队关联系统
-     */
-    @ApiModelProperty(value = "团队系统")
-    private List<Long> systemIds;
-
-    /**
-     * 团队关联成员
-     */
-    @ApiModelProperty(value = "团队成员")
-    private List<STeamUser> teamUsers;
-
-    /**
-     * 团队po
-     */
-    @ApiModelProperty(value = "团队po")
-    private List<Long> teamPoS;
-
-    /**
-     * 团队SM
-     */
-    @ApiModelProperty(value = "团队sm")
-    private List<Long> teamSmS;
-
-
     private static final long serialVersionUID = 1L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getTeamId() {
         return teamId;
@@ -62,20 +42,28 @@ public class STeam implements Serializable {
         this.teamId = teamId;
     }
 
-    public String getTeamName() {
-        return teamName;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName == null ? null : teamName.trim();
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public String getState() {
-        return state;
+    public String getUserAccount() {
+        return userAccount;
     }
 
-    public void setState(String state) {
-        this.state = state == null ? null : state.trim();
+    public void setUserAccount(String userAccount) {
+        this.userAccount = userAccount == null ? null : userAccount.trim();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
     }
 
     public Long getCreateUid() {
@@ -116,13 +104,5 @@ public class STeam implements Serializable {
 
     public void setTenantCode(String tenantCode) {
         this.tenantCode = tenantCode == null ? null : tenantCode.trim();
-    }
-
-    public String getTeamDesc() {
-        return teamDesc;
-    }
-
-    public void setTeamDesc(String teamDesc) {
-        this.teamDesc = teamDesc == null ? null : teamDesc.trim();
     }
 }

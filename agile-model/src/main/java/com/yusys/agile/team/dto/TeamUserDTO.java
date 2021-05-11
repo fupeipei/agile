@@ -8,7 +8,7 @@ import lombok.Data;
  * @Date 2021/4/25 15:21
  */
 @Data
-public class TeanUserDTO {
+public class TeamUserDTO {
     @ApiModelProperty(value = "主键")
     private Long id;
     @ApiModelProperty(value = "团队id")
@@ -19,6 +19,6 @@ public class TeanUserDTO {
     private String userAccount;
     @ApiModelProperty(value = "用户名称")
     private String userName;
-    @ApiModelProperty(value="用户角色，1：po，2：sm，3：普通成员")
-    private Integer userRole;
+    @ApiModelProperty(value = "系统id")
+    private Integer systemId;
 }

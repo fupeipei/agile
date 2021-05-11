@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.teamv3.dao.STeamUserMapper">
-    <resultMap id="BaseResultMap" type="com.yusys.agile.teamv3.domain.STeamUser">
+<mapper namespace="com.yusys.agile.teamv3.dao.STeamPoMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.teamv3.domain.STeamPo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="team_id" jdbcType="BIGINT" property="teamId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="user_account" jdbcType="VARCHAR" property="userAccount" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="system_id" jdbcType="BIGINT" property="systemId" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
@@ -73,16 +72,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, team_id, user_id, user_account, user_name, system_id, create_uid, create_time,
-    update_uid, update_time, tenant_code
+    id, team_id, user_id, user_account, user_name, create_uid, create_time, update_uid, 
+    update_time, tenant_code
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.teamv3.domain.STeamUserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.teamv3.domain.STeamPoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from s_team_user
+    from s_team_po
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -91,33 +90,33 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
-    from s_team_user
+    from s_team_po
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from s_team_user
+    delete from s_team_po
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.teamv3.domain.STeamUserExample">
-    delete from s_team_user
+  <delete id="deleteByExample" parameterType="com.yusys.agile.teamv3.domain.STeamPoExample">
+    delete from s_team_po
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.teamv3.domain.STeamUser">
-    insert into s_team_user (id, team_id, user_id,
-      user_account, user_name, system_id,
-      create_uid, create_time, update_uid,
-      update_time, tenant_code)
-    values (#{id,jdbcType=BIGINT}, #{teamId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
-      #{userAccount,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{systemId,jdbcType=BIGINT},
-      #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT},
-      #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.yusys.agile.teamv3.domain.STeamPo">
+    insert into s_team_po (id, team_id, user_id, 
+      user_account, user_name, create_uid, 
+      create_time, update_uid, update_time, 
+      tenant_code)
+    values (#{id,jdbcType=BIGINT}, #{teamId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+      #{userAccount,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{createUid,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeamUser">
-    insert into s_team_user
+  <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeamPo">
+    insert into s_team_po
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -133,9 +132,6 @@
       </if>
       <if test="userName != null">
         user_name,
-      </if>
-      <if test="systemId != null">
-        system_id,
       </if>
       <if test="createUid != null">
         create_uid,
@@ -169,9 +165,6 @@
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
       </if>
-      <if test="systemId != null">
-        #{systemId,jdbcType=BIGINT},
-      </if>
       <if test="createUid != null">
         #{createUid,jdbcType=BIGINT},
       </if>
@@ -189,14 +182,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.teamv3.domain.STeamUserExample" resultType="java.lang.Long">
-    select count(*) from s_team_user
+  <select id="countByExample" parameterType="com.yusys.agile.teamv3.domain.STeamPoExample" resultType="java.lang.Long">
+    select count(*) from s_team_po
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update s_team_user
+    update s_team_po
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -212,9 +205,6 @@
       </if>
       <if test="record.userName != null">
         user_name = #{record.userName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.systemId != null">
-        system_id = #{record.systemId,jdbcType=BIGINT},
       </if>
       <if test="record.createUid != null">
         create_uid = #{record.createUid,jdbcType=BIGINT},
@@ -237,13 +227,12 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update s_team_user
+    update s_team_po
     set id = #{record.id,jdbcType=BIGINT},
       team_id = #{record.teamId,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=BIGINT},
       user_account = #{record.userAccount,jdbcType=VARCHAR},
       user_name = #{record.userName,jdbcType=VARCHAR},
-      system_id = #{record.systemId,jdbcType=BIGINT},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
@@ -253,8 +242,8 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.teamv3.domain.STeamUser">
-    update s_team_user
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.teamv3.domain.STeamPo">
+    update s_team_po
     <set>
       <if test="teamId != null">
         team_id = #{teamId,jdbcType=BIGINT},
@@ -267,9 +256,6 @@
       </if>
       <if test="userName != null">
         user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="systemId != null">
-        system_id = #{systemId,jdbcType=BIGINT},
       </if>
       <if test="createUid != null">
         create_uid = #{createUid,jdbcType=BIGINT},
@@ -289,13 +275,12 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.teamv3.domain.STeamUser">
-    update s_team_user
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.teamv3.domain.STeamPo">
+    update s_team_po
     set team_id = #{teamId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       user_account = #{userAccount,jdbcType=VARCHAR},
       user_name = #{userName,jdbcType=VARCHAR},
-      system_id = #{systemId,jdbcType=BIGINT},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_uid = #{updateUid,jdbcType=BIGINT},
@@ -304,14 +289,25 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-    <select id="selectByTeamIds" resultType="com.yusys.agile.team.dto.TeamUserDTO">
+  <insert id="bindingTeamAndPo">
+    insert into s_team_po (team_id, user_id,
+      user_account, user_name, create_uid,
+      create_time, update_uid, update_time,
+      tenant_code)
+    values
+        <foreach collection="users" item="item" separator=",">
+            (#{teamId}, #{item.userId}, #{item.userAccount}, #{item.userName}, create_uid, create_time, update_uid,
+             update_time, tenant_code)
+        </foreach>
+  </insert>
+
+  <select id="selectByTeamIds" resultType="com.yusys.agile.team.dto.TeamUserDTO">
         select id,
                team_id,
                user_id,
                user_account,
-               user_name,
-               system_id
-        from s_team_user
+               user_name
+        from s_team_po
                 where
         <choose>
             <when test="teamIds != null and teamIds.size > 0">
@@ -324,23 +320,10 @@
                 1=0
             </otherwise>
         </choose>
-    </select>
+  </select>
 
-    <insert id="bindingTeamAndUser">
-        insert into s_team_user(team_id, user_id, user_account, user_name,system_id, create_uid, create_time,
-                                update_uid, update_time, tenant_code)
-                values
-        <foreach collection="users" item="item" separator=",">
-            (#{teamId}, #{item.userId}, #{item.userAccount}, #{item.userName},#{item.systemId}, create_uid, create_time, update_uid,
-             update_time, tenant_code)
-        </foreach>
-    </insert>
-
-
-    <delete id="removeBindingTeamAndUser">
-        delete
-        from s_team_user a
-        where a.team_id = #{teamId}
-    </delete>
-
+  <delete id="removeBindingTeamAndUser">
+    delete from s_team_po
+    where team_id = #{teamId}
+  </delete>
 </mapper>

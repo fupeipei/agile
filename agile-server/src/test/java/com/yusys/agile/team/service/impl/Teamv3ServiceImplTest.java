@@ -5,9 +5,11 @@ import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamUser;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.id.IdGenerator;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -19,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,13 +47,15 @@ public class Teamv3ServiceImplTest {
         team.setTeamId(840617539415855106l);
         team.setTeamName("测试团队");
         List<Long> systems = new ArrayList();
-        systems.add(783336382841401344L);
-        systems.add(816664862883926016L);
-        systems.add(808372190482649088L);
+        systems.add(816662916938469376L);
         team.setSystemIds(systems);
-        List<Long> users = new ArrayList();
-        users.add(816662609684729856L);
-        users.add(807202108292194304L);
+        List<STeamUser> users = new ArrayList();
+        STeamUser user1 = new STeamUser();
+        user1.setUserId(816662609684729856L);
+        user1.setUserName("a5");
+        user1.setUserAccount("a5");
+        user1.setSystemId(816662916938469376L);
+        users.add(user1);
         team.setTeamUsers(users);
         List<Long> teamPOs = new ArrayList();
         teamPOs.add(807202108292194304L);
@@ -115,13 +120,25 @@ public class Teamv3ServiceImplTest {
      */
     @Test
     public void insertTeam() {
-        STeam team = initTeam();
-        if (null == team.getTeamId()) {
-            IdGenerator idGenerator = new IdGenerator();
-            team.setTeamId(idGenerator.nextId());
+        for (int i=0; i<5; i++){
+            STeam team = new STeam();
+            team.setTeamName("联通ggxx"+i);
+            team.setTeamDesc("联通ggxx"+i);
+            team.setState(StateEnum.U.getValue());
+            team.setTeamPoS(Arrays.asList(841351045005778944L,816974204303933440L));
+            team.setTeamSmS(Arrays.asList(817430824963395584L,817436627609112576L));
+            List<STeamUser> users = new ArrayList();
+            STeamUser user1 = new STeamUser();
+            user1.setUserId(816662609684729856L);
+            user1.setUserName("a5");
+            user1.setUserAccount("a5");
+            user1.setSystemId(816662916938469376L);
+            users.add(user1);
+            team.setTeamUsers(users);
+            team.setSystemIds(Arrays.asList(816662916938469376L));
+            String s = teamv3Service.insertTeam(team);
+            log.info("当前第【{}】条数据{}插入成功",i, team);
         }
-        int i = sTeamMapper.insertSelective(team);
-        System.out.println(i);
 
     }
 
