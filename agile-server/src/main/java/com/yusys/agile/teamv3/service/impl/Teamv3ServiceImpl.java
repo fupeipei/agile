@@ -175,7 +175,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
                 });
                 params.put("systemIds", systemIds);
             }else{
-                params.put("systemIds", -1L);
+                params.put("systemIds", Arrays.asList(-1L));
             }
         } else {
             params.put("systemIds", null);
