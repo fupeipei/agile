@@ -1,482 +1,509 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.sprintv3.dao.SSprintMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.sprintv3.domain.SSprint">
-    <id column="sprint_id" jdbcType="BIGINT" property="sprintId" />
-    <result column="sprint_name" jdbcType="VARCHAR" property="sprintName" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="state" jdbcType="VARCHAR" property="state" />
-    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
-    <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
-    <result column="team_id" jdbcType="BIGINT" property="teamId" />
-    <result column="work_hours" jdbcType="INTEGER" property="workHours" />
-    <result column="version_number" jdbcType="VARCHAR" property="versionNumber" />
-    <result column="sync_state" jdbcType="TINYINT" property="syncState" />
-    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
-    <result column="sprint_desc" jdbcType="LONGVARCHAR" property="sprintDesc" />
-    <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays" />
-  </resultMap>
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+    <resultMap id="BaseResultMap" type="com.yusys.agile.sprintv3.domain.SSprint">
+        <id column="sprint_id" jdbcType="BIGINT" property="sprintId"/>
+        <result column="sprint_name" jdbcType="VARCHAR" property="sprintName"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="state" jdbcType="VARCHAR" property="state"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime"/>
+        <result column="team_id" jdbcType="BIGINT" property="teamId"/>
+        <result column="work_hours" jdbcType="INTEGER" property="workHours"/>
+        <result column="version_number" jdbcType="VARCHAR" property="versionNumber"/>
+        <result column="sync_state" jdbcType="TINYINT" property="syncState"/>
+        <result column="create_uid" jdbcType="BIGINT" property="createUid"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_uid" jdbcType="BIGINT" property="updateUid"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
+        <result column="sprint_desc" jdbcType="LONGVARCHAR" property="sprintDesc"/>
+        <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List">
-    sprint_id, sprint_name, status, state, start_time, end_time, finish_time, team_id, 
-    work_hours, version_number, sync_state, create_uid, create_time, update_uid, update_time, 
-    tenant_code
-  </sql>
-  <sql id="Blob_Column_List">
-    sprint_desc, sprint_days
-  </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample" resultMap="ResultMapWithBLOBs">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from s_sprint
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample" resultMap="BaseResultMap">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from s_sprint
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from s_sprint
-    where sprint_id = #{sprintId,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from s_sprint
-    where sprint_id = #{sprintId,jdbcType=BIGINT}
-  </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample">
-    delete from s_sprint
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
-    insert into s_sprint (sprint_id, sprint_name, status, 
-      state, start_time, end_time, 
-      finish_time, team_id, work_hours, 
-      version_number, sync_state, create_uid, 
-      create_time, update_uid, update_time, 
-      tenant_code, sprint_desc, sprint_days
-      )
-    values (#{sprintId,jdbcType=BIGINT}, #{sprintName,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{state,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
-      #{finishTime,jdbcType=TIMESTAMP}, #{teamId,jdbcType=BIGINT}, #{workHours,jdbcType=INTEGER}, 
-      #{versionNumber,jdbcType=VARCHAR}, #{syncState,jdbcType=TINYINT}, #{createUid,jdbcType=BIGINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{tenantCode,jdbcType=VARCHAR}, #{sprintDesc,jdbcType=LONGVARCHAR}, #{sprintDays,jdbcType=LONGVARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
-    insert into s_sprint
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="sprintId != null">
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
         sprint_id,
-      </if>
-      <if test="sprintName != null">
         sprint_name,
-      </if>
-      <if test="status != null">
         status,
-      </if>
-      <if test="state != null">
         state,
-      </if>
-      <if test="startTime != null">
         start_time,
-      </if>
-      <if test="endTime != null">
         end_time,
-      </if>
-      <if test="finishTime != null">
         finish_time,
-      </if>
-      <if test="teamId != null">
         team_id,
-      </if>
-      <if test="workHours != null">
         work_hours,
-      </if>
-      <if test="versionNumber != null">
         version_number,
-      </if>
-      <if test="syncState != null">
         sync_state,
-      </if>
-      <if test="createUid != null">
         create_uid,
-      </if>
-      <if test="createTime != null">
         create_time,
-      </if>
-      <if test="updateUid != null">
         update_uid,
-      </if>
-      <if test="updateTime != null">
         update_time,
-      </if>
-      <if test="tenantCode != null">
-        tenant_code,
-      </if>
-      <if test="sprintDesc != null">
+        tenant_code
+    </sql>
+    <sql id="Blob_Column_List">
         sprint_desc,
-      </if>
-      <if test="sprintDays != null">
-        sprint_days,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="sprintId != null">
-        #{sprintId,jdbcType=BIGINT},
-      </if>
-      <if test="sprintName != null">
-        #{sprintName,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=VARCHAR},
-      </if>
-      <if test="startTime != null">
-        #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endTime != null">
-        #{endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="finishTime != null">
-        #{finishTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="teamId != null">
-        #{teamId,jdbcType=BIGINT},
-      </if>
-      <if test="workHours != null">
-        #{workHours,jdbcType=INTEGER},
-      </if>
-      <if test="versionNumber != null">
-        #{versionNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="syncState != null">
-        #{syncState,jdbcType=TINYINT},
-      </if>
-      <if test="createUid != null">
-        #{createUid,jdbcType=BIGINT},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUid != null">
-        #{updateUid,jdbcType=BIGINT},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="tenantCode != null">
-        #{tenantCode,jdbcType=VARCHAR},
-      </if>
-      <if test="sprintDesc != null">
-        #{sprintDesc,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="sprintDays != null">
-        #{sprintDays,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample" resultType="java.lang.Long">
-    select count(*) from s_sprint
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map">
-    update s_sprint
-    <set>
-      <if test="record.sprintId != null">
-        sprint_id = #{record.sprintId,jdbcType=BIGINT},
-      </if>
-      <if test="record.sprintName != null">
-        sprint_name = #{record.sprintName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=TINYINT},
-      </if>
-      <if test="record.state != null">
-        state = #{record.state,jdbcType=VARCHAR},
-      </if>
-      <if test="record.startTime != null">
-        start_time = #{record.startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.endTime != null">
-        end_time = #{record.endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.finishTime != null">
-        finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.teamId != null">
-        team_id = #{record.teamId,jdbcType=BIGINT},
-      </if>
-      <if test="record.workHours != null">
-        work_hours = #{record.workHours,jdbcType=INTEGER},
-      </if>
-      <if test="record.versionNumber != null">
-        version_number = #{record.versionNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="record.syncState != null">
-        sync_state = #{record.syncState,jdbcType=TINYINT},
-      </if>
-      <if test="record.createUid != null">
-        create_uid = #{record.createUid,jdbcType=BIGINT},
-      </if>
-      <if test="record.createTime != null">
-        create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.updateUid != null">
-        update_uid = #{record.updateUid,jdbcType=BIGINT},
-      </if>
-      <if test="record.updateTime != null">
-        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.tenantCode != null">
-        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.sprintDesc != null">
-        sprint_desc = #{record.sprintDesc,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.sprintDays != null">
-        sprint_days = #{record.sprintDays,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map">
-    update s_sprint
-    set sprint_id = #{record.sprintId,jdbcType=BIGINT},
-      sprint_name = #{record.sprintName,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=TINYINT},
-      state = #{record.state,jdbcType=VARCHAR},
-      start_time = #{record.startTime,jdbcType=TIMESTAMP},
-      end_time = #{record.endTime,jdbcType=TIMESTAMP},
-      finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
-      team_id = #{record.teamId,jdbcType=BIGINT},
-      work_hours = #{record.workHours,jdbcType=INTEGER},
-      version_number = #{record.versionNumber,jdbcType=VARCHAR},
-      sync_state = #{record.syncState,jdbcType=TINYINT},
-      create_uid = #{record.createUid,jdbcType=BIGINT},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_uid = #{record.updateUid,jdbcType=BIGINT},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
-      sprint_desc = #{record.sprintDesc,jdbcType=LONGVARCHAR},
-      sprint_days = #{record.sprintDays,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update s_sprint
-    set sprint_id = #{record.sprintId,jdbcType=BIGINT},
-      sprint_name = #{record.sprintName,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=TINYINT},
-      state = #{record.state,jdbcType=VARCHAR},
-      start_time = #{record.startTime,jdbcType=TIMESTAMP},
-      end_time = #{record.endTime,jdbcType=TIMESTAMP},
-      finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
-      team_id = #{record.teamId,jdbcType=BIGINT},
-      work_hours = #{record.workHours,jdbcType=INTEGER},
-      version_number = #{record.versionNumber,jdbcType=VARCHAR},
-      sync_state = #{record.syncState,jdbcType=TINYINT},
-      create_uid = #{record.createUid,jdbcType=BIGINT},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_uid = #{record.updateUid,jdbcType=BIGINT},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
-    update s_sprint
-    <set>
-      <if test="sprintName != null">
-        sprint_name = #{sprintName,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="state != null">
-        state = #{state,jdbcType=VARCHAR},
-      </if>
-      <if test="startTime != null">
-        start_time = #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endTime != null">
-        end_time = #{endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="finishTime != null">
-        finish_time = #{finishTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="teamId != null">
-        team_id = #{teamId,jdbcType=BIGINT},
-      </if>
-      <if test="workHours != null">
-        work_hours = #{workHours,jdbcType=INTEGER},
-      </if>
-      <if test="versionNumber != null">
-        version_number = #{versionNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="syncState != null">
-        sync_state = #{syncState,jdbcType=TINYINT},
-      </if>
-      <if test="createUid != null">
-        create_uid = #{createUid,jdbcType=BIGINT},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUid != null">
-        update_uid = #{updateUid,jdbcType=BIGINT},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="tenantCode != null">
-        tenant_code = #{tenantCode,jdbcType=VARCHAR},
-      </if>
-      <if test="sprintDesc != null">
-        sprint_desc = #{sprintDesc,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="sprintDays != null">
-        sprint_days = #{sprintDays,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where sprint_id = #{sprintId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
-    update s_sprint
-    set sprint_name = #{sprintName,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT},
-      state = #{state,jdbcType=VARCHAR},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
-      finish_time = #{finishTime,jdbcType=TIMESTAMP},
-      team_id = #{teamId,jdbcType=BIGINT},
-      work_hours = #{workHours,jdbcType=INTEGER},
-      version_number = #{versionNumber,jdbcType=VARCHAR},
-      sync_state = #{syncState,jdbcType=TINYINT},
-      create_uid = #{createUid,jdbcType=BIGINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_uid = #{updateUid,jdbcType=BIGINT},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{tenantCode,jdbcType=VARCHAR},
-      sprint_desc = #{sprintDesc,jdbcType=LONGVARCHAR},
-      sprint_days = #{sprintDays,jdbcType=LONGVARCHAR}
-    where sprint_id = #{sprintId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sprintv3.domain.SSprint">
-    update s_sprint
-    set sprint_name = #{sprintName,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT},
-      state = #{state,jdbcType=VARCHAR},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
-      finish_time = #{finishTime,jdbcType=TIMESTAMP},
-      team_id = #{teamId,jdbcType=BIGINT},
-      work_hours = #{workHours,jdbcType=INTEGER},
-      version_number = #{versionNumber,jdbcType=VARCHAR},
-      sync_state = #{syncState,jdbcType=TINYINT},
-      create_uid = #{createUid,jdbcType=BIGINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_uid = #{updateUid,jdbcType=BIGINT},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{tenantCode,jdbcType=VARCHAR}
-    where sprint_id = #{sprintId,jdbcType=BIGINT}
-  </update>
+        sprint_days
+    </sql>
+    <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample"
+            resultMap="ResultMapWithBLOBs">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from s_sprint
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample"
+            resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from s_sprint
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from s_sprint
+        where sprint_id = #{sprintId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from s_sprint
+        where sprint_id = #{sprintId,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample">
+        delete
+        from s_sprint
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs" keyColumn="sprint_id" keyProperty="sprintId">
+        insert into s_sprint (sprint_id, sprint_name, status,
+                              state, start_time, end_time,
+                              finish_time, team_id, work_hours,
+                              version_number, sync_state, create_uid,
+                              create_time, update_uid, update_time,
+                              tenant_code, sprint_desc, sprint_days)
+        values (#{sprintId,jdbcType=BIGINT}, #{sprintName,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+                #{state,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+                #{finishTime,jdbcType=TIMESTAMP}, #{teamId,jdbcType=BIGINT}, #{workHours,jdbcType=INTEGER},
+                #{versionNumber,jdbcType=VARCHAR}, #{syncState,jdbcType=TINYINT}, #{createUid,jdbcType=BIGINT},
+                #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP},
+                #{tenantCode,jdbcType=VARCHAR}, #{sprintDesc,jdbcType=LONGVARCHAR}, #{sprintDays,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs" keyColumn="sprint_id" keyProperty="sprintId">
+        insert into s_sprint
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sprintId != null">
+                sprint_id,
+            </if>
+            <if test="sprintName != null">
+                sprint_name,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="finishTime != null">
+                finish_time,
+            </if>
+            <if test="teamId != null">
+                team_id,
+            </if>
+            <if test="workHours != null">
+                work_hours,
+            </if>
+            <if test="versionNumber != null">
+                version_number,
+            </if>
+            <if test="syncState != null">
+                sync_state,
+            </if>
+            <if test="createUid != null">
+                create_uid,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUid != null">
+                update_uid,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="tenantCode != null">
+                tenant_code,
+            </if>
+            <if test="sprintDesc != null">
+                sprint_desc,
+            </if>
+            <if test="sprintDays != null">
+                sprint_days,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sprintId != null">
+                #{sprintId,jdbcType=BIGINT},
+            </if>
+            <if test="sprintName != null">
+                #{sprintName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teamId != null">
+                #{teamId,jdbcType=BIGINT},
+            </if>
+            <if test="workHours != null">
+                #{workHours,jdbcType=INTEGER},
+            </if>
+            <if test="versionNumber != null">
+                #{versionNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="syncState != null">
+                #{syncState,jdbcType=TINYINT},
+            </if>
+            <if test="createUid != null">
+                #{createUid,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUid != null">
+                #{updateUid,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="tenantCode != null">
+                #{tenantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sprintDesc != null">
+                #{sprintDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="sprintDays != null">
+                #{sprintDays,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample"
+            resultType="java.lang.Long">
+        select count(*)
+        from s_sprint
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update s_sprint
+        <set>
+            <if test="record.sprintId != null">
+                sprint_id = #{record.sprintId,jdbcType=BIGINT},
+            </if>
+            <if test="record.sprintName != null">
+                sprint_name = #{record.sprintName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.status != null">
+                status = #{record.status,jdbcType=TINYINT},
+            </if>
+            <if test="record.state != null">
+                state = #{record.state,jdbcType=VARCHAR},
+            </if>
+            <if test="record.startTime != null">
+                start_time = #{record.startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.endTime != null">
+                end_time = #{record.endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.finishTime != null">
+                finish_time = #{record.finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.teamId != null">
+                team_id = #{record.teamId,jdbcType=BIGINT},
+            </if>
+            <if test="record.workHours != null">
+                work_hours = #{record.workHours,jdbcType=INTEGER},
+            </if>
+            <if test="record.versionNumber != null">
+                version_number = #{record.versionNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="record.syncState != null">
+                sync_state = #{record.syncState,jdbcType=TINYINT},
+            </if>
+            <if test="record.createUid != null">
+                create_uid = #{record.createUid,jdbcType=BIGINT},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.updateUid != null">
+                update_uid = #{record.updateUid,jdbcType=BIGINT},
+            </if>
+            <if test="record.updateTime != null">
+                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.tenantCode != null">
+                tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.sprintDesc != null">
+                sprint_desc = #{record.sprintDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="record.sprintDays != null">
+                sprint_days = #{record.sprintDays,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map">
+        update s_sprint
+        set sprint_id      = #{record.sprintId,jdbcType=BIGINT},
+            sprint_name    = #{record.sprintName,jdbcType=VARCHAR},
+            status         = #{record.status,jdbcType=TINYINT},
+            state          = #{record.state,jdbcType=VARCHAR},
+            start_time     = #{record.startTime,jdbcType=TIMESTAMP},
+            end_time       = #{record.endTime,jdbcType=TIMESTAMP},
+            finish_time    = #{record.finishTime,jdbcType=TIMESTAMP},
+            team_id        = #{record.teamId,jdbcType=BIGINT},
+            work_hours     = #{record.workHours,jdbcType=INTEGER},
+            version_number = #{record.versionNumber,jdbcType=VARCHAR},
+            sync_state     = #{record.syncState,jdbcType=TINYINT},
+            create_uid     = #{record.createUid,jdbcType=BIGINT},
+            create_time    = #{record.createTime,jdbcType=TIMESTAMP},
+            update_uid     = #{record.updateUid,jdbcType=BIGINT},
+            update_time    = #{record.updateTime,jdbcType=TIMESTAMP},
+            tenant_code    = #{record.tenantCode,jdbcType=VARCHAR},
+            sprint_desc    = #{record.sprintDesc,jdbcType=LONGVARCHAR},
+            sprint_days    = #{record.sprintDays,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update s_sprint
+        set sprint_id      = #{record.sprintId,jdbcType=BIGINT},
+            sprint_name    = #{record.sprintName,jdbcType=VARCHAR},
+            status         = #{record.status,jdbcType=TINYINT},
+            state          = #{record.state,jdbcType=VARCHAR},
+            start_time     = #{record.startTime,jdbcType=TIMESTAMP},
+            end_time       = #{record.endTime,jdbcType=TIMESTAMP},
+            finish_time    = #{record.finishTime,jdbcType=TIMESTAMP},
+            team_id        = #{record.teamId,jdbcType=BIGINT},
+            work_hours     = #{record.workHours,jdbcType=INTEGER},
+            version_number = #{record.versionNumber,jdbcType=VARCHAR},
+            sync_state     = #{record.syncState,jdbcType=TINYINT},
+            create_uid     = #{record.createUid,jdbcType=BIGINT},
+            create_time    = #{record.createTime,jdbcType=TIMESTAMP},
+            update_uid     = #{record.updateUid,jdbcType=BIGINT},
+            update_time    = #{record.updateTime,jdbcType=TIMESTAMP},
+            tenant_code    = #{record.tenantCode,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
+        update s_sprint
+        <set>
+            <if test="sprintName != null">
+                sprint_name = #{sprintName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishTime != null">
+                finish_time = #{finishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teamId != null">
+                team_id = #{teamId,jdbcType=BIGINT},
+            </if>
+            <if test="workHours != null">
+                work_hours = #{workHours,jdbcType=INTEGER},
+            </if>
+            <if test="versionNumber != null">
+                version_number = #{versionNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="syncState != null">
+                sync_state = #{syncState,jdbcType=TINYINT},
+            </if>
+            <if test="createUid != null">
+                create_uid = #{createUid,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUid != null">
+                update_uid = #{updateUid,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="tenantCode != null">
+                tenant_code = #{tenantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sprintDesc != null">
+                sprint_desc = #{sprintDesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="sprintDays != null">
+                sprint_days = #{sprintDays,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where sprint_id = #{sprintId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
+        update s_sprint
+        set sprint_name    = #{sprintName,jdbcType=VARCHAR},
+            status         = #{status,jdbcType=TINYINT},
+            state          = #{state,jdbcType=VARCHAR},
+            start_time     = #{startTime,jdbcType=TIMESTAMP},
+            end_time       = #{endTime,jdbcType=TIMESTAMP},
+            finish_time    = #{finishTime,jdbcType=TIMESTAMP},
+            team_id        = #{teamId,jdbcType=BIGINT},
+            work_hours     = #{workHours,jdbcType=INTEGER},
+            version_number = #{versionNumber,jdbcType=VARCHAR},
+            sync_state     = #{syncState,jdbcType=TINYINT},
+            create_uid     = #{createUid,jdbcType=BIGINT},
+            create_time    = #{createTime,jdbcType=TIMESTAMP},
+            update_uid     = #{updateUid,jdbcType=BIGINT},
+            update_time    = #{updateTime,jdbcType=TIMESTAMP},
+            tenant_code    = #{tenantCode,jdbcType=VARCHAR},
+            sprint_desc    = #{sprintDesc,jdbcType=LONGVARCHAR},
+            sprint_days    = #{sprintDays,jdbcType=LONGVARCHAR}
+        where sprint_id = #{sprintId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sprintv3.domain.SSprint">
+        update s_sprint
+        set sprint_name    = #{sprintName,jdbcType=VARCHAR},
+            status         = #{status,jdbcType=TINYINT},
+            state          = #{state,jdbcType=VARCHAR},
+            start_time     = #{startTime,jdbcType=TIMESTAMP},
+            end_time       = #{endTime,jdbcType=TIMESTAMP},
+            finish_time    = #{finishTime,jdbcType=TIMESTAMP},
+            team_id        = #{teamId,jdbcType=BIGINT},
+            work_hours     = #{workHours,jdbcType=INTEGER},
+            version_number = #{versionNumber,jdbcType=VARCHAR},
+            sync_state     = #{syncState,jdbcType=TINYINT},
+            create_uid     = #{createUid,jdbcType=BIGINT},
+            create_time    = #{createTime,jdbcType=TIMESTAMP},
+            update_uid     = #{updateUid,jdbcType=BIGINT},
+            update_time    = #{updateTime,jdbcType=TIMESTAMP},
+            tenant_code    = #{tenantCode,jdbcType=VARCHAR}
+        where sprint_id = #{sprintId,jdbcType=BIGINT}
+    </update>
+    <select id="CheckSprintName" resultType="int">
+        select count(sprint_name)
+        from s_sprint
+        where sprint_name = #{sprintName}
+          and tenant_code = #{tenantCode}
+    </select>
+
 </mapper>

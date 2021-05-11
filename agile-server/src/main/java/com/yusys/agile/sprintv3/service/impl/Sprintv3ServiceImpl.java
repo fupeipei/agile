@@ -1,14 +1,20 @@
 package com.yusys.agile.sprintv3.service.impl;
 
+import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamDTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
@@ -17,17 +23,29 @@ import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.dao.STeamSystemMapper;
+import com.yusys.portal.facade.client.api.IFacadeSystemApi;
+import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.util.date.DateUtil;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
+import org.springframework.beans.BeanUtils;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.yusys.agile.team.dto.TeamDTO;
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Author zhaofeng
@@ -40,7 +58,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private SSprintMapper ssprintMapper;
     @Resource
     private SSprintUserHourMapper ssprintUserHourMapper;
-
     @Resource
     private STeamMapper sTeamMapper;
     @Resource
@@ -50,7 +67,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Resource
     private IFacadeSystemApi iFacadeSystemApi;
     @Resource
-    private STeamSystemMapper STeamSystemMapper;
+    private com.yusys.agile.teamv3.dao.STeamSystemMapper STeamSystemMapper;
 
 
     @Override
@@ -144,5 +161,82 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public List<SprintListDTO> listSprint(SprintQueryDTO dto, SecurityDTO security) {
         return null;
+    }
+
+
+    /**
+     * 新建迭代
+     *
+     * @param sprintDTO 迭代dto
+     * @return {@link String}
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long createSprint(SprintV3DTO sprintDTO) {
+//        sprintDTO.setTenantCode(UserThreadLocalUtil.getTenantCode());
+        List<Date> sprintDayList = sprintDTO.getSprintDayList();
+        int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
+        if (sprintNameNumber > 0) {
+            throw new BusinessException("当前租户下迭代名称重复");
+        }
+        //迭代开始结束时间判断
+        try {
+            Date startTime = sprintDayList.get(0);
+            Date endTime = DateUtil.getAfterDay(sprintDayList.get(sprintDayList.size() - 1));
+            sprintDTO.setStartTime(startTime);
+            sprintDTO.setEndTime(endTime);
+        } catch (Exception e) {
+            throw new BusinessException("迭代开始,结束时间填充异常 list.size小于2");
+        }
+
+        //版本号判断
+        Matcher m = null;
+        try {
+            String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+            Pattern p = Pattern.compile(regEx);
+            m = p.matcher(sprintDTO.getVersionNumber());
+            if (m.find()) {
+                throw new BusinessException("版本号只能是英文数字_.等常用字符！");
+            }
+        } catch (NullPointerException e) {
+            throw new BusinessException("迭代版本号异常");
+        }
+//团队真实性校验
+//        int teamNember = sTeamMapper.teamExist(sprintDTO.getTeamId(), sprintDTO.getTenantCode());
+//        if (teamNember == 0) {
+//            throw new BusinessException("当前租户下无此团队");
+//        }
+
+        //迭代状态判断
+        Date now = new Date(System.currentTimeMillis());
+        if (sprintDTO.getStartTime().getTime() > now.getTime()) {
+            // 未开始
+            sprintDTO.setStatus(SprintStatusEnum.TYPE_NO_START_STATE.CODE);
+        } else {
+            // 已开始
+            sprintDTO.setStatus(SprintStatusEnum.TYPE_ONGOING_STATE.CODE);
+        }
+
+        sprintDTO.setState("U");
+        sprintDTO.setCreateTime(new Date());
+        //转换迭代有效日期为String，中间以|隔开
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < sprintDayList.size(); i++) {
+            stringBuffer.append(sprintDayList.get(i).getTime());
+            if (i < sprintDayList.size() - 1) {
+                stringBuffer.append("|");
+            }
+        }
+        sprintDTO.setSprintDays(stringBuffer.toString());
+
+        //插入迭代
+        SSprintWithBLOBs sprint = new SSprintWithBLOBs();
+        BeanUtils.copyProperties(sprintDTO, sprint);
+        int i = ssprintMapper.insert(sprint);
+
+        //插入迭代人员
+        List<SprintV3UserHourDTO> members = sprintDTO.getMembers();
+        ssprintUserHourMapper.batchInsert(members, sprint.getSprintId());
+        return sprint.getSprintId();
     }
 }

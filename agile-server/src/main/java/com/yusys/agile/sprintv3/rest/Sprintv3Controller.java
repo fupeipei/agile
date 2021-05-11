@@ -1,8 +1,10 @@
 package com.yusys.agile.sprintv3.rest;
 
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -37,19 +39,23 @@ public class Sprintv3Controller {
 
     /**
      * 条件-分页查询迭代列表
-     * @author zhaofeng
-     * @date 2021/5/11 15:56
+     *
      * @param dto
      * @param security
+     * @author zhaofeng
+     * @date 2021/5/11 15:56
      */
     @PostMapping("/listSprint")
-    public ControllerResponse listSprint(@RequestBody SprintQueryDTO dto, SecurityDTO security){
+    public ControllerResponse listSprint(@RequestBody SprintQueryDTO dto, SecurityDTO security) {
         List<SprintListDTO> list = sprintv3Service.listSprint(dto, security);
         return ControllerResponse.success(new PageInfo<SprintListDTO>(list));
     }
 
+    @PostMapping("/createSprint")
+    public ControllerResponse createSprint(@RequestBody SprintV3DTO sprintV3DTO) {
+        return ControllerResponse.success(sprintv3Service.createSprint(sprintV3DTO));
 
-
+    }
 
 
 }

@@ -2,6 +2,7 @@ package com.yusys.agile.sprintv3.service;
 
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import com.yusys.agile.sprint.dto.SprintDTO;
  * @Date 2021/5/11 14:48
  */
 public interface Sprintv3Service {
+
 
 
     /**
@@ -31,4 +33,12 @@ public interface Sprintv3Service {
      * @param security
      */
     List<SprintListDTO> listSprint(SprintQueryDTO dto, SecurityDTO security);
+
+    /**
+     * 新建迭代
+     *
+     * @param sprintV3DTO 迭代v3dto
+     * @return {@link Long}
+     */
+    Long createSprint(SprintV3DTO sprintV3DTO);
 }
