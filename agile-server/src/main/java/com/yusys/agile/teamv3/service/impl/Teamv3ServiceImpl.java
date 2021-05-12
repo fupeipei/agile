@@ -374,5 +374,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         return queryTeamResponse;
     }
 
+    @Override
+    public List<STeam> getTeamLikeNameOrCode(String team) {
+        List<STeam> list = sTeamMapper.getTeamLikeNameOrCode(team);
+        return list;
+    }
 
 }

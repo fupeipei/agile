@@ -49,37 +49,32 @@ public interface STeamMapper {
 
     /**
      * 按ids查团队列表
-     *
+     * @author zhaofeng
      * @param teamIds
      * @return
-     * @author zhaofeng
      */
     List<STeam> listTeamByIds(@Param("teamIds") List<Long> teamIds);
 
     /**
      * 条件查询与我相关的团队列表
-     *
+     * @author zhaofeng
      * @param params
      * @return
-     * @author zhaofeng
      */
     List<TeamListDTO> queryMyHiveTeam(@Param("params") HashMap<String, Object> params);
-
     /**
      * 条件查询租户下所有team
-     *
-     * @param params
-     * @return
      * @author zhaofeng
      * @date 2021/5/8 14:39
+     * @param params
+     * @return
      */
     List<TeamListDTO> queryAllTeam(@Param("params") HashMap<String, Object> params);
 
     /**
      * 查询租户下团队，不条件不分页
-     *
-     * @return
      * @author zhaofeng
+     * @return
      */
     List<TeamListDTO> selectAll();
 
@@ -93,11 +88,10 @@ public interface STeamMapper {
 
     /**
      * 更新团队数据类型，U：有效数据，E:无效数据
-     *
-     * @param teamId 主键
-     * @param state  数据状态
      * @author zhaofeng
      * @date 2021/5/10 10:01
+     * @param teamId 主键
+     * @param state  数据状态
      */
     void updateStateById(@Param("teamId") long teamId, @Param("state") String state);
 
@@ -105,4 +99,7 @@ public interface STeamMapper {
 
 
     List<Team> getTeamsByTeamId(Long teamId);
+
+
+    List<STeam> getTeamLikeNameOrCode(@Param("team") String team);
 }

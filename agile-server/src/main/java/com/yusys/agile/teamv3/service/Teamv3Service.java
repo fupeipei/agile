@@ -62,5 +62,11 @@ public interface Teamv3Service {
      */
     QueryTeamResponse queryTeam(long teamId);
 
-
+    /**
+     * 按团队名称或编号模糊查询
+     * @author zhaofeng
+     * @date 2021/5/11 20:54
+     * @param team
+     */
+    List<STeam> getTeamLikeNameOrCode(String team);
 }
