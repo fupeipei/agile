@@ -368,9 +368,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (list.size() > 0) {
             queryTeamResponse.setSystems(iFacadeSystemApi.querySsoSystem(list));
         }
-        queryTeamResponse.setTeamPos(teamPoMapper.selectByTeamIds(Arrays.asList(teamId)));
-        queryTeamResponse.setTeamSms(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
-        queryTeamResponse.setUsers(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
+        queryTeamResponse.setTeamPoS(teamPoMapper.selectByTeamIds(Arrays.asList(teamId)));
+        queryTeamResponse.setTeamSmS(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
+        queryTeamResponse.setTeamUsers(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
         return queryTeamResponse;
     }
 
