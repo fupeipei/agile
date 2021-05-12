@@ -368,9 +368,12 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (list.size() > 0) {
             queryTeamResponse.setSystems(iFacadeSystemApi.querySsoSystem(list));
         }
+        //查询po
         queryTeamResponse.setTeamPoS(teamPoMapper.selectByTeamIds(Arrays.asList(teamId)));
+        //查询sm
         queryTeamResponse.setTeamSmS(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
-        queryTeamResponse.setTeamUsers(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
+        //查询成员
+        queryTeamResponse.setTeamUsers(teamUserMapper.selectByTeamIds(Arrays.asList(teamId)));
         return queryTeamResponse;
     }
 
