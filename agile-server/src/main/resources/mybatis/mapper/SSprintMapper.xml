@@ -157,7 +157,8 @@
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
-    <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs" keyColumn="sprint_id" keyProperty="sprintId">
+    <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs" keyColumn="sprint_id"
+            keyProperty="sprintId">
         insert into s_sprint (sprint_id, sprint_name, status,
                               state, start_time, end_time,
                               finish_time, team_id, work_hours,
@@ -171,7 +172,8 @@
                 #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP},
                 #{tenantCode,jdbcType=VARCHAR}, #{sprintDesc,jdbcType=LONGVARCHAR}, #{sprintDays,jdbcType=LONGVARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs" keyColumn="sprint_id" keyProperty="sprintId">
+    <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs" keyColumn="sprint_id"
+            keyProperty="sprintId">
         insert into s_sprint
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="sprintId != null">
@@ -505,5 +507,18 @@
         where sprint_name = #{sprintName}
           and tenant_code = #{tenantCode}
     </select>
-
+    <select id="getUnStartIds" resultType="java.lang.Long">
+        select sprint_id
+        from s_sprint
+        where start_time <![CDATA[<=]]> #{now}
+          AND status = 2
+          and state = "U"
+    </select>
+    <update id="changeStatusTOProgressByIds">
+    UPDATE s_sprint SET status=3 WHERE sprint_id IN(
+    <foreach collection="sprintIds" separator="," item="sprintId">
+      #{sprintId}
+    </foreach>
+    )
+</update>
 </mapper>

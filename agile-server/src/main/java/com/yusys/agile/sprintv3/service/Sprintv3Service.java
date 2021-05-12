@@ -41,4 +41,6 @@ public interface Sprintv3Service {
      * @return {@link Long}
      */
     Long createSprint(SprintV3DTO sprintV3DTO);
+
+    void changeStatusDaily();
 }
