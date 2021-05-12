@@ -163,25 +163,25 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         HashMap<String, Object> params = buildQueryParams(dto, security);
 
         //如果是租户管理员
-        boolean isTenantAdmin = iFacadeUserApi.checkIsTenantAdmin(userId);
-        if(isTenantAdmin){
-
-        }
-        //如果是系统负责人
-        boolean isSystemOwner = iFacadeUserApi.checkIsSystemOwner(userId, systemId);
-        if(isSystemOwner){
-
-        }
-        //如果是po
-        boolean isTeamPo = iFacadeUserApi.checkIsTeamPo(userId);
-        if(isTeamPo){
-
-        }
-        //如果是sm
-        boolean isTeamSm = iFacadeUserApi.checkIsTeamSm(userId);
-        if(isTeamSm){
-
-        }
+//        boolean isTenantAdmin = iFacadeUserApi.checkIsTenantAdmin(userId);
+//        if(isTenantAdmin){
+//
+//        }
+//        //如果是系统负责人
+//        boolean isSystemOwner = iFacadeUserApi.checkIsSystemOwner(userId, systemId);
+//        if(isSystemOwner){
+//
+//        }
+//        //如果是po
+//        boolean isTeamPo = iFacadeUserApi.checkIsTeamPo(userId);
+//        if(isTeamPo){
+//
+//        }
+//        //如果是sm
+//        boolean isTeamSm = iFacadeUserApi.checkIsTeamSm(userId);
+//        if(isTeamSm){
+//
+//        }
         return null;
     }
 
