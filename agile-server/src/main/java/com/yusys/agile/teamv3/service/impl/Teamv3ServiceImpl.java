@@ -370,7 +370,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         queryTeamResponse.setTeamPoS(teamPoMapper.selectByTeamIds(Arrays.asList(teamId)));
         queryTeamResponse.setTeamSmS(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
-        queryTeamResponse.setTeamUsers(teamSmMapper.selectByTeamIds(Arrays.asList(teamId)));
+        queryTeamResponse.setTeamUsers(teamUserMapper.selectByTeamIds(Arrays.asList(teamId)));
         return queryTeamResponse;
     }
 
