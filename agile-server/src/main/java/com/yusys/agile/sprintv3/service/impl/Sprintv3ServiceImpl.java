@@ -1,10 +1,11 @@
 package com.yusys.agile.sprintv3.service.impl;
 
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.enums.SprintStatusEnum;
+import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
@@ -13,37 +14,30 @@ import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamDTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.service.Teamv3Service;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
-import com.yusys.portal.facade.client.api.IFacadeSystemApi;
-import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-import com.yusys.portal.util.date.DateUtil;
-import com.yusys.portal.util.thread.UserThreadLocalUtil;
-import org.springframework.beans.BeanUtils;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
+import com.yusys.portal.util.date.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.yusys.agile.team.dto.TeamDTO;
+
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,13 +55,15 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Resource
     private STeamMapper sTeamMapper;
     @Resource
-    private IFacadeUserApi iFacadeUserApi;
-    @Resource
     private SSprintUserHourMapper sSprintUserHourMapper;
     @Resource
+    private STeamSystemMapper STeamSystemMapper;
+    @Autowired
     private IFacadeSystemApi iFacadeSystemApi;
-    @Resource
-    private com.yusys.agile.teamv3.dao.STeamSystemMapper STeamSystemMapper;
+    @Autowired
+    private IFacadeUserApi iFacadeUserApi;
+    @Autowired
+    private Teamv3Service teamv3Service;
 
 
     @Override
@@ -160,6 +156,32 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
     @Override
     public List<SprintListDTO> listSprint(SprintQueryDTO dto, SecurityDTO security) {
+        PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+        Long userId = security.getUserId();
+        Long systemId = security.getSystemId();
+
+        HashMap<String, Object> params = buildQueryParams(dto, security);
+
+        //如果是租户管理员
+        boolean isTenantAdmin = iFacadeUserApi.checkIsTenantAdmin(userId);
+        if(isTenantAdmin){
+
+        }
+        //如果是系统负责人
+        boolean isSystemOwner = iFacadeUserApi.checkIsSystemOwner(userId, systemId);
+        if(isSystemOwner){
+
+        }
+        //如果是po
+        boolean isTeamPo = iFacadeUserApi.checkIsTeamPo(userId);
+        if(isTeamPo){
+
+        }
+        //如果是sm
+        boolean isTeamSm = iFacadeUserApi.checkIsTeamSm(userId);
+        if(isTeamSm){
+
+        }
         return null;
     }
 
@@ -238,5 +260,26 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<SprintV3UserHourDTO> members = sprintDTO.getMembers();
         ssprintUserHourMapper.batchInsert(members, sprint.getSprintId());
         return sprint.getSprintId();
+    }
+
+    private HashMap<String, Object> buildQueryParams(SprintQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        //按团队名称或编号模糊查询
+        String team = dto.getTeam();
+        if(!StringUtils.isEmpty(team)){
+            List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
+            if(!team.isEmpty()){
+                List<Long> teamIds = Lists.newArrayList();
+                teams.forEach(item-> teamIds.add(item.getTeamId()));
+                params.put("teamIds", teamIds);
+            }else{
+                params.put("teamIds", Arrays.asList(-1L));
+            }
+        }else{
+            params.put("teamIds", null);
+        }
+        //迭代名称或编号
+        params.put("sprint", dto.getSprint());
+        return params;
     }
 }

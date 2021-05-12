@@ -56,7 +56,7 @@ public class Teamv3Controller {
      * @return {@link ControllerResponse}
      */
     @PostMapping("/insertTeam")
-    public ControllerResponse insertTeam(STeam team) {
+    public ControllerResponse insertTeam(@RequestBody STeam team) {
         return ControllerResponse.success(teamv3Service.insertTeam(team));
     }
 
@@ -78,7 +78,7 @@ public class Teamv3Controller {
      * @return {@link ControllerResponse}
      */
     @PostMapping("/updateTeam")
-    public ControllerResponse updateTeam(STeam team) {
+    public ControllerResponse updateTeam(@RequestBody STeam team) {
         return ControllerResponse.success(teamv3Service.updateTeam(team));
     }
 
