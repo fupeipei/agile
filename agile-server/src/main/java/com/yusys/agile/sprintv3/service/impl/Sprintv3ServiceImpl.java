@@ -29,6 +29,7 @@ import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -46,6 +47,7 @@ import java.util.regex.Pattern;
  * @Date 2021/5/11 14:48
  */
 @Service
+@Slf4j
 public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Resource
@@ -93,6 +95,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     /**
      * string 转date
+     *
      * @param str
      * @return
      */
@@ -108,6 +111,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
         return dateList;
     }
+
     /**
      * @param sprintId
      * @Date 2021/05/11 16:24
@@ -132,7 +136,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             }
             teamDTO.setUsers(userSprintHourDTOS);
             //查询团队下的子系统
-            List<Long> systemIds=STeamSystemMapper.querySystemIdByTeamId(teamDTO.getTeamId());
+            List<Long> systemIds = STeamSystemMapper.querySystemIdByTeamId(teamDTO.getTeamId());
             List<SsoSystemRestDTO> systemByIds = iFacadeSystemApi.getSystemByIds(systemIds);
             teamDTO.setTeamSystems(systemByIds);
 
@@ -154,6 +158,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             }
         }
     }
+
     @Override
     public List<SprintListDTO> listSprint(SprintQueryDTO dto, SecurityDTO security) {
         PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
@@ -262,20 +267,32 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return sprint.getSprintId();
     }
 
+    /**
+     * 改变迭代状态
+     */
+    @Override
+    public void changeStatusDaily() {
+        final List<Long> sprintIds = ssprintMapper.getUnStartIds(new Date(System.currentTimeMillis()));
+        log.debug("change state daily sprintIds:{}", sprintIds);
+        if (null != sprintIds && !sprintIds.isEmpty()) {
+            ssprintMapper.changeStatusTOProgressByIds(sprintIds);
+        }
+    }
+
     private HashMap<String, Object> buildQueryParams(SprintQueryDTO dto, SecurityDTO security) {
         HashMap<String, Object> params = new HashMap<>();
         //按团队名称或编号模糊查询
         String team = dto.getTeam();
-        if(!StringUtils.isEmpty(team)){
+        if (!StringUtils.isEmpty(team)) {
             List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
-            if(!team.isEmpty()){
+            if (!team.isEmpty()) {
                 List<Long> teamIds = Lists.newArrayList();
-                teams.forEach(item-> teamIds.add(item.getTeamId()));
+                teams.forEach(item -> teamIds.add(item.getTeamId()));
                 params.put("teamIds", teamIds);
-            }else{
+            } else {
                 params.put("teamIds", Arrays.asList(-1L));
             }
-        }else{
+        } else {
             params.put("teamIds", null);
         }
         //迭代名称或编号

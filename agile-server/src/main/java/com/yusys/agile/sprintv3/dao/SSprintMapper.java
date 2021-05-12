@@ -4,6 +4,7 @@ import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -39,6 +40,7 @@ public interface SSprintMapper {
 
     int CheckSprintName(@Param("sprintName") String sprintName, @Param("tenantCode") String tenantCode);
 
-    Long getLAST_INSERT_ID();
+    List<Long> getUnStartIds(Date date);
 
+    void changeStatusTOProgressByIds(@Param("sprintIds") List<Long> sprintIds);
 }
