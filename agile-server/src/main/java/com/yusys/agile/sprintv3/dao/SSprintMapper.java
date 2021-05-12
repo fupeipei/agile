@@ -1,10 +1,12 @@
 package com.yusys.agile.sprintv3.dao;
 
+import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -43,4 +45,10 @@ public interface SSprintMapper {
     List<Long> getUnStartIds(Date date);
 
     void changeStatusTOProgressByIds(@Param("sprintIds") List<Long> sprintIds);
+    /**
+     * 查询租户下所有
+     * @param params
+     * @return
+     */
+    List<SprintListDTO> queryAllSprint(@Param("params") HashMap<String, Object> params);
 }

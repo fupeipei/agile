@@ -521,4 +521,47 @@
     </foreach>
     )
 </update>
+
+    <sql id="query_list_column">
+        sprint_id,
+        sprint_name,
+        status,
+        start_time,
+        end_time,
+        finish_time,
+        sprint_days,
+        team_id,
+        work_hours,
+        version_number,
+        sync_state,
+        create_uid,
+        create_time,
+        tenant_code
+    </sql>
+    <sql id="query_list_param">
+        and state = 'U'
+        <if test="params != null">
+            <if test="params.teamIds != null and params.teamIds.size != 0">
+                and (team_id in
+                <foreach collection="params.teamIds" item="teamId" open="(" close=")" separator=",">
+                    #{teamId}
+                </foreach>
+                )
+            </if>
+            <if test="params.sprint != null and params.sprint != ''">
+                and (sprint_name like concat('%',#{params.sprint},'%')
+                    or sprint_id like concat('%',#{params.sprint},'%')
+                )
+            </if>
+        </if>
+    </sql>
+    <select id="queryAllSprint" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        select
+        <include refid="query_list_column" />
+        from s_sprint
+        <where>
+            <include refid="query_list_param" />
+        </where>
+        order by create_time desc
+    </select>
 </mapper>

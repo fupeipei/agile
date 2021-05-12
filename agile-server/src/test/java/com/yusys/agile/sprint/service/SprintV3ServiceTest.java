@@ -31,7 +31,9 @@ import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +43,7 @@ import com.yusys.portal.util.code.ReflectUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -53,6 +56,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class SprintV3ServiceTest {
@@ -71,6 +75,9 @@ public class SprintV3ServiceTest {
     private IFacadeSystemApi iFacadeSystemApi;
     @Resource
     private com.yusys.agile.teamv3.dao.STeamSystemMapper STeamSystemMapper;
+
+    @Autowired
+    private Sprintv3Service sprintv3Service;
 
     public SprintV3DTO initData() {
         SprintV3DTO sprintDTO = new SprintV3DTO();
@@ -176,4 +183,27 @@ public class SprintV3ServiceTest {
             Assert.fail();
         }
     }
+
+
+    private SecurityDTO securityDTO;
+    @Before
+    public void setUp() {
+        this.securityDTO = new SecurityDTO();
+        securityDTO.setUserId(812352455803777024L);
+        securityDTO.setSystemId(817701268263542784L);
+        securityDTO.setTenantCode("1");
+        securityDTO.setUserName("马雪萍");
+        securityDTO.setUserAcct("maxueq");
+    }
+    @Test
+    public void testQueryList1(){
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
+        log.info("迭代列表数据【{}】", list);
+    }
+
+
+
 }
