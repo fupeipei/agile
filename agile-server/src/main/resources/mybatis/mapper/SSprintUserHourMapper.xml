@@ -297,6 +297,10 @@
     </insert>
 
   <select id="getUserIds4Sprint" resultType="com.yusys.agile.sprint.domain.UserSprintHour">
-    SELECT <include refid="Base_Column_List" /> FROM s_sprintuser_hour WHERE sprint_id = #{sprintId}
+    SELECT <include refid="Base_Column_List" /> FROM s_sprint_user_hour WHERE sprint_id = #{sprintId}
   </select>
+
+    <delete id="deleteBySprintId">
+        DELETE FROM s_sprint_user_hour WHERE sprint_id = #{sprintId}
+    </delete>
 </mapper>
