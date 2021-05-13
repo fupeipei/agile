@@ -101,6 +101,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //按ids分别查询
         List<TeamUserDTO> teamPoUsers = teamPoMapper.selectByTeamIds(teamIds);
         List<TeamUserDTO> teamSmUsers = teamSmMapper.selectByTeamIds(teamIds);
+        List<TeamUserDTO> teamUsers = teamUserMapper.selectByTeamIds(teamIds);
         List<TeamSystemDTO> teamSystems = teamSystemMapper.selectByTeamIds(teamIds);
         //收集得到的systemids
         List<Long> systemIds = Lists.newArrayList();
@@ -135,6 +136,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             });
             item.setTeamPoNames(poUsers);
             item.setTeamSmNames(smUsers);
+            //团队成员赋值
+            List<TeamUserDTO> otherUsers = Lists.newArrayList();
+            teamUsers.forEach(user->{
+                if (Objects.equals(item.getTeamId(),user.getTeamId())) {
+                    otherUsers.add(user);
+                }
+            });
+            item.setTeamUsers(otherUsers);
             //创建人
             users.forEach(user -> {
                 if (Objects.equals(item.getCreateUid(),user.getUserId())) {
