@@ -44,6 +44,10 @@ public interface SSprintMapper {
 
     List<Long> getUnStartIds(Date date);
 
+
+    int arrangeTeam(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
+
+
     void changeStatusTOProgressByIds(@Param("sprintIds") List<Long> sprintIds);
     /**
      * 查询租户下所有

@@ -10,7 +10,6 @@ import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 /**
@@ -30,12 +29,10 @@ public class Sprintv3Controller {
      * @Date 2021/5/10
      * @Description查看迭代编辑页面
      */
-    @GetMapping("/getSprint/{sprintId}")
-    public ControllerResponse viewEdit(@PathVariable Long sprintId) {
+    @GetMapping("/getSprint")
+    public ControllerResponse viewEdit( Long sprintId) {
         return ControllerResponse.success(sprintv3Service.viewEdit(sprintId));
     }
-
-
 
     /**
      * 条件-分页查询迭代列表
@@ -55,6 +52,16 @@ public class Sprintv3Controller {
     public ControllerResponse createSprint(@RequestBody SprintV3DTO sprintV3DTO) {
         return ControllerResponse.success(sprintv3Service.createSprint(sprintV3DTO));
 
+    }
+
+    @PostMapping("/updateSprint")
+    public ControllerResponse updateSprint(@RequestBody SprintDTO sprintDTO){
+        try {
+            sprintv3Service.updateSprint(sprintDTO);
+        } catch (Exception e) {
+            return ControllerResponse.fail("编辑迭代失败：" + e.getMessage());
+        }
+        return ControllerResponse.success("编辑成功");
     }
 
 

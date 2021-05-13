@@ -5,6 +5,7 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.sprint.dao.SprintMapper;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.google.common.collect.Lists;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.model.facade.entity.SsoProject;
@@ -32,6 +33,8 @@ public class SprintServiceTest {
     private IFacadeProjectApi iFacadeProjectApi;
 
     private SprintMapper sprintMapper;
+    @Autowired
+    private Sprintv3Service sprintv3Service;
 
     @Before
     public void setup() {
@@ -293,5 +296,15 @@ public class SprintServiceTest {
         assert (updateSprintDTO.getState().equals(newStatus));
         assert (!sprintDTO.getState().equals(updateSprintDTO.getState()));
     }
+
+
+    @Test
+    public void viewSrint(){
+        long sprintId=130211;
+        SprintDTO sprintDTO = sprintv3Service.viewEdit(sprintId);
+        System.out.println(sprintDTO);
+    }
+
+ //{sprintId=130211, projectId=null, sprintName='sprit name edit', sprintDesc='描述这是一次迭代', status=3, state='U', startTime=Fri Apr 30 17:25:07 CST 2021, endTime=Fri Apr 30 23:59:59 CST 2021, finishTime=Fri Apr 30 17:25:07 CST 2021, teamId=1, teamName='团队1', workHours=3, versionNumber='v1', createUid=9999, createTime=Fri Apr 30 17:25:07 CST 2021, updateUid=11, updateTime=Fri Apr 30 17:25:07 CST 2021, hold='null', improve='null', terminate='null', sprintDays='1619774706780|1619774706780|1619774706780|1619774706780', sprintDayList=[Fri Apr 30 17:25:06 CST 2021, Fri Apr 30 17:25:06 CST 2021, Fri Apr 30 17:25:06 CST 2021, Fri Apr 30 17:25:06 CST 2021], members=null, teamDTOList=[TeamDTO(teamId=1, teamName=团队1, teamDesc=null, state=U, projectId=null, createTime=Tue May 11 19:51:21 CST 2021, createUid=324234, users=[com.yusys.agile.sprint.dto.UserSprintHourDTO@c8d0ea3], teamSystems=[SsoSystemRestDTO(systemId=807205004631072768, systemCode=DevOps, systemName=DevOps), SsoSystemRestDTO(systemId=816048836585721856, systemCode=maewyfssftt4, systemName=系qdfftts)], tenantCode=1)], sprintRate=null, issueIds=null, issueType=null, planDays=null, story=null, task=null, userNum=null}
 
 }

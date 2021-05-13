@@ -1,6 +1,7 @@
 package com.yusys.agile.sprintv3.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -12,6 +13,8 @@ import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.domain.Team;
@@ -36,6 +39,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -345,6 +349,146 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return sprint.getSprintId();
     }
 
+    @Override
+    public boolean canEdit(Long sprintId) {
+        SSprint sprint = ssprintMapper.selectByPrimaryKey(sprintId);
+        Byte status = sprint.getStatus();
+        if (status.equals(SprintStatusEnum.TYPE_ONGOING_STATE.CODE) || status.equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void updateSprint(SprintDTO sprintDTO) {
+        if (!canEdit(sprintDTO.getSprintId())) {
+            throw new BusinessException("迭代已结束或已完成，禁止编辑!");
+        }
+        checkParameter(sprintDTO);
+        editSprint(sprintDTO);
+    }
+
+
+    /**
+     * @param sprintDTO
+     * @Date 2021/5/11
+     * @Description 对传来的参数做判断
+     * @Return void
+     */
+    private void checkParameter(@RequestBody SprintDTO sprintDTO) {
+        String str1 = "迭代名称过长,不能大于100!";
+        String str2 = "团队名称过长，不能大于100!";
+        String str3 = "请选择团队";
+        String str4 = "工作时间超长，不能大于24小时!";
+        int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
+        if (sprintNameNumber > 0) {
+            throw new BusinessException("当前租户下迭代名称重复");
+        }
+        Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, str1);
+        Preconditions.checkArgument(sprintDTO.getTeamName().length() <= 100, str2);
+        Preconditions.checkArgument(sprintDTO.getTeamId() != null || sprintDTO.getTeamName() != null, str3);
+        Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, str4);
+    }
+
+
+    public void editSprint(SprintDTO sprintDTO) {
+        final SSprintWithBLOBs sprint = ReflectUtil.copyProperties(sprintDTO, SSprintWithBLOBs.class);
+        final Long sprintId = sprint.getSprintId();
+        final SSprintWithBLOBs origin = ssprintMapper.selectByPrimaryKey(sprintId);
+        // 根据时间设置迭代状态
+        Date now = new Date(System.currentTimeMillis());
+        Date startTime = getDate(sprintDTO, sprint);
+        if (null != startTime) {
+            if (startTime.getTime() > now.getTime()) {
+                // 未开始
+                sprint.setStatus(SprintStatusEnum.TYPE_NO_START_STATE.CODE);
+            } else {
+                // 已开始
+                sprint.setStatus(SprintStatusEnum.TYPE_ONGOING_STATE.CODE);
+            }
+        }
+        sprint.setUpdateTime(new Date());
+        sprint.setTeamId(sprint.getTeamId());
+        //判断版本号只能是英文数字_.常用字符
+        versionNumberRegex(sprintDTO);
+        int i = ssprintMapper.updateByPrimaryKeySelective(sprint);
+        if (i == 0) {
+            throw new BusinessException("更新迭代失败");
+        }
+        // 移除sprintUser
+        ssprintUserHourMapper.deleteBySprintId(sprintId);
+        // 再新建
+        createUserSprintHour(sprintDTO, sprintId, sprint.getCreateUid());
+    }
+
+    /**
+     * @param sprintDTO
+     * @param sprint
+     * @Date 2020/4/24
+     * @Description 时间戳排序，结束时间取最后日期后一天
+     * @Return java.util.Date
+     */
+    private Date getDate(SprintDTO sprintDTO, SSprintWithBLOBs sprint) {
+        List<Date> sprintDays = sprintDTO.getSprintDayList();
+        List<Date> dateList = sprintDays.stream().sorted().collect(Collectors.toList());
+        sprint.setSprintDays(convertDateToStr(dateList));
+        Date startTime = dateList.get(0);
+        Date endTime = DateUtil.getAfterDay(dateList.get(dateList.size() - 1));
+        sprint.setStartTime(startTime);
+        sprint.setEndTime(endTime);
+        return startTime;
+    }
+
+    private String convertDateToStr(List<Date> dateList) {
+        StringBuilder sprintDaysStr = new StringBuilder();
+        for (int i = 0; i < dateList.size(); i++) {
+            sprintDaysStr.append(dateList.get(i).getTime());
+            if (i < dateList.size() - 1) {
+                sprintDaysStr.append("|");
+            }
+        }
+        return sprintDaysStr.toString();
+    }
+
+    /**
+     * @param sprintDTO
+     * @Date 2021/05/12
+     * @Description 判断版本号只能是英文数字_.常用字符
+     * @Return void
+     */
+    private void versionNumberRegex(SprintDTO sprintDTO) {
+        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(sprintDTO.getVersionNumber());
+        if (m.find()) {
+            throw new BusinessException("版本号只能是英文数字_.等常用字符！");
+        }
+    }
+
+    /**
+     * @param sprintDTO
+     * @param sprintId
+     * @param userId
+     * @Date 2020/4/26 16:23
+     * @Description 创建迭代人员
+     * @Return void
+     */
+    private void createUserSprintHour(SprintDTO sprintDTO, Long sprintId, Long userId) {
+        List<UserSprintHourDTO> sprintHourDTOS = sprintDTO.getMembers();
+        if (CollectionUtils.isNotEmpty(sprintHourDTOS)) {
+            for (UserSprintHourDTO userSprintHourDTO : sprintHourDTOS) {
+                SSprintUserHour userSprintHour = ReflectUtil.copyProperties(userSprintHourDTO, SSprintUserHour.class);
+                userSprintHour.setSprintId(sprintId);
+                userSprintHour.setCreateUid(userId);
+                userSprintHour.setCreateTime(new Date());
+                int i = sSprintUserHourMapper.insert(userSprintHour);
+                if (i != 1) {
+                    throw new BusinessException("创建迭代人员失败!");
+                }
+            }
+        }
+    }
+
     /**
      * 改变迭代状态
      */
@@ -356,5 +500,4 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             ssprintMapper.changeStatusTOProgressByIds(sprintIds);
         }
     }
-
 }
