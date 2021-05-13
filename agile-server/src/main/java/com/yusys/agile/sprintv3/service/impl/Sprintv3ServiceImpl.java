@@ -450,8 +450,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * 构建查询条件--租户管理员角色下的
      * @author zhaofeng
      * @date 2021/5/12 10:11
-     * @param dto
-     * @param security
      */
     private HashMap<String, Object> buildQueryParamsTenantAdmin(SprintQueryDTO dto, SecurityDTO security) {
         HashMap<String, Object> params = new HashMap<>();
