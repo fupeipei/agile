@@ -471,7 +471,7 @@
           and tenant_code = #{tenantCode}
     </select>
     <select id="getTeamsByTeamId" resultType="com.yusys.agile.team.domain.Team">
-        SELECT <include refid="Base_Column_List" /> FROM team WHERE team_id = #{teamId} and state = 'U'
+        SELECT <include refid="Base_Column_List" /> FROM s_team WHERE team_id = #{teamId} and state = 'U'
     </select>
 
     <select id="getTeamLikeNameOrCode" resultMap="BaseResultMap">

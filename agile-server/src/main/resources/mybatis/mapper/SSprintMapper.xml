@@ -507,6 +507,10 @@
         where sprint_name = #{sprintName}
           and tenant_code = #{tenantCode}
     </select>
+
+    <update id="arrangeTeam">
+        UPDATE sprint SET team_id = #{teamId} WHERE sprint_id = #{sprintId}
+    </update>
     <select id="getUnStartIds" resultType="java.lang.Long">
         select sprint_id
         from s_sprint

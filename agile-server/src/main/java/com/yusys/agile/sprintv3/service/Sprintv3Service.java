@@ -4,9 +4,7 @@ import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-
 import java.util.List;
-
 import com.yusys.agile.sprint.dto.SprintDTO;
 
 /**
@@ -41,6 +39,21 @@ public interface Sprintv3Service {
      * @return {@link Long}
      */
     Long createSprint(SprintV3DTO sprintV3DTO);
+
+    /**
+     * 是否满足编辑条件
+     * @param sprintId 迭代id
+     * @return boolean
+     */
+    boolean canEdit(Long sprintId);
+
+
+    void updateSprint(SprintDTO sprintDTO);
+
+
+
+
+
 
     void changeStatusDaily();
 }
