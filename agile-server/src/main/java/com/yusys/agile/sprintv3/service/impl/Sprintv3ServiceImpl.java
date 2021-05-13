@@ -6,18 +6,14 @@ import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
-import com.yusys.agile.sprintV3.dto.SprintListDTO;
-import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
-import com.yusys.agile.sprintV3.dto.SprintV3DTO;
-import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
+import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamDTO;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
+import com.yusys.agile.teamv3.dao.*;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.exception.BusinessException;
@@ -61,6 +57,12 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private SSprintUserHourMapper sSprintUserHourMapper;
     @Resource
     private STeamSystemMapper STeamSystemMapper;
+    @Resource
+    private STeamPoMapper sTeamPoMapper;
+    @Resource
+    private STeamSmMapper sTeamSmMapper;
+    @Resource
+    private STeamUserMapper sTeamUserMapper;
     @Autowired
     private IFacadeSystemApi iFacadeSystemApi;
     @Autowired
@@ -166,11 +168,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Long userId = security.getUserId();
         Long systemId = security.getSystemId();
 
-        HashMap<String, Object> params = buildQueryParams(dto, security);
-
         //如果是租户管理员
         boolean isTenantAdmin = iFacadeUserApi.checkIsTenantAdmin(userId);
         if(isTenantAdmin){
+            //构建查询条件
+            HashMap<String, Object> params = buildQueryParamsTenantAdmin(dto, security);
             List<SprintListDTO> rest =  ssprintMapper.queryAllSprint(params);
             rest = buildResultList(rest);
             return rest;
@@ -178,24 +180,221 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         //如果是系统负责人
         boolean isSystemOwner = iFacadeUserApi.checkIsSystemOwner(userId, systemId);
         if(isSystemOwner){
-            return null;
+            HashMap<String, Object> params = buildQueryParamsSystemOwner(dto, security);
+            List<SprintListDTO> rest =  ssprintMapper.queryAllSprint(params);
+            rest = buildResultList(rest);
+            return rest;
         }
-        //如果是po
+        //po 、sm
         boolean isTeamPo = iFacadeUserApi.checkIsTeamPo(userId);
-        if(isTeamPo){
-            return null;
-        }
-        //如果是sm
         boolean isTeamSm = iFacadeUserApi.checkIsTeamSm(userId);
-        if(isTeamSm){
-            return null;
+        //如果既是po、又是sm
+        if(isTeamPo && isTeamSm){
+            HashMap<String, Object> params = buildQueryParamsPoAndSm(dto, security);
+            List<SprintListDTO> rest =  ssprintMapper.queryAllSprint(params);
+            rest = buildResultList(rest);
+            return rest;
+        }else if(isTeamPo){
+            HashMap<String, Object> params = buildQueryParamsTeamPo(dto, security);
+            List<SprintListDTO> rest =  ssprintMapper.queryAllSprint(params);
+            rest = buildResultList(rest);
+            return rest;
+        }else if(isTeamSm){
+            HashMap<String, Object> params = buildQueryParamsTeamSm(dto, security);
+            List<SprintListDTO> rest =  ssprintMapper.queryAllSprint(params);
+            rest = buildResultList(rest);
+            return rest;
         }
         //如果是团队成员
         boolean isTeamMember = iFacadeUserApi.checkIsTeamMember(userId);
         if(isTeamMember){
-            return null;
+            HashMap<String, Object> params = buildQueryParamsTeamUser(dto, security);
+            List<SprintListDTO> rest =  ssprintMapper.queryAllSprint(params);
+            rest = buildResultList(rest);
+            return rest;
         }
         throw new BusinessException("该用户没有权限");
+    }
+
+    /**
+     * 构建查询条件--是团队成员
+     * @return
+     */
+    private HashMap<String, Object> buildQueryParamsTeamUser(SprintQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        Long userId = security.getUserId();
+        List<Long> teamAll = Lists.newArrayList();
+        List<Long> teamuserids = sTeamUserMapper.queryTeamIdByUserId(userId);
+        if(!teamuserids.isEmpty()){
+            teamAll.addAll(teamuserids);
+        }else{
+            teamAll.add(-1L);
+        }
+        /*
+            按团队名称或编号模糊查询出teamids，如果不为空则与之前的teamids进行合并，否则不添加
+         */
+        String team = dto.getTeam();
+        if(!StringUtils.isEmpty(team)){
+            List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
+            if(!teams.isEmpty()){
+                //按团队名称模糊查询
+                List<Long> ids = Lists.newArrayList();
+                teams.forEach(item-> ids.add(item.getTeamId()));
+                teamAll.addAll(ids);
+            }
+        }
+        //最终的teamids
+        params.put("teamIds", teamAll);
+        //迭代名称或编号
+        params.put("sprint", dto.getSprint());
+        return params;
+    }
+
+    /**
+     * 构建查询条件--是sm
+     * @return
+     */
+    private HashMap<String, Object> buildQueryParamsTeamSm(SprintQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        Long userId = security.getUserId();
+        List<Long> teamAll = Lists.newArrayList();
+        List<Long> smteamids = sTeamSmMapper.queryTeamIdByUserId(userId);
+        if(!smteamids.isEmpty()){
+            teamAll.addAll(smteamids);
+        }else{
+            teamAll.add(-1L);
+        }
+        /*
+            按团队名称或编号模糊查询出teamids，如果不为空则与之前的teamids进行合并，否则不添加
+         */
+        String team = dto.getTeam();
+        if(!StringUtils.isEmpty(team)){
+            List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
+            if(!teams.isEmpty()){
+                //按团队名称模糊查询
+                List<Long> ids = Lists.newArrayList();
+                teams.forEach(item-> ids.add(item.getTeamId()));
+                teamAll.addAll(ids);
+            }
+        }
+        //最终的teamids
+        params.put("teamIds", teamAll);
+        //迭代名称或编号
+        params.put("sprint", dto.getSprint());
+        return params;
+    }
+
+    /**
+     * 构建查询条件--是po
+     * @return
+     */
+    private HashMap<String, Object> buildQueryParamsTeamPo(SprintQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        Long userId = security.getUserId();
+        List<Long> teamAll = Lists.newArrayList();
+        List<Long> poteamids = sTeamPoMapper.queryTeamIdByUserId(userId);
+        if(!poteamids.isEmpty()){
+            teamAll.addAll(poteamids);
+        }else{
+            teamAll.add(-1L);
+        }
+        /*
+            按团队名称或编号模糊查询出teamids，如果不为空则与之前的teamids进行合并，否则不添加
+         */
+        String team = dto.getTeam();
+        if(!StringUtils.isEmpty(team)){
+            List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
+            if(!teams.isEmpty()){
+                //按团队名称模糊查询
+                List<Long> ids = Lists.newArrayList();
+                teams.forEach(item-> ids.add(item.getTeamId()));
+                teamAll.addAll(ids);
+            }
+        }
+        //最终的teamids
+        params.put("teamIds", teamAll);
+        //迭代名称或编号
+        params.put("sprint", dto.getSprint());
+        return params;
+    }
+
+    /**
+     * 构建查询条件--既是po、又是sm
+     * @return
+     */
+    private HashMap<String, Object> buildQueryParamsPoAndSm(SprintQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        Long userId = security.getUserId();
+        /*
+            查询出作为po的poteamids、再查询出作为sm的smteamids，然后将两者合并成teamAll
+            之后按照teamName或teamid模糊查询出teamids，与teamAll进行最终合并，得到最终的teamids
+         */
+        List<Long> teamAll = Lists.newArrayList();
+        List<Long> poteamids = sTeamPoMapper.queryTeamIdByUserId(userId);
+        List<Long> smteamids = sTeamSmMapper.queryTeamIdByUserId(userId);
+        if(poteamids.isEmpty() && smteamids.isEmpty()){
+            teamAll.add(-1L);
+        }else if(poteamids.isEmpty()){
+            teamAll.addAll(smteamids);
+        }else{
+            teamAll.addAll(poteamids);
+        }
+        /*
+            按团队名称或编号模糊查询出teamids，如果不为空则与之前的teamids进行合并，否则不添加
+         */
+        String team = dto.getTeam();
+        if(!StringUtils.isEmpty(team)){
+            List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
+            if(!teams.isEmpty()){
+                //按团队名称模糊查询
+                List<Long> ids = Lists.newArrayList();
+                teams.forEach(item-> ids.add(item.getTeamId()));
+                teamAll.addAll(ids);
+            }
+        }
+        //最终的teamids
+        params.put("teamIds", teamAll);
+        //迭代名称或编号
+        params.put("sprint", dto.getSprint());
+        return params;
+    }
+
+    /**
+     * 构建查询条件--是系统负责人
+     * @return
+     */
+    private HashMap<String, Object> buildQueryParamsSystemOwner(SprintQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        Long userId = security.getUserId();
+        /*
+            查询出当前人负责的所有系统ids（systemids），然后根据systemids查询出关联的teamids
+         */
+        List<Long> systemIds = iFacadeSystemApi.querySystemIdByUserId(userId);
+        List<Long> teamIds = STeamSystemMapper.queryTeamIdBySystemId(systemIds);
+        List<Long> teamAll = Lists.newArrayList();
+        if(!teamIds.isEmpty()){
+            teamAll.addAll(teamIds);
+        }else{
+            teamAll.add(-1L);
+        }
+        /*
+            按团队名称或编号模糊查询出teamids，如果不为空则与之前的teamids进行合并，否则不添加
+         */
+        String team = dto.getTeam();
+        if(!StringUtils.isEmpty(team)){
+            List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
+            if(!teams.isEmpty()){
+                //按团队名称模糊查询
+                List<Long> ids = Lists.newArrayList();
+                teams.forEach(item-> ids.add(item.getTeamId()));
+                teamAll.addAll(ids);
+            }
+        }
+        //最终的teamids
+        params.put("teamIds", teamAll);
+        //迭代名称或编号
+        params.put("sprint", dto.getSprint());
+        return params;
     }
 
     /**
@@ -231,7 +430,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             //迭代天数
             item.setPlanDays(dates.size());
             //TODO 故事数及完成数
+            item.setStory(new SprintTaskDTO());
             //TODO 任务数及完成数
+            item.setTask(new SprintTaskDTO());
             //创建人
             ssoUsers.forEach(u->{
                 if(Objects.equals(item.getCreateUid(), u.getUserId())){
@@ -242,19 +443,19 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return rest;
     }
     /**
-     * 构建查询条件
+     * 构建查询条件--租户管理员角色下的
      * @author zhaofeng
      * @date 2021/5/12 10:11
      * @param dto
      * @param security
      */
-    private HashMap<String, Object> buildQueryParams(SprintQueryDTO dto, SecurityDTO security) {
+    private HashMap<String, Object> buildQueryParamsTenantAdmin(SprintQueryDTO dto, SecurityDTO security) {
         HashMap<String, Object> params = new HashMap<>();
         //按团队名称或编号模糊查询
         String team = dto.getTeam();
         if(!StringUtils.isEmpty(team)){
             List<STeam> teams = teamv3Service.getTeamLikeNameOrCode(team);
-            if(!team.isEmpty()){
+            if(!teams.isEmpty()){
                 List<Long> teamIds = Lists.newArrayList();
                 teams.forEach(item-> teamIds.add(item.getTeamId()));
                 params.put("teamIds", teamIds);

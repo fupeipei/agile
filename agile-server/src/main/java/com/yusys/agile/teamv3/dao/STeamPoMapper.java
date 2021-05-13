@@ -36,4 +36,6 @@ public interface STeamPoMapper {
     List<TeamUserDTO> selectByTeamIds(@Param("teamIds") List<Long> teamIds);
 
     void removeBindingTeamAndUser(@Param("teamId") long teamId);
+
+    List<Long> queryTeamIdByUserId(@Param("userId") Long userId);
 }

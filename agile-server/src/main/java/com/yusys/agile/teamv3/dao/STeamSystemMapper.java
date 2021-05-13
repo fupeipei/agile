@@ -58,4 +58,5 @@ public interface STeamSystemMapper {
     List<Long> querySystemIdByTeamId(long teamId);
 
 
+    List<Long> queryTeamIdBySystemId(@Param("systemIds") List<Long> systemIds);
 }

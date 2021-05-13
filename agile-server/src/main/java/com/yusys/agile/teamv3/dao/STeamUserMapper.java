@@ -47,4 +47,5 @@ public interface STeamUserMapper {
      */
     void removeBindingTeamAndUser(Long teamId);
 
+    List<Long> queryTeamIdByUserId(@Param("userId") Long userId);
 }

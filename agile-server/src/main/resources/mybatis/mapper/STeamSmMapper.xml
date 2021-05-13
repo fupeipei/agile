@@ -325,4 +325,9 @@
   <delete id="removeBindingTeamAndUser">
     delete from s_team_sm where team_id = #{teamId}
   </delete>
+
+  <select id="queryTeamIdByUserId" resultType="java.lang.Long">
+    select team_id from s_team_sm where user_id = #{userId}
+  </select>
+
 </mapper>

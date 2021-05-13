@@ -343,4 +343,8 @@
         where a.team_id = #{teamId}
     </delete>
 
+    <select id="queryTeamIdByUserId" resultType="java.lang.Long">
+        select team_id from s_team_user where user_id = #{userId}
+    </select>
+
 </mapper>

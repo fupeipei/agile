@@ -303,4 +303,11 @@
         from s_team_system
         where team_id = #{teamId}
     </select>
+
+    <select id="queryTeamIdBySystemId" resultType="java.lang.Long">
+        select team_id from s_team_system where system_id in
+        <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">
+            #{systemId}
+        </foreach>
+    </select>
 </mapper>
