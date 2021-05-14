@@ -561,6 +561,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
+    @Transactional(rollbackFor =Exception.class )
     public void updateSprint(SprintDTO sprintDTO) {
         if (!canEdit(sprintDTO.getSprintId())) {
             throw new BusinessException("迭代已结束或已完成，禁止编辑!");
@@ -581,16 +582,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         String str2 = "团队名称过长，不能大于100!";
         String str3 = "请选择团队";
         String str4 = "工作时间超长，不能大于24小时!";
-        int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
-        if (sprintNameNumber > 0) {
-            throw new BusinessException("当前租户下迭代名称重复");
-        }
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, str1);
         Preconditions.checkArgument(sprintDTO.getTeamName().length() <= 100, str2);
         Preconditions.checkArgument(sprintDTO.getTeamId() != null || sprintDTO.getTeamName() != null, str3);
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, str4);
     }
-
 
     public void editSprint(SprintDTO sprintDTO) {
         final SSprintWithBLOBs sprint = ReflectUtil.copyProperties(sprintDTO, SSprintWithBLOBs.class);
