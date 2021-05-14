@@ -32,4 +32,6 @@ public class TeamListDTO {
     private List<TeamSystemDTO> systemNames;
     @ApiModelProperty("团队所有人员")
     private List<TeamUserDTO> teamUsers;
+    @ApiModelProperty("团队所有人员")
+    private Integer teamUserCount;
 }

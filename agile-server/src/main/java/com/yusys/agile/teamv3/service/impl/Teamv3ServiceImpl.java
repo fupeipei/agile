@@ -144,6 +144,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
                 }
             });
             item.setTeamUsers(otherUsers);
+            //团队成员总数
+            item.setTeamUserCount(otherUsers.size());
             //创建人
             users.forEach(user -> {
                 if (Objects.equals(item.getCreateUid(),user.getUserId())) {

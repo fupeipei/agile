@@ -74,6 +74,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Autowired
     private Teamv3Service teamv3Service;
 
+    String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+
 
     @Override
     public SprintDTO viewEdit(Long sprintId) {
@@ -494,21 +496,21 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             sprintDTO.setStartTime(startTime);
             sprintDTO.setEndTime(endTime);
         } catch (Exception e) {
-            throw new BusinessException("迭代开始,结束时间填充异常 list.size小于2");
+            throw new BusinessException("迭代开始,结束时间填充异常"+e);
         }
 
         //版本号判断
         Matcher m = null;
         try {
-            String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
             Pattern p = Pattern.compile(regEx);
             m = p.matcher(sprintDTO.getVersionNumber());
             if (m.find()) {
                 throw new BusinessException("版本号只能是英文数字_.等常用字符！");
             }
         } catch (NullPointerException e) {
-            throw new BusinessException("迭代版本号异常");
+            throw new BusinessException("迭代版本号异常"+e);
         }
+
 //团队真实性校验
 //        int teamNember = sTeamMapper.teamExist(sprintDTO.getTeamId(), sprintDTO.getTenantCode());
 //        if (teamNember == 0) {
