@@ -48,6 +48,12 @@ public class Sprintv3Controller {
         return ControllerResponse.success(new PageInfo<SprintListDTO>(list));
     }
 
+    /**
+     * 新建迭代
+     *
+     * @param sprintV3DTO 迭代v3dto
+     * @return {@link ControllerResponse}
+     */
     @PostMapping("/createSprint")
     public ControllerResponse createSprint(@RequestBody SprintV3DTO sprintV3DTO) {
         return ControllerResponse.success(sprintv3Service.createSprint(sprintV3DTO));

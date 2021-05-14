@@ -112,73 +112,10 @@ public class SprintV3ServiceTest {
      */
     @Test
     public void createSprint() {
+        SprintV3DTO sprintV3DTO = initData();
         try {
-            SprintV3DTO sprintDTO = initData();
-//        sprintDTO.setTenantCode(UserThreadLocalUtil.getTenantCode());
-            List<Date> sprintDayList = sprintDTO.getSprintDayList();
-            int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
-            if (sprintNameNumber > 0) {
-                throw new BusinessException("当前租户下迭代名称重复");
-            }
-            //迭代开始结束时间判断
-            try {
-                Date startTime = sprintDayList.get(0);
-                Date endTime = DateUtil.getAfterDay(sprintDayList.get(sprintDayList.size() - 1));
-                sprintDTO.setStartTime(startTime);
-                sprintDTO.setEndTime(endTime);
-            } catch (Exception e) {
-                throw new BusinessException("迭代开始,结束时间填充异常 list.size小于2");
-            }
-
-            //版本号判断
-            Matcher m = null;
-            try {
-                String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
-                Pattern p = Pattern.compile(regEx);
-                m = p.matcher(sprintDTO.getVersionNumber());
-                if (m.find()) {
-                    throw new BusinessException("版本号只能是英文数字_.等常用字符！");
-                }
-            } catch (NullPointerException e) {
-                throw new BusinessException("迭代版本号异常");
-            }
-//团队真实性校验
-//        int teamNember = sTeamMapper.teamExist(sprintDTO.getTeamId(), sprintDTO.getTenantCode());
-//        if (teamNember == 0) {
-//            throw new BusinessException("当前租户下无此团队");
-//        }
-
-            //迭代状态判断
-            Date now = new Date(System.currentTimeMillis());
-            if (sprintDTO.getStartTime().getTime() > now.getTime()) {
-                // 未开始
-                sprintDTO.setStatus(SprintStatusEnum.TYPE_NO_START_STATE.CODE);
-            } else {
-                // 已开始
-                sprintDTO.setStatus(SprintStatusEnum.TYPE_ONGOING_STATE.CODE);
-            }
-
-            sprintDTO.setState("U");
-            sprintDTO.setCreateTime(new Date());
-            //转换迭代有效日期为String，中间以|隔开
-            StringBuffer stringBuffer = new StringBuffer();
-            for (int i = 0; i < sprintDayList.size(); i++) {
-                stringBuffer.append(sprintDayList.get(i).getTime());
-                if (i < sprintDayList.size() - 1) {
-                    stringBuffer.append("|");
-                }
-            }
-            sprintDTO.setSprintDays(stringBuffer.toString());
-
-            //插入迭代
-            SSprintWithBLOBs sprint = new SSprintWithBLOBs();
-            BeanUtils.copyProperties(sprintDTO, sprint);
-            int i = ssprintMapper.insert(sprint);
-
-            //插入迭代人员
-            List<SprintV3UserHourDTO> members = sprintDTO.getMembers();
-            ssprintUserHourMapper.batchInsert(members, sprint.getSprintId());
-            Assert.assertNotNull(sprint.getSprintId());
+            Long sprintId = sprintv3Service.createSprint(sprintV3DTO);
+            Assert.assertNotNull(sprintId);
         } catch (BusinessException e) {
             Assert.fail();
         }
@@ -186,6 +123,7 @@ public class SprintV3ServiceTest {
 
 
     private SecurityDTO securityDTO;
+
     @Before
     public void setUp() {
         this.securityDTO = new SecurityDTO();
@@ -195,15 +133,15 @@ public class SprintV3ServiceTest {
         securityDTO.setUserName("马雪萍");
         securityDTO.setUserAcct("maxueq");
     }
+
     @Test
-    public void testQueryList1(){
+    public void testQueryList1() {
         SprintQueryDTO queryDTO = new SprintQueryDTO();
         queryDTO.setPageNum(1);
         queryDTO.setPageSize(10);
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
-
 
 
 }
