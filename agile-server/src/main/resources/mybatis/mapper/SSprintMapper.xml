@@ -505,7 +505,7 @@
         select count(sprint_name)
         from s_sprint
         where sprint_name = #{sprintName}
-          and tenant_code = #{tenantCode}
+<!--          and tenant_code = #{tenantCode}-->
     </select>
 
     <update id="arrangeTeam">

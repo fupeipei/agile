@@ -40,6 +40,13 @@ public interface SSprintMapper {
 
     int updateByPrimaryKey(SSprint record);
 
+    /**
+     * 检查迭代的名字
+     *
+     * @param sprintName 迭代的名字
+     * @param tenantCode 租户的代码
+     * @return int
+     */
     int CheckSprintName(@Param("sprintName") String sprintName, @Param("tenantCode") String tenantCode);
 
     List<Long> getUnStartIds(Date date);
