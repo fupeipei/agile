@@ -13,8 +13,6 @@ import com.yusys.agile.sprint.dto.SprintDTO;
  */
 public interface Sprintv3Service {
 
-
-
     /**
      * @param sprintId
      * @Date 2021/5/11
@@ -47,13 +45,24 @@ public interface Sprintv3Service {
      */
     boolean canEdit(Long sprintId);
 
-
     void updateSprint(SprintDTO sprintDTO);
 
-
-
-
-
-
     void changeStatusDaily();
+
+    /**
+     * 取消迭代
+     *
+     * @param sprintId 迭代id
+     * @return {@link Object}
+     */
+    String cancelSprint(long sprintId);
+
+    /**
+     * 迭代存在
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int sprintExist(long sprintId);
+
 }

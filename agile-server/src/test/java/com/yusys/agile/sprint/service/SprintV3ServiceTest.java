@@ -23,6 +23,7 @@ import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
@@ -121,8 +122,26 @@ public class SprintV3ServiceTest {
         }
     }
 
+    /**
+     * 取消迭代
+     */
+    @Test
+    public void cancelSprint() {
+        Long sprintId = 843787687910965248l;
+        String s;
+        int sprintNumber = ssprintMapper.sprintExist(sprintId);
+        if (sprintNumber == 0) {
+            //"暂无该迭代";
+            Assert.fail();
+        }
+        ssprintMapper.cancelSprint(sprintId);
+        s = "迭代状态更新成功";
+        Assert.assertNotNull(s);
+    }
+
 
     private SecurityDTO securityDTO;
+
     @Before
     public void setUp() {
         this.securityDTO = new SecurityDTO();
@@ -132,8 +151,9 @@ public class SprintV3ServiceTest {
         securityDTO.setUserName("马雪萍");
         securityDTO.setUserAcct("maxueq");
     }
+
     @Test
-    public void testQueryList1(){
+    public void testQueryList1() {
         SprintQueryDTO queryDTO = new SprintQueryDTO();
         queryDTO.setPageNum(1);
         queryDTO.setPageSize(10);
@@ -141,26 +161,25 @@ public class SprintV3ServiceTest {
         log.info("迭代列表数据【{}】", list);
     }
 
-
     @Test
-    public void updateSprint(){
+    public void updateSprint() {
         SprintDTO sprintDTO = new SprintDTO();
         sprintDTO.setSprintId(1111l);
-       sprintDTO.setTeamId(10087l);
-       sprintDTO.setSprintName("修改测试");
-       sprintDTO.setTeamName("测试团队");
-       sprintDTO.setSprintDesc("修改了111111");
-       sprintDTO.setWorkHours(8);
+        sprintDTO.setTeamId(10087l);
+        sprintDTO.setSprintName("修改测试");
+        sprintDTO.setTeamName("测试团队");
+        sprintDTO.setSprintDesc("修改了111111");
+        sprintDTO.setWorkHours(8);
         List<Date> sprintDayLists = new ArrayList<>();
         sprintDayLists.add(new Date());
         sprintDayLists.add(new Date());
-       sprintDTO.setSprintDayList(sprintDayLists);
+        sprintDTO.setSprintDayList(sprintDayLists);
         sprintDTO.setVersionNumber("1.0");
-       List<UserSprintHourDTO> userSprintHourDTOS=new ArrayList<>();
+        List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             UserSprintHourDTO sprintV3UserHourDTO = new UserSprintHourDTO();
-            sprintV3UserHourDTO.setUserId(i +1l);
-            sprintV3UserHourDTO.setReallyHours(i +10);
+            sprintV3UserHourDTO.setUserId(i + 1l);
+            sprintV3UserHourDTO.setReallyHours(i + 10);
             sprintV3UserHourDTO.setUserName("李四" + i);
             sprintV3UserHourDTO.setUserAccount("lisi" + i);
             userSprintHourDTOS.add(sprintV3UserHourDTO);
