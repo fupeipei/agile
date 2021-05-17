@@ -509,7 +509,9 @@
     </select>
 
     <update id="arrangeTeam">
-        UPDATE sprint SET team_id = #{teamId} WHERE sprint_id = #{sprintId}
+        UPDATE sprint
+        SET team_id = #{teamId}
+        WHERE sprint_id = #{sprintId}
     </update>
     <select id="getUnStartIds" resultType="java.lang.Long">
         select sprint_id
@@ -519,12 +521,13 @@
           and state = "U"
     </select>
     <update id="changeStatusTOProgressByIds">
-    UPDATE s_sprint SET status=3 WHERE sprint_id IN(
-    <foreach collection="sprintIds" separator="," item="sprintId">
-      #{sprintId}
-    </foreach>
-    )
-</update>
+        UPDATE s_sprint
+        SET status=3 WHERE sprint_id IN(
+        <foreach collection="sprintIds" separator="," item="sprintId">
+            #{sprintId}
+        </foreach>
+        )
+    </update>
 
     <sql id="query_list_column">
         sprint_id,
@@ -554,18 +557,30 @@
             </if>
             <if test="params.sprint != null and params.sprint != ''">
                 and (sprint_name like concat('%',#{params.sprint},'%')
-                    or sprint_id like concat('%',#{params.sprint},'%')
+                or sprint_id like concat('%',#{params.sprint},'%')
                 )
             </if>
         </if>
     </sql>
     <select id="queryAllSprint" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
         select
-        <include refid="query_list_column" />
+        <include refid="query_list_column"/>
         from s_sprint
         <where>
-            <include refid="query_list_param" />
+            <include refid="query_list_param"/>
         </where>
         order by create_time desc
+    </select>
+
+    <update id="cancelSprint">
+        update s_sprint
+        set status = 0
+        where sprint_id = #{sprintId}
+    </update>
+
+    <select id="sprintExist" resultType="int">
+        select count(sprint_id)
+        from s_sprint
+        where sprint_id = #{sprintId}
     </select>
 </mapper>

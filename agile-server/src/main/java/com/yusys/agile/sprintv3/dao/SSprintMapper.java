@@ -49,10 +49,29 @@ public interface SSprintMapper {
 
 
     void changeStatusTOProgressByIds(@Param("sprintIds") List<Long> sprintIds);
+
     /**
      * 查询租户下所有
+     *
      * @param params
      * @return
      */
     List<SprintListDTO> queryAllSprint(@Param("params") HashMap<String, Object> params);
+
+    /**
+     * 取消迭代
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int cancelSprint(long sprintId);
+
+
+    /**
+     * 迭代存在
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int sprintExist(@Param("sprintId") long sprintId);
 }
