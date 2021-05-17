@@ -36,8 +36,8 @@ public class SprintListDTO {
     private Long teamId;
     @ApiModelProperty("团队名称")
     private String teamName;
-    @ApiModelProperty("团队成员数")
-    private Integer teamUserCount;
+    @ApiModelProperty("迭代成员数")
+    private Integer sprintUserCount;
     @ApiModelProperty("每天工作时长")
     private Integer workHours;
     @ApiModelProperty("迭代版本号")
