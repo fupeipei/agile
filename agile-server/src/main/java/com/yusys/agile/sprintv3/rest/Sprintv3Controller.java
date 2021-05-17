@@ -70,6 +70,12 @@ public class Sprintv3Controller {
         return ControllerResponse.success("编辑成功");
     }
 
+    /**
+     * 取消迭代
+     *
+     * @param sprintId 迭代id
+     * @return {@link ControllerResponse}
+     */
     @GetMapping("/cancelSprint")
     public ControllerResponse cancelSprint(long sprintId) {
         return ControllerResponse.success(sprintv3Service.cancelSprint(sprintId));
