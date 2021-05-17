@@ -496,9 +496,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createSprint(SprintV3DTO sprintDTO) {
+
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, "迭代名称过长,不能大于100!");
-        Preconditions.checkArgument(sprintDTO.getTeamName().length() <= 100, "团队名称过长，不能大于100!");
-        Preconditions.checkArgument(sprintDTO.getTeamId() != null || sprintDTO.getTeamName() != null, "请选择团队");
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, "工作时间超长，不能大于24小时!");
 
         List<Date> sprintDayList = sprintDTO.getSprintDayList();
