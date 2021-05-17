@@ -496,7 +496,10 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createSprint(SprintV3DTO sprintDTO) {
-//        sprintDTO.setTenantCode(UserThreadLocalUtil.getTenantCode());
+
+        Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, "迭代名称过长,不能大于100!");
+        Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, "工作时间超长，不能大于24小时!");
+
         List<Date> sprintDayList = sprintDTO.getSprintDayList();
         int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
         if (sprintNameNumber > 0) {
