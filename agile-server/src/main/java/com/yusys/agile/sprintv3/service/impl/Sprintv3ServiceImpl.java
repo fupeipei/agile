@@ -417,23 +417,28 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      */
     private List<SprintListDTO> buildResultList(List<SprintListDTO> rest) {
         //收集teamids，查询team，收集createuid，查询创建人
+        List<Long> sprintIds = Lists.newArrayList();
         List<Long> teamIds = Lists.newArrayList();
         List<Long> createIds = Lists.newArrayList();
         rest.forEach(item -> {
+            sprintIds.add(item.getSprintId());
             teamIds.add(item.getTeamId());
             createIds.add(item.getCreateUid());
         });
         List<STeam> sTeams = sTeamMapper.listTeamByIds(teamIds);
         List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(createIds);
+        List<SprintV3UserHourDTO> userHours = ssprintUserHourMapper.listUserHourBySprintId(sprintIds);
         //拼接返回值
         rest.forEach(item -> {
             //团队
             sTeams.forEach(t -> {
                 if (Objects.equals(item.getTeamId(), t.getTeamId())) {
                     item.setTeamName(t.getTeamName());
-                    item.setTeamUserCount(t.getTeamUsers().size());
                 }
             });
+            //迭代成员人数
+            long count = userHours.stream().filter(userHour -> Objects.equals(item.getSprintId(), userHour.getSprintId())).count();
+            item.setSprintUserCount((int) count);
             //状态
             item.setStatusStr(SprintStatusEnum.getName(item.getStatus()));
             //迭代周期
