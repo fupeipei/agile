@@ -37,4 +37,6 @@ public interface SSprintUserHourMapper {
     List<UserSprintHour> getUserIds4Sprint(Long sprintId);
 
     int deleteBySprintId(Long sprintId);
+
+    List<SprintV3UserHourDTO> listUserHourBySprintId(@Param("sprintIds") List<Long> sprintIds);
 }
