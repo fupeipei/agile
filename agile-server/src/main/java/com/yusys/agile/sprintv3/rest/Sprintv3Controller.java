@@ -57,7 +57,8 @@ public class Sprintv3Controller {
      * @return {@link ControllerResponse}
      */
     @PostMapping("/createSprint")
-    public ControllerResponse createSprint(@RequestBody SprintV3DTO sprintV3DTO) {
+    public ControllerResponse createSprint(@RequestBody SprintV3DTO sprintV3DTO,@RequestHeader("tenantCode") String tenantCode) {
+        sprintV3DTO.setTenantCode(tenantCode);
         return ControllerResponse.success(sprintv3Service.createSprint(sprintV3DTO));
     }
 
