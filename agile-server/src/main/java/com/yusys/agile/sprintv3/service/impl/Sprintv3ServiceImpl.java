@@ -589,7 +589,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Transactional(rollbackFor = Exception.class)
     public void updateSprint(SprintDTO sprintDTO,SecurityDTO securityDTO) {
         if (!canEdit(sprintDTO.getSprintId())) {
-            throw new BusinessException("迭代已结束或已完成，禁止编辑!");
+            throw new BusinessException("只有【未开始】状态的迭代才允许修改");
         }
         checkParameter(sprintDTO);
         SSprintExample sSprintExample = new SSprintExample();
