@@ -45,7 +45,7 @@ public interface Sprintv3Service {
      */
     boolean canEdit(Long sprintId);
 
-    void updateSprint(SprintDTO sprintDTO);
+    void updateSprint(SprintDTO sprintDTO,SecurityDTO securityDTO);
 
     void changeStatusDaily();
 

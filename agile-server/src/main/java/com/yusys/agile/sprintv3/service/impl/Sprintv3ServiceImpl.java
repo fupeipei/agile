@@ -587,7 +587,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateSprint(SprintDTO sprintDTO) {
+    public void updateSprint(SprintDTO sprintDTO,SecurityDTO securityDTO) {
         if (!canEdit(sprintDTO.getSprintId())) {
             throw new BusinessException("迭代已结束或已完成，禁止编辑!");
         }
@@ -597,7 +597,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         criteria.andSprintIdNotEqualTo(sprintDTO.getSprintId());
         criteria.andSprintNameEqualTo(sprintDTO.getSprintName());
         criteria.andStateEqualTo(StateEnum.U.getValue());
-        criteria.andTenantCodeEqualTo(sprintDTO.getTenantCode());
+        criteria.andTenantCodeEqualTo(securityDTO.getTenantCode());
         List<SSprint> sSprints = ssprintMapper.selectByExample(sSprintExample);
         if (sSprints.size() >0) {
             throw new BusinessException("当前租户下迭代名称重复");
