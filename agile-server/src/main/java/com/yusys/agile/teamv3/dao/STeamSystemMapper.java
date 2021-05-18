@@ -1,12 +1,12 @@
 package com.yusys.agile.teamv3.dao;
 
 import com.yusys.agile.team.dto.TeamSystemDTO;
+import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.domain.STeamSystemExample;
 
 import java.util.List;
 
-import com.yusys.portal.model.facade.entity.SsoUser;
 import org.apache.ibatis.annotations.Param;
 
 public interface STeamSystemMapper {
@@ -36,11 +36,10 @@ public interface STeamSystemMapper {
 
     /**
      * 绑定团队和系统
-     *
-     * @param teamId    团队id
+     *  @param team    团队
      * @param systemIds ids系统
      */
-    void bindingTeamAndSystem(@Param("teamId") Long teamId, @Param("systemIds") List<Long> systemIds);
+    void bindingTeamAndSystem(@Param("team") STeam team, @Param("systemIds") List<Long> systemIds);
 
     /**
      * 删除绑定的团队和系统

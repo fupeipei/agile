@@ -296,8 +296,8 @@
       tenant_code)
     values
         <foreach collection="users" item="item" separator=",">
-            (#{teamId}, #{item.userId}, #{item.userAccount}, #{item.userName}, create_uid, create_time, update_uid,
-             update_time, tenant_code)
+            (#{team.teamId}, #{item.userId}, #{item.userAccount}, #{item.userName}, #{team.createUid}, #{team.createTime}, #{team.updateUid},
+             #{team.updateTime}, #{team.tenantCode})
         </foreach>
   </insert>
 
