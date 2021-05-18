@@ -23,7 +23,6 @@ import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
-import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
@@ -83,8 +82,8 @@ public class SprintV3ServiceTest {
     public SprintV3DTO initData() {
         SprintV3DTO sprintDTO = new SprintV3DTO();
 //        sprintDTO.setSprintId();
-        sprintDTO.setSprintName("这是一个迭代16点35分");
-        sprintDTO.setSprintDesc("这是一条测试的迭代测试数据");
+        sprintDTO.setSprintName(UUID.randomUUID().toString());
+        sprintDTO.setSprintDesc("这是一条单元测试测试数据");
 //        sprintDTO.setFinishTime(now);
         sprintDTO.setTeamId(10086l);
         sprintDTO.setWorkHours(23);
@@ -122,23 +121,6 @@ public class SprintV3ServiceTest {
         }
     }
 
-    /**
-     * 取消迭代
-     */
-    @Test
-    public void cancelSprint() {
-        Long sprintId = 843787687910965248l;
-        String s;
-        int sprintNumber = ssprintMapper.sprintExist(sprintId);
-        if (sprintNumber == 0) {
-            //"暂无该迭代";
-            Assert.fail();
-        }
-        ssprintMapper.cancelSprint(sprintId);
-        s = "迭代状态更新成功";
-        Assert.assertNotNull(s);
-    }
-
 
     private SecurityDTO securityDTO;
 
@@ -159,35 +141,6 @@ public class SprintV3ServiceTest {
         queryDTO.setPageSize(10);
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
-    }
-
-    @Test
-    public void updateSprint() {
-        SprintDTO sprintDTO = new SprintDTO();
-        sprintDTO.setSprintId(1111l);
-        sprintDTO.setTeamId(10087l);
-        sprintDTO.setSprintName("修改测试");
-        sprintDTO.setTeamName("测试团队");
-        sprintDTO.setSprintDesc("修改了111111");
-        sprintDTO.setWorkHours(8);
-        List<Date> sprintDayLists = new ArrayList<>();
-        sprintDayLists.add(new Date());
-        sprintDayLists.add(new Date());
-        sprintDTO.setSprintDayList(sprintDayLists);
-        sprintDTO.setVersionNumber("1.0");
-        List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
-            UserSprintHourDTO sprintV3UserHourDTO = new UserSprintHourDTO();
-            sprintV3UserHourDTO.setUserId(i + 1l);
-            sprintV3UserHourDTO.setReallyHours(i + 10);
-            sprintV3UserHourDTO.setUserName("李四" + i);
-            sprintV3UserHourDTO.setUserAccount("lisi" + i);
-            userSprintHourDTOS.add(sprintV3UserHourDTO);
-        }
-        sprintDTO.setMembers(userSprintHourDTOS);
-        sprintv3Service.updateSprint(sprintDTO);
-
-
     }
 
 
