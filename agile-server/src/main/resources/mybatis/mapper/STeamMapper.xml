@@ -339,24 +339,15 @@
     </select>
 
 
-    <resultMap id="MyResultMap" type="com.yusys.agile.teamv3.domain.STeam">
-        <id column="team_id" jdbcType="BIGINT" property="teamId"/>
-        <result column="team_name" jdbcType="VARCHAR" property="teamName"/>
-        <collection property="teamUsers" ofType="com.yusys.agile.teamv3.domain.STeamUser" column="team_id">
-            <id column="id" jdbcType="BIGINT" property="id" />
-            <result column="user_id" jdbcType="BIGINT" property="userId" />
-            <result column="user_account" jdbcType="VARCHAR" property="userAccount" />
-            <result column="user_name" jdbcType="VARCHAR" property="userName" />
-            <result column="system_id" jdbcType="BIGINT" property="systemId" />
-        </collection>
-    </resultMap>
-    <select id="listTeamByIds" resultMap="MyResultMap">
-        select s.team_id as team_id,team_name,id,user_id,user_account,user_name,system_id
-        from s_team s left join s_team_user u on s.team_id = u.team_id
+
+    <select id="listTeamByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from s_team
         <where>
             <choose>
                 <when test="teamIds != null and teamIds.size > 0">
-                    and s.team_id in
+                    and team_id in
                     <foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
                         #{teamId}
                     </foreach>
@@ -365,7 +356,7 @@
                     and 1=0
                 </otherwise>
             </choose>
-            and s.state = 'U'
+            and state = 'U'
         </where>
     </select>
 
