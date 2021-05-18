@@ -11,6 +11,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Security;
 import java.util.List;
 
 /**
@@ -61,9 +62,9 @@ public class Sprintv3Controller {
     }
 
     @PostMapping("/updateSprint")
-    public ControllerResponse updateSprint(@RequestBody SprintDTO sprintDTO) {
+    public ControllerResponse updateSprint(@RequestBody SprintDTO sprintDTO, SecurityDTO securityDTO) {
         try {
-            sprintv3Service.updateSprint(sprintDTO);
+            sprintv3Service.updateSprint(sprintDTO,securityDTO);
         } catch (Exception e) {
             return ControllerResponse.fail("编辑迭代失败：" + e.getMessage());
         }
