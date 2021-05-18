@@ -1,6 +1,7 @@
 package com.yusys.agile.teamv3.dao;
 
 import com.yusys.agile.team.dto.TeamUserDTO;
+import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamSm;
 import com.yusys.agile.teamv3.domain.STeamSmExample;
 import java.util.List;
@@ -31,7 +32,7 @@ public interface STeamSmMapper {
 
     int updateByPrimaryKey(STeamSm record);
 
-    int bindingTeamAndSm(@Param("teamId") Long teamId,@Param("users") List<SsoUser> users);
+    int bindingTeamAndSm(@Param("team") STeam team, @Param("users") List<SsoUser> users);
 
     List<TeamUserDTO> selectByTeamIds(@Param("teamIds") List<Long> teamIds);
 

@@ -295,7 +295,7 @@
         insert into s_team_system(team_id, system_id, create_uid, create_time, update_uid, update_time, tenant_code)
                 values
         <foreach collection="systemIds" item="item" separator=",">
-            (#{teamId}, #{item.value}, create_uid, create_time, update_uid, update_time, tenant_code)
+            (#{team.teamId}, #{item.value}, #{team.createUid}, #{team.createTime}, #{team.updateUid}, #{team.updateTime}, #{team.tenantCode})
         </foreach>
     </insert>
     <select id="querySystemIdByTeamId" resultType="java.lang.Long">

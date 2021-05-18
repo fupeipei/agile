@@ -1,6 +1,7 @@
 package com.yusys.agile.teamv3.dao;
 
 import com.yusys.agile.team.dto.TeamUserDTO;
+import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamUser;
 import com.yusys.agile.teamv3.domain.STeamUserExample;
 
@@ -35,10 +36,10 @@ public interface STeamUserMapper {
 
     /**
      * 绑定的团队和用户
-     *  @param teamId 团队id
+     * @param teamId 团队id
      * @param users  用户
      */
-    void bindingTeamAndUser(@Param("teamId") Long teamId, @Param("users") List<STeamUser> users);
+    void bindingTeamAndUser(@Param("team") STeam team, @Param("users") List<STeamUser> users);
 
     /**
      * 删除绑定团队和用户

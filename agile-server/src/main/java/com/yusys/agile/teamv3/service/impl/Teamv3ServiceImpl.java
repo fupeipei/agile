@@ -285,15 +285,15 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.insertSelective(team);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team.getTeamId(), team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
         //团队绑定po
         List<SsoUser> teamPoUsers = iFacadeSystemApi.queryUserList(teamPo);
-        teamPoMapper.bindingTeamAndPo(team.getTeamId(), teamPoUsers);
+        teamPoMapper.bindingTeamAndPo(team, teamPoUsers);
         //团队绑定sm
         List<SsoUser> teamSmUsers = iFacadeSystemApi.queryUserList(teamSm);
-        teamSmMapper.bindingTeamAndSm(team.getTeamId(), teamSmUsers);
+        teamSmMapper.bindingTeamAndSm(team, teamSmUsers);
         //绑定团队用户
-        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUser);
+        teamUserMapper.bindingTeamAndUser(team, teamUser);
         return "新建团队成功";
     }
 
@@ -348,15 +348,15 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.updateByPrimaryKeySelective(team);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team.getTeamId(), team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
         //团队绑定po
         List<SsoUser> teamPoUsers = iFacadeSystemApi.queryUserList(teamPo);
-        teamPoMapper.bindingTeamAndPo(team.getTeamId(), teamPoUsers);
+        teamPoMapper.bindingTeamAndPo(team, teamPoUsers);
         //团队绑定sm
         List<SsoUser> teamSmUsers = iFacadeSystemApi.queryUserList(teamSm);
-        teamSmMapper.bindingTeamAndSm(team.getTeamId(), teamSmUsers);
+        teamSmMapper.bindingTeamAndSm(team, teamSmUsers);
         //绑定团队用户
-        teamUserMapper.bindingTeamAndUser(team.getTeamId(), teamUser);
+        teamUserMapper.bindingTeamAndUser(team, teamUser);
         return "更新团队成功";
     }
 
