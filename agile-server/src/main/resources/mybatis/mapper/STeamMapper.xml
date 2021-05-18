@@ -149,9 +149,7 @@
     <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeam" useGeneratedKeys="true">
         insert into s_team
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="teamId != null">
-                team_id,
-            </if>
+
             <if test="teamName != null">
                 team_name,
             </if>
@@ -178,9 +176,7 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="teamId != null">
-                #{teamId,jdbcType=BIGINT},
-            </if>
+
             <if test="teamName != null">
                 #{teamName,jdbcType=VARCHAR},
             </if>

@@ -158,14 +158,14 @@
         </if>
     </delete>
     <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs" keyColumn="sprint_id"
-            keyProperty="sprintId">
-        insert into s_sprint (sprint_id, sprint_name, status,
+            keyProperty="sprintId" useGeneratedKeys="true">
+        insert into s_sprint (sprint_name, status,
                               state, start_time, end_time,
                               finish_time, team_id, work_hours,
                               version_number, sync_state, create_uid,
                               create_time, update_uid, update_time,
                               tenant_code, sprint_desc, sprint_days)
-        values (#{sprintId,jdbcType=BIGINT}, #{sprintName,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+        values (#{sprintName,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
                 #{state,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
                 #{finishTime,jdbcType=TIMESTAMP}, #{teamId,jdbcType=BIGINT}, #{workHours,jdbcType=INTEGER},
                 #{versionNumber,jdbcType=VARCHAR}, #{syncState,jdbcType=TINYINT}, #{createUid,jdbcType=BIGINT},
@@ -600,4 +600,5 @@
         where sprint_id = #{sprintId}
           and create_uid = #{userId}
     </select>
+
 </mapper>

@@ -567,7 +567,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         //插入迭代
         SSprintWithBLOBs sprint = new SSprintWithBLOBs();
         BeanUtils.copyProperties(sprintDTO, sprint);
-        int i = ssprintMapper.insert(sprint);
+         ssprintMapper.insert(sprint);
 
         //插入迭代人员
         List<SprintV3UserHourDTO> members = sprintDTO.getMembers();
@@ -750,7 +750,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         ssprintMapper.cancelSprint(sprintId);
         return "迭代状态更新成功";
     }
-
 
     @Override
     public int sprintExist(long sprintId) {

@@ -23,6 +23,7 @@ import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
@@ -49,6 +50,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import com.yusys.agile.team.dto.TeamDTO;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -114,13 +116,26 @@ public class SprintV3ServiceTest {
     public void createSprint() {
         SprintV3DTO sprintV3DTO = initData();
         try {
-//            Long sprintId = sprintv3Service.createSprint(sprintV3DTO);
-//            Assert.assertNotNull(sprintId);
+            Long sprintId = sprintv3Service.createSprint(sprintV3DTO);
+            Assert.assertNotNull(sprintId);
         } catch (BusinessException e) {
             Assert.fail();
         }
     }
 
+    /**
+     * 取消迭代
+     */
+    @Test
+    public void cancelSprint() {
+        String s = null;
+        try {
+            s = sprintv3Service.cancelSprint(1, 1);
+        } catch (Exception e) {
+            s=e.toString();
+        }
+        Assert.assertNotNull(s);
+    }
 
     private SecurityDTO securityDTO;
 
