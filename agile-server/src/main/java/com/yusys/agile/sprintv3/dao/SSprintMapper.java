@@ -81,4 +81,23 @@ public interface SSprintMapper {
      * @return int
      */
     int sprintExist(@Param("sprintId") long sprintId);
+
+
+    /**
+     * 检查身份
+     *
+     * @param sprintId 迭代id
+     * @param userId   用户id
+     * @return int
+     */
+    int joinSprint(@Param("sprintId") long sprintId, @Param("userId") long userId);
+
+    /**
+     * 迭代创建人
+     *
+     * @param sprintId 迭代id
+     * @param userId   用户id
+     * @return int
+     */
+    int creatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
 }

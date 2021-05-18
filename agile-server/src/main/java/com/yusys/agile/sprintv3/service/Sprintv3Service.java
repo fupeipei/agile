@@ -4,7 +4,9 @@ import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+
 import java.util.List;
+
 import com.yusys.agile.sprint.dto.SprintDTO;
 
 /**
@@ -23,10 +25,11 @@ public interface Sprintv3Service {
 
     /**
      * 条件分页-查询列表
-     * @author zhaofeng
-     * @date 2021/5/11 16:33
+     *
      * @param dto
      * @param security
+     * @author zhaofeng
+     * @date 2021/5/11 16:33
      */
     List<SprintListDTO> listSprint(SprintQueryDTO dto, SecurityDTO security);
 
@@ -40,6 +43,7 @@ public interface Sprintv3Service {
 
     /**
      * 是否满足编辑条件
+     *
      * @param sprintId 迭代id
      * @return boolean
      */
@@ -55,7 +59,7 @@ public interface Sprintv3Service {
      * @param sprintId 迭代id
      * @return {@link Object}
      */
-    String cancelSprint(long sprintId);
+    String cancelSprint(long sprintId, long userId);
 
     /**
      * 迭代存在

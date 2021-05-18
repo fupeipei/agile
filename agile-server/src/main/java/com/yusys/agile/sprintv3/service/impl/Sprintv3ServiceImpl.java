@@ -29,6 +29,7 @@ import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -496,19 +497,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return params;
     }
 
-    /**
-     * 新建迭代
-     *
-     * @param sprintDTO 迭代dto
-     * @return {@link String}
-     */
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createSprint(SprintV3DTO sprintDTO) {
-
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, "迭代名称过长,不能大于100!");
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, "工作时间超长，不能大于24小时!");
-
         List<Date> sprintDayList = sprintDTO.getSprintDayList();
         int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
         if (sprintNameNumber > 0) {
@@ -740,7 +735,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @return {@link String}
      */
     @Override
-    public String cancelSprint(long sprintId) {
+    public String cancelSprint(long sprintId, long userId) {
+        //参加迭代PO,迭代创建人允许取消迭代,其余不允许
+        CheckIdentity(userId, sprintId);
         int sprintNumber = ssprintMapper.sprintExist(sprintId);
         if (sprintNumber == 0) {
             throw new BusinessException("暂无该迭代");
@@ -749,8 +746,32 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return "迭代状态更新成功";
     }
 
+
     @Override
     public int sprintExist(long sprintId) {
         return ssprintMapper.sprintExist(sprintId);
+    }
+
+    /**
+     * 检查身份:参加迭代PO,迭代创建人允许取消迭代,其余不允许
+     *
+     * @param userId   用户id
+     * @param sprintId 迭代id
+     * @return boolean
+     */
+    public void CheckIdentity(long userId, long sprintId) {
+        boolean joinSprint = true;
+        boolean creature = true;
+        if (0 == ssprintMapper.joinSprint(sprintId, userId)) {
+            joinSprint = false;
+        }
+        if (0 == ssprintMapper.creatUser(sprintId, userId)) {
+            creature = false;
+        }
+        if (joinSprint || creature) {
+
+        } else {
+            throw new BusinessException("迭代无关人员");
+        }
     }
 }

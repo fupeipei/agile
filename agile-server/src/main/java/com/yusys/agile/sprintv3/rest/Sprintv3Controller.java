@@ -78,8 +78,8 @@ public class Sprintv3Controller {
      * @return {@link ControllerResponse}
      */
     @GetMapping("/cancelSprint")
-    public ControllerResponse cancelSprint(long sprintId) {
-        return ControllerResponse.success(sprintv3Service.cancelSprint(sprintId));
+    public ControllerResponse cancelSprint(long sprintId, long userId) {
+        return ControllerResponse.success(sprintv3Service.cancelSprint(sprintId, userId));
     }
 
 

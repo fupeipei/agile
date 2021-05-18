@@ -501,11 +501,12 @@
             tenant_code    = #{tenantCode,jdbcType=VARCHAR}
         where sprint_id = #{sprintId,jdbcType=BIGINT}
     </update>
+
     <select id="CheckSprintName" resultType="int">
-        select count(sprint_name)
+        select count(sprint_id)
         from s_sprint
         where sprint_name = #{sprintName}
-<!--          and tenant_code = #{tenantCode}-->
+          and tenant_code = #{tenantCode}
     </select>
 
     <update id="arrangeTeam">
@@ -582,5 +583,21 @@
         select count(sprint_id)
         from s_sprint
         where sprint_id = #{sprintId}
+    </select>
+
+    <select id="joinSprint" resultType="int">
+        select count(a.sprint_id)
+        from s_sprint a
+                     left join s_sprint_user_hour b on a.sprint_id = b.sprint_id
+                     left join s_team_po c on b.user_id = c.user_id
+        where a.sprint_id = #{sprintId}
+          and c.user_id = #{userId}
+    </select>
+
+    <select id="creatUser" resultType="int">
+        select count(sprint_id)
+        from s_sprint
+        where sprint_id = #{sprintId}
+          and create_uid = #{userId}
     </select>
 </mapper>
