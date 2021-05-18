@@ -484,12 +484,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                     return t.getTeamId();
                 }).collect(Collectors.toList());
                 teamAll.addAll(teamIds);
+            }else{
+                teamAll.add(-1L);
             }
+            params.put("teamIds", teamAll);
         } else {
-            teamAll.add(-1L);
+            params.put("teamIds", null);
         }
-        //团队
-        params.put("teamIds", teamAll);
         //迭代名称或编号
         params.put("sprint", dto.getSprint());
         return params;
