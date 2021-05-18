@@ -11,6 +11,7 @@ import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
@@ -590,6 +591,16 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             throw new BusinessException("迭代已结束或已完成，禁止编辑!");
         }
         checkParameter(sprintDTO);
+        SSprintExample sSprintExample = new SSprintExample();
+        SSprintExample.Criteria criteria = sSprintExample.createCriteria();
+        criteria.andSprintIdNotEqualTo(sprintDTO.getSprintId());
+        criteria.andSprintNameEqualTo(sprintDTO.getSprintName());
+        criteria.andStateEqualTo(StateEnum.U.getValue());
+        criteria.andTenantCodeEqualTo(sprintDTO.getTenantCode());
+        List<SSprint> sSprints = ssprintMapper.selectByExample(sSprintExample);
+        if (sSprints.size() >0) {
+            throw new BusinessException("当前租户下迭代名称重复");
+        }
         editSprint(sprintDTO);
     }
 
@@ -603,11 +614,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private void checkParameter(@RequestBody SprintDTO sprintDTO) {
         String str1 = "迭代名称过长,不能大于100!";
         String str2 = "团队名称过长，不能大于100!";
-        String str3 = "请选择团队";
+       // String str3 = "请选择团队";
         String str4 = "工作时间超长，不能大于24小时!";
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, str1);
         Preconditions.checkArgument(sprintDTO.getTeamName().length() <= 100, str2);
-        Preconditions.checkArgument(sprintDTO.getTeamId() != null || sprintDTO.getTeamName() != null, str3);
+        //Preconditions.checkArgument(sprintDTO.getTeamId() != null || sprintDTO.getTeamName() != null, str3);
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, str4);
     }
 
