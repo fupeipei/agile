@@ -23,6 +23,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -268,7 +269,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String insertTeam(STeam team) {
-        if (sTeamMapper.teamNameNumber(team.getTeamName(), team.getTeamId()) > 0) {
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        if (sTeamMapper.teamNameNumber(team.getTeamName(), tenantCode) > 0) {
             throw new BusinessException("团队名称已存在");
         }
         List<Long> teamPo = team.getTeamPoS();

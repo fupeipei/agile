@@ -444,20 +444,17 @@
     <select id="teamNameNumber" resultType="int">
         select count(team_name)
         from s_team
-        where team_name = #{teamName}
+        where
+        team_name = #{teamName}
+        and tenant_code = #{tenantCode}
+        and state = 'U'
     </select>
 
     <update id="updateStateById">
         update s_team set state = #{state}
         where team_id = #{teamId}
     </update>
-    <select id="teamExist" resultType="int">
-        select count(team_id)
-        from s_team
-        where team_id = #{teamId}
-          and tenant_code = #{tenantCode}
-          and state = 'U'
-    </select>
+
     <select id="getTeamsByTeamId" resultType="com.yusys.agile.team.domain.Team">
         SELECT <include refid="Base_Column_List" /> FROM s_team WHERE team_id = #{teamId} and state = 'U'
     </select>

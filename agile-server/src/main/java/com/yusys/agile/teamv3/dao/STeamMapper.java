@@ -84,7 +84,7 @@ public interface STeamMapper {
      * @param teamName 团队的名字
      * @return int
      */
-    int teamNameNumber(@Param("teamName") String teamName, @Param("teamId") Long teamId);
+    int teamNameNumber(@Param("teamName") String teamName, @Param("tenantCode") String tenantCode);
 
     /**
      * 更新团队数据类型，U：有效数据，E:无效数据
@@ -94,9 +94,6 @@ public interface STeamMapper {
      * @param state  数据状态
      */
     void updateStateById(@Param("teamId") long teamId, @Param("state") String state);
-
-    int teamExist(@Param("teamId") Long teamId, @Param("tenantCode") String tenantCode);
-
 
     List<Team> getTeamsByTeamId(Long teamId);
 
