@@ -456,6 +456,7 @@
         from s_team
         where team_id = #{teamId}
           and tenant_code = #{tenantCode}
+          and state = 'U'
     </select>
     <select id="getTeamsByTeamId" resultType="com.yusys.agile.team.domain.Team">
         SELECT <include refid="Base_Column_List" /> FROM s_team WHERE team_id = #{teamId} and state = 'U'
