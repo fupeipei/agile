@@ -268,10 +268,6 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String insertTeam(STeam team) {
-        if (null == team.getTeamId() ) {
-            IdGenerator idGenerator = new IdGenerator();
-            team.setTeamId(idGenerator.nextId());
-        }
         if (sTeamMapper.teamNameNumber(team.getTeamName(), team.getTeamId()) > 0) {
             throw new BusinessException("团队名称已存在");
         }

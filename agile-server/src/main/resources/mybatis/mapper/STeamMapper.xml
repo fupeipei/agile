@@ -146,7 +146,7 @@
                 #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT},
                 #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, #{teamDesc,jdbcType=LONGVARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeam" useGeneratedKeys="true">
+    <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeam" useGeneratedKeys="true" keyColumn="team_id" keyProperty="teamId">
         insert into s_team
         <trim prefix="(" suffix=")" suffixOverrides=",">
 
