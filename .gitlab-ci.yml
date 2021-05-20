@@ -51,22 +51,35 @@ execute_dev_sql:
   only:
     - dev
     
+#deploy_test:
+#  allow_failure: false
+#  when: manual
+#  stage: deploy_test
+#  image: 192.168.48.2:5002/library/git-mysql:alpine
+#  dependencies:
+#    - build_maven
+#  script:
+#    - tag=`cat docker-tag`
+#    - echo $tag
+#    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
+#    - cd devops_sql/devops-deployment/
+#    - ./deploy_k8s.sh $CI_PROJECT_NAME $tag
+#  only:
+#    - master
 deploy_test:
-  allow_failure: false
   when: manual
-  stage: deploy_test
+  stage: deploy_dev
   image: 192.168.48.2:5002/library/git-mysql:alpine
   dependencies:
     - build_maven
   script:
     - tag=`cat docker-tag`
     - echo $tag
-    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
-    - cd devops_sql/devops-deployment/
-    - ./deploy_k8s.sh $CI_PROJECT_NAME $tag
+    - ssh -p 22 root@192.168.48.14 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
+    - ssh -p 22 root@192.168.48.14 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
   only:
     - master
-    
+
 execute_test_sql:
   stage: execute_test_sql
   image: 192.168.48.2:5002/library/git-mysql:alpine
