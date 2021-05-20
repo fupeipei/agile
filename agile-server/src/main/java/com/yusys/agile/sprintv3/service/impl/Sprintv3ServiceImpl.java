@@ -134,7 +134,16 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<Team> teams = sTeamMapper.getTeamsByTeamId(teamId);
         // 空的直接返回
         if (CollectionUtils.isEmpty(teams)) {
-            return new ArrayList<>();
+            List<TeamDTO> teamDTOS=new ArrayList<>();
+            List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
+            List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+            if (CollectionUtils.isNotEmpty(userSprintHours)) {
+                getUser(userSprintHourDTOS, userSprintHours);
+            }
+            TeamDTO teamDTO=new TeamDTO();
+            teamDTO.setUsers(userSprintHourDTOS);
+           teamDTOS.add(teamDTO);
+            return teamDTOS;
         }
         List<TeamDTO> teamDTOS = new ArrayList<>();
         for (Team team : teams) {
@@ -592,16 +601,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             throw new BusinessException("只有【未开始】状态的迭代才允许修改");
         }
         checkParameter(sprintDTO);
-        SSprintExample sSprintExample = new SSprintExample();
-        SSprintExample.Criteria criteria = sSprintExample.createCriteria();
-        criteria.andSprintIdNotEqualTo(sprintDTO.getSprintId());
-        criteria.andSprintNameEqualTo(sprintDTO.getSprintName());
-        criteria.andStateEqualTo(StateEnum.U.getValue());
-        criteria.andTenantCodeEqualTo(securityDTO.getTenantCode());
-        List<SSprint> sSprints = ssprintMapper.selectByExample(sSprintExample);
-        if (sSprints.size() >0) {
-            throw new BusinessException("当前租户下迭代名称重复");
-        }
         editSprint(sprintDTO);
     }
 
