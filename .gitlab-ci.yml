@@ -66,6 +66,7 @@ execute_dev_sql:
 #    - ./deploy_k8s.sh $CI_PROJECT_NAME $tag
 #  only:
 #    - master
+
 deploy_test:
   when: manual
   stage: deploy_dev
