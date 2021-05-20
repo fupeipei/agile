@@ -43,10 +43,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -280,6 +278,7 @@ public class SprintServiceImpl implements SprintService {
      * @Return java.util.List<com.yusys.agile.team.dto.TeamDTO>
      */
     private List<TeamDTO> getOptionalMembers4Team(Long projectId, Long sprintId) {
+        //通过projectId查询所有团队
         List<Team> teams = teamMapper.getTeams4Project(projectId);
         // 空的直接返回
         if (CollectionUtils.isEmpty(teams)) {
@@ -289,6 +288,7 @@ public class SprintServiceImpl implements SprintService {
         for (Team team : teams) {
             TeamDTO teamDTO = ReflectUtil.copyProperties(team, TeamDTO.class);
             List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
+            //通过迭代id查询迭代时长表
             List<UserSprintHour> userSprintHours = userSprintHourMapper.getUserIds4Sprint(sprintId);
             if (CollectionUtils.isNotEmpty(userSprintHours)) {
                 getUser(userSprintHourDTOS, userSprintHours);

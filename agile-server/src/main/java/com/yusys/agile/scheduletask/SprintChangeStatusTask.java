@@ -5,6 +5,7 @@ import com.yusys.agile.sprint.service.SprintService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.JobHandler;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -17,10 +18,13 @@ import javax.annotation.Resource;
 public class SprintChangeStatusTask extends IJobHandler {
     @Resource
     private SprintService sprintService;
+    @Resource
+    private Sprintv3Service sprintv3Service;
 
     @Override
     public ReturnT<String> execute(String s) {
-        sprintService.changeStatusDaily();
+//        sprintService.changeStatusDaily();
+        sprintv3Service.changeStatusDaily();
         return ReturnT.SUCCESS;
     }
 }

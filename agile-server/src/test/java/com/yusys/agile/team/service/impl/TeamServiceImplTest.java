@@ -44,4 +44,6 @@ public class TeamServiceImplTest {
         List<SsoUser> ssoUsers = teamService.listMemberUsers(subjectId, UserRelateTypeEnum.PROJECT.getValue());
         LOG.info("Junit测试--根据项目Id获取团队成员列表成功：{}", ssoUsers.toString());
     }
+
+
 }
