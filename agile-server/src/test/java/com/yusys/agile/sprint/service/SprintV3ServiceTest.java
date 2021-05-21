@@ -32,6 +32,7 @@ import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,6 +58,8 @@ import java.util.*;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_NO_START_STATE;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -132,10 +135,26 @@ public class SprintV3ServiceTest {
         try {
             s = sprintv3Service.cancelSprint(1, 1);
         } catch (Exception e) {
-            s=e.toString();
+            s = e.toString();
         }
         Assert.assertNotNull(s);
     }
+
+    /**
+     * 迭代完成
+     */
+    @Test
+    public void sprintFinish() {
+        long sprintId = 1l;
+        String s = null;
+        try {
+            s = sprintv3Service.sprintFinish(sprintId);
+        } catch (Exception e) {
+            s = e.toString();
+        }
+        Assert.assertNotNull(s);
+    }
+
 
     private SecurityDTO securityDTO;
 
