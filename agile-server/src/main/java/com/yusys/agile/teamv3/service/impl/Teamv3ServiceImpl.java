@@ -327,7 +327,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             return sm.getUserId();
         }).collect(Collectors.toList());
         //插入团队
-        sTeamMapper.updateByPrimaryKeyWithBLOBs(team);
+        sTeamMapper.updateByPrimaryKeySelective(team);
         //团队绑定系统
         teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
         //团队绑定PO
