@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.issuev3.dao.SIssueMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.issuev3.domain.SIssue">
+    <id column="issue_id" jdbcType="BIGINT" property="issueId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="issue_type" jdbcType="TINYINT" property="issueType" />
+    <result column="sprint_id" jdbcType="BIGINT" property="sprintId" />
+    <result column="module_id" jdbcType="BIGINT" property="moduleId" />
+    <result column="system_id" jdbcType="BIGINT" property="systemId" />
+    <result column="handler" jdbcType="BIGINT" property="handler" />
+    <result column="begin_date" jdbcType="TIMESTAMP" property="beginDate" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="plan_workload" jdbcType="INTEGER" property="planWorkload" />
+    <result column="really_workload" jdbcType="INTEGER" property="reallyWorkload" />
+    <result column="priority" jdbcType="TINYINT" property="priority" />
+    <result column="importance" jdbcType="TINYINT" property="importance" />
+    <result column="stage_id" jdbcType="BIGINT" property="stageId" />
+    <result column="lane_id" jdbcType="BIGINT" property="laneId" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="is_collect" jdbcType="TINYINT" property="isCollect" />
+    <result column="completion" jdbcType="VARCHAR" property="completion" />
+    <result column="task_type" jdbcType="INTEGER" property="taskType" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="fault_type" jdbcType="BIGINT" property="faultType" />
+    <result column="fault_level" jdbcType="BIGINT" property="faultLevel" />
+    <result column="fixed_time" jdbcType="TIMESTAMP" property="fixedTime" />
+    <result column="close_time" jdbcType="TIMESTAMP" property="closeTime" />
+    <result column="fixed_uid" jdbcType="BIGINT" property="fixedUid" />
+    <result column="test_uid" jdbcType="BIGINT" property="testUid" />
+    <result column="version_id" jdbcType="BIGINT" property="versionId" />
+    <result column="case_id" jdbcType="BIGINT" property="caseId" />
+    <result column="deadline" jdbcType="TIMESTAMP" property="deadline" />
+    <result column="file" jdbcType="VARCHAR" property="file" />
+    <result column="urgency" jdbcType="VARCHAR" property="urgency" />
+    <result column="cause" jdbcType="VARCHAR" property="cause" />
+    <result column="manual_case_id" jdbcType="BIGINT" property="manualCaseId" />
+    <result column="remain_workload" jdbcType="INTEGER" property="remainWorkload" />
+    <result column="bug_id" jdbcType="BIGINT" property="bugId" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="block_state" jdbcType="TINYINT" property="blockState" />
+    <result column="reopen_times" jdbcType="INTEGER" property="reopenTimes" />
+    <result column="assess_is_pass" jdbcType="TINYINT" property="assessIsPass" />
+    <result column="assess_remarks" jdbcType="VARCHAR" property="assessRemarks" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <result column="is_archive" jdbcType="TINYINT" property="isArchive" />
+    <result column="is_cancel" jdbcType="TINYINT" property="isCancel" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    issue_id, title, parent_id, issue_type, sprint_id, module_id, system_id, handler, 
+    begin_date, end_date, plan_workload, really_workload, priority, importance, stage_id, 
+    lane_id, state, status, project_id, is_collect, completion, task_type, create_uid, 
+    create_time, update_uid, update_time, fault_type, fault_level, fixed_time, close_time, 
+    fixed_uid, test_uid, version_id, case_id, deadline, file, urgency, cause, manual_case_id, 
+    remain_workload, bug_id, order, block_state, reopen_times, assess_is_pass, assess_remarks, 
+    tenant_code, is_archive, is_cancel
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.issuev3.domain.SIssueExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from s_issue
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from s_issue
+    where issue_id = #{issueId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from s_issue
+    where issue_id = #{issueId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.issuev3.domain.SIssueExample">
+    delete from s_issue
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.issuev3.domain.SIssue">
+    insert into s_issue (issue_id, title, parent_id, 
+      issue_type, sprint_id, module_id, 
+      system_id, handler, begin_date, 
+      end_date, plan_workload, really_workload, 
+      priority, importance, stage_id, 
+      lane_id, state, status, 
+      project_id, is_collect, completion, 
+      task_type, create_uid, create_time, 
+      update_uid, update_time, fault_type, 
+      fault_level, fixed_time, close_time, 
+      fixed_uid, test_uid, version_id, 
+      case_id, deadline, file, 
+      urgency, cause, manual_case_id, 
+      remain_workload, bug_id, order, 
+      block_state, reopen_times, assess_is_pass, 
+      assess_remarks, tenant_code, is_archive, 
+      is_cancel)
+    values (#{issueId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
+      #{issueType,jdbcType=TINYINT}, #{sprintId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, 
+      #{systemId,jdbcType=BIGINT}, #{handler,jdbcType=BIGINT}, #{beginDate,jdbcType=TIMESTAMP}, 
+      #{endDate,jdbcType=TIMESTAMP}, #{planWorkload,jdbcType=INTEGER}, #{reallyWorkload,jdbcType=INTEGER}, 
+      #{priority,jdbcType=TINYINT}, #{importance,jdbcType=TINYINT}, #{stageId,jdbcType=BIGINT}, 
+      #{laneId,jdbcType=BIGINT}, #{state,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{projectId,jdbcType=BIGINT}, #{isCollect,jdbcType=TINYINT}, #{completion,jdbcType=VARCHAR}, 
+      #{taskType,jdbcType=INTEGER}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{faultType,jdbcType=BIGINT}, 
+      #{faultLevel,jdbcType=BIGINT}, #{fixedTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, 
+      #{fixedUid,jdbcType=BIGINT}, #{testUid,jdbcType=BIGINT}, #{versionId,jdbcType=BIGINT}, 
+      #{caseId,jdbcType=BIGINT}, #{deadline,jdbcType=TIMESTAMP}, #{file,jdbcType=VARCHAR}, 
+      #{urgency,jdbcType=VARCHAR}, #{cause,jdbcType=VARCHAR}, #{manualCaseId,jdbcType=BIGINT}, 
+      #{remainWorkload,jdbcType=INTEGER}, #{bugId,jdbcType=BIGINT}, #{order,jdbcType=INTEGER}, 
+      #{blockState,jdbcType=TINYINT}, #{reopenTimes,jdbcType=INTEGER}, #{assessIsPass,jdbcType=TINYINT}, 
+      #{assessRemarks,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR}, #{isArchive,jdbcType=TINYINT}, 
+      #{isCancel,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.issuev3.domain.SIssue">
+    insert into s_issue
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="issueId != null">
+        issue_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="issueType != null">
+        issue_type,
+      </if>
+      <if test="sprintId != null">
+        sprint_id,
+      </if>
+      <if test="moduleId != null">
+        module_id,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="handler != null">
+        handler,
+      </if>
+      <if test="beginDate != null">
+        begin_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="planWorkload != null">
+        plan_workload,
+      </if>
+      <if test="reallyWorkload != null">
+        really_workload,
+      </if>
+      <if test="priority != null">
+        priority,
+      </if>
+      <if test="importance != null">
+        importance,
+      </if>
+      <if test="stageId != null">
+        stage_id,
+      </if>
+      <if test="laneId != null">
+        lane_id,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="isCollect != null">
+        is_collect,
+      </if>
+      <if test="completion != null">
+        completion,
+      </if>
+      <if test="taskType != null">
+        task_type,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="faultType != null">
+        fault_type,
+      </if>
+      <if test="faultLevel != null">
+        fault_level,
+      </if>
+      <if test="fixedTime != null">
+        fixed_time,
+      </if>
+      <if test="closeTime != null">
+        close_time,
+      </if>
+      <if test="fixedUid != null">
+        fixed_uid,
+      </if>
+      <if test="testUid != null">
+        test_uid,
+      </if>
+      <if test="versionId != null">
+        version_id,
+      </if>
+      <if test="caseId != null">
+        case_id,
+      </if>
+      <if test="deadline != null">
+        deadline,
+      </if>
+      <if test="file != null">
+        file,
+      </if>
+      <if test="urgency != null">
+        urgency,
+      </if>
+      <if test="cause != null">
+        cause,
+      </if>
+      <if test="manualCaseId != null">
+        manual_case_id,
+      </if>
+      <if test="remainWorkload != null">
+        remain_workload,
+      </if>
+      <if test="bugId != null">
+        bug_id,
+      </if>
+      <if test="order != null">
+        order,
+      </if>
+      <if test="blockState != null">
+        block_state,
+      </if>
+      <if test="reopenTimes != null">
+        reopen_times,
+      </if>
+      <if test="assessIsPass != null">
+        assess_is_pass,
+      </if>
+      <if test="assessRemarks != null">
+        assess_remarks,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+      <if test="isArchive != null">
+        is_archive,
+      </if>
+      <if test="isCancel != null">
+        is_cancel,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="issueId != null">
+        #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="issueType != null">
+        #{issueType,jdbcType=TINYINT},
+      </if>
+      <if test="sprintId != null">
+        #{sprintId,jdbcType=BIGINT},
+      </if>
+      <if test="moduleId != null">
+        #{moduleId,jdbcType=BIGINT},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=BIGINT},
+      </if>
+      <if test="handler != null">
+        #{handler,jdbcType=BIGINT},
+      </if>
+      <if test="beginDate != null">
+        #{beginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planWorkload != null">
+        #{planWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="reallyWorkload != null">
+        #{reallyWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null">
+        #{priority,jdbcType=TINYINT},
+      </if>
+      <if test="importance != null">
+        #{importance,jdbcType=TINYINT},
+      </if>
+      <if test="stageId != null">
+        #{stageId,jdbcType=BIGINT},
+      </if>
+      <if test="laneId != null">
+        #{laneId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="isCollect != null">
+        #{isCollect,jdbcType=TINYINT},
+      </if>
+      <if test="completion != null">
+        #{completion,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null">
+        #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="faultType != null">
+        #{faultType,jdbcType=BIGINT},
+      </if>
+      <if test="faultLevel != null">
+        #{faultLevel,jdbcType=BIGINT},
+      </if>
+      <if test="fixedTime != null">
+        #{fixedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null">
+        #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fixedUid != null">
+        #{fixedUid,jdbcType=BIGINT},
+      </if>
+      <if test="testUid != null">
+        #{testUid,jdbcType=BIGINT},
+      </if>
+      <if test="versionId != null">
+        #{versionId,jdbcType=BIGINT},
+      </if>
+      <if test="caseId != null">
+        #{caseId,jdbcType=BIGINT},
+      </if>
+      <if test="deadline != null">
+        #{deadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="file != null">
+        #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="urgency != null">
+        #{urgency,jdbcType=VARCHAR},
+      </if>
+      <if test="cause != null">
+        #{cause,jdbcType=VARCHAR},
+      </if>
+      <if test="manualCaseId != null">
+        #{manualCaseId,jdbcType=BIGINT},
+      </if>
+      <if test="remainWorkload != null">
+        #{remainWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="bugId != null">
+        #{bugId,jdbcType=BIGINT},
+      </if>
+      <if test="order != null">
+        #{order,jdbcType=INTEGER},
+      </if>
+      <if test="blockState != null">
+        #{blockState,jdbcType=TINYINT},
+      </if>
+      <if test="reopenTimes != null">
+        #{reopenTimes,jdbcType=INTEGER},
+      </if>
+      <if test="assessIsPass != null">
+        #{assessIsPass,jdbcType=TINYINT},
+      </if>
+      <if test="assessRemarks != null">
+        #{assessRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isArchive != null">
+        #{isArchive,jdbcType=TINYINT},
+      </if>
+      <if test="isCancel != null">
+        #{isCancel,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.issuev3.domain.SIssueExample" resultType="java.lang.Long">
+    select count(*) from s_issue
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update s_issue
+    <set>
+      <if test="record.issueId != null">
+        issue_id = #{record.issueId,jdbcType=BIGINT},
+      </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=BIGINT},
+      </if>
+      <if test="record.issueType != null">
+        issue_type = #{record.issueType,jdbcType=TINYINT},
+      </if>
+      <if test="record.sprintId != null">
+        sprint_id = #{record.sprintId,jdbcType=BIGINT},
+      </if>
+      <if test="record.moduleId != null">
+        module_id = #{record.moduleId,jdbcType=BIGINT},
+      </if>
+      <if test="record.systemId != null">
+        system_id = #{record.systemId,jdbcType=BIGINT},
+      </if>
+      <if test="record.handler != null">
+        handler = #{record.handler,jdbcType=BIGINT},
+      </if>
+      <if test="record.beginDate != null">
+        begin_date = #{record.beginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endDate != null">
+        end_date = #{record.endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.planWorkload != null">
+        plan_workload = #{record.planWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="record.reallyWorkload != null">
+        really_workload = #{record.reallyWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="record.priority != null">
+        priority = #{record.priority,jdbcType=TINYINT},
+      </if>
+      <if test="record.importance != null">
+        importance = #{record.importance,jdbcType=TINYINT},
+      </if>
+      <if test="record.stageId != null">
+        stage_id = #{record.stageId,jdbcType=BIGINT},
+      </if>
+      <if test="record.laneId != null">
+        lane_id = #{record.laneId,jdbcType=BIGINT},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.isCollect != null">
+        is_collect = #{record.isCollect,jdbcType=TINYINT},
+      </if>
+      <if test="record.completion != null">
+        completion = #{record.completion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskType != null">
+        task_type = #{record.taskType,jdbcType=INTEGER},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateUid != null">
+        update_uid = #{record.updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.faultType != null">
+        fault_type = #{record.faultType,jdbcType=BIGINT},
+      </if>
+      <if test="record.faultLevel != null">
+        fault_level = #{record.faultLevel,jdbcType=BIGINT},
+      </if>
+      <if test="record.fixedTime != null">
+        fixed_time = #{record.fixedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.closeTime != null">
+        close_time = #{record.closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.fixedUid != null">
+        fixed_uid = #{record.fixedUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.testUid != null">
+        test_uid = #{record.testUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.versionId != null">
+        version_id = #{record.versionId,jdbcType=BIGINT},
+      </if>
+      <if test="record.caseId != null">
+        case_id = #{record.caseId,jdbcType=BIGINT},
+      </if>
+      <if test="record.deadline != null">
+        deadline = #{record.deadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.file != null">
+        file = #{record.file,jdbcType=VARCHAR},
+      </if>
+      <if test="record.urgency != null">
+        urgency = #{record.urgency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cause != null">
+        cause = #{record.cause,jdbcType=VARCHAR},
+      </if>
+      <if test="record.manualCaseId != null">
+        manual_case_id = #{record.manualCaseId,jdbcType=BIGINT},
+      </if>
+      <if test="record.remainWorkload != null">
+        remain_workload = #{record.remainWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="record.bugId != null">
+        bug_id = #{record.bugId,jdbcType=BIGINT},
+      </if>
+      <if test="record.order != null">
+        order = #{record.order,jdbcType=INTEGER},
+      </if>
+      <if test="record.blockState != null">
+        block_state = #{record.blockState,jdbcType=TINYINT},
+      </if>
+      <if test="record.reopenTimes != null">
+        reopen_times = #{record.reopenTimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.assessIsPass != null">
+        assess_is_pass = #{record.assessIsPass,jdbcType=TINYINT},
+      </if>
+      <if test="record.assessRemarks != null">
+        assess_remarks = #{record.assessRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isArchive != null">
+        is_archive = #{record.isArchive,jdbcType=TINYINT},
+      </if>
+      <if test="record.isCancel != null">
+        is_cancel = #{record.isCancel,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update s_issue
+    set issue_id = #{record.issueId,jdbcType=BIGINT},
+      title = #{record.title,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=BIGINT},
+      issue_type = #{record.issueType,jdbcType=TINYINT},
+      sprint_id = #{record.sprintId,jdbcType=BIGINT},
+      module_id = #{record.moduleId,jdbcType=BIGINT},
+      system_id = #{record.systemId,jdbcType=BIGINT},
+      handler = #{record.handler,jdbcType=BIGINT},
+      begin_date = #{record.beginDate,jdbcType=TIMESTAMP},
+      end_date = #{record.endDate,jdbcType=TIMESTAMP},
+      plan_workload = #{record.planWorkload,jdbcType=INTEGER},
+      really_workload = #{record.reallyWorkload,jdbcType=INTEGER},
+      priority = #{record.priority,jdbcType=TINYINT},
+      importance = #{record.importance,jdbcType=TINYINT},
+      stage_id = #{record.stageId,jdbcType=BIGINT},
+      lane_id = #{record.laneId,jdbcType=BIGINT},
+      state = #{record.state,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=TINYINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      is_collect = #{record.isCollect,jdbcType=TINYINT},
+      completion = #{record.completion,jdbcType=VARCHAR},
+      task_type = #{record.taskType,jdbcType=INTEGER},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      fault_type = #{record.faultType,jdbcType=BIGINT},
+      fault_level = #{record.faultLevel,jdbcType=BIGINT},
+      fixed_time = #{record.fixedTime,jdbcType=TIMESTAMP},
+      close_time = #{record.closeTime,jdbcType=TIMESTAMP},
+      fixed_uid = #{record.fixedUid,jdbcType=BIGINT},
+      test_uid = #{record.testUid,jdbcType=BIGINT},
+      version_id = #{record.versionId,jdbcType=BIGINT},
+      case_id = #{record.caseId,jdbcType=BIGINT},
+      deadline = #{record.deadline,jdbcType=TIMESTAMP},
+      file = #{record.file,jdbcType=VARCHAR},
+      urgency = #{record.urgency,jdbcType=VARCHAR},
+      cause = #{record.cause,jdbcType=VARCHAR},
+      manual_case_id = #{record.manualCaseId,jdbcType=BIGINT},
+      remain_workload = #{record.remainWorkload,jdbcType=INTEGER},
+      bug_id = #{record.bugId,jdbcType=BIGINT},
+      order = #{record.order,jdbcType=INTEGER},
+      block_state = #{record.blockState,jdbcType=TINYINT},
+      reopen_times = #{record.reopenTimes,jdbcType=INTEGER},
+      assess_is_pass = #{record.assessIsPass,jdbcType=TINYINT},
+      assess_remarks = #{record.assessRemarks,jdbcType=VARCHAR},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      is_archive = #{record.isArchive,jdbcType=TINYINT},
+      is_cancel = #{record.isCancel,jdbcType=TINYINT}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issuev3.domain.SIssue">
+    update s_issue
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="issueType != null">
+        issue_type = #{issueType,jdbcType=TINYINT},
+      </if>
+      <if test="sprintId != null">
+        sprint_id = #{sprintId,jdbcType=BIGINT},
+      </if>
+      <if test="moduleId != null">
+        module_id = #{moduleId,jdbcType=BIGINT},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=BIGINT},
+      </if>
+      <if test="handler != null">
+        handler = #{handler,jdbcType=BIGINT},
+      </if>
+      <if test="beginDate != null">
+        begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planWorkload != null">
+        plan_workload = #{planWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="reallyWorkload != null">
+        really_workload = #{reallyWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null">
+        priority = #{priority,jdbcType=TINYINT},
+      </if>
+      <if test="importance != null">
+        importance = #{importance,jdbcType=TINYINT},
+      </if>
+      <if test="stageId != null">
+        stage_id = #{stageId,jdbcType=BIGINT},
+      </if>
+      <if test="laneId != null">
+        lane_id = #{laneId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="isCollect != null">
+        is_collect = #{isCollect,jdbcType=TINYINT},
+      </if>
+      <if test="completion != null">
+        completion = #{completion,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null">
+        task_type = #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="faultType != null">
+        fault_type = #{faultType,jdbcType=BIGINT},
+      </if>
+      <if test="faultLevel != null">
+        fault_level = #{faultLevel,jdbcType=BIGINT},
+      </if>
+      <if test="fixedTime != null">
+        fixed_time = #{fixedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closeTime != null">
+        close_time = #{closeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fixedUid != null">
+        fixed_uid = #{fixedUid,jdbcType=BIGINT},
+      </if>
+      <if test="testUid != null">
+        test_uid = #{testUid,jdbcType=BIGINT},
+      </if>
+      <if test="versionId != null">
+        version_id = #{versionId,jdbcType=BIGINT},
+      </if>
+      <if test="caseId != null">
+        case_id = #{caseId,jdbcType=BIGINT},
+      </if>
+      <if test="deadline != null">
+        deadline = #{deadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="file != null">
+        file = #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="urgency != null">
+        urgency = #{urgency,jdbcType=VARCHAR},
+      </if>
+      <if test="cause != null">
+        cause = #{cause,jdbcType=VARCHAR},
+      </if>
+      <if test="manualCaseId != null">
+        manual_case_id = #{manualCaseId,jdbcType=BIGINT},
+      </if>
+      <if test="remainWorkload != null">
+        remain_workload = #{remainWorkload,jdbcType=INTEGER},
+      </if>
+      <if test="bugId != null">
+        bug_id = #{bugId,jdbcType=BIGINT},
+      </if>
+      <if test="order != null">
+        order = #{order,jdbcType=INTEGER},
+      </if>
+      <if test="blockState != null">
+        block_state = #{blockState,jdbcType=TINYINT},
+      </if>
+      <if test="reopenTimes != null">
+        reopen_times = #{reopenTimes,jdbcType=INTEGER},
+      </if>
+      <if test="assessIsPass != null">
+        assess_is_pass = #{assessIsPass,jdbcType=TINYINT},
+      </if>
+      <if test="assessRemarks != null">
+        assess_remarks = #{assessRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isArchive != null">
+        is_archive = #{isArchive,jdbcType=TINYINT},
+      </if>
+      <if test="isCancel != null">
+        is_cancel = #{isCancel,jdbcType=TINYINT},
+      </if>
+    </set>
+    where issue_id = #{issueId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issuev3.domain.SIssue">
+    update s_issue
+    set title = #{title,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      issue_type = #{issueType,jdbcType=TINYINT},
+      sprint_id = #{sprintId,jdbcType=BIGINT},
+      module_id = #{moduleId,jdbcType=BIGINT},
+      system_id = #{systemId,jdbcType=BIGINT},
+      handler = #{handler,jdbcType=BIGINT},
+      begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      end_date = #{endDate,jdbcType=TIMESTAMP},
+      plan_workload = #{planWorkload,jdbcType=INTEGER},
+      really_workload = #{reallyWorkload,jdbcType=INTEGER},
+      priority = #{priority,jdbcType=TINYINT},
+      importance = #{importance,jdbcType=TINYINT},
+      stage_id = #{stageId,jdbcType=BIGINT},
+      lane_id = #{laneId,jdbcType=BIGINT},
+      state = #{state,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      project_id = #{projectId,jdbcType=BIGINT},
+      is_collect = #{isCollect,jdbcType=TINYINT},
+      completion = #{completion,jdbcType=VARCHAR},
+      task_type = #{taskType,jdbcType=INTEGER},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      fault_type = #{faultType,jdbcType=BIGINT},
+      fault_level = #{faultLevel,jdbcType=BIGINT},
+      fixed_time = #{fixedTime,jdbcType=TIMESTAMP},
+      close_time = #{closeTime,jdbcType=TIMESTAMP},
+      fixed_uid = #{fixedUid,jdbcType=BIGINT},
+      test_uid = #{testUid,jdbcType=BIGINT},
+      version_id = #{versionId,jdbcType=BIGINT},
+      case_id = #{caseId,jdbcType=BIGINT},
+      deadline = #{deadline,jdbcType=TIMESTAMP},
+      file = #{file,jdbcType=VARCHAR},
+      urgency = #{urgency,jdbcType=VARCHAR},
+      cause = #{cause,jdbcType=VARCHAR},
+      manual_case_id = #{manualCaseId,jdbcType=BIGINT},
+      remain_workload = #{remainWorkload,jdbcType=INTEGER},
+      bug_id = #{bugId,jdbcType=BIGINT},
+      order = #{order,jdbcType=INTEGER},
+      block_state = #{blockState,jdbcType=TINYINT},
+      reopen_times = #{reopenTimes,jdbcType=INTEGER},
+      assess_is_pass = #{assessIsPass,jdbcType=TINYINT},
+      assess_remarks = #{assessRemarks,jdbcType=VARCHAR},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      is_archive = #{isArchive,jdbcType=TINYINT},
+      is_cancel = #{isCancel,jdbcType=TINYINT}
+    where issue_id = #{issueId,jdbcType=BIGINT}
+  </update>
+</mapper>
