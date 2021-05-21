@@ -331,8 +331,8 @@
     <foreach collection="users" item="user" separator=",">
     (#{team.teamId}, #{user.userId},
       #{user.userAccount}, #{user.userName}, #{roleId},
-      #{user.systemId}, #{user.createUid}, #{user.createTime},
-      #{user.updateUid}, #{user.updateTime}, #{user.tenantCode}
+      #{user.systemId}, #{team.createUid}, #{team.createTime},
+      #{team.updateUid}, #{team.updateTime}, #{team.tenantCode}
       )
     </foreach>
   </insert>
@@ -352,9 +352,17 @@
     select
     id, team_id, user_id, user_account, user_name, role_id, system_id
     from s_team_member
-    where team_id in
-    <foreach collection="teamIds" item="teamId" open="(" close=")" separator=",">
-        #{teamId}
-    </foreach>
+    where
+    <choose>
+        <when test="teamIds != null and teamIds.size > 0">
+            team_id in
+            <foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
+                #{teamId}
+            </foreach>
+        </when>
+        <otherwise>
+            1=0
+        </otherwise>
+    </choose>
   </select>
 </mapper>
