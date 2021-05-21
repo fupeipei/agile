@@ -21,4 +21,6 @@ public class TeamUserDTO {
     private String userName;
     @ApiModelProperty(value = "系统id")
     private Long systemId;
+    @ApiModelProperty(value = "角色id")
+    private Integer roleId;
 }

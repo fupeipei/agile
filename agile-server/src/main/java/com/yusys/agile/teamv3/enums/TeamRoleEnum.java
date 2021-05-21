@@ -7,24 +7,34 @@ package com.yusys.agile.teamv3.enums;
  */
 public enum TeamRoleEnum {
 
-    TEAM_PO( new Byte("1"),"po"),
-    TEAM_SM(new Byte("2"), "sm"),
-    TEAM_USER(new Byte("3"), "user");
+    SCRUM_MASTER(103,"SM","Scrum Master"),
+    PRODUCT_OWNER(104,"PO","Product Owner"),
+    TEAM_MEMBER(105,"MEMBER","Team Member"),
+    ;
 
-    public Byte roleCode;
+    public int roleId;
+    public String roleCode;
     public String roleName;
 
-    TeamRoleEnum(Byte roleCode, String roleName) {
+    private TeamRoleEnum(int roleId, String roleCode, String roleName){
+        this.roleId = roleId;
         this.roleCode = roleCode;
         this.roleName = roleName;
     }
 
+    public int getRoleId() {
+        return roleId;
+    }
 
-    public int getRoleCode() {
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRoleCode() {
         return roleCode;
     }
 
-    public void setRoleCode(Byte roleCode) {
+    public void setRoleCode(String roleCode) {
         this.roleCode = roleCode;
     }
 
