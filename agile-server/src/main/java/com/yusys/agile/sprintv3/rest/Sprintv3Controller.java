@@ -100,5 +100,17 @@ public class Sprintv3Controller {
         return ControllerResponse.success(sprintv3Service.sprintFinish(sprintId));
     }
 
+    /**
+     * 迭代视图 - 迭代详情
+     *
+     * @param sprintId 迭代id
+     * @return {@link ControllerResponse}
+     */
+    @ApiOperation(value = "迭代完成")
+    @GetMapping("/sprintOverView")
+    public ControllerResponse sprintOverView(long sprintId) {
+        return ControllerResponse.success(sprintv3Service.sprintOverView(sprintId));
+    }
+
 
 }

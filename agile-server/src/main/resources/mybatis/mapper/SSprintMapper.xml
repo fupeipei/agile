@@ -594,16 +594,18 @@
           and c.user_id = #{userId}
     </select>
 
-    <select id="creatUser" resultType="int">
+    <select id="creatUser" resultType="boolean">
+        <![CDATA[
         select count(sprint_id)
         from s_sprint
         where sprint_id = #{sprintId}
           and create_uid = #{userId}
+        ]]>
     </select>
 
     <select id="sprintUnfinishedStory" resultType="int">
         select count(issue_id)
-        from issue
+        from s_issue
         where sprint_id = #{sprintId}
           and issue_type = 3
           and stage_id <![CDATA[<]]> 103
@@ -619,5 +621,22 @@
         select status
         from s_sprint
         where sprint_id = #{sprintId}
+    </select>
+
+    <select id="sprintOverViewSprintDetails" resultMap="ResultMapWithBLOBs">
+        select sprint_id, sprint_name, sprint_desc, start_time, end_time, work_hours
+        from s_sprint
+        where sprint_id = #{sprintId}
+    </select>
+
+    <select id="checkSprintPo" resultType="boolean">
+        <![CDATA[
+        select count(sprint_id)
+        from s_sprint a
+                     left join s_team_member b on a.team_id = b.team_id
+        where a.sprint_id = #{sprintId}
+          and b.user_id = #{userId}
+          and b.role_id = 104
+        ]]>
     </select>
 </mapper>
