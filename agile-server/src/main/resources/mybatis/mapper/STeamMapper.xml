@@ -149,7 +149,6 @@
     <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeam" useGeneratedKeys="true" keyColumn="team_id" keyProperty="teamId">
         insert into s_team
         <trim prefix="(" suffix=")" suffixOverrides=",">
-
             <if test="teamName != null">
                 team_name,
             </if>
@@ -176,7 +175,6 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-
             <if test="teamName != null">
                 #{teamName,jdbcType=VARCHAR},
             </if>
@@ -371,9 +369,6 @@
         t.tenant_code as tenant_code
     </sql>
     <sql id="query_list_param">
-        and t.team_id = tu.team_id
-        and t.team_id = tp.team_id
-        and t.team_id = ts.team_id
         and t.team_id = tss.team_id
         and t.state = 'U'
         <if test="params != null ">
@@ -383,20 +378,30 @@
                 )
             </if>
             <if test="params.po != null and params.po != ''">
-                and ( tp.user_name like concat('%',#{params.po},'%')
-                      or tp.user_account like concat('%',#{params.po},'%')
+                and exists (
+                    select * from s_team_member tm where t.team_id=tm.team_id
+                    and (
+                        tm.user_name like concat('%',#{params.po},'%')
+                        or tm.user_account like concat('%',#{params.po},'%')
+                        and tm.role_id=104
                     )
+                )
             </if>
             <if test="params.sm != null and params.sm != ''">
-                and ( ts.user_name like concat('%',#{params.sm},'%')
-                      or ts.user_account like concat('%',#{params.sm},'%')
+                and exists (
+                    select * from s_team_member tm where t.team_id=tm.team_id
+                    and (
+                        tm.user_name like concat('%',#{params.sm},'%')
+                        or tm.user_account like concat('%',#{params.sm},'%')
+                        and tm.role_id=103
+                    )
                 )
             </if>
             <if test="params.systemIds != null and params.systemIds.size != 0">
                 and ( tss.system_id in
-                <foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
-                    #{systemId}
-                </foreach>
+                    <foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
+                        #{systemId}
+                    </foreach>
                 )
             </if>
         </if>
@@ -406,9 +411,6 @@
         <include refid="query_list_column"/>
         from
             s_team t,
-            s_team_po tp,
-            s_team_sm ts,
-            s_team_user tu,
             s_team_system tss
         <where>
             <include refid="query_list_param" />
@@ -420,17 +422,15 @@
         <include refid="query_list_column"/>
         from
             s_team t,
-            s_team_po tp,
-            s_team_sm ts,
-            s_team_user tu,
             s_team_system tss
         <where>
             <include refid="query_list_param" />
             <if test="params.userId != null and params.userId != ''">
-                and ( t.create_uid = #{params.userId}
-                or tu.user_id = #{params.userId}
-                or tp.user_id = #{params.userId}
-                or ts.user_id = #{params.userId} )
+                and ( t.create_uid = #{params.userId} or exists (
+                        select * from s_team_member tm where t.team_id = tm.team_id
+                        and tm.user_id = #{params.userId}
+                    )
+                )
             </if>
         </where>
         order by t.create_time desc
@@ -448,6 +448,9 @@
         team_name = #{teamName}
         and tenant_code = #{tenantCode}
         and state = 'U'
+        <if test="teamId != null">
+            and team_id <![CDATA[<>]]> #{teamId}
+        </if>
     </select>
 
     <update id="updateStateById">

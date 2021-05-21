@@ -22,13 +22,6 @@ public interface Teamv3Service {
      * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
      */
     List<TeamListDTO> listTeam(TeamQueryDTO dto, SecurityDTO security);
-    /*
-     * 查询所有
-     * @author zhaofeng
-     * @date 2021/5/8 11:03
-     * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
-     */
-    List<TeamListDTO> list();
 
     /**
      * 新增团队
@@ -36,7 +29,7 @@ public interface Teamv3Service {
      * @param team 团队
      * @return {@link String}
      */
-    String insertTeam(STeam team);
+    void insertTeam(STeam team);
 
     /**
      * 删除团队
@@ -44,7 +37,7 @@ public interface Teamv3Service {
      * @param teamId 团队id
      * @return {@link String}
      */
-    String deleteTeam(long teamId);
+    void deleteTeam(long teamId);
 
     /**
      * 更新团队
@@ -52,7 +45,7 @@ public interface Teamv3Service {
      * @param team 团队
      * @return {@link String}
      */
-    String updateTeam(STeam team);
+    void updateTeam(STeam team);
 
     /**
      * 查询团队

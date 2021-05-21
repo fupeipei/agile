@@ -38,55 +38,46 @@ public class Teamv3Controller {
     }
 
     /**
-     * 查询团队列表
-     * @author zhaofeng
-     * @date 2021/5/8 11:16
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     */
-    @GetMapping("/list")
-    public ControllerResponse list() {
-        List<TeamListDTO> result = teamv3Service.list();
-        return ControllerResponse.success(result);
-    }
-
-    /**
      * 新增团队
-     *
-     * @param team 团队
-     * @return {@link ControllerResponse}
+     * @author zhaofeng
+     * @date 2021/5/21 11:34
+     * @param team
      */
     @PostMapping("/insertTeam")
     public ControllerResponse insertTeam(@RequestBody STeam team) {
-        return ControllerResponse.success(teamv3Service.insertTeam(team));
+        teamv3Service.insertTeam(team);
+        return ControllerResponse.success();
     }
 
     /**
      * 删除团队
-     *
-     * @param teamId 团队id
-     * @return {@link ControllerResponse}
+     * @author zhaofeng
+     * @date 2021/5/21 11:34
+     * @param teamId
      */
     @DeleteMapping("/deleteTeam/{teamId}")
     public ControllerResponse deleteTeam(@PathVariable("teamId") long teamId) {
-        return ControllerResponse.success(teamv3Service.deleteTeam(teamId));
+        teamv3Service.deleteTeam(teamId);
+        return ControllerResponse.success();
     }
 
     /**
      * 更新团队
-     *
-     * @param team 团队
-     * @return {@link ControllerResponse}
+     * @author zhaofeng
+     * @date 2021/5/21 11:35
+     * @param team
      */
     @PostMapping("/updateTeam")
     public ControllerResponse updateTeam(@RequestBody STeam team) {
-        return ControllerResponse.success(teamv3Service.updateTeam(team));
+        teamv3Service.updateTeam(team);
+        return ControllerResponse.success();
     }
 
     /**
-     * 查询团队
-     *
-     * @param teamId 团队id
-     * @return {@link ControllerResponse}
+     * 查询团队详情
+     * @author zhaofeng
+     * @date 2021/5/21 11:35
+     * @param teamId
      */
     @GetMapping("/queryTeam/{teamId}")
     public ControllerResponse queryTeam(@PathVariable("teamId") long teamId) {

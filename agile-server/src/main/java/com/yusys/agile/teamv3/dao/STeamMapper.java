@@ -81,10 +81,12 @@ public interface STeamMapper {
     /**
      * 团队名称数量
      *
+     *
+     * @param teamId
      * @param teamName 团队的名字
      * @return int
      */
-    int teamNameNumber(@Param("teamName") String teamName, @Param("tenantCode") String tenantCode);
+    int teamNameNumber(@Param("teamId") Long teamId, @Param("teamName") String teamName, @Param("tenantCode") String tenantCode);
 
     /**
      * 更新团队数据类型，U：有效数据，E:无效数据
