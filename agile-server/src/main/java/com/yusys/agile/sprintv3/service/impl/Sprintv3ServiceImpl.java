@@ -14,6 +14,7 @@ import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamDTO;
@@ -44,6 +45,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_NO_START_STATE;
+import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_ONGOING_STATE;
 
 /**
  * @Author zhaofeng
@@ -78,7 +82,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
-
     @Override
     public SprintDTO viewEdit(Long sprintId) {
         SSprintWithBLOBs sprint = ssprintMapper.selectByPrimaryKey(sprintId);
@@ -102,7 +105,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
         return sprintDTO;
     }
-
 
     /**
      * string 转date
@@ -134,15 +136,15 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<Team> teams = sTeamMapper.getTeamsByTeamId(teamId);
         // 空的直接返回
         if (CollectionUtils.isEmpty(teams)) {
-            List<TeamDTO> teamDTOS=new ArrayList<>();
+            List<TeamDTO> teamDTOS = new ArrayList<>();
             List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
             List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
             if (CollectionUtils.isNotEmpty(userSprintHours)) {
                 getUser(userSprintHourDTOS, userSprintHours);
             }
-            TeamDTO teamDTO=new TeamDTO();
+            TeamDTO teamDTO = new TeamDTO();
             teamDTO.setUsers(userSprintHourDTOS);
-           teamDTOS.add(teamDTO);
+            teamDTOS.add(teamDTO);
             return teamDTOS;
         }
         List<TeamDTO> teamDTOS = new ArrayList<>();
@@ -164,7 +166,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
         return teamDTOS;
     }
-
 
     private void getUser(List<UserSprintHourDTO> userSprintHourDTOS, List<UserSprintHour> userSprintHours) {
         for (UserSprintHour userSprintHour : userSprintHours) {
@@ -494,7 +495,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                     return t.getTeamId();
                 }).collect(Collectors.toList());
                 teamAll.addAll(teamIds);
-            }else{
+            } else {
                 teamAll.add(-1L);
             }
             params.put("teamIds", teamAll);
@@ -505,7 +506,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         params.put("sprint", dto.getSprint());
         return params;
     }
-
 
     /**
      * 创建迭代
@@ -576,7 +576,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         //插入迭代
         SSprintWithBLOBs sprint = new SSprintWithBLOBs();
         BeanUtils.copyProperties(sprintDTO, sprint);
-         ssprintMapper.insert(sprint);
+        ssprintMapper.insert(sprint);
 
         //插入迭代人员
         List<SprintV3UserHourDTO> members = sprintDTO.getMembers();
@@ -596,14 +596,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateSprint(SprintDTO sprintDTO,SecurityDTO securityDTO) {
+    public void updateSprint(SprintDTO sprintDTO, SecurityDTO securityDTO) {
         if (!canEdit(sprintDTO.getSprintId())) {
             throw new BusinessException("只有【未开始】状态的迭代才允许修改");
         }
         checkParameter(sprintDTO);
         editSprint(sprintDTO);
     }
-
 
     /**
      * @param sprintDTO
@@ -614,7 +613,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private void checkParameter(@RequestBody SprintDTO sprintDTO) {
         String str1 = "迭代名称过长,不能大于100!";
         String str2 = "团队名称过长，不能大于100!";
-       // String str3 = "请选择团队";
+        // String str3 = "请选择团队";
         String str4 = "工作时间超长，不能大于24小时!";
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, str1);
         Preconditions.checkArgument(sprintDTO.getTeamName().length() <= 100, str2);
@@ -742,17 +741,31 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     public String cancelSprint(long sprintId, long userId) {
         //参加迭代PO,迭代创建人允许取消迭代,其余不允许
         CheckIdentity(userId, sprintId);
-        int sprintNumber = ssprintMapper.sprintExist(sprintId);
-        if (sprintNumber == 0) {
+        if (0 == ssprintMapper.sprintExist(sprintId)) {
             throw new BusinessException("暂无该迭代");
         }
         ssprintMapper.cancelSprint(sprintId);
         return "迭代状态更新成功";
     }
 
+    /**
+     * 迭代完成
+     *
+     * @param sprintId 迭代id
+     * @return {@link String}
+     */
     @Override
-    public int sprintExist(long sprintId) {
-        return ssprintMapper.sprintExist(sprintId);
+    public String sprintFinish(long sprintId) {
+        //迭代下未完成的故事数
+        if (0 != ssprintMapper.sprintUnfinishedStory(sprintId)) {
+            throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
+        }
+        //只有进行中的迭代允许完成
+        if (!TYPE_ONGOING_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
+            throw new BusinessException("只有进行中的迭代允许完成");
+        }
+        ssprintMapper.sprintFinish(sprintId);
+        return "迭代完成成功";
     }
 
     /**
@@ -765,12 +778,25 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     public void CheckIdentity(long userId, long sprintId) {
         boolean joinSprint = true;
         boolean creature = true;
-        if (0 == ssprintMapper.joinSprint(sprintId, userId)) {
-            joinSprint = false;
+
+        //迭代未开始
+        if (!TYPE_NO_START_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
+            throw new BusinessException("只有未开始的迭代才允许取消");
         }
+
+        //团队PO
+
+
+        //参与迭代的Po
+//        if (0 == ssprintMapper.joinSprint(sprintId, userId)) {
+//            joinSprint = false;
+//        }
+
+        //创建人
         if (0 == ssprintMapper.creatUser(sprintId, userId)) {
             creature = false;
         }
+
         if (joinSprint || creature) {
 
         } else {

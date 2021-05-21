@@ -601,4 +601,23 @@
           and create_uid = #{userId}
     </select>
 
+    <select id="sprintUnfinishedStory" resultType="int">
+        select count(issue_id)
+        from issue
+        where sprint_id = #{sprintId}
+          and issue_type = 3
+          and stage_id <![CDATA[<]]> 103
+    </select>
+
+    <update id="sprintFinish">
+        update s_sprint
+        set status = 4
+        where sprint_id = #{sprintId}
+    </update>
+
+    <select id="querySprintStatus" resultType="java.lang.Byte">
+        select status
+        from s_sprint
+        where sprint_id = #{sprintId}
+    </select>
 </mapper>

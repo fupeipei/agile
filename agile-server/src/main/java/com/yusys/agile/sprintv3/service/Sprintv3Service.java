@@ -3,8 +3,8 @@ package com.yusys.agile.sprintv3.service;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-
 import java.util.List;
 
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -51,6 +51,9 @@ public interface Sprintv3Service {
 
     void updateSprint(SprintDTO sprintDTO,SecurityDTO securityDTO);
 
+    /**
+     * 每天改变迭代状态
+     */
     void changeStatusDaily();
 
     /**
@@ -62,11 +65,10 @@ public interface Sprintv3Service {
     String cancelSprint(long sprintId, long userId);
 
     /**
-     * 迭代存在
+     * 迭代完成
      *
      * @param sprintId 迭代id
-     * @return int
+     * @return {@link String}
      */
-    int sprintExist(long sprintId);
-
+    String sprintFinish(long sprintId);
 }

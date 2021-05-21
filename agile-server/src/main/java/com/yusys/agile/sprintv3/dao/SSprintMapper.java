@@ -51,9 +51,7 @@ public interface SSprintMapper {
 
     List<Long> getUnStartIds(Date date);
 
-
     int arrangeTeam(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
-
 
     void changeStatusTOProgressByIds(@Param("sprintIds") List<Long> sprintIds);
 
@@ -73,7 +71,6 @@ public interface SSprintMapper {
      */
     int cancelSprint(long sprintId);
 
-
     /**
      * 迭代存在
      *
@@ -81,7 +78,6 @@ public interface SSprintMapper {
      * @return int
      */
     int sprintExist(@Param("sprintId") long sprintId);
-
 
     /**
      * 检查身份
@@ -100,4 +96,29 @@ public interface SSprintMapper {
      * @return int
      */
     int creatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
+
+    /**
+     * 迭代未完成的故事
+     * 迭代完成
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int sprintUnfinishedStory(long sprintId);
+
+    /**
+     * 迭代完成
+     *
+     * @param sprintId 迭代id
+     */
+    void sprintFinish(long sprintId);
+
+    /**
+     * 查询迭代状态
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    Byte querySprintStatus(long sprintId);
+
 }
