@@ -202,38 +202,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             rest = buildResultList(rest);
             return rest;
         }
-        //po 、sm
-        boolean isTeamPo = iFacadeUserApi.checkIsTeamPo(userId);
-        boolean isTeamSm = iFacadeUserApi.checkIsTeamSm(userId);
-        //如果既是po、又是sm
-        if (isTeamPo && isTeamSm) {
-            HashMap<String, Object> params = buildQueryParamsPoAndSm(dto, security);
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-            List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
-            rest = buildResultList(rest);
-            return rest;
-        } else if (isTeamPo) {
-            HashMap<String, Object> params = buildQueryParamsTeamPo(dto, security);
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-            List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
-            rest = buildResultList(rest);
-            return rest;
-        } else if (isTeamSm) {
-            HashMap<String, Object> params = buildQueryParamsTeamSm(dto, security);
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-            List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
-            rest = buildResultList(rest);
-            return rest;
-        }
-        //如果是团队成员
-        boolean isTeamMember = iFacadeUserApi.checkIsTeamMember(userId);
-        if (isTeamMember) {
-            HashMap<String, Object> params = buildQueryParamsTeamUser(dto, security);
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-            List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
-            rest = buildResultList(rest);
-            return rest;
-        }
         throw new BusinessException("该用户没有权限");
     }
 
