@@ -3,7 +3,6 @@ package com.yusys.agile.sprintv3.service;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
-import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import java.util.List;
 
