@@ -3,7 +3,9 @@ package com.yusys.agile.sprintv3.service;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+
 import java.util.List;
 
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -70,4 +72,12 @@ public interface Sprintv3Service {
      * @return {@link String}
      */
     String sprintFinish(long sprintId);
+
+    /**
+     * 迭代视图 - 迭代详情
+     *
+     * @param sprintId 迭代id
+     * @return {@link SprintOverView}
+     */
+    SprintOverView sprintOverView(long sprintId);
 }

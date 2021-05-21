@@ -13,6 +13,7 @@ import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamDTO;
@@ -737,8 +738,17 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      */
     @Override
     public String cancelSprint(long sprintId, long userId) {
-        //参加迭代PO,迭代创建人允许取消迭代,其余不允许
-        CheckIdentity(userId, sprintId);
+        //迭代未开始
+        if (!TYPE_NO_START_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
+            throw new BusinessException("只有未开始的迭代才允许取消");
+        }
+        //迭代po
+        boolean SprintPo = ssprintMapper.checkSprintPo(sprintId, userId);
+        //迭代创建人
+        boolean creatUser = ssprintMapper.creatUser(sprintId, userId);
+        if (!(SprintPo || creatUser)) {
+            throw new BusinessException("只有迭代创建人和迭代所属的团队PO才允许取消迭代");
+        }
         if (0 == ssprintMapper.sprintExist(sprintId)) {
             throw new BusinessException("暂无该迭代");
         }
@@ -766,39 +776,27 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return "迭代完成成功";
     }
 
-    /**
-     * 检查身份:参加迭代PO,迭代创建人允许取消迭代,其余不允许
-     *
-     * @param userId   用户id
-     * @param sprintId 迭代id
-     * @return boolean
-     */
-    public void CheckIdentity(long userId, long sprintId) {
-        boolean joinSprint = true;
-        boolean creature = true;
-
-        //迭代未开始
-        if (!TYPE_NO_START_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
-            throw new BusinessException("只有未开始的迭代才允许取消");
-        }
-
-        //团队PO
-
-
-        //参与迭代的Po
-//        if (0 == ssprintMapper.joinSprint(sprintId, userId)) {
-//            joinSprint = false;
-//        }
-
-        //创建人
-        if (0 == ssprintMapper.creatUser(sprintId, userId)) {
-            creature = false;
-        }
-
-        if (joinSprint || creature) {
-
-        } else {
-            throw new BusinessException("迭代无关人员");
-        }
+    @Override
+    public SprintOverView sprintOverView(long sprintId) {
+        return null;
     }
+
+
+//    /**
+//     * 检查身份
+//     *
+//     * @param userId     用户id
+//     * @param sprintId   迭代id
+//     * @param sprintPo   sprintPo (true:需要po权限)
+//     * @param sprintSm   迭代sm
+//     * @param sprintUser 迭代用户
+//     */
+//    public void CheckIdentity(long userId, long sprintId, boolean sprintPo, boolean sprintSm, boolean sprintUser, int IdentityNumber) {
+//
+//        if (0 == ssprintMapper.sprintExist(sprintId)) {
+//            throw new BusinessException("该迭代不存在");
+//        }
+//
+//
+//    }
 }

@@ -80,22 +80,13 @@ public interface SSprintMapper {
     int sprintExist(@Param("sprintId") long sprintId);
 
     /**
-     * 检查身份
-     *
-     * @param sprintId 迭代id
-     * @param userId   用户id
-     * @return int
-     */
-    int joinSprint(@Param("sprintId") long sprintId, @Param("userId") long userId);
-
-    /**
      * 迭代创建人
      *
      * @param sprintId 迭代id
      * @param userId   用户id
      * @return int
      */
-    int creatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
+    boolean creatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
     /**
      * 迭代未完成的故事
@@ -120,5 +111,20 @@ public interface SSprintMapper {
      * @return int
      */
     Byte querySprintStatus(long sprintId);
+
+    /**
+     * 迭代视图 - 迭代详情
+     *
+     * @param sprintId 迭代id
+     * @return {@link SSprintWithBLOBs}
+     */
+    SSprintWithBLOBs sprintOverViewSprintDetails(long sprintId);
+
+    /**
+     * 检查迭代Po
+     *
+     * @return boolean
+     */
+    boolean checkSprintPo(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
 }
