@@ -3,6 +3,9 @@ package com.yusys.agile.team.service.impl;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**

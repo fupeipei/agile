@@ -52,6 +52,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,6 +68,7 @@ import java.util.stream.Collectors;
 @Service
 public class StoryServiceImpl implements StoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoryServiceImpl.class);
+
     @Resource
     private IssueFactory issueFactory;
     @Resource
@@ -195,9 +198,11 @@ public class StoryServiceImpl implements StoryService {
         if (null == sprint || !StringUtils.equals(sprint.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }
-        //故事的迭代id为null
+        //故事的迭代id为null 故事的状态为未开始
         issue.setSprintId(null);
         issue.setUpdateTime(new Date());
+        issue.setStageId(104L);
+        issue.setHandler(null);
         int i = issueMapper.updateByPrimaryKey(issue);
         if (i != 1) {
             throw new BusinessException(ExceptionCodeEnum.SYS_ERROR.getDesc());
@@ -394,8 +399,11 @@ public class StoryServiceImpl implements StoryService {
         Sprint sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
         int count = 0;
         if (null != sprint) {
-            if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
-                throw new BusinessException("迭代已完成不能再关联工作项");
+            if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                throw new BusinessException("只有未开始的任务可以关联工作项");
+            }
+            if (sprint.getEndTime().before(new Date())) {
+                throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
             }
             //为故事分配迭代
             if (issue.getIssueType().equals(IssueTypeEnum.TYPE_STORY.CODE)) {
@@ -877,4 +885,25 @@ public class StoryServiceImpl implements StoryService {
         return mapUser;
     }
 
+
+    /**
+     *
+     *判断迭代已完成，已取消，以及迭代结束日期小于当前时间的迭代
+     *
+     * @param sprintId 迭代id
+     */
+    @Override
+    public void checkSprintParam(Long sprintId) {
+        Sprint sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
+        if (null != sprint) {
+            if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                throw new BusinessException("只有未开始的任务可以关联工作项");
+            }
+            if (sprint.getEndTime().before(new Date())) {
+                throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
+            }
+        }else{
+            throw new BusinessException("迭代不存在");
+        }
+    }
 }
