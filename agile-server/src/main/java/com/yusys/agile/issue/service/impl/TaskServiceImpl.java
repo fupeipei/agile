@@ -234,7 +234,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void dragTask(Long issueId, Long from, Long to) {
+    public void dragTask(Long issueId, Long from, Long to,Long userId) {
         if (null == issueId || null == from || null == to) {
             throw new BusinessException("入参为空！");
         }
