@@ -4,6 +4,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.service.IssueService;
+import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.utils.StringUtil;
@@ -34,6 +35,9 @@ public class IssueController {
     @Resource
     private IssueService issueService;
 
+    @Resource
+    private StoryService storyService;
+
     /**
      * 功能描述  初始化Issue列表
      *
@@ -55,6 +59,12 @@ public class IssueController {
         return ControllerResponse.success(result);
     }
 
+    /**
+     * 创建关联关系
+     * @param parentId 父级id
+     * @param issueId 工作项id
+     * @return
+     */
     @PutMapping("/issue/createRelation/{parentId}/{issueId}")
     public ControllerResponse createRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
@@ -67,9 +77,16 @@ public class IssueController {
         return ControllerResponse.success("建立关联成功！");
     }
 
+    /**
+     * 取消关联用户故事
+     * @param parentId 父级id
+     * @param issueId 工作项id
+     * @return
+     */
     @PutMapping("/issue/deleteRelation/{parentId}/{issueId}")
     public ControllerResponse deleteRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
+
             issueService.deleteRelation(parentId, issueId);
         } catch (Exception e) {
             LOGGER.error("删除关联失败：{}", e);
@@ -142,16 +159,17 @@ public class IssueController {
         return ControllerResponse.success("操作成功");
     }
 
+
     /**
-     * @param issueDTO
-     * @Date: 9:06
-     * @Description: 批量建立关联关系
-     * @Param: * @param parentId
-     * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
+     *  批量建立关联关系
+     * @param issueDTO  issueDTO
+     * @param securityDTO securityDTO
+     * @return 返回成功失败
      */
     @PostMapping("/issue/createBatchRelation")
     public ControllerResponse createBatchRelation(@RequestBody IssueDTO issueDTO, SecurityDTO securityDTO) {
         try {
+            storyService.checkSprintParam(issueDTO.getSprintId());
             issueService.createBatchRelation(issueDTO.getParentId(), issueDTO.getListIssueIds(), securityDTO.getUserId());
         } catch (Exception e) {
             LOGGER.error("批量建立关联失败：{}", e);

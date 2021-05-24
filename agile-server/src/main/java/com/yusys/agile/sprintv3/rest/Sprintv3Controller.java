@@ -123,4 +123,18 @@ public class Sprintv3Controller {
     }
 
 
+    /**
+     * @param sprintDTO
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @Date 2020/4/17 21:08
+     * @Description 迭代添加工作项（故事或缺陷）
+     */
+    @PostMapping("/relation/issue")
+    public ControllerResponse arrangeIssue(@RequestBody SprintDTO sprintDTO) {
+        if (sprintv3Service.arrangeIssue(sprintDTO)) {
+            return ControllerResponse.success("关联成功！");
+        }
+        return ControllerResponse.fail("关联失败！");
+    }
+
 }

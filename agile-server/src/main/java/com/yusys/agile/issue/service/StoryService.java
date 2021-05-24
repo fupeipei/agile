@@ -225,4 +225,10 @@ public interface StoryService {
      * @date 2020/10/26
      */
     Map<Long, String> getDevlopManager(Long storyId);
+
+    /**
+     * 判断迭代已完成，已取消，以及迭代结束日期小于当前时间的迭代
+     * @param sprintId 迭代id
+     */
+  void checkSprintParam(Long sprintId);
 }
