@@ -63,6 +63,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Resource
     private SSprintMapper ssprintMapper;
     @Resource
+    private SSprintUserHourMapper sSprintUserHourMapper;
+    @Resource
     private STeamMapper sTeamMapper;
     @Resource
     private STeamSystemMapper STeamSystemMapper;
@@ -131,7 +133,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         if (CollectionUtils.isEmpty(teams)) {
             List<TeamDTO> teamDTOS = new ArrayList<>();
             List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
-            List<UserSprintHour> userSprintHours = ssprintUserHourMapper.getUserIds4Sprint(sprintId);
+            List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
             if (CollectionUtils.isNotEmpty(userSprintHours)) {
                 getUser(userSprintHourDTOS, userSprintHours);
             }
@@ -145,7 +147,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             TeamDTO teamDTO = ReflectUtil.copyProperties(team, TeamDTO.class);
             List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
             //通过迭代id查询迭代时长表的userid，然后再查人员
-            List<UserSprintHour> userSprintHours = ssprintUserHourMapper.getUserIds4Sprint(sprintId);
+            List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
             if (CollectionUtils.isNotEmpty(userSprintHours)) {
                 getUser(userSprintHourDTOS, userSprintHours);
             }
@@ -477,7 +479,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 userSprintHour.setSprintId(sprintId);
                 userSprintHour.setCreateUid(userId);
                 userSprintHour.setCreateTime(new Date());
-                int i = ssprintUserHourMapper.insert(userSprintHour);
+                int i = sSprintUserHourMapper.insert(userSprintHour);
                 if (i != 1) {
                     throw new BusinessException("创建迭代人员失败!");
                 }
