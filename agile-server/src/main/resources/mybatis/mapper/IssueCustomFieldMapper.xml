@@ -80,7 +80,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_custom_field
+    from s_issue_custom_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -89,13 +89,13 @@
     </if>
   </select>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueCustomFieldExample">
-    delete from issue_custom_field
+    delete from s_issue_custom_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueCustomField">
-    insert into issue_custom_field (extend_id, field_id, field_value, 
+    insert into s_issue_custom_field (extend_id, field_id, field_value, 
       issue_id, create_time, create_uid, 
       update_time, update_uid,tenant_code)
     values (#{extendId,jdbcType=BIGINT}, #{fieldId,jdbcType=BIGINT}, #{fieldValue,jdbcType=VARCHAR}, 
@@ -103,7 +103,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueCustomField">
-    insert into issue_custom_field
+    insert into s_issue_custom_field
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="extendId != null">
         extend_id,
@@ -164,13 +164,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueCustomFieldExample" resultType="java.lang.Long">
-    select count(*) from issue_custom_field
+    select count(*) from s_issue_custom_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_custom_field
+    update s_issue_custom_field
     <set>
       <if test="record.extendId != null">
         extend_id = #{record.extendId,jdbcType=BIGINT},
@@ -205,7 +205,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_custom_field
+    update s_issue_custom_field
     set extend_id = #{record.extendId,jdbcType=BIGINT},
       field_id = #{record.fieldId,jdbcType=BIGINT},
       field_value = #{record.fieldValue,jdbcType=VARCHAR},
@@ -220,32 +220,32 @@
     </if>
   </update>
     <select id="listCustomField" resultType="com.yusys.agile.issue.dto.IssueCustomFieldDTO">
-      select a.*,b.field_code,b.field_name,b.field_type,b.field_content,b.required,b.state,b.is_select from issue_custom_field a,header_field b
+      select a.*,b.field_code,b.field_name,b.field_type,b.field_content,b.required,b.state,b.is_select from s_issue_custom_field a,header_field b
       where a.field_id = b.field_id and a.issue_id=#{issueId}
       and b.is_select = 1
     </select>
   <insert id="createBatch">
-    INSERT INTO issue_custom_field (issue_id,field_id, field_value, create_time, create_uid,tenant_code)
+    INSERT INTO s_issue_custom_field (issue_id,field_id, field_value, create_time, create_uid,tenant_code)
     VALUES
     <foreach collection="fields" item="field" separator=",">
       (#{field.issueId},#{field.fieldId},#{field.fieldValue},now(),#{field.createUid},#{field.tenantCode})
     </foreach>
   </insert>
     <delete id="deleteInFieldIdList4Issus">
-      DELETE FROM issue_custom_field WHERE issue_id = #{issueId} AND field_id IN (
+      DELETE FROM s_issue_custom_field WHERE issue_id = #{issueId} AND field_id IN (
       <foreach collection="fieldIds" item="fieldId" separator=",">
         #{fieldId}
       </foreach>
       )
     </delete>
   <delete id="deleteCustomFileByIssueId">
-    DELETE FROM issue_custom_field WHERE issue_id = #{issueId}
+    DELETE FROM s_issue_custom_field WHERE issue_id = #{issueId}
   </delete>
 
 
   <!--修改自定义字段时允许值为空 -->
   <update id="updateByExampleSelectiveWithNull" parameterType="map">
-    update issue_custom_field
+    update s_issue_custom_field
     <set>
       <if test="record.extendId != null">
         extend_id = #{record.extendId,jdbcType=BIGINT},
@@ -279,7 +279,7 @@
   </update>
 
   <delete id="deleteInFieldIdListByFieldIds">
-    DELETE FROM issue_custom_field WHERE field_id = #{fieldId}
+    DELETE FROM s_issue_custom_field WHERE field_id = #{fieldId}
   </delete>
 
 

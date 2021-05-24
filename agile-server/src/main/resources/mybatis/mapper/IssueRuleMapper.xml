@@ -84,7 +84,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_rule
+    from s_issue_rule
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -95,21 +95,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from issue_rule
+    from s_issue_rule
     where rule_id = #{ruleId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_rule
+    delete from s_issue_rule
     where rule_id = #{ruleId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueRuleExample">
-    delete from issue_rule
+    delete from s_issue_rule
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueRule" useGeneratedKeys="true" keyProperty="ruleId">
-    insert into issue_rule (rule_id, project_id, tenant_code, 
+    insert into s_issue_rule (rule_id, project_id, tenant_code, 
       category, from_stage_id, from_lane_id, 
       to_stage_id, to_lane_id, id_check, 
       create_uid, create_time, update_uid, 
@@ -121,7 +121,7 @@
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueRule">
-    insert into issue_rule
+    insert into s_issue_rule
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="ruleId != null">
         rule_id,
@@ -206,13 +206,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueRuleExample" resultType="java.lang.Long">
-    select count(*) from issue_rule
+    select count(*) from s_issue_rule
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_rule
+    update s_issue_rule
     <set>
       <if test="record.ruleId != null">
         rule_id = #{record.ruleId,jdbcType=BIGINT},
@@ -259,7 +259,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_rule
+    update s_issue_rule
     set rule_id = #{record.ruleId,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
       tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
@@ -278,7 +278,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueRule">
-    update issue_rule
+    update s_issue_rule
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
@@ -320,7 +320,7 @@
     where rule_id = #{ruleId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueRule">
-    update issue_rule
+    update s_issue_rule
     set project_id = #{projectId,jdbcType=BIGINT},
       tenant_code = #{tenantCode,jdbcType=VARCHAR},
       category = #{category,jdbcType=TINYINT},
@@ -336,7 +336,7 @@
     where rule_id = #{ruleId,jdbcType=BIGINT}
   </update>
   <insert id="batchInsert" >
-    insert into issue_rule (project_id, tenant_code,
+    insert into s_issue_rule (project_id, tenant_code,
                             category, from_stage_id, from_lane_id,
                             to_stage_id, to_lane_id, id_check,
                             create_uid, create_time, update_uid,

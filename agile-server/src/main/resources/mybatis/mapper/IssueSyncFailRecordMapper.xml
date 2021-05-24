@@ -83,7 +83,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_sync_fail_record
+    from s_issue_sync_fail_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,21 +94,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from issue_sync_fail_record
+    from s_issue_sync_fail_record
     where record_id = #{recordId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_sync_fail_record
+    delete from s_issue_sync_fail_record
     where record_id = #{recordId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueSyncFailRecordExample">
-    delete from issue_sync_fail_record
+    delete from s_issue_sync_fail_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueSyncFailRecord" useGeneratedKeys="true" keyProperty="recordId">
-    insert into issue_sync_fail_record (record_id, issue_id, issue_type, 
+    insert into s_issue_sync_fail_record (record_id, issue_id, issue_type, 
       operate_type, project_id, sync_system, 
       sync_result, create_uid, create_time, 
       update_uid, update_time, tenant_code
@@ -120,7 +120,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueSyncFailRecord" useGeneratedKeys="true" keyProperty="recordId">
-    insert into issue_sync_fail_record
+    insert into s_issue_sync_fail_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="recordId != null">
         record_id,
@@ -199,13 +199,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueSyncFailRecordExample" resultType="java.lang.Long">
-    select count(*) from issue_sync_fail_record
+    select count(*) from s_issue_sync_fail_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_sync_fail_record
+    update s_issue_sync_fail_record
     <set>
       <if test="record.recordId != null">
         record_id = #{record.recordId,jdbcType=BIGINT},
@@ -249,7 +249,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_sync_fail_record
+    update s_issue_sync_fail_record
     set record_id = #{record.recordId,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       issue_type = #{record.issueType,jdbcType=TINYINT},
@@ -267,7 +267,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueSyncFailRecord">
-    update issue_sync_fail_record
+    update s_issue_sync_fail_record
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -306,7 +306,7 @@
     where record_id = #{recordId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueSyncFailRecord">
-    update issue_sync_fail_record
+    update s_issue_sync_fail_record
     set issue_id = #{issueId,jdbcType=BIGINT},
       issue_type = #{issueType,jdbcType=TINYINT},
       operate_type = #{operateType,jdbcType=INTEGER},
@@ -327,14 +327,14 @@
       issue_id,
       issue_type
     from
-      issue_sync_fail_record
+      s_issue_sync_fail_record
     where
       record_id >=
     (
     select
       record_id
     from
-      issue_sync_fail_record
+      s_issue_sync_fail_record
     where
       operate_type = 2
     and
