@@ -105,6 +105,10 @@
         sprint_desc,
         sprint_days
     </sql>
+
+    <sql id="sprintOverViewDetails">
+    </sql>
+
     <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample"
             resultMap="ResultMapWithBLOBs">
         select
@@ -658,12 +662,6 @@
         where sprint_id = #{sprintId}
     </select>
 
-    <select id="sprintOverViewSprintDetails" resultMap="ResultMapWithBLOBs">
-        select sprint_id, sprint_name, sprint_desc, start_time, end_time, work_hours
-        from s_sprint
-        where sprint_id = #{sprintId}
-    </select>
-
     <select id="checkSprintPo" resultType="boolean">
         <![CDATA[
         select count(sprint_id)
@@ -673,5 +671,12 @@
           and b.user_id = #{userId}
           and b.role_id = 104
         ]]>
+    </select>
+
+    <select id="queryValidSprintById" resultMap="ResultMapWithBLOBs">
+        select status, sprint_name, sprint_id,work_hours, start_time, end_time,team_id
+        from s_sprint
+        where sprint_id = #{sprintId}
+          and state = 'U'
     </select>
 </mapper>

@@ -8,6 +8,8 @@ import com.yusys.agile.teamv3.domain.STeamExample;
 import java.util.HashMap;
 import java.util.List;
 
+import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 import org.apache.ibatis.annotations.Param;
 
 public interface STeamMapper {
@@ -101,4 +103,29 @@ public interface STeamMapper {
 
 
     List<STeam> getTeamLikeNameOrCode(@Param("team") String team);
+
+    /**
+     * 查询系统团队
+     *
+     * @param teamId 团队id
+     * @return {@link List<SsoSystem>}
+     */
+    List<Long> queryTeamSystem(Long teamId);
+
+    /**
+     * 查询用户信息,用户id
+     *
+     * @param sprintId 迭代id
+     * @param teamId   团队id
+     * @return {@link List<STeamMember>}
+     */
+    List<STeamMember> queryUserInfoByUserId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
+
+    /**
+     * 通过团队id查询团队的名字
+     *
+     * @param teamId 团队id
+     * @return {@link String}
+     */
+    String queryTeamNameByTeamId(Long teamId);
 }
