@@ -76,13 +76,12 @@ public interface StoryService {
     List<IssueDTO> queryUnlinkedStory(Long projectId, Integer pageNum, Integer pageSize, String title);
 
     /**
-     * @param projectId
      * @param issueDTO
      * @Date 2021/2/12
      * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> listStorysAndTasks(Long projectId, IssueDTO issueDTO);
+    List<IssueDTO> listStorysAndTasks(IssueDTO issueDTO);
 
     /**
      * @param issueDTO

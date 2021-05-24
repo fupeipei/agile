@@ -19,6 +19,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
     </resultMap>
+
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
         <result column="sprint_desc" jdbcType="LONGVARCHAR" property="sprintDesc"/>
         <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays"/>
@@ -53,6 +54,7 @@
             </foreach>
         </where>
     </sql>
+
     <sql id="Update_By_Example_Where_Clause">
         <where>
             <foreach collection="example.oredCriteria" item="criteria" separator="or">
@@ -83,6 +85,7 @@
             </foreach>
         </where>
     </sql>
+
     <sql id="Base_Column_List">
         sprint_id,
         sprint_name,
@@ -101,6 +104,7 @@
         update_time,
         tenant_code
     </sql>
+
     <sql id="Blob_Column_List">
         sprint_desc,
         sprint_days
@@ -624,15 +628,6 @@
         where sprint_id = #{sprintId}
     </select>
 
-    <select id="joinSprint" resultType="int">
-        select count(a.sprint_id)
-        from s_sprint a
-                     left join s_sprint_user_hour b on a.sprint_id = b.sprint_id
-                     left join s_team_po c on b.user_id = c.user_id
-        where a.sprint_id = #{sprintId}
-          and c.user_id = #{userId}
-    </select>
-
     <select id="creatUser" resultType="boolean">
         <![CDATA[
         select count(sprint_id)
@@ -673,18 +668,18 @@
         ]]>
     </select>
 
-<<<<<<< HEAD
+
     <select id="selectByPrimaryKeyNotText" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
         select
         <include refid="Base_Column_List" />
-        from sprint
+        from s_sprint
         where sprint_id = #{sprintId,jdbcType=BIGINT}
-=======
+    </select>
+
     <select id="queryValidSprintById" resultMap="ResultMapWithBLOBs">
         select status, sprint_name, sprint_id,work_hours, start_time, end_time,team_id
         from s_sprint
         where sprint_id = #{sprintId}
           and state = 'U'
->>>>>>> c725ed6ab29433979b4d332b6fd46e5374b2e92c
     </select>
 </mapper>

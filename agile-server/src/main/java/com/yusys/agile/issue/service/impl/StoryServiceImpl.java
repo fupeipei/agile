@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.yusys.agile.burndown.dao.BurnDownChartStoryDao;
 import com.yusys.agile.constant.StringConstant;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
@@ -51,6 +52,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,7 +94,6 @@ public class StoryServiceImpl implements StoryService {
      * @return
      */
     private static final String PERCENT_SIGN = "%";
-
 
     @Override
     public Long createStory(IssueDTO issueDTO) {
@@ -226,7 +227,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> listStorysAndTasks(Long projectId, IssueDTO issueDTO) {
+    public List<IssueDTO> listStorysAndTasks( IssueDTO issueDTO) {
         String filter = issueDTO.getStoryKeyWord();
         String taskKeyWord = issueDTO.getTaskKeyWord();
         Long sprintId = issueDTO.getSprintId();
@@ -236,55 +237,50 @@ public class StoryServiceImpl implements StoryService {
         List<Integer> taskTypes = issueDTO.getTaskTypes();
         List<Long> handlers = issueDTO.getHandlers();
 
-        if (null == projectId) {
-            throw new BusinessException("查询故事项目id为空！");
-        }
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
         }
         IssueExample example = new IssueExample();
-        example.setOrderByClause("`order` desc,create_time desc");
+        example.setOrderByClause("priority desc,create_time desc");
 
         IssueExample.Criteria criteria = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
-                .andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
+                .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
         IssueExample.Criteria criteria2 = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
-                .andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
+                .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
 
         // 判断是根据id还是name
-        if (StringUtils.isNotBlank(filter)) {
-            try {
-                Long id = Long.valueOf(filter);
-                // 能转成long，说明可能是id，也可能是name
-                criteria.andIssueIdEqualTo(id);
-                // 同时赋值给标题
-                criteria2.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
-                example.or(criteria2);
-            } catch (Exception e) {
-                LOGGER.info("转换异常e:{}", e);
-                // 存在异常说明只能查name
-                criteria.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
-            }
-        }
+        doFilterCondition(filter, example, criteria, criteria2);
 
         List<IssueDTO> issueDTOS = issueMapper.selectByExampleDTO(example);
-
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             //获取故事下的任务
-            issueDTOS = getChildren(projectId, sprintId, issueDTOS, taskKeyWord, stageIds, taskTypes, handlers);
+            issueDTOS = getChildren(sprintId, issueDTOS, taskKeyWord, stageIds, taskTypes, handlers);
         }
         return issueDTOS;
     }
 
+    private void doFilterCondition(String filter, IssueExample example, IssueExample.Criteria criteria, IssueExample.Criteria criteria2) {
+        if (StringUtils.isNotBlank(filter) && NumberUtil.isLong(filter)) {
+            Long id = Long.valueOf(filter);
+            // 能转成long，说明可能是id，也可能是name
+            criteria.andIssueIdEqualTo(id);
+            // 同时赋值给标题
+            criteria2.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
+            example.or(criteria2);
+        }else{
+            criteria.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
+        }
+    }
+
     /**
-     * @param projectId
      * @param sprintId
      * @param issueDTOS
      * @Date 2021/2/12
      * @Description 获取故事下的任务
      * @Return void
      */
-    private List<IssueDTO> getChildren(Long projectId, Long sprintId, List<IssueDTO> issueDTOS,
+    private List<IssueDTO> getChildren(Long sprintId, List<IssueDTO> issueDTOS,
                                        String taskKeyWord, List<Long> stageIds, List<Integer> taskTypes, List<Long> handlers) {
         List<IssueDTO> issueDTOSTmp = new ArrayList<>();
         Sprint sprint = sprintMapper.selectByPrimaryKey(sprintId);
@@ -296,10 +292,10 @@ public class StoryServiceImpl implements StoryService {
                 issueDTO.setCaseNum(0);
                 IssueExample issueExample = new IssueExample();
                 IssueExample.Criteria criteria1 = issueExample.createCriteria();
-                criteria1.andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).
+                criteria1.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
                 IssueExample.Criteria criteria2 = issueExample.createCriteria();
-                criteria2.andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).
+                criteria2.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
 
                 //任务查询加上“阻塞中”状态   start
@@ -308,7 +304,7 @@ public class StoryServiceImpl implements StoryService {
                     b = stageIds.contains(9999L);
                 }
                 IssueExample.Criteria criteria3 = issueExample.createCriteria();
-                criteria3.andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).
+                criteria3.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
                 if (b) {
                     //过滤掉“阻塞中”的状态：9999
@@ -329,20 +325,7 @@ public class StoryServiceImpl implements StoryService {
                 }
 
                 // 判断是根据id还是name
-                if (StringUtils.isNotBlank(taskKeyWord)) {
-                    try {
-                        Long id = Long.valueOf(taskKeyWord);
-                        // 能转成long，说明可能是id，也可能是name
-                        criteria1.andIssueIdEqualTo(id);
-                        // 同时赋值给标题
-                        criteria2.andTitleLike(PERCENT_SIGN + taskKeyWord + PERCENT_SIGN);
-                        issueExample.or(criteria2);
-                    } catch (Exception e) {
-                        LOGGER.info("转换异常e:{}", e);
-                        // 存在异常说明只能查name
-                        criteria1.andTitleLike(PERCENT_SIGN + taskKeyWord + PERCENT_SIGN);
-                    }
-                }
+                doFilterCondition(taskKeyWord, issueExample, criteria1, criteria2);
 
                 //任务查询加上“阻塞中”状态   start
                 if (b) {

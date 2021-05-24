@@ -31,6 +31,7 @@ import java.util.Map;
  *
  */
 @RestController
+@RequestMapping("/issue/story")
 public class StoryContoller {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
@@ -43,8 +44,13 @@ public class StoryContoller {
     @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
 
+<<<<<<< HEAD
     @PostMapping("/issue/createStory")
     public ControllerResponse createStory(@RequestBody Map<String, Object> map) {
+=======
+    @PostMapping("/create")
+    public ControllerResponse createStory(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+>>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
         try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
@@ -64,8 +70,24 @@ public class StoryContoller {
 
     }
 
+<<<<<<< HEAD
     @GetMapping("/issue/queryStory/{storyId}")
     public ControllerResponse queryStory(@PathVariable("storyId") Long storyId) {
+=======
+    private boolean checkHasServerAnalysManager(JSONObject jsonObject) {
+        for (String str : jsonObject.keySet()) {
+            if (VersionConstants.SysExtendFiledConstant.SERVERANALYSTMANAGER.equals(str)) {
+                if (!Strings.isBlank((String) jsonObject.get(str))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @GetMapping("/query/{storyId}")
+    public ControllerResponse queryStory(@PathVariable("storyId") Long storyId, @RequestHeader(name = "projectId") Long projectId) {
+>>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
         IssueDTO issueDTO = storyService.queryStory(storyId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
@@ -85,8 +107,13 @@ public class StoryContoller {
         return ControllerResponse.success(map);
     }
 
+<<<<<<< HEAD
     @DeleteMapping("/issue/deleteStory/{storyId}")
     public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild) {
+=======
+    @DeleteMapping("/delete/{storyId}")
+    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild, @RequestHeader(name = "projectId") Long projectId) {
+>>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
         try {
             storyService.deleteStory(storyId, deleteChild);
         } catch (Exception e) {
@@ -96,8 +123,13 @@ public class StoryContoller {
         return ControllerResponse.success("删除用户故事成功！");
     }
 
+<<<<<<< HEAD
     @PostMapping("/issue/editStory")
     public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
+=======
+    @PostMapping("/edit")
+    public ControllerResponse editStory(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+>>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
         try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
@@ -113,7 +145,7 @@ public class StoryContoller {
         return ControllerResponse.success("编辑用户故事成功！");
     }
 
-    @PutMapping("/issue/copyStory/{storyId}")
+    @PutMapping("/copy/{storyId}")
     public ControllerResponse copyStory(@PathVariable(name = "storyId") Long storyId, @RequestHeader(name = "projectId") Long projectId) {
         try {
             Long newStoryId = storyService.copyStory(storyId, projectId);
@@ -134,7 +166,7 @@ public class StoryContoller {
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
-    @GetMapping("/issue/queryUnlinkedStory")
+    @GetMapping("/query/unlinked/stories")
     public ControllerResponse queryUnlinkedStory(@RequestHeader(name = "projectId") Long projectId, @RequestParam("pageNum") Integer pageNum,
                                                  @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
                                                  @RequestParam(name = "projectId", required = false) Long paramProjectId) {
@@ -155,15 +187,15 @@ public class StoryContoller {
     }
 
     /**
-     * @param projectId
      * @param issueDTO
      * @Date 2021/2/12
-     * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
+     * @Description 团队管理-进入迭代管理-看板
+     * 通过迭代id，故事id/故事名称获取故事以及故事下的任务信息
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
-    @PostMapping("/issue/listStorysAndTasks")
-    public ControllerResponse listStorysAndTasks(@RequestHeader(name = "projectId") Long projectId, @RequestBody IssueDTO issueDTO) {
-        List<IssueDTO> result = storyService.listStorysAndTasks(projectId, issueDTO);
+    @PostMapping("/list/stories/union/tasks")
+    public ControllerResponse listStoriesAndTasks(@RequestBody IssueDTO issueDTO) {
+        List<IssueDTO> result = storyService.listStorysAndTasks(issueDTO);
         return ControllerResponse.success(new PageInfo<>(result));
     }
 
@@ -174,7 +206,7 @@ public class StoryContoller {
      * @Description 看板编辑故事状态和任务卡片阻塞状态
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
-    @PostMapping("/issue/editStoryOrTask")
+    @PostMapping("/edit/storyOrTask")
     public ControllerResponse editStoryOrTask(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId") Long projectId) {
         int i = storyService.editStoryOrTask(issueDTO, projectId);
         if (i == 0) {
@@ -190,7 +222,7 @@ public class StoryContoller {
      * @Description 迭代评审获取故事及故事验收标准信息
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
-    @PostMapping("/issue/story/listStoryAcceptance")
+    @PostMapping("/listStoryAcceptance")
     public ControllerResponse listStoryAcceptance(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId") Long projectId) {
         List<IssueDTO> result = storyService.listStoryAcceptance(issueDTO, projectId, issueDTO.getPageNum(), issueDTO.getPageSize());
         return ControllerResponse.success(new PageInfo<>(result));
@@ -202,7 +234,7 @@ public class StoryContoller {
      * @Description 编辑故事评审状态及备注
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
-    @PostMapping("/issue/story/editStoryAssess")
+    @PostMapping("/edit/storyAssess")
     public ControllerResponse editStoryAssess(@RequestBody IssueDTO issueDTO) {
         Preconditions.checkArgument(issueDTO.getAssessRemarks().length() <= 100, "评审备注字段过长，不能超过100！");
         int i = storyService.editStoryAssess(issueDTO);
@@ -221,7 +253,7 @@ public class StoryContoller {
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
-    @GetMapping("/issue/queryAllStory")
+    @GetMapping("/query/all")
     public ControllerResponse queryAllStory(@RequestHeader(name = "projectId", required = false) Long projectId, @RequestParam(value = "pageNum", required = false) Integer pageNum,
                                             @RequestParam(value = "pageSize", required = false) Integer pageSize, @RequestParam(value = "title", required = false) String title,
                                             @RequestParam(name = "projectId", required = false) Long paramProjectId) {
@@ -248,7 +280,7 @@ public class StoryContoller {
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
-    @GetMapping("/issue/queryStoryForEpic")
+    @GetMapping("/query/story/for/epic")
     public ControllerResponse queryStoryForEpic(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "epicId") Long epicId) {
         List<IssueDTO> result;
         try {
@@ -267,7 +299,7 @@ public class StoryContoller {
      * @Param: * @param projectId
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
-    @GetMapping("/issue/queryStoryForFeature")
+    @GetMapping("/query/story/for/feature")
     public ControllerResponse queryStoryForFeature(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "featureId") Long featureId) {
         List<IssueDTO> result;
         try {
@@ -285,7 +317,7 @@ public class StoryContoller {
      * @Description 获取迭代中未完成故事
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
-    @GetMapping("/issue/unfinishedStory/{sprintId}")
+    @GetMapping("/unfinished/{sprintId}")
     public ControllerResponse getUnfinishedStoryList(@PathVariable Long sprintId) {
         return ControllerResponse.success(storyService.getUnfinishedStoryList(sprintId));
     }
@@ -300,7 +332,7 @@ public class StoryContoller {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/8/19
      */
-    @GetMapping("/issue/listUnFinisherStorysByProjectId")
+    @GetMapping("/list/unfinished/story")
     public ControllerResponse listUnFinisherStorysByProjectId(@RequestParam("projectId") Long projectId,
                                                               @RequestParam(value = "name", required = false) String name,
                                                               @RequestParam(value = "pageNum", required = false) Integer pageNum,
@@ -322,7 +354,7 @@ public class StoryContoller {
      * @return
      * @description 提供cicd接口：查询迭代下未完成的用户故事
      */
-    @GetMapping("/issue/getUnfinishedStorysBySprintId")
+    @GetMapping("/getUnfinishedStorysBySprintId")
     public ControllerResponse getUnfinishedStorysBySprintId(@RequestParam("sprintId") Long sprintId,
                                                             @RequestParam(name = "pageNum") Integer pageNum,
                                                             @RequestParam(name = "pageSize") Integer pageSize) {
@@ -342,7 +374,7 @@ public class StoryContoller {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/10/26
      */
-    @GetMapping("/issue/getDevlopManager/{storyId}")
+    @GetMapping("/getDevlopManager/{storyId}")
     public ControllerResponse getDevlopManager(@RequestParam("storyId") Long storyId) {
         try {
             Map<Long, String> mapDevlopManager = storyService.getDevlopManager(storyId);

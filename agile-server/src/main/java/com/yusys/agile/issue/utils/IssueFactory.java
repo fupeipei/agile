@@ -24,14 +24,9 @@ import com.yusys.agile.sysextendfield.domain.SysExtendField;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
-import com.yusys.agile.review.dto.StoryCheckResultDTO;
 import com.yusys.agile.review.service.ReviewService;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.domain.KanbanStageInstance;
-import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.StageService;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.Sprint;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
@@ -113,7 +108,7 @@ public class IssueFactory {
     @Resource
     private RabbitTemplate rabbitTemplate;
     @Resource
-    private SSprintMapper sprintMapper;
+    private SSprintMapper sSprintMapper;
     @Autowired
     private ReviewService reviewService;
     @Autowired
@@ -169,7 +164,7 @@ public class IssueFactory {
         issue.setReallyWorkload(0);
 
         if (null != issue.getSprintId()) {
-            SSprintWithBLOBs sprint = sprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
+            SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
             if (null != sprint) {
                 if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
                     throw new BusinessException("迭代已完成不能再关联工作项");
