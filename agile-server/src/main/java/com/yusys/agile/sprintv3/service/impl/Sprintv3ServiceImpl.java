@@ -1,5 +1,6 @@
 package com.yusys.agile.sprintv3.service.impl;
 
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
@@ -12,6 +13,7 @@ import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
@@ -273,6 +275,27 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         //登录人id
         params.put("user", security.getUserId());
         return params;
+    }
+
+    @Override
+    public List<SprintListDTO> teamInSprint(Long teamId) {
+        /*
+         * 按团队ID查询出所有（进行中、未开始）状态下的有效迭代
+         */
+        SSprintExample example = new SSprintExample();
+        example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE,SprintStatusEnum.TYPE_ONGOING_STATE.CODE))
+                .andTeamIdEqualTo(teamId);
+        example.setOrderByClause("create_time desc");
+        List<SSprint> list = ssprintMapper.selectByExample(example);
+        try {
+            List<SprintListDTO> result = ReflectUtil.copyProperties4List(list, SprintListDTO.class);
+            return result;
+        } catch (Exception e) {
+            log.error("反射失败", e);
+            throw new BusinessException("获取数据失败");
+        }
     }
 
     /**

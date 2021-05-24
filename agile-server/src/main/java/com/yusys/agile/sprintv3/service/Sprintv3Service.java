@@ -80,4 +80,11 @@ public interface Sprintv3Service {
      * @return {@link SprintOverView}
      */
     SprintOverView sprintOverView(long sprintId);
+    /**
+     * 按团队id查询有效迭代
+     * @author zhaofeng
+     * @date 2021/5/24 13:28
+     * @param teamId
+     */
+    List<SprintListDTO> teamInSprint(Long teamId);
 }
