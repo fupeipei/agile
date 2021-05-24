@@ -62,7 +62,7 @@ public interface SSprintMapper {
      * @return
      */
     List<SprintListDTO> queryAllSprint(@Param("params") HashMap<String, Object> params);
-
+    List<SprintListDTO> queryOtherSprint(@Param("params") HashMap<String, Object> params);
     /**
      * 取消迭代
      *

@@ -531,46 +531,81 @@
     </update>
 
     <sql id="query_list_column">
-        sprint_id,
-        sprint_name,
-        status,
-        start_time,
-        end_time,
-        finish_time,
-        sprint_days,
-        team_id,
-        work_hours,
-        version_number,
-        sync_state,
-        create_uid,
-        create_time,
-        tenant_code
+        sp.sprint_id as sprint_id,
+        sp.sprint_name as sprint_name,
+        sp.status as status,
+        sp.start_time as start_time,
+        sp.end_time as end_time,
+        sp.finish_time as finish_time,
+        sp.sprint_days as sprint_days,
+        sp.team_id as team_id,
+        sp.work_hours as work_hours,
+        sp.version_number as version_number,
+        sp.sync_state as sync_state,
+        sp.create_uid as create_uid,
+        sp.create_time as create_time,
+        sp.tenant_code as tenant_code
     </sql>
     <sql id="query_list_param">
-        and state = 'U'
+        sp.team_id = st.team_id
+        and sp.state = 'U'
         <if test="params != null">
-            <if test="params.teamIds != null and params.teamIds.size != 0">
-                and (team_id in
-                <foreach collection="params.teamIds" item="teamId" open="(" close=")" separator=",">
-                    #{teamId}
-                </foreach>
+            <if test="params.team != null and params.team != ''">
+                and (st.team_id like concat('%',#{params.team},'%')
+                    or st.team_name like concat('%',#{params.team},'%')
                 )
             </if>
             <if test="params.sprint != null and params.sprint != ''">
-                and (sprint_name like concat('%',#{params.sprint},'%')
-                or sprint_id like concat('%',#{params.sprint},'%')
+                and (sp.sprint_id like concat('%',#{params.sprint},'%')
+                    or sp.sprint_name like concat('%',#{params.sprint},'%')
                 )
+            </if>
+        </if>
+    </sql>
+    <sql id="query_other_list_param">
+        and sp.team_id = st.team_id
+        and st.team_id = stm.team_id
+        and st.team_id = sts.team_id
+        and sp.state = 'U'
+        <if test="params != null">
+            <if test="params.team != null and params.team != ''">
+                and (st.team_id like concat('%',#{params.team},'%')
+                    or st.team_name like concat('%',#{params.team},'%')
+                )
+            </if>
+            <if test="params.sprint != null and params.sprint != ''">
+                and (sp.sprint_id like concat('%',#{params.sprint},'%')
+                    or sp.sprint_name like concat('%',#{params.sprint},'%')
+                )
+            </if>
+            <if test="params.system != null">
+                and sts.system_id = #{params.system}
+            </if>
+            <if test="params.user != null">
+                and stm.user_id = #{params.user}
             </if>
         </if>
     </sql>
     <select id="queryAllSprint" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
         select
         <include refid="query_list_column"/>
-        from s_sprint
+        from s_sprint sp, s_team st
         <where>
             <include refid="query_list_param"/>
         </where>
-        order by create_time desc
+        order by sp.create_time desc
+    </select>
+    <select id="queryOtherSprint" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        select
+        <include refid="query_list_column"/>
+        from s_sprint sp, s_team st, s_team_member stm, s_team_system sts
+        <where>
+            <include refid="query_other_list_param"/>
+            <if test="params.user != null">
+                and sp.create_uid = #{params.user}
+            </if>
+        </where>
+        order by sp.create_time desc
     </select>
 
     <update id="cancelSprint">
