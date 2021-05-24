@@ -285,7 +285,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         SSprintExample example = new SSprintExample();
         example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
-                .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE,SprintStatusEnum.TYPE_ONGOING_STATE.CODE))
+                .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE,SprintStatusEnum.TYPE_ONGOING_STATE.CODE,SprintStatusEnum.TYPE_FINISHED_STATE.CODE))
                 .andTeamIdEqualTo(teamId);
         example.setOrderByClause("create_time desc");
         List<SSprint> list = ssprintMapper.selectByExample(example);
