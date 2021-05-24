@@ -278,8 +278,6 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteTeam(long teamId) {
-        //删除团队与PO、SM、TM的绑定关系
-        sTeamMemberMapper.deleteByTeamId(teamId);
         //逻辑删除团队
         sTeamMapper.updateStateById(teamId, StateEnum.E.getValue());
         //删除PO、SM的角色，直接按平台级删除
@@ -301,6 +299,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             throw new BusinessException("团队名称已存在");
         }
 
+        //删除团队与系统的绑定关系
+        teamSystemMapper.deleteByTeamId(teamId);
         //删除团队与PO、SM、TM的绑定关系
         sTeamMemberMapper.deleteByTeamId(teamId);
         //删除PO、SM的角色，直接按平台级删除

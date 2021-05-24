@@ -296,17 +296,22 @@
         </foreach>
     </insert>
 
-  <select id="getUserIds4Sprint" resultType="com.yusys.agile.sprint.domain.UserSprintHour">
-    SELECT <include refid="Base_Column_List" /> FROM s_sprint_user_hour WHERE sprint_id = #{sprintId}
-  </select>
+    <select id="getUserIds4Sprint" resultType="com.yusys.agile.sprint.domain.UserSprintHour">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM s_sprint_user_hour
+        WHERE sprint_id = #{sprintId}
+    </select>
 
     <delete id="deleteBySprintId">
-        DELETE FROM s_sprint_user_hour WHERE sprint_id = #{sprintId}
+        DELETE
+        FROM s_sprint_user_hour
+        WHERE sprint_id = #{sprintId}
     </delete>
 
     <select id="listUserHourBySprintId" resultType="com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from s_sprint_user_hour
         <where>
             <choose>
@@ -317,9 +322,15 @@
                     </foreach>
                 </when>
                 <otherwise>
-                    and 1=0
+                    and 1 = 0
                 </otherwise>
             </choose>
         </where>
+    </select>
+
+    <select id="queryUserInfoBySprintId" resultType="java.lang.Long">
+        select user_id
+        from s_sprint_user_hour
+        where sprint_id = #{sprintId}
     </select>
 </mapper>

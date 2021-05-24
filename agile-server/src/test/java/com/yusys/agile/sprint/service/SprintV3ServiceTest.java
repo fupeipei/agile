@@ -155,15 +155,6 @@ public class SprintV3ServiceTest {
         Assert.assertNotNull(s);
     }
 
-    @Test
-    public void sdsdsdsds() {
-        long sprintId =100014l;
-        long userId = 841351045005778944l;
-        boolean b = ssprintMapper.checkSprintPo(sprintId, userId);
-        System.out.println(b);
-    }
-
-
     private SecurityDTO securityDTO;
 
     @Before

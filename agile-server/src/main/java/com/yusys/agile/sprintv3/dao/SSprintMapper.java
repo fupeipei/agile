@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.yusys.agile.sprintv3.responseModel.SprintOverView;
+import com.yusys.agile.teamv3.domain.STeamMember;
 import org.apache.ibatis.annotations.Param;
 
 public interface SSprintMapper {
@@ -63,7 +65,7 @@ public interface SSprintMapper {
      * @return
      */
     List<SprintListDTO> queryAllSprint(@Param("params") HashMap<String, Object> params);
-
+    List<SprintListDTO> queryOtherSprint(@Param("params") HashMap<String, Object> params);
     /**
      * 取消迭代
      *
@@ -114,19 +116,20 @@ public interface SSprintMapper {
     Byte querySprintStatus(long sprintId);
 
     /**
-     * 迭代视图 - 迭代详情
-     *
-     * @param sprintId 迭代id
-     * @return {@link SSprintWithBLOBs}
-     */
-    SSprintWithBLOBs sprintOverViewSprintDetails(long sprintId);
-
-    /**
      * 检查迭代Po
      *
      * @return boolean
      */
     boolean checkSprintPo(@Param("sprintId") long sprintId, @Param("userId") long userId);
+
+    /**
+     * 查询有效的迭代通过id
+     *
+     * @param sprintId 迭代id
+     * @return {@link SSprintWithBLOBs}
+     */
+    SSprintWithBLOBs queryValidSprintById(long sprintId);
+
 
 
     /**
