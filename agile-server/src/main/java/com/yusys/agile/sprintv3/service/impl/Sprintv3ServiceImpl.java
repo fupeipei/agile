@@ -1,6 +1,5 @@
 package com.yusys.agile.sprintv3.service.impl;
 
-import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
@@ -25,14 +24,12 @@ import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
-import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
-import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
@@ -278,7 +275,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<SprintListDTO> teamInSprint(Long teamId) {
+    public List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum) {
         /*
          * 按团队ID查询出所有（进行中、未开始）状态下的有效迭代
          */
@@ -288,6 +285,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE, SprintStatusEnum.TYPE_ONGOING_STATE.CODE, SprintStatusEnum.TYPE_FINISHED_STATE.CODE))
                 .andTeamIdEqualTo(teamId);
         example.setOrderByClause("create_time desc");
+        PageHelper.startPage(pageNum, pageSize);
         List<SSprint> list = ssprintMapper.selectByExample(example);
         try {
             List<SprintListDTO> result = ReflectUtil.copyProperties4List(list, SprintListDTO.class);
