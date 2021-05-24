@@ -4,10 +4,9 @@ import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.domain.STeamSystemExample;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface STeamSystemMapper {
     long countByExample(STeamSystemExample example);

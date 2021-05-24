@@ -38,6 +38,17 @@ public class Sprintv3Controller {
     }
 
     /**
+     * 团队进入迭代-按团队id查询有效迭代
+     * @author zhaofeng
+     * @date 2021/5/24 11:50
+     * @param teamId
+     */
+    @GetMapping("/teamInSprint/{teamId}")
+    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId){
+        return null;
+    }
+
+    /**
      * 条件-分页查询迭代列表
      *
      * @param dto

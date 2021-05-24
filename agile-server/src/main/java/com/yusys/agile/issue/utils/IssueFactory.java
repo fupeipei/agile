@@ -133,33 +133,35 @@ public class IssueFactory {
         Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
         issue.setIssueType(issueType);
 
-        //如果是快速新建过来没有选择阶段走if，新增页面过来走else
-        Long[] stages = issueDTO.getStages();
-        if (null == stages) {
-            if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                //任务选择处理人就是已领取，否则就是未领取
-                if (null != issue.getHandler()) {
-                    issue.setStageId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
-                } else {
-                    issue.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
-                }
-                //从故事获取迭代放入到任务上
-                //故事ID
-                Long parentId = issueDTO.getParentId();
-                //获取迭代ID
-                Issue story = issueMapper.selectByPrimaryKey(parentId);
-                // 任务可能不在故事里也不在迭代里
-                if (null != story) {
-                    issue.setSprintId(story.getSprintId());
-                }
-                issue.setReallyWorkload(0);
+        //处理任务
+        if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
+            //任务选择处理人就是已领取，否则就是未领取
+            if (null != issue.getHandler()) {
+                issue.setStageId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
+            } else {
+                issue.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
             }
-        } else {
+            //从故事获取迭代放入到任务上
+            //故事ID
+            Long parentId = issueDTO.getParentId();
+            //获取迭代ID
+            Issue story = issueMapper.selectByPrimaryKey(parentId);
+            // 任务可能不在故事里也不在迭代里
+            if (null != story) {
+                issue.setSprintId(story.getSprintId());
+            }
+            issue.setReallyWorkload(0);
+        }
+
+        //处理阶段
+        Long[] stages = issueDTO.getStages();
+        if (null != stages) {
             issue.setStageId(stages[0]);
             if (stages.length > 1) {
                 issue.setLaneId(stages[1]);
             }
         }
+
         //处理预计工时，默认8小时且剩余工时等于预计工时
         Integer planWorklaod = issue.getPlanWorkload();
         planWorklaod = Optional.ofNullable(planWorklaod).orElse(8);
@@ -178,18 +180,8 @@ public class IssueFactory {
         issue.setUpdateTime(new Date());
         issueMapper.insertSelective(issue);
 
-        // 评审拦截
-//        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType) && null != issue.getSprintId()) {
-//            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issue.getIssueId(), issueDTO.getProjectId());
-//            if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
-//                LOGGER.info("由于未通过评审，创建故事关联迭代失败！storyId = {}", issue.getIssueId());
-//                throw new BusinessException("由于未通过评审，创建故事不能关联迭代！");
-//            }
-//
-//        }
-
         /**  赋值issue ,保存富文本 */
-        //快速新建过来设置默认模板
+        //处理富文本信息、验收标准
         if (StringUtils.isBlank(issueDTO.getDescription())) {
             IssueTemplate issueTemplate = issueTemplateService.getTemplateByProjectAndType(issueDTO.getSystemId(), issueType);
             if (Optional.ofNullable(issueTemplate).isPresent()) {
@@ -200,9 +192,9 @@ public class IssueFactory {
 
         final Long issueId = issue.getIssueId();
         issueDTO.setIssueId(issueId);
-        //新增故事验收标准
-        createAcceptance(issueDTO, issueType, issueId);
-        //create backlog attachment
+
+
+        //处理附件信息
         List<IssueAttachment> attachments;
         try {
             attachments = ReflectUtil.copyProperties4List(issueDTO.getAttachments(), IssueAttachment.class);
@@ -221,14 +213,14 @@ public class IssueFactory {
             }
         }
 
-        // -自定义字段
+        // 处理自定义字段
         List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
         if (CollectionUtils.isNotEmpty(list)) {
             String json = JSON.toJSONString(list);
             createIssueCustomFields(issueId, json);
         }
 
-        //create backlog history
+        //处理历史记录
         count = createHistory(issueId, newMsg);
         if (count != 1) {
             throw new BusinessException("新增历史记录失败！");
@@ -239,9 +231,6 @@ public class IssueFactory {
 
         //处理模块信息
         dealModules(issueId, issueDTO.getModuleIds());
-
-        //todo 处理新建代办
-        dealCommissionCreate(issue);
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
@@ -268,39 +257,6 @@ public class IssueFactory {
         return issueId;
     }
 
-
-    /**
-     * @param issueDTO
-     * @param issueType
-     * @param issueId
-     * @Date 2021/2/1
-     * @Description 新增故事验收标准
-     * @Return void
-     */
-    private void createAcceptance(IssueDTO issueDTO, Byte issueType, Long issueId) {
-        List<IssueAcceptanceDTO> issueAcceptanceDTOS = issueDTO.getIssueAcceptanceDTOS();
-        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
-            IssueAcceptanceExample issueAcceptanceExample = new IssueAcceptanceExample();
-            IssueAcceptanceExample.Criteria criteria = issueAcceptanceExample.createCriteria();
-            criteria.andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.getValue());
-            List<IssueAcceptance> issueAcceptances = issueAcceptanceMapper.selectByExample(issueAcceptanceExample);
-            if (CollectionUtils.isNotEmpty(issueAcceptances)) {
-                for (IssueAcceptance issueAcceptance : issueAcceptances) {
-                    issueAcceptance.setState(StateEnum.E.getValue());
-                    issueAcceptanceMapper.updateByPrimaryKey(issueAcceptance);
-                }
-            }
-            if (CollectionUtils.isNotEmpty(issueAcceptanceDTOS)) {
-                for (IssueAcceptanceDTO issueAcceptanceDTO : issueAcceptanceDTOS) {
-                    IssueAcceptance issueAcceptance = ReflectUtil.copyProperties(issueAcceptanceDTO, IssueAcceptance.class);
-                    issueAcceptance.setAcceptanceId(null);
-                    issueAcceptance.setIssueId(issueId);
-                    issueAcceptanceMapper.insert(issueAcceptance);
-                }
-            }
-        }
-    }
-
     private void dealSystems(Long issueId, List<Long> systemIds) {
         if (CollectionUtils.isNotEmpty(systemIds)) {
             issueSystemRelpService.batchInsert(issueId, systemIds);
@@ -313,15 +269,6 @@ public class IssueFactory {
         }
     }
 
-    /**
-     * @param issue
-     * @description 处理代办创建业务
-     * @date 2020/07/09
-     */
-    private void dealCommissionCreate(Issue issue) {
-        CommissionDTO commissionDTO = assembleCommissionObject(issue);
-        commissionService.saveCommission(commissionDTO);
-    }
 
     /**
      * @param issue
@@ -389,10 +336,6 @@ public class IssueFactory {
 
             //处理附件并组织附件的变更的历史记录
             dealAttachments(issueDTO, issueId, history);
-
-            //编辑故事验收标准
-            createAcceptance(issueDTO, oldIssue.getIssueType(), issueId);
-
 
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
