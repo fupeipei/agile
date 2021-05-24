@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.commission.dao.CommissionRecordMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.commission.domain.CommissionRecord">
+<mapper namespace="com.yusys.agile.sCommission.dao.CommissionRecordMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.sCommission.domain.CommissionRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="commisson_id" jdbcType="BIGINT" property="commissonId" />
     <result column="title" jdbcType="VARCHAR" property="title" />
@@ -80,7 +80,7 @@
     id, commisson_id, title, type, handler, issue_id, project_id, stage_id, lane_id, 
     state, create_uid, create_time, update_uid, update_time, tenant_code
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.commission.domain.CommissionRecordExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.sCommission.domain.CommissionRecordExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -104,13 +104,13 @@
     delete from commission_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.commission.domain.CommissionRecordExample">
+  <delete id="deleteByExample" parameterType="com.yusys.agile.sCommission.domain.CommissionRecordExample">
     delete from commission_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.commission.domain.CommissionRecord">
+  <insert id="insert" parameterType="com.yusys.agile.sCommission.domain.CommissionRecord">
     insert into commission_record (id, commisson_id, title, 
       type, handler, issue_id, 
       project_id, stage_id, lane_id, 
@@ -124,7 +124,7 @@
       #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.commission.domain.CommissionRecord">
+  <insert id="insertSelective" parameterType="com.yusys.agile.sCommission.domain.CommissionRecord">
     insert into commission_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -221,7 +221,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.commission.domain.CommissionRecordExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.yusys.agile.sCommission.domain.CommissionRecordExample" resultType="java.lang.Long">
     select count(*) from commission_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -301,7 +301,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.commission.domain.CommissionRecord">
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sCommission.domain.CommissionRecord">
     update commission_record
     <set>
       <if test="commissonId != null">
@@ -349,7 +349,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.commission.domain.CommissionRecord">
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sCommission.domain.CommissionRecord">
     update commission_record
     set commisson_id = #{commissonId,jdbcType=BIGINT},
       title = #{title,jdbcType=VARCHAR},

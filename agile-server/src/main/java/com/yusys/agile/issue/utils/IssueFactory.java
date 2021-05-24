@@ -1,7 +1,7 @@
 package com.yusys.agile.issue.utils;
 
-import com.yusys.agile.commission.domain.Commission;
-import com.yusys.agile.commission.dto.CommissionDTO;
+import com.yusys.agile.commission.domain.SCommission;
+import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.consumer.constant.AgileConstant;
@@ -270,17 +270,17 @@ public class IssueFactory {
      * @description 组装代办对象
      * @date 2020/07/09
      */
-    public CommissionDTO assembleCommissionObject(Issue issue) {
-        CommissionDTO commissionDTO = new CommissionDTO();
-        commissionDTO.setIssueId(issue.getIssueId());
-        commissionDTO.setProjectId(issue.getProjectId());
-        commissionDTO.setTitle(issue.getTitle());
-        commissionDTO.setCurrentHandler(issue.getHandler());
-        commissionDTO.setStageId(issue.getStageId());
-        commissionDTO.setLaneId(issue.getLaneId());
-        commissionDTO.setType(issue.getIssueType());
-        commissionDTO.setState(StateEnum.U.getValue());
-        return commissionDTO;
+    public SCommissionDTO assembleCommissionObject(Issue issue) {
+        SCommissionDTO sCommissionDTO = new SCommissionDTO();
+        sCommissionDTO.setIssueId(issue.getIssueId());
+        sCommissionDTO.setProjectId(issue.getProjectId());
+        sCommissionDTO.setTitle(issue.getTitle());
+        sCommissionDTO.setCurrentHandler(issue.getHandler());
+        sCommissionDTO.setStageId(issue.getStageId());
+        sCommissionDTO.setLaneId(issue.getLaneId());
+        sCommissionDTO.setType(issue.getIssueType());
+        sCommissionDTO.setState(StateEnum.U.getValue());
+        return sCommissionDTO;
     }
 
     @ExceptionHandler(value = Throwable.class)
@@ -489,26 +489,26 @@ public class IssueFactory {
     public void dealCommissionEdit(Long issueId) {
         LOGGER.info("dealCommissionEdit param issueId:{}", issueId);
         boolean exist = false;
-        Commission commission = commissionService.getCommissionByIssueId(issueId);
-        if (Optional.ofNullable(commission).isPresent()) {
+        SCommission sCommission = commissionService.getCommissionByIssueId(issueId);
+        if (Optional.ofNullable(sCommission).isPresent()) {
             exist = true;
         }
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         if (Optional.ofNullable(issue).isPresent()) {
             Long currentHandler = issue.getHandler();
-            CommissionDTO commissionDTO = assembleCommissionObject(issue);
+            SCommissionDTO sCommissionDTO = assembleCommissionObject(issue);
             //工作项对应代办存在
             if (exist) {
-                commissionDTO.setState(commission.getState());
-                commissionDTO.setUpdateTime(new Date());
-                commissionDTO.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
+                sCommissionDTO.setState(sCommission.getState());
+                sCommissionDTO.setUpdateTime(new Date());
+                sCommissionDTO.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
                 if (null != currentHandler) {
-                    Long oldCurrentHandler = commission.getCurrentHandler();
+                    Long oldCurrentHandler = sCommission.getCurrentHandler();
                     //更新代办
                     if (Optional.ofNullable(currentHandler).isPresent() && !currentHandler.equals(oldCurrentHandler)) {
-                        commissionService.updateCommission(commissionDTO);
+                        commissionService.updateCommission(sCommissionDTO);
                     } else if (Optional.ofNullable(oldCurrentHandler).isPresent() && !oldCurrentHandler.equals(currentHandler)) {
-                        commissionService.updateCommission(commissionDTO);
+                        commissionService.updateCommission(sCommissionDTO);
                     }
                 }
             }
@@ -516,7 +516,7 @@ public class IssueFactory {
             else {
                 //保存代办
                 if (null != currentHandler) {
-                    commissionService.saveCommission(commissionDTO);
+                    commissionService.saveCommission(sCommissionDTO);
                 }
             }
         }
@@ -621,8 +621,7 @@ public class IssueFactory {
         //更新工作项为失效
         upateIssue(issueId);
 
-        //todo 删除代办
-        commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
+        commissionService.deleteCommission(issueId);
 
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
 

@@ -1,6 +1,6 @@
 package com.yusys.agile.fault.service.impl;
 
-import com.yusys.agile.commission.dto.CommissionDTO;
+import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.constant.StringConstant;
@@ -19,7 +19,6 @@ import com.yusys.agile.fault.service.FaultService;
 import com.yusys.agile.headerfield.dao.HeaderFieldMapper;
 import com.yusys.agile.headerfield.domain.HeaderField;
 import com.yusys.agile.headerfield.domain.HeaderFieldExample;
-import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.headerfield.util.HeaderFieldUtil;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
@@ -28,8 +27,6 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.enums.IssueField;
-import com.yusys.agile.issue.enums.IssueHistoryRecordTypeEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueService;
@@ -53,7 +50,6 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
-import com.yusys.portal.util.dto.CommonHttpResponse;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -153,8 +149,8 @@ public class FaultServiceImpl implements FaultService {
 
         // todo 附件
 
-        CommissionDTO commissionDTO = issueFactory.assembleCommissionObject(issue);
-        commissionService.saveCommission(commissionDTO);
+        SCommissionDTO sCommissionDTO = issueFactory.assembleCommissionObject(issue);
+        commissionService.saveCommission(sCommissionDTO);
 
         //邮件发送
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
