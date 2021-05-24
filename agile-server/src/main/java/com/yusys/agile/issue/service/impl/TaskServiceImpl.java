@@ -92,6 +92,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void editTask(IssueDTO issueDTO) {
+        //校验参数
         Issue oldTask = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         this.ckeckTaksParams(oldTask.getSprintId());
 

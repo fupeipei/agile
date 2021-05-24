@@ -29,6 +29,11 @@ public class TaskController {
     @Resource
     private TaskService taskService;
 
+    /**
+     * 用户故事下新建任务
+     * @param issueDTO
+     * @return
+     */
     @PostMapping("/createTask")
     public ControllerResponse createTask(@RequestBody IssueDTO issueDTO) {
         try {
@@ -51,6 +56,12 @@ public class TaskController {
         return ControllerResponse.success(taskService.queryTask(taskId));
     }
 
+    /**
+     * 用户故事下删除任务
+     * @param taskId
+     * @param deleteChild
+     * @return
+     */
     @DeleteMapping("/deleteTask/{taskId}")
     public ControllerResponse deleteTask(@PathVariable("taskId") Long taskId, @RequestParam(name = "deleteChild") Boolean deleteChild) {
         try {
@@ -62,11 +73,16 @@ public class TaskController {
         return ControllerResponse.success("删除任务成功！");
     }
 
+    /**
+     * 用户故事下修改任务
+     * @param
+     * @return
+     */
     @PostMapping("/editTask")
-    public ControllerResponse editTask(@RequestBody Map<String, Object> map) {
-        //暂时先将扩展字段扔掉
-        JSONObject jsonObject = new JSONObject(map);
-        IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
+    public ControllerResponse editTask(@RequestBody IssueDTO issueDTO) {
+//        //暂时先将扩展字段扔掉
+//        JSONObject jsonObject = new JSONObject(map);
+//        IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
         taskService.editTask(issueDTO);
         return ControllerResponse.success("编辑任务成功！");
     }

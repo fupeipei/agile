@@ -45,7 +45,8 @@ public class Sprintv3Controller {
      */
     @GetMapping("/teamInSprint/{teamId}")
     public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId){
-        return null;
+        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId);
+        return ControllerResponse.success(list);
     }
 
     /**
