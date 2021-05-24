@@ -3,10 +3,10 @@ package com.yusys.agile.commission.service.impl;
 import com.yusys.agile.commission.constants.CommissionConstant;
 import com.yusys.agile.commission.dao.CommissionMapper;
 import com.yusys.agile.commission.dao.CommissionRecordMapper;
-import com.yusys.agile.commission.domain.Commission;
-import com.yusys.agile.commission.domain.CommissionExample;
-import com.yusys.agile.commission.domain.CommissionRecord;
-import com.yusys.agile.commission.dto.CommissionDTO;
+import com.yusys.agile.commission.domain.SCommission;
+import com.yusys.agile.commission.domain.SCommissionExample;
+import com.yusys.agile.commission.domain.SCommissionRecord;
+import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
@@ -60,67 +60,67 @@ public class CommissionServiceImpl implements CommissionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveCommission(CommissionDTO commissionDTO) {
-        if (null == commissionDTO.getCurrentHandler()) {
+    public void saveCommission(SCommissionDTO sCommissionDTO) {
+        if (null == sCommissionDTO.getCurrentHandler()) {
             return;
         }
-        Commission commission = ReflectUtil.copyProperties(commissionDTO, Commission.class);
-        commission.setCreateUid(UserThreadLocalUtil.getUserInfo().getUserId());
-        commission.setCreateTime(new Date());
-        commission.setState(StateEnum.U.getValue());
-        commission.setTenantCode(UserThreadLocalUtil.getUserInfo().getTenantCode());
+        SCommission sCommission = ReflectUtil.copyProperties(sCommissionDTO, SCommission.class);
+        sCommission.setCreateUid(UserThreadLocalUtil.getUserInfo().getUserId());
+        sCommission.setCreateTime(new Date());
+        sCommission.setState(StateEnum.U.getValue());
+        sCommission.setTenantCode(UserThreadLocalUtil.getUserInfo().getTenantCode());
         //保存代办
-        int count = commissionMapper.insert(commission);
+        int count = commissionMapper.insert(sCommission);
         if (count != 1) {
             throw new RuntimeException("保存代办异常");
         }
-        saveCommissionRecord(commission);
+        saveCommissionRecord(sCommission);
     }
 
     /**
-     * @param commission
+     * @param sCommission
      * @description 保存代办记录
      * @date 2021/2/1
      */
-    private void saveCommissionRecord(Commission commission) {
+    private void saveCommissionRecord(SCommission sCommission) {
         //保存代办记录
-        CommissionRecord commissionRecord = getCommissionRecord(commission);
-        int count = commissionRecordMapper.insert(commissionRecord);
+        SCommissionRecord sCommissionRecord = getCommissionRecord(sCommission);
+        int count = commissionRecordMapper.insert(sCommissionRecord);
         if (count != 1) {
             throw new RuntimeException("保存代办记录异常");
         }
     }
 
-    private CommissionRecord getCommissionRecord(Commission commission) {
-        Long commissionId = commission.getId();
-        CommissionRecord commissionRecord = new CommissionRecord();
-        commissionRecord.setCommissonId(commissionId);
-        commissionRecord.setTitle(commission.getTitle());
-        commissionRecord.setType(commission.getType());
-        commissionRecord.setHandler(commission.getCurrentHandler());
-        commissionRecord.setIssueId(commission.getIssueId());
-        commissionRecord.setProjectId(commission.getProjectId());
-        commissionRecord.setStageId(commission.getStageId());
-        commissionRecord.setLaneId(commission.getLaneId());
-        commissionRecord.setState(commission.getState());
-        commissionRecord.setCreateTime(new Date());
-        commissionRecord.setCreateUid(commission.getCreateUid());
-        commissionRecord.setTenantCode(commission.getTenantCode());
-        return commissionRecord;
+    private SCommissionRecord getCommissionRecord(SCommission sCommission) {
+        Long commissionId = sCommission.getId();
+        SCommissionRecord sCommissionRecord = new SCommissionRecord();
+        sCommissionRecord.setCommissonId(commissionId);
+        sCommissionRecord.setTitle(sCommission.getTitle());
+        sCommissionRecord.setType(sCommission.getType());
+        sCommissionRecord.setHandler(sCommission.getCurrentHandler());
+        sCommissionRecord.setIssueId(sCommission.getIssueId());
+        sCommissionRecord.setProjectId(sCommission.getProjectId());
+        sCommissionRecord.setStageId(sCommission.getStageId());
+        sCommissionRecord.setLaneId(sCommission.getLaneId());
+        sCommissionRecord.setState(sCommission.getState());
+        sCommissionRecord.setCreateTime(new Date());
+        sCommissionRecord.setCreateUid(sCommission.getCreateUid());
+        sCommissionRecord.setTenantCode(sCommission.getTenantCode());
+        return sCommissionRecord;
     }
 
     @Override
-    public void updateCommission(int type, CommissionDTO commissionDTO) {
-        LOGGER.info("updateCommission method param issueId:{}", commissionDTO.getIssueId());
-        Commission commission = ReflectUtil.copyProperties(commissionDTO, Commission.class);
-        commission.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
-        commission.setUpdateTime(new Date());
-        commission.setTenantCode(UserThreadLocalUtil.getUserInfo().getTenantCode());
+    public void updateCommission(int type, SCommissionDTO sCommissionDTO) {
+        LOGGER.info("updateCommission method param issueId:{}", sCommissionDTO.getIssueId());
+        SCommission sCommission = ReflectUtil.copyProperties(sCommissionDTO, SCommission.class);
+        sCommission.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
+        sCommission.setUpdateTime(new Date());
+        sCommission.setTenantCode(UserThreadLocalUtil.getUserInfo().getTenantCode());
         int count = 0;
         if (type == CommissionConstant.ISSUE_TYPE) {
-            count = commissionMapper.updateByIssueIdSelective(commission);
+            count = commissionMapper.updateByIssueIdSelective(sCommission);
         } else if (type == CommissionConstant.PRIMARY_KEY_TYPE) {
-            count = commissionMapper.updateByPrimaryKeySelective(commission);
+            count = commissionMapper.updateByPrimaryKeySelective(sCommission);
         }
         if (count != 1) {
             throw new RuntimeException("更新代办异常");
@@ -128,36 +128,36 @@ public class CommissionServiceImpl implements CommissionService {
     }
 
     @Override
-    public PageInfo<List<CommissionDTO>> getCommissionList(Long currentHandler, String title, Integer pageNum, Integer pageSize) {
-        List<CommissionDTO> commissionDTOList = Lists.newArrayList();
+    public PageInfo<List<SCommissionDTO>> getCommissionList(Long currentHandler, String title, Integer pageNum, Integer pageSize) {
+        List<SCommissionDTO> sCommissionDTOList = Lists.newArrayList();
         PageHelper.startPage(pageNum, pageSize);
-        Commission commission = new Commission();
-        commission.setCurrentHandler(currentHandler);
-        commission.setTitle(title);
-        List<Commission> commissionList = commissionMapper.selectCommissionList(commission);
-        if (CollectionUtils.isNotEmpty(commissionList)) {
+        SCommission sCommission = new SCommission();
+        sCommission.setCurrentHandler(currentHandler);
+        sCommission.setTitle(title);
+        List<SCommission> sCommissionList = commissionMapper.selectCommissionList(sCommission);
+        if (CollectionUtils.isNotEmpty(sCommissionList)) {
             try {
-                commissionDTOList = ReflectUtil.copyProperties4List(commissionList, CommissionDTO.class);
+                sCommissionDTOList = ReflectUtil.copyProperties4List(sCommissionList, SCommissionDTO.class);
             } catch (Exception e) {
                 LOGGER.error("getCommissionList copyProperties4List method param currentHandler:{}, title:{} occur exception:{}", e.getMessage());
             }
             Set<Long> projectIdSet = Sets.newHashSet();
-            commissionList.forEach(obj -> {
+            sCommissionList.forEach(obj -> {
                 projectIdSet.add(obj.getProjectId());
             });
-            dealCommissionList(commissionDTOList, currentHandler, projectIdSet);
+            dealCommissionList(sCommissionDTOList, currentHandler, projectIdSet);
         }
-        return new PageInfo(commissionDTOList);
+        return new PageInfo(sCommissionDTOList);
     }
 
     /**
-     * @param commissionDTOList
+     * @param sCommissionDTOList
      * @param currentHandler
      * @param projectIdSet
      * @description 处理代办列表
      * @date 2021/2/1
      */
-    private void dealCommissionList(List<CommissionDTO> commissionDTOList, Long currentHandler, Set<Long> projectIdSet) {
+    private void dealCommissionList(List<SCommissionDTO> sCommissionDTOList, Long currentHandler, Set<Long> projectIdSet) {
         //根据用户id查询用户名称
         SsoUser ssoUser = iFacadeUserApi.queryUserById(currentHandler);
         //批量查询项目名称
@@ -168,59 +168,59 @@ public class CommissionServiceImpl implements CommissionService {
             ssoProjectList.forEach(project -> {
                 projectMap.put(project.getProjectId(), project.getProjectName());
             });
-            for (CommissionDTO commissionDTO : commissionDTOList) {
-                Long projectId = commissionDTO.getProjectId();
-                commissionDTO.setProjectName(projectMap.get(projectId));
+            for (SCommissionDTO sCommissionDTO : sCommissionDTOList) {
+                Long projectId = sCommissionDTO.getProjectId();
+                sCommissionDTO.setProjectName(projectMap.get(projectId));
                 if (null != ssoUser) {
-                    commissionDTO.setCurrentHandlerName(ssoUser.getUserName());
+                    sCommissionDTO.setCurrentHandlerName(ssoUser.getUserName());
                 }
             }
         }
     }
 
     @Override
-    public CommissionDTO getCommissionById(Long commissionId) {
-        CommissionDTO commissionDTO = new CommissionDTO();
-        Commission commission = commissionMapper.selectByPrimaryKey(commissionId);
-        if (commission != null) {
-            commissionDTO = ReflectUtil.copyProperties(commission, commissionDTO.getClass());
-            Long projectId = commissionDTO.getProjectId();
+    public SCommissionDTO getCommissionById(Long commissionId) {
+        SCommissionDTO sCommissionDTO = new SCommissionDTO();
+        SCommission sCommission = commissionMapper.selectByPrimaryKey(commissionId);
+        if (sCommission != null) {
+            sCommissionDTO = ReflectUtil.copyProperties(sCommission, sCommissionDTO.getClass());
+            Long projectId = sCommissionDTO.getProjectId();
             if (null != projectId) {
                 SsoProject ssoProject = iFacadeProjectApi.getProjectInfoById(projectId);
                 if (null != ssoProject) {
-                    commissionDTO.setProjectName(ssoProject.getProjectName());
+                    sCommissionDTO.setProjectName(ssoProject.getProjectName());
                 }
             }
-            Long currentHandler = commission.getCurrentHandler();
+            Long currentHandler = sCommission.getCurrentHandler();
             if (null != currentHandler) {
                 SsoUser ssoUser = iFacadeUserApi.queryUserById(currentHandler);
                 if (null != ssoUser) {
-                    commissionDTO.setCurrentHandlerName(ssoUser.getUserName());
+                    sCommissionDTO.setCurrentHandlerName(ssoUser.getUserName());
                 }
             }
         }
-        return commissionDTO;
+        return sCommissionDTO;
     }
 
     @Override
-    public Commission getCommissionByIssueId(Long issueId) {
-        Commission commission = null;
-        CommissionExample commissionExample = new CommissionExample();
-        commissionExample.createCriteria().andIssueIdEqualTo(issueId);
-        List<Commission> commissionList = commissionMapper.selectByExample(commissionExample);
-        if (CollectionUtils.isNotEmpty(commissionList)) {
-            commission = commissionList.get(0);
+    public SCommission getCommissionByIssueId(Long issueId) {
+        SCommission sCommission = null;
+        SCommissionExample sCommissionExample = new SCommissionExample();
+        sCommissionExample.createCriteria().andIssueIdEqualTo(issueId);
+        List<SCommission> sCommissionList = commissionMapper.selectByExample(sCommissionExample);
+        if (CollectionUtils.isNotEmpty(sCommissionList)) {
+            sCommission = sCommissionList.get(0);
         }
-        return commission;
+        return sCommission;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateCommission(CommissionDTO commissionDTO) {
-        Commission commission = ReflectUtil.copyProperties(commissionDTO, Commission.class);
-        commission.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
-        commission.setUpdateTime(new Date());
-        int count = commissionMapper.updateCommissionByIssueId(commission);
+    public void updateCommission(SCommissionDTO sCommissionDTO) {
+        SCommission sCommission = ReflectUtil.copyProperties(sCommissionDTO, SCommission.class);
+        sCommission.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
+        sCommission.setUpdateTime(new Date());
+        int count = commissionMapper.updateCommissionByIssueId(sCommission);
         if (count != 1) {
             throw new RuntimeException("更新代办异常");
         }
@@ -228,15 +228,15 @@ public class CommissionServiceImpl implements CommissionService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveOrUpdateCommission(boolean exist, CommissionDTO commissionDTO, Long issueId) {
+    public void saveOrUpdateCommission(boolean exist, SCommissionDTO sCommissionDTO, Long issueId) {
         if (exist) {
-            updateCommission(commissionDTO);
+            updateCommission(sCommissionDTO);
             int result = saveCommissionRecord(issueId);
             if (result != 1) {
                 throw new RuntimeException("保存代办记录异常");
             }
         } else {
-            saveCommission(commissionDTO);
+            saveCommission(sCommissionDTO);
         }
     }
 
@@ -248,62 +248,46 @@ public class CommissionServiceImpl implements CommissionService {
      */
     private int saveCommissionRecord(Long issueId) {
         int count = 0;
-        CommissionExample commissionExample = new CommissionExample();
-        commissionExample.createCriteria().andIssueIdEqualTo(issueId);
+        SCommissionExample sCommissionExample = new SCommissionExample();
+        sCommissionExample.createCriteria().andIssueIdEqualTo(issueId);
         //查询代办是否存在
-        List<Commission> commissionList = commissionMapper.selectByExample(commissionExample);
-        if (CollectionUtils.isNotEmpty(commissionList)) {
+        List<SCommission> sCommissionList = commissionMapper.selectByExample(sCommissionExample);
+        if (CollectionUtils.isNotEmpty(sCommissionList)) {
             Issue issue = issueMapper.selectByPrimaryKey(issueId);
             if (null != issue) {
-                Commission commission = commissionList.get(0);
-                CommissionRecord commissionRecord = generateCommission(issueId, issue, commission);
-                count = commissionRecordMapper.insert(commissionRecord);
+                SCommission sCommission = sCommissionList.get(0);
+                SCommissionRecord sCommissionRecord = generateCommission(issueId, issue, sCommission);
+                count = commissionRecordMapper.insert(sCommissionRecord);
             }
         }
         return count;
     }
 
-    private CommissionRecord generateCommission(Long issueId, Issue issue, Commission commission) {
-        Long commissionId = commission.getId();
-        CommissionRecord commissionRecord = new CommissionRecord();
-        commissionRecord.setCommissonId(commissionId);
-        commissionRecord.setIssueId(issueId);
-        commissionRecord.setTitle(commission.getTitle());
-        commissionRecord.setType(issue.getIssueType());
-        commissionRecord.setHandler(issue.getHandler());
-        commissionRecord.setProjectId(issue.getProjectId());
-        commissionRecord.setStageId(issue.getStageId());
-        commissionRecord.setLaneId(issue.getLaneId());
-        commissionRecord.setState(StateEnum.U.getValue());
-        commissionRecord.setCreateUid(issue.getCreateUid());
-        commissionRecord.setCreateTime(new Date());
-        commissionRecord.setTenantCode(UserThreadLocalUtil.getUserInfo().getTenantCode());
-        return commissionRecord;
+    private SCommissionRecord generateCommission(Long issueId, Issue issue, SCommission sCommission) {
+        Long commissionId = sCommission.getId();
+        SCommissionRecord sCommissionRecord = new SCommissionRecord();
+        sCommissionRecord.setCommissonId(commissionId);
+        sCommissionRecord.setIssueId(issueId);
+        sCommissionRecord.setTitle(sCommission.getTitle());
+        sCommissionRecord.setType(issue.getIssueType());
+        sCommissionRecord.setHandler(issue.getHandler());
+        sCommissionRecord.setProjectId(issue.getProjectId());
+        sCommissionRecord.setStageId(issue.getStageId());
+        sCommissionRecord.setLaneId(issue.getLaneId());
+        sCommissionRecord.setState(StateEnum.U.getValue());
+        sCommissionRecord.setCreateUid(issue.getCreateUid());
+        sCommissionRecord.setCreateTime(new Date());
+        sCommissionRecord.setTenantCode(UserThreadLocalUtil.getUserInfo().getTenantCode());
+        return sCommissionRecord;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateCommissionState(Long issueId, String state) {
-        LOGGER.info("updateCommissionState param issueId:{},state:{}", issueId, state);
+    public void deleteCommission(Long issueId) {
+        LOGGER.info("updateCommissionState param issueId:{}", issueId);
         //关闭代办
-        Commission commission = getCommissionByIssueId(issueId);
-        if (null != commission) {
-            commission = new Commission();
-            commission.setIssueId(issueId);
-            Issue issue = issueMapper.selectByPrimaryKey(issueId);
-            if (null != issue) {
-                commission.setStageId(issue.getStageId());
-                commission.setLaneId(issue.getLaneId());
-                commission.setCurrentHandler(issue.getHandler());
-            }
-            commission.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
-            commission.setUpdateTime(new Date());
-            commission.setState(state);
-            int count = commissionMapper.updateByIssueIdSelective(commission);
-            LOGGER.info("updateCommissionState param issueId:{}, state:{}, affect row:{}", count);
-            if (count != 1) {
-                throw new RuntimeException("updateCommissionState issueId: " + issueId + " state: " + state + "异常");
-            }
-        }
+        SCommissionExample sCommissionExample = new SCommissionExample();
+        sCommissionExample.createCriteria().andIssueIdEqualTo(issueId);
+        commissionMapper.deleteByExample(sCommissionExample);
     }
 }

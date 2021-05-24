@@ -1,31 +1,31 @@
 package com.yusys.agile.commission.dao;
 
-import com.yusys.agile.commission.domain.CommissionRecord;
-import com.yusys.agile.commission.domain.CommissionRecordExample;
+import com.yusys.agile.commission.domain.SCommissionRecord;
+import com.yusys.agile.commission.domain.SCommissionRecordExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface CommissionRecordMapper {
-    long countByExample(CommissionRecordExample example);
+    long countByExample(SCommissionRecordExample example);
 
-    int deleteByExample(CommissionRecordExample example);
+    int deleteByExample(SCommissionRecordExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(CommissionRecord record);
+    int insert(SCommissionRecord record);
 
-    int insertSelective(CommissionRecord record);
+    int insertSelective(SCommissionRecord record);
 
-    List<CommissionRecord> selectByExample(CommissionRecordExample example);
+    List<SCommissionRecord> selectByExample(SCommissionRecordExample example);
 
-    CommissionRecord selectByPrimaryKey(Long id);
+    SCommissionRecord selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") CommissionRecord record, @Param("example") CommissionRecordExample example);
+    int updateByExampleSelective(@Param("record") SCommissionRecord record, @Param("example") SCommissionRecordExample example);
 
-    int updateByExample(@Param("record") CommissionRecord record, @Param("example") CommissionRecordExample example);
+    int updateByExample(@Param("record") SCommissionRecord record, @Param("example") SCommissionRecordExample example);
 
-    int updateByPrimaryKeySelective(CommissionRecord record);
+    int updateByPrimaryKeySelective(SCommissionRecord record);
 
-    int updateByPrimaryKey(CommissionRecord record);
+    int updateByPrimaryKey(SCommissionRecord record);
 }

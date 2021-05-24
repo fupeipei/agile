@@ -7,43 +7,51 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ *  @Description: 用户故事服务
+ *  @author: zhao_yd
+ *  @Date: 2021/5/24 1:44 下午
+ *
+ */
+
 public interface StoryService {
 
     /**
-     * @Date: 18:07
-     * @Description: 查询用户故事
-     * @Param: * @param storyId
-     * @Return: com.yusys.agile.issue.dto.IssueDTO
+     * 创建用户故事
+     * @param issueDTO
+     * @return
      */
-    //IssueDTO queryStory(Long storyId, Long projectId);
+    Long createStory(IssueDTO issueDTO);
+
+    /**
+     * 查询用户故事
+     * @param storyId
+     * @return
+     */
     IssueDTO queryStory(Long storyId);
 
     /**
+     * 删除用户故事
+     * @param storyId
      * @param deleteChild
-     * @Date: 18:08
-     * @Description: 删除用户故事
-     * @Param: * @param storyId
-     * @Return: int
      */
-    //void deleteStory(Long storyId, Boolean deleteChild,Long projectId);
     void deleteStory(Long storyId, Boolean deleteChild);
 
+
     /**
-     * @param
-     * @Date: 18:08
-     * @Description: 编辑用户故事
-     * @Param: * @param issueDTO
-     * @Return: void
+     * 编辑用户故事
+     * @param issueDTO
      */
     void editStory(IssueDTO issueDTO);
 
     /**
-     * @Date: 18:08
-     * @Description: 创建用户故事
-     * @Param: * @param issueDTO
-     * @Return: Long issueId
+     * 将故事移出迭代
+     * @param sprintId
+     * @param storyId
+     * @return int 故事记录创建条数
      */
-    Long createStory(IssueDTO issueDTO);
+    int removeStory4Sprint(Long sprintId, Long storyId);
 
     /**
      * @param projectId
@@ -57,15 +65,6 @@ public interface StoryService {
     int distributeSprint(Long storyId, Long sprintId);
 
     /**
-     * @param sprintId
-     * @param storyId
-     * @Date 2020/4/17 17:27
-     * @Description 将故事移出迭代
-     * @Return int 故事记录创建条数
-     */
-    int removeStory4Sprint(Long sprintId, Long storyId);
-
-    /**
      * @param pageNum
      * @param pageSize
      * @param title
@@ -77,13 +76,12 @@ public interface StoryService {
     List<IssueDTO> queryUnlinkedStory(Long projectId, Integer pageNum, Integer pageSize, String title);
 
     /**
-     * @param projectId
      * @param issueDTO
      * @Date 2021/2/12
      * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> listStorysAndTasks(Long projectId, IssueDTO issueDTO);
+    List<IssueDTO> listStorysAndTasks(IssueDTO issueDTO);
 
     /**
      * @param issueDTO
@@ -227,4 +225,10 @@ public interface StoryService {
      * @date 2020/10/26
      */
     Map<Long, String> getDevlopManager(Long storyId);
+
+    /**
+     * 判断迭代已完成，已取消，以及迭代结束日期小于当前时间的迭代
+     * @param sprintId 迭代id
+     */
+  void checkSprintParam(Long sprintId);
 }

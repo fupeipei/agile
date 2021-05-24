@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.yusys.agile.burndown.dao.BurnDownChartStoryDao;
 import com.yusys.agile.constant.StringConstant;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
@@ -17,6 +18,8 @@ import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
+import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.review.dto.StoryCheckResultDTO;
@@ -49,12 +52,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @Date: 13:34
+ *  @Description: 用户故事实现类
+ *  @author: zhao_yd
+ *  @Date: 2021/5/24 1:43 下午
+ *
  */
+
 @Service
 public class StoryServiceImpl implements StoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoryServiceImpl.class);
@@ -73,16 +83,12 @@ public class StoryServiceImpl implements StoryService {
     private IFacadeUserApi iFacadeUserApi;
     @Resource
     private IssueAcceptanceMapper issueAcceptanceMapper;
-    @Autowired
-    private ReviewService reviewService;
     @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
     @Resource
-    private KanbanStageInstanceMapper kanbanStageInstanceMapper;
-    @Resource
-    private StageService stageService;
-    @Resource
     private IssueRichTextFactory issueRichTextFactory;
+    @Resource
+    private IStageService stageService;
 
     /**
      * 功能描述 百分号
@@ -92,12 +98,28 @@ public class StoryServiceImpl implements StoryService {
      */
     private static final String PERCENT_SIGN = "%";
 
-    /*@Override
-    public IssueDTO queryStory(Long storyId, Long projectId) {
-        IssueDTO issueDTO = issueFactory.queryIssue(storyId, projectId);
+    @Override
+    public Long createStory(IssueDTO issueDTO) {
+        //设置默认创建
+        Long[] stages = issueDTO.getStages();
+        if(!Optional.ofNullable(stages).isPresent()){
+            List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
+            stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
+            //创建用户故事默认放在开发中的未开始阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
+            if(CollectionUtils.isNotEmpty(stageInstances)){
+                Long sprintId = issueDTO.getSprintId();
+                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(0):stageInstances.get(1);
+                stages[1] = stageInstance.getStageId();
+            }
+            issueDTO.setStages(stages);
+        }
+        Long storyId = issueFactory.createIssue(issueDTO, "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
+        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
+        issue.setIssueType(IssueTypeEnum.TYPE_STORY.CODE);
 
-        return issueDTO;
-    }*/
+        return storyId;
+    }
+
 
     @Override
     public IssueDTO queryStory(Long storyId) {
@@ -111,20 +133,12 @@ public class StoryServiceImpl implements StoryService {
         issueFactory.deleteIssue(storyId, deleteChild);
     }
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void editStory(IssueDTO issueDTO) {
         Issue oldStory = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         Long projectId = oldStory.getProjectId();
-        // 评审拦截
-        if (!ObjectUtil.equals(oldStory.getSprintId(), issueDTO.getSprintId())) {
-            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issueDTO.getIssueId(), projectId);
-            if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
-                LOGGER.info("由于未通过评审，修改故事关联迭代失败！storyId = {}", issueDTO.getIssueId());
-                throw new BusinessException(storyCheckResultDTO.getMsg());
-            }
-
-        }
 
         //校验故事下有未完成任务或未修复缺陷不允许改为完成阶段
         Long[] stages = issueDTO.getStages();
@@ -133,7 +147,6 @@ public class StoryServiceImpl implements StoryService {
                 throw new BusinessException("故事下有未完成任务或未修复缺陷不允许改为完成阶段！");
             }
         }
-
 
         Issue story = issueFactory.editIssue(issueDTO, oldStory, projectId);
         int count;
@@ -170,16 +183,6 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public Long createStory(IssueDTO issueDTO) {
-
-        Long storyId = issueFactory.createIssue(issueDTO, "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
-        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
-        issue.setIssueType(IssueTypeEnum.TYPE_STORY.CODE);
-
-        return storyId;
-    }
-
-    @Override
     public Long copyStory(Long storyId, Long projectId) {
         return issueFactory.copyIssue(storyId, projectId, "该复制的用户故事已失效！", "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
     }
@@ -195,9 +198,11 @@ public class StoryServiceImpl implements StoryService {
         if (null == sprint || !StringUtils.equals(sprint.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }
-        //故事的迭代id为null
+        //故事的迭代id为null 故事的状态为未开始
         issue.setSprintId(null);
         issue.setUpdateTime(new Date());
+        issue.setStageId(104L);
+        issue.setHandler(null);
         int i = issueMapper.updateByPrimaryKey(issue);
         if (i != 1) {
             throw new BusinessException(ExceptionCodeEnum.SYS_ERROR.getDesc());
@@ -227,7 +232,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> listStorysAndTasks(Long projectId, IssueDTO issueDTO) {
+    public List<IssueDTO> listStorysAndTasks( IssueDTO issueDTO) {
         String filter = issueDTO.getStoryKeyWord();
         String taskKeyWord = issueDTO.getTaskKeyWord();
         Long sprintId = issueDTO.getSprintId();
@@ -237,55 +242,50 @@ public class StoryServiceImpl implements StoryService {
         List<Integer> taskTypes = issueDTO.getTaskTypes();
         List<Long> handlers = issueDTO.getHandlers();
 
-        if (null == projectId) {
-            throw new BusinessException("查询故事项目id为空！");
-        }
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
         }
         IssueExample example = new IssueExample();
-        example.setOrderByClause("`order` desc,create_time desc");
+        example.setOrderByClause("priority desc,create_time desc");
 
         IssueExample.Criteria criteria = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
-                .andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
+                .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
         IssueExample.Criteria criteria2 = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
-                .andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
+                .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
 
         // 判断是根据id还是name
-        if (StringUtils.isNotBlank(filter)) {
-            try {
-                Long id = Long.valueOf(filter);
-                // 能转成long，说明可能是id，也可能是name
-                criteria.andIssueIdEqualTo(id);
-                // 同时赋值给标题
-                criteria2.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
-                example.or(criteria2);
-            } catch (Exception e) {
-                LOGGER.info("转换异常e:{}", e);
-                // 存在异常说明只能查name
-                criteria.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
-            }
-        }
+        doFilterCondition(filter, example, criteria, criteria2);
 
         List<IssueDTO> issueDTOS = issueMapper.selectByExampleDTO(example);
-
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             //获取故事下的任务
-            issueDTOS = getChildren(projectId, sprintId, issueDTOS, taskKeyWord, stageIds, taskTypes, handlers);
+            issueDTOS = getChildren(sprintId, issueDTOS, taskKeyWord, stageIds, taskTypes, handlers);
         }
         return issueDTOS;
     }
 
+    private void doFilterCondition(String filter, IssueExample example, IssueExample.Criteria criteria, IssueExample.Criteria criteria2) {
+        if (StringUtils.isNotBlank(filter) && NumberUtil.isLong(filter)) {
+            Long id = Long.valueOf(filter);
+            // 能转成long，说明可能是id，也可能是name
+            criteria.andIssueIdEqualTo(id);
+            // 同时赋值给标题
+            criteria2.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
+            example.or(criteria2);
+        }else{
+            criteria.andTitleLike(PERCENT_SIGN + filter + PERCENT_SIGN);
+        }
+    }
+
     /**
-     * @param projectId
      * @param sprintId
      * @param issueDTOS
      * @Date 2021/2/12
      * @Description 获取故事下的任务
      * @Return void
      */
-    private List<IssueDTO> getChildren(Long projectId, Long sprintId, List<IssueDTO> issueDTOS,
+    private List<IssueDTO> getChildren(Long sprintId, List<IssueDTO> issueDTOS,
                                        String taskKeyWord, List<Long> stageIds, List<Integer> taskTypes, List<Long> handlers) {
         List<IssueDTO> issueDTOSTmp = new ArrayList<>();
         Sprint sprint = sprintMapper.selectByPrimaryKey(sprintId);
@@ -297,10 +297,10 @@ public class StoryServiceImpl implements StoryService {
                 issueDTO.setCaseNum(0);
                 IssueExample issueExample = new IssueExample();
                 IssueExample.Criteria criteria1 = issueExample.createCriteria();
-                criteria1.andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).
+                criteria1.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
                 IssueExample.Criteria criteria2 = issueExample.createCriteria();
-                criteria2.andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).
+                criteria2.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
 
                 //任务查询加上“阻塞中”状态   start
@@ -309,7 +309,7 @@ public class StoryServiceImpl implements StoryService {
                     b = stageIds.contains(9999L);
                 }
                 IssueExample.Criteria criteria3 = issueExample.createCriteria();
-                criteria3.andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId).andSprintIdEqualTo(sprintId).
+                criteria3.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
                 if (b) {
                     //过滤掉“阻塞中”的状态：9999
@@ -330,20 +330,7 @@ public class StoryServiceImpl implements StoryService {
                 }
 
                 // 判断是根据id还是name
-                if (StringUtils.isNotBlank(taskKeyWord)) {
-                    try {
-                        Long id = Long.valueOf(taskKeyWord);
-                        // 能转成long，说明可能是id，也可能是name
-                        criteria1.andIssueIdEqualTo(id);
-                        // 同时赋值给标题
-                        criteria2.andTitleLike(PERCENT_SIGN + taskKeyWord + PERCENT_SIGN);
-                        issueExample.or(criteria2);
-                    } catch (Exception e) {
-                        LOGGER.info("转换异常e:{}", e);
-                        // 存在异常说明只能查name
-                        criteria1.andTitleLike(PERCENT_SIGN + taskKeyWord + PERCENT_SIGN);
-                    }
-                }
+                doFilterCondition(taskKeyWord, issueExample, criteria1, criteria2);
 
                 //任务查询加上“阻塞中”状态   start
                 if (b) {
@@ -412,8 +399,11 @@ public class StoryServiceImpl implements StoryService {
         Sprint sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
         int count = 0;
         if (null != sprint) {
-            if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
-                throw new BusinessException("迭代已完成不能再关联工作项");
+            if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                throw new BusinessException("只有未开始的任务可以关联工作项");
+            }
+            if (sprint.getEndTime().before(new Date())) {
+                throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
             }
             //为故事分配迭代
             if (issue.getIssueType().equals(IssueTypeEnum.TYPE_STORY.CODE)) {
@@ -895,4 +885,25 @@ public class StoryServiceImpl implements StoryService {
         return mapUser;
     }
 
+
+    /**
+     *
+     *判断迭代已完成，已取消，以及迭代结束日期小于当前时间的迭代
+     *
+     * @param sprintId 迭代id
+     */
+    @Override
+    public void checkSprintParam(Long sprintId) {
+        Sprint sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
+        if (null != sprint) {
+            if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                throw new BusinessException("只有未开始的任务可以关联工作项");
+            }
+            if (sprint.getEndTime().before(new Date())) {
+                throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
+            }
+        }else{
+            throw new BusinessException("迭代不存在");
+        }
+    }
 }

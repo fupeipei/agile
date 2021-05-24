@@ -82,10 +82,22 @@ public interface Sprintv3Service {
     SprintOverView sprintOverView(long sprintId);
 
     /**
+     * @param sprintDTO
+     * @Date 2021/05/21
+     * @Description 迭代添加故事或缺陷
+     * @Return int
+     */
+     boolean arrangeIssue(SprintDTO sprintDTO);
+
+
+    /**
      * 按团队id查询有效迭代
      * @author zhaofeng
      * @date 2021/5/24 13:28
      * @param teamId
+     * @param pageSize
+     * @param pageNum
+     * @param sprint 迭代名称或编号
      */
-    List<SprintListDTO> teamInSprint(Long teamId);
+    List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum, String sprint);
 }

@@ -100,7 +100,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from kanban_stage_instance
+    from s_kanban_stage_instance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -114,7 +114,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from kanban_stage_instance
+    from s_kanban_stage_instance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -127,24 +127,24 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from kanban_stage_instance
+    from s_kanban_stage_instance 
     where
       instance_id = #{instanceId,jdbcType=BIGINT}
     and
       state = 'U'
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from kanban_stage_instance
+    delete from s_kanban_stage_instance 
     where instance_id = #{instanceId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstanceExample">
-    delete from kanban_stage_instance
+    delete from s_kanban_stage_instance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance" useGeneratedKeys="true" keyProperty="instanceId">
-    insert into kanban_stage_instance (instance_id, stage_id, stage_name, 
+    insert into s_kanban_stage_instance  (instance_id, stage_id, stage_name, 
       parent_id, type_id, project_id, 
       order_id, max_numbers, stay_days, 
       is_show, level, state, 
@@ -162,7 +162,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance" useGeneratedKeys="true" keyProperty="instanceId">
-    insert into kanban_stage_instance
+    insert into s_kanban_stage_instance 
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="instanceId != null">
         instance_id,
@@ -295,13 +295,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstanceExample" resultType="java.lang.Long">
-    select count(*) from kanban_stage_instance
+    select count(*) from s_kanban_stage_instance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update kanban_stage_instance
+    update s_kanban_stage_instance 
     <set>
       <if test="record.instanceId != null">
         instance_id = #{record.instanceId,jdbcType=BIGINT},
@@ -372,7 +372,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update kanban_stage_instance
+    update s_kanban_stage_instance 
     set instance_id = #{record.instanceId,jdbcType=BIGINT},
       stage_id = #{record.stageId,jdbcType=BIGINT},
       stage_name = #{record.stageName,jdbcType=VARCHAR},
@@ -399,7 +399,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update kanban_stage_instance
+    update s_kanban_stage_instance 
     set instance_id = #{record.instanceId,jdbcType=BIGINT},
       stage_id = #{record.stageId,jdbcType=BIGINT},
       stage_name = #{record.stageName,jdbcType=VARCHAR},
@@ -425,7 +425,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
-    update kanban_stage_instance
+    update s_kanban_stage_instance 
     <set>
         principal = #{principal},
       <if test="stageId != null">
@@ -489,7 +489,7 @@
     where instance_id = #{instanceId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
-    update kanban_stage_instance
+    update s_kanban_stage_instance 
     set stage_id = #{stageId,jdbcType=BIGINT},
       stage_name = #{stageName,jdbcType=VARCHAR},
       parent_id = #{parentId,jdbcType=BIGINT},
@@ -513,7 +513,7 @@
     where instance_id = #{instanceId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
-    update kanban_stage_instance
+    update s_kanban_stage_instance 
     set stage_id = #{stageId,jdbcType=BIGINT},
       stage_name = #{stageName,jdbcType=VARCHAR},
       parent_id = #{parentId,jdbcType=BIGINT},
@@ -538,7 +538,7 @@
 
   <update id="updateSelectStatusByPrimaryKeyList">
     update
-      kanban_stage_instance
+      s_kanban_stage_instance 
     set
       is_show = #{status},
       update_uid = #{updateUid},
@@ -554,7 +554,7 @@
     select
       count(1)
     from
-    kanban_stage_instance
+    s_kanban_stage_instance 
     <trim prefix="where" prefixOverrides="and">
       <if test="projectId != null">
         project_id = #{projectId}
@@ -581,21 +581,21 @@
     select
       max(order_id)
     from
-    kanban_stage_instance t
+    s_kanban_stage_instance  t
   </select>
 
   <select id="selectMaxStateId" resultType="long">
     select
       max(stage_id)
     from
-    kanban_stage_instance t
+    s_kanban_stage_instance  t
   </select>
 
   <select id="getSecondStageInstances" resultType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
     select
       <include refid="Base_Column_List"/>
     from
-      kanban_stage_instance
+      s_kanban_stage_instance 
     where
       project_id = #{projectId}
     and
@@ -612,7 +612,7 @@
     instance_id,
     order_id
     from
-    kanban_stage_instance
+    s_kanban_stage_instance 
     where
     instance_id in
     <foreach collection="instanceIds" item="item" index="index" open="(" separator="," close=")">
@@ -626,7 +626,7 @@
 
   <update id="updateSecondStageSort" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
     update
-      kanban_stage_instance t
+      s_kanban_stage_instance  t
     set
       order_id = #{orderId},
       update_uid = #{updateUid},
@@ -641,7 +641,7 @@
       ,
       <include refid="Blob_Column_List" />
     from
-      kanban_stage_instance
+      s_kanban_stage_instance 
     where
       project_id = #{projectId}
     and
@@ -659,7 +659,7 @@
   <insert id="batchInsert" parameterType="java.util.List">
     insert
       into
-    kanban_stage_instance
+    s_kanban_stage_instance 
     (
       stage_id,
       stage_name,
@@ -697,7 +697,7 @@
 
   <update id="updateStagePopUpInfo" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance">
     update
-      kanban_stage_instance
+      s_kanban_stage_instance 
     set
        max_numbers = #{maxNumbers},
        stay_days = #{stayDays},
@@ -711,21 +711,21 @@
     select
         <include refid="Base_Column_List" />
     from
-        kanban_stage_instance
+        s_kanban_stage_instance 
     where
         state ='U'
         and order_id =(
             select
                 order_id
             from
-                kanban_stage_instance
+                s_kanban_stage_instance 
             where
                state = 'U'
                and order_id &gt;(
                   select
                       order_id
                   from
-                      kanban_stage_instance
+                      s_kanban_stage_instance 
                   where
                       project_id=#{projectId}
                       <choose>

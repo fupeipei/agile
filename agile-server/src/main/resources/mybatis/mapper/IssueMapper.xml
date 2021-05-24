@@ -1129,7 +1129,7 @@
     </select>
 
     <update id="updateStatusByParentId">
-    update s_issue set sprint_id = null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
+    update s_issue set sprint_id = null,stage_id=100,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
   </update>
     <select id="getBySprint" resultMap="BaseResultMap">
         SELECT
@@ -1138,7 +1138,7 @@
         WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U' and is_archive != 1
     </select>
     <update id="createBatchRelation">
-        update s_issue SET parent_id = #{parentId},
+        update s_issue SET parent_id = #{parentId},stage_id=111,
         <if test="sprintId != null">
             sprint_id = #{sprintId},
         </if>
@@ -1164,7 +1164,7 @@
     </select>
     <update id="deleteAllChildRelation">
         update
-        issue
+        s_issue
         set
         parent_id = null
         <if test="sprintId != null">
@@ -1202,7 +1202,7 @@
 
     <update id="batchUpdateIssueLaneId">
         update
-        issue
+        s_issue
         set
         lane_id = #{laneId}
         where
@@ -1218,7 +1218,7 @@
 
     <update id="updateIssueLaneStateNull" parameterType="com.yusys.agile.issue.domain.Issue">
     update
-    issue
+    s_issue
     set
     lane_id = null
     where
@@ -1589,7 +1589,7 @@
     <select id="queryStoryForEpic" resultType="com.yusys.agile.issue.dto.IssueDTO">
         select
         a.issue_id, a.title, a.parent_id, a.issue_type, a.stage_id, a.lane_id,a.handler
-        from s_issue a,issue b,issue c
+        from s_issue a,s_issue b,s_issue c
         <where>
             a.parent_id = b.issue_id
             and b.parent_id = c.issue_id
@@ -2454,7 +2454,7 @@
 
     <update id="updateIssueFeatureSyncResult">
     update
-      issue
+      s_issue
     set
       cmp_sync_result = #{cmpSyncResult}
     where
@@ -2475,7 +2475,7 @@
 
     <update id="batchUpdateIssueStageStatus">
         update
-          issue
+        s_issue
         set
           stage_id = #{stageId},
           lane_id = #{laneId},
@@ -2528,7 +2528,7 @@
 
     <update id="batchUpdateIssueCmpSyncResult">
         update
-        issue
+        s_issue
         set
         cmp_sync_result = #{cmpSyncResult}
         where

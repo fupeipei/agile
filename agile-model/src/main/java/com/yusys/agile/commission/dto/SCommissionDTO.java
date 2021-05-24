@@ -1,15 +1,15 @@
-package com.yusys.agile.commission.domain;
+package com.yusys.agile.commission.dto;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @description 代办类
- * @date 2021/2/1
+ * @date 2020/07/06
  */
-public class Commission implements Serializable {
+public class SCommissionDTO implements Serializable {
 
-    private static final long serialVersionUID = 1017018754926524571L;
+    private static final long serialVersionUID = 3936582718365008574L;
 
     /**
      * 代办主键
@@ -27,6 +27,11 @@ public class Commission implements Serializable {
     private Long projectId;
 
     /**
+     * 项目名称
+     */
+    private String projectName;
+
+    /**
      * 代办标题
      */
     private String title;
@@ -40,6 +45,11 @@ public class Commission implements Serializable {
      * 当前代办人
      */
     private Long currentHandler;
+
+    /**
+     * 当前代办人名字
+     */
+    private String currentHandlerName;
 
     /**
      * 阶段编号
@@ -105,12 +115,20 @@ public class Commission implements Serializable {
         this.projectId = projectId;
     }
 
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+        this.title = title;
     }
 
     public Byte getType() {
@@ -127,6 +145,14 @@ public class Commission implements Serializable {
 
     public void setCurrentHandler(Long currentHandler) {
         this.currentHandler = currentHandler;
+    }
+
+    public String getCurrentHandlerName() {
+        return currentHandlerName;
+    }
+
+    public void setCurrentHandlerName(String currentHandlerName) {
+        this.currentHandlerName = currentHandlerName;
     }
 
     public Long getStageId() {
@@ -182,7 +208,7 @@ public class Commission implements Serializable {
     }
 
     public void setState(String state) {
-        this.state = state == null ? null : state.trim();
+        this.state = state;
     }
 
     public String getTenantCode() {
@@ -190,18 +216,21 @@ public class Commission implements Serializable {
     }
 
     public void setTenantCode(String tenantCode) {
-        this.tenantCode = tenantCode == null ? null : tenantCode.trim();
+        this.tenantCode = tenantCode;
     }
+
 
     @Override
     public String toString() {
-        return "Commission{" +
+        return "CommissionDTO{" +
                 "id=" + id +
                 ", issueId=" + issueId +
                 ", projectId=" + projectId +
+                ", projectName='" + projectName + '\'' +
                 ", title='" + title + '\'' +
                 ", type=" + type +
                 ", currentHandler=" + currentHandler +
+                ", currentHandlerName='" + currentHandlerName + '\'' +
                 ", stageId=" + stageId +
                 ", laneId=" + laneId +
                 ", createUid=" + createUid +

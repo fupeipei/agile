@@ -1,6 +1,6 @@
 stages:
   - build_maven
-  - deploy_dev
+  #- deploy_dev
   - execute_dev_sql
   - deploy_test
   - execute_test_sql
@@ -22,22 +22,22 @@ build_maven:
       - docker-tag
     expire_in: 3 days 
   only:
-    - dev
+    #- dev
     - master
 
-deploy_dev:
-  when: manual
-  stage: deploy_dev
-  image: 192.168.48.2:5002/library/git-mysql:alpine
-  dependencies:
-    - build_maven
-  script:
-    - tag=`cat docker-tag`
-    - echo $tag
-    - ssh -p 22 root@192.168.48.5 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
-    - ssh -p 22 root@192.168.48.5 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
-  only:
-    - dev
+#deploy_dev:
+#  when: manual
+#  stage: deploy_dev
+#  image: 192.168.48.2:5002/library/git-mysql:alpine
+#  dependencies:
+#    - build_maven
+#  script:
+#    - tag=`cat docker-tag`
+#    - echo $tag
+#    - ssh -p 22 root@192.168.48.5 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
+#    - ssh -p 22 root@192.168.48.5 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
+#  only:
+#    - dev
 
 execute_dev_sql:
   when: manual

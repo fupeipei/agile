@@ -1,39 +1,39 @@
 package com.yusys.agile.commission.dao;
 
-import com.yusys.agile.commission.domain.Commission;
-import com.yusys.agile.commission.domain.CommissionExample;
+import com.yusys.agile.commission.domain.SCommission;
+import com.yusys.agile.commission.domain.SCommissionExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface CommissionMapper {
-    long countByExample(CommissionExample example);
+    long countByExample(SCommissionExample example);
 
-    int deleteByExample(CommissionExample example);
+    int deleteByExample(SCommissionExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(Commission record);
+    int insert(SCommission record);
 
-    int insertSelective(Commission record);
+    int insertSelective(SCommission record);
 
-    List<Commission> selectByExample(CommissionExample example);
+    List<SCommission> selectByExample(SCommissionExample example);
 
-    Commission selectByPrimaryKey(Long id);
+    SCommission selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") Commission record, @Param("example") CommissionExample example);
+    int updateByExampleSelective(@Param("record") SCommission record, @Param("example") SCommissionExample example);
 
-    int updateByExample(@Param("record") Commission record, @Param("example") CommissionExample example);
+    int updateByExample(@Param("record") SCommission record, @Param("example") SCommissionExample example);
 
-    int updateByPrimaryKeySelective(Commission record);
+    int updateByPrimaryKeySelective(SCommission record);
 
-    int updateByPrimaryKey(Commission record);
+    int updateByPrimaryKey(SCommission record);
 
-    int updateByIssueIdSelective(Commission record);
+    int updateByIssueIdSelective(SCommission record);
 
-    int updateCommissionByIssueId(Commission record);
+    int updateCommissionByIssueId(SCommission record);
 
-    int updateCommissionByPrimaryKey(Commission record);
+    int updateCommissionByPrimaryKey(SCommission record);
 
-    List<Commission> selectCommissionList(Commission record);
+    List<SCommission> selectCommissionList(SCommission record);
 }

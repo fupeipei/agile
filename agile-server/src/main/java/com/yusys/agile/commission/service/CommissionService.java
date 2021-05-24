@@ -1,7 +1,7 @@
 package com.yusys.agile.commission.service;
 
-import com.yusys.agile.commission.domain.Commission;
-import com.yusys.agile.commission.dto.CommissionDTO;
+import com.yusys.agile.commission.domain.SCommission;
+import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -12,21 +12,21 @@ import java.util.List;
 public interface CommissionService {
 
     /**
-     * @param commissionDTO
+     * @param sCommissionDTO
      * @return
      * @description 保存代办
      * @date 2021/2/1
      */
-    void saveCommission(CommissionDTO commissionDTO);
+    void saveCommission(SCommissionDTO sCommissionDTO);
 
     /**
      * @param type          1:工作项编号 2:代办主键
-     * @param commissionDTO
+     * @param sCommissionDTO
      * @return
      * @description 更新代办
      * @date 2021/2/1
      */
-    void updateCommission(int type, CommissionDTO commissionDTO);
+    void updateCommission(int type, SCommissionDTO sCommissionDTO);
 
     /**
      * @param currentHandler
@@ -37,7 +37,7 @@ public interface CommissionService {
      * @description 查询与我相关的代办
      * @date 2021/2/1
      */
-    PageInfo<List<CommissionDTO>> getCommissionList(Long currentHandler, String title, Integer pageNum, Integer pageSize);
+    PageInfo<List<SCommissionDTO>> getCommissionList(Long currentHandler, String title, Integer pageNum, Integer pageSize);
 
     /**
      * @param commissionId
@@ -45,7 +45,7 @@ public interface CommissionService {
      * @description 根据代办编号查询代办记录
      * @date 2021/2/1
      */
-    CommissionDTO getCommissionById(Long commissionId);
+    SCommissionDTO getCommissionById(Long commissionId);
 
     /**
      * @param issueId
@@ -53,29 +53,28 @@ public interface CommissionService {
      * @description 根据工作项编号查询代办记录
      * @date 2021/2/1
      */
-    Commission getCommissionByIssueId(Long issueId);
+    SCommission getCommissionByIssueId(Long issueId);
 
     /**
-     * @param commissionDTO
+     * @param sCommissionDTO
      * @description 更新代办
      * @date 2021/2/1
      */
-    void updateCommission(CommissionDTO commissionDTO);
+    void updateCommission(SCommissionDTO sCommissionDTO);
 
     /**
      * @param exist         代办是否存在
-     * @param commissionDTO
+     * @param sCommissionDTO
      * @param issueId
      * @description 保存或更新代办
      * @date 2021/2/1
      */
-    void saveOrUpdateCommission(boolean exist, CommissionDTO commissionDTO, Long issueId);
+    void saveOrUpdateCommission(boolean exist, SCommissionDTO sCommissionDTO, Long issueId);
 
     /**
      * @param issueId
-     * @param state
-     * @description 更新代办状态
+     * @description
      * @date 2021/2/1
      */
-    void updateCommissionState(Long issueId, String state);
+    void deleteCommission(Long issueId);
 }

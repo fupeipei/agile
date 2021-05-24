@@ -21,6 +21,7 @@ import com.yusys.agile.issue.dto.*;
 import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.IssueSystemRelpService;
+import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.module.domain.Module;
@@ -165,6 +166,8 @@ public class IssueServiceImpl implements IssueService {
     private ReqUserRlatService reqUserRlatService;
     @Resource
     private SytExtendFieldDetailFactory sytExtendFieldDetailFactory;
+    @Autowired
+    private StoryService storyService;
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
         @Override
@@ -282,6 +285,8 @@ public class IssueServiceImpl implements IssueService {
         setHistoryRecordList(history, issueId, parentId.toString(), null);
         issueFactory.dealHistory(history);
         Long sprintId = getRelatedIssueSprintId(issueId, IssueTypeEnum.TYPE_TASK.CODE);
+        //迭代信息校验
+        storyService.checkSprintParam(sprintId);
         issueMapper.deleteRelation(parentId, sprintId, issueId);
         //deleteEpicFeatureData(parentId, issueId);
     }
@@ -1254,7 +1259,7 @@ public class IssueServiceImpl implements IssueService {
                 }
                 if (issueType.compareTo(IssueTypeEnum.TYPE_STORY.CODE) >= 0) {
                     if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_STORY.CODE)) {
-                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_STORY.CODE))) {
+                            if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_STORY.CODE))) {
                             return issueList;
                         }
                         epicResultIds = issueMapper.listLevelIssueIdforStory(extendFieldIssueIds.get(IssueTypeEnum.TYPE_STORY.CODE), epicResultIds);

@@ -1,35 +1,25 @@
-package com.yusys.agile.commission.dto;
+package com.yusys.agile.commission.domain;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @description 代办类
- * @date 2020/07/06
+ * @description 代办记录类
+ * @date 2021/2/1
  */
-public class CommissionDTO implements Serializable {
+public class SCommissionRecord implements Serializable {
 
-    private static final long serialVersionUID = 3936582718365008574L;
+    private static final long serialVersionUID = -2076546806454422444L;
 
     /**
-     * 代办主键
+     * 代办记录主键
      */
     private Long id;
 
     /**
-     * 工作项编号
+     * 代办主键
      */
-    private Long issueId;
-
-    /**
-     * 项目编号
-     */
-    private Long projectId;
-
-    /**
-     * 项目名称
-     */
-    private String projectName;
+    private Long commissonId;
 
     /**
      * 代办标题
@@ -42,14 +32,19 @@ public class CommissionDTO implements Serializable {
     private Byte type;
 
     /**
-     * 当前代办人
+     * 代办人
      */
-    private Long currentHandler;
+    private Long handler;
 
     /**
-     * 当前代办人名字
+     * 工作项类型
      */
-    private String currentHandlerName;
+    private Long issueId;
+
+    /**
+     * 项目编号
+     */
+    private Long projectId;
 
     /**
      * 阶段编号
@@ -62,29 +57,29 @@ public class CommissionDTO implements Serializable {
     private Long laneId;
 
     /**
-     * 代办创建人
+     * 数据状态
+     */
+    private String state;
+
+    /**
+     * 创建人
      */
     private Long createUid;
 
     /**
-     * 代办创建时间
+     * 创建时间
      */
     private Date createTime;
 
     /**
-     * 代办更新人
+     * 更新人
      */
     private Long updateUid;
 
     /**
-     * 代办更新时间
+     * 更新时间
      */
     private Date updateTime;
-
-    /**
-     * 数据状态
-     */
-    private String state;
 
     /**
      * 租户编码
@@ -97,6 +92,38 @@ public class CommissionDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCommissonId() {
+        return commissonId;
+    }
+
+    public void setCommissonId(Long commissonId) {
+        this.commissonId = commissonId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title == null ? null : title.trim();
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public Long getHandler() {
+        return handler;
+    }
+
+    public void setHandler(Long handler) {
+        this.handler = handler;
     }
 
     public Long getIssueId() {
@@ -115,46 +142,6 @@ public class CommissionDTO implements Serializable {
         this.projectId = projectId;
     }
 
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Byte getType() {
-        return type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
-    public Long getCurrentHandler() {
-        return currentHandler;
-    }
-
-    public void setCurrentHandler(Long currentHandler) {
-        this.currentHandler = currentHandler;
-    }
-
-    public String getCurrentHandlerName() {
-        return currentHandlerName;
-    }
-
-    public void setCurrentHandlerName(String currentHandlerName) {
-        this.currentHandlerName = currentHandlerName;
-    }
-
     public Long getStageId() {
         return stageId;
     }
@@ -169,6 +156,14 @@ public class CommissionDTO implements Serializable {
 
     public void setLaneId(Long laneId) {
         this.laneId = laneId;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state == null ? null : state.trim();
     }
 
     public Long getCreateUid() {
@@ -203,41 +198,31 @@ public class CommissionDTO implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public String getTenantCode() {
         return tenantCode;
     }
 
     public void setTenantCode(String tenantCode) {
-        this.tenantCode = tenantCode;
+        this.tenantCode = tenantCode == null ? null : tenantCode.trim();
     }
-
 
     @Override
     public String toString() {
-        return "CommissionDTO{" +
+        return "CommissionRecord{" +
                 "id=" + id +
-                ", issueId=" + issueId +
-                ", projectId=" + projectId +
-                ", projectName='" + projectName + '\'' +
+                ", commissonId=" + commissonId +
                 ", title='" + title + '\'' +
                 ", type=" + type +
-                ", currentHandler=" + currentHandler +
-                ", currentHandlerName='" + currentHandlerName + '\'' +
+                ", handler=" + handler +
+                ", issueId=" + issueId +
+                ", projectId=" + projectId +
                 ", stageId=" + stageId +
                 ", laneId=" + laneId +
+                ", state='" + state + '\'' +
                 ", createUid=" + createUid +
                 ", createTime=" + createTime +
                 ", updateUid=" + updateUid +
                 ", updateTime=" + updateTime +
-                ", state='" + state + '\'' +
                 ", tenantCode='" + tenantCode + '\'' +
                 '}';
     }
