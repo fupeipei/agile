@@ -18,7 +18,14 @@ import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRuleFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintExample;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.utils.ObjectUtil;
+import com.yusys.agile.utils.StringUtil;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.portal.common.exception.BusinessException;
@@ -26,12 +33,15 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -66,8 +76,16 @@ public class TaskServiceImpl implements TaskService {
     @Resource
     private ExternalApiConfigUtil externalApiConfigUtil;
 
+    @Resource
+    private SSprintMapper sSprintMapper;
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteTask(Long taskId, Boolean deleteChild) {
+        Issue issue = issueMapper.selectByPrimaryKey(taskId);
+        if (null != issue) {
+            this.ckeckTaksParams(issue.getSprintId());
+        }
         issueFactory.deleteIssue(taskId, deleteChild);
     }
 
@@ -75,6 +93,8 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(rollbackFor = Exception.class)
     public void editTask(IssueDTO issueDTO) {
         Issue oldTask = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
+        this.ckeckTaksParams(oldTask.getSprintId());
+
         Long projectId = oldTask.getProjectId();
         Issue task = issueFactory.editIssue(issueDTO, oldTask, projectId);
 
@@ -143,6 +163,23 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Long createTask(IssueDTO issueDTO) {
         return issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
+    }
+
+    private void ckeckTaksParams(Long sprintId) {
+        SSprintExample sSprintExample = new SSprintExample();
+        sSprintExample.createCriteria().andSprintIdEqualTo(sprintId)
+                .andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
+        List<SSprint> sSprintList = sSprintMapper.selectByExample(sSprintExample);
+        if (CollectionUtils.isNotEmpty(sSprintList)) {
+            SSprint sSprint = sSprintList.get(0);
+            if (sSprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
+                throw new BusinessException("迭代已完成不能再新建任务");
+            }
+            boolean compareTime = LocalDateTime.now().isAfter(LocalDateTime.ofInstant(sSprint.getEndTime().toInstant(), ZoneId.systemDefault()));
+            if (compareTime) {
+                throw new BusinessException("迭代结束日期 < 当前时间 不能再新建任务");
+            }
+        }
     }
 
     @Override

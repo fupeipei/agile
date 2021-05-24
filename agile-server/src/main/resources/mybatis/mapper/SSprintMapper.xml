@@ -673,18 +673,17 @@
         ]]>
     </select>
 
-<<<<<<< HEAD
+
     <select id="selectByPrimaryKeyNotText" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
         select
         <include refid="Base_Column_List" />
-        from sprint
+        from s_sprint
         where sprint_id = #{sprintId,jdbcType=BIGINT}
-=======
+    </select>
     <select id="queryValidSprintById" resultMap="ResultMapWithBLOBs">
         select status, sprint_name, sprint_id,work_hours, start_time, end_time,team_id
         from s_sprint
         where sprint_id = #{sprintId}
           and state = 'U'
->>>>>>> c725ed6ab29433979b4d332b6fd46e5374b2e92c
     </select>
 </mapper>
