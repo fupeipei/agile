@@ -108,9 +108,9 @@ public class TaskController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/task/stageId/{issueId}/{from}/{to}")
-    public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to) {
+    public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to, @RequestParam(value = "assignUserId") Long userId) {
         try {
-            taskService.dragTask(issueId, from, to);
+            taskService.dragTask(issueId, from, to,userId);
         } catch (Exception e) {
             return ControllerResponse.fail("拖拽任务卡片失败! " + e.getMessage());
         }
