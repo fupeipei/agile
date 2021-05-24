@@ -337,10 +337,6 @@ public class IssueFactory {
             //处理附件并组织附件的变更的历史记录
             dealAttachments(issueDTO, issueId, history);
 
-            //编辑故事验收标准
-            createAcceptance(issueDTO, oldIssue.getIssueType(), issueId);
-
-
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
             List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
