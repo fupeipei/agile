@@ -262,7 +262,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         try {
             iFacadeUserApi.addUserRlats(po);
             //调用门户服务，新增SM角色
-            iFacadeUserApi.addUserRlats(po);
+            iFacadeUserApi.addUserRlats(sm);
         }catch (Exception e){
             log.error("调用门户服务添加PO、SM角色失败，失败原因:{}", e);
             throw new BusinessException("调用门户服务添加PO、SM角色失败");
@@ -353,7 +353,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         try {
             iFacadeUserApi.addUserRlats(po);
             //调用门户服务，新增SM角色
-            iFacadeUserApi.addUserRlats(po);
+            iFacadeUserApi.addUserRlats(sm);
         }catch (Exception e){
             log.error("调用门户服务添加PO、SM角色失败，失败原因:{}", e);
             throw new BusinessException("调用门户服务添加PO、SM角色失败");
