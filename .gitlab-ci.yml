@@ -1,6 +1,5 @@
 stages:
   - build_maven
-#  - deploy_dev
   - execute_dev_sql
   - deploy_test
   - execute_test_sql
