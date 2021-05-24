@@ -4,8 +4,9 @@ import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.domain.STeamMemberExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface STeamMemberMapper {
     long countByExample(STeamMemberExample example);

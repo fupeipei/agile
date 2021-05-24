@@ -4,13 +4,12 @@ import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
-
-import java.util.HashMap;
-import java.util.List;
-
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.HashMap;
+import java.util.List;
 
 public interface STeamMapper {
     long countByExample(STeamExample example);
