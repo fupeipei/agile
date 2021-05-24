@@ -639,4 +639,11 @@
           and b.role_id = 104
         ]]>
     </select>
+
+    <select id="selectByPrimaryKeyNotText" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />
+        from sprint
+        where sprint_id = #{sprintId,jdbcType=BIGINT}
+    </select>
 </mapper>

@@ -3,7 +3,7 @@ package com.yusys.agile.issue.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-public class IssueRichtext implements Serializable {
+public class SIssueRichtext implements Serializable {
     private Long id;
 
     private Long issueId;
@@ -11,18 +11,6 @@ public class IssueRichtext implements Serializable {
     private Date createTime;
 
     private String state;
-
-    private String description;
-
-    private String acceptanceCriteria;
-
-    public String getTenantCode() {
-        return tenantCode;
-    }
-
-    public void setTenantCode(String tenantCode) {
-        this.tenantCode = tenantCode;
-    }
 
     private String tenantCode;
 
@@ -60,19 +48,11 @@ public class IssueRichtext implements Serializable {
         this.state = state == null ? null : state.trim();
     }
 
-    public String getDescription() {
-        return description;
+    public String getTenantCode() {
+        return tenantCode;
     }
 
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
-
-    public String getAcceptanceCriteria() {
-        return acceptanceCriteria;
-    }
-
-    public void setAcceptanceCriteria(String acceptanceCriteria) {
-        this.acceptanceCriteria = acceptanceCriteria;
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode == null ? null : tenantCode.trim();
     }
 }

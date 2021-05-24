@@ -1,5 +1,6 @@
 package com.yusys.agile.sprintv3.dao;
 
+import com.yusys.agile.sprint.domain.SprintWithBLOBs;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
@@ -126,5 +127,13 @@ public interface SSprintMapper {
      * @return boolean
      */
     boolean checkSprintPo(@Param("sprintId") long sprintId, @Param("userId") long userId);
+
+
+    /**
+     * 获取迭代信息去掉文本
+     * @param sprintId
+     * @return
+     */
+    SSprintWithBLOBs selectByPrimaryKeyNotText(Long sprintId);
 
 }

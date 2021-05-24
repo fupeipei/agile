@@ -1,11 +1,8 @@
 package com.yusys.agile.issue.utils;
 
 import com.yusys.agile.issue.dao.IssueMapper;
-import com.yusys.agile.issue.dao.IssueRichtextMapper;
-import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.domain.IssueExample;
-import com.yusys.agile.issue.domain.IssueRichtext;
-import com.yusys.agile.issue.domain.IssueRichtextExample;
+import com.yusys.agile.issue.dao.SIssueRichtextMapper;
+import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
@@ -32,7 +29,7 @@ public class IssueRichTextFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(IssueRichTextFactory.class);
     @Autowired
-    private IssueRichtextMapper richtextMapper;
+    private SIssueRichtextMapper richtextMapper;
     @Autowired
     private IssueMapper issueMapper;
 
@@ -45,19 +42,21 @@ public class IssueRichTextFactory {
      * @param issueId
      * @param description
      */
-    public void dealIssueRichText(Long issueId, String description, String tenantCode) {
-        IssueRichtextExample example = new IssueRichtextExample();
+    public void dealIssueRichText(Long issueId, String description,String acceptanceCriteria,String tenantCode) {
+        SIssueRichtextExample example = new SIssueRichtextExample();
         example.createCriteria().andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.toString());
-        List<IssueRichtext> issueRichTexts = richtextMapper.selectByExampleWithBLOBs(example);
+        List<SIssueRichtextWithBLOBs> issueRichTexts = richtextMapper.selectByExampleWithBLOBs(example);
         if (CollectionUtils.isNotEmpty(issueRichTexts)) {
-            IssueRichtext richText = issueRichTexts.get(0);
+            SIssueRichtextWithBLOBs richText = issueRichTexts.get(0);
             richText.setDescription(description);
             richText.setCreateTime(new Date());
+            richText.setAcceptanceCriteria(acceptanceCriteria);
             richtextMapper.updateByPrimaryKeyWithBLOBs(richText);
         } else {
-            IssueRichtext richText = new IssueRichtext();
+            SIssueRichtextWithBLOBs richText = new SIssueRichtextWithBLOBs();
             richText.setIssueId(issueId);
             richText.setDescription(description);
+            richText.setAcceptanceCriteria(acceptanceCriteria);
             richText.setCreateTime(new Date());
             richText.setState(StateEnum.U.toString());
             if (StringUtils.isNotBlank(tenantCode)) {
@@ -74,13 +73,14 @@ public class IssueRichTextFactory {
      */
     public void queryIssueRichText(IssueDTO issueDTO) {
         Long issueId = issueDTO.getIssueId();
-        IssueRichtextExample example = new IssueRichtextExample();
+        SIssueRichtextExample example = new SIssueRichtextExample();
         example.createCriteria().andStateEqualTo(StateEnum.U.toString()).andIssueIdEqualTo(issueId);
-        List<IssueRichtext> issueRichtexts = richtextMapper.selectByExampleWithBLOBs(example);
+        List<SIssueRichtextWithBLOBs> issueRichtexts = richtextMapper.selectByExampleWithBLOBs(example);
         if (CollectionUtils.isNotEmpty(issueRichtexts)) {
-            IssueRichtext richtext = issueRichtexts.get(0);
+            SIssueRichtextWithBLOBs richtext = issueRichtexts.get(0);
             if (Optional.ofNullable(richtext).isPresent()) {
                 issueDTO.setDescription(richtext.getDescription());
+                issueDTO.setAcceptanceCriteria(richtext.getAcceptanceCriteria());
             }
         }
     }
@@ -131,11 +131,11 @@ public class IssueRichTextFactory {
      * @param issueId 工作项ID
      * @return
      */
-    public IssueRichtext getIssueRichText(Long issueId) {
-        IssueRichtext richtext = null;
-        IssueRichtextExample richtextExample = new IssueRichtextExample();
+    public SIssueRichtextWithBLOBs getIssueRichText(Long issueId) {
+        SIssueRichtextWithBLOBs richtext = null;
+        SIssueRichtextExample richtextExample = new SIssueRichtextExample();
         richtextExample.createCriteria().andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.toString());
-        List<IssueRichtext> issueRichtexts = richtextMapper.selectByExampleWithBLOBs(richtextExample);
+        List<SIssueRichtextWithBLOBs> issueRichtexts = richtextMapper.selectByExampleWithBLOBs(richtextExample);
         if (CollectionUtils.isNotEmpty(issueRichtexts)) {
             richtext = issueRichtexts.get(0);
         }

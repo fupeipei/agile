@@ -122,6 +122,18 @@ public class IssueDTO {
     //迭代对象
     private SprintDTO sprintDTO;
 
+    //故事验收标准
+    private String acceptanceCriteria;
+
+    public String getAcceptanceCriteria() {
+        return acceptanceCriteria;
+    }
+
+    public void setAcceptanceCriteria(String acceptanceCriteria) {
+        this.acceptanceCriteria = acceptanceCriteria;
+    }
+
+
     public Byte getIsArchive() {
         return isArchive;
     }
