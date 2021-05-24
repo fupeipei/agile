@@ -77,10 +77,10 @@ public class IssueRichTextFactory {
         example.createCriteria().andStateEqualTo(StateEnum.U.toString()).andIssueIdEqualTo(issueId);
         List<SIssueRichtextWithBLOBs> issueRichtexts = richtextMapper.selectByExampleWithBLOBs(example);
         if (CollectionUtils.isNotEmpty(issueRichtexts)) {
-            SIssueRichtextWithBLOBs richtext = issueRichtexts.get(0);
-            if (Optional.ofNullable(richtext).isPresent()) {
-                issueDTO.setDescription(richtext.getDescription());
-                issueDTO.setAcceptanceCriteria(richtext.getAcceptanceCriteria());
+            SIssueRichtextWithBLOBs richText = issueRichtexts.get(0);
+            if (Optional.ofNullable(richText).isPresent()) {
+                issueDTO.setDescription(richText.getDescription());
+                issueDTO.setAcceptanceCriteria(richText.getAcceptanceCriteria());
             }
         }
     }

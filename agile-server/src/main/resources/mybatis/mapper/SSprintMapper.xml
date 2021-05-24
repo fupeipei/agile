@@ -668,10 +668,11 @@
         ]]>
     </select>
 
+
     <select id="selectByPrimaryKeyNotText" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
         select
         <include refid="Base_Column_List" />
-        from sprint
+        from s_sprint
         where sprint_id = #{sprintId,jdbcType=BIGINT}
     </select>
 
