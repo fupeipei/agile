@@ -83,7 +83,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from issue_richtext
+    from  s_issue_richtext 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -97,7 +97,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_richtext
+    from  s_issue_richtext 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -110,27 +110,27 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from issue_richtext
+    from  s_issue_richtext 
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_richtext
+    delete from  s_issue_richtext 
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueRichtextExample">
-    delete from issue_richtext
+    delete from  s_issue_richtext 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueRichtext" useGeneratedKeys="true" keyProperty="id">
-    insert into issue_richtext (id, issue_id, create_time, 
+    insert into  s_issue_richtext  (id, issue_id, create_time, 
       state, description,tenant_code)
     values (#{id,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{state,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    insert into issue_richtext
+    insert into  s_issue_richtext 
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -173,13 +173,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueRichtextExample" resultType="java.lang.Long">
-    select count(*) from issue_richtext
+    select count(*) from  s_issue_richtext 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_richtext
+    update  s_issue_richtext 
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -205,7 +205,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update issue_richtext
+    update  s_issue_richtext 
     set id = #{record.id,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -217,7 +217,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_richtext
+    update  s_issue_richtext 
     set id = #{record.id,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -228,7 +228,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    update issue_richtext
+    update  s_issue_richtext 
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -249,7 +249,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    update issue_richtext
+    update  s_issue_richtext 
     set issue_id = #{issueId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       state = #{state,jdbcType=VARCHAR},
@@ -258,7 +258,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    update issue_richtext
+    update  s_issue_richtext 
     set issue_id = #{issueId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       state = #{state,jdbcType=VARCHAR}
