@@ -1,14 +1,11 @@
 package com.yusys.agile.issue.rest;
 
 import com.yusys.agile.consumer.constant.AgileConstant;
-import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
-import com.yusys.agile.set.stage.service.StageService;
-import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
@@ -16,7 +13,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.yusys.portal.model.common.dto.ControllerResponse;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -27,9 +23,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- */
+
 @RestController
 @RequestMapping("/issue/story")
 public class StoryContoller {
@@ -44,13 +38,9 @@ public class StoryContoller {
     @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
 
-<<<<<<< HEAD
-    @PostMapping("/issue/createStory")
-    public ControllerResponse createStory(@RequestBody Map<String, Object> map) {
-=======
+
     @PostMapping("/create")
-    public ControllerResponse createStory(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
->>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
+    public ControllerResponse createStory(@RequestBody Map<String, Object> map) {
         try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
@@ -70,24 +60,9 @@ public class StoryContoller {
 
     }
 
-<<<<<<< HEAD
-    @GetMapping("/issue/queryStory/{storyId}")
-    public ControllerResponse queryStory(@PathVariable("storyId") Long storyId) {
-=======
-    private boolean checkHasServerAnalysManager(JSONObject jsonObject) {
-        for (String str : jsonObject.keySet()) {
-            if (VersionConstants.SysExtendFiledConstant.SERVERANALYSTMANAGER.equals(str)) {
-                if (!Strings.isBlank((String) jsonObject.get(str))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     @GetMapping("/query/{storyId}")
-    public ControllerResponse queryStory(@PathVariable("storyId") Long storyId, @RequestHeader(name = "projectId") Long projectId) {
->>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
+    public ControllerResponse queryStory(@PathVariable("storyId") Long storyId) {
         IssueDTO issueDTO = storyService.queryStory(storyId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
@@ -107,13 +82,9 @@ public class StoryContoller {
         return ControllerResponse.success(map);
     }
 
-<<<<<<< HEAD
-    @DeleteMapping("/issue/deleteStory/{storyId}")
-    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild) {
-=======
+
     @DeleteMapping("/delete/{storyId}")
-    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild, @RequestHeader(name = "projectId") Long projectId) {
->>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
+    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild) {
         try {
             storyService.deleteStory(storyId, deleteChild);
         } catch (Exception e) {
@@ -123,13 +94,9 @@ public class StoryContoller {
         return ControllerResponse.success("删除用户故事成功！");
     }
 
-<<<<<<< HEAD
-    @PostMapping("/issue/editStory")
-    public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
-=======
+
     @PostMapping("/edit")
-    public ControllerResponse editStory(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
->>>>>>> 44e9d2fde21154311ba940fd89b5c5aba9b9a9c1
+    public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
         try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
