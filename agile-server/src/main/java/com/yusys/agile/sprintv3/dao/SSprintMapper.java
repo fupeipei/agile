@@ -138,5 +138,12 @@ public interface SSprintMapper {
      * @return
      */
     SSprintWithBLOBs selectByPrimaryKeyNotText(Long sprintId);
-
+    /**
+     * 团队进入迭代时，按照teamId和sprint名称查询
+     * @author zhaofeng
+     * @date 2021/5/24 17:20
+     * @param teamId
+     * @param sprint
+     */
+    List<SprintListDTO> selectByIdAndName(@Param("teamId") Long teamId,@Param("sprint") String sprint);
 }

@@ -97,6 +97,7 @@ public interface Sprintv3Service {
      * @param teamId
      * @param pageSize
      * @param pageNum
+     * @param sprint 迭代名称或编号
      */
-    List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum);
+    List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum, String sprint);
 }
