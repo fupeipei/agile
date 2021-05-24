@@ -34,7 +34,6 @@ import java.util.Map;
 public class StoryContoller {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
-
     @Resource
     private StoryService storyService;
     @Resource
@@ -43,22 +42,14 @@ public class StoryContoller {
     private IssueFactory issueFactory;
     @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
-    @Resource
-    private StageService stageService;
-    @Resource
-    private ExternalApiConfigUtil externalApiConfigUtil;
 
     @PostMapping("/issue/createStory")
-    public ControllerResponse createStory(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse createStory(@RequestBody Map<String, Object> map) {
         try {
-            //issueDTO.setProjectId(projectId);
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-            Long paramProjectId = issueDTO.getProjectId();
-            if (null == paramProjectId) {
-                issueDTO.setProjectId(projectId);
-            }
+
             Long issueId = storyService.createStory(issueDTO);
             //批量新增或者批量更新扩展字段值
             issueDTO.setIssueType(new Byte("3"));
@@ -73,19 +64,8 @@ public class StoryContoller {
 
     }
 
-    private boolean checkHasServerAnalysManager(JSONObject jsonObject) {
-        for (String str : jsonObject.keySet()) {
-            if (VersionConstants.SysExtendFiledConstant.SERVERANALYSTMANAGER.equals(str)) {
-                if (!Strings.isBlank((String) jsonObject.get(str))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     @GetMapping("/issue/queryStory/{storyId}")
-    public ControllerResponse queryStory(@PathVariable("storyId") Long storyId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse queryStory(@PathVariable("storyId") Long storyId) {
         IssueDTO issueDTO = storyService.queryStory(storyId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
@@ -106,9 +86,8 @@ public class StoryContoller {
     }
 
     @DeleteMapping("/issue/deleteStory/{storyId}")
-    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild) {
         try {
-            //storyService.deleteStory(storyId, deleteChild,projectId);
             storyService.deleteStory(storyId, deleteChild);
         } catch (Exception e) {
             LOGGER.error("删除用户故事失败：{}", e);
@@ -118,7 +97,7 @@ public class StoryContoller {
     }
 
     @PostMapping("/issue/editStory")
-    public ControllerResponse editStory(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
         try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
@@ -129,9 +108,6 @@ public class StoryContoller {
             issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueDTO.getIssueId());
         } catch (Exception e) {
-            /*if(e instanceof BaseBusinessException){
-                return ControllerResponse.fail2(e.getMessage());
-            }*/
             return ControllerResponse.fail(e.getMessage());
         }
         return ControllerResponse.success("编辑用户故事成功！");

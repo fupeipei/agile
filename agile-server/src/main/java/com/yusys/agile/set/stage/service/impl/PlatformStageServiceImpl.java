@@ -1,0 +1,106 @@
+package com.yusys.agile.set.stage.service.impl;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.domain.IssueExample;
+import com.yusys.agile.redis.service.RedissonService;
+import com.yusys.agile.set.stage.constant.StageConstant;
+import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
+import com.yusys.agile.set.stage.domain.KanbanStageInstance;
+import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
+import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.exception.StageException;
+import com.yusys.agile.set.stage.service.IStageService;
+import com.yusys.portal.util.code.ReflectUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ *  @Description: 平台级别阶段实现类
+ *  @author: zhao_yd
+ *  @Date: 2021/5/24 3:31 下午
+ *
+ */
+@Service
+public class PlatformStageServiceImpl implements IStageService {
+
+    private static final Logger log = LoggerFactory.getLogger(PlatformStageServiceImpl.class);
+
+    @Resource
+    private KanbanStageInstanceMapper kanbanStageInstanceMapper;
+
+    /**
+     * 获取平台级别的阶段信息
+     * @return
+     */
+    @Override
+    public List<StageInstance> getStageList() {
+        //一级阶段集合
+        List<StageInstance> tempStageInstanceList = Lists.newArrayList();
+        KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
+        kanbanStageInstanceExample.createCriteria()
+                .andParentIdEqualTo(StageConstant.PARENT_STAGE_ID)
+                .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE);
+        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        //一级阶段
+        List<KanbanStageInstance> firstStageInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
+        if (CollectionUtils.isNotEmpty(firstStageInstanceList)) {
+            StageInstance firstStageInstance = null;
+            for (KanbanStageInstance kanbanStageInstance : firstStageInstanceList) {
+                firstStageInstance = new StageInstance();
+                ReflectUtil.copyProperties(kanbanStageInstance, firstStageInstance);
+                tempStageInstanceList.add(firstStageInstance);
+            }
+            //处理一级阶段下二级状态
+            dealSecondLevelStatusDatas(tempStageInstanceList);
+        }
+        return tempStageInstanceList;
+    }
+
+    @Override
+    public List<StageInstance> getSecondStageListByParentId(Long stageParentId) {
+        KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
+        kanbanStageInstanceExample.createCriteria()
+                .andParentIdNotEqualTo(StageConstant.PARENT_STAGE_ID)
+                .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
+                .andStateEqualTo(StageConstant.STATE_VALIDATE)
+                .andParentIdEqualTo(stageParentId);
+        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
+        List<StageInstance> stageInstances = Lists.newArrayList();
+        try {
+            stageInstances = ReflectUtil.copyProperties4List(kanbanStageInstances, StageInstance.class);
+        } catch (Exception e) {
+            log.info("stageParentId :{} 获取二级阶段异常：{}",stageParentId,e.getMessage());
+        }
+        return stageInstances;
+    }
+
+
+    /**
+     * 批量处理二级状态数据
+     * @param stageInstanceList
+     */
+    private void dealSecondLevelStatusDatas(List<StageInstance> stageInstanceList) {
+        for (StageInstance stageInstance : stageInstanceList) {
+            Long stageId = stageInstance.getStageId();
+            KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
+            kanbanStageInstanceExample.createCriteria()
+                    .andParentIdNotEqualTo(StageConstant.PARENT_STAGE_ID)
+                    .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
+                    .andStateEqualTo(StageConstant.STATE_VALIDATE)
+                    .andParentIdEqualTo(stageId);
+            kanbanStageInstanceExample.setOrderByClause("order_id asc");
+            List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
+            stageInstance.setSecondStages(kanbanStageInstances);
+        }
+    }
+}
