@@ -3,6 +3,7 @@ package com.yusys.agile.issue.utils;
 import com.yusys.agile.commission.domain.SCommission;
 import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
+import com.yusys.agile.common.exception.BaseBusinessException;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.consumer.dto.IssueMailSendDto;
@@ -88,8 +89,6 @@ public class IssueFactory {
     @Resource
     private IssueCustomFieldService issueCustomFieldService;
     @Resource
-    private StageService stageService;
-    @Resource
     private HeaderFieldService headerFieldService;
     @Resource
     private IssueSystemRelpService issueSystemRelpService;
@@ -110,17 +109,11 @@ public class IssueFactory {
     @Resource
     private SSprintMapper sSprintMapper;
     @Autowired
-    private ReviewService reviewService;
-    @Autowired
     private SysExtendFieldDetailService sysExtendFieldDetailService;
-    @Autowired
-    private VersionIssueRelateService versionIssueRelateService;
     @Resource
     private SysExtendFieldService sysExtendFieldService;
     @Resource
     private IssueTemplateService issueTemplateService;
-    @Resource
-    private KanbanStageInstanceMapper kanbanStageInstanceMapper;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -233,23 +226,6 @@ public class IssueFactory {
         return issueId;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public Long createIssueForMoveData(IssueDTO issueDTO, String checkErrMsg, String newMsg, Byte issueType) {
-        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
-        issue.setIssueType(issueType);
-
-        issueMapper.insertSelective(issue);
-        Long issueId = issue.getIssueId();
-        issueDTO.setIssueId(issueId);
-        issueDTO.setIsArchive(issue.getIsArchive());
-        issueDTO.setIssueType(issue.getIssueType());
-
-        //处理系统信息
-        dealSystems(issueId, issueDTO.getSystemIds());
-        //处理模块信息
-        dealModules(issueId, issueDTO.getModuleIds());
-        return issueId;
-    }
 
     private void dealSystems(Long issueId, List<Long> systemIds) {
         if (CollectionUtils.isNotEmpty(systemIds)) {
@@ -285,8 +261,6 @@ public class IssueFactory {
 
     @ExceptionHandler(value = Throwable.class)
     public Issue editIssue(IssueDTO issueDTO, Issue oldIssue, Long projectId) {
-        Long oldStageId = oldIssue.getStageId();
-        Long oldLaneId = oldIssue.getLaneId();
         final Long issueId = issueDTO.getIssueId();
         final String state = oldIssue.getState();
         Byte issueType = oldIssue.getIssueType();
@@ -305,7 +279,7 @@ public class IssueFactory {
                 }
                 /** 判断工作项流转规则是否允许*/
                 if (!ruleFactory.getIssueRulesCheckFlag(issueType, oldIssue.getStageId(), oldIssue.getLaneId(), stageId, landId, projectId)) {
-                    //throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
+                    throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
                 }
                 /** 判断泳道ID不为空的情况*/
                 if ((!stageId.equals(oldIssue.getStageId()) && !Optional.ofNullable(landId).isPresent())
@@ -358,7 +332,6 @@ public class IssueFactory {
             issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(),null);
             issue.setProjectId(projectId);
 
-            //todo 处理代办编辑
             issue.setIssueType(issueType);
             dealCommissionEdit(issueId);
 
@@ -637,22 +610,6 @@ public class IssueFactory {
         issueMapper.updateByPrimaryKeySelective(record);
     }
 
-    /**
-     * @param issue
-     * @description 保存epic和feature删除的数据到需求分支同步表
-     * @date 2021/2/7
-     */
-    private void dealEpicFeatureData(Issue issue) {
-        Byte issueType = issue.getIssueType();
-        if (IssueTypeEnum.TYPE_EPIC.CODE.equals(issueType)) {
-            /*IssueExample issueExample = new IssueExample();
-            IssueExample.Criteria criteria = issueExample.createCriteria();*/
-            return;
-        } else if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(issueType)) {
-            Long featureId = issue.getIssueId();
-            Long epicId = issue.getParentId();
-        }
-    }
 
     public void createHistory(Long issueId) {
         IssueHistoryRecord nameHistory = new IssueHistoryRecord();
@@ -1018,8 +975,6 @@ public class IssueFactory {
     private void dealSysExtendFieldDetail(Long issueId, Long newIssueId, Byte issueType) {
         List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetail(issueId);
         if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
-            boolean hasReqScheduling = false;
-            boolean hasPlanStates = false;
             for (SysExtendFieldDetail sysExtendFieldDetail : sysExtendFieldDetailList) {
                 sysExtendFieldDetail.setIssueId(newIssueId);
                 if (VersionConstants.SysExtendFiledConstant.BIZNUM.equals(sysExtendFieldDetail.getFieldId())) {
@@ -1029,7 +984,6 @@ public class IssueFactory {
                 }
 
                 if (VersionConstants.SysExtendFiledConstant.PLANSTATES.equals(sysExtendFieldDetail.getFieldId())) {
-                    hasPlanStates = false;
                     sysExtendFieldDetail.setValue(PlanStatesEnum.ON_TIME.CODE);
                 }
 
@@ -1316,26 +1270,6 @@ public class IssueFactory {
         return false;
     }
 
-    public Long getEpicId(String issueId) {
-        Long epicId = null;
-        if (issueId.indexOf("CRM") != -1) {
-            SysExtendFieldDetail sysExtendFieldDetail = sysExtendFieldDetailService.getEpicIdByBizNum(issueId);
-            if (!Optional.ofNullable(sysExtendFieldDetail).isPresent()) {
-                throw new BusinessException("根据客户需求编号：" + issueId + "找不到对应得客户需求");
-            } else {
-                epicId = sysExtendFieldDetail.getIssueId();
-            }
-
-        } else {
-            Long lIssueId = Long.parseLong(issueId);
-            Issue issue = issueMapper.getIssue(lIssueId);
-            if (null != issue) {
-                epicId = getEpicId(lIssueId, issue.getIssueType());
-            }
-        }
-        return epicId;
-    }
-
 
     public Long getEpicIdForPlanDeployDate(String issueId, String bizNum) {
         Long epicId = null;
@@ -1391,44 +1325,6 @@ public class IssueFactory {
             }
         }
         return null;
-    }
-
-    /**
-     * @Date: 9:42
-     * @Description: 复制工作项
-     * @Param: * @param epicId
-     * @Return: void
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public Long copyEpicForRMS(Long issueId, Long projectId, String errMsg, String checkErrMsg, String newMsg, Byte issueType) {
-        IssueExample example = new IssueExample();
-        IssueExample.Criteria criteria = example.createCriteria();
-        criteria.andIssueIdEqualTo(issueId);
-        criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
-        List<Issue> issueList = issueMapper.selectByExample(example);
-        if (CollectionUtils.isEmpty(issueList)) {
-            throw new BusinessException(errMsg);
-        }
-        Issue issue = issueList.get(0);
-
-        IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
-        /** 查询当前Issue的富文本内容,并赋值 */
-        issueRichTextFactory.queryIssueRichText(issueDTO);
-        issueDTO.setIssueId(null);
-
-        //查询自定义字段并塞入对象中
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
-        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
-
-        //查询工作项和产品关系表并保存
-        List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
-        if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
-            issueDTO.setSystemIds(issueSystemRelpList.stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList()));
-        }
-
-        Long newIssueId = createIssue(issueDTO, checkErrMsg, newMsg, issueType);
-
-        return newIssueId;
     }
 
 }
