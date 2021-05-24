@@ -92,7 +92,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from issue_acceptance
+    from s_issue_acceptance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -106,7 +106,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_acceptance
+    from s_issue_acceptance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -119,21 +119,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from issue_acceptance
+    from s_issue_acceptance 
     where acceptance_id = #{acceptanceId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_acceptance
+    delete from s_issue_acceptance 
     where acceptance_id = #{acceptanceId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueAcceptanceExample">
-    delete from issue_acceptance
+    delete from s_issue_acceptance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueAcceptance" useGeneratedKeys="true" keyProperty="acceptanceId">
-    insert into issue_acceptance (acceptance_id, issue_id, standard, 
+    insert into s_issue_acceptance  (acceptance_id, issue_id, standard, 
       is_select, state, create_uid, 
       create_time, update_uid, update_time, 
       accepter, accept_time, is_pass, 
@@ -145,7 +145,7 @@
       #{remarks,jdbcType=LONGVARCHAR},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueAcceptance" useGeneratedKeys="true" keyProperty="acceptanceId">
-    insert into issue_acceptance
+    insert into s_issue_acceptance 
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="acceptanceId != null">
         acceptance_id,
@@ -236,13 +236,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueAcceptanceExample" resultType="java.lang.Long">
-    select count(*) from issue_acceptance
+    select count(*) from s_issue_acceptance 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_acceptance
+    update s_issue_acceptance 
     <set>
       <if test="record.acceptanceId != null">
         acceptance_id = #{record.acceptanceId,jdbcType=BIGINT},
@@ -292,7 +292,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update issue_acceptance
+    update s_issue_acceptance 
     set acceptance_id = #{record.acceptanceId,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       standard = #{record.standard,jdbcType=VARCHAR},
@@ -312,7 +312,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_acceptance
+    update s_issue_acceptance 
     set acceptance_id = #{record.acceptanceId,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       standard = #{record.standard,jdbcType=VARCHAR},
@@ -331,7 +331,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueAcceptance">
-    update issue_acceptance
+    update s_issue_acceptance 
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -376,7 +376,7 @@
     where acceptance_id = #{acceptanceId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueAcceptance">
-    update issue_acceptance
+    update s_issue_acceptance 
     set issue_id = #{issueId,jdbcType=BIGINT},
       standard = #{standard,jdbcType=VARCHAR},
       is_select = #{isSelect,jdbcType=TINYINT},
@@ -393,7 +393,7 @@
     where acceptance_id = #{acceptanceId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueAcceptance">
-    update issue_acceptance
+    update s_issue_acceptance 
     set issue_id = #{issueId,jdbcType=BIGINT},
       standard = #{standard,jdbcType=VARCHAR},
       is_select = #{isSelect,jdbcType=TINYINT},

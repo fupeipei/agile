@@ -81,7 +81,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_filter
+    from  s_issue_filter 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -92,21 +92,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from issue_filter
+    from  s_issue_filter 
     where filter_id = #{filterId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_filter
+    delete from  s_issue_filter 
     where filter_id = #{filterId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterExample">
-    delete from issue_filter
+    delete from  s_issue_filter 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueFilter" useGeneratedKeys="true" keyProperty="filterId">
-    insert into issue_filter (filter_id, name, category, 
+    insert into  s_issue_filter  (filter_id, name, category, 
       filter_type, project_id, create_uid, 
       create_name, create_time, state,tenant_code
       )
@@ -116,7 +116,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueFilter">
-    insert into issue_filter
+    insert into  s_issue_filter 
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="filterId != null">
         filter_id,
@@ -183,13 +183,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterExample" resultType="java.lang.Long">
-    select count(*) from issue_filter
+    select count(*) from  s_issue_filter 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_filter
+    update  s_issue_filter 
     <set>
       <if test="record.filterId != null">
         filter_id = #{record.filterId,jdbcType=BIGINT},
@@ -227,7 +227,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_filter
+    update  s_issue_filter 
     set filter_id = #{record.filterId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       category = #{record.category,jdbcType=TINYINT},
@@ -243,7 +243,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueFilter">
-    update issue_filter
+    update  s_issue_filter 
     <set>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -276,7 +276,7 @@
     where filter_id = #{filterId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueFilter">
-    update issue_filter
+    update  s_issue_filter 
     set name = #{name,jdbcType=VARCHAR},
       category = #{category,jdbcType=TINYINT},
       filter_type = #{filterType,jdbcType=TINYINT},
