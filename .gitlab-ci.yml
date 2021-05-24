@@ -1,6 +1,6 @@
 stages:
   - build_maven
-#  - deploy_dev
+  #- deploy_dev
   - execute_dev_sql
   - deploy_test
   - execute_test_sql
@@ -22,7 +22,7 @@ build_maven:
       - docker-tag
     expire_in: 3 days 
   only:
-#    - dev
+    #- dev
     - master
 
 #deploy_dev:
@@ -40,7 +40,7 @@ build_maven:
 #    - dev
 
 execute_dev_sql:
-#  when: manual
+  when: manual
   stage: execute_dev_sql
   image: 192.168.48.2:5002/library/git-mysql:alpine
   script:
