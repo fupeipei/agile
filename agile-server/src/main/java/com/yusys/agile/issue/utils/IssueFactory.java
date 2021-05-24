@@ -18,6 +18,8 @@ import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.issue.service.*;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
@@ -111,7 +113,7 @@ public class IssueFactory {
     @Resource
     private RabbitTemplate rabbitTemplate;
     @Resource
-    private SprintMapper sprintMapper;
+    private SSprintMapper sprintMapper;
     @Autowired
     private ReviewService reviewService;
     @Autowired
@@ -134,17 +136,7 @@ public class IssueFactory {
         //如果是快速新建过来没有选择阶段走if，新增页面过来走else
         Long[] stages = issueDTO.getStages();
         if (null == stages) {
-            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                List<StageInstance> stageInstanceList = stageService.getFirstStageFirstLane(issueDTO.getProjectId());
-                if (CollectionUtils.isNotEmpty(stageInstanceList)) {
-                    StageInstance stageInstance = stageInstanceList.get(0);
-                    issue.setStageId(stageInstance.getStageId());
-                    if (CollectionUtils.isNotEmpty(stageInstance.getSecondStages())) {
-                        KanbanStageInstance kanbanStageInstance = stageInstance.getSecondStages().get(0);
-                        issue.setLaneId(kanbanStageInstance.getStageId());
-                    }
-                }
-            } else {
+            if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
                 //任务选择处理人就是已领取，否则就是未领取
                 if (null != issue.getHandler()) {
                     issue.setStageId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
@@ -160,7 +152,6 @@ public class IssueFactory {
                 if (null != story) {
                     issue.setSprintId(story.getSprintId());
                 }
-
                 issue.setReallyWorkload(0);
             }
         } else {
@@ -177,7 +168,7 @@ public class IssueFactory {
         issue.setReallyWorkload(0);
 
         if (null != issue.getSprintId()) {
-            Sprint sprint = sprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
+            SSprintWithBLOBs sprint = sprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
             if (null != sprint) {
                 if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
                     throw new BusinessException("迭代已完成不能再关联工作项");
@@ -188,24 +179,24 @@ public class IssueFactory {
         issueMapper.insertSelective(issue);
 
         // 评审拦截
-        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType) && null != issue.getSprintId()) {
-            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issue.getIssueId(), issueDTO.getProjectId());
-            if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
-                LOGGER.info("由于未通过评审，创建故事关联迭代失败！storyId = {}", issue.getIssueId());
-                throw new BusinessException("由于未通过评审，创建故事不能关联迭代！");
-            }
-
-        }
+//        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType) && null != issue.getSprintId()) {
+//            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issue.getIssueId(), issueDTO.getProjectId());
+//            if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
+//                LOGGER.info("由于未通过评审，创建故事关联迭代失败！storyId = {}", issue.getIssueId());
+//                throw new BusinessException("由于未通过评审，创建故事不能关联迭代！");
+//            }
+//
+//        }
 
         /**  赋值issue ,保存富文本 */
         //快速新建过来设置默认模板
         if (StringUtils.isBlank(issueDTO.getDescription())) {
-            IssueTemplate issueTemplate = issueTemplateService.getTemplateByProjectAndType(issueDTO.getProjectId(), issueType);
+            IssueTemplate issueTemplate = issueTemplateService.getTemplateByProjectAndType(issueDTO.getSystemId(), issueType);
             if (Optional.ofNullable(issueTemplate).isPresent()) {
                 issueDTO.setDescription(issueTemplate.getDescription());
             }
         }
-        issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), null);
+        issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(),null);
 
         final Long issueId = issue.getIssueId();
         issueDTO.setIssueId(issueId);
@@ -427,7 +418,7 @@ public class IssueFactory {
             dealHistory(history);
 
             //富文本单独保存
-            issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), null);
+            issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(),null);
             issue.setProjectId(projectId);
 
             //todo 处理代办编辑
@@ -922,7 +913,7 @@ public class IssueFactory {
             records.add(nameHistory);
         }
         /** 富文本 */
-        IssueRichtext issueRichText = issueRichTextFactory.getIssueRichText(issueDTO.getIssueId());
+        SIssueRichtextWithBLOBs issueRichText = issueRichTextFactory.getIssueRichText(issueDTO.getIssueId());
         if (Optional.ofNullable(issueRichText).isPresent()) {
             if (!ObjectUtil.equals(issueDTO.getDescription(), issueRichText.getDescription())) {
                 IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_RICH_TEXT.CODE, IssueField.DESCRIPTION.getDesc());

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.issue.dao.IssueRichtextMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.issue.domain.IssueRichtext">
+<mapper namespace="com.yusys.agile.issue.dao.SIssueRichtextMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.issue.domain.SIssueRichtext">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="issue_id" jdbcType="BIGINT" property="issueId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.issue.domain.IssueRichtext">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.issue.domain.SIssueRichtextWithBLOBs">
     <result column="description" jdbcType="LONGVARCHAR" property="description" />
+    <result column="acceptance_criteria" jdbcType="LONGVARCHAR" property="acceptanceCriteria" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,12 +71,12 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, issue_id, create_time, state,tenant_code
+    id, issue_id, create_time, state, tenant_code
   </sql>
   <sql id="Blob_Column_List">
-    description
+    description, acceptance_criteria
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueRichtextExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.issue.domain.SIssueRichtextExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -83,7 +84,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from  s_issue_richtext 
+    from s_issue_richtext
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -91,13 +92,13 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.IssueRichtextExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.SIssueRichtextExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from  s_issue_richtext 
+    from s_issue_richtext
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -110,27 +111,29 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from  s_issue_richtext 
+    from s_issue_richtext
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from  s_issue_richtext 
+    delete from s_issue_richtext
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueRichtextExample">
-    delete from  s_issue_richtext 
+  <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.SIssueRichtextExample">
+    delete from s_issue_richtext
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueRichtext" useGeneratedKeys="true" keyProperty="id">
-    insert into  s_issue_richtext  (id, issue_id, create_time, 
-      state, description,tenant_code)
+  <insert id="insert" parameterType="com.yusys.agile.issue.domain.SIssueRichtextWithBLOBs">
+    insert into s_issue_richtext (id, issue_id, create_time, 
+      state, tenant_code, description, 
+      acceptance_criteria)
     values (#{id,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{state,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR},#{tenantCode})
+      #{state,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR}, 
+      #{acceptanceCriteria,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    insert into  s_issue_richtext 
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.SIssueRichtextWithBLOBs">
+    insert into s_issue_richtext
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -144,11 +147,14 @@
       <if test="state != null">
         state,
       </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
       <if test="description != null">
         description,
       </if>
-      <if test="tenantCode != null">
-        tenant_code,
+      <if test="acceptanceCriteria != null">
+        acceptance_criteria,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -164,22 +170,25 @@
       <if test="state != null">
         #{state,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        #{description,jdbcType=LONGVARCHAR},
-      </if>
       <if test="tenantCode != null">
         #{tenantCode,jdbcType=VARCHAR},
       </if>
+      <if test="description != null">
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="acceptanceCriteria != null">
+        #{acceptanceCriteria,jdbcType=LONGVARCHAR},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueRichtextExample" resultType="java.lang.Long">
-    select count(*) from  s_issue_richtext 
+  <select id="countByExample" parameterType="com.yusys.agile.issue.domain.SIssueRichtextExample" resultType="java.lang.Long">
+    select count(*) from s_issue_richtext
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update  s_issue_richtext 
+    update s_issue_richtext
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -193,11 +202,14 @@
       <if test="record.state != null">
         state = #{record.state,jdbcType=VARCHAR},
       </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=LONGVARCHAR},
       </if>
-      <if test="record.tenantCode != null">
-        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      <if test="record.acceptanceCriteria != null">
+        acceptance_criteria = #{record.acceptanceCriteria,jdbcType=LONGVARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -205,30 +217,31 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update  s_issue_richtext 
+    update s_issue_richtext
     set id = #{record.id,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       state = #{record.state,jdbcType=VARCHAR},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=LONGVARCHAR},
-    tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+      acceptance_criteria = #{record.acceptanceCriteria,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update  s_issue_richtext 
+    update s_issue_richtext
     set id = #{record.id,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       state = #{record.state,jdbcType=VARCHAR},
-    tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    update  s_issue_richtext 
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.SIssueRichtextWithBLOBs">
+    update s_issue_richtext
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -239,29 +252,34 @@
       <if test="state != null">
         state = #{state,jdbcType=VARCHAR},
       </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
       <if test="description != null">
         description = #{description,jdbcType=LONGVARCHAR},
       </if>
-      <if test="tenantCode != null">
-        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      <if test="acceptanceCriteria != null">
+        acceptance_criteria = #{acceptanceCriteria,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    update  s_issue_richtext 
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.SIssueRichtextWithBLOBs">
+    update s_issue_richtext
     set issue_id = #{issueId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       state = #{state,jdbcType=VARCHAR},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR},
       description = #{description,jdbcType=LONGVARCHAR},
-      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+      acceptance_criteria = #{acceptanceCriteria,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueRichtext">
-    update  s_issue_richtext 
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.SIssueRichtext">
+    update s_issue_richtext
     set issue_id = #{issueId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      state = #{state,jdbcType=VARCHAR}
+      state = #{state,jdbcType=VARCHAR},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

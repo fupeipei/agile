@@ -42,13 +42,6 @@ public interface STeamSystemMapper {
     void bindingTeamAndSystem(@Param("team") STeam team, @Param("systemIds") List<Long> systemIds);
 
     /**
-     * 删除绑定的团队和系统
-     *
-     * @param teamId 团队id
-     */
-    void removeBindingTeamAndSystem(Long teamId);
-
-    /**
      * 通过团队id查询系统id
      *
      * @param teamId 团队id
@@ -58,4 +51,6 @@ public interface STeamSystemMapper {
 
 
     List<Long> queryTeamIdBySystemId(@Param("systemIds") List<Long> systemIds);
+
+    void deleteByTeamId(@Param("teamId") Long teamId);
 }

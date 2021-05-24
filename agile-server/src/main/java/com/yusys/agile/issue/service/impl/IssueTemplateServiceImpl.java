@@ -94,7 +94,7 @@ public class IssueTemplateServiceImpl implements IssueTemplateService {
     }
 
     @Override
-    public IssueTemplate getTemplateByProjectAndType(Long projectId, Byte issueType) {
-        return issueTemplateMapper.getTemplateByProjectAndType(projectId, issueType);
+    public IssueTemplate getTemplateByProjectAndType(Long systemId, Byte issueType) {
+        return issueTemplateMapper.getTemplateByProjectAndType(systemId, issueType);
     }
 }
