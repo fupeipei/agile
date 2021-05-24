@@ -97,7 +97,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_history_record
+    from s_issue_history_record 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -111,7 +111,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_history_record
+    from s_issue_history_record 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -122,21 +122,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from issue_history_record
+    from s_issue_history_record 
     where record_id = #{recordId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_history_record
+    delete from s_issue_history_record 
     where record_id = #{recordId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecordExample">
-    delete from issue_history_record
+    delete from s_issue_history_record 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecord" useGeneratedKeys="true" keyProperty="recordId">
-    insert into issue_history_record (record_id, operation_field, issue_id, 
+    insert into s_issue_history_record  (record_id, operation_field, issue_id, 
       record_type, is_custom, label, 
       create_time, create_uid, old_value, 
       new_value, stay_days,tenant_code)
@@ -146,7 +146,7 @@
       #{newValue,jdbcType=LONGVARCHAR}, #{stayDays,jdbcType=INTEGER},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecord">
-    insert into issue_history_record
+    insert into s_issue_history_record 
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="recordId != null">
         record_id,
@@ -225,13 +225,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecordExample" resultType="java.lang.Long">
-    select count(*) from issue_history_record
+    select count(*) from s_issue_history_record 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_history_record
+    update s_issue_history_record 
     <set>
       <if test="record.recordId != null">
         record_id = #{record.recordId,jdbcType=BIGINT},
@@ -275,7 +275,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update issue_history_record
+    update s_issue_history_record 
     set record_id = #{record.recordId,jdbcType=BIGINT},
       operation_field = #{record.operationField,jdbcType=VARCHAR},
       issue_id = #{record.issueId,jdbcType=BIGINT},
@@ -293,7 +293,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_history_record
+    update s_issue_history_record 
     set record_id = #{record.recordId,jdbcType=BIGINT},
       operation_field = #{record.operationField,jdbcType=VARCHAR},
       issue_id = #{record.issueId,jdbcType=BIGINT},
@@ -309,7 +309,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecord">
-    update issue_history_record
+    update s_issue_history_record 
     <set>
       <if test="operationField != null">
         operation_field = #{operationField,jdbcType=VARCHAR},
@@ -348,7 +348,7 @@
     where record_id = #{recordId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecord">
-    update issue_history_record
+    update s_issue_history_record 
     set operation_field = #{operationField,jdbcType=VARCHAR},
       issue_id = #{issueId,jdbcType=BIGINT},
       record_type = #{recordType,jdbcType=TINYINT},
@@ -363,7 +363,7 @@
     where record_id = #{recordId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecord">
-    update issue_history_record
+    update s_issue_history_record 
     set operation_field = #{operationField,jdbcType=VARCHAR},
       issue_id = #{issueId,jdbcType=BIGINT},
       record_type = #{recordType,jdbcType=TINYINT},
@@ -377,10 +377,10 @@
   </update>
 
   <delete id="deleteByTaskId">
-    DELETE FROM issue_history_record WHERE issue_id = #{issueId}
+    DELETE FROM s_issue_history_record  WHERE issue_id = #{issueId}
   </delete>
   <insert id="createBatchHistory">
-    INSERT INTO issue_history_record (operation_field, issue_id,record_type, is_custom, label,create_time, old_value,new_value,stay_days,create_uid,tenant_code)
+    INSERT INTO s_issue_history_record  (operation_field, issue_id,record_type, is_custom, label,create_time, old_value,new_value,stay_days,create_uid,tenant_code)
     VALUES
     <foreach collection="history" item="item" separator=",">
       (#{item.operationField},#{item.issueId},#{item.recordType},#{item.isCustom},#{item.label},now(),#{item.oldValue},#{item.newValue},#{item.stayDays},#{item.createUid},#{item.tenantCode})
