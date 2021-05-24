@@ -4,22 +4,27 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @description 代办记录类
+ * @description 代办类
  * @date 2021/2/1
  */
-public class CommissionRecord implements Serializable {
+public class SCommission implements Serializable {
 
-    private static final long serialVersionUID = -2076546806454422444L;
-
-    /**
-     * 代办记录主键
-     */
-    private Long id;
+    private static final long serialVersionUID = 1017018754926524571L;
 
     /**
      * 代办主键
      */
-    private Long commissonId;
+    private Long id;
+
+    /**
+     * 工作项编号
+     */
+    private Long issueId;
+
+    /**
+     * 项目编号
+     */
+    private Long projectId;
 
     /**
      * 代办标题
@@ -32,19 +37,9 @@ public class CommissionRecord implements Serializable {
     private Byte type;
 
     /**
-     * 代办人
+     * 当前代办人
      */
-    private Long handler;
-
-    /**
-     * 工作项类型
-     */
-    private Long issueId;
-
-    /**
-     * 项目编号
-     */
-    private Long projectId;
+    private Long currentHandler;
 
     /**
      * 阶段编号
@@ -57,29 +52,29 @@ public class CommissionRecord implements Serializable {
     private Long laneId;
 
     /**
-     * 数据状态
-     */
-    private String state;
-
-    /**
-     * 创建人
+     * 代办创建人
      */
     private Long createUid;
 
     /**
-     * 创建时间
+     * 代办创建时间
      */
     private Date createTime;
 
     /**
-     * 更新人
+     * 代办更新人
      */
     private Long updateUid;
 
     /**
-     * 更新时间
+     * 代办更新时间
      */
     private Date updateTime;
+
+    /**
+     * 数据状态
+     */
+    private String state;
 
     /**
      * 租户编码
@@ -92,38 +87,6 @@ public class CommissionRecord implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getCommissonId() {
-        return commissonId;
-    }
-
-    public void setCommissonId(Long commissonId) {
-        this.commissonId = commissonId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
-
-    public Byte getType() {
-        return type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
-    public Long getHandler() {
-        return handler;
-    }
-
-    public void setHandler(Long handler) {
-        this.handler = handler;
     }
 
     public Long getIssueId() {
@@ -142,6 +105,30 @@ public class CommissionRecord implements Serializable {
         this.projectId = projectId;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title == null ? null : title.trim();
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public Long getCurrentHandler() {
+        return currentHandler;
+    }
+
+    public void setCurrentHandler(Long currentHandler) {
+        this.currentHandler = currentHandler;
+    }
+
     public Long getStageId() {
         return stageId;
     }
@@ -156,14 +143,6 @@ public class CommissionRecord implements Serializable {
 
     public void setLaneId(Long laneId) {
         this.laneId = laneId;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state == null ? null : state.trim();
     }
 
     public Long getCreateUid() {
@@ -198,6 +177,14 @@ public class CommissionRecord implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state == null ? null : state.trim();
+    }
+
     public String getTenantCode() {
         return tenantCode;
     }
@@ -208,21 +195,20 @@ public class CommissionRecord implements Serializable {
 
     @Override
     public String toString() {
-        return "CommissionRecord{" +
+        return "Commission{" +
                 "id=" + id +
-                ", commissonId=" + commissonId +
-                ", title='" + title + '\'' +
-                ", type=" + type +
-                ", handler=" + handler +
                 ", issueId=" + issueId +
                 ", projectId=" + projectId +
+                ", title='" + title + '\'' +
+                ", type=" + type +
+                ", currentHandler=" + currentHandler +
                 ", stageId=" + stageId +
                 ", laneId=" + laneId +
-                ", state='" + state + '\'' +
                 ", createUid=" + createUid +
                 ", createTime=" + createTime +
                 ", updateUid=" + updateUid +
                 ", updateTime=" + updateTime +
+                ", state='" + state + '\'' +
                 ", tenantCode='" + tenantCode + '\'' +
                 '}';
     }

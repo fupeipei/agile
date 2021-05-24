@@ -1,7 +1,7 @@
 package com.yusys.agile.commission.rest;
 
 import com.yusys.agile.commission.constants.CommissionConstant;
-import com.yusys.agile.commission.dto.CommissionDTO;
+import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -62,18 +62,18 @@ public class CommissionController {
     }
 
     /**
-     * @param commissionDTO
+     * @param sCommissionDTO
      * @return
      * @description 更新代办信息
      * @date 2021/2/1
      */
     @PostMapping("/modifyCommission")
-    public ControllerResponse modifyCommission(@RequestBody CommissionDTO commissionDTO) {
+    public ControllerResponse modifyCommission(@RequestBody SCommissionDTO sCommissionDTO) {
         try {
-            commissionService.updateCommission(CommissionConstant.PRIMARY_KEY_TYPE, commissionDTO);
+            commissionService.updateCommission(CommissionConstant.PRIMARY_KEY_TYPE, sCommissionDTO);
             return ControllerResponse.success("更新代办信息成功");
         } catch (Exception e) {
-            LOGGER.error("modifyCommission method param commissionId:{} occur exception:{}", commissionDTO.getId(), e.getMessage());
+            LOGGER.error("modifyCommission method param commissionId:{} occur exception:{}", sCommissionDTO.getId(), e.getMessage());
             return ControllerResponse.fail("更新代办信息失败");
         }
     }
