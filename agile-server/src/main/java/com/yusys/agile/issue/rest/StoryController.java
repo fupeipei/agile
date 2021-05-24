@@ -24,9 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * @Decription 系统下用户故事控制类
+ * @author hanke
+ * @Date 2021-05-24 16:30;00
+ */
 @RestController
 @RequestMapping("/issue/story")
-public class StoryContoller {
+public class StoryController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
     @Resource
@@ -155,9 +160,9 @@ public class StoryContoller {
 
     /**
      * @param issueDTO
-     * @Date 2021/2/12
+     * @Date 2021/05/24
      * @Description 团队管理-进入迭代管理-看板
-     * 通过迭代id，故事id/故事名称获取故事以及故事下的任务信息
+     * 通过迭代id、故事id/故事名称、任务ID/任务名称、任务状态、任务类型、人员,获取故事以及故事下的任务信息
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/list/stories/union/tasks")
