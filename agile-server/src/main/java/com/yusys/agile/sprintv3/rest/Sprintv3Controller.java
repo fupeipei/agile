@@ -48,8 +48,8 @@ public class Sprintv3Controller {
      * @param teamId
      */
     @GetMapping("/teamInSprint/{teamId}/{pageNum}/{pageSize}")
-    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum){
-        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum);
+    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum, @RequestParam("sprint") String sprint){
+        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
         return ControllerResponse.success(new PageInfo<SprintListDTO>(list));
     }
 
