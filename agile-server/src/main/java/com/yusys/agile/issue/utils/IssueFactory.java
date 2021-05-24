@@ -128,6 +128,15 @@ public class IssueFactory {
         Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
         issue.setIssueType(issueType);
 
+        //处理阶段
+        Long[] stages = issueDTO.getStages();
+        if (Optional.ofNullable(stages).isPresent()) {
+            issue.setStageId(stages[0]);
+            if (stages.length > 1) {
+                issue.setLaneId(stages[1]);
+            }
+        }
+
         //处理任务
         if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
             //任务选择处理人就是已领取，否则就是未领取
@@ -141,20 +150,10 @@ public class IssueFactory {
             Long parentId = issueDTO.getParentId();
             //获取迭代ID
             Issue story = issueMapper.selectByPrimaryKey(parentId);
-            // 任务可能不在故事里也不在迭代里
             if (null != story) {
                 issue.setSprintId(story.getSprintId());
             }
             issue.setReallyWorkload(0);
-        }
-
-        //处理阶段
-        Long[] stages = issueDTO.getStages();
-        if (null != stages) {
-            issue.setStageId(stages[0]);
-            if (stages.length > 1) {
-                issue.setLaneId(stages[1]);
-            }
         }
 
         //处理预计工时，默认8小时且剩余工时等于预计工时

@@ -18,6 +18,8 @@ import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
+import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.review.dto.StoryCheckResultDTO;
@@ -55,12 +57,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @Date: 13:34
+ *  @Description: 用户故事实现类
+ *  @author: zhao_yd
+ *  @Date: 2021/5/24 1:43 下午
+ *
  */
+
 @Service
 public class StoryServiceImpl implements StoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(StoryServiceImpl.class);
-
     @Resource
     private IssueFactory issueFactory;
     @Resource
@@ -75,16 +80,12 @@ public class StoryServiceImpl implements StoryService {
     private IFacadeUserApi iFacadeUserApi;
     @Resource
     private IssueAcceptanceMapper issueAcceptanceMapper;
-    @Autowired
-    private ReviewService reviewService;
     @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
     @Resource
-    private KanbanStageInstanceMapper kanbanStageInstanceMapper;
-    @Resource
-    private StageService stageService;
-    @Resource
     private IssueRichTextFactory issueRichTextFactory;
+    @Resource
+    private IStageService stageService;
 
     /**
      * 功能描述 百分号
@@ -94,12 +95,28 @@ public class StoryServiceImpl implements StoryService {
      */
     private static final String PERCENT_SIGN = "%";
 
-    /*@Override
-    public IssueDTO queryStory(Long storyId, Long projectId) {
-        IssueDTO issueDTO = issueFactory.queryIssue(storyId, projectId);
+    @Override
+    public Long createStory(IssueDTO issueDTO) {
+        //设置默认创建
+        Long[] stages = issueDTO.getStages();
+        if(!Optional.ofNullable(stages).isPresent()){
+            List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
+            stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
+            //创建用户故事默认放在开发中的未开始阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
+            if(CollectionUtils.isNotEmpty(stageInstances)){
+                Long sprintId = issueDTO.getSprintId();
+                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(0):stageInstances.get(1);
+                stages[1] = stageInstance.getStageId();
+            }
+            issueDTO.setStages(stages);
+        }
+        Long storyId = issueFactory.createIssue(issueDTO, "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
+        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
+        issue.setIssueType(IssueTypeEnum.TYPE_STORY.CODE);
 
-        return issueDTO;
-    }*/
+        return storyId;
+    }
+
 
     @Override
     public IssueDTO queryStory(Long storyId) {
@@ -113,20 +130,12 @@ public class StoryServiceImpl implements StoryService {
         issueFactory.deleteIssue(storyId, deleteChild);
     }
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void editStory(IssueDTO issueDTO) {
         Issue oldStory = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         Long projectId = oldStory.getProjectId();
-        // 评审拦截
-        if (!ObjectUtil.equals(oldStory.getSprintId(), issueDTO.getSprintId())) {
-            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issueDTO.getIssueId(), projectId);
-            if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
-                LOGGER.info("由于未通过评审，修改故事关联迭代失败！storyId = {}", issueDTO.getIssueId());
-                throw new BusinessException(storyCheckResultDTO.getMsg());
-            }
-
-        }
 
         //校验故事下有未完成任务或未修复缺陷不允许改为完成阶段
         Long[] stages = issueDTO.getStages();
@@ -135,7 +144,6 @@ public class StoryServiceImpl implements StoryService {
                 throw new BusinessException("故事下有未完成任务或未修复缺陷不允许改为完成阶段！");
             }
         }
-
 
         Issue story = issueFactory.editIssue(issueDTO, oldStory, projectId);
         int count;
@@ -169,16 +177,6 @@ public class StoryServiceImpl implements StoryService {
             issue.setSprintId(issueDTO.getSprintId());
             issueMapper.updatePrint(issue);
         }
-    }
-
-    @Override
-    public Long createStory(IssueDTO issueDTO) {
-
-        Long storyId = issueFactory.createIssue(issueDTO, "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
-        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
-        issue.setIssueType(IssueTypeEnum.TYPE_STORY.CODE);
-
-        return storyId;
     }
 
     @Override

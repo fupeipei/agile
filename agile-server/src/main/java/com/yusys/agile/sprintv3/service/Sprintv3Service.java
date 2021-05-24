@@ -86,6 +86,8 @@ public interface Sprintv3Service {
      * @author zhaofeng
      * @date 2021/5/24 13:28
      * @param teamId
+     * @param pageSize
+     * @param pageNum
      */
-    List<SprintListDTO> teamInSprint(Long teamId);
+    List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum);
 }

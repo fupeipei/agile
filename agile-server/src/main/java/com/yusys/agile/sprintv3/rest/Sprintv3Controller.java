@@ -43,10 +43,10 @@ public class Sprintv3Controller {
      * @date 2021/5/24 11:50
      * @param teamId
      */
-    @GetMapping("/teamInSprint/{teamId}")
-    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId){
-        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId);
-        return ControllerResponse.success(list);
+    @GetMapping("/teamInSprint/{teamId}/{pageNum}/{pageSize}")
+    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum){
+        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum);
+        return ControllerResponse.success(new PageInfo<SprintListDTO>(list));
     }
 
     /**
