@@ -62,7 +62,6 @@ public class StoryController {
             LOGGER.error("新增用户故事失败：{}", e);
             return ControllerResponse.fail("新增用户故事失败：" + e.getMessage());
         }
-
     }
 
 

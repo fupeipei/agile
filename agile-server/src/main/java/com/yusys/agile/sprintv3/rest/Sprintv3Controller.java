@@ -1,6 +1,7 @@
 package com.yusys.agile.sprintv3.rest;
 
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
@@ -26,6 +27,9 @@ public class Sprintv3Controller {
     @Autowired
     private Sprintv3Service sprintv3Service;
 
+    @Autowired
+    private StoryService storyService;
+
     /**
      * @param sprintId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
@@ -44,8 +48,8 @@ public class Sprintv3Controller {
      * @param teamId
      */
     @GetMapping("/teamInSprint/{teamId}/{pageNum}/{pageSize}")
-    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum){
-        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum);
+    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum, @RequestParam("sprint") String sprint){
+        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
         return ControllerResponse.success(new PageInfo<SprintListDTO>(list));
     }
 
@@ -124,10 +128,9 @@ public class Sprintv3Controller {
 
 
     /**
-     * @param sprintDTO
+     * 迭代添加工作项（故事或缺陷）
+     * @param sprintDTO 迭代dto
      * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @Date 2020/4/17 21:08
-     * @Description 迭代添加工作项（故事或缺陷）
      */
     @PostMapping("/relation/issue")
     public ControllerResponse arrangeIssue(@RequestBody SprintDTO sprintDTO) {
@@ -137,4 +140,18 @@ public class Sprintv3Controller {
         return ControllerResponse.fail("关联失败！");
     }
 
+
+    /**
+     *  通过迭代id和故事id将故事移出迭代
+     * @param sprintId 迭代id
+     * @param issueId  工作项id
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     */
+    @PutMapping("/issues/{sprintId}/{issueId}")
+    public ControllerResponse removeIssue4Sprint(@PathVariable Long sprintId, @PathVariable Long issueId) {
+        if (storyService.removeStory4Sprint(sprintId, issueId) != 1) {
+            return ControllerResponse.fail("移除迭代失败！");
+        }
+        return ControllerResponse.success("工作项移除成功！");
+    }
 }

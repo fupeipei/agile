@@ -276,30 +276,27 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum) {
+    public List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum, String sprint) {
         /*
          * 按团队ID查询出所有（进行中、未开始）状态下的有效迭代
          */
-        SSprintExample example = new SSprintExample();
-        example.createCriteria()
-                .andStateEqualTo(StateEnum.U.getValue())
-                .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE, SprintStatusEnum.TYPE_ONGOING_STATE.CODE, SprintStatusEnum.TYPE_FINISHED_STATE.CODE))
-                .andTeamIdEqualTo(teamId);
-        example.setOrderByClause("create_time desc");
         PageHelper.startPage(pageNum, pageSize);
-        List<SSprint> list = ssprintMapper.selectByExample(example);
-        try {
-            List<SprintListDTO> result = ReflectUtil.copyProperties4List(list, SprintListDTO.class);
-            //属性值翻译
-            result.forEach(item -> {
-                //状态
-                item.setStatusStr(SprintStatusEnum.getName(item.getStatus()));
-            });
-            return result;
-        } catch (Exception e) {
-            log.error("反射失败", e);
-            throw new BusinessException("获取数据失败");
-        }
+        List<SprintListDTO> result = ssprintMapper.selectByIdAndName(teamId,sprint);
+        //属性值翻译
+        result.forEach(item -> {
+            //状态
+            item.setStatusStr(SprintStatusEnum.getName(item.getStatus()));
+        });
+        return result;
+        //        SSprintExample example = new SSprintExample();
+//        example.createCriteria()
+//                .andStateEqualTo(StateEnum.U.getValue())
+//                .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE, SprintStatusEnum.TYPE_ONGOING_STATE.CODE, SprintStatusEnum.TYPE_FINISHED_STATE.CODE))
+//                .andTeamIdEqualTo(teamId);
+//
+//        example.setOrderByClause("create_time desc");
+//        List<SSprint> list = ssprintMapper.selectByExample(example);
+
     }
 
     /**
