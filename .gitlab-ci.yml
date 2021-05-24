@@ -40,7 +40,7 @@ build_maven:
 #    - dev
 
 execute_dev_sql:
-#  when: manual
+  when: manual
   stage: execute_dev_sql
   image: 192.168.48.2:5002/library/git-mysql:alpine
   script:
