@@ -291,6 +291,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<SSprint> list = ssprintMapper.selectByExample(example);
         try {
             List<SprintListDTO> result = ReflectUtil.copyProperties4List(list, SprintListDTO.class);
+            //属性值翻译
+            result.forEach(item->{
+                //状态
+                item.setStatusStr(SprintStatusEnum.getName(item.getStatus()));
+            });
             return result;
         } catch (Exception e) {
             log.error("反射失败", e);
