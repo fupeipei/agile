@@ -206,6 +206,7 @@ public class TaskServiceImpl implements TaskService {
                     nameHistory.setNewValue("任务移除迭代");
                     burnDownChartDao.cancel(issue.getIssueId().toString());
                     i = issueMapper.updateStatusByParentId(storyId);
+                    records.add(nameHistory);
                     createIssueHistoryRecords(records);
                 }
             }
