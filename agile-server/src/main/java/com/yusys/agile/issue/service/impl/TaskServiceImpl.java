@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.consumer.constant.AgileConstant;
@@ -93,6 +94,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private IStageService stageService;
+
+    @Autowired
+    private SActionLogService logService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -285,6 +289,9 @@ public class TaskServiceImpl implements TaskService {
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
 
 
+        //Long loginUserId=807906052370849792L;
+
+
         if (null != loginUserId) {
             task.setHandler(loginUserId);
         }
@@ -318,6 +325,7 @@ public class TaskServiceImpl implements TaskService {
                 .size();
 
         log.info("团队人员信息smCount"+smCount+" memCount"+memCount+" poCount"+poCount+" userId"+userId+" loginUserId"+loginUserId);
+        String actionRemark="";
         if(poCount>0&&memCount==0){
             throw new BusinessException("对于PO，不允许修改任务信息");
         }
@@ -335,6 +343,7 @@ public class TaskServiceImpl implements TaskService {
             if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount>0){
                 task.setStageId(to);
                 task.setHandler(loginUserId);
+                actionRemark="sm自己领任务";
             }
             else {//sm指派或非指派拖拽
                 task.setStageId(to);
@@ -343,6 +352,7 @@ public class TaskServiceImpl implements TaskService {
                 if(userId!=null&&userId>0){//sm指派任务的情况
                     task.setHandler(userId);
                 }
+                actionRemark+="sm指派或非指派拖拽";
             }
 
         }else if(memCount>0){
@@ -360,6 +370,7 @@ public class TaskServiceImpl implements TaskService {
             if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(to)){
                 task.setStageId(to);
                 task.setHandler(null);
+                actionRemark+="领取人需要清除";
             }
 
         }else{
@@ -403,6 +414,8 @@ public class TaskServiceImpl implements TaskService {
 //            }
 
         }
+
+        logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+from+" to="+to,"1");
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
