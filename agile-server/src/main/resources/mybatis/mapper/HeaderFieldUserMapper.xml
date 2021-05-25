@@ -88,7 +88,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from header_field_user
+    from s_header_field_user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -102,7 +102,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from header_field_user
+    from s_header_field_user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -115,21 +115,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from header_field_user
+    from s_header_field_user
     where header_user_id = #{headerUserId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from header_field_user
+    delete from s_header_field_user
     where header_user_id = #{headerUserId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.headerfielduser.domain.HeaderFieldUserExample">
-    delete from header_field_user
+    delete from s_header_field_user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.headerfielduser.domain.HeaderFieldUser">
-    insert into header_field_user (header_user_id, field_id, user_id, 
+    insert into s_header_field_user (header_user_id, field_id, user_id,
       project_id, order_no, field_type,
       apply, field_content,category,is_filter,tenant_code)
     values (#{headerUserId,jdbcType=BIGINT}, #{fieldId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
@@ -137,7 +137,7 @@
       #{apply,jdbcType=TINYINT}, #{fieldContent,jdbcType=LONGVARCHAR}, #{category,jdbcType=TINYINT},#{isFilter,jdbcType=TINYINT},#{tenantCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.headerfielduser.domain.HeaderFieldUser">
-    insert into header_field_user
+    insert into s_header_field_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="headerUserId != null">
         header_user_id,
@@ -210,13 +210,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.headerfielduser.domain.HeaderFieldUserExample" resultType="java.lang.Long">
-    select count(*) from header_field_user
+    select count(*) from s_header_field_user
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update header_field_user
+    update s_header_field_user
     <set>
       <if test="record.headerUserId != null">
         header_user_id = #{record.headerUserId,jdbcType=BIGINT},
@@ -257,7 +257,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update header_field_user
+    update s_header_field_user
     set header_user_id = #{record.headerUserId,jdbcType=BIGINT},
       field_id = #{record.fieldId,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=BIGINT},
@@ -274,7 +274,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update header_field_user
+    update s_header_field_user
     set header_user_id = #{record.headerUserId,jdbcType=BIGINT},
       field_id = #{record.fieldId,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=BIGINT},
@@ -290,7 +290,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.headerfielduser.domain.HeaderFieldUser">
-    update header_field_user
+    update s_header_field_user
     <set>
       <if test="fieldId != null">
         field_id = #{fieldId,jdbcType=BIGINT},
@@ -327,7 +327,7 @@
     where header_user_id = #{headerUserId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.headerfielduser.domain.HeaderFieldUser">
-    update header_field_user
+    update s_header_field_user
     set field_id = #{fieldId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       project_id = #{projectId,jdbcType=BIGINT},
@@ -341,7 +341,7 @@
     where header_user_id = #{headerUserId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.headerfielduser.domain.HeaderFieldUser">
-    update header_field_user
+    update s_header_field_user
     set field_id = #{fieldId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       project_id = #{projectId,jdbcType=BIGINT},
