@@ -7,13 +7,17 @@ import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
+import com.yusys.agile.sprintv3.responseModel.SprintOverView;
+import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -123,6 +128,28 @@ public class SprintV3ServiceTest {
         Assert.assertNotNull(s);
     }
 
+
+//    /**
+//     * 迭代视图 - 迭代详情
+//     */
+//    @Test
+//    public void sprintOverView() {
+//        long sprintId = 10000;
+//        SprintOverView sprintOverView = sprintv3Service.sprintOverView(sprintId);
+//        Assert.assertNotNull(sprintOverView);
+//    }
+
+    /**
+     * 迭代视图 - 迭代统计详情
+     */
+    @Test
+    public void SprintStatisticalInformation() {
+        long sprintId = 10000;
+        SprintStatisticalInformation statisticalInformation = sprintv3Service.SprintStatisticalInformation(sprintId);
+        Assert.assertNotNull(statisticalInformation);
+
+    }
+
     private SecurityDTO securityDTO;
 
     @Before
@@ -146,6 +173,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 测试迭代列表-分页+迭代编号
      */
@@ -158,6 +186,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 测试迭代列表-分页+迭代名称
      */
@@ -170,6 +199,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 测试迭代列表-分页+团队名称
      */
@@ -182,6 +212,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 测试迭代列表-分页+团队编号
      */
@@ -194,6 +225,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 测试迭代列表-分页+迭代名称+分页名称
      */
@@ -207,6 +239,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 测试迭代列表-分页+迭代编号+分页编号
      */
@@ -220,6 +253,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 按teamId查询有效迭代--分页情况
      * 并且迭代状态为 未开始、进行中、已完成的
@@ -245,6 +279,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
         log.info("迭代列表数据【{}】", list);
     }
+
     /**
      * 按teamId查询有效迭代--分页+迭代编号
      */
