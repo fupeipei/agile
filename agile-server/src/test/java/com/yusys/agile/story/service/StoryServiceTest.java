@@ -19,10 +19,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  @Description: 用户故事单元测试
- *  @author: zhao_yd
- *  @Date: 2021/5/24 5:25 下午
- *
+ * @Description: 用户故事单元测试
+ * @author: zhao_yd
+ * @Date: 2021/5/24 5:25 下午
  */
 
 @Slf4j
@@ -36,11 +35,11 @@ public class StoryServiceTest {
     private IssueFactory issueFactory;
 
     @Test
-    public void createStroyTest(){
+    public void createStroyTest() {
         IssueDTO issueDTO = new IssueDTO();
         issueDTO.setCompletion("5");
         //开发阶段、未开始
-        Long[] stages = {4L,100L};
+        Long[] stages = {4L, 100L};
         issueDTO.setStages(stages);
         issueDTO.setAcceptanceCriteria("1、需求完成度要高 2、任务完成时间要准");
         issueDTO.setBeginDate(new Date());
