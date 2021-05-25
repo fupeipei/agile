@@ -340,6 +340,7 @@ public class TaskServiceImpl implements TaskService {
             else {//sm指派或非指派拖拽
                 task.setStageId(to);
                 task.setHandler(task.getHandler());
+                task.setAssessRemarks(task.getAssessRemarks()+"by s");
                 if(userId!=null&&userId>0){//sm指派任务的情况
                     task.setHandler(userId);
                 }
