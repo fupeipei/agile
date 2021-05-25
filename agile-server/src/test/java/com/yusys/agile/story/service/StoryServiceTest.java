@@ -2,7 +2,6 @@ package com.yusys.agile.story.service;
 
 import cn.hutool.core.lang.Assert;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
@@ -12,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,5 +66,21 @@ public class StoryServiceTest {
         log.info("转换为 object值为:{}",JSONObject.toJSONString(jsonObject));
         issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
         Assert.isFalse(story == null);
+    }
+
+    @Test
+    public void deleteStroyTest() {
+        Long storyId = 1L;
+        boolean deleteChild = false;
+        storyService.deleteStory(storyId, deleteChild);
+        org.junit.Assert.assertTrue("deleteStroyTest通过", true);
+    }
+
+    @Test
+    public void deleteStroyWithChildTest() {
+        Long storyId = 1L;
+        boolean deleteChild = true;
+        storyService.deleteStory(storyId, deleteChild);
+        org.junit.Assert.assertTrue("deleteStroyWithChildTest通过", true);
     }
 }
