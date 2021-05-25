@@ -620,21 +620,25 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     public SprintStatisticalInformation sprintStatisticalInformation(long sprintId) {
         SprintStatisticalInformation statisticalInformation = new SprintStatisticalInformation();
 
+        //story
         statisticalInformation.setUserStory(ssprintMapper.querySprintFinishedStoryNumber(sprintId));
         statisticalInformation.setUserStorySum(ssprintMapper.querySprintStoryNumBer(sprintId));
         statisticalInformation.setUserStoryCompleteness(NumberUtilDiv(statisticalInformation.getUserStory(), statisticalInformation.getUserStorySum()));
 
+        //StoryPoint
         statisticalInformation.setStoryPoint(ssprintMapper.querySprintFinishedStoryPoint(sprintId));
         statisticalInformation.setStoryPointSum(ssprintMapper.querySprintStoryPoint(sprintId));
         statisticalInformation.setStoryPointCompleteness(NumberUtilDiv(statisticalInformation.getStoryPoint(), statisticalInformation.getStoryPointSum()));
 
+        //Workload
         statisticalInformation.setWorkload(ssprintMapper.querySprintFinishedWorkload(sprintId));
         statisticalInformation.setWorkloadSum(ssprintMapper.querySprintWorkload(sprintId));
         statisticalInformation.setWorkloadCompleteness(NumberUtilDiv(statisticalInformation.getWorkload(), statisticalInformation.getWorkloadSum()));
 
+        //Task
         statisticalInformation.setTask(ssprintMapper.querySprintFinishedTaskNumber(sprintId));
         statisticalInformation.setTaskSum(ssprintMapper.querySprintTaskNumber(sprintId));
-        statisticalInformation.setTaskCompleteness(NumberUtilDiv(statisticalInformation.getTask(),statisticalInformation.getTaskSum()));
+        statisticalInformation.setTaskCompleteness(NumberUtilDiv(statisticalInformation.getTask(), statisticalInformation.getTaskSum()));
 
         return statisticalInformation;
     }
@@ -660,7 +664,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 //工作项加入迭代
                 storyService.distributeSprint(issueId, sprintDTO.getSprintId());
             }
-        }else {
+        } else {
             throw new BusinessException("查不到工作项");
         }
         return true;
