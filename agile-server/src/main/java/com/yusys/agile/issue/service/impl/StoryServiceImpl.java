@@ -113,7 +113,7 @@ public class StoryServiceImpl implements StoryService {
             //创建用户故事默认放在开发中的未开始阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
             if(CollectionUtils.isNotEmpty(stageInstances)){
                 Long sprintId = issueDTO.getSprintId();
-                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(0):stageInstances.get(1);
+                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(1):stageInstances.get(0);
                 stages[1] = stageInstance.getStageId();
             }
             issueDTO.setStages(stages);
