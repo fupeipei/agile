@@ -83,4 +83,15 @@ public class StoryServiceTest {
         storyService.deleteStory(storyId, deleteChild);
         org.junit.Assert.assertTrue("deleteStroyWithChildTest通过", true);
     }
+
+    @Test
+    public void editStroyTest() {
+        IssueDTO issueDTO = new IssueDTO();
+        issueDTO.setIssueId(507077L);
+        issueDTO.setTitle("测试");
+        Long[] stages = {4L,105L};
+        issueDTO.setStages(stages);
+        storyService.editStory(issueDTO);
+        org.junit.Assert.assertTrue("editStroyTest通过", true);
+    }
 }

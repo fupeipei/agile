@@ -138,6 +138,9 @@ public class StoryServiceImpl implements StoryService {
     @Transactional(rollbackFor = Exception.class)
     public void editStory(IssueDTO issueDTO) {
         Issue oldStory = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
+        if(null == oldStory){
+            return;
+        }
         Long projectId = oldStory.getProjectId();
 
         //校验故事下有未完成任务或未修复缺陷不允许改为完成阶段
