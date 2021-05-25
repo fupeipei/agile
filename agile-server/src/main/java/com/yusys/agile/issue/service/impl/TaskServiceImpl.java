@@ -415,7 +415,8 @@ public class TaskServiceImpl implements TaskService {
 
         }
 
-        logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+from+" to="+to,"1");
+        logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+TaskStageIdEnum.getName(from)+from
+                +" to="+TaskStageIdEnum.getName(to)+to,"1");
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
