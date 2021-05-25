@@ -102,7 +102,7 @@ public class StoryController {
     @PostMapping("/edit")
     public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
         try {
-            //暂时先将扩展字段扔掉
+            //保存工作项基础字段
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
             storyService.editStory(issueDTO);
