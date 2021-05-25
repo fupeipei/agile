@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.consumer.constant.AgileConstant;
@@ -96,6 +97,9 @@ public class TaskServiceImpl implements TaskService {
     private IStageService stageService;
 
     @Autowired
+    private SActionLogService logService;
+
+    @Autowired
     private IFacadeUserApi iFacadeUserApi;
 
     @Override
@@ -114,7 +118,7 @@ public class TaskServiceImpl implements TaskService {
         Issue oldTask = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         Boolean isPass = checkAuth(issueDTO, oldTask, securityDTO);
         if (!isPass){
-            throw new BusinessException("团队成员角色，只允许更新领取人为自己的卡片信息，但不允许更新领取人");
+            throw new BusinessException("团队成员角色,只允许更新领取人为自己的卡片信息,但不允许更新领取人");
         }
         //校验参数
         this.ckeckTaksParams(oldTask.getSprintId(),"无法编辑任务");
@@ -126,22 +130,22 @@ public class TaskServiceImpl implements TaskService {
             Long[] stages = issueDTO.getStages();
             if (null != stages) {
                 issueDTO.setStageId(stages[0]);
-                if (!ObjectUtil.equals(oldTask.getStageId(), issueDTO.getStageId())) {
+                if (!ObjectUtil.equals(oldTask.getLaneId(), issueDTO.getLaneId())) {
                     //创建任务状态变更历史记录
-                    createIssueHistoryRecords(oldTask.getStageId(), issueDTO.getStageId(), oldTask);
+                    createIssueHistoryRecords(oldTask.getLaneId(), issueDTO.getLaneId(), oldTask);
                 }
             }
         }
 
         //如果任务状态是未领取状态和已领取，编辑任务时,剩余工作量等于预计工作量 多了一项实际工时
-        if (null != task && (TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(issueDTO.getStageId()) || TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE.equals(issueDTO.getStageId()))) {
+        if (null != task && (TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(issueDTO.getLaneId()) || TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE.equals(issueDTO.getLaneId()))) {
             //实际工时
             task.setReallyWorkload(issueDTO.getReallyWorkload());
             task.setRemainWorkload(0);
         }
 
         //如果任务拖到进行中和已完成，多了一项剩余工时
-        if (null != task &&  (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId()) || TaskStageIdEnum.TYPE_MODIFYING_STATE.CODE.equals(issueDTO.getStageId()))) {
+        if (null != task &&  (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getLaneId()) || TaskStageIdEnum.TYPE_MODIFYING_STATE.CODE.equals(issueDTO.getLaneId()))) {
             task.setRemainWorkload(issueDTO.getRemainWorkload());
             task.setReallyWorkload(0);
         }
@@ -198,7 +202,7 @@ public class TaskServiceImpl implements TaskService {
             return Boolean.TRUE;
         //2.团队成员角色，只允许更新领取人为自己的卡片信息
         }else if (teamMember > 0
-                && !TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getStageId())
+                && !TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getLaneId())
                 && Optional.ofNullable(oldTask.getHandler()).isPresent()
                 && oldTask.getHandler().equals(issueDTO.getHandler())
                 && securityDTO.getUserId().equals(oldTask.getHandler())){
@@ -336,13 +340,15 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("该工作项不允许流转到目标阶段！");
         }
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
-        if (to.equals(TaskStageIdEnum.TYPE_ADD_STATE.CODE)) {
-            task.setHandler(null);
-        } else {
-            if (null != loginUserId) {
-                task.setHandler(loginUserId);
-            }
+
+
+        //Long loginUserId=807906052370849792L;
+
+
+        if (null != loginUserId) {
+            task.setHandler(loginUserId);
         }
+
 
         //根据task获得team，根据team及当前登录人员进行判断：
         SprintDTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
@@ -355,23 +361,24 @@ public class TaskServiceImpl implements TaskService {
         //判断当前登录人员是否为sm
         int smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
                 stream().
-                filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId + ""))
+                filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
                 .collect(Collectors.toList())
                 .size();
 
         int memCount = Optional.ofNullable(queryTeamResponse.getTeamUsers()).orElse(new ArrayList<>())
                 .stream()
-                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId + ""))
+                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
                 .collect(Collectors.toList())
                 .size();
 
         int poCount = Optional.ofNullable(queryTeamResponse.getTeamPoS()).orElse(new ArrayList<>())
                 .stream()
-                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId + ""))
+                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
                 .collect(Collectors.toList())
                 .size();
 
-        log.info("团队人员信息smCount"+smCount+"memCount"+memCount+"poCount"+poCount+"userId"+userId+"loginUserId"+loginUserId);
+        log.info("团队人员信息smCount"+smCount+" memCount"+memCount+" poCount"+poCount+" userId"+userId+" loginUserId"+loginUserId);
+        String actionRemark="";
         if(poCount>0&&memCount==0){
             throw new BusinessException("对于PO，不允许修改任务信息");
         }
@@ -389,6 +396,7 @@ public class TaskServiceImpl implements TaskService {
             if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount>0){
                 task.setStageId(to);
                 task.setHandler(loginUserId);
+                actionRemark="sm自己领任务";
             }
             else {//sm指派或非指派拖拽
                 task.setStageId(to);
@@ -397,6 +405,7 @@ public class TaskServiceImpl implements TaskService {
                 if(userId!=null&&userId>0){//sm指派任务的情况
                     task.setHandler(userId);
                 }
+                actionRemark+="sm指派或非指派拖拽";
             }
 
         }else if(memCount>0){
@@ -408,16 +417,23 @@ public class TaskServiceImpl implements TaskService {
             if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())){
                 task.setStageId(to);
                 task.setHandler(loginUserId);
-            }else if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&loginUserId!=task.getHandler()){
+            }else if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&!loginUserId.equals(task.getHandler())){
                 throw new BusinessException("当前任务已被他人领取，不允许拖动!");
             }
             if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(to)){
                 task.setStageId(to);
                 task.setHandler(null);
+                actionRemark+="领取人需要清除";
             }
 
         }else{
             throw new BusinessException("不是团队成员不允许该操作!");
+        }
+
+        //上面是特殊情况，这里兜底
+        if(!task.getStageId().equals(to)){
+            task.setStageId(to);
+            task.setHandler(loginUserId);
         }
 
 
@@ -451,6 +467,9 @@ public class TaskServiceImpl implements TaskService {
 //            }
 
         }
+
+        logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+TaskStageIdEnum.getName(from)+from
+                +" to="+TaskStageIdEnum.getName(to)+to,"1");
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();

@@ -65,7 +65,9 @@ public interface SSprintMapper {
      * @return
      */
     List<SprintListDTO> queryAllSprint(@Param("params") HashMap<String, Object> params);
+
     List<SprintListDTO> queryOtherSprint(@Param("params") HashMap<String, Object> params);
+
     /**
      * 取消迭代
      *
@@ -98,7 +100,23 @@ public interface SSprintMapper {
      * @param sprintId 迭代id
      * @return int
      */
-    int sprintUnfinishedStory(long sprintId);
+    int querySprintUnfinishedStoryNumber(long sprintId);
+
+    /**
+     * 迭代完成的故事数量
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int querySprintFinishedStoryNumber(long sprintId);
+
+    /**
+     * 查询迭代故事
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int querySprintStoryNumBer(long sprintId);
 
     /**
      * 迭代完成
@@ -130,20 +148,69 @@ public interface SSprintMapper {
      */
     SSprintWithBLOBs queryValidSprintById(long sprintId);
 
-
-
     /**
      * 获取迭代信息去掉文本
+     *
      * @param sprintId
      * @return
      */
     SSprintWithBLOBs selectByPrimaryKeyNotText(Long sprintId);
+
     /**
      * 团队进入迭代时，按照teamId和sprint名称查询
-     * @author zhaofeng
-     * @date 2021/5/24 17:20
+     *
      * @param teamId
      * @param sprint
+     * @author zhaofeng
+     * @date 2021/5/24 17:20
      */
-    List<SprintListDTO> selectByIdAndName(@Param("teamId") Long teamId,@Param("sprint") String sprint);
+    List<SprintListDTO> selectByIdAndName(@Param("teamId") Long teamId, @Param("sprint") String sprint);
+
+    /**
+     * 查询迭代完成的故事点
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int querySprintFinishedStoryPoint(long sprintId);
+
+    /**
+     * 查询迭代故事点
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int querySprintStoryPoint(long sprintId);
+
+    /**
+     * 查询迭代已完成的工作负载数量
+     *
+     * @param sprintId 迭代id
+     * @return {@link Integer}
+     */
+    int querySprintFinishedWorkload(long sprintId);
+
+    /**
+     * 查询迭代工作负载数量
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int querySprintWorkload(long sprintId);
+
+    /**
+     * 查询迭代已完成的任务数量
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int querySprintFinishedTaskNumber(long sprintId);
+
+    /**
+     * 查询迭代任务数量
+     *
+     * @param sprintId 迭代id
+     * @return int
+     */
+    int querySprintTaskNumber(long sprintId);
 }

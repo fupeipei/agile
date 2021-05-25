@@ -2264,6 +2264,7 @@
     <update id="updateBySprintId">
     update s_issue
     set
+        stage_id=111,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>

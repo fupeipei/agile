@@ -63,8 +63,8 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
      */
     @Override
     public List<HeaderField> queryAllHeaderFields(SecurityDTO securityDTO, Byte category, Byte isFilter) {
-
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields("", null, null, securityDTO.getProjectId());
+        /** 查询自定义字段，先注释掉自定义字段
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields("", null, null, securityDTO.getSystemId());
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<IssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(securityDTO.getProjectId(), category);
         Map<Long, List<IssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(IssueCustomRelation::getId));
@@ -115,6 +115,43 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
         allHeaderFieldCategoryIsNull.addAll(allHeaderFieldFault);
         allHeaderField.addAll(allHeaderFieldCategoryIsNull);
         allHeaderField.addAll(allHeaderFieldCustom);
+        //处理fieldType对应的name
+        for (int i = 0; i < allHeaderField.size(); i++) {
+            allHeaderField.get(i).setFieldTypeName(FieldTypeEnum.getName(allHeaderField.get(i).getFieldType()));
+        }
+        return allHeaderField;
+         **/
+        List<HeaderField> allHeaderField = Lists.newArrayList();
+        List<HeaderField> allHeaderFieldCategoryIsNull = Lists.newArrayList();
+        List<HeaderField> allHeaderFieldFault = Lists.newArrayList();
+
+        HeaderFieldExample headerFieldExample = new HeaderFieldExample();
+        HeaderFieldExample.Criteria headerFieldExampleCriteria = headerFieldExample.createCriteria();
+        HeaderFieldExample headerFieldExampleTemp = new HeaderFieldExample();
+        HeaderFieldExample.Criteria headerFieldExampleTempCriteria = headerFieldExampleTemp.createCriteria();
+
+        //初始化基础数据
+        headerFieldExampleCriteria.andIsCustomEqualTo(IsCustomEnum.FALSE.getValue()).andCategoryIsNull();
+        //如果是fault，过滤null与5的
+        headerFieldExampleTempCriteria.andIsCustomEqualTo(IsCustomEnum.FALSE.getValue()).andCategoryEqualTo(category);
+        if (isFilter != null && Byte.parseByte("1") == isFilter) {
+            //只查询time、select、time_date
+            List<Byte> values = Lists.newArrayList();
+            values.add(Byte.parseByte("2"));
+            values.add(Byte.parseByte("3"));
+            values.add(Byte.parseByte("5"));
+            List<String> list = Lists.newArrayList();
+            list.add("taskType");
+            list.add("issueType");
+            headerFieldExampleCriteria.andFieldTypeIn(values).andFieldCodeNotIn(list);
+            headerFieldExampleTempCriteria.andFieldTypeIn(values).andFieldCodeNotIn(list);
+        }
+        allHeaderFieldCategoryIsNull = headerFieldMapper.selectByExampleWithBLOBs(headerFieldExample);
+        allHeaderFieldFault = headerFieldMapper.selectByExampleWithBLOBs(headerFieldExampleTemp);
+
+        allHeaderFieldCategoryIsNull.addAll(allHeaderFieldFault);
+        allHeaderField.addAll(allHeaderFieldCategoryIsNull);
+
         //处理fieldType对应的name
         for (int i = 0; i < allHeaderField.size(); i++) {
             allHeaderField.get(i).setFieldTypeName(FieldTypeEnum.getName(allHeaderField.get(i).getFieldType()));

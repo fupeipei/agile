@@ -139,11 +139,11 @@
     insert into s_issue_history_record  (record_id, operation_field, issue_id, 
       record_type, is_custom, label, 
       create_time, create_uid, old_value, 
-      new_value, stay_days,tenant_code)
+      new_value,tenant_code)
     values (#{recordId,jdbcType=BIGINT}, #{operationField,jdbcType=VARCHAR}, #{issueId,jdbcType=BIGINT}, 
       #{recordType,jdbcType=TINYINT}, #{isCustom,jdbcType=TINYINT}, #{label,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT}, #{oldValue,jdbcType=LONGVARCHAR}, 
-      #{newValue,jdbcType=LONGVARCHAR}, #{stayDays,jdbcType=INTEGER},#{tenantCode})
+      #{newValue,jdbcType=LONGVARCHAR},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueHistoryRecord">
     insert into s_issue_history_record 

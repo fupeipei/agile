@@ -82,7 +82,6 @@ public class SprintServiceImpl implements SprintService {
     private BurnDownChartDao burnDownChartDao;
     @Resource
     private BurnDownChartStoryDao burnDownChartStoryDao;
-
     @Resource
     private ReviewService reviewService;
     /**
