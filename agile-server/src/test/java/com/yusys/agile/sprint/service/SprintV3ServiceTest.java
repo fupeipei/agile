@@ -148,7 +148,7 @@ public class SprintV3ServiceTest {
     @Test
     public void SprintStatisticalInformation() {
         long sprintId = 10000;
-        SprintStatisticalInformation statisticalInformation = sprintv3Service.SprintStatisticalInformation(sprintId);
+        SprintStatisticalInformation statisticalInformation = sprintv3Service.sprintStatisticalInformation(sprintId);
         Assert.assertNotNull(statisticalInformation);
 
     }

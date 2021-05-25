@@ -136,7 +136,7 @@ public class Sprintv3Controller {
      */
     @ApiOperation(value = "迭代视图 - 迭代统计详情")
     @GetMapping("/SprintStatisticalInformation")
-    public ControllerResponse SprintStatisticalInformation(long sprintId) {
+    public ControllerResponse sprintStatisticalInformation(long sprintId) {
         return ControllerResponse.success(sprintv3Service.sprintStatisticalInformation(sprintId));
     }
 
