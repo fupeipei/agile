@@ -241,10 +241,17 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             item.setSprintDayList(dates);
             //迭代天数
             item.setPlanDays(dates.size());
-            //TODO 故事数及完成数
-            item.setStory(new SprintTaskDTO());
-            //TODO 任务数及完成数
-            item.setTask(new SprintTaskDTO());
+            //故事数及完成数
+            SprintStatisticalInformation information = sprintStatisticalInformation(item.getSprintId());
+            SprintTaskDTO story = new SprintTaskDTO();
+            story.setAll(information.getUserStorySum());
+            story.setDone(information.getUserStory());
+            item.setStory(story);
+            //任务数及完成数
+            SprintTaskDTO task = new SprintTaskDTO();
+            task.setAll(information.getTaskSum());
+            task.setDone(information.getTask());
+            item.setTask(task);
             //创建人
             ssoUsers.forEach(u -> {
                 if (Objects.equals(item.getCreateUid(), u.getUserId())) {
@@ -609,7 +616,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @return {@link SprintStatisticalInformation}
      */
     @Override
-    public SprintStatisticalInformation SprintStatisticalInformation(long sprintId) {
+    public SprintStatisticalInformation sprintStatisticalInformation(long sprintId) {
         SprintStatisticalInformation statisticalInformation = new SprintStatisticalInformation();
 
         statisticalInformation.setUserStory(ssprintMapper.querySprintFinishedStoryNumber(sprintId));

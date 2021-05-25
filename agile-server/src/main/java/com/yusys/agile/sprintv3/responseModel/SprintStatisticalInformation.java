@@ -11,7 +11,7 @@ import lombok.Data;
 public class SprintStatisticalInformation {
 
     /**
-     * 用户故事
+     * 已完成用户故事
      */
     int userStory;
 
@@ -26,7 +26,7 @@ public class SprintStatisticalInformation {
     double userStoryCompleteness;
 
     /**
-     * 故事点
+     * 已完成故事点
      */
     int storyPoint;
 
@@ -41,7 +41,7 @@ public class SprintStatisticalInformation {
     double storyPointCompleteness;
 
     /**
-     * 工作量
+     * 已完成工作量
      */
     int workload;
 
@@ -56,7 +56,7 @@ public class SprintStatisticalInformation {
     double workloadCompleteness;
 
     /**
-     * 任务
+     * 已完成任务
      */
     int task;
 
