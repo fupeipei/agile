@@ -303,7 +303,7 @@ public class TaskServiceImpl implements TaskService {
                 .size();
 
         log.info("团队人员信息smCount"+smCount+"memCount"+memCount+"poCount"+poCount+"userId"+userId+"loginUserId"+loginUserId);
-        if(poCount>0){
+        if(poCount>0&&memCount==0){
             throw new BusinessException("对于PO，不允许修改任务信息");
         }
 
