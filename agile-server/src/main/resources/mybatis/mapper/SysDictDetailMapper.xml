@@ -74,7 +74,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sys_dict_detail
+    from s_sys_dict_detail
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -85,27 +85,27 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sys_dict_detail
+    from s_sys_dict_detail
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sys_dict_detail
+    delete from s_sys_dict_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.dict.domain.SysDictDetailExample">
-    delete from sys_dict_detail
+    delete from s_sys_dict_detail
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.dict.domain.SysDictDetail">
-    insert into sys_dict_detail (id, dict_code, detail_code, 
+    insert into s_sys_dict_detail (id, dict_code, detail_code,
       detail_name)
     values (#{id,jdbcType=BIGINT}, #{dictCode,jdbcType=VARCHAR}, #{detailCode,jdbcType=VARCHAR}, 
       #{detailName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.dict.domain.SysDictDetail">
-    insert into sys_dict_detail
+    insert into s_sys_dict_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -136,13 +136,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.dict.domain.SysDictDetailExample" resultType="java.lang.Long">
-    select count(*) from sys_dict_detail
+    select count(*) from s_sys_dict_detail
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sys_dict_detail
+    update s_sys_dict_detail
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -162,7 +162,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sys_dict_detail
+    update s_sys_dict_detail
     set id = #{record.id,jdbcType=BIGINT},
       dict_code = #{record.dictCode,jdbcType=VARCHAR},
       detail_code = #{record.detailCode,jdbcType=VARCHAR},
@@ -172,7 +172,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.dict.domain.SysDictDetail">
-    update sys_dict_detail
+    update s_sys_dict_detail
     <set>
       <if test="dictCode != null">
         dict_code = #{dictCode,jdbcType=VARCHAR},
@@ -187,7 +187,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.dict.domain.SysDictDetail">
-    update sys_dict_detail
+    update s_sys_dict_detail
     set dict_code = #{dictCode,jdbcType=VARCHAR},
       detail_code = #{detailCode,jdbcType=VARCHAR},
       detail_name = #{detailName,jdbcType=VARCHAR}

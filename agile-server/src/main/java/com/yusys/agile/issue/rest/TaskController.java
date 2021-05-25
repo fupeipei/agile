@@ -127,7 +127,7 @@ public class TaskController {
      * @Description 任务卡片拖拽
      */
     @GetMapping("/task/stageId/{issueId}/{from}/{to}")
-    public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to, @RequestParam(value = "assignUserId") Long userId) {
+    public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to, @RequestParam(value = "assignUserId",required = false) Long userId) {
         try {
             taskService.dragTask(issueId, from, to, userId);
         } catch (Exception e) {

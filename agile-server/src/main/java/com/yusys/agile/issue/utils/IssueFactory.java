@@ -159,8 +159,12 @@ public class IssueFactory {
         if (null != issue.getSprintId()) {
             SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
             if (null != sprint) {
-                if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
-                    throw new BusinessException("迭代已完成不能再关联工作项");
+                if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) ||
+                        sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                    throw new BusinessException("只有未开始的任务可以关联工作项");
+                }
+                if (sprint.getEndTime().before(new Date())) {
+                    throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
                 }
             }
         }
@@ -271,23 +275,23 @@ public class IssueFactory {
             Long[] stages = issueDTO.getStages();
 
             /** 判断当前业务需求、研发需求、用户故事、子任务制品数是否大于阶段下的制品数 */
-            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType()) && !IssueTypeEnum.TYPE_FAULT.CODE.equals(issue.getIssueType())) {
-                Long stageId = stages[0];
-                Long landId = null;
-                if (stages.length > 1) {
-                    landId = stages[1];
-                }
-                /** 判断工作项流转规则是否允许*/
-                if (!ruleFactory.getIssueRulesCheckFlag(issueType, oldIssue.getStageId(), oldIssue.getLaneId(), stageId, landId, projectId)) {
-                    throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
-                }
-                /** 判断泳道ID不为空的情况*/
-                if ((!stageId.equals(oldIssue.getStageId()) && !Optional.ofNullable(landId).isPresent())
-                        || !(stageId.equals(oldIssue.getStageId()) && (Optional.ofNullable(landId).isPresent()
-                        && landId.equals(oldIssue.getLaneId())))) {
-                    issueRichTextFactory.dealStagesProductLimit(stageId, landId, projectId, issueType);
-                }
-            }
+//            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType()) && !IssueTypeEnum.TYPE_FAULT.CODE.equals(issue.getIssueType())) {
+//                Long stageId = stages[0];
+//                Long landId = null;
+//                if (stages.length > 1) {
+//                    landId = stages[1];
+//                }
+//                /** 判断工作项流转规则是否允许*/
+//                if (!ruleFactory.getIssueRulesCheckFlag(issueType, oldIssue.getStageId(), oldIssue.getLaneId(), stageId, landId, projectId)) {
+//                    throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
+//                }
+//                /** 判断泳道ID不为空的情况*/
+//                if ((!stageId.equals(oldIssue.getStageId()) && !Optional.ofNullable(landId).isPresent())
+//                        || !(stageId.equals(oldIssue.getStageId()) && (Optional.ofNullable(landId).isPresent()
+//                        && landId.equals(oldIssue.getLaneId())))) {
+//                    issueRichTextFactory.dealStagesProductLimit(stageId, landId, projectId, issueType);
+//                }
+//            }
 
             List<IssueHistoryRecord> history = new ArrayList<>();
             //处理阶段
