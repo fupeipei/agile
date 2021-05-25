@@ -283,13 +283,12 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("该工作项不允许流转到目标阶段！");
         }
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
-        if (to.equals(TaskStageIdEnum.TYPE_ADD_STATE.CODE)) {
-            task.setHandler(null);
-        } else {
-            if (null != loginUserId) {
-                task.setHandler(loginUserId);
-            }
+
+
+        if (null != loginUserId) {
+            task.setHandler(loginUserId);
         }
+
 
         //根据task获得team，根据team及当前登录人员进行判断：
         SprintDTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
@@ -302,23 +301,23 @@ public class TaskServiceImpl implements TaskService {
         //判断当前登录人员是否为sm
         int smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
                 stream().
-                filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId + ""))
+                filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
                 .collect(Collectors.toList())
                 .size();
 
         int memCount = Optional.ofNullable(queryTeamResponse.getTeamUsers()).orElse(new ArrayList<>())
                 .stream()
-                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId + ""))
+                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
                 .collect(Collectors.toList())
                 .size();
 
         int poCount = Optional.ofNullable(queryTeamResponse.getTeamPoS()).orElse(new ArrayList<>())
                 .stream()
-                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId + ""))
+                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
                 .collect(Collectors.toList())
                 .size();
 
-        log.info("团队人员信息smCount"+smCount+"memCount"+memCount+"poCount"+poCount+"userId"+userId+"loginUserId"+loginUserId);
+        log.info("团队人员信息smCount"+smCount+" memCount"+memCount+" poCount"+poCount+" userId"+userId+" loginUserId"+loginUserId);
         if(poCount>0&&memCount==0){
             throw new BusinessException("对于PO，不允许修改任务信息");
         }
@@ -355,7 +354,7 @@ public class TaskServiceImpl implements TaskService {
             if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())){
                 task.setStageId(to);
                 task.setHandler(loginUserId);
-            }else if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&loginUserId!=task.getHandler()){
+            }else if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&!loginUserId.equals(task.getHandler())){
                 throw new BusinessException("当前任务已被他人领取，不允许拖动!");
             }
             if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(to)){
@@ -365,6 +364,12 @@ public class TaskServiceImpl implements TaskService {
 
         }else{
             throw new BusinessException("不是团队成员不允许该操作!");
+        }
+
+        //上面是特殊情况，这里兜底
+        if(!task.getStageId().equals(to)){
+            task.setStageId(to);
+            task.setHandler(loginUserId);
         }
 
 
