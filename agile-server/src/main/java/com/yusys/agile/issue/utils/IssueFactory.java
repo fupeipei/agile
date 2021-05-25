@@ -132,12 +132,6 @@ public class IssueFactory {
 
         //处理任务
         if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-            //任务选择处理人就是已领取，否则就是未领取
-            if (null != issue.getHandler()) {
-                issue.setStageId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
-            } else {
-                issue.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
-            }
             //从故事获取迭代放入到任务上
             //故事ID
             Long parentId = issueDTO.getParentId();
