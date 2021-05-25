@@ -159,8 +159,12 @@ public class IssueFactory {
         if (null != issue.getSprintId()) {
             SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
             if (null != sprint) {
-                if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
-                    throw new BusinessException("迭代已完成不能再关联工作项");
+                if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) ||
+                        sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                    throw new BusinessException("只有未开始的任务可以关联工作项");
+                }
+                if (sprint.getEndTime().before(new Date())) {
+                    throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
                 }
             }
         }
