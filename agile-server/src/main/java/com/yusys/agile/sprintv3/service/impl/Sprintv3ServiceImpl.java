@@ -619,10 +619,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public SprintStatisticalInformation sprintStatisticalInformation(long sprintId) {
         SprintStatisticalInformation statisticalInformation = new SprintStatisticalInformation();
-
+        log.info("sprintId " + sprintId);
         statisticalInformation.setUserStory(ssprintMapper.querySprintFinishedStoryNumber(sprintId));
         statisticalInformation.setUserStorySum(ssprintMapper.querySprintStoryNumBer(sprintId));
         statisticalInformation.setUserStoryCompleteness(NumberUtilDiv(statisticalInformation.getUserStory(), statisticalInformation.getUserStorySum()));
+
 
         statisticalInformation.setStoryPoint(ssprintMapper.querySprintFinishedStoryPoint(sprintId));
         statisticalInformation.setStoryPointSum(ssprintMapper.querySprintStoryPoint(sprintId));
@@ -634,8 +635,10 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
         statisticalInformation.setTask(ssprintMapper.querySprintFinishedTaskNumber(sprintId));
         statisticalInformation.setTaskSum(ssprintMapper.querySprintTaskNumber(sprintId));
-        statisticalInformation.setTaskCompleteness(NumberUtilDiv(statisticalInformation.getTask(),statisticalInformation.getTaskSum()));
+        statisticalInformation.setTaskCompleteness(NumberUtilDiv(statisticalInformation.getTask(), statisticalInformation.getTaskSum()));
 
+
+        log.info("statisticalInformation " + statisticalInformation);
         return statisticalInformation;
     }
 
@@ -660,7 +663,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 //工作项加入迭代
                 storyService.distributeSprint(issueId, sprintDTO.getSprintId());
             }
-        }else {
+        } else {
             throw new BusinessException("查不到工作项");
         }
         return true;
