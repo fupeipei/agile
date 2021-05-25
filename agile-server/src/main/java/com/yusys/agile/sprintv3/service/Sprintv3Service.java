@@ -100,7 +100,6 @@ public interface Sprintv3Service {
      */
     boolean arrangeIssue(SprintDTO sprintDTO);
 
-
     /**
      * 按团队id查询有效迭代
      *
@@ -112,7 +111,6 @@ public interface Sprintv3Service {
      * @date 2021/5/24 13:28
      */
     List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum, String sprint);
-
 
     /**
      * 迭代视图 - 迭代统计详情

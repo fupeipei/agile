@@ -21,6 +21,11 @@ public class SprintStatisticalInformation {
     int userStorySum;
 
     /**
+     * 故事完成度
+     */
+    double userStoryCompleteness;
+
+    /**
      * 故事点
      */
     int storyPoint;
@@ -29,6 +34,11 @@ public class SprintStatisticalInformation {
      * 故事点和
      */
     int storyPointSum;
+
+    /**
+     * 故事点完成度
+     */
+    double storyPointCompleteness;
 
     /**
      * 工作量
@@ -41,6 +51,11 @@ public class SprintStatisticalInformation {
     int workloadSum;
 
     /**
+     * 工作负载完成度
+     */
+    double workloadCompleteness;
+
+    /**
      * 任务
      */
     int task;
@@ -49,4 +64,9 @@ public class SprintStatisticalInformation {
      * 任务和
      */
     int taskSum;
+
+    /**
+     * task完成度
+     */
+    double taskCompleteness;
 }
