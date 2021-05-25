@@ -5,10 +5,13 @@ import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,11 +88,56 @@ public class Teamv3ServiceImplTest {
         log.info("分页查询列表 list={}", list);
     }
     /**
-     * 新增团队
+     * 新增团队--团队名称重复情况
      */
     @Test
     public void insertTeam() {
-
+        STeam team = new STeam();
+        team.setTeamName("团队002");
+        team.setTeamDesc("描述");
+        team.setTenantCode("1");
+        STeamMember po1 = new STeamMember();
+        po1.setUserId(846427329554370560L);
+        po1.setUserName("张宇");
+        po1.setUserAccount("zhangyu");
+        team.setTeamPoS(Arrays.asList(po1));
+        STeamMember sm1 = new STeamMember();
+        sm1.setUserId(842765807724986368L);
+        sm1.setUserName("ceshieeee");
+        sm1.setUserAccount("ceshieeee");
+        team.setTeamSmS(Arrays.asList(sm1));
+        team.setSystemIds(Arrays.asList(816356430371512320L));
+        try {
+            teamv3Service.insertTeam(team);
+        }catch (Exception e){
+            Assert.assertTrue(e.getMessage() != null);
+        }
+    }
+    /**
+     * 新增团队--PO、SM重复情况
+     */
+    @Test
+    public void insertTeam2() {
+        STeam team = new STeam();
+        team.setTeamName("团队003");
+        team.setTeamDesc("描述");
+        team.setTenantCode("1");
+        STeamMember po1 = new STeamMember();
+        po1.setUserId(846427329554370560L);
+        po1.setUserName("张宇");
+        po1.setUserAccount("zhangyu");
+        team.setTeamPoS(Arrays.asList(po1));
+        STeamMember sm1 = new STeamMember();
+        sm1.setUserId(846427329554370560L);
+        sm1.setUserName("张宇");
+        sm1.setUserAccount("zhangyu");
+        team.setTeamSmS(Arrays.asList(sm1));
+        team.setSystemIds(Arrays.asList(816356430371512320L));
+        try {
+            teamv3Service.insertTeam(team);
+        }catch (Exception e){
+            Assert.assertTrue(e.getMessage() != null);
+        }
     }
 
     /**
@@ -105,6 +153,27 @@ public class Teamv3ServiceImplTest {
      */
     @Test
     public void updateTeam() {
+        STeam team = new STeam();
+        team.setTeamId(100002L);
+        team.setTeamName("团队003");
+        team.setTeamDesc("描述");
+        team.setTenantCode("1");
+        STeamMember po1 = new STeamMember();
+        po1.setUserId(834731929562857472L);
+        po1.setUserName("刘行");
+        po1.setUserAccount("liuxing4");
+        team.setTeamPoS(Arrays.asList(po1));
+        STeamMember sm1 = new STeamMember();
+        sm1.setUserId(846427329554370560L);
+        sm1.setUserName("张宇");
+        sm1.setUserAccount("zhangyu");
+        team.setTeamSmS(Arrays.asList(sm1));
+        team.setSystemIds(Arrays.asList(816356430371512320L));
+        try {
+            teamv3Service.updateTeam(team);
+        }catch (Exception e){
+            Assert.assertTrue(e.getMessage() != null);
+        }
     }
 
     /**
@@ -112,7 +181,9 @@ public class Teamv3ServiceImplTest {
      */
     @Test
     public void queryTeam() {
-
+        Long teamId = 100007L;
+        QueryTeamResponse response = teamv3Service.queryTeam(teamId);
+        log.info("团队详情：【{}}", response);
     }
 
 }
