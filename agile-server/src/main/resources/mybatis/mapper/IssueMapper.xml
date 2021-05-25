@@ -1108,7 +1108,7 @@
   </select>
     <update id="deleteRelation">
         update
-        issue
+        s_issue
         set parent_id = null
         <if test="sprintId != null">
             ,sprint_id = null

@@ -44,8 +44,7 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
         HeaderFieldUserExample headerFieldUserExample = new HeaderFieldUserExample();
         headerFieldUserExample.setOrderByClause(" header_user_id asc");
         HeaderFieldUserExample.Criteria criteria = headerFieldUserExample.createCriteria();
-        criteria.andUserIdEqualTo(securityDTO.getUserId())
-                .andProjectIdEqualTo(securityDTO.getProjectId());
+        criteria.andUserIdEqualTo(securityDTO.getUserId());
         if (category != null) {
             criteria.andCategoryEqualTo(category);
         }
