@@ -1,9 +1,12 @@
 package com.yusys.agile.sprintv3.service.impl;
 
+import cn.hutool.core.math.MathUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -13,7 +16,6 @@ import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
-import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
@@ -26,6 +28,7 @@ import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.utils.exception.ExceptionCodeEnum;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
@@ -45,6 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,6 +81,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
     private StoryService storyService;
+    @Resource
+    private IssueMapper issueMapper;
 
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
@@ -236,10 +242,17 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             item.setSprintDayList(dates);
             //迭代天数
             item.setPlanDays(dates.size());
-            //TODO 故事数及完成数
-            item.setStory(new SprintTaskDTO());
-            //TODO 任务数及完成数
-            item.setTask(new SprintTaskDTO());
+            //故事数及完成数
+            SprintStatisticalInformation information = sprintStatisticalInformation(item.getSprintId());
+            SprintTaskDTO story = new SprintTaskDTO();
+            story.setAll(information.getUserStorySum());
+            story.setDone(information.getUserStory());
+            item.setStory(story);
+            //任务数及完成数
+            SprintTaskDTO task = new SprintTaskDTO();
+            task.setAll(information.getTaskSum());
+            task.setDone(information.getTask());
+            item.setTask(task);
             //创建人
             ssoUsers.forEach(u -> {
                 if (Objects.equals(item.getCreateUid(), u.getUserId())) {
@@ -562,7 +575,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public String sprintFinish(long sprintId) {
         //迭代下未完成的故事数
-        if (0 != ssprintMapper.sprintUnfinishedStory(sprintId)) {
+        if (0 != ssprintMapper.querySprintUnfinishedStoryNumber(sprintId)) {
             throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
         }
         //只有进行中的迭代允许完成
@@ -604,8 +617,26 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @return {@link SprintStatisticalInformation}
      */
     @Override
-    public SprintStatisticalInformation SprintStatisticalInformation(long sprintId) {
-        return null;
+    public SprintStatisticalInformation sprintStatisticalInformation(long sprintId) {
+        SprintStatisticalInformation statisticalInformation = new SprintStatisticalInformation();
+
+        statisticalInformation.setUserStory(ssprintMapper.querySprintFinishedStoryNumber(sprintId));
+        statisticalInformation.setUserStorySum(ssprintMapper.querySprintStoryNumBer(sprintId));
+        statisticalInformation.setUserStoryCompleteness(NumberUtilDiv(statisticalInformation.getUserStory(), statisticalInformation.getUserStorySum()));
+
+        statisticalInformation.setStoryPoint(ssprintMapper.querySprintFinishedStoryPoint(sprintId));
+        statisticalInformation.setStoryPointSum(ssprintMapper.querySprintStoryPoint(sprintId));
+        statisticalInformation.setStoryPointCompleteness(NumberUtilDiv(statisticalInformation.getStoryPoint(), statisticalInformation.getStoryPointSum()));
+
+        statisticalInformation.setWorkload(ssprintMapper.querySprintFinishedWorkload(sprintId));
+        statisticalInformation.setWorkloadSum(ssprintMapper.querySprintWorkload(sprintId));
+        statisticalInformation.setWorkloadCompleteness(NumberUtilDiv(statisticalInformation.getWorkload(), statisticalInformation.getWorkloadSum()));
+
+        statisticalInformation.setTask(ssprintMapper.querySprintFinishedTaskNumber(sprintId));
+        statisticalInformation.setTaskSum(ssprintMapper.querySprintTaskNumber(sprintId));
+        statisticalInformation.setTaskCompleteness(NumberUtilDiv(statisticalInformation.getTask(),statisticalInformation.getTaskSum()));
+
+        return statisticalInformation;
     }
 
 
@@ -629,7 +660,21 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 //工作项加入迭代
                 storyService.distributeSprint(issueId, sprintDTO.getSprintId());
             }
+        }else {
+            throw new BusinessException("查不到工作项");
         }
         return true;
     }
+
+    public double NumberUtilDiv(int a, int b) {
+        if (0 == b || 0 == a) {
+            return 0.00;
+        } else {
+            double div;
+            div = NumberUtil.div(a, b, 2);
+            return div;
+        }
+    }
+
+
 }
