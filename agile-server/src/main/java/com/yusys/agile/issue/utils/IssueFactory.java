@@ -271,23 +271,23 @@ public class IssueFactory {
             Long[] stages = issueDTO.getStages();
 
             /** 判断当前业务需求、研发需求、用户故事、子任务制品数是否大于阶段下的制品数 */
-            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType()) && !IssueTypeEnum.TYPE_FAULT.CODE.equals(issue.getIssueType())) {
-                Long stageId = stages[0];
-                Long landId = null;
-                if (stages.length > 1) {
-                    landId = stages[1];
-                }
-                /** 判断工作项流转规则是否允许*/
-                if (!ruleFactory.getIssueRulesCheckFlag(issueType, oldIssue.getStageId(), oldIssue.getLaneId(), stageId, landId, projectId)) {
-                    throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
-                }
-                /** 判断泳道ID不为空的情况*/
-                if ((!stageId.equals(oldIssue.getStageId()) && !Optional.ofNullable(landId).isPresent())
-                        || !(stageId.equals(oldIssue.getStageId()) && (Optional.ofNullable(landId).isPresent()
-                        && landId.equals(oldIssue.getLaneId())))) {
-                    issueRichTextFactory.dealStagesProductLimit(stageId, landId, projectId, issueType);
-                }
-            }
+//            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType()) && !IssueTypeEnum.TYPE_FAULT.CODE.equals(issue.getIssueType())) {
+//                Long stageId = stages[0];
+//                Long landId = null;
+//                if (stages.length > 1) {
+//                    landId = stages[1];
+//                }
+//                /** 判断工作项流转规则是否允许*/
+//                if (!ruleFactory.getIssueRulesCheckFlag(issueType, oldIssue.getStageId(), oldIssue.getLaneId(), stageId, landId, projectId)) {
+//                    throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
+//                }
+//                /** 判断泳道ID不为空的情况*/
+//                if ((!stageId.equals(oldIssue.getStageId()) && !Optional.ofNullable(landId).isPresent())
+//                        || !(stageId.equals(oldIssue.getStageId()) && (Optional.ofNullable(landId).isPresent()
+//                        && landId.equals(oldIssue.getLaneId())))) {
+//                    issueRichTextFactory.dealStagesProductLimit(stageId, landId, projectId, issueType);
+//                }
+//            }
 
             List<IssueHistoryRecord> history = new ArrayList<>();
             //处理阶段
