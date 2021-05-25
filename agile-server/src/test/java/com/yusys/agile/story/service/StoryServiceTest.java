@@ -62,6 +62,8 @@ public class StoryServiceTest {
         issueDTO.setImportance((byte) 1);
         issueDTO.setOrder(100);
         issueDTO.setPlanWorkload(8);
+        //实际工时
+        issueDTO.setReallyWorkload(8);
         issueDTO.setTitle("测试新建任务啊");
         issueDTO.setSystemId(814801485815332864L);
         List<Long> systemIds = new ArrayList();
