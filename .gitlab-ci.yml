@@ -51,25 +51,10 @@ execute_dev_sql:
   only:
     - dev
     
-#deploy_test:
-#  allow_failure: false
-#  when: manual
-#  stage: deploy_test
-#  image: 192.168.48.2:5002/library/git-mysql:alpine
-#  dependencies:
-#    - build_maven
-#  script:
-#    - tag=`cat docker-tag`
-#    - echo $tag
-#    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
-#    - cd devops_sql/devops-deployment/
-#    - ./deploy_k8s.sh $CI_PROJECT_NAME $tag
-#  only:
-#    - master
 
 deploy_test:
   when: manual
-  stage: deploy_dev
+  stage: deploy_test
   image: 192.168.48.2:5002/library/git-mysql:alpine
   dependencies:
     - build_maven
