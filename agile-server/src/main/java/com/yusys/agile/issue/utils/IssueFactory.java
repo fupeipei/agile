@@ -132,12 +132,6 @@ public class IssueFactory {
 
         //处理任务
         if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-            //任务选择处理人就是已领取，否则就是未领取
-            if (null != issue.getHandler()) {
-                issue.setStageId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
-            } else {
-                issue.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
-            }
             //从故事获取迭代放入到任务上
             //故事ID
             Long parentId = issueDTO.getParentId();
@@ -363,7 +357,7 @@ public class IssueFactory {
         for (IssueModuleRelp issueModuleRelp : oldModuleList) {
             oldModuledList.add(issueModuleRelp.getModuleId());
         }
-        if (!CollectionUtils.isEqualCollection(oldModuledList, newModuleList)) {
+        if (CollectionUtils.isNotEmpty(newModuleList) && !CollectionUtils.isEqualCollection(oldModuledList, newModuleList)) {
             IssueHistoryRecord attachHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.MODULE.getDesc());
             try {
                 attachHistory.setOldValue(JSON.toJSONString(oldModuledList));
@@ -384,7 +378,7 @@ public class IssueFactory {
         for (IssueSystemRelp issueSystemRelp : oldSystemList) {
             oldSystemIdList.add(issueSystemRelp.getSystemId());
         }
-        if (!CollectionUtils.isEqualCollection(oldSystemIdList, newSystemList)) {
+        if (CollectionUtils.isNotEmpty(newSystemList) && !CollectionUtils.isEqualCollection(oldSystemIdList, newSystemList)) {
             IssueHistoryRecord systemHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.SYSTEM.getDesc());
             try {
                 systemHistory.setOldValue(JSON.toJSONString(oldSystemIdList));
@@ -846,7 +840,19 @@ public class IssueFactory {
             }
             records.add(nameHistory);
         }
-
+        /**
+         * 实际工时
+         */
+        if (!ObjectUtil.equals(issueDTO.getReallyWorkload(), oldIssue.getReallyWorkload())) {
+            IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.REALLYWORKLOAD.getDesc());
+            if (null != oldIssue.getReallyWorkload()) {
+                nameHistory.setOldValue(String.valueOf(oldIssue.getReallyWorkload()));
+            }
+            if (null != issueDTO.getReallyWorkload()) {
+                nameHistory.setNewValue(String.valueOf(issueDTO.getReallyWorkload()));
+            }
+            records.add(nameHistory);
+        }
         return records;
     }
 

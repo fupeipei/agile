@@ -2,6 +2,7 @@ package com.yusys.agile.issue.service;
 
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface TaskService {
      * @Param: * @param issueDTO
      * @Return: void
      */
-    void editTask(IssueDTO issueDTO);
+    void editTask(IssueDTO issueDTO, SecurityDTO securityDTO);
 
     /**
      * @Date: 18:09

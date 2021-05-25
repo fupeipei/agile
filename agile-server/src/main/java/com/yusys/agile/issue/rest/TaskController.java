@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,11 +80,11 @@ public class TaskController {
      * @return
      */
     @PostMapping("/editTask")
-    public ControllerResponse editTask(@RequestBody IssueDTO issueDTO) {
+    public ControllerResponse editTask(@RequestBody IssueDTO issueDTO, SecurityDTO securityDTO) {
 //        //暂时先将扩展字段扔掉
 //        JSONObject jsonObject = new JSONObject(map);
 //        IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-        taskService.editTask(issueDTO);
+        taskService.editTask(issueDTO,securityDTO);
         return ControllerResponse.success("编辑任务成功！");
     }
 
