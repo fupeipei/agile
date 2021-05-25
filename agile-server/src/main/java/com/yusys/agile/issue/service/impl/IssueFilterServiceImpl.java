@@ -177,11 +177,10 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                 IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
                 checkedExample.createCriteria()
                         .andCategoryEqualTo(category)
-                        .andProjectIdEqualTo(securityDTO.getProjectId())
                         .andCreateUidEqualTo(securityDTO.getUserId());
                 List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
-//todo
-                List<StageInstance> stageList = stageService.getStageList(null);
+                //todo      阶段暂时设置为空数组
+                List<StageInstance> stageList = new ArrayList<>();
 
                 if (CollectionUtils.isNotEmpty(issueFilterRelatedCheckeds)) {
                     relatedChecked = issueFilterRelatedCheckeds.get(0);

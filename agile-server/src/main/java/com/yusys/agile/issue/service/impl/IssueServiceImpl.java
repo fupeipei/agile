@@ -180,7 +180,7 @@ public class IssueServiceImpl implements IssueService {
      * 功能描述
      *
      * @param map
-     * @param projectId
+     * @param systemId
      * @return java.util.List<com.yusys.agile.requirement.SysExtendFieldDetailDTO ;>
      * @date 2020/4/20
      */
@@ -1215,7 +1215,7 @@ public class IssueServiceImpl implements IssueService {
         List<Issue> issueList = Lists.newArrayList();
         IssueRecord issueRecord = new IssueRecord();
         //查询自定义字段条件
-        List<CustomFieldJsonType> customFieldJsonTypeList = getCustomIssueIds(map, projectId);
+        List<CustomFieldJsonType> customFieldJsonTypeList = getCustomIssueIds(map, null);
 
         //增加扩展字段搜索能力
         Boolean isQueryExtendField = true;

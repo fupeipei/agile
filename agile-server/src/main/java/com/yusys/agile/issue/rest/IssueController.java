@@ -47,7 +47,8 @@ public class IssueController {
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
-    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map,
+                                           @RequestHeader(name = "projectId",required = false) Long projectId) {
         PageInfo result;
         try {
 

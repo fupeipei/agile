@@ -140,7 +140,9 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
             PageHelper.startPage(pageNum, pageSize);
         }
         CustomFieldPoolExample example = new CustomFieldPoolExample();
-        CustomFieldPoolExample.Criteria criteria = example.createCriteria().andProjectIdEqualTo(projectId).andStateEqualTo(StateEnum.U.getValue());
+        CustomFieldPoolExample.Criteria criteria = example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andProjectIdEqualTo(projectId);
         if (StringUtils.isNotBlank(fieldName)) {
             criteria.andFieldNameLike(StringConstant.PERCENT_SIGN + fieldName + StringConstant.PERCENT_SIGN);
         }
