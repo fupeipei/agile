@@ -176,7 +176,7 @@ public class FaultServiceImpl implements FaultService {
         // todo 删除历史记录
         // todo 删除附件
 
-        commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
+       // commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
         //邮件发送
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
@@ -759,7 +759,7 @@ public class FaultServiceImpl implements FaultService {
             if (FaultStatusEnum.FIXED.CODE.equals(to)) {
                 syncFixedFault(oldFault.getIssueId(), oldFault.getBugId(), loginUserId);
                 //关闭代办状态
-                commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
+             //   commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
             }
 
         } else {

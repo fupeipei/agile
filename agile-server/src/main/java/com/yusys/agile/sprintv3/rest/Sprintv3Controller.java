@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /**
@@ -43,12 +44,13 @@ public class Sprintv3Controller {
 
     /**
      * 团队进入迭代-按团队id查询有效迭代
+     *
+     * @param teamId
      * @author zhaofeng
      * @date 2021/5/24 11:50
-     * @param teamId
      */
     @GetMapping("/teamInSprint/{teamId}/{pageNum}/{pageSize}")
-    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum, @RequestParam("sprint") String sprint){
+    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum, @RequestParam("sprint") String sprint) {
         List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
         return ControllerResponse.success(new PageInfo<SprintListDTO>(list));
     }
@@ -120,7 +122,7 @@ public class Sprintv3Controller {
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
      */
-    @ApiOperation(value = "迭代完成")
+    @ApiOperation(value = "迭代视图 - 迭代详情")
     @GetMapping("/sprintOverView")
     public ControllerResponse sprintOverView(long sprintId) {
         return ControllerResponse.success(sprintv3Service.sprintOverView(sprintId));
@@ -128,7 +130,21 @@ public class Sprintv3Controller {
 
 
     /**
+     * 迭代视图 - 迭代统计详情
+     *
+     * @param sprintId 迭代id
+     * @return {@link ControllerResponse}
+     */
+    @ApiOperation(value = "迭代视图 - 迭代统计详情")
+    @GetMapping("/SprintStatisticalInformation")
+    public ControllerResponse SprintStatisticalInformation(long sprintId) {
+        return ControllerResponse.success(sprintv3Service.SprintStatisticalInformation(sprintId));
+    }
+
+
+    /**
      * 迭代添加工作项（故事或缺陷）
+     *
      * @param sprintDTO 迭代dto
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
@@ -142,7 +158,8 @@ public class Sprintv3Controller {
 
 
     /**
-     *  通过迭代id和故事id将故事移出迭代
+     * 通过迭代id和故事id将故事移出迭代
+     *
      * @param sprintId 迭代id
      * @param issueId  工作项id
      * @return com.yusys.portal.model.common.dto.ControllerResponse

@@ -188,7 +188,7 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
             } else {
                 state = StateEnum.U.getValue();
             }
-            commissionService.updateCommissionState(issueId, state);
+            //commissionService.updateCommissionState(issueId, state);
         }
         return i;
     }

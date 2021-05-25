@@ -1,9 +1,12 @@
 package com.yusys.agile.story.service;
 
 import cn.hutool.core.lang.Assert;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.utils.IssueFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,10 +19,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  @Description: 用户故事单元测试
- *  @author: zhao_yd
- *  @Date: 2021/5/24 5:25 下午
- *
+ * @Description: 用户故事单元测试
+ * @author: zhao_yd
+ * @Date: 2021/5/24 5:25 下午
  */
 
 @Slf4j
@@ -29,13 +31,15 @@ public class StoryServiceTest {
 
     @Resource
     private StoryService storyService;
+    @Resource
+    private IssueFactory issueFactory;
 
     @Test
-    public void createStroyTest(){
+    public void createStroyTest() {
         IssueDTO issueDTO = new IssueDTO();
         issueDTO.setCompletion("5");
         //开发阶段、未开始
-        Long[] stages = {4L,100L};
+        Long[] stages = {4L, 100L};
         issueDTO.setStages(stages);
         issueDTO.setAcceptanceCriteria("1、需求完成度要高 2、任务完成时间要准");
         issueDTO.setBeginDate(new Date());
@@ -51,11 +55,18 @@ public class StoryServiceTest {
         issueDTO.setImportance((byte) 1);
         issueDTO.setOrder(100);
         issueDTO.setPlanWorkload(8);
-        issueDTO.setTitle("测试新建任务");
+        issueDTO.setTitle("测试新建任务啊");
         issueDTO.setSystemId(814801485815332864L);
         List<Long> systemIds = new ArrayList();
         systemIds.add(817389531406000128L);
         Long story = storyService.createStory(issueDTO);
+        //批量新增或者批量更新扩展字段值
+        issueDTO.setIssueType(new Byte("3"));
+        issueDTO.setIssueId(story);
+        JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
+        jsonObject.put("storyPoint","11");
+        log.info("转换为 object值为:{}",JSONObject.toJSONString(jsonObject));
+        issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
         Assert.isFalse(story == null);
     }
 }

@@ -17,6 +17,7 @@ import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
+import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamDTO;
@@ -42,11 +43,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_NO_START_STATE;
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_ONGOING_STATE;
 
@@ -186,7 +189,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
             rest = buildResultList(rest);
             return rest;
-        }else{
+        } else {
             HashMap<String, Object> params = buildQueryParamsOthers(dto, security);
             PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
             List<SprintListDTO> rest = ssprintMapper.queryOtherSprint(params);
@@ -281,7 +284,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
          * 按团队ID查询出所有（进行中、未开始）状态下的有效迭代
          */
         PageHelper.startPage(pageNum, pageSize);
-        List<SprintListDTO> result = ssprintMapper.selectByIdAndName(teamId,sprint);
+        List<SprintListDTO> result = ssprintMapper.selectByIdAndName(teamId, sprint);
         //属性值翻译
         result.forEach(item -> {
             //状态
@@ -298,6 +301,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 //        List<SSprint> list = ssprintMapper.selectByExample(example);
 
     }
+
 
     /**
      * 创建迭代
@@ -570,7 +574,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     /**
-     * 迭代视图
+     * 迭代视图 - 迭代详情
      *
      * @param sprintId 迭代id
      * @return {@link SprintOverView}
@@ -584,12 +588,37 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
         BeanUtils.copyProperties(sprint, sprintOverView);
         sprintOverView.setTeamName(sTeamMapper.queryTeamNameByTeamId(sprint.getTeamId()));
-        List<STeamMember> sprintUSer = sTeamMapper.queryUserInfoByUserId(sprintId, sprint.getTeamId());
+        //List<STeamMember> sprintUSer = sTeamMapper.queryUserInfoByUserId(sprintId, sprint.getTeamId());
+        List<STeamMember> sprintUSer = querySprintUSer(sprintId);
         sprintOverView.setSprintUSer(sprintUSer);
         List<Long> sprintSystemIds = sTeamMapper.queryTeamSystem(sprint.getTeamId());
         List<SsoSystemRestDTO> ssoSystemRestDTOS = iFacadeSystemApi.getSystemByIds(sprintSystemIds);
         sprintOverView.setSprintSystem(ssoSystemRestDTOS);
         return sprintOverView;
+    }
+
+    /**
+     * 迭代视图 - 迭代统计详情
+     *
+     * @param sprintId 迭代id
+     * @return {@link SprintStatisticalInformation}
+     */
+    @Override
+    public SprintStatisticalInformation SprintStatisticalInformation(long sprintId) {
+        return null;
+    }
+
+
+    /**
+     * 查询迭代用户
+     *
+     * @param sprintId 迭代id
+     * @return {user_id,user_account,user_name}
+     */
+    @Override
+    public List<STeamMember> querySprintUSer(long sprintId) {
+        List<STeamMember> sTeamMembers = sTeamMapper.queryUserInfoByUserId(sprintId);
+        return sTeamMembers;
     }
 
     @Override
