@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
@@ -41,13 +42,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_NO_START_STATE;
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_ONGOING_STATE;
 
@@ -73,6 +72,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private IFacadeSystemApi iFacadeSystemApi;
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
+    @Autowired
+    private StoryService storyService;
 
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
@@ -275,30 +276,27 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum) {
+    public List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum, String sprint) {
         /*
          * 按团队ID查询出所有（进行中、未开始）状态下的有效迭代
          */
-        SSprintExample example = new SSprintExample();
-        example.createCriteria()
-                .andStateEqualTo(StateEnum.U.getValue())
-                .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE, SprintStatusEnum.TYPE_ONGOING_STATE.CODE, SprintStatusEnum.TYPE_FINISHED_STATE.CODE))
-                .andTeamIdEqualTo(teamId);
-        example.setOrderByClause("create_time desc");
         PageHelper.startPage(pageNum, pageSize);
-        List<SSprint> list = ssprintMapper.selectByExample(example);
-        try {
-            List<SprintListDTO> result = ReflectUtil.copyProperties4List(list, SprintListDTO.class);
-            //属性值翻译
-            result.forEach(item -> {
-                //状态
-                item.setStatusStr(SprintStatusEnum.getName(item.getStatus()));
-            });
-            return result;
-        } catch (Exception e) {
-            log.error("反射失败", e);
-            throw new BusinessException("获取数据失败");
-        }
+        List<SprintListDTO> result = ssprintMapper.selectByIdAndName(teamId,sprint);
+        //属性值翻译
+        result.forEach(item -> {
+            //状态
+            item.setStatusStr(SprintStatusEnum.getName(item.getStatus()));
+        });
+        return result;
+        //        SSprintExample example = new SSprintExample();
+//        example.createCriteria()
+//                .andStateEqualTo(StateEnum.U.getValue())
+//                .andStatusIn(Arrays.asList(SprintStatusEnum.TYPE_NO_START_STATE.CODE, SprintStatusEnum.TYPE_ONGOING_STATE.CODE, SprintStatusEnum.TYPE_FINISHED_STATE.CODE))
+//                .andTeamIdEqualTo(teamId);
+//
+//        example.setOrderByClause("create_time desc");
+//        List<SSprint> list = ssprintMapper.selectByExample(example);
+
     }
 
     /**
@@ -592,5 +590,17 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<SsoSystemRestDTO> ssoSystemRestDTOS = iFacadeSystemApi.getSystemByIds(sprintSystemIds);
         sprintOverView.setSprintSystem(ssoSystemRestDTOS);
         return sprintOverView;
+    }
+
+    @Override
+    public boolean arrangeIssue(SprintDTO sprintDTO) {
+        List<Long> issueIds = sprintDTO.getIssueIds();
+        if (CollectionUtils.isNotEmpty(issueIds)) {
+            for (Long issueId : issueIds) {
+                //工作项加入迭代
+                storyService.distributeSprint(issueId, sprintDTO.getSprintId());
+            }
+        }
+        return true;
     }
 }

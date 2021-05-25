@@ -97,9 +97,11 @@ public class IssueRichTextFactory {
         IssueExample issueExample = new IssueExample();
         IssueExample.Criteria criteria = issueExample.createCriteria();
         criteria.andStageIdEqualTo(stageId)
-                .andProjectIdEqualTo(projectId)
                 .andIssueTypeEqualTo(issueType)
                 .andStateEqualTo(StateEnum.U.toString());
+        if(Optional.ofNullable(projectId).isPresent()){
+            criteria.andProjectIdEqualTo(projectId);
+        }
         if (Optional.ofNullable(landId).isPresent()) {
             criteria.andLaneIdEqualTo(landId);
         }

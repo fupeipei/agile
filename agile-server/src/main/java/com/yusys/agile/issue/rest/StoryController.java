@@ -62,7 +62,6 @@ public class StoryController {
             LOGGER.error("新增用户故事失败：{}", e);
             return ControllerResponse.fail("新增用户故事失败：" + e.getMessage());
         }
-
     }
 
 
@@ -103,7 +102,7 @@ public class StoryController {
     @PostMapping("/edit")
     public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
         try {
-            //暂时先将扩展字段扔掉
+            //保存工作项基础字段
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
             storyService.editStory(issueDTO);

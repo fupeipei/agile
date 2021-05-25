@@ -682,4 +682,18 @@
         where sprint_id = #{sprintId}
           and state = 'U'
     </select>
+
+    <select id="selectByIdAndName" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        select <include refid="Base_Column_List" />
+        from s_sprint
+        where
+        state = 'U'
+        and status in (2,3,4)
+        and team_id = #{teamId}
+        and (
+            sprint_name like concat('%',#{sprint},'%')
+            or sprint_id like concat('%',#{sprint},'%')
+        )
+        order by create_time desc
+    </select>
 </mapper>

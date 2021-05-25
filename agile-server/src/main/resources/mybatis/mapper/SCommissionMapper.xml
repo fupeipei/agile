@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.commission.dao.CommissionMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.commission.domain.Commission">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.commission.domain.SCommission">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="issue_id" jdbcType="BIGINT" property="issueId" />
     <result column="project_id" jdbcType="BIGINT" property="projectId" />
@@ -76,16 +76,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, issue_id, project_id, title, type, current_handler, stage_id, lane_id, create_uid, 
+    id, issue_id, project_id, title, `type`, current_handler, stage_id, lane_id, create_uid,
     create_time, update_uid, update_time, state, tenant_code
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.commission.domain.CommissionExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.commission.domain.SCommissionExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from commission
+    from s_commission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -96,21 +96,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from commission
+    from s_commission
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from commission
+    delete from s_commission
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.commission.domain.CommissionExample">
-    delete from commission
+  <delete id="deleteByExample" parameterType="com.yusys.agile.commission.domain.SCommissionExample">
+    delete from s_commission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.commission.domain.Commission" useGeneratedKeys="true" keyProperty="id">
-    insert into commission (id, issue_id, project_id, 
+  <insert id="insert" parameterType="com.yusys.agile.commission.domain.SCommission" useGeneratedKeys="true" keyProperty="id">
+    insert into s_commission (id, issue_id, project_id,
       title, type, current_handler, 
       stage_id, lane_id, create_uid, 
       create_time, update_uid, update_time, 
@@ -121,8 +121,8 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{state,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.commission.domain.Commission" useGeneratedKeys="true" keyProperty="id">
-    insert into commission
+  <insert id="insertSelective" parameterType="com.yusys.agile.commission.domain.SCommission" useGeneratedKeys="true" keyProperty="id">
+    insert into s_commission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -212,14 +212,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.commission.domain.CommissionExample" resultType="java.lang.Long">
-    select count(*) from commission
+  <select id="countByExample" parameterType="com.yusys.agile.commission.domain.SCommissionExample" resultType="java.lang.Long">
+    select count(*) from sCommission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update commission
+    update s_commission
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -269,7 +269,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update commission
+    update s_commission
     set id = #{record.id,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
@@ -288,8 +288,8 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.commission.domain.Commission">
-    update commission
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.commission.domain.SCommission">
+    update s_commission
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -333,8 +333,8 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.commission.domain.Commission">
-    update commission
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.commission.domain.SCommission">
+    update s_commission
     set issue_id = #{issueId,jdbcType=BIGINT},
       project_id = #{projectId,jdbcType=BIGINT},
       title = #{title,jdbcType=VARCHAR},
@@ -351,8 +351,8 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <update id="updateByIssueIdSelective" parameterType="com.yusys.agile.commission.domain.Commission">
-    update commission
+  <update id="updateByIssueIdSelective" parameterType="com.yusys.agile.commission.domain.SCommission">
+    update s_commission
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
@@ -388,8 +388,8 @@
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
 
-  <update id="updateCommissionByIssueId" parameterType="com.yusys.agile.commission.domain.Commission">
-    update commission
+  <update id="updateCommissionByIssueId" parameterType="com.yusys.agile.commission.domain.SCommission">
+    update s_commission
     set project_id = #{projectId,jdbcType=BIGINT},
       current_handler = #{currentHandler,jdbcType=BIGINT},
       stage_id = #{stageId,jdbcType=BIGINT},
@@ -400,8 +400,8 @@
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
 
-  <update id="updateCommissionByPrimaryKey" parameterType="com.yusys.agile.commission.domain.Commission">
-    update commission
+  <update id="updateCommissionByPrimaryKey" parameterType="com.yusys.agile.commission.domain.SCommission">
+    update s_commission
     set project_id = #{projectId,jdbcType=BIGINT},
       current_handler = #{currentHandler,jdbcType=BIGINT},
       stage_id = #{stageId,jdbcType=BIGINT},
@@ -412,7 +412,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectCommissionList" parameterType="com.yusys.agile.commission.domain.Commission" resultType="com.yusys.agile.commission.domain.Commission">
+  <select id="selectCommissionList" parameterType="com.yusys.agile.commission.domain.SCommission" resultType="com.yusys.agile.commission.domain.SCommission">
     select
       id,
       issue_id,
@@ -421,7 +421,7 @@
       type,
       current_handler
     from
-      commission
+      s_commission
     where
       current_handler = #{currentHandler}
     <if test="title != null and title != ''">

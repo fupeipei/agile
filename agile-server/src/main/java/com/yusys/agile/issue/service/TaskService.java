@@ -86,7 +86,7 @@ public interface TaskService {
      * @Description 任务卡片拖拽
      * @Return void
      */
-    void dragTask(Long issueId, Long from, Long to);
+    void dragTask(Long issueId, Long from, Long to,Long userId);
 
     /**
      * @param code

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CommissionRecordExample {
+public class SCommissionExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public CommissionRecordExample() {
+    public SCommissionExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -165,63 +165,123 @@ public class CommissionRecordExample {
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdIsNull() {
-            addCriterion("commisson_id is null");
+        public Criteria andIssueIdIsNull() {
+            addCriterion("issue_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdIsNotNull() {
-            addCriterion("commisson_id is not null");
+        public Criteria andIssueIdIsNotNull() {
+            addCriterion("issue_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdEqualTo(Long value) {
-            addCriterion("commisson_id =", value, "commissonId");
+        public Criteria andIssueIdEqualTo(Long value) {
+            addCriterion("issue_id =", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdNotEqualTo(Long value) {
-            addCriterion("commisson_id <>", value, "commissonId");
+        public Criteria andIssueIdNotEqualTo(Long value) {
+            addCriterion("issue_id <>", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdGreaterThan(Long value) {
-            addCriterion("commisson_id >", value, "commissonId");
+        public Criteria andIssueIdGreaterThan(Long value) {
+            addCriterion("issue_id >", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("commisson_id >=", value, "commissonId");
+        public Criteria andIssueIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("issue_id >=", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdLessThan(Long value) {
-            addCriterion("commisson_id <", value, "commissonId");
+        public Criteria andIssueIdLessThan(Long value) {
+            addCriterion("issue_id <", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdLessThanOrEqualTo(Long value) {
-            addCriterion("commisson_id <=", value, "commissonId");
+        public Criteria andIssueIdLessThanOrEqualTo(Long value) {
+            addCriterion("issue_id <=", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdIn(List<Long> values) {
-            addCriterion("commisson_id in", values, "commissonId");
+        public Criteria andIssueIdIn(List<Long> values) {
+            addCriterion("issue_id in", values, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdNotIn(List<Long> values) {
-            addCriterion("commisson_id not in", values, "commissonId");
+        public Criteria andIssueIdNotIn(List<Long> values) {
+            addCriterion("issue_id not in", values, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdBetween(Long value1, Long value2) {
-            addCriterion("commisson_id between", value1, value2, "commissonId");
+        public Criteria andIssueIdBetween(Long value1, Long value2) {
+            addCriterion("issue_id between", value1, value2, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommissonIdNotBetween(Long value1, Long value2) {
-            addCriterion("commisson_id not between", value1, value2, "commissonId");
+        public Criteria andIssueIdNotBetween(Long value1, Long value2) {
+            addCriterion("issue_id not between", value1, value2, "issueId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdIsNull() {
+            addCriterion("project_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdIsNotNull() {
+            addCriterion("project_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdEqualTo(Long value) {
+            addCriterion("project_id =", value, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdNotEqualTo(Long value) {
+            addCriterion("project_id <>", value, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdGreaterThan(Long value) {
+            addCriterion("project_id >", value, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("project_id >=", value, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdLessThan(Long value) {
+            addCriterion("project_id <", value, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdLessThanOrEqualTo(Long value) {
+            addCriterion("project_id <=", value, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdIn(List<Long> values) {
+            addCriterion("project_id in", values, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdNotIn(List<Long> values) {
+            addCriterion("project_id not in", values, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdBetween(Long value1, Long value2) {
+            addCriterion("project_id between", value1, value2, "projectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andProjectIdNotBetween(Long value1, Long value2) {
+            addCriterion("project_id not between", value1, value2, "projectId");
             return (Criteria) this;
         }
 
@@ -355,183 +415,63 @@ public class CommissionRecordExample {
             return (Criteria) this;
         }
 
-        public Criteria andHandlerIsNull() {
-            addCriterion("handler is null");
+        public Criteria andCurrentHandlerIsNull() {
+            addCriterion("current_handler is null");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerIsNotNull() {
-            addCriterion("handler is not null");
+        public Criteria andCurrentHandlerIsNotNull() {
+            addCriterion("current_handler is not null");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerEqualTo(Long value) {
-            addCriterion("handler =", value, "handler");
+        public Criteria andCurrentHandlerEqualTo(Long value) {
+            addCriterion("current_handler =", value, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerNotEqualTo(Long value) {
-            addCriterion("handler <>", value, "handler");
+        public Criteria andCurrentHandlerNotEqualTo(Long value) {
+            addCriterion("current_handler <>", value, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerGreaterThan(Long value) {
-            addCriterion("handler >", value, "handler");
+        public Criteria andCurrentHandlerGreaterThan(Long value) {
+            addCriterion("current_handler >", value, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerGreaterThanOrEqualTo(Long value) {
-            addCriterion("handler >=", value, "handler");
+        public Criteria andCurrentHandlerGreaterThanOrEqualTo(Long value) {
+            addCriterion("current_handler >=", value, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerLessThan(Long value) {
-            addCriterion("handler <", value, "handler");
+        public Criteria andCurrentHandlerLessThan(Long value) {
+            addCriterion("current_handler <", value, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerLessThanOrEqualTo(Long value) {
-            addCriterion("handler <=", value, "handler");
+        public Criteria andCurrentHandlerLessThanOrEqualTo(Long value) {
+            addCriterion("current_handler <=", value, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerIn(List<Long> values) {
-            addCriterion("handler in", values, "handler");
+        public Criteria andCurrentHandlerIn(List<Long> values) {
+            addCriterion("current_handler in", values, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerNotIn(List<Long> values) {
-            addCriterion("handler not in", values, "handler");
+        public Criteria andCurrentHandlerNotIn(List<Long> values) {
+            addCriterion("current_handler not in", values, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerBetween(Long value1, Long value2) {
-            addCriterion("handler between", value1, value2, "handler");
+        public Criteria andCurrentHandlerBetween(Long value1, Long value2) {
+            addCriterion("current_handler between", value1, value2, "currentHandler");
             return (Criteria) this;
         }
 
-        public Criteria andHandlerNotBetween(Long value1, Long value2) {
-            addCriterion("handler not between", value1, value2, "handler");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdIsNull() {
-            addCriterion("issue_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdIsNotNull() {
-            addCriterion("issue_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdEqualTo(Long value) {
-            addCriterion("issue_id =", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotEqualTo(Long value) {
-            addCriterion("issue_id <>", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdGreaterThan(Long value) {
-            addCriterion("issue_id >", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("issue_id >=", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdLessThan(Long value) {
-            addCriterion("issue_id <", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdLessThanOrEqualTo(Long value) {
-            addCriterion("issue_id <=", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdIn(List<Long> values) {
-            addCriterion("issue_id in", values, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotIn(List<Long> values) {
-            addCriterion("issue_id not in", values, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdBetween(Long value1, Long value2) {
-            addCriterion("issue_id between", value1, value2, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotBetween(Long value1, Long value2) {
-            addCriterion("issue_id not between", value1, value2, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdIsNull() {
-            addCriterion("project_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdIsNotNull() {
-            addCriterion("project_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdEqualTo(Long value) {
-            addCriterion("project_id =", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdNotEqualTo(Long value) {
-            addCriterion("project_id <>", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdGreaterThan(Long value) {
-            addCriterion("project_id >", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("project_id >=", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdLessThan(Long value) {
-            addCriterion("project_id <", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdLessThanOrEqualTo(Long value) {
-            addCriterion("project_id <=", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdIn(List<Long> values) {
-            addCriterion("project_id in", values, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdNotIn(List<Long> values) {
-            addCriterion("project_id not in", values, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdBetween(Long value1, Long value2) {
-            addCriterion("project_id between", value1, value2, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdNotBetween(Long value1, Long value2) {
-            addCriterion("project_id not between", value1, value2, "projectId");
+        public Criteria andCurrentHandlerNotBetween(Long value1, Long value2) {
+            addCriterion("current_handler not between", value1, value2, "currentHandler");
             return (Criteria) this;
         }
 
@@ -645,83 +585,13 @@ public class CommissionRecordExample {
             return (Criteria) this;
         }
 
-        public Criteria andLaneIdBetween(Long value1, Long value2) {
+        public Criteria andLaneIdBetween(Long value1, Integer value2) {
             addCriterion("lane_id between", value1, value2, "laneId");
             return (Criteria) this;
         }
 
-        public Criteria andLaneIdNotBetween(Long value1, Long value2) {
+        public Criteria andLaneIdNotBetween(Long value1, Integer value2) {
             addCriterion("lane_id not between", value1, value2, "laneId");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateIsNull() {
-            addCriterion("state is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateIsNotNull() {
-            addCriterion("state is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateEqualTo(String value) {
-            addCriterion("state =", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateNotEqualTo(String value) {
-            addCriterion("state <>", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateGreaterThan(String value) {
-            addCriterion("state >", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateGreaterThanOrEqualTo(String value) {
-            addCriterion("state >=", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateLessThan(String value) {
-            addCriterion("state <", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateLessThanOrEqualTo(String value) {
-            addCriterion("state <=", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateLike(String value) {
-            addCriterion("state like", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateNotLike(String value) {
-            addCriterion("state not like", value, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateIn(List<String> values) {
-            addCriterion("state in", values, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateNotIn(List<String> values) {
-            addCriterion("state not in", values, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateBetween(String value1, String value2) {
-            addCriterion("state between", value1, value2, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andStateNotBetween(String value1, String value2) {
-            addCriterion("state not between", value1, value2, "state");
             return (Criteria) this;
         }
 
@@ -962,6 +832,76 @@ public class CommissionRecordExample {
 
         public Criteria andUpdateTimeNotBetween(Date value1, Date value2) {
             addCriterion("update_time not between", value1, value2, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateIsNull() {
+            addCriterion("state is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateIsNotNull() {
+            addCriterion("state is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateEqualTo(String value) {
+            addCriterion("state =", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateNotEqualTo(String value) {
+            addCriterion("state <>", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateGreaterThan(String value) {
+            addCriterion("state >", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateGreaterThanOrEqualTo(String value) {
+            addCriterion("state >=", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateLessThan(String value) {
+            addCriterion("state <", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateLessThanOrEqualTo(String value) {
+            addCriterion("state <=", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateLike(String value) {
+            addCriterion("state like", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateNotLike(String value) {
+            addCriterion("state not like", value, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateIn(List<String> values) {
+            addCriterion("state in", values, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateNotIn(List<String> values) {
+            addCriterion("state not in", values, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateBetween(String value1, String value2) {
+            addCriterion("state between", value1, value2, "state");
+            return (Criteria) this;
+        }
+
+        public Criteria andStateNotBetween(String value1, String value2) {
+            addCriterion("state not between", value1, value2, "state");
             return (Criteria) this;
         }
 
