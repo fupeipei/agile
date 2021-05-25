@@ -7,6 +7,7 @@ import com.yusys.agile.issue.dto.IssueAttachmentDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.utils.IssueFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +49,7 @@ public class TaskServiceTest {
 //        附件
         List<IssueAttachmentDTO> issueAttachmentDTOS = Lists.newArrayList();
         IssueAttachmentDTO issueAttachmentDTO = new IssueAttachmentDTO();
-        issueAttachmentDTO.setAttachmentId(1L);
+        issueAttachmentDTO.setAttachmentId(10001L);
         issueAttachmentDTO.setAttachmentDesc("附件描述");
         issueAttachmentDTOS.add(issueAttachmentDTO);
         issueDTO.setAttachments(issueAttachmentDTOS);
@@ -57,7 +58,7 @@ public class TaskServiceTest {
     @Test
     public void createIssue() {
         Long taskId = taskService.createTask(issueDTO);
-        System.out.println(taskId);
+        Assert.assertNotNull(taskId);
     }
 
 
@@ -70,4 +71,9 @@ public class TaskServiceTest {
     }
 
 
+    @Test
+    public void editTask(){
+        issueDTO.setIssueId(846689230687264768L);
+        taskService.editTask(issueDTO);
+    }
 }
