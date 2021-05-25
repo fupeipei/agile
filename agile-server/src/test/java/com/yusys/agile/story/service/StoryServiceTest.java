@@ -3,9 +3,14 @@ package com.yusys.agile.story.service;
 import cn.hutool.core.lang.Assert;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.sprint.domain.Sprint;
+import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +36,10 @@ public class StoryServiceTest {
     private StoryService storyService;
     @Resource
     private IssueFactory issueFactory;
+    @Resource
+    private Sprintv3Service sprintv3Service;
+    @Resource
+    private IssueService issueService;
 
     @Test
     public void createStroyTest() {
@@ -94,4 +103,45 @@ public class StoryServiceTest {
         storyService.editStory(issueDTO);
         org.junit.Assert.assertTrue("editStroyTest通过", true);
     }
+
+
+
+    @Test
+    public void testRemoveIssue4Sprint(){
+        Long sprintId= 130190l;
+        Long storyId=507077l;
+        int i = storyService.removeStory4Sprint(sprintId, storyId);
+        Assert.isTrue(i==1);
+    }
+
+
+   @Test
+   public void testRelationIssue(){
+       SprintDTO sprintDTO=new SprintDTO();
+       List<Long> issueIds =new ArrayList<>();
+       for (int i = 9999; i < 10005; i++) {
+           issueIds.add(i+1l);
+       }
+       sprintDTO.setIssueIds(issueIds);
+       sprintDTO.setSprintId(10000L);
+       System.out.println(sprintDTO);
+       boolean b = sprintv3Service.arrangeIssue(sprintDTO);
+       Assert.isTrue(b==true);
+
+   }
+
+    @Test
+    public void createBatchRelation(){
+        Long parentId=1000L;
+        List<Long> issueIds =new ArrayList<>();
+        for (int i = 10000; i < 10005; i++) {
+            issueIds.add(i+1l);
+        }
+        Long userId=10000l;
+        issueService.createBatchRelation(parentId,issueIds,userId);
+    }
+
+
+
 }
+
