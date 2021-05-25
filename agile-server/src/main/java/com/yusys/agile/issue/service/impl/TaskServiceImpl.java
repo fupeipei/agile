@@ -319,7 +319,7 @@ public class TaskServiceImpl implements TaskService {
                 .size();
 
         log.info("团队人员信息smCount"+smCount+"memCount"+memCount+"poCount"+poCount+"userId"+userId+"loginUserId"+loginUserId);
-        if(poCount>0){
+        if(poCount>0&&memCount==0){
             throw new BusinessException("对于PO，不允许修改任务信息");
         }
 
@@ -340,6 +340,7 @@ public class TaskServiceImpl implements TaskService {
             else {//sm指派或非指派拖拽
                 task.setStageId(to);
                 task.setHandler(task.getHandler());
+                task.setAssessRemarks(task.getAssessRemarks()+"by s");
                 if(userId!=null&&userId>0){//sm指派任务的情况
                     task.setHandler(userId);
                 }
