@@ -118,5 +118,5 @@ public interface Sprintv3Service {
      * @param sprintId 迭代id
      * @return {@link SprintStatisticalInformation}
      */
-    SprintStatisticalInformation SprintStatisticalInformation(long sprintId);
+    SprintStatisticalInformation sprintStatisticalInformation(long sprintId);
 }
