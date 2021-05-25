@@ -1,65 +1,33 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.enums.SprintStatusEnum;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
-import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.portal.common.exception.BusinessException;
-import com.yusys.agile.team.domain.Team;
-import com.yusys.agile.team.dto.TeamDTO;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
-import com.yusys.agile.teamv3.domain.STeam;
-import com.yusys.portal.facade.client.api.IFacadeSystemApi;
-import com.yusys.portal.facade.client.api.IFacadeUserApi;
-import com.yusys.portal.model.common.dto.ControllerResponse;
-import com.yusys.portal.model.common.enums.StateEnum;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-import com.yusys.portal.util.date.DateUtil;
-import com.yusys.portal.util.thread.UserThreadLocalUtil;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
-import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
-import com.yusys.portal.model.facade.entity.SsoUser;
-import com.yusys.portal.util.code.ReflectUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-import com.yusys.agile.team.dto.TeamDTO;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_NO_START_STATE;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -167,6 +135,9 @@ public class SprintV3ServiceTest {
         securityDTO.setUserAcct("maxueq");
     }
 
+    /**
+     * 测试迭代列表-分页情况
+     */
     @Test
     public void testQueryList1() {
         SprintQueryDTO queryDTO = new SprintQueryDTO();
@@ -175,6 +146,116 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
         log.info("迭代列表数据【{}】", list);
     }
+    /**
+     * 测试迭代列表-分页+迭代编号
+     */
+    @Test
+    public void testQueryList2() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("100013");
+        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
+        log.info("迭代列表数据【{}】", list);
+    }
+    /**
+     * 测试迭代列表-分页+迭代名称
+     */
+    @Test
+    public void testQueryList3() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("haha");
+        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
+        log.info("迭代列表数据【{}】", list);
+    }
+    /**
+     * 测试迭代列表-分页+团队名称
+     */
+    @Test
+    public void testQueryList4() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setTeam("ceshi");
+        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
+        log.info("迭代列表数据【{}】", list);
+    }
+    /**
+     * 测试迭代列表-分页+团队编号
+     */
+    @Test
+    public void testQueryList5() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setTeam("100013");
+        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
+        log.info("迭代列表数据【{}】", list);
+    }
+    /**
+     * 测试迭代列表-分页+迭代名称+分页名称
+     */
+    @Test
+    public void testQueryList6() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("快克");
+        queryDTO.setTeam("ceshi");
+        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
+        log.info("迭代列表数据【{}】", list);
+    }
+    /**
+     * 测试迭代列表-分页+迭代编号+分页编号
+     */
+    @Test
+    public void testQueryList7() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("100024");
+        queryDTO.setTeam("100013");
+        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
+        log.info("迭代列表数据【{}】", list);
+    }
+    /**
+     * 按teamId查询有效迭代--分页情况
+     * 并且迭代状态为 未开始、进行中、已完成的
+     */
+    @Test
+    public void testGetSprintById() {
+        Long teamId = 100013L;
+        int pageSize = 10;
+        int pageNum = 1;
+        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, "");
+        log.info("迭代列表数据【{}】", list);
+    }
 
+    /**
+     * 按teamId查询有效迭代--分页+迭代名称
+     */
+    @Test
+    public void testGetSprintById2() {
+        Long teamId = 100013L;
+        int pageSize = 10;
+        int pageNum = 1;
+        String sprint = "狒狒";
+        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
+        log.info("迭代列表数据【{}】", list);
+    }
+    /**
+     * 按teamId查询有效迭代--分页+迭代编号
+     */
+    @Test
+    public void testGetSprintById3() {
+        Long teamId = 100013L;
+        int pageSize = 10;
+        int pageNum = 1;
+        String sprint = "100012";
+        List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
+        log.info("迭代列表数据【{}】", list);
+    }
 
 }
