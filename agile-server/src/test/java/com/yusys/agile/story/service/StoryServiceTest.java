@@ -1,9 +1,12 @@
 package com.yusys.agile.story.service;
 
 import cn.hutool.core.lang.Assert;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.utils.IssueFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +32,8 @@ public class StoryServiceTest {
 
     @Resource
     private StoryService storyService;
+    @Resource
+    private IssueFactory issueFactory;
 
     @Test
     public void createStroyTest(){
@@ -51,11 +56,18 @@ public class StoryServiceTest {
         issueDTO.setImportance((byte) 1);
         issueDTO.setOrder(100);
         issueDTO.setPlanWorkload(8);
-        issueDTO.setTitle("测试新建任务");
+        issueDTO.setTitle("测试新建任务啊");
         issueDTO.setSystemId(814801485815332864L);
         List<Long> systemIds = new ArrayList();
         systemIds.add(817389531406000128L);
         Long story = storyService.createStory(issueDTO);
+        //批量新增或者批量更新扩展字段值
+        issueDTO.setIssueType(new Byte("3"));
+        issueDTO.setIssueId(story);
+        JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
+        jsonObject.put("storyPoint","11");
+        log.info("转换为 object值为:{}",JSONObject.toJSONString(jsonObject));
+        issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
         Assert.isFalse(story == null);
     }
 }
