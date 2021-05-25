@@ -292,12 +292,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
         //根据task获得team，根据team及当前登录人员进行判断：
-        SprintDTO sprintDTO1 = this.sprintv3Service.viewEdit(task.getSprintId());
+        SprintDTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
         if(sprintDTO1==null){
             throw new BusinessException("根据迭代标识获取迭代信息为空"+task.getSprintId());
         }
 
-        QueryTeamResponse queryTeamResponse = this.teamv3Service.queryTeam(sprintDTO1.getTeamId());
+        QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO1.getTeamId());
 
         //判断当前登录人员是否为sm
         int smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
@@ -323,7 +323,7 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("对于PO，不允许修改任务信息");
         }
 
-        else if(smCount>0){
+        if(smCount>0){
             //：对于SM角色  当前任务的团队的sm
             //1）SM可以拖动看板下的任意卡片，当卡片已被团队成员领取时，拖动时不改变卡片领取人信息，当卡片从未领取拖动其他状态列时，未指定领取人时，需要提示：SM拖动卡片需要指定领取人
             //需要弹框，指定卡片领取人，需要预研交互
