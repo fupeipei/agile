@@ -13,6 +13,8 @@ import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -162,9 +165,6 @@ public class SprintV3ServiceTest {
         securityDTO.setUserAcct("maxueq");
     }
 
-    /**
-     * 测试迭代列表-分页情况
-     */
     @Test
     public void testQueryList1() {
         SprintQueryDTO queryDTO = new SprintQueryDTO();
@@ -292,5 +292,7 @@ public class SprintV3ServiceTest {
         List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
         log.info("迭代列表数据【{}】", list);
     }
+
+
 
 }

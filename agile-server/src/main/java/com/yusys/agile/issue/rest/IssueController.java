@@ -61,7 +61,7 @@ public class IssueController {
     }
 
     /**
-     * 创建关联关系
+     * 创建父级关联关系
      * @param parentId 父级id
      * @param issueId 工作项id
      * @return
@@ -79,7 +79,7 @@ public class IssueController {
     }
 
     /**
-     * 取消关联用户故事
+     * 取消父级关联关系
      * @param parentId 父级id
      * @param issueId 工作项id
      * @return
@@ -87,7 +87,6 @@ public class IssueController {
     @PutMapping("/issue/deleteRelation/{parentId}/{issueId}")
     public ControllerResponse deleteRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
-
             issueService.deleteRelation(parentId, issueId);
         } catch (Exception e) {
             LOGGER.error("删除关联失败：{}", e);
