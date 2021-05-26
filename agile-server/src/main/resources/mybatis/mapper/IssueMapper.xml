@@ -1774,7 +1774,7 @@
         from s_issue iu
         left join s_issue_system_relp isr on iu.issue_id = isr.issue_id
         left join s_issue_module_relp imr on iu.issue_id = imr.issue_id
-        left join S_issue_custom_field icf on iu.issue_id = icf.issue_id
+        left join s_issue_custom_field icf on iu.issue_id = icf.issue_id
         <where>
             iu.`state` = 'U'
             <if test="issueRecord.projectId != null ">
