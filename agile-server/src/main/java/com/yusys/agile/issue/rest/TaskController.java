@@ -8,6 +8,7 @@ import com.yusys.agile.issue.service.TaskService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -230,5 +231,12 @@ public class TaskController {
     public ControllerResponse listStoryIdsByTaskIds(@RequestBody List<Long> taskIds) {
 
         return ControllerResponse.success(taskService.listStoryIdsByTaskIds(taskIds));
+    }
+
+    @GetMapping("/task/listMemberUsers")
+    public ControllerResponse listMemberUsers(@RequestParam(name = "storyId") Long storyId,SecurityDTO securityDTO){
+        Long systemId = securityDTO.getSystemId();
+        List<UserSprintHourDTO> userSprintHourDTOList = taskService.listMemberUsers(systemId, storyId);
+        return ControllerResponse.success(userSprintHourDTOList);
     }
 }
