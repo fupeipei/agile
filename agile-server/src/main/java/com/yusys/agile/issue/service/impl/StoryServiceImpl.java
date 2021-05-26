@@ -439,7 +439,7 @@ public class StoryServiceImpl implements StoryService {
                         Date start = task.getBeginDate();
                         Date end = task.getEndDate();
                         if (null != start) {
-                            task.setOverTime(isTaskOverTime(start, end, task.getPlanWorkload(), sprint.getWorkHours()));
+                           // task.setOverTime(isTaskOverTime(start, end, task.getPlanWorkload(), sprint.getWorkHours()));
                         }
                         if (null != task.getHandler()) {
                             SsoUser ssoUser = iFacadeUserApi.queryUserById(task.getHandler());

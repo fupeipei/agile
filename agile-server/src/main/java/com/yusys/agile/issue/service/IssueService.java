@@ -23,12 +23,11 @@ public interface IssueService {
      * 功能描述 列表查询接口 1:epic 2:feature 3:story 4:task 5:fault
      *
      * @param map
-     * @param projectId
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      * @date 2020/4/16
      */
 
-    PageInfo getIssueList(Map<String, Object> map, Long projectId);
+    PageInfo getIssueList(Map<String, Object> map);
 
     /**
      * @param issueId
@@ -157,12 +156,11 @@ public interface IssueService {
      * 根据查询条件，返回List<Issue>对象
      *
      * @param map
-     * @param projectId
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      * @date 2020/06/15
      */
 
-    List<Issue> queryIssueList(Map<String, Object> map, Long projectId) throws Exception;
+    List<Issue> queryIssueList(Map<String, Object> map) throws Exception;
 
     /**
      * @param projectId
@@ -230,13 +228,13 @@ public interface IssueService {
     Issue selectIssueInfo(Long issueId, int type);
 
     /**
+     * 租户下的缓存数据
      * 功能描述
      *
-     * @param projrctId
      * @param noLogin   免登录标识，"true"标识免登录调用，other非免登录调用
      * @return java.util.Map
      */
-    Map IssueMap(Long projrctId, String noLogin);
+    Map IssueMap( String noLogin);
 
     IssueListDTO arrangeIssueListDTO(Issue issue, IssueListDTO issueListDTO, Map<String, Map> mapMap);
 

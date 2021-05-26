@@ -118,7 +118,7 @@ public interface STeamMapper {
      * @param teamId   团队id
      * @return {@link List<STeamMember>}
      */
-    List<STeamMember> queryUserInfoByUserId(@Param("sprintId") Long sprintId);
+    List<STeamMember> querySprintUser(@Param("sprintId") Long sprintId);
 //    List<STeamMember> queryUserInfoByUserId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
 
     /**

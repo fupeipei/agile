@@ -91,7 +91,7 @@ public interface StoryService {
      * @param issueDTO
      * @Date 2021/2/12
      * @Description 看板上通过迭代id和故事id，故事名称获取故事以及故事下的任务信息
-     * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
     List<IssueDTO> listStorysAndTasks(IssueDTO issueDTO);
 

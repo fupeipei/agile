@@ -1,5 +1,7 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
 import com.yusys.agile.constant.NumberConstant;
@@ -23,6 +25,7 @@ import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
@@ -37,6 +40,8 @@ import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,6 +54,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -101,6 +107,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -433,14 +440,16 @@ public class TaskServiceImpl implements TaskService {
         //创建历史记录
         createIssueHistoryRecords(from, to, task);
         // 修改数据库
-        issueMapper.updateByPrimaryKey(task);
+        int taskCount = issueMapper.updateByPrimaryKey(task);
 
         if (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
 
             Long storyId = task.getParentId();
             // 故事的上层feature规整
             //rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, storyId);
-            issueUpRegularFactory.commonIssueUpRegular(storyId);
+
+            //先注释，目前迭代没有这部分内容  by dushan
+            //issueUpRegularFactory.commonIssueUpRegular(storyId);
 //            // feature的上层也就是epic规整
 //            Long featureId = faultSyncService.getParentIdByIssueId(storyId);
 //            if(null != featureId){
@@ -449,13 +458,42 @@ public class TaskServiceImpl implements TaskService {
 
         }
 
+        //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+        int storyCount = this.updateStoryStageIdByTaskCound(task);
+
         logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+TaskStageIdEnum.getName(from)+from
-                +" to="+TaskStageIdEnum.getName(to)+to,"1");
+                +" to="+TaskStageIdEnum.getName(to)+to+" storyCount="+storyCount+" taskCount="+taskCount,"1");
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(task, NumberConstant.THREE, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+    }
+
+    //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+    private int updateStoryStageIdByTaskCound(Issue task) {
+        Long storyId = task.getParentId();
+        IssueExample example = new IssueExample();
+        example.createCriteria()
+                .andParentIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
+        //完成的数量
+        long finishCount = tasks.stream().filter(t ->  t.getStageId().equals(TaskStageIdEnum.TYPE_CLOSED_STATE.CODE)).count();
+
+        Issue storyIssue=new Issue();
+        storyIssue.setIssueId(storyId);
+        if(finishCount==tasks.size()){
+            storyIssue.setStageId(StoryStageIdEnum.TYPE_CLOSED_STATE.CODE);
+        }else{
+            storyIssue.setStageId(StoryStageIdEnum.TYPE_MODIFYING_STATE.CODE);
+        }
+        int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
+        log.info("根据故事id查询有效的、未完成的任务,finishCount="+finishCount+" 故事更新数量="+i+" storyIssue="+ JSONObject.toJSONString(storyIssue));
+        return i;
     }
 
     @Override
@@ -487,6 +525,32 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         return new ArrayList<>(storyIds);
+    }
+
+    @Override
+    public List<UserSprintHourDTO> listMemberUsers(Long systemId, Long storyId) {
+        List<UserSprintHourDTO> userSprintHourDTOList = Lists.newArrayList();
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andIssueIdEqualTo(storyId)
+                .andStateEqualTo(StateEnum.U.getValue());
+        List<Issue> issueslist = issueMapper.selectByExample(issueExample);
+        if (CollectionUtils.isNotEmpty(issueslist)) {
+            Issue issue = issueslist.get(0);
+            Long parentId = issue.getParentId();
+            if (Optional.ofNullable(parentId).isPresent()){
+                userSprintHourDTOList = sprintv3Service.getUsersBySprintId(parentId);
+            } else {
+                List<Long> systemIds = new ArrayList<>();
+                systemIds.add(systemId);
+                List<SsoUserDTO> ssoUserDTOList = iFacadeUserApi.queryUsersBySystemIds(systemIds);
+                try {
+                    userSprintHourDTOList = ReflectUtil.copyProperties4List(ssoUserDTOList, UserSprintHourDTO.class);
+                } catch (Exception e) {
+                    log.error("数据转换异常 异常信息:{}",e.getMessage());
+                }
+            }
+        }
+        return userSprintHourDTOList;
     }
 
     /**

@@ -10,8 +10,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import org.apache.ibatis.annotations.Param;
 
 public interface SSprintMapper {
@@ -215,9 +218,34 @@ public interface SSprintMapper {
     int querySprintTaskNumber(long sprintId);
 
     /**
+<<<<<<< HEAD
      * 根据系统id查询进行中、未开始的迭代信息
      * @param systemId
      * @return
      */
     List<SprintListDTO> selectBySystemId(@Param("systemId") Long systemId);
+=======
+     * 查询迭代用户id
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<Long>}
+     */
+    List<Long> querySprintUserIds(long sprintId);
+
+    /**
+     * 查询用户工作负载
+     *
+     * @param userId 用户id
+     * @return {@link UserWorkloadQueryModel}
+     */
+    UserWorkloadQueryModel queryUserWorkload(long userId);
+
+    /**
+     * 查询用户剩余工作量
+     *
+     * @param userId 用户id
+     * @return int
+     */
+    int queryUserResidueWorkload(Long userId);
+>>>>>>> ab6130182a6dd1fdb8c48c1124692d9871d56549
 }

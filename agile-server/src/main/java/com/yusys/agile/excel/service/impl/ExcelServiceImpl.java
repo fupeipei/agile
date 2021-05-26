@@ -1466,7 +1466,7 @@ public class ExcelServiceImpl implements ExcelService {
     private List<Issue> queryIssueList(Long projectId, Map<String, Object> mapStr, List<Long> issueIdList, Byte type) throws Exception {
         List<Issue> issueList = null;
         if (ALL_TYPE.equals(type)) {
-            issueList = issueService.queryIssueList(mapStr, projectId);
+            issueList = issueService.queryIssueList(mapStr);
         } else if (PART_TYPE.equals(type)) {
             IssueExample example = new IssueExample();
             example.setOrderByClause("issue_id desc");
@@ -1491,7 +1491,7 @@ public class ExcelServiceImpl implements ExcelService {
             List<Long> allIssueId = issueMapper.listAllIssueId(Lists.newArrayList(issueRestltMap.keySet()));
             if (CollectionUtils.isNotEmpty(allIssueId)) {
                 //项目下的当前页
-                Map<String, Map> map = issueService.IssueMap(projectId, null);
+                Map<String, Map> map = issueService.IssueMap( null);
                 if (MapUtils.isNotEmpty(map)) {
                     IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(mapStr), IssueStringDTO.class);
                     for (Issue issue : issues) {
