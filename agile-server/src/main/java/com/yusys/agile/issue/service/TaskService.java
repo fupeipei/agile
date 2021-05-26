@@ -2,6 +2,7 @@ package com.yusys.agile.issue.service;
 
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
 import java.util.List;
@@ -128,4 +129,12 @@ public interface TaskService {
      * @date 2021/2/8
      */
     List<Long> listStoryIdsByTaskIds(List<Long> taskIds);
+
+    /**
+     *如果故事上有迭代，从迭代内选人，没有迭代从系统选人
+     * @param systemId
+     * @param storyId
+     * @return
+     */
+    List<UserSprintHourDTO> listMemberUsers(Long systemId, Long storyId);
 }
