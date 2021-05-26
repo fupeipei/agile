@@ -47,12 +47,11 @@ public class IssueController {
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
-    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map,
-                                           @RequestHeader(name = "projectId",required = false) Long projectId) {
+    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map) {
         PageInfo result;
         try {
 
-            result = issueService.getIssueList(map, projectId);
+            result = issueService.getIssueList(map);
         } catch (Exception e) {
             LOGGER.error("查询Issue异常", e);
             return ControllerResponse.fail("查询Issue异常：" + e.getMessage());

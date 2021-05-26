@@ -16,6 +16,7 @@ import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
@@ -154,12 +155,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<TeamDTO> teamDTOS = new ArrayList<>();
         for (Team team : teams) {
             TeamDTO teamDTO = ReflectUtil.copyProperties(team, TeamDTO.class);
-            List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
-            //通过迭代id查询迭代时长表的userid，然后再查人员
-            List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
-            if (CollectionUtils.isNotEmpty(userSprintHours)) {
-                getUser(userSprintHourDTOS, userSprintHours);
-            }
+            List<UserSprintHourDTO> userSprintHourDTOS = this.queryUsersBySprintId(sprintId);
             teamDTO.setUsers(userSprintHourDTOS);
             //查询团队下的子系统
             List<Long> systemIds = STeamSystemMapper.querySystemIdByTeamId(teamDTO.getTeamId());
@@ -169,6 +165,16 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             teamDTOS.add(teamDTO);
         }
         return teamDTOS;
+    }
+
+    private List<UserSprintHourDTO> queryUsersBySprintId(Long sprintId){
+        List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
+        //通过迭代id查询迭代时长表的userid，然后再查人员
+        List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        if (CollectionUtils.isNotEmpty(userSprintHours)) {
+            getUser(userSprintHourDTOS, userSprintHours);
+        }
+        return userSprintHourDTOS;
     }
 
     private void getUser(List<UserSprintHourDTO> userSprintHourDTOS, List<UserSprintHour> userSprintHours) {
@@ -643,6 +649,12 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return statisticalInformation;
     }
 
+    @Override
+    public List<UserSprintHourDTO> getUsersBySprintId(Long sprintId) {
+        List<UserSprintHourDTO> userSprintHourDTOList = this.queryUsersBySprintId(sprintId);
+        return userSprintHourDTOList;
+    }
+
 
     /**
      * 查询迭代用户
@@ -680,5 +692,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
     }
 
-
+    @Override
+    public List<SSprint>queryAllSprint() {
+        SSprintExample sSprintExample = new SSprintExample();
+        sSprintExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue());
+        return ssprintMapper.selectByExample(sSprintExample);
+    }
 }

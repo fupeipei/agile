@@ -176,4 +176,12 @@ public class ModuleServiceImpl implements ModuleService {
         resposeJson.put("options", optionsList);
         return resposeJson;
     }
+
+    @Override
+    public List<Module> listModule() {
+        ModuleExample example = new ModuleExample();
+        ModuleExample.Criteria criteria = example.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.toString());
+        return moduleMapper.selectByExampleWithBLOBs(example);
+    }
 }
