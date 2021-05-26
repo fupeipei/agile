@@ -135,18 +135,16 @@ public interface Sprintv3Service {
     List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
 
     /**
-<<<<<<< HEAD
      * 根据系统id获取未开始和执行中的迭代信息
      * @param systemId
      * @return
      */
     List<SprintListDTO> getEffectiveSprintsBySystemId(Long systemId);
-=======
-     * 迭代视图 - 成员工时
+
+    /**
      *
      * @param sprintId 迭代id
      * @return {@link List<SprintMembersWorkHours>}
      */
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
->>>>>>> ab6130182a6dd1fdb8c48c1124692d9871d56549
 }

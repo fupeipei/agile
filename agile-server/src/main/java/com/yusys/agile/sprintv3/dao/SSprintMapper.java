@@ -218,14 +218,13 @@ public interface SSprintMapper {
     int querySprintTaskNumber(long sprintId);
 
     /**
-<<<<<<< HEAD
      * 根据系统id查询进行中、未开始的迭代信息
      * @param systemId
      * @return
      */
     List<SprintListDTO> selectBySystemId(@Param("systemId") Long systemId);
-=======
-     * 查询迭代用户id
+
+    /**
      *
      * @param sprintId 迭代id
      * @return {@link List<Long>}
@@ -247,5 +246,5 @@ public interface SSprintMapper {
      * @return int
      */
     int queryUserResidueWorkload(Long userId);
->>>>>>> ab6130182a6dd1fdb8c48c1124692d9871d56549
+
 }
