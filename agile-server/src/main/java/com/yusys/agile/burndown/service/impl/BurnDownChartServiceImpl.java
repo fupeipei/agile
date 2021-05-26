@@ -1,24 +1,27 @@
 package com.yusys.agile.burndown.service.impl;
 
+import com.google.common.collect.Lists;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
 import com.yusys.agile.burndown.dao.BurnDownChartStoryDao;
 import com.yusys.agile.burndown.domain.BurnDownChart;
 import com.yusys.agile.burndown.domain.BurnDownChartStory;
 import com.yusys.agile.burndown.dto.BurnDownStory;
 import com.yusys.agile.burndown.dto.BurnDownStoryDTO;
+import com.yusys.agile.burndown.dto.BurnDownStoryPoint;
+import com.yusys.agile.burndown.dto.BurnDownStoryPointDTO;
 import com.yusys.agile.burndown.service.BurnDownChartService;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.sprint.dao.SprintMapper;
 import com.yusys.agile.sprint.domain.SprintWithBLOBs;
 import com.yusys.agile.sprint.service.SprintService;
-import com.google.common.collect.Lists;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SsoProjectDTO;
-import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.date.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -36,6 +39,11 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     private BurnDownChartStoryDao burnDownChartStoryDao;
     @Resource
     private IFacadeProjectApi iFacadeProjectApi;
+    /*
+        新写的迭代mapper
+     */
+    @Resource
+    private SSprintMapper sSprintMapper;
     @Resource
     private SprintMapper sprintMapper;
     @Resource
@@ -198,6 +206,77 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         return burnDownStoryDTO;
     }
 
+    @Override
+    public BurnDownStoryPointDTO getStoryPointBySprint(Long sprintId) {
+        SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
+        //如果迭代不存在，抛出异常
+        Optional.ofNullable(sprint).orElseThrow(()-> new BusinessException("迭代计划不存在"));
+        //查询出迭代下故事点数的总数
+        Integer count = issueMapper.countStoryPointsForSprint(sprintId);
+        BurnDownStoryPointDTO storyPointDTO = new BurnDownStoryPointDTO();
+        /*
+         * 设置计划故事点数、实际故事点数、迭代日期剩余故事点数
+         */
+        storyPointDTO.setPlanStoryPoint(count == null ? 0 : count);
+        storyPointDTO.setActualRemainStoryPoint(count == null ? 0 : count);
+        storyPointDTO.setStoryPoints(getStoryPoints(sprint, count == null ? 0 : count));
+        return storyPointDTO;
+    }
+    /**
+     * 获取迭代日期对应的剩余故事点数
+     * @author zhaofeng
+     * @date 2021/5/26 14:47
+     * @param sprint    当前迭代
+     * @param count     迭代下故事点数的总数
+     */
+    private List<BurnDownStoryPoint> getStoryPoints(SSprintWithBLOBs sprint, Integer count) {
+        //获取迭代周期、迭代开始时间、迭代结束时间
+        Long sprintId = sprint.getSprintId();
+        String sprintDays = sprint.getSprintDays();
+        Date startTime = sprint.getStartTime();
+        Date endTime = sprint.getEndTime();
+        List<BurnDownStoryPoint> rest  = Lists.newArrayList();
+        if (null != startTime && null != endTime) {
+            /*
+             * 当开始日期小于等于结束日期时，判断这个日期是否在迭代内
+             * 如果存在，则获取剩余的故事点数，
+             * 获取剩余故事点数的逻辑：按当前日期查询是否有完成的故事、如果有则得到当前日期完成的故事总数currCount
+             * 然后递减 count-=currCount，将count赋值到 DTO中，如果没有查询到，那就直接将count赋值到 DTO中
+             * 最后当前日期+1
+             */
+            while (DateUtil.compare(endTime, startTime)) {
+                if (legalDate(sprintDays, startTime)) {
+                    BurnDownStoryPoint burnDownStoryPoint = new BurnDownStoryPoint();
+                    burnDownStoryPoint.setSprintTime(DateUtil.formatDate(startTime));
+                    //查询当前startTime完成的故事点总数
+                    Integer currCount = issueMapper.countCurrTimeStoryPointsForSprintId(sprintId, startTime);
+                    if(currCount != null){
+                        count -= currCount;
+                    }
+                    burnDownStoryPoint.setRemainStoryPoint(count);
+                    rest.add(burnDownStoryPoint);
+                }
+                startTime = DateUtil.nextDay(startTime);
+            }
+        }
+        return rest;
+    }
+    public boolean legalDate(String sprintDays, Date target) {
+        List<Date> dateList = convertStrToDate(sprintDays);
+        return DateUtil.isBetween(dateList, target);
+    }
+    public List<Date> convertStrToDate(String str) {
+        if (null == str || str.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Date> dateList = new ArrayList<>();
+        String[] dateArray = str.split("\\|");
+        for (int i = 0; i < dateArray.length; i++) {
+            long longVaule = Long.parseLong(dateArray[i]);
+            dateList.add(new Date(longVaule));
+        }
+        return dateList;
+    }
     /**
      * 计算每日剩余故事数
      */

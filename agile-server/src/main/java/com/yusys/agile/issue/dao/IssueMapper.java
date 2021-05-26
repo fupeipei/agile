@@ -9,6 +9,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IssueMapper {
@@ -572,4 +573,19 @@ public interface IssueMapper {
      * @date 2020/12/15
      */
     Issue getParentIssue(Long issueId);
+    /**
+     * 查询迭代下故事点数的总数
+     * @author zhaofeng
+     * @date 2021/5/26 14:40
+     * @param sprintId
+     */
+    Integer countStoryPointsForSprint(@Param("sprintId") Long sprintId);
+    /**
+     * 查询当前日期完成的故事点总数
+     * @author zhaofeng
+     * @date 2021/5/26 15:40
+     * @param sprintId 迭代id
+     * @param currTime 当前日期
+     */
+    Integer countCurrTimeStoryPointsForSprintId(@Param("sprintId") Long sprintId,@Param("currTime") Date currTime);
 }

@@ -3040,4 +3040,30 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         and
           r.state = 'U'
     </select>
+
+    <select id="countStoryPointsForSprint" resultType="java.lang.Integer">
+        select sum(se.`value`)
+        from
+        s_issue si,
+        s_sys_extend_field_detail se
+        where
+        si.issue_id = se.issue_id
+        and si.sprint_id = #{sprintId} and si.issue_type=3 and si.is_archive != 1
+    </select>
+
+    <select id="countCurrTimeStoryPointsForSprintId" resultType="java.lang.Integer">
+        <![CDATA[
+        select sum(se.`value`) from
+            s_issue si,
+            s_sys_extend_field_detail se,
+            burndown_chart_story b
+        where 1=1
+            and si.issue_id = se.issue_id
+            and si.issue_id = b.story_id
+            and si.sprint_id = #{sprintId}
+            and si.issue_type=3 and si.is_archive != 1 and si.stage_id != 7
+            and b.story_state = 7
+            and b.sprint_time = #{currTime}
+        ]]>
+    </select>
 </mapper>
