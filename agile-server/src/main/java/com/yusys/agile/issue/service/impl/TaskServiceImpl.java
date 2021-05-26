@@ -359,23 +359,20 @@ public class TaskServiceImpl implements TaskService {
         QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO1.getTeamId());
 
         //判断当前登录人员是否为sm
-        int smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
+        long smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
                 stream().
-                filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
-                .collect(Collectors.toList())
-                .size();
+                filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
 
-        int memCount = Optional.ofNullable(queryTeamResponse.getTeamUsers()).orElse(new ArrayList<>())
-                .stream()
-                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
-                .collect(Collectors.toList())
-                .size();
 
-        int poCount = Optional.ofNullable(queryTeamResponse.getTeamPoS()).orElse(new ArrayList<>())
+        long memCount = Optional.ofNullable(queryTeamResponse.getTeamUsers()).orElse(new ArrayList<>())
                 .stream()
-                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId))
-                .collect(Collectors.toList())
-                .size();
+                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
+
+
+        long poCount = Optional.ofNullable(queryTeamResponse.getTeamPoS()).orElse(new ArrayList<>())
+                .stream()
+                .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
+
 
         log.info("团队人员信息smCount"+smCount+" memCount"+memCount+" poCount"+poCount+" userId"+userId+" loginUserId"+loginUserId);
         String actionRemark="";
