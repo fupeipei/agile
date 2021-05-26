@@ -75,5 +75,15 @@ public interface HeaderFieldService {
      */
     List<HeaderField> getAllHeaderFieldByProjectId(Long projectId);
 
+    /**
+     * 功能描述  当前项目的列头信息
+     *
+     * @param tenantCode
+     * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
+     * @date 2020/4/15
+     */
+    List<HeaderField> getAllHeaderFieldByTenantCode(String tenantCode);
+
+
 
 }

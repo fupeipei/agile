@@ -171,4 +171,18 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         CustomFieldDTO customFieldDTO = ReflectUtil.copyProperties(customFieldPool, CustomFieldDTO.class);
         return customFieldDTO;
     }
+
+    @Override
+    public List<CustomFieldDTO> listAllCustomFieldsByTenantCode(String tenantCode) {
+        CustomFieldPoolExample example = new CustomFieldPoolExample();
+        CustomFieldPoolExample.Criteria criteria = example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue());
+        if (StringUtils.isNotBlank(tenantCode)) {
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
+        // 排序
+        example.setOrderByClause("create_time desc");
+
+        return customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
+    }
 }

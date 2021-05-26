@@ -1,5 +1,7 @@
 package com.yusys.agile.headerfield.service.impl;
 
+import com.yusys.agile.constant.StringConstant;
+import com.yusys.agile.customfield.domain.CustomFieldPoolExample;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
@@ -24,8 +26,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -342,6 +346,42 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
         List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields("", null, null, projectId);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<IssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(projectId, null);
+        Map<Long, List<IssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(IssueCustomRelation::getId));
+        List<HeaderField> headerFields = Lists.newArrayList();
+        HeaderFieldExample headerFieldExample = new HeaderFieldExample();
+        HeaderFieldExample.Criteria criteria = headerFieldExample.createCriteria();
+        criteria.andIsCustomEqualTo(Byte.parseByte("1"));
+        headerFields = headerFieldMapper.selectByExample(headerFieldExample);
+        headerFields.forEach(HeaderField -> {
+            if (longListMap.containsKey(Long.parseLong(HeaderField.getFieldCode())) && listMap.containsKey(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId())) {
+                HeaderField.setFieldName(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldName());
+                HeaderField.setFieldType(Byte.parseByte(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldType().toString()));
+                HeaderField.setFieldContent(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldContent());
+                HeaderField.setRequired(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getRequired());
+                HeaderField.setFieldPoolCode("pool_code" + listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldId());
+            }
+        });
+        return headerFields;
+    }
+
+    /**
+     * 租户下的自定义字段列头数据
+     * @param tenantCode
+     * @return
+     */
+    @Override
+    public List<HeaderField> getAllHeaderFieldByTenantCode(String tenantCode) {
+        return  orderHeaderFieldDTO(customFieldPoolService.listAllCustomFieldsByTenantCode(tenantCode));
+    }
+
+    /**
+     * 组织列表自定义字段数据
+     * @param customFieldDTOList
+     * @return
+     */
+    public List<HeaderField> orderHeaderFieldDTO( List<CustomFieldDTO> customFieldDTOList){
+        Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
+        List<IssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(null, null);
         Map<Long, List<IssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(IssueCustomRelation::getId));
         List<HeaderField> headerFields = Lists.newArrayList();
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();

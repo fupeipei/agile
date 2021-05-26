@@ -78,4 +78,12 @@ public interface ModuleService {
      * @return
      */
     JSONObject listModuleBySystemIds(List<Long> systemIds);
+
+
+    /**
+     * 根据所有查询模块列表
+     *
+     * @return
+     */
+    List<Module> listModule();
 }
