@@ -340,16 +340,10 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("该工作项不允许流转到目标阶段！");
         }
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
-
-
         //Long loginUserId=807906052370849792L;
-
-
         if (null != loginUserId) {
             task.setHandler(loginUserId);
         }
-
-
         //根据task获得team，根据team及当前登录人员进行判断：
         SprintDTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
         if(sprintDTO1==null){
@@ -357,29 +351,21 @@ public class TaskServiceImpl implements TaskService {
         }
 
         QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO1.getTeamId());
-
         //判断当前登录人员是否为sm
         long smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
                 stream().
                 filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
-
-
         long memCount = Optional.ofNullable(queryTeamResponse.getTeamUsers()).orElse(new ArrayList<>())
                 .stream()
                 .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
-
-
         long poCount = Optional.ofNullable(queryTeamResponse.getTeamPoS()).orElse(new ArrayList<>())
                 .stream()
                 .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
-
-
         log.info("团队人员信息smCount"+smCount+" memCount"+memCount+" poCount"+poCount+" userId"+userId+" loginUserId"+loginUserId);
         String actionRemark="";
         if(poCount>0&&memCount==0){
             throw new BusinessException("对于PO，不允许修改任务信息");
         }
-
         if(smCount>0){
             //：对于SM角色  当前任务的团队的sm
             //1）SM可以拖动看板下的任意卡片，当卡片已被团队成员领取时，拖动时不改变卡片领取人信息，当卡片从未领取拖动其他状态列时，未指定领取人时，需要提示：SM拖动卡片需要指定领取人
@@ -388,7 +374,6 @@ public class TaskServiceImpl implements TaskService {
             if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount==0){
                 throw new BusinessException("SM拖动卡片需要指定领取人");
             }
-
             //sm自己领任务
             if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount>0){
                 task.setStageId(to);
@@ -404,7 +389,6 @@ public class TaskServiceImpl implements TaskService {
                 }
                 actionRemark+="sm指派或非指派拖拽";
             }
-
         }else if(memCount>0){
             //：对于团队成员角色：
             /*2、对于团队成员角色：
