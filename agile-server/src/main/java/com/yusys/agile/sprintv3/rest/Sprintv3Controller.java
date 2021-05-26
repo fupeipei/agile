@@ -152,8 +152,6 @@ public class Sprintv3Controller {
         if (sprintv3Service.arrangeIssue(sprintDTO)) {
             return ControllerResponse.success("关联成功！");
         }
-
-
         return ControllerResponse.fail("关联失败！");
     }
 
