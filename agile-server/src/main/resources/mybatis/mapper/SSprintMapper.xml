@@ -777,6 +777,15 @@
           and state = 'U'
     </select>
 
+<<<<<<< HEAD
+    <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        SELECT DISTINCT ss.sprint_id,ss.sprint_name
+        from agile.s_sprint ss
+        left join agile.s_team_system sts
+        on ss.team_id  = sts.team_id
+        where
+        ss.status in (2,3) and sts.system_id  = #{systemId};
+=======
     <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
         select *
         from s_sprint a
@@ -808,5 +817,6 @@
           and a.issue_type = 4
           and a.stage_id = 102
           and a.state = 'U'
+>>>>>>> ab6130182a6dd1fdb8c48c1124692d9871d56549
     </select>
 </mapper>

@@ -62,10 +62,15 @@ public class StoryServiceTest {
         issueDTO.setImportance((byte) 1);
         issueDTO.setOrder(100);
         issueDTO.setPlanWorkload(8);
+        issueDTO.setTitle("测试故事啊xxx啊");
         //实际工时
         issueDTO.setReallyWorkload(8);
         issueDTO.setTitle("测试新建任务啊");
         issueDTO.setSystemId(814801485815332864L);
+        issueDTO.setParentId(100028L);
+        issueDTO.setSprintId(100028L);
+        issueDTO.setIssueType((byte)3);
+        issueDTO.setPriority((byte)100);
         List<Long> systemIds = new ArrayList();
         systemIds.add(817389531406000128L);
         Long story = storyService.createStory(issueDTO);

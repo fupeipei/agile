@@ -130,6 +130,11 @@
             <artifactId>poi-ooxml-schemas</artifactId>
             <version>3.16</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>2.1.6</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>agile-server</finalName>
