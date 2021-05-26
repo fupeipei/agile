@@ -7,6 +7,7 @@ import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.teamv3.domain.STeamMember;
@@ -93,7 +94,7 @@ public interface Sprintv3Service {
      * @param sprintId 迭代id
      * @return {@link List<STeamMember>}
      */
-    List<STeamMember> querySprintUSer(long sprintId);
+    List<STeamMember> querySprintUser(long sprintId);
 
     /**
      * @param sprintDTO
@@ -132,4 +133,12 @@ public interface Sprintv3Service {
     List<SSprint> queryAllSprint();
 
     List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
+
+    /**
+     * 迭代视图 - 成员工时
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<SprintMembersWorkHours>}
+     */
+    List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
 }

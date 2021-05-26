@@ -24,6 +24,11 @@
         <result column="sprint_desc" jdbcType="LONGVARCHAR" property="sprintDesc"/>
         <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays"/>
     </resultMap>
+
+    <resultMap id="SprintMembersWorkHours" type="com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel">
+        <result column="sum(plan_workload)" property="firstData"/>
+        <result column="count(issue_id)" property="secondData"/>
+    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -770,5 +775,38 @@
         where sprint_id = #{sprintId}
           and issue_type = 4
           and state = 'U'
+    </select>
+
+    <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
+        select *
+        from s_sprint a
+                     left join s_sprint_user_hour b on a.sprint_id = b.sprint_id
+                     left join s_issue c on b.sprint_id = c.sprint_id
+        where a.sprint_id = 10000
+          and c.issue_type = 4
+    </select>
+
+    <select id="querySprintUserIds" resultType="java.lang.Long">
+        select distinct user_id
+        from s_sprint_user_hour
+        where sprint_id = #{sprintId}
+    </select>
+
+    <select id="queryUserWorkload" resultMap="SprintMembersWorkHours">
+        select sum(plan_workload), count(issue_id)
+        from s_issue a
+        where a.handler = #{userId}
+          and a.issue_type = 4
+          and a.stage_id in (101, 102, 103)
+          and a.state = 'U'
+    </select>
+
+    <select id="queryUserResidueWorkload" resultType="int">
+        select ifnull( sum(plan_workload),0)
+        from s_issue a
+        where a.handler = #{userId}
+          and a.issue_type = 4
+          and a.stage_id = 102
+          and a.state = 'U'
     </select>
 </mapper>

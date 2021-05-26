@@ -19,6 +19,8 @@ import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
@@ -167,7 +169,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return teamDTOS;
     }
 
-    private List<UserSprintHourDTO> queryUsersBySprintId(Long sprintId){
+    private List<UserSprintHourDTO> queryUsersBySprintId(Long sprintId) {
         List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
         //通过迭代id查询迭代时长表的userid，然后再查人员
         List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
@@ -608,7 +610,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         BeanUtils.copyProperties(sprint, sprintOverView);
         sprintOverView.setTeamName(sTeamMapper.queryTeamNameByTeamId(sprint.getTeamId()));
         //List<STeamMember> sprintUSer = sTeamMapper.queryUserInfoByUserId(sprintId, sprint.getTeamId());
-        List<STeamMember> sprintUSer = querySprintUSer(sprintId);
+        List<STeamMember> sprintUSer = querySprintUser(sprintId);
         sprintOverView.setSprintUSer(sprintUSer);
         List<Long> sprintSystemIds = sTeamMapper.queryTeamSystem(sprint.getTeamId());
         List<SsoSystemRestDTO> ssoSystemRestDTOS = iFacadeSystemApi.getSystemByIds(sprintSystemIds);
@@ -657,13 +659,38 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
 
     /**
+     * 迭代视图 - 成员工时
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<SprintMembersWorkHours>}
+     */
+    @Override
+    public List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId) {
+        List<STeamMember> userList = sTeamMapper.queryUserInfoByUserId(sprintId);
+        List<SprintMembersWorkHours> list = new ArrayList<>();
+
+        for (int i = 0; i < userList.size(); i++) {
+            SprintMembersWorkHours sprintMembersWorkHours = new SprintMembersWorkHours();
+            sprintMembersWorkHours.setUserId(userList.get(i).getUserId());
+            sprintMembersWorkHours.setUserName(userList.get(i).getUserName());
+            sprintMembersWorkHours.setUserAccount(userList.get(i).getUserAccount());
+            UserWorkloadQueryModel userWorkloadQueryModel = ssprintMapper.queryUserWorkload(userList.get(i).getUserId());
+            sprintMembersWorkHours.setActualWorkload(userWorkloadQueryModel.getFirstData());
+            sprintMembersWorkHours.setTaskNumber(userWorkloadQueryModel.getSecondData());
+            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(userList.get(i).getUserId()));
+            list.add(sprintMembersWorkHours);
+        }
+        return list;
+    }
+
+    /**
      * 查询迭代用户
      *
      * @param sprintId 迭代id
      * @return {user_id,user_account,user_name}
      */
     @Override
-    public List<STeamMember> querySprintUSer(long sprintId) {
+    public List<STeamMember> querySprintUser(long sprintId) {
         List<STeamMember> sTeamMembers = sTeamMapper.queryUserInfoByUserId(sprintId);
         return sTeamMembers;
     }
