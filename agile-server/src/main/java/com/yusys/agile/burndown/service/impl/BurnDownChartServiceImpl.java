@@ -5,6 +5,7 @@ import com.yusys.agile.burndown.dao.BurnDownChartStoryDao;
 import com.yusys.agile.burndown.domain.BurnDownChart;
 import com.yusys.agile.burndown.domain.BurnDownChartStory;
 import com.yusys.agile.burndown.dto.BurnDownStory;
+import com.yusys.agile.burndown.dto.BurnDownStoryDTO;
 import com.yusys.agile.burndown.service.BurnDownChartService;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
@@ -188,8 +189,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @return
      */
     @Override
-    public com.yusys.agile.burndown.dto.BurnDownStoryDTO getStorysBySprint(Long sprintId) {
-        com.yusys.agile.burndown.dto.BurnDownStoryDTO burnDownStoryDTO = new com.yusys.agile.burndown.dto.BurnDownStoryDTO();
+    public BurnDownStoryDTO getStorysBySprint(Long sprintId) {
+        BurnDownStoryDTO burnDownStoryDTO = new BurnDownStoryDTO();
         Integer actualRemainStory = issueMapper.countStories4Sprint(sprintId);
         burnDownStoryDTO.setPlanStory(actualRemainStory);
         burnDownStoryDTO.setActualRemainStory(actualRemainStory);
@@ -272,16 +273,16 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param actualRemainStory
      * @return
      */
-    private List<com.yusys.agile.burndown.dto.BurnDownStory> getStorys(Long sprintId, Integer actualRemainStory) {
+    private List<BurnDownStory> getStorys(Long sprintId, Integer actualRemainStory) {
         SprintWithBLOBs sprint = sprintMapper.selectByPrimaryKey(sprintId);
         Optional.ofNullable(sprint).orElseThrow(() -> new BusinessException("迭代计划不存在"));
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();
         /** 获得故事的迭代有效日期*/
-        List<com.yusys.agile.burndown.dto.BurnDownStory> stories = getStorys(start, end, sprintDays);
-        List<com.yusys.agile.burndown.dto.BurnDownStory> inSprintStorys = getSprintStorys(sprintId, actualRemainStory, sprintDays);
-        com.yusys.agile.burndown.dto.BurnDownStory currentStory = getCurrentStory(sprintId, sprintDays);
+        List<BurnDownStory> stories = getStorys(start, end, sprintDays);
+        List<BurnDownStory> inSprintStorys = getSprintStorys(sprintId, actualRemainStory, sprintDays);
+        BurnDownStory currentStory = getCurrentStory(sprintId, sprintDays);
         setRemainStorys(stories, inSprintStorys, currentStory, actualRemainStory);
         return stories;
     }

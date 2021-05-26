@@ -56,4 +56,5 @@ public interface ReqUserRlatService {
      * @date 2020/12/1
      */
     List<Long> listReqUserRlatByUserId(Long userId, String tenantCode);
+
 }

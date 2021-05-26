@@ -16,6 +16,7 @@ import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
@@ -691,5 +692,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
     }
 
-
+    @Override
+    public List<SSprint>queryAllSprint() {
+        SSprintExample sSprintExample = new SSprintExample();
+        sSprintExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue());
+        return ssprintMapper.selectByExample(sSprintExample);
+    }
 }
