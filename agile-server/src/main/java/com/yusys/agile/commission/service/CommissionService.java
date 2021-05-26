@@ -77,4 +77,12 @@ public interface CommissionService {
      * @date 2021/2/1
      */
     void deleteCommission(Long issueId);
+
+    /**
+     * @param issueId
+     * @param state
+     * @description 更新代办状态
+     * @date 2021/2/1
+     */
+    void updateCommissionState(Long issueId, String state);
 }

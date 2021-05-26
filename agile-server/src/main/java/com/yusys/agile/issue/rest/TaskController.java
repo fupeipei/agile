@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/issue/v3")
+@RequestMapping("/v3/issue")
 public class TaskController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
 
@@ -79,11 +80,11 @@ public class TaskController {
      * @return
      */
     @PostMapping("/editTask")
-    public ControllerResponse editTask(@RequestBody IssueDTO issueDTO) {
+    public ControllerResponse editTask(@RequestBody IssueDTO issueDTO, SecurityDTO securityDTO) {
 //        //暂时先将扩展字段扔掉
 //        JSONObject jsonObject = new JSONObject(map);
 //        IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-        taskService.editTask(issueDTO);
+        taskService.editTask(issueDTO,securityDTO);
         return ControllerResponse.success("编辑任务成功！");
     }
 
@@ -127,9 +128,9 @@ public class TaskController {
      * @Description 任务卡片拖拽
      */
     @GetMapping("/task/stageId/{issueId}/{from}/{to}")
-    public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to) {
+    public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to, @RequestParam(value = "assignUserId",required = false) Long userId) {
         try {
-            taskService.dragTask(issueId, from, to);
+            taskService.dragTask(issueId, from, to, userId);
         } catch (Exception e) {
             return ControllerResponse.fail("拖拽任务卡片失败! " + e.getMessage());
         }

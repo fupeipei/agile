@@ -3,6 +3,7 @@ package com.yusys.agile.sprintv3.rest;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
@@ -13,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /**
@@ -43,12 +45,13 @@ public class Sprintv3Controller {
 
     /**
      * 团队进入迭代-按团队id查询有效迭代
+     *
+     * @param teamId
      * @author zhaofeng
      * @date 2021/5/24 11:50
-     * @param teamId
      */
     @GetMapping("/teamInSprint/{teamId}/{pageNum}/{pageSize}")
-    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum, @RequestParam("sprint") String sprint){
+    public ControllerResponse teamInSprint(@PathVariable("teamId") Long teamId, @PathVariable("pageSize") Integer pageSize, @PathVariable("pageNum") Integer pageNum, @RequestParam("sprint") String sprint) {
         List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
         return ControllerResponse.success(new PageInfo<SprintListDTO>(list));
     }
@@ -120,15 +123,27 @@ public class Sprintv3Controller {
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
      */
-    @ApiOperation(value = "迭代完成")
+    @ApiOperation(value = "迭代视图 - 迭代详情")
     @GetMapping("/sprintOverView")
     public ControllerResponse sprintOverView(long sprintId) {
         return ControllerResponse.success(sprintv3Service.sprintOverView(sprintId));
     }
 
+    /**
+     * 迭代视图 - 迭代统计详情
+     *
+     * @param sprintId 迭代id
+     * @return {@link ControllerResponse}
+     */
+    @ApiOperation(value = "迭代视图 - 迭代统计详情")
+    @GetMapping("/SprintStatisticalInformation")
+    public ControllerResponse sprintStatisticalInformation(long sprintId) {
+        return ControllerResponse.success(sprintv3Service.sprintStatisticalInformation(sprintId));
+    }
 
     /**
      * 迭代添加工作项（故事或缺陷）
+     *
      * @param sprintDTO 迭代dto
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
@@ -137,12 +152,14 @@ public class Sprintv3Controller {
         if (sprintv3Service.arrangeIssue(sprintDTO)) {
             return ControllerResponse.success("关联成功！");
         }
+
+
         return ControllerResponse.fail("关联失败！");
     }
 
-
     /**
-     *  通过迭代id和故事id将故事移出迭代
+     * 通过迭代id和故事id将故事移出迭代
+     *
      * @param sprintId 迭代id
      * @param issueId  工作项id
      * @return com.yusys.portal.model.common.dto.ControllerResponse
@@ -153,5 +170,16 @@ public class Sprintv3Controller {
             return ControllerResponse.fail("移除迭代失败！");
         }
         return ControllerResponse.success("工作项移除成功！");
+    }
+
+    /**
+     * 通过迭代ID查询迭代下的人员
+     * @param sprintId 迭代id
+     * @return
+     */
+    @GetMapping("/getUsersBySprintId/{sprintId}")
+    public ControllerResponse getUsersBySprintId(@PathVariable Long sprintId){
+        List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(sprintId);
+        return ControllerResponse.success(userSprintHourDTOList);
     }
 }

@@ -1108,7 +1108,7 @@
   </select>
     <update id="deleteRelation">
         update
-        issue
+        s_issue
         set parent_id = null
         <if test="sprintId != null">
             ,sprint_id = null
@@ -1565,8 +1565,8 @@
     <select id="listRelation" resultType="com.yusys.agile.issue.dto.IssueDTO">
     select
     a.issue_id,a.title,a.parent_id,a.issue_type,a.`handler`,
-    (select c.stage_name from kanban_stage_instance c where c.stage_id = a.stage_id and c.project_id=#{projectId} ) as stageName,
-    (select d.stage_name from kanban_stage_instance d where d.stage_id = a.lane_id and d.parent_id = a.stage_id and d.project_id=#{projectId}) as laneName
+    (select c.stage_name from s_kanban_stage_instance c where c.stage_id = a.stage_id and c.project_id=#{projectId} ) as stageName,
+    (select d.stage_name from s_kanban_stage_instance d where d.stage_id = a.lane_id and d.parent_id = a.stage_id and d.project_id=#{projectId}) as laneName
     from s_issue a where a.state='U' and ((a.issue_id = (select parent_id from s_issue c where c.issue_id=#{issueId} and c.state='U')) or a.parent_id = #{issueId})
   </select>
     <select id="getTaskMemberAnalysis" resultType="com.yusys.agile.burndown.dto.HistogramTaskDTO">
@@ -1772,9 +1772,9 @@
         distinct
         iu.*
         from s_issue iu
-        left join issue_system_relp isr on iu.issue_id = isr.issue_id
-        left join issue_module_relp imr on iu.issue_id = imr.issue_id
-        left join issue_custom_field icf on iu.issue_id = icf.issue_id
+        left join s_issue_system_relp isr on iu.issue_id = isr.issue_id
+        left join s_issue_module_relp imr on iu.issue_id = imr.issue_id
+        left join S_issue_custom_field icf on iu.issue_id = icf.issue_id
         <where>
             iu.`state` = 'U'
             <if test="issueRecord.projectId != null ">
@@ -2264,13 +2264,14 @@
     <update id="updateBySprintId">
     update s_issue
     set
+        stage_id=111,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
 
     <select id="selectBySystemId" resultType="com.yusys.agile.issue.dto.IssueDTO">
     select iss.issue_id,iss.issue_type,iss.stage_id
-    from s_issue iss left join  issue_system_relp issy on iss.issue_id = issy.issue_id where
+    from s_issue iss left join  s_issue_system_relp issy on iss.issue_id = issy.issue_id where
     issy.system_id = #{systemId} and iss.project_id = #{projectId} and iss.issue_type = #{issueType} and iss.state = "U"
   </select>
 
@@ -2279,8 +2280,8 @@
     <select id="selectBySystemIdAndVersion" resultType="com.yusys.agile.issue.dto.IssueDTO">
     SELECT a.issue_id,a.issue_type,a.stage_id
     from s_issue a
-    LEFT JOIN version_issue_relate b ON a.issue_id = b.issue_id
-    LEFT JOIN issue_system_relp d ON a.issue_id = d.issue_id
+    LEFT JOIN s_version_issue_relate b ON a.issue_id = b.issue_id
+    LEFT JOIN s_issue_system_relp d ON a.issue_id = d.issue_id
     WHERE a.system_id = #{systemId} AND a.project_id = #{projectId} AND a.issue_type=#{issueType} AND a.state = "U" AND b.version_id=#{versionId}
   </select>
 
@@ -2437,7 +2438,7 @@
         a.lane_id, a.state, a.status,a.create_uid,
         a.create_time, a.update_uid, a.update_time,a.remain_workload
         from s_issue a
-        inner join sys_extend_field_detail b on a.issue_id = b.issue_id
+        inner join s_sys_extend_field_detail b on a.issue_id = b.issue_id
         <where>
             b.field_id = 'bizNum'
             <if test="issueType != null">
@@ -2879,7 +2880,7 @@
                 select
                     ksi.order_id
                 from
-                    kanban_stage_instance ksi
+                    s_kanban_stage_instance ksi
                 where
                     ksi.stage_id = su.stage_id
                     and ksi.state ='U'
@@ -2928,7 +2929,7 @@
     SELECT
         1
       FROM
-        sys_extend_field_detail b
+        s_sys_extend_field_detail b
       WHERE
         b.issue_id = a.issue_id
       AND b.field_id = 'planStates'
@@ -2946,7 +2947,7 @@
                 SELECT
                     1
                 FROM
-                    sys_extend_field_detail b
+                    s_sys_extend_field_detail b
                 WHERE
                     b.issue_id = a.issue_id
                 AND b.field_id = 'reqScheduling'
@@ -2955,7 +2956,7 @@
                       SELECT
                         1
                       FROM
-                        sys_extend_field_detail b
+                        s_sys_extend_field_detail b
                       WHERE
                         b.issue_id = a.issue_id
                       AND b.field_id = 'planStates'
@@ -2972,7 +2973,7 @@
                 SELECT
                     1
                 FROM
-                    sys_extend_field_detail b
+                    s_sys_extend_field_detail b
                 WHERE
                     b.issue_id = a.issue_id
                 AND b.field_id = 'reqScheduling'
@@ -2982,7 +2983,7 @@
                       SELECT
                         1
                       FROM
-                        sys_extend_field_detail b
+                        s_sys_extend_field_detail b
                       WHERE
                         b.issue_id = a.issue_id
                       AND b.field_id = 'planStates'
@@ -2999,7 +3000,7 @@
                 SELECT
                     1
                 FROM
-                    sys_extend_field_detail b
+                    s_sys_extend_field_detail b
                 WHERE
                     b.issue_id = a.issue_id
                 AND b.field_id = 'reqScheduling'
@@ -3009,14 +3010,14 @@
                       SELECT
                         1
                       FROM
-                        sys_extend_field_detail b
+                        s_sys_extend_field_detail b
                       WHERE
                         b.issue_id = a.issue_id
                       AND b.field_id = 'planStates'
                       AND b.`value` IN ( '8880', '8881','8888'))
     </select>
     <select id="getAllTaskFunTester" resultType="java.lang.String">
-        select c.`value` from s_issue b,sys_extend_field_detail c  where b.issue_id = c.issue_id and c.field_id='externalHandlerId' and  b.parent_id in (
+        select c.`value` from s_issue b,s_sys_extend_field_detail c  where b.issue_id = c.issue_id and c.field_id='externalHandlerId' and  b.parent_id in (
 select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U') and b.state = 'U';
     </select>
     

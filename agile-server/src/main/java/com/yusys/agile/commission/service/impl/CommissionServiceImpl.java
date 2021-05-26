@@ -290,4 +290,30 @@ public class CommissionServiceImpl implements CommissionService {
         sCommissionExample.createCriteria().andIssueIdEqualTo(issueId);
         commissionMapper.deleteByExample(sCommissionExample);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateCommissionState(Long issueId, String state) {
+        LOGGER.info("updateCommissionState param issueId:{},state:{}", issueId, state);
+        //关闭代办
+        SCommission commission = getCommissionByIssueId(issueId);
+        if (null != commission) {
+            commission = new SCommission();
+            commission.setIssueId(issueId);
+            Issue issue = issueMapper.selectByPrimaryKey(issueId);
+            if (null != issue) {
+                commission.setStageId(issue.getStageId());
+                commission.setLaneId(issue.getLaneId());
+                commission.setCurrentHandler(issue.getHandler());
+            }
+            commission.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
+            commission.setUpdateTime(new Date());
+            commission.setState(state);
+            int count = commissionMapper.updateByIssueIdSelective(commission);
+            LOGGER.info("updateCommissionState param issueId:{}, state:{}, affect row:{}", count);
+            if (count != 1) {
+                throw new RuntimeException("updateCommissionState issueId: " + issueId + " state: " + state + "异常");
+            }
+        }
+    }
 }

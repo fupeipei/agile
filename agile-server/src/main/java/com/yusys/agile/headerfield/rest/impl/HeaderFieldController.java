@@ -33,13 +33,9 @@ public class HeaderFieldController {
      * @date 2020/4/13
      */
     @GetMapping("/queryHeaderFields")
-    public ControllerResponse queryHeaderFields(SecurityDTO securityDTO, @RequestHeader(name = "projectId") Long projectId, @RequestParam("category") Byte category,
-                                                @RequestParam(value = "isFilter", required = false) Byte isFilter, @RequestParam(name = "projectId", required = false) Long paramProjectId) {
-        if (null != paramProjectId) {
-            securityDTO.setProjectId(paramProjectId);
-        } else {
-            securityDTO.setProjectId(projectId);
-        }
+    public ControllerResponse queryHeaderFields(SecurityDTO securityDTO, @RequestParam("category") Byte category,
+                                                @RequestParam(value = "isFilter", required = false) Byte isFilter) {
+
         securityDTO.setUserId(UserThreadLocalUtil.getUserInfo().getUserId());
         return ControllerResponse.success(headerFieldService.queryHeaderFields(securityDTO, category, isFilter));
     }

@@ -84,7 +84,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sys_field
+    from s_sys_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -95,21 +95,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sys_field
+    from s_sys_field
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sys_field
+    delete from s_sys_field
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.sysextendfield.domain.SysFieldExample">
-    delete from sys_field
+    delete from s_sys_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.sysextendfield.domain.SysField">
-    insert into sys_field (id, field_id, field_name, 
+    insert into s_sys_field (id, field_id, field_name,
       state, is_display, is_edit, 
       is_required, extend_type, create_uid, 
       create_time, update_uid, update_time, 
@@ -121,7 +121,7 @@
       #{tenantCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.sysextendfield.domain.SysField">
-    insert into sys_field
+    insert into s_sys_field
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -206,13 +206,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.sysextendfield.domain.SysFieldExample" resultType="java.lang.Long">
-    select count(*) from sys_field
+    select count(*) from s_sys_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sys_field
+    update s_sys_field
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -259,7 +259,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sys_field
+    update s_sys_field
     set id = #{record.id,jdbcType=BIGINT},
       field_id = #{record.fieldId,jdbcType=VARCHAR},
       field_name = #{record.fieldName,jdbcType=VARCHAR},
@@ -278,7 +278,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sysextendfield.domain.SysField">
-    update sys_field
+    update s_sys_field
     <set>
       <if test="fieldId != null">
         field_id = #{fieldId,jdbcType=VARCHAR},
@@ -320,7 +320,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sysextendfield.domain.SysField">
-    update sys_field
+    update s_sys_field
     set field_id = #{fieldId,jdbcType=VARCHAR},
       field_name = #{fieldName,jdbcType=VARCHAR},
       state = #{state,jdbcType=VARCHAR},

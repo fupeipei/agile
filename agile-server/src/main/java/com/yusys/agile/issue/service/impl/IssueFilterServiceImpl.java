@@ -154,10 +154,10 @@ public class IssueFilterServiceImpl implements IssueFilterService {
     @Override
     public ControllerResponse getIssueFilters(Byte category, SecurityDTO securityDTO) {
         try {
-            Long projectId = securityDTO.getProjectId();
+            //系统ID
             Long userId = securityDTO.getUserId();
             IssueFilterExample filterExample = new IssueFilterExample();
-            filterExample.createCriteria().andProjectIdEqualTo(projectId)
+            filterExample.createCriteria()
                     .andCategoryEqualTo(category)
                     .andCreateUidEqualTo(userId).andStateEqualTo(StateEnum.U.toString());
 
@@ -177,11 +177,10 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                 IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
                 checkedExample.createCriteria()
                         .andCategoryEqualTo(category)
-                        .andProjectIdEqualTo(securityDTO.getProjectId())
                         .andCreateUidEqualTo(securityDTO.getUserId());
                 List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
-
-                List<StageInstance> stageList = stageService.getStageList(projectId);
+                //todo      阶段暂时设置为空数组
+                List<StageInstance> stageList = new ArrayList<>();
 
                 if (CollectionUtils.isNotEmpty(issueFilterRelatedCheckeds)) {
                     relatedChecked = issueFilterRelatedCheckeds.get(0);

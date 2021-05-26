@@ -20,6 +20,8 @@ import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.review.dto.StoryCheckResultDTO;
@@ -89,6 +91,9 @@ public class StoryServiceImpl implements StoryService {
     private IssueRichTextFactory issueRichTextFactory;
     @Resource
     private IStageService stageService;
+    @Resource
+    private SSprintMapper sSprintMapper;
+
 
     /**
      * 功能描述 百分号
@@ -108,7 +113,7 @@ public class StoryServiceImpl implements StoryService {
             //创建用户故事默认放在开发中的未开始阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
             if(CollectionUtils.isNotEmpty(stageInstances)){
                 Long sprintId = issueDTO.getSprintId();
-                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(0):stageInstances.get(1);
+                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(1):stageInstances.get(0);
                 stages[1] = stageInstance.getStageId();
             }
             issueDTO.setStages(stages);
@@ -138,6 +143,9 @@ public class StoryServiceImpl implements StoryService {
     @Transactional(rollbackFor = Exception.class)
     public void editStory(IssueDTO issueDTO) {
         Issue oldStory = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
+        if(null == oldStory){
+            return;
+        }
         Long projectId = oldStory.getProjectId();
 
         //校验故事下有未完成任务或未修复缺陷不允许改为完成阶段
@@ -208,7 +216,7 @@ public class StoryServiceImpl implements StoryService {
             throw new BusinessException(ExceptionCodeEnum.SYS_ERROR.getDesc());
         }
         burnDownChartStoryDao.cancelByStorys(sprintId, Lists.newArrayList(storyId));
-        // 故事下的任务迭代id为null
+        // 故事下的任务迭代id为null,任务状态置为未领取状态
         taskService.cancel4Story(storyId);
         //创建故事历史
         List<IssueHistoryRecord> records = new ArrayList<>();
@@ -396,16 +404,16 @@ public class StoryServiceImpl implements StoryService {
         if (null == issue || !StringUtils.equals(issue.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }
-        Sprint sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
+        SSprint sprint = sSprintMapper.selectByPrimaryKeyNotText(sprintId);
         int count = 0;
         if (null != sprint) {
             if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
                 throw new BusinessException("只有未开始的任务可以关联工作项");
             }
             if (sprint.getEndTime().before(new Date())) {
-                throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
+                throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许新增用户故事");
             }
-            //为故事分配迭代
+            //为故事分配迭代用户故事状态由未开始变为进行中
             if (issue.getIssueType().equals(IssueTypeEnum.TYPE_STORY.CODE)) {
                 count = issueMapper.updateBySprintId(issueId, sprintId);
                 if (count != 1) {

@@ -180,7 +180,7 @@ public class IssueServiceImpl implements IssueService {
      * 功能描述
      *
      * @param map
-     * @param projectId
+     * @param systemId
      * @return java.util.List<com.yusys.agile.requirement.SysExtendFieldDetailDTO ;>
      * @date 2020/4/20
      */
@@ -1215,7 +1215,10 @@ public class IssueServiceImpl implements IssueService {
         List<Issue> issueList = Lists.newArrayList();
         IssueRecord issueRecord = new IssueRecord();
         //查询自定义字段条件
-        List<CustomFieldJsonType> customFieldJsonTypeList = getCustomIssueIds(map, projectId);
+        //暂时先注释掉
+        // getCustomIssueIds(map, null);
+        List<CustomFieldJsonType> customFieldJsonTypeList =new ArrayList<>();
+
 
         //增加扩展字段搜索能力
         Boolean isQueryExtendField = true;
@@ -1227,8 +1230,7 @@ public class IssueServiceImpl implements IssueService {
             if (MapUtils.isEmpty(extendFieldIssueIds)) {
                 return issueList;
             } else {
-                //下面的if不要看，千万不要  :) :) :) :)
-                //根据扩展字段查询满足条件的上级主键Id, *_*  *_*  *_*
+                //根据扩展字段查询满足条件的上级主键Id, >_< >_< >_<
                 List<Long> epicResultIds = Lists.newArrayList();
                 if (issueType.compareTo(IssueTypeEnum.TYPE_EPIC.CODE) >= 0) {
                     if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_EPIC.CODE)) {
@@ -1304,7 +1306,11 @@ public class IssueServiceImpl implements IssueService {
         if (map.containsKey("BAPerson")) {
             issueRecord.setBAPerson(map.get("BAPerson").toString());
         }
-        issueRecord.setProjectId(projectId);
+        //项目Id不是null时
+        if(projectId!=null){
+            issueRecord.setProjectId(projectId);
+        }
+
         if (StringUtils.isNotEmpty(issueStringDTO.getIssueType())) {
             issueRecord.setIssueTypes(dealData(issueStringDTO.getIssueType(), BYTE));
         }
@@ -2037,15 +2043,15 @@ public class IssueServiceImpl implements IssueService {
         IssueExample issueExample = new IssueExample();
         IssueExample.Criteria criteria = issueExample.createCriteria();
         if (faultStatusList != null && faultStatusList.size() > 0) {
-            criteria.andProjectIdEqualTo(projectId).andStageIdIn(faultStatusList);
+            criteria.andStageIdIn(faultStatusList);
             if (b) {
                 IssueExample.Criteria criteria1 = issueExample.createCriteria();
-                criteria1.andProjectIdEqualTo(projectId).andStageIdIsNull();
+                criteria1.andStageIdIsNull();
                 issueExample.or(criteria1);
             }
         } else {
             if (b) {
-                criteria.andProjectIdEqualTo(projectId).andStageIdIsNull();
+                criteria.andStageIdIsNull();
             }
         }
 

@@ -477,7 +477,7 @@
                      left join s_sprint_user_hour b on b.user_id = a.user_id
                      left join s_sprint c on b.sprint_id = c.sprint_id
         where b.sprint_id = #{sprintId}
-          and a.team_id = #{teamId}
+          and a.team_id = (select team_id from  s_sprint where sprint_id = #{sprintId})
           and c.state = 'U'
     </select>
 

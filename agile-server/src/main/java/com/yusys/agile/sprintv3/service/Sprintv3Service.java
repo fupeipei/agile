@@ -1,9 +1,14 @@
 package com.yusys.agile.sprintv3.service;
 
+import com.yusys.agile.sprint.domain.UserSprintHour;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
+import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
+import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
 import java.util.List;
@@ -50,7 +55,7 @@ public interface Sprintv3Service {
      */
     boolean canEdit(Long sprintId);
 
-    void updateSprint(SprintDTO sprintDTO,SecurityDTO securityDTO);
+    void updateSprint(SprintDTO sprintDTO, SecurityDTO securityDTO);
 
     /**
      * 每天改变迭代状态
@@ -82,22 +87,40 @@ public interface Sprintv3Service {
     SprintOverView sprintOverView(long sprintId);
 
     /**
+     * 查询迭代用户
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<STeamMember>}
+     */
+    List<STeamMember> querySprintUSer(long sprintId);
+
+    /**
      * @param sprintDTO
      * @Date 2021/05/21
      * @Description 迭代添加故事或缺陷
      * @Return int
      */
-     boolean arrangeIssue(SprintDTO sprintDTO);
-
+    boolean arrangeIssue(SprintDTO sprintDTO);
 
     /**
      * 按团队id查询有效迭代
-     * @author zhaofeng
-     * @date 2021/5/24 13:28
+     *
      * @param teamId
      * @param pageSize
      * @param pageNum
-     * @param sprint 迭代名称或编号
+     * @param sprint   迭代名称或编号
+     * @author zhaofeng
+     * @date 2021/5/24 13:28
      */
     List<SprintListDTO> teamInSprint(Long teamId, Integer pageSize, Integer pageNum, String sprint);
+
+    /**
+     * 迭代视图 - 迭代统计详情
+     *
+     * @param sprintId 迭代id
+     * @return {@link SprintStatisticalInformation}
+     */
+    SprintStatisticalInformation sprintStatisticalInformation(long sprintId);
+
+    List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
 }

@@ -95,7 +95,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from header_field
+    from s_header_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -109,7 +109,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from header_field
+    from s_header_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -122,21 +122,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from header_field
+    from s_header_field
     where field_id = #{fieldId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from header_field
+    delete from s_header_field
     where field_id = #{fieldId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.headerfield.domain.HeaderFieldExample">
-    delete from header_field
+    delete from s_header_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.headerfield.domain.HeaderField" useGeneratedKeys="true" keyProperty="field_id">
-    insert into header_field (field_id, project_id, field_code, 
+    insert into s_header_field (field_id, project_id, field_code,
       field_name, is_select, is_custom, 
       field_type, category, field_group, 
       sortable, tenant_code, comment, 
@@ -150,7 +150,7 @@
       #{apply,jdbcType=VARCHAR}, #{fieldContent,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.headerfield.domain.HeaderField" useGeneratedKeys="true" keyProperty="field_id">
-    insert into header_field
+    insert into s_header_field
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fieldId != null">
         field_id,
@@ -259,13 +259,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.headerfield.domain.HeaderFieldExample" resultType="java.lang.Long">
-    select count(*) from header_field
+    select count(*) from s_header_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update header_field
+    update s_header_field
     <set>
       <if test="record.fieldId != null">
         field_id = #{record.fieldId,jdbcType=BIGINT},
@@ -324,7 +324,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update header_field
+    update s_header_field
     set field_id = #{record.fieldId,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
       field_code = #{record.fieldCode,jdbcType=VARCHAR},
@@ -347,7 +347,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update header_field
+    update s_header_field
     set field_id = #{record.fieldId,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
       field_code = #{record.fieldCode,jdbcType=VARCHAR},
@@ -369,7 +369,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.headerfield.domain.HeaderField">
-    update header_field
+    update s_header_field
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
@@ -423,7 +423,7 @@
     where field_id = #{fieldId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.headerfield.domain.HeaderField">
-    update header_field
+    update s_header_field
     set project_id = #{projectId,jdbcType=BIGINT},
       field_code = #{fieldCode,jdbcType=VARCHAR},
       field_name = #{fieldName,jdbcType=VARCHAR},
@@ -443,7 +443,7 @@
     where field_id = #{fieldId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.headerfield.domain.HeaderField">
-    update header_field
+    update s_header_field
     set project_id = #{projectId,jdbcType=BIGINT},
       field_code = #{fieldCode,jdbcType=VARCHAR},
       field_name = #{fieldName,jdbcType=VARCHAR},
@@ -471,7 +471,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from header_field
+    from s_header_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
