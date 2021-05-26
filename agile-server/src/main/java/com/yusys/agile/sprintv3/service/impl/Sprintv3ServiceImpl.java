@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -687,6 +688,16 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             list.add(sprintMembersWorkHours);
         }
         return list;
+    }
+
+    @Override
+    public List<IssueDTO> queryNotRelationStorys(String title, Long systemId, Integer pageNum, Integer pageSize) {
+        // 不传page信息时查全部数据
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        List<IssueDTO> issueDTOS = issueMapper.queryNotRelationStory(title, systemId);
+        return issueDTOS;
     }
 
     /**

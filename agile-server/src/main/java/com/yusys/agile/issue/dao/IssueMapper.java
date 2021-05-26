@@ -9,7 +9,6 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 public interface IssueMapper {
@@ -573,6 +572,14 @@ public interface IssueMapper {
      * @date 2020/12/15
      */
     Issue getParentIssue(Long issueId);
+
+    /**
+     * 查询没有关联迭代的故事
+     * @param title
+     * @param systemId
+     * @return
+     */
+    List<IssueDTO> queryNotRelationStory(@Param("title") String title,@Param("systemId") Long systemId);
     /**
      * 查询迭代下故事点数的总数
      * @author zhaofeng

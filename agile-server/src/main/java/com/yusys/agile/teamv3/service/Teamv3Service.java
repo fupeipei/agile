@@ -2,9 +2,13 @@ package com.yusys.agile.teamv3.service;
 
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
+import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 
 import java.util.List;
 
@@ -62,4 +66,11 @@ public interface Teamv3Service {
      * @param team
      */
     List<STeam> getTeamLikeNameOrCode(String team);
+
+    /**
+     * 通过团队id查询团队下的系统
+     * @param teamId 团队id
+     * @return
+     */
+    List<SsoSystemRestDTO> querySystemByTeamId(long teamId);
 }
