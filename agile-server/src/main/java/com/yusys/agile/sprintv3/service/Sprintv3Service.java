@@ -1,5 +1,6 @@
 package com.yusys.agile.sprintv3.service;
 
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
@@ -147,4 +148,6 @@ public interface Sprintv3Service {
      * @return {@link List<SprintMembersWorkHours>}
      */
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
+
+    List<IssueDTO>  queryNotRelationStorys(String title, Long systemId, Integer pageNum, Integer pageSize);
 }

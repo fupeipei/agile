@@ -138,8 +138,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param remainStory
      * @return
      */
-    private com.yusys.agile.burndown.dto.BurnDownStory generateStory(Date sprintTime, int remainStory) {
-        com.yusys.agile.burndown.dto.BurnDownStory story = new com.yusys.agile.burndown.dto.BurnDownStory();
+    private BurnDownStory generateStory(Date sprintTime, int remainStory) {
+        BurnDownStory story = new BurnDownStory();
         story.setSprintTime(sprintTime);
         story.setRemainStory(remainStory);
         return story;
@@ -359,8 +359,11 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();
         /** 获得故事的迭代有效日期*/
+        //取迭代日期
         List<BurnDownStory> stories = getStorys(start, end, sprintDays);
+
         List<BurnDownStory> inSprintStorys = getSprintStorys(sprintId, actualRemainStory, sprintDays);
+
         BurnDownStory currentStory = getCurrentStory(sprintId, sprintDays);
         setRemainStorys(stories, inSprintStorys, currentStory, actualRemainStory);
         return stories;
@@ -430,17 +433,17 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param currentStory
      * @param actualRemainStory
      */
-    private void setRemainStorys(List<com.yusys.agile.burndown.dto.BurnDownStory> storys, List<com.yusys.agile.burndown.dto.BurnDownStory> inSprintStorys,
-                                 com.yusys.agile.burndown.dto.BurnDownStory currentStory, Integer actualRemainStory) {
+    private void setRemainStorys(List<BurnDownStory> storys, List<BurnDownStory> inSprintStorys,
+                                 BurnDownStory currentStory, Integer actualRemainStory) {
         if (storys != null && !storys.isEmpty()) {
-            Iterator<com.yusys.agile.burndown.dto.BurnDownStory> storyIt = storys.iterator();
+            Iterator<BurnDownStory> storyIt = storys.iterator();
             while (storyIt.hasNext()) {
-                com.yusys.agile.burndown.dto.BurnDownStory story = storyIt.next();
+               BurnDownStory story = storyIt.next();
                 if (story.getSprintTime().compareTo(new Date()) > 0) {
                     break;
                 }
                 if (CollectionUtils.isNotEmpty(inSprintStorys)) {
-                    for (com.yusys.agile.burndown.dto.BurnDownStory sprintStory : inSprintStorys) {
+                    for (BurnDownStory sprintStory : inSprintStorys) {
                         if (story != null && sprintStory != null && DateUtil.equalsByDay(story.getSprintTime(), sprintStory.getSprintTime())) {
                             story.setRemainStory(sprintStory.getRemainStory());
                             break;
@@ -532,13 +535,13 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param sprintDays
      * @return
      */
-    private List<com.yusys.agile.burndown.dto.BurnDownStory> getSprintStorys(Long sprintId, Integer planStory, String sprintDays) {
-        List<com.yusys.agile.burndown.dto.BurnDownStory> stories = Lists.newArrayList();
-        List<com.yusys.agile.burndown.dto.BurnDownStory> inSprint = burnDownChartStoryDao.getStorysBySprint(sprintId, planStory);
+    private List<BurnDownStory> getSprintStorys(Long sprintId, Integer planStory, String sprintDays) {
+        List<BurnDownStory> stories = Lists.newArrayList();
+        List<BurnDownStory> inSprint = burnDownChartStoryDao.getStorysBySprint(sprintId, planStory);
         if (CollectionUtils.isNotEmpty(inSprint)) {
-            for (com.yusys.agile.burndown.dto.BurnDownStory story : inSprint) {
+            for (BurnDownStory story : inSprint) {
                 if (null != story && sprintService.legalDate(sprintDays, story.getSprintTime())) {
-                    com.yusys.agile.burndown.dto.BurnDownStory tempStory = new com.yusys.agile.burndown.dto.BurnDownStory();
+                    BurnDownStory tempStory = new BurnDownStory();
                     tempStory.setSprintTime(story.getSprintTime());
                     tempStory.setRemainStory(story.getRemainStory());
                     stories.add(tempStory);
@@ -581,7 +584,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param sprintDays
      * @return
      */
-    private com.yusys.agile.burndown.dto.BurnDownStory getCurrentStory(Long sprintId, String sprintDays) {
+    private BurnDownStory getCurrentStory(Long sprintId, String sprintDays) {
         if (sprintService.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
             int currentStory = issueMapper.countInsprintBySprint(sprintId);
             return generateStory(new Date(), currentStory);
@@ -633,12 +636,12 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param sprintDays
      * @return
      */
-    private List<com.yusys.agile.burndown.dto.BurnDownStory> getStorys(Date start, Date end, String sprintDays) {
-        List<com.yusys.agile.burndown.dto.BurnDownStory> stories = new ArrayList<>();
+    private List<BurnDownStory> getStorys(Date start, Date end, String sprintDays) {
+        List<BurnDownStory> stories = new ArrayList<>();
         if (null != start && null != end) {
             while (DateUtil.compare(end, start)) {
                 if (sprintService.legalDate(sprintDays, start)) {
-                    com.yusys.agile.burndown.dto.BurnDownStory burnDownStory = new BurnDownStory();
+                    BurnDownStory burnDownStory = new BurnDownStory();
                     burnDownStory.setSprintTime(DateUtil.formatDate(start));
                     stories.add(burnDownStory);
                 }
