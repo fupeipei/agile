@@ -8,6 +8,8 @@ import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
+import com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
@@ -133,16 +135,6 @@ public class SprintV3ServiceTest {
     }
 
 
-//    /**
-//     * 迭代视图 - 迭代详情
-//     */
-//    @Test
-//    public void sprintOverView() {
-//        long sprintId = 10000;
-//        SprintOverView sprintOverView = sprintv3Service.sprintOverView(sprintId);
-//        Assert.assertNotNull(sprintOverView);
-//    }
-
     /**
      * 迭代视图 - 迭代统计详情
      */
@@ -151,7 +143,16 @@ public class SprintV3ServiceTest {
         long sprintId = 10000;
         SprintStatisticalInformation statisticalInformation = sprintv3Service.sprintStatisticalInformation(sprintId);
         Assert.assertNotNull(statisticalInformation);
+    }
 
+    /**
+     * 迭代视图 - 成员工时
+     */
+    @Test
+    public void sprintMembersWorkHours(   ) {
+        long sprintId = 10000;
+        List<SprintMembersWorkHours> sprintMembersWorkHours = sprintv3Service.sprintMembersWorkHours(sprintId);
+        Assert.assertNotNull(sprintMembersWorkHours);
     }
 
     private SecurityDTO securityDTO;
@@ -298,11 +299,10 @@ public class SprintV3ServiceTest {
      * 根据迭代ID查询迭代下的人员
      */
     @Test
-    public void getUsersBySprintId(){
+    public void getUsersBySprintId() {
         List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(100012L);
         Assert.assertNotNull(userSprintHourDTOList);
     }
-
 
 
 }
