@@ -492,6 +492,9 @@ public class TaskServiceImpl implements TaskService {
 
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
     private int updateStoryStageIdByTaskCount(Issue task) {
+        if(task==null){
+            return -1;
+        }
         Long storyId = task.getParentId();
         IssueExample example = new IssueExample();
         example.createCriteria()
