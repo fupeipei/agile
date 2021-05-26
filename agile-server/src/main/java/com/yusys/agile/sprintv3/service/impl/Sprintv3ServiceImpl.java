@@ -666,7 +666,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      */
     @Override
     public List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId) {
-        List<STeamMember> userList = sTeamMapper.queryUserInfoByUserId(sprintId);
+        List<STeamMember> userList = sTeamMapper.querySprintUser(sprintId);
         List<SprintMembersWorkHours> list = new ArrayList<>();
 
         for (int i = 0; i < userList.size(); i++) {
@@ -691,7 +691,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      */
     @Override
     public List<STeamMember> querySprintUser(long sprintId) {
-        List<STeamMember> sTeamMembers = sTeamMapper.queryUserInfoByUserId(sprintId);
+        List<STeamMember> sTeamMembers = sTeamMapper.querySprintUser(sprintId);
         return sTeamMembers;
     }
 
