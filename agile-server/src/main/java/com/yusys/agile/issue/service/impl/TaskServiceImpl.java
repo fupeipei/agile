@@ -435,12 +435,17 @@ public class TaskServiceImpl implements TaskService {
         // 修改数据库
         issueMapper.updateByPrimaryKey(task);
 
+        //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+        updateStoryStageIdByTaskCound(task);
+
         if (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
 
             Long storyId = task.getParentId();
             // 故事的上层feature规整
             //rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, storyId);
-            issueUpRegularFactory.commonIssueUpRegular(storyId);
+
+            //先注释，目前迭代没有这部分内容  by dushan
+            //issueUpRegularFactory.commonIssueUpRegular(storyId);
 //            // feature的上层也就是epic规整
 //            Long featureId = faultSyncService.getParentIdByIssueId(storyId);
 //            if(null != featureId){
@@ -456,6 +461,10 @@ public class TaskServiceImpl implements TaskService {
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(task, NumberConstant.THREE, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+    }
+
+    //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+    private void updateStoryStageIdByTaskCound(Issue task) {
     }
 
     @Override
