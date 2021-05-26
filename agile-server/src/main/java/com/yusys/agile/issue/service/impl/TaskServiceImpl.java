@@ -121,6 +121,9 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(rollbackFor = Exception.class)
     public void editTask(IssueDTO issueDTO,SecurityDTO securityDTO) {
         Issue oldTask = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
+        if (null == oldTask){
+            return;
+        }
         Boolean isPass = checkAuth(issueDTO, oldTask, securityDTO);
         if (!isPass){
             throw new BusinessException("团队成员角色,只允许更新领取人为自己的卡片信息,但不允许更新领取人");
@@ -191,9 +194,9 @@ public class TaskServiceImpl implements TaskService {
         //        校验权限 1.SM角色，可以更新卡片上的任意信息
         //                2.团队成员角色，只允许更新领取人为自己的卡片信息
         //根据task获得team，根据team及当前登录人员进行判断：
-        SprintDTO sprintDTO = sprintv3Service.viewEdit(issueDTO.getSprintId());
+        SprintDTO sprintDTO = sprintv3Service.viewEdit(oldTask.getSprintId());
         if(null == sprintDTO.getSprintId()){
-            throw new BusinessException("该任务下的迭代不存在"+issueDTO.getSprintId());
+            throw new BusinessException("该任务下的迭代不存在"+oldTask.getSprintId());
         }
         QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO.getTeamId());
         //该团队下的团队成员
@@ -236,7 +239,10 @@ public class TaskServiceImpl implements TaskService {
     public Long createTask(IssueDTO issueDTO) {
         //设置默认创建
         Long[] stages = issueDTO.getStages();
-        if(!Optional.ofNullable(stages).isPresent()){
+        if (Optional.ofNullable(issueDTO.getHandler()).isPresent()){
+            //任务选择处理人就是已领取，否则就是未领取
+            stages = new Long[]{StageConstant.FirstStageEnum.READY_STAGE.getValue(), TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE};
+        }else if (!Optional.ofNullable(stages).isPresent()){
             stages = new Long[2];
             List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
             stages[0] = StageConstant.FirstStageEnum.READY_STAGE.getValue();
@@ -246,14 +252,8 @@ public class TaskServiceImpl implements TaskService {
                 StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(1):stageInstances.get(0);
                 stages[1] = stageInstance.getStageId();
             }
-            issueDTO.setStages(stages);
-        }else {
-            //任务选择处理人就是已领取，否则就是未领取
-            if (Optional.ofNullable(issueDTO.getHandler()).isPresent()){
-                issueDTO.setStageId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-                issueDTO.setLaneId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
-            }
         }
+        issueDTO.setStages(stages);
         return issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
     }
 
@@ -541,7 +541,7 @@ public class TaskServiceImpl implements TaskService {
         List<IssueHistoryRecord> records = new ArrayList<>();
         IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(
                 task.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.STAGEID.getDesc());
-        if (null != task.getIssueId()) {
+        if (null != task.getIssueId() && Optional.ofNullable(to).isPresent()) {
             nameHistory.setOldValue(TaskStageIdEnum.getName(from));
             if (to.equals(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE)) {
                 nameHistory.setNewValue("任务已领取");

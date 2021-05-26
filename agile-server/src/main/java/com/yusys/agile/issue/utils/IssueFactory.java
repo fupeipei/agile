@@ -305,23 +305,24 @@ public class IssueFactory {
 
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
-            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
-            // todo 自定义字段处理
-            List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
-            if (CollectionUtils.isNotEmpty(list)) {
 
-                List<IssueCustomField> fieldsAfterEdit = Lists.newArrayList();
-                // IssueCustomFieldDTO转换成IssueCustomField
-                for (IssueCustomFieldDTO temp : list) {
-                    IssueCustomField issueCustomField = new IssueCustomField();
-                    issueCustomField.setExtendId(temp.getDetailId());
-                    issueCustomField.setFieldId(temp.getFieldId());
-                    issueCustomField.setFieldValue(temp.getFieldValue());
-                    issueCustomField.setIssueId(issueId);
-                    fieldsAfterEdit.add(issueCustomField);
-                }
-                dealCustomFieldAndFieldHistory(projectId, issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
-            }
+//            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
+//            // todo 自定义字段处理
+//            List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
+//            if (CollectionUtils.isNotEmpty(list)) {
+//
+//                List<IssueCustomField> fieldsAfterEdit = Lists.newArrayList();
+//                // IssueCustomFieldDTO转换成IssueCustomField
+//                for (IssueCustomFieldDTO temp : list) {
+//                    IssueCustomField issueCustomField = new IssueCustomField();
+//                    issueCustomField.setExtendId(temp.getDetailId());
+//                    issueCustomField.setFieldId(temp.getFieldId());
+//                    issueCustomField.setFieldValue(temp.getFieldValue());
+//                    issueCustomField.setIssueId(issueId);
+//                    fieldsAfterEdit.add(issueCustomField);
+//                }
+//                dealCustomFieldAndFieldHistory(projectId, issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
+//            }
 
             //历史记录处理
             dealHistory(history);
