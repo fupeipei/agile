@@ -1,5 +1,7 @@
 package com.yusys.agile.sprintv3.service;
 
+import com.yusys.agile.sprint.domain.UserSprintHour;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
@@ -119,4 +121,6 @@ public interface Sprintv3Service {
      * @return {@link SprintStatisticalInformation}
      */
     SprintStatisticalInformation sprintStatisticalInformation(long sprintId);
+
+    List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
 }

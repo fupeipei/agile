@@ -63,6 +63,9 @@ public class StoryServiceTest {
         issueDTO.setOrder(100);
         issueDTO.setPlanWorkload(8);
         issueDTO.setTitle("测试故事啊xxx啊");
+        //实际工时
+        issueDTO.setReallyWorkload(8);
+        issueDTO.setTitle("测试新建任务啊");
         issueDTO.setSystemId(814801485815332864L);
         issueDTO.setParentId(100028L);
         issueDTO.setSprintId(100028L);

@@ -3,6 +3,7 @@ package com.yusys.agile.sprintv3.rest;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
@@ -151,8 +152,6 @@ public class Sprintv3Controller {
         if (sprintv3Service.arrangeIssue(sprintDTO)) {
             return ControllerResponse.success("关联成功！");
         }
-
-
         return ControllerResponse.fail("关联失败！");
     }
 
@@ -169,5 +168,16 @@ public class Sprintv3Controller {
             return ControllerResponse.fail("移除迭代失败！");
         }
         return ControllerResponse.success("工作项移除成功！");
+    }
+
+    /**
+     * 通过迭代ID查询迭代下的人员
+     * @param sprintId 迭代id
+     * @return
+     */
+    @GetMapping("/getUsersBySprintId/{sprintId}")
+    public ControllerResponse getUsersBySprintId(@PathVariable Long sprintId){
+        List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(sprintId);
+        return ControllerResponse.success(userSprintHourDTOList);
     }
 }

@@ -1,6 +1,7 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
@@ -291,6 +292,15 @@ public class SprintV3ServiceTest {
         String sprint = "100012";
         List<SprintListDTO> list = sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
         log.info("迭代列表数据【{}】", list);
+    }
+
+    /**
+     * 根据迭代ID查询迭代下的人员
+     */
+    @Test
+    public void getUsersBySprintId(){
+        List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(100012L);
+        Assert.assertNotNull(userSprintHourDTOList);
     }
 
 
