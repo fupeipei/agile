@@ -220,10 +220,10 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
                     map.put("stageId", stageId.toString());
                     map.put("queryFlag", "leankanban");
                     //计算总记录数
-                    issues = issueService.queryIssueList(map, projectId);
+                    issues = issueService.queryIssueList(map);
                     map.put("pageNum", null);
                     map.put("pageSize", null);
-                    issueTotal = issueService.queryIssueList(map, projectId);
+                    issueTotal = issueService.queryIssueList(map);
                 }
                 int count = pageResultDTO.getFrom() + pageResultDTO.getPageSize();
                 resultDTO.setHasNext(issueTotal.size() >= count ? true : false);

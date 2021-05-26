@@ -206,10 +206,10 @@ public class StoryServiceImpl implements StoryService {
         if (null == sprint || !StringUtils.equals(sprint.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }
-        //故事的迭代id为null 故事的状态为未开始
+        //故事的迭代id为null 故事的状态为开发阶段的未开始
         issue.setSprintId(null);
         issue.setUpdateTime(new Date());
-        issue.setStageId(104L);
+        issue.setStageId(110L);
         issue.setHandler(null);
         int i = issueMapper.updateByPrimaryKey(issue);
         if (i != 1) {
@@ -360,7 +360,7 @@ public class StoryServiceImpl implements StoryService {
                         Date start = task.getBeginDate();
                         Date end = task.getEndDate();
                         if (null != start) {
-                            task.setOverTime(isTaskOverTime(start, end, task.getPlanWorkload(), sprint.getWorkHours()));
+                           // task.setOverTime(isTaskOverTime(start, end, task.getPlanWorkload(), sprint.getWorkHours()));
                         }
                         if (null != task.getHandler()) {
                             SsoUser ssoUser = iFacadeUserApi.queryUserById(task.getHandler());

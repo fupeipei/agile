@@ -1094,7 +1094,7 @@
         WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U' and is_archive != 1 ORDER BY priority DESC
     </select>
     <select id="countStories4Sprint" resultType="int">
-    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U'  and  is_archive != 1  ;
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U'  and  is_archive != 1
   </select>
     <select id="countInsprintBySprint" resultType="Integer">
     SELECT COUNT(1) from s_issue a WHERE a.sprint_id = #{sprintId} AND a.issue_type = 3  AND state = 'U'   and  is_archive != 1 AND a.stage_id != 7
@@ -1774,7 +1774,7 @@
         from s_issue iu
         left join s_issue_system_relp isr on iu.issue_id = isr.issue_id
         left join s_issue_module_relp imr on iu.issue_id = imr.issue_id
-        left join S_issue_custom_field icf on iu.issue_id = icf.issue_id
+        left join s_issue_custom_field icf on iu.issue_id = icf.issue_id
         <where>
             iu.`state` = 'U'
             <if test="issueRecord.projectId != null ">

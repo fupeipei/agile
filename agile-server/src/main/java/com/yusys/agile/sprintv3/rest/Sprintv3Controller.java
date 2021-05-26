@@ -142,6 +142,18 @@ public class Sprintv3Controller {
     }
 
     /**
+     * 迭代视图 - 成员工时
+     *
+     * @param sprintId 迭代id
+     * @return {@link ControllerResponse}
+     */
+    @ApiOperation(value = "迭代视图 - 成员工时")
+    @GetMapping("/sprintMembersWorkHours")
+    public ControllerResponse sprintMembersWorkHours(long sprintId) {
+        return ControllerResponse.success(sprintv3Service.sprintMembersWorkHours(sprintId));
+    }
+
+    /**
      * 迭代添加工作项（故事或缺陷）
      *
      * @param sprintDTO 迭代dto
@@ -152,8 +164,6 @@ public class Sprintv3Controller {
         if (sprintv3Service.arrangeIssue(sprintDTO)) {
             return ControllerResponse.success("关联成功！");
         }
-
-
         return ControllerResponse.fail("关联失败！");
     }
 

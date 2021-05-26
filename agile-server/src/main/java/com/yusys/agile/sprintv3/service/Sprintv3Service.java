@@ -5,7 +5,9 @@ import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.teamv3.domain.STeamMember;
@@ -92,7 +94,7 @@ public interface Sprintv3Service {
      * @param sprintId 迭代id
      * @return {@link List<STeamMember>}
      */
-    List<STeamMember> querySprintUSer(long sprintId);
+    List<STeamMember> querySprintUser(long sprintId);
 
     /**
      * @param sprintDTO
@@ -122,5 +124,21 @@ public interface Sprintv3Service {
      */
     SprintStatisticalInformation sprintStatisticalInformation(long sprintId);
 
+
+    /**
+     * 查询所有的有效的迭代信息
+     * @author wangsh
+     * @date 2021/5/24 13:28
+     */
+    List<SSprint> queryAllSprint();
+
     List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
+
+    /**
+     * 迭代视图 - 成员工时
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<SprintMembersWorkHours>}
+     */
+    List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
 }
