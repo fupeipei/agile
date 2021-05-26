@@ -123,4 +123,11 @@ public interface Sprintv3Service {
     SprintStatisticalInformation sprintStatisticalInformation(long sprintId);
 
     List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
+
+    /**
+     * 根据系统id获取未开始和执行中的迭代信息
+     * @param systemId
+     * @return
+     */
+    List<SprintListDTO> getEffectiveSprintsBySystemId(Long systemId);
 }

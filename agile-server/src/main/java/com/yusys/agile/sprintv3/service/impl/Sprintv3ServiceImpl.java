@@ -654,6 +654,12 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return userSprintHourDTOList;
     }
 
+    @Override
+    public List<SprintListDTO> getEffectiveSprintsBySystemId(Long systemId) {
+        List<SprintListDTO> sprints = ssprintMapper.selectBySystemId(systemId);
+        return sprints;
+    }
+
 
     /**
      * 查询迭代用户

@@ -13,6 +13,7 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueAcceptanceDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -20,8 +21,11 @@ import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
+import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.review.dto.StoryCheckResultDTO;
@@ -32,6 +36,7 @@ import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.sprint.dao.SprintMapper;
 import com.yusys.agile.sprint.domain.Sprint;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
+import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.utils.exception.ExceptionCodeEnum;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
@@ -39,12 +44,16 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
+import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -93,6 +102,13 @@ public class StoryServiceImpl implements StoryService {
     private IStageService stageService;
     @Resource
     private SSprintMapper sSprintMapper;
+    @Resource
+    private Sprintv3Service sprintv3Service;
+    @Resource
+    private IFacadeSystemApi iFacadeSystemApi;
+    @Resource
+    private STeamSystemMapper teamSystemMapper;
+
 
 
     /**
@@ -171,6 +187,69 @@ public class StoryServiceImpl implements StoryService {
         }
 
 
+    }
+
+    /**
+     * 1、从列表新建故事
+     *       执行人：当前系统内查询所有人
+     *       迭代：关联本系统所有团队下，未开始，进行中迭代
+     *       系统：默认当前系统
+     *       阶段：设计开发/开发阶段->未开始（默认）
+     * 2、从kanban新建故事
+     *       迭代：默认本迭代
+     *       系统：迭代所属团队关联系统中选其一
+     *       执行人：迭代所属团队关联系统（其一）内所有人
+     *       设计开发/开发阶段->未开始（默认）
+     * @param crateType
+     * @param sprintId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public StoryCreatePrepInfoDTO getStoryPreInfo(Integer crateType, Long sprintId,Long systemId, Integer page, Integer pageSize,String userName){
+        StoryCreatePrepInfoDTO storyCreatePrepInfoDTO = new StoryCreatePrepInfoDTO();
+        Long sysId = Optional.ofNullable(systemId).orElse(UserThreadLocalUtil.getUserInfo().getSystemId());
+
+        //如果从列表创建
+        if(CreateTypeEnum.LIST.CODE.equals(crateType)){
+            //迭代信息
+            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
+            storyCreatePrepInfoDTO.setSprintDTOS(sprintListDTOS);
+            //系统信息
+            SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
+            SsoSystemDTO ssoSystemDTO = ReflectUtil.copyProperties(ssoSystem, SsoSystemDTO.class);
+            List<SsoSystemDTO> ssoSystemDTOS = Lists.newArrayList();
+            ssoSystemDTOS.add(ssoSystemDTO);
+            storyCreatePrepInfoDTO.setSystemDTOS(ssoSystemDTOS);
+            //人员信息
+            List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByCondition(userName, page, pageSize, sysId);
+            storyCreatePrepInfoDTO.setUserDTOS(ssoUserDTOS);
+        }else if(CreateTypeEnum.KANBAN.CODE.equals(crateType)){
+            SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(sprintId);
+            SprintListDTO sprintListDTO = ReflectUtil.copyProperties(sSprintWithBLOBs, SprintListDTO.class);
+            List<SprintListDTO> sprintListDTOS = Lists.newArrayList();
+            sprintListDTOS.add(sprintListDTO);
+            storyCreatePrepInfoDTO.setSprintDTOS(sprintListDTOS);
+
+            //系统
+            Long teamId = sSprintWithBLOBs.getTeamId();
+            List<Long> systemIds = teamSystemMapper.querySystemIdByTeamId(teamId);
+            List<SsoSystem> ssoSystems = iFacadeSystemApi.querySsoSystem(systemIds);
+            List<SsoSystemDTO> ssoSystemDTOS = null;
+            try {
+                ssoSystemDTOS = ReflectUtil.copyProperties4List(ssoSystems, SsoSystemDTO.class);
+            } catch (Exception e) {
+                LOGGER.error("数据转换异常:{}",e.getMessage());
+            }
+            storyCreatePrepInfoDTO.setSystemDTOS(ssoSystemDTOS);
+            //人员信息
+            if(Optional.ofNullable(systemId).isPresent()){
+                List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByCondition(userName, page, pageSize, sysId);
+                storyCreatePrepInfoDTO.setUserDTOS(ssoUserDTOS);
+            }
+        }
+        return storyCreatePrepInfoDTO;
     }
 
     /**

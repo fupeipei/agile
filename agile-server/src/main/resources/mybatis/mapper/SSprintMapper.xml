@@ -771,4 +771,13 @@
           and issue_type = 4
           and state = 'U'
     </select>
+
+    <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        SELECT DISTINCT ss.sprint_id,ss.sprint_name
+        from agile.s_sprint ss
+        left join agile.s_team_system sts
+        on ss.team_id  = sts.team_id
+        where
+        ss.status in (2,3) and sts.system_id  = #{systemId};
+    </select>
 </mapper>

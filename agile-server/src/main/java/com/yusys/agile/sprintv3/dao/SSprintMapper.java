@@ -213,4 +213,11 @@ public interface SSprintMapper {
      * @return int
      */
     int querySprintTaskNumber(long sprintId);
+
+    /**
+     * 根据系统id查询进行中、未开始的迭代信息
+     * @param systemId
+     * @return
+     */
+    List<SprintListDTO> selectBySystemId(@Param("systemId") Long systemId);
 }
