@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -53,6 +54,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -438,10 +440,7 @@ public class TaskServiceImpl implements TaskService {
         //创建历史记录
         createIssueHistoryRecords(from, to, task);
         // 修改数据库
-        issueMapper.updateByPrimaryKey(task);
-
-        //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-        updateStoryStageIdByTaskCound(task);
+        int taskCount = issueMapper.updateByPrimaryKey(task);
 
         if (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
 
@@ -459,8 +458,11 @@ public class TaskServiceImpl implements TaskService {
 
         }
 
+        //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+        int storyCount = this.updateStoryStageIdByTaskCound(task);
+
         logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+TaskStageIdEnum.getName(from)+from
-                +" to="+TaskStageIdEnum.getName(to)+to,"1");
+                +" to="+TaskStageIdEnum.getName(to)+to+" storyCount="+storyCount+" taskCount="+taskCount,"1");
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
@@ -469,7 +471,29 @@ public class TaskServiceImpl implements TaskService {
     }
 
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-    private void updateStoryStageIdByTaskCound(Issue task) {
+    private int updateStoryStageIdByTaskCound(Issue task) {
+        Long storyId = task.getParentId();
+        IssueExample example = new IssueExample();
+        example.createCriteria()
+                .andParentIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
+        //完成的数量
+        long finishCount = tasks.stream().filter(t ->  t.getStageId().equals(TaskStageIdEnum.TYPE_CLOSED_STATE.CODE)).count();
+
+        Issue storyIssue=new Issue();
+        storyIssue.setIssueId(storyId);
+        if(finishCount==tasks.size()){
+            storyIssue.setStageId(StoryStageIdEnum.TYPE_CLOSED_STATE.CODE);
+        }else{
+            storyIssue.setStageId(StoryStageIdEnum.TYPE_MODIFYING_STATE.CODE);
+        }
+        int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
+        log.info("根据故事id查询有效的、未完成的任务,finishCount="+finishCount+" 故事更新数量="+i+" storyIssue="+ JSONObject.toJSONString(storyIssue));
+        return i;
     }
 
     @Override
