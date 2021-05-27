@@ -2387,7 +2387,7 @@ public class IssueServiceImpl implements IssueService {
             panoramasStoryDTO.setStoryStatus(stageName);
 
             Long stageId = (Long) stageMap.get("id");
-            if (StageConstant.FirstStageEnum.COMBINED_TEST_STAGE.getValue().equals(stageId) ||
+            if (StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue().equals(stageId) ||
                     StageConstant.FirstStageEnum.ONLINE_STAGE.getValue().equals(stageId) ||
                     StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(stageId)) {
                 panoramasTaskDTO.setTaskStatus("已完成");
@@ -2455,7 +2455,7 @@ public class IssueServiceImpl implements IssueService {
         if (StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(stageId)
                 || StageConstant.FirstStageEnum.ONLINE_STAGE.getValue().equals(stageId)) {
             panoramasFeatureDTO.setSysTestStatus("已完成");
-        } else if (StageConstant.FirstStageEnum.COMBINED_TEST_STAGE.getValue().equals(stageId)) {
+        } else if (StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue().equals(stageId)) {
             Map laneMap = feature.getLaneId();
             Long laneId = (Long) laneMap.get("id");
             KanbanStageInstance kanbanStageInstance = stageService.getStageInfo(feature.getProjectId(), laneId);
