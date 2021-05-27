@@ -7,6 +7,8 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -31,6 +33,7 @@ import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.agile.utils.exception.ExceptionCodeEnum;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
@@ -38,6 +41,7 @@ import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
@@ -86,6 +90,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private StoryService storyService;
     @Resource
     private IssueMapper issueMapper;
+    @Resource
+    private Teamv3Service teamv3Service;
 
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
@@ -689,6 +695,38 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return list;
     }
 
+    @Override
+    public List<IssueDTO> queryNotRelationStorys(String title, Long teamId, Long systemIds, Integer pageNum, Integer pageSize) {
+        List<Long> systemIdInfo = new ArrayList<>();
+        // 不传page信息时查全部数据
+        List<IssueDTO> issueDTOS = new ArrayList<>();
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        if (null == systemIds) {
+            //如果没有系统id 查询团队下的所有系统
+            List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
+            for (SsoSystemRestDTO ssoSystemRestDTO : ssoSystemRestDTOS) {
+                Long systemId = ssoSystemRestDTO.getSystemId();
+                String systemCode = ssoSystemRestDTO.getSystemCode();
+                List<IssueDTO> issueDTOS1 = issueMapper.queryNotRelationStory(title, systemId);
+                if (CollectionUtils.isNotEmpty(issueDTOS1)) {
+                    for (IssueDTO issueDTO : issueDTOS1) {
+                        issueDTO.setSystemCode(systemCode);
+                    }
+                    issueDTOS.addAll(issueDTOS1);
+                }
+            }
+        } else {
+            issueDTOS = issueMapper.queryNotRelationStory(title,systemIds);
+            SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds);
+            for (IssueDTO issueDTO : issueDTOS) {
+                issueDTO.setSystemCode(ssoSystem.getSystemCode());
+            }
+        }
+        return issueDTOS;
+    }
+
     /**
      * 查询迭代用户
      *
@@ -726,7 +764,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<SSprint>queryAllSprint() {
+    public List<SSprint> queryAllSprint() {
         SSprintExample sSprintExample = new SSprintExample();
         sSprintExample.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue());

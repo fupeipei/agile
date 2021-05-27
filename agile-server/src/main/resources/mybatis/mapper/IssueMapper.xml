@@ -1129,7 +1129,7 @@
     </select>
 
     <update id="updateStatusByParentId">
-    update s_issue set sprint_id = null,stage_id=100,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
+    update s_issue set sprint_id = null,stage_id=107,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
   </update>
     <select id="getBySprint" resultMap="BaseResultMap">
         SELECT
@@ -2264,7 +2264,7 @@
     <update id="updateBySprintId">
     update s_issue
     set
-        stage_id=111,
+        stage_id=105,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
@@ -3039,5 +3039,49 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
           t.issue_id = #{issueId}
         and
           r.state = 'U'
+    </select>
+
+
+    <select id="queryNotRelationStory" resultType="com.yusys.agile.issue.dto.IssueDTO">
+        select a.* from s_issue a  where a.sprint_id is null
+                                   and a.stage_id=104
+                                   and a.issue_type=3
+                                   and a.state='U'
+                                   and a.is_archive != 1
+        <if test="systemIds != null and systemIds!= ''">
+            and a.issue_id in(
+            select b.issue_id from s_issue_system_relp b where  b.system_id =#{systemIds}
+            )
+
+        </if>
+        <if test="title != null and title != ''">
+            AND (a.title LIKE CONCAT('%', #{title}, '%')or a.issue_id LIKE CONCAT('%', #{title}, '%'))
+        </if>
+    </select>
+
+    <select id="countStoryPointsForSprint" resultType="java.lang.Integer">
+        select sum(se.`value`)
+        from
+        s_issue si,
+        s_sys_extend_field_detail se
+        where
+        si.issue_id = se.issue_id
+        and si.sprint_id = #{sprintId} and si.issue_type=3 and si.is_archive != 1
+    </select>
+
+    <select id="countCurrTimeStoryPointsForSprintId" resultType="java.lang.Integer">
+        <![CDATA[
+        select sum(se.`value`) from
+            s_issue si,
+            s_sys_extend_field_detail se,
+            burndown_chart_story b
+        where 1=1
+            and si.issue_id = se.issue_id
+            and si.issue_id = b.story_id
+            and si.sprint_id = #{sprintId}
+            and si.issue_type=3 and si.is_archive != 1 and si.stage_id != 7
+            and b.story_state = 7
+            and b.sprint_time = #{currTime}
+        ]]>
     </select>
 </mapper>

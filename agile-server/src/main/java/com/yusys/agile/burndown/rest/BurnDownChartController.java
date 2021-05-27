@@ -62,6 +62,17 @@ public class BurnDownChartController {
     }
 
     /**
+     * 计算迭代周期内的故事点燃尽图
+     * @author zhaofeng
+     * @date 2021/5/26 11:14
+     * @param sprintId 迭代ID
+     */
+    @GetMapping("/burndowns/storyPoint/{sprintId}")
+    public ResultObject getStoryPointBySprint(@PathVariable("sprintId") Long sprintId){
+        return ResultObject.success(burnDownChartService.getStoryPointBySprint(sprintId));
+    }
+
+    /**
      * 根据迭代ID获取当前迭代内团队成员工作量和任务数
      *
      * @param sprintId 迭代ID

@@ -117,6 +117,9 @@ public class TaskServiceImpl implements TaskService {
             this.ckeckTaksParams(issue.getSprintId(),"无法删除任务");
         }
         issueFactory.deleteIssue(taskId, deleteChild);
+
+        int i = this.updateStoryStageIdByTaskCount(issue);
+        log.info("deleteTask_updateStoryStageIdByTaskCount="+i);
     }
 
     @Override
@@ -183,6 +186,9 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("更新任务失败！");
         }
 
+        int i = this.updateStoryStageIdByTaskCount(task);
+        log.info("editTask_updateStoryStageIdByTaskCound="+i);
+
         // 拖到完成
         /*if (null != task && TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId())) {
         }*/
@@ -235,6 +241,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
         //设置默认创建
         Long[] stages = issueDTO.getStages();
@@ -256,7 +263,13 @@ public class TaskServiceImpl implements TaskService {
                 issueDTO.setLaneId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
             }
         }
-        return issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
+        Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
+        Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(()->new BusinessException("任务不存在，taskId="+taskId));
+
+        int i = this.updateStoryStageIdByTaskCount(task);
+        log.info("createTask_updateStoryStageIdByTaskCount="+i);
+
+        return taskId;
     }
 
     private void ckeckTaksParams(Long sprintId,String errorMsg) {
@@ -277,8 +290,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long copyTask(Long taskId, Long projectId) {
-        return issueFactory.copyIssue(taskId, projectId, "该复制的任务已失效！", "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
+        Long issue = issueFactory.copyIssue(taskId, projectId, "该复制的任务已失效！", "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
+
+        Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(issue)).orElseThrow(()->new BusinessException("任务不存在，taskId="+issue));
+
+        int i = this.updateStoryStageIdByTaskCount(task);
+        log.info("copyTask_updateStoryStageIdByTaskCount="+i);
+        return issue;
     }
 
     @Override
@@ -459,7 +479,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-        int storyCount = this.updateStoryStageIdByTaskCound(task);
+        int storyCount = this.updateStoryStageIdByTaskCount(task);
 
         logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+TaskStageIdEnum.getName(from)+from
                 +" to="+TaskStageIdEnum.getName(to)+to+" storyCount="+storyCount+" taskCount="+taskCount,"1");
@@ -471,7 +491,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-    private int updateStoryStageIdByTaskCound(Issue task) {
+    private int updateStoryStageIdByTaskCount(Issue task) {
+        if(task==null){
+            return -1;
+        }
         Long storyId = task.getParentId();
         IssueExample example = new IssueExample();
         example.createCriteria()
