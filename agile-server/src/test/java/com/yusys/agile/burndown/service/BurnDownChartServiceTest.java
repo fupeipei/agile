@@ -70,7 +70,7 @@ public class BurnDownChartServiceTest {
     @Test
     public void testGetStoryPointsBySprint(){
         try {
-            Long sprintId = 10L;
+            Long sprintId = 100034L;
             BurnDownStoryPointDTO storyPointBySprint = burnDownChartService.getStoryPointBySprint(sprintId);
             log.info("Junit测试--根据迭代ID查询故事点数据成功：{}", storyPointBySprint);
         } catch (Exception e) {

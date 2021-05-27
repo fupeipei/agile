@@ -9,6 +9,9 @@ import com.google.common.collect.Lists;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.enums.IssueTypeEnum;
+import com.yusys.agile.issue.enums.StoryStatusEnum;
+import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -544,7 +547,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     /**
-     * 改变迭代状态
+     * 每天改变状态
+     *
+     * @author 张宇
      */
     @Override
     public void changeStatusDaily() {
@@ -560,6 +565,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      *
      * @param sprintId 迭代id
      * @return {@link String}
+     * @author 张宇
      */
     @Override
     public String cancelSprint(long sprintId, long userId) {
@@ -586,6 +592,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      *
      * @param sprintId 迭代id
      * @return {@link String}
+     * @author 张宇
      */
     @Override
     public String sprintFinish(long sprintId) {
@@ -606,6 +613,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      *
      * @param sprintId 迭代id
      * @return {@link SprintOverView}
+     * @author 张宇
      */
     @Override
     public SprintOverView sprintOverView(long sprintId) {
@@ -630,32 +638,68 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      *
      * @param sprintId 迭代id
      * @return {@link SprintStatisticalInformation}
+     * @author 张宇
      */
     @Override
     public SprintStatisticalInformation sprintStatisticalInformation(long sprintId) {
         SprintStatisticalInformation statisticalInformation = new SprintStatisticalInformation();
 
         //story
-        statisticalInformation.setUserStory(ssprintMapper.querySprintFinishedStoryNumber(sprintId));
-        statisticalInformation.setUserStorySum(ssprintMapper.querySprintStoryNumBer(sprintId));
+        statisticalInformation.setUserStory(ssprintMapper.querySprintFinishedStoryNumber(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_CLOSED_STATE.CODE));
+        statisticalInformation.setUserStorySum(ssprintMapper.querySprintStoryNumBer(sprintId, IssueTypeEnum.TYPE_STORY.CODE));
         statisticalInformation.setUserStoryCompleteness(NumberUtilDiv(statisticalInformation.getUserStory(), statisticalInformation.getUserStorySum()));
 
         //StoryPoint
-        statisticalInformation.setStoryPoint(ssprintMapper.querySprintFinishedStoryPoint(sprintId));
-        statisticalInformation.setStoryPointSum(ssprintMapper.querySprintStoryPoint(sprintId));
+        statisticalInformation.setStoryPoint(ssprintMapper.querySprintFinishedStoryPoint(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_CLOSED_STATE.CODE));
+        statisticalInformation.setStoryPointSum(ssprintMapper.querySprintStoryPoint(sprintId, IssueTypeEnum.TYPE_STORY.CODE));
         statisticalInformation.setStoryPointCompleteness(NumberUtilDiv(statisticalInformation.getStoryPoint(), statisticalInformation.getStoryPointSum()));
 
         //Workload
-        statisticalInformation.setWorkload(ssprintMapper.querySprintFinishedWorkload(sprintId));
-        statisticalInformation.setWorkloadSum(ssprintMapper.querySprintWorkload(sprintId));
+        statisticalInformation.setWorkload(ssprintMapper.querySprintFinishedWorkload(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_CLOSED_STATE.CODE));
+        statisticalInformation.setWorkloadSum(ssprintMapper.querySprintWorkload(sprintId, IssueTypeEnum.TYPE_TASK.CODE));
         statisticalInformation.setWorkloadCompleteness(NumberUtilDiv(statisticalInformation.getWorkload(), statisticalInformation.getWorkloadSum()));
 
         //Task
-        statisticalInformation.setTask(ssprintMapper.querySprintFinishedTaskNumber(sprintId));
-        statisticalInformation.setTaskSum(ssprintMapper.querySprintTaskNumber(sprintId));
+        statisticalInformation.setTask(ssprintMapper.querySprintFinishedTaskNumber(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_CLOSED_STATE.CODE));
+        statisticalInformation.setTaskSum(ssprintMapper.querySprintTaskNumber(sprintId, IssueTypeEnum.TYPE_TASK.CODE));
         statisticalInformation.setTaskCompleteness(NumberUtilDiv(statisticalInformation.getTask(), statisticalInformation.getTaskSum()));
 
         return statisticalInformation;
+    }
+
+    /**
+     * 迭代视图 - 成员工时
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<SprintMembersWorkHours>}
+     * @author 张宇
+     */
+    @Override
+    public List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId) {
+        //迭代相关人员
+        List<STeamMember> userList = sTeamMapper.querySprintUser(sprintId);
+        List<SprintMembersWorkHours> list = new ArrayList<>();
+
+        //未领取
+        SprintMembersWorkHours unclaimedWorkHours = new SprintMembersWorkHours();
+        unclaimedWorkHours.setUserId(0);
+        unclaimedWorkHours.setUserAccount("未领取任务");
+        unclaimedWorkHours.setUserName("未领取任务");
+        unclaimedWorkHours.setResidueWorkload(ssprintMapper.unclaimedWorkHours(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE));
+        list.add(unclaimedWorkHours);
+
+        for (int i = 0; i < userList.size(); i++) {
+            SprintMembersWorkHours sprintMembersWorkHours = new SprintMembersWorkHours();
+            sprintMembersWorkHours.setUserId(userList.get(i).getUserId());
+            sprintMembersWorkHours.setUserName(userList.get(i).getUserName());
+            sprintMembersWorkHours.setUserAccount(userList.get(i).getUserAccount());
+            UserWorkloadQueryModel userWorkloadQueryModel = ssprintMapper.queryUserWorkload(userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE);
+            sprintMembersWorkHours.setActualWorkload(userWorkloadQueryModel.getFirstData());
+            sprintMembersWorkHours.setTaskNumber(userWorkloadQueryModel.getSecondData());
+            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
+            list.add(sprintMembersWorkHours);
+        }
+        return list;
     }
 
     @Override
@@ -670,61 +714,37 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return sprints;
     }
 
-
-    /**
-     * 迭代视图 - 成员工时
-     *
-     * @param sprintId 迭代id
-     * @return {@link List<SprintMembersWorkHours>}
-     */
     @Override
-    public List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId) {
-        List<STeamMember> userList = sTeamMapper.querySprintUser(sprintId);
-        List<SprintMembersWorkHours> list = new ArrayList<>();
-
-        for (int i = 0; i < userList.size(); i++) {
-            SprintMembersWorkHours sprintMembersWorkHours = new SprintMembersWorkHours();
-            sprintMembersWorkHours.setUserId(userList.get(i).getUserId());
-            sprintMembersWorkHours.setUserName(userList.get(i).getUserName());
-            sprintMembersWorkHours.setUserAccount(userList.get(i).getUserAccount());
-            UserWorkloadQueryModel userWorkloadQueryModel = ssprintMapper.queryUserWorkload(userList.get(i).getUserId());
-            sprintMembersWorkHours.setActualWorkload(userWorkloadQueryModel.getFirstData());
-            sprintMembersWorkHours.setTaskNumber(userWorkloadQueryModel.getSecondData());
-            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(userList.get(i).getUserId()));
-            list.add(sprintMembersWorkHours);
-        }
-        return list;
-    }
-
-    @Override
-    public List<IssueDTO> queryNotRelationStorys(String title, Long teamId, Long systemIds, Integer pageNum, Integer pageSize) {
-        List<Long> systemIdInfo = new ArrayList<>();
-        // 不传page信息时查全部数据
+    public List<IssueDTO> queryNotRelationStorys(String title, Long teamId, List<Long> systemIds, Integer pageNum, Integer pageSize) {
         List<IssueDTO> issueDTOS = new ArrayList<>();
-        if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
-        }
-        if (null == systemIds) {
+        List<Long> systemIdInfo=new ArrayList<>();
+        if(CollectionUtils.isEmpty(systemIds)){
             //如果没有系统id 查询团队下的所有系统
             List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
-            for (SsoSystemRestDTO ssoSystemRestDTO : ssoSystemRestDTOS) {
+            for(SsoSystemRestDTO ssoSystemRestDTO:ssoSystemRestDTOS){
                 Long systemId = ssoSystemRestDTO.getSystemId();
-                String systemCode = ssoSystemRestDTO.getSystemCode();
-                List<IssueDTO> issueDTOS1 = issueMapper.queryNotRelationStory(title, systemId);
-                if (CollectionUtils.isNotEmpty(issueDTOS1)) {
-                    for (IssueDTO issueDTO : issueDTOS1) {
-                        issueDTO.setSystemCode(systemCode);
+                systemIdInfo.add(systemId);
+            }
+            PageHelper.startPage(pageNum,pageSize);
+            issueDTOS = issueMapper.queryNotRelationStory(title, systemIdInfo);
+            issueDTOS.stream().map(issueDTO -> {
+                ssoSystemRestDTOS.forEach(ssoSystemRestDTO -> {
+                    if (issueDTO.getSystemId().equals(ssoSystemRestDTO.getSystemId())) {
+                        issueDTO.setSystemCode(ssoSystemRestDTO.getSystemCode());
                     }
-                    issueDTOS.addAll(issueDTOS1);
-                }
-            }
+                });
+                return issueDTO;
+            }).collect(Collectors.toList());
         } else {
+            PageHelper.startPage(pageNum,pageSize);
             issueDTOS = issueMapper.queryNotRelationStory(title,systemIds);
-            SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds);
-            for (IssueDTO issueDTO : issueDTOS) {
-                issueDTO.setSystemCode(ssoSystem.getSystemCode());
-            }
+            SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds.get(0));
+            issueDTOS.stream().map(issueDTO -> {
+                issueDTO.setSystemCode( ssoSystem.getSystemCode());
+                return issueDTO;
+            }).collect(Collectors.toList());
         }
+
         return issueDTOS;
     }
     /**
@@ -747,7 +767,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 //工作项加入迭代
                 storyService.distributeSprint(issueId, sprintDTO.getSprintId());
             }
-        } else {
+        }else {
             throw new BusinessException("查不到工作项");
         }
         return true;

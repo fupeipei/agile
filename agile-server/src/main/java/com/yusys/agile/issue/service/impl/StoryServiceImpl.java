@@ -55,6 +55,7 @@ import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -319,7 +320,7 @@ public class StoryServiceImpl implements StoryService {
         Long sprintId = issueDTO.getSprintId();
         Integer pageNum = issueDTO.getPageNum();
         Integer pageSize = issueDTO.getPageSize();
-        List<Long> stageIds = issueDTO.getStageIds();
+        List<Long> laneIds = issueDTO.getLaneIds();
         List<Integer> taskTypes = issueDTO.getTaskTypes();
         List<Long> handlers = issueDTO.getHandlers();
 
@@ -341,7 +342,7 @@ public class StoryServiceImpl implements StoryService {
         List<IssueDTO> issueDTOS = issueMapper.selectByExampleDTO(example);
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             //获取故事下的任务
-            issueDTOS = getChildren(sprintId, issueDTOS, taskKeyWord, stageIds, taskTypes, handlers);
+            issueDTOS = getChildren(sprintId, issueDTOS, taskKeyWord, laneIds, taskTypes, handlers);
         }
         return issueDTOS;
     }
@@ -367,15 +368,23 @@ public class StoryServiceImpl implements StoryService {
      * @Return void
      */
     private List<IssueDTO> getChildren(Long sprintId, List<IssueDTO> issueDTOS,
-                                       String taskKeyWord, List<Long> stageIds, List<Integer> taskTypes, List<Long> handlers) {
+                                       String taskKeyWord, List<Long> laneIds, List<Integer> taskTypes, List<Long> handlers) {
         List<IssueDTO> issueDTOSTmp = new ArrayList<>();
+        List<Long> systemIds = new ArrayList<>();
+        Map<Long, String> systemMap = new HashedMap();
         Sprint sprint = sprintMapper.selectByPrimaryKey(sprintId);
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
+            issueDTOS.forEach(issueDTO -> systemIds.add(issueDTO.getSystemId()));
+            List<SsoSystem> ssoSystems = iFacadeSystemApi.querySsoSystem(systemIds);
+            if(CollectionUtils.isNotEmpty(ssoSystems)){
+                ssoSystems.forEach(ssoSystem -> systemMap.put(ssoSystem.getSystemId(), ssoSystem.getSystemCode()));
+            }
             for (IssueDTO issueDTO : issueDTOS) {
                 /** 查询富文本 */
                 issueRichTextFactory.queryIssueRichText(issueDTO);
                 issueDTO.setFaultNum(0);
                 issueDTO.setCaseNum(0);
+                issueDTO.setSystemCode(systemMap.get(issueDTO.getSystemId()));
                 IssueExample issueExample = new IssueExample();
                 IssueExample.Criteria criteria1 = issueExample.createCriteria();
                 criteria1.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
@@ -386,20 +395,20 @@ public class StoryServiceImpl implements StoryService {
 
                 //任务查询加上“阻塞中”状态   start
                 boolean b = false;
-                if (CollectionUtils.isNotEmpty(stageIds)) {
-                    b = stageIds.contains(9999L);
+                if (CollectionUtils.isNotEmpty(laneIds)) {
+                    b = laneIds.contains(9999L);
                 }
                 IssueExample.Criteria criteria3 = issueExample.createCriteria();
                 criteria3.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
                 if (b) {
                     //过滤掉“阻塞中”的状态：9999
-                    stageIds = stageIds.stream().filter(id -> id != 9999).collect(Collectors.toList());
+                    laneIds = laneIds.stream().filter(id -> id != 9999).collect(Collectors.toList());
                 }
                 //任务查询加上“阻塞中”状态   end
-                if (CollectionUtils.isNotEmpty(stageIds)) {
-                    criteria1.andStageIdIn(stageIds);
-                    criteria2.andStageIdIn(stageIds);
+                if (CollectionUtils.isNotEmpty(laneIds)) {
+                    criteria1.andLaneIdIn(laneIds);
+                    criteria2.andLaneIdIn(laneIds);
                 }
                 if (CollectionUtils.isNotEmpty(taskTypes)) {
                     criteria1.andTaskTypeIn(taskTypes);
@@ -416,7 +425,7 @@ public class StoryServiceImpl implements StoryService {
                 //任务查询加上“阻塞中”状态   start
                 if (b) {
                     criteria3.andBlockStateEqualTo((byte) 1L);
-                    if (CollectionUtils.isEmpty(stageIds)) {
+                    if (CollectionUtils.isEmpty(laneIds)) {
                         criteria1.andBlockStateEqualTo((byte) 1L);
                     } else {
                         issueExample.or(criteria3);

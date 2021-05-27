@@ -44,7 +44,7 @@ public class StoryServiceTest {
         IssueDTO issueDTO = new IssueDTO();
         issueDTO.setCompletion("5");
         //开发阶段、未开始
-        Long[] stages = {4L, 100L};
+        Long[] stages = {4L, 105L};
         issueDTO.setStages(stages);
         issueDTO.setAcceptanceCriteria("1、需求完成度要高 2、任务完成时间要准");
         issueDTO.setBeginDate(new Date());
