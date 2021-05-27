@@ -10,6 +10,7 @@ import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -185,5 +186,15 @@ public class Teamv3ServiceImplTest {
         QueryTeamResponse response = teamv3Service.queryTeam(teamId);
         log.info("团队详情：【{}}", response);
     }
+
+
+    @Test
+    public void testQuerySystemByTeamId(){
+        Long teamId=100002L;
+        List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
+        cn.hutool.core.lang.Assert.isTrue(ssoSystemRestDTOS.size()==1);
+    }
+
+
 
 }

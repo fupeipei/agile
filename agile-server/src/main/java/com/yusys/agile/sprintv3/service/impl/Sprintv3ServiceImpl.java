@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
@@ -40,6 +41,7 @@ import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
@@ -694,30 +696,35 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<IssueDTO> queryNotRelationStorys(String title, Long teamId,List<Long> systemIds,Integer pageNum,Integer pageSize) {
-        List<Long> systemIdInfo=new ArrayList<>();
+    public List<IssueDTO> queryNotRelationStorys(String title, Long teamId, Long systemIds, Integer pageNum, Integer pageSize) {
+        List<Long> systemIdInfo = new ArrayList<>();
         // 不传page信息时查全部数据
-        List<IssueDTO> issueDTOS = null;
+        List<IssueDTO> issueDTOS = new ArrayList<>();
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
         }
-        if(CollectionUtils.isEmpty(systemIds)){
+        if (null == systemIds) {
             //如果没有系统id 查询团队下的所有系统
             List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
-            for(SsoSystemRestDTO ssoSystemRestDTO:ssoSystemRestDTOS){
+            for (SsoSystemRestDTO ssoSystemRestDTO : ssoSystemRestDTOS) {
                 Long systemId = ssoSystemRestDTO.getSystemId();
-                systemIdInfo.add(systemId);
+                String systemCode = ssoSystemRestDTO.getSystemCode();
+                List<IssueDTO> issueDTOS1 = issueMapper.queryNotRelationStory(title, systemId);
+                if (CollectionUtils.isNotEmpty(issueDTOS1)) {
+                    for (IssueDTO issueDTO : issueDTOS1) {
+                        issueDTO.setSystemCode(systemCode);
+                    }
+                    issueDTOS.addAll(issueDTOS1);
+                }
             }
-            issueDTOS = issueMapper.queryNotRelationStory(title, systemIdInfo);
-
-        }else{
-
-            issueDTOS = issueMapper.queryNotRelationStory(title, systemIds);
+        } else {
+            issueDTOS = issueMapper.queryNotRelationStory(title,systemIds);
+            SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds);
+            for (IssueDTO issueDTO : issueDTOS) {
+                issueDTO.setSystemCode(ssoSystem.getSystemCode());
+            }
         }
-
-
         return issueDTOS;
-
     }
 
     /**
@@ -757,7 +764,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<SSprint>queryAllSprint() {
+    public List<SSprint> queryAllSprint() {
         SSprintExample sSprintExample = new SSprintExample();
         sSprintExample.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue());

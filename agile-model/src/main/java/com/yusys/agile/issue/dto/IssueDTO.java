@@ -35,6 +35,8 @@ public class IssueDTO {
 
     private String systemName;
 
+    private String systemCode;
+
     private String moduleName;
 
     private Long handler;
@@ -1141,4 +1143,11 @@ public class IssueDTO {
         this.taskKeyWord = taskKeyWord;
     }
 
+    public String getSystemCode() {
+        return systemCode;
+    }
+
+    public void setSystemCode(String systemCode) {
+        this.systemCode = systemCode;
+    }
 }

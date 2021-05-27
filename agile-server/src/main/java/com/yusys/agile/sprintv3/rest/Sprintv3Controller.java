@@ -207,7 +207,7 @@ public class Sprintv3Controller {
     @GetMapping("/queryNotRelationStorys")
     public ControllerResponse queryNotRelationStorys(@RequestParam(name = "title", required = false) String title,
                                                      @RequestParam(name = "teamId") Long teamId,
-                                                     @RequestParam(name = "systemId",required = false) List<Long> systemId,
+                                                     @RequestParam(name = "systemId",required = false) Long systemId,
                                                      @RequestParam(name = "pageNum") Integer pageNum,
                                                      @RequestParam(name = "pageSize") Integer pageSize) {
 
