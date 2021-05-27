@@ -19,7 +19,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.util.code.ReflectUtil;
 
 /**
  * @Author zhaofeng
@@ -162,6 +165,26 @@ public interface Sprintv3Service {
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
 
     List<IssueDTO>  queryNotRelationStorys(String title, Long teamId,List<Long> systemIds, Integer pageNum, Integer pageSize);
+
+
+    /**
+     * 分页模糊查询迭代下人员
+     * @param sprintId
+     * @param userName
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    List<STeamMember> querySprintVagueUser(Long sprintId,String userName,Integer pageNum,Integer pageSize);
+
+
+    /**
+     * 查询迭代下关联的系统
+     * @param sprintId
+     * @return
+     */
+    List<SsoSystemDTO> querySystemBySprint(Long sprintId);
+
 
     /**
      * @Author maxp2

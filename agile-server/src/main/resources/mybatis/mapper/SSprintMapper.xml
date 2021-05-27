@@ -26,8 +26,8 @@
     </resultMap>
 
     <resultMap id="SprintMembersWorkHours" type="com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel">
-        <result column="ifnull(sum(plan_workload),0)" property="firstData"/>
-        <result column="count(issue_id)" property="secondData"/>
+        <result column="first" property="firstData"/>
+        <result column="second" property="secondData"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -808,8 +808,8 @@
                                             where handler = #{userId}
                                               and issue_type = #{issueType}
                                               and lane_id = 110
-                                              and state = 'U'), 0),
-               count(issue_id)
+                                              and state = 'U'), 0) as first,
+               count(issue_id)                                     as second
         from s_issue a
         where a.handler = #{userId}
           and a.issue_type = #{issueType}
@@ -821,6 +821,7 @@
         select ifnull(sum(plan_workload), 0)
         from s_issue a
         where a.handler is null
+        and a.sprint_id = #{sprintId}
           and a.issue_type = #{issueType}
           and a.lane_id = #{status}
     </select>

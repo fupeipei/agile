@@ -493,7 +493,7 @@ public class TaskServiceImpl implements TaskService {
 
         }
 
-        //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+        //  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
         int storyCount = this.updateStoryStageIdByTaskCount(task);
 
         logService.insertLog("dragTask", issueId, IssueTypeEnum.TYPE_TASK.CODE.longValue(), actionRemark + "from=" + TaskStatusEnum.getName(from) + from
@@ -520,14 +520,14 @@ public class TaskServiceImpl implements TaskService {
         //根据故事查询所有有效的任务
         List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
         //完成的数量
-        long finishCount = tasks.stream().filter(t -> t.getStageId().equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)).count();
+        long finishCount = tasks.stream().filter(t -> t.getLaneId().equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)).count();
 
         Issue storyIssue = new Issue();
         storyIssue.setIssueId(storyId);
         if (finishCount == tasks.size()) {
-            storyIssue.setStageId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
         } else {
-            storyIssue.setStageId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
         }
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
         log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));

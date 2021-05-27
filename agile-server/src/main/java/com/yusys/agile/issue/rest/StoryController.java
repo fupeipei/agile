@@ -77,7 +77,6 @@ public class StoryController {
         return ControllerResponse.success(storyService.getStoryPreInfo(crateType,sprintId,systemId,pageNum,pageSize,userName));
     }
 
-
     @GetMapping("/query/{storyId}")
     public ControllerResponse queryStory(@PathVariable("storyId") Long storyId) {
         IssueDTO issueDTO = storyService.queryStory(storyId);
