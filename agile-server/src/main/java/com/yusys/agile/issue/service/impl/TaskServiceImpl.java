@@ -278,12 +278,6 @@ public class TaskServiceImpl implements TaskService {
                 stages[1] = stageInstance.getStageId();
             }
             issueDTO.setStages(stages);
-        } else {
-            //任务选择处理人就是已领取，否则就是未领取
-            if (Optional.ofNullable(issueDTO.getHandler()).isPresent()) {
-                issueDTO.setStageId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-                issueDTO.setLaneId(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE);
-            }
         }
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
@@ -643,7 +637,7 @@ public class TaskServiceImpl implements TaskService {
         pageInfoDTO.setPageSize(pageSize);
         pageInfoDTO.setUserIds(userIds);
         pageInfoDTO.setUserName(userName);
-        return iFacadeUserApi.queryUsersByUserIdsAndConditions(pageInfoDTO);
+        return null;
     }
 
     /**
