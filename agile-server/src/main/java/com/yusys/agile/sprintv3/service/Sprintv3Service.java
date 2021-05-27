@@ -1,5 +1,6 @@
 package com.yusys.agile.sprintv3.service;
 
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
@@ -16,6 +17,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import java.util.List;
 
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 
 /**
  * @Author zhaofeng
@@ -135,10 +137,18 @@ public interface Sprintv3Service {
     List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
 
     /**
-     * 迭代视图 - 成员工时
+     * 根据系统id获取未开始和执行中的迭代信息
+     * @param systemId
+     * @return
+     */
+    List<SprintListDTO> getEffectiveSprintsBySystemId(Long systemId);
+
+    /**
      *
      * @param sprintId 迭代id
      * @return {@link List<SprintMembersWorkHours>}
      */
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
+
+    List<IssueDTO>  queryNotRelationStorys(String title, Long systemId, Integer pageNum, Integer pageSize);
 }

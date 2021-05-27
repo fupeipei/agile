@@ -2,7 +2,7 @@ package com.yusys.agile.issue.service;
 
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
 import java.util.List;
@@ -136,5 +136,5 @@ public interface TaskService {
      * @param storyId
      * @return
      */
-    List<UserSprintHourDTO> listMemberUsers(Long systemId, Long storyId);
+    StoryCreatePrepInfoDTO getTaskPreInfo(String userName,Integer page,Integer pageSize,Long systemId, Long storyId, Integer createType);
 }

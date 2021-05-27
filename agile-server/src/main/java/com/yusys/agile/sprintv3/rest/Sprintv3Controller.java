@@ -1,6 +1,7 @@
 package com.yusys.agile.sprintv3.rest;
 
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
@@ -184,12 +185,35 @@ public class Sprintv3Controller {
 
     /**
      * 通过迭代ID查询迭代下的人员
+     *
      * @param sprintId 迭代id
      * @return
      */
     @GetMapping("/getUsersBySprintId/{sprintId}")
-    public ControllerResponse getUsersBySprintId(@PathVariable Long sprintId){
+    public ControllerResponse getUsersBySprintId(@PathVariable Long sprintId) {
         List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(sprintId);
         return ControllerResponse.success(userSprintHourDTOList);
     }
+
+    /**
+     * 查询系统下未迭代的故事
+     *
+     * @param title
+     * @param systemId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/queryNotRelationStorys")
+    public ControllerResponse queryNotRelationStorys(@RequestParam(name = "title", required = false) String title,
+                                                     @RequestParam(name = "systemId",required = false) Long systemId,
+                                                     @RequestParam(name = "pageNum") Integer pageNum,
+                                                     @RequestParam(name = "pageSize") Integer pageSize) {
+
+        List<IssueDTO> result = sprintv3Service.queryNotRelationStorys(title, systemId,pageNum, pageSize);
+        return ControllerResponse.success(new PageInfo<>(result));
+
+    }
+
 }
+

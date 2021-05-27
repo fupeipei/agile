@@ -2,6 +2,7 @@ package com.yusys.agile.issue.rest;
 
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
@@ -62,6 +63,18 @@ public class StoryController {
             LOGGER.error("新增用户故事失败：{}", e);
             return ControllerResponse.fail("新增用户故事失败：" + e.getMessage());
         }
+    }
+
+
+    @GetMapping("/getStoryPreInfo")
+    public ControllerResponse getStoryPreInfo(@RequestParam("crateType") Integer crateType,
+                                              @RequestParam(value = "sprintId",required = false) Long sprintId,
+                                              @RequestParam(value = "systemId" ,required = false) Long systemId,
+                                              @RequestParam("pageNum") Integer pageNum,
+                                              @RequestParam("pageSize") Integer pageSize,
+                                              @RequestParam(value = "userName",required = false) String userName) {
+
+        return ControllerResponse.success(storyService.getStoryPreInfo(crateType,sprintId,systemId,pageNum,pageSize,userName));
     }
 
 

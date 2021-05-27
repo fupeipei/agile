@@ -26,7 +26,7 @@
     </resultMap>
 
     <resultMap id="SprintMembersWorkHours" type="com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel">
-        <result column="sum(plan_workload)" property="firstData"/>
+        <result column="ifnull(sum(plan_workload),0)" property="firstData"/>
         <result column="count(issue_id)" property="secondData"/>
     </resultMap>
     <sql id="Example_Where_Clause">
@@ -777,6 +777,14 @@
           and state = 'U'
     </select>
 
+    <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        SELECT DISTINCT ss.sprint_id,ss.sprint_name
+        from agile.s_sprint ss
+        left join agile.s_team_system sts
+        on ss.team_id  = sts.team_id
+        where
+        ss.status in (2,3) and sts.system_id  = #{systemId};
+    </select>
     <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
         select *
         from s_sprint a
@@ -793,7 +801,7 @@
     </select>
 
     <select id="queryUserWorkload" resultMap="SprintMembersWorkHours">
-        select sum(plan_workload), count(issue_id)
+        select ifnull(sum(plan_workload),0), count(issue_id)
         from s_issue a
         where a.handler = #{userId}
           and a.issue_type = 4

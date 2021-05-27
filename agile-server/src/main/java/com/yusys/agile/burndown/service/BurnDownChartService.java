@@ -1,10 +1,7 @@
 package com.yusys.agile.burndown.service;
 
 
-import com.yusys.agile.burndown.dto.BurnDownChartDTO;
-import com.yusys.agile.burndown.dto.BurnDownStoryDTO;
-import com.yusys.agile.burndown.dto.BurnDownTaskDTO;
-import com.yusys.agile.burndown.dto.HistogramTaskDTO;
+import com.yusys.agile.burndown.dto.*;
 
 import java.util.List;
 
@@ -23,6 +20,13 @@ public interface BurnDownChartService {
     BurnDownTaskDTO getTasksBySprint(Long sprintId);
 
     BurnDownStoryDTO getStorysBySprint(Long sprintId);
+    /**
+     * 计算迭代周期内的故事点数燃尽图
+     * @author zhaofeng
+     * @date 2021/5/26 11:28
+     * @param sprintId
+     */
+    BurnDownStoryPointDTO getStoryPointBySprint(Long sprintId);
 
     void calculateStorys();
 

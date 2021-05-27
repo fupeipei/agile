@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -38,6 +39,7 @@ import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
@@ -657,6 +659,12 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return userSprintHourDTOList;
     }
 
+    @Override
+    public List<SprintListDTO> getEffectiveSprintsBySystemId(Long systemId) {
+        List<SprintListDTO> sprints = ssprintMapper.selectBySystemId(systemId);
+        return sprints;
+    }
+
 
     /**
      * 迭代视图 - 成员工时
@@ -666,7 +674,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      */
     @Override
     public List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId) {
-        List<STeamMember> userList = sTeamMapper.queryUserInfoByUserId(sprintId);
+        List<STeamMember> userList = sTeamMapper.querySprintUser(sprintId);
         List<SprintMembersWorkHours> list = new ArrayList<>();
 
         for (int i = 0; i < userList.size(); i++) {
@@ -683,6 +691,15 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return list;
     }
 
+    @Override
+    public List<IssueDTO> queryNotRelationStorys(String title, Long systemId, Integer pageNum, Integer pageSize) {
+        // 不传page信息时查全部数据
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        List<IssueDTO> issueDTOS = issueMapper.queryNotRelationStory(title, systemId);
+        return issueDTOS;
+    }
     /**
      * 查询迭代用户
      *
@@ -691,7 +708,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      */
     @Override
     public List<STeamMember> querySprintUser(long sprintId) {
-        List<STeamMember> sTeamMembers = sTeamMapper.queryUserInfoByUserId(sprintId);
+        List<STeamMember> sTeamMembers = sTeamMapper.querySprintUser(sprintId);
         return sTeamMembers;
     }
 

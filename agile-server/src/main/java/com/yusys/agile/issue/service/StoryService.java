@@ -3,6 +3,7 @@ package com.yusys.agile.issue.service;
 
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,17 @@ public interface StoryService {
      * @param issueDTO
      */
     void editStory(IssueDTO issueDTO);
+
+
+    /**
+     * 获取创建故事的前置信息（如系统、迭代、人员信息）
+     * @param crateType 创建方式 1、kanban 2、列表创建
+     * @param sprintId  迭代id
+     * @param page     人员分页
+     * @param pageSize
+     * @return
+     */
+    StoryCreatePrepInfoDTO getStoryPreInfo(Integer crateType,Long sprintId,Long systemId,Integer page,Integer pageSize,String userName);
 
     /**
      * 将故事移出迭代
