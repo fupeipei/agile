@@ -100,20 +100,12 @@ public interface SSprintMapper {
     int querySprintUnfinishedStoryNumber(long sprintId);
 
     /**
-     * 迭代完成的故事数量
-     *
-     * @param sprintId 迭代id
-     * @return int
-     */
-    int querySprintFinishedStoryNumber(long sprintId);
-
-    /**
      * 查询迭代故事
      *
      * @param sprintId 迭代id
      * @return int
      */
-    int querySprintStoryNumBer(long sprintId);
+    int querySprintStoryNumBer(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
 
     /**
      * 迭代完成
@@ -169,7 +161,7 @@ public interface SSprintMapper {
      * @param sprintId 迭代id
      * @return int
      */
-    int querySprintFinishedStoryPoint(long sprintId);
+    int querySprintFinishedStoryPoint(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
     /**
      * 查询迭代故事点
@@ -177,15 +169,8 @@ public interface SSprintMapper {
      * @param sprintId 迭代id
      * @return int
      */
-    int querySprintStoryPoint(long sprintId);
+    int querySprintStoryPoint(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
 
-    /**
-     * 查询迭代已完成的工作负载数量
-     *
-     * @param sprintId 迭代id
-     * @return {@link Integer}
-     */
-    int querySprintFinishedWorkload(long sprintId);
 
     /**
      * 查询迭代工作负载数量
@@ -193,7 +178,7 @@ public interface SSprintMapper {
      * @param sprintId 迭代id
      * @return int
      */
-    int querySprintWorkload(long sprintId);
+    int querySprintWorkload(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
 
     /**
      * 查询迭代已完成的任务数量
@@ -201,7 +186,7 @@ public interface SSprintMapper {
      * @param sprintId 迭代id
      * @return int
      */
-    int querySprintFinishedTaskNumber(long sprintId);
+    int querySprintFinishedTaskNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
     /**
      * 查询迭代任务数量
@@ -209,17 +194,17 @@ public interface SSprintMapper {
      * @param sprintId 迭代id
      * @return int
      */
-    int querySprintTaskNumber(long sprintId);
+    int querySprintTaskNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
 
     /**
      * 根据系统id查询进行中、未开始的迭代信息
+     *
      * @param systemId
      * @return
      */
     List<SprintListDTO> selectBySystemId(@Param("systemId") Long systemId);
 
     /**
-     *
      * @param sprintId 迭代id
      * @return {@link List<Long>}
      */
@@ -228,7 +213,40 @@ public interface SSprintMapper {
     /**
      * 查询用户工作负载
      *
-     * @param userId 用户id
+     * 实际工作量计算方法：已领取（预计工时）+进行中（预计工时）+已完成（实际工时）任务卡片总和
+     *
+     * @param userId    用户id
+     * @param IssueType 问题类型
+     * @return {@link UserWorkloadQueryModel}
+     */
+    UserWorkloadQueryModel queryUserWorkload(@Param("userId") long userId, @Param("issueType") Byte IssueType);
+
+
+    /**
+     * 查询迭代已完成的故事数量
+     *
+     * @param sprintId  迭代id
+     * @param IssueType 问题类型
+     * @param Status    状态
+     * @return int
+     */
+    int querySprintFinishedStoryNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+
+    /**
+     * 查询迭代已完成的工作负载
+     *
+     * @param sprintId  迭代id
+     * @param IssueType 问题类型
+     * @param Status    状态
+     * @return int
+     */
+    int querySprintFinishedWorkload(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+
+    /**
+     * 无人认领的工作时间
+     *
+     * @param sprintId 迭代id
+     * @param code     代码
      * @return {@link UserWorkloadQueryModel}
      */
     UserWorkloadQueryModel queryUserWorkload(long userId);
@@ -236,8 +254,20 @@ public interface SSprintMapper {
     /**
      * 查询用户剩余工作量
      *
-     * @param userId 用户id
+     * @param userId    用户id
+     * @param IssueType 问题类型
+     * @param Status    状态
      * @return int
      */
-    int queryUserResidueWorkload(Long userId);
+    int queryUserResidueWorkload(@Param("userId") long userId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+
+    /**
+     * 无人认领的工作时间
+     *
+     * @param sprintId 迭代id
+     * @param code     代码
+     * @param code1    code1
+     * @return {@link UserWorkloadQueryModel}
+     */
+    int unclaimedWorkHours(@Param("userId") long userId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 }

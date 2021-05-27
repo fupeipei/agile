@@ -272,4 +272,6 @@ public class IssueDTO {
 
     private List<IssueCustomFieldDTO> customFieldDetailDTOList;
 
+    private Boolean parent;
+
 }
