@@ -269,5 +269,5 @@ public interface SSprintMapper {
      * @param code1    code1
      * @return {@link UserWorkloadQueryModel}
      */
-    int unclaimedWorkHours(@Param("userId") long userId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+    int unclaimedWorkHours(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 }
