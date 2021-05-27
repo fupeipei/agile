@@ -253,7 +253,10 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
                     if(currCount != null){
                         count -= currCount;
                     }
-                    burnDownStoryPoint.setRemainStoryPoint(count);
+                    //如果startTime > 今天 则不赋值
+                    if(!startTime.after(DateUtil.currentDay())){
+                        burnDownStoryPoint.setRemainStoryPoint(count);
+                    }
                     rest.add(burnDownStoryPoint);
                 }
                 startTime = DateUtil.nextDay(startTime);
