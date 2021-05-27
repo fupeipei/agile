@@ -1,6 +1,7 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
@@ -307,13 +308,15 @@ public class SprintV3ServiceTest {
     @Test
     public void testQueryNotRelationStorys(){
         List<Long> systemIds=new ArrayList<>();
-        systemIds.add(807205004631072768L);
+        systemIds.add(816662916938469376L);
         systemIds.add(888L);
-        String title="7084";
-        Long teamId=100002l;
+        String title="";
+        Long teamId=100020L;
         Integer pageNum=1;
-        Integer pageSize=10;
+        Integer pageSize=15;
 
 
-}
+        List<IssueDTO> issueDTOS = sprintv3Service.queryNotRelationStorys(title, teamId, systemIds, pageNum, pageNum);
+        log.info("未关联用户故事列表【{}】", issueDTOS);
+    }
 }
