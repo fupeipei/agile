@@ -438,6 +438,7 @@
         from s_team
         where state = 'U'
     </select>
+
     <select id="teamNameNumber" resultType="int">
         select count(team_name)
         from s_team
@@ -471,13 +472,13 @@
            or team_id like concat('%', #{team}, '%')
     </select>
 
-    <select id="queryUserInfoByUserId" resultType="com.yusys.agile.teamv3.domain.STeamMember">
-        select a.user_id, a.user_account, a.user_name
+    <select id="querySprintUser" resultType="com.yusys.agile.teamv3.domain.STeamMember">
+        select distinct a.user_id, a.user_account, a.user_name
         from s_team_member a
                      left join s_sprint_user_hour b on b.user_id = a.user_id
                      left join s_sprint c on b.sprint_id = c.sprint_id
         where b.sprint_id = #{sprintId}
-          and a.team_id = (select team_id from  s_sprint where sprint_id = #{sprintId})
+          and a.team_id = (select team_id from s_sprint where sprint_id = #{sprintId})
           and c.state = 'U'
     </select>
 
@@ -486,6 +487,7 @@
         from s_team_system
         where team_id = #{teamId}
     </select>
+
     <select id="queryTeamNameByTeamId" resultType="java.lang.String">
         select team_name
         from s_team

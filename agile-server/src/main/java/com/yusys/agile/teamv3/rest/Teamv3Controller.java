@@ -85,6 +85,15 @@ public class Teamv3Controller {
     }
 
 
+    /**
+     * 通过团队id查询团队下的系统
+     * @param teamId 团队id
+     * @return
+     */
+    @GetMapping("/querySystem/{teamId}")
+    public ControllerResponse querySystemByTeamId(@PathVariable("teamId") long teamId){
+        return ControllerResponse.success(teamv3Service.querySystemByTeamId(teamId));
+    }
 
 
 }

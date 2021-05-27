@@ -12,6 +12,7 @@ import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
@@ -23,6 +24,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSubjectUserDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.model.facade.enums.RoleTypeEnum;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -34,10 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,9 +69,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<TeamListDTO> rest = Lists.newArrayList();
         boolean check = iFacadeUserApi.checkIsTenantAdmin(userId);
         //如果是租户管理员
-        if(check){
+        if (check) {
             rest = sTeamMapper.queryAllTeam(params);
-        }else{ //不是租户管理员
+        } else { //不是租户管理员
             rest = sTeamMapper.queryMyHiveTeam(params);
         }
         //构建返回结果
@@ -82,9 +81,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     /**
      * 构建返回值
+     *
+     * @param rest
      * @author zhaofeng
      * @date 2021/5/8 14:53
-     * @param rest
      */
     private List<TeamListDTO> buildResultList(List<TeamListDTO> rest) {
         //收集teamIds和创建人userIds
@@ -119,14 +119,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             List<TeamUserDTO> poUsers = Lists.newArrayList();
             List<TeamUserDTO> smUsers = Lists.newArrayList();
             List<TeamUserDTO> tmUsers = Lists.newArrayList();
-            teamMembers.forEach(member->{
-                if(Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.PRODUCT_OWNER.roleId)){
+            teamMembers.forEach(member -> {
+                if (Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.PRODUCT_OWNER.roleId)) {
                     poUsers.add(member);
                 }
-                if(Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.SCRUM_MASTER.roleId)){
+                if (Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.SCRUM_MASTER.roleId)) {
                     smUsers.add(member);
                 }
-                if(Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.TEAM_MEMBER.roleId)){
+                if (Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.TEAM_MEMBER.roleId)) {
                     tmUsers.add(member);
                 }
             });
@@ -140,7 +140,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             item.setTeamUserCount(tmUsers.size());
             //创建人
             users.forEach(user -> {
-                if (Objects.equals(item.getCreateUid(),user.getUserId())) {
+                if (Objects.equals(item.getCreateUid(), user.getUserId())) {
                     SsoUserDTO userDTO = new SsoUserDTO();
                     BeanUtils.copyProperties(user, userDTO);
                     userDTO.setUserPassword("");
@@ -161,10 +161,11 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     /**
      * 创建列表查询条件
-     * @author zhaofeng
-     * @date 2021/5/8 14:11
+     *
      * @param dto
      * @param userId
+     * @author zhaofeng
+     * @date 2021/5/8 14:11
      */
     private HashMap<String, Object> buildQueryParams(TeamQueryDTO dto, Long userId) {
         HashMap<String, Object> params = new HashMap<>();
@@ -173,12 +174,12 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (!StringUtils.isEmpty(system)) {
             List<SsoSystemRestDTO> systemList = iFacadeSystemApi.getSystemByLikeNameOrCode(system);
             List<Long> systemIds = Lists.newArrayList();
-            if(!systemList.isEmpty()){
+            if (!systemList.isEmpty()) {
                 systemList.forEach(s -> {
                     systemIds.add(s.getSystemId());
                 });
                 params.put("systemIds", systemIds);
-            }else{
+            } else {
                 params.put("systemIds", Arrays.asList(-1L));
             }
         } else {
@@ -186,16 +187,16 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         //按po名称或账号获取poids
         String po = dto.getPo();
-        if(!StringUtils.isEmpty(po)){
+        if (!StringUtils.isEmpty(po)) {
             params.put("po", po);
-        }else{
+        } else {
             params.put("po", null);
         }
         //按sm名称或账号获取smids
         String sm = dto.getSm();
-        if(!StringUtils.isEmpty(sm)){
+        if (!StringUtils.isEmpty(sm)) {
             params.put("sm", sm);
-        }else{
+        } else {
             params.put("sm", null);
         }
         params.put("team", dto.getTeam());
@@ -213,7 +214,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Transactional(rollbackFor = Exception.class)
     public void insertTeam(STeam team) {
         String tenantCode = UserThreadLocalUtil.getTenantCode();
-        if (sTeamMapper.teamNameNumber(team.getTeamId() ,team.getTeamName(), tenantCode) > 0) {
+        if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode) > 0) {
             throw new BusinessException("团队名称已存在");
         }
         //取出数据
@@ -221,9 +222,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<STeamMember> teamSmS = team.getTeamSmS();
         List<STeamMember> teamUsers = team.getTeamUsers();
         //PO、SM不能重复
-        teamPoS.forEach(po->{
-            teamSmS.forEach(sm->{
-                if(Objects.equals(po.getUserId(), sm.getUserId())){
+        teamPoS.forEach(po -> {
+            teamSmS.forEach(sm -> {
+                if (Objects.equals(po.getUserId(), sm.getUserId())) {
                     throw new BusinessException("团队PO、SM重复");
                 }
             });
@@ -248,14 +249,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //调门户服务，新增PO角色
         SsoSubjectUserDTO po = new SsoSubjectUserDTO();
         po.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
-        po.setRoleId((long)TeamRoleEnum.PRODUCT_OWNER.roleId);
+        po.setRoleId((long) TeamRoleEnum.PRODUCT_OWNER.roleId);
         po.setSubjectId(team.getTeamId());
         po.setDataCreatorId(team.getCreateUid());
         po.setUserIds(poIds);
         //调用门户服务，新增SM角色
         SsoSubjectUserDTO sm = new SsoSubjectUserDTO();
         sm.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
-        sm.setRoleId((long)TeamRoleEnum.SCRUM_MASTER.roleId);
+        sm.setRoleId((long) TeamRoleEnum.SCRUM_MASTER.roleId);
         sm.setSubjectId(team.getTeamId());
         sm.setDataCreatorId(team.getCreateUid());
         sm.setUserIds(smIds);
@@ -263,7 +264,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             iFacadeUserApi.addUserRlats(po);
             //调用门户服务，新增SM角色
             iFacadeUserApi.addUserRlats(sm);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("调用门户服务添加PO、SM角色失败，失败原因:{}", e);
             throw new BusinessException("调用门户服务添加PO、SM角色失败");
         }
@@ -295,7 +296,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     public void updateTeam(STeam team) {
         Long teamId = team.getTeamId();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
-        if (sTeamMapper.teamNameNumber(teamId ,team.getTeamName(), tenantCode) > 0) {
+        if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode) > 0) {
             throw new BusinessException("团队名称已存在");
         }
 
@@ -312,9 +313,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<STeamMember> teamSmS = team.getTeamSmS();
         List<STeamMember> teamUsers = team.getTeamUsers();
         //PO、SM不能重复
-        teamPoS.forEach(po->{
-            teamSmS.forEach(sm->{
-                if(Objects.equals(po.getUserId(), sm.getUserId())){
+        teamPoS.forEach(po -> {
+            teamSmS.forEach(sm -> {
+                if (Objects.equals(po.getUserId(), sm.getUserId())) {
                     throw new BusinessException("团队PO、SM重复");
                 }
             });
@@ -339,14 +340,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //调门户服务，新增PO角色
         SsoSubjectUserDTO po = new SsoSubjectUserDTO();
         po.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
-        po.setRoleId((long)TeamRoleEnum.PRODUCT_OWNER.roleId);
+        po.setRoleId((long) TeamRoleEnum.PRODUCT_OWNER.roleId);
         po.setSubjectId(team.getTeamId());
         po.setDataCreatorId(team.getCreateUid());
         po.setUserIds(poIds);
         //调用门户服务，新增SM角色
         SsoSubjectUserDTO sm = new SsoSubjectUserDTO();
         sm.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
-        sm.setRoleId((long)TeamRoleEnum.SCRUM_MASTER.roleId);
+        sm.setRoleId((long) TeamRoleEnum.SCRUM_MASTER.roleId);
         sm.setSubjectId(team.getTeamId());
         sm.setDataCreatorId(team.getCreateUid());
         sm.setUserIds(smIds);
@@ -354,7 +355,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             iFacadeUserApi.addUserRlats(po);
             //调用门户服务，新增SM角色
             iFacadeUserApi.addUserRlats(sm);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("调用门户服务添加PO、SM角色失败，失败原因:{}", e);
             throw new BusinessException("调用门户服务添加PO、SM角色失败");
         }
@@ -394,4 +395,11 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         return list;
     }
 
+
+    @Override
+    public List<SsoSystemRestDTO> querySystemByTeamId(long teamId) {
+        List<Long> systemIdByTeamIds = teamSystemMapper.querySystemIdByTeamId(teamId);
+        List<SsoSystemRestDTO> systemByIds = iFacadeSystemApi.getSystemByIds(systemIdByTeamIds);
+        return systemByIds;
+    }
 }

@@ -304,5 +304,16 @@ public class SprintV3ServiceTest {
         Assert.assertNotNull(userSprintHourDTOList);
     }
 
+    @Test
+    public void testQueryNotRelationStorys(){
+        List<Long> systemIds=new ArrayList<>();
+        systemIds.add(807205004631072768L);
+        systemIds.add(888L);
+        String title="7084";
+        Long teamId=100002l;
+        Integer pageNum=1;
+        Integer pageSize=10;
 
+
+}
 }

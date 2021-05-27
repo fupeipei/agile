@@ -295,7 +295,7 @@
         </foreach>
     </insert>
     <select id="querySystemIdByTeamId" resultType="java.lang.Long">
-        select system_id
+        select DISTINCT system_id
         from s_team_system
         where team_id = #{teamId}
     </select>
@@ -312,4 +312,6 @@
         from s_team_system
         where team_id = #{teamId}
     </delete>
+
+
 </mapper>
