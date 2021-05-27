@@ -11,6 +11,7 @@ public class BurnDownChart {
     private String taskId;
     private Byte taskState;
     private String tenantCode;
+    private Date createTime;
 
     public String getTenantCode() {
         return tenantCode;
@@ -76,4 +77,11 @@ public class BurnDownChart {
         this.taskState = taskState;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 }

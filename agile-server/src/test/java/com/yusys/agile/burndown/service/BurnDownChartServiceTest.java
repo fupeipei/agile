@@ -2,6 +2,7 @@ package com.yusys.agile.burndown.service;
 
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.burndown.dto.*;
+import io.micrometer.core.instrument.util.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -11,6 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -35,7 +39,7 @@ public class BurnDownChartServiceTest {
     @Test
     public void getBySprintTest() {
         try {
-            Long sprintId = 89L;
+            Long sprintId = 100035L;
             BurnDownChartDTO chartDTO = burnDownChartService.getBySprint(sprintId);
             log.info("Junit测试--根据迭代ID查询迭代计划饼图数据成功：{}", chartDTO.toString());
         } catch (Exception e) {
@@ -68,7 +72,7 @@ public class BurnDownChartServiceTest {
     }
 
     @Test
-    public void testGetStoryPointsBySprint(){
+    public void testGetStoryPointsBySprint() {
         try {
             Long sprintId = 100034L;
             BurnDownStoryPointDTO storyPointBySprint = burnDownChartService.getStoryPointBySprint(sprintId);
@@ -77,6 +81,7 @@ public class BurnDownChartServiceTest {
             log.info("Junit测试--根据迭代ID查询故事点数据失败：{}", e);
         }
     }
+
     @Test
     @Transactional
     public void calculateStorys() {
@@ -97,4 +102,16 @@ public class BurnDownChartServiceTest {
             log.info("Junit测试--根据迭代ID获取当前迭代内团队成员工作量和任务数失败：{}", e);
         }
     }
+
+    @Test
+    public void testGetStorysBySprint() {
+        Long sprintId = 100028L;
+        BurnDownStoryDTO storysBySprint = burnDownChartService.getStorysBySprint(sprintId);
+//        String sprintDays = "1621823328785|1621823328785|1621823328785";
+//        List<Date> dateList = convertStrToDate(sprintDays);
+
+    }
+
+
+
 }

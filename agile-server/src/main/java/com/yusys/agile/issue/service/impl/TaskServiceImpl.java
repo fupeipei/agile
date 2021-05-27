@@ -134,7 +134,7 @@ public class TaskServiceImpl implements TaskService {
         }
         issueFactory.deleteIssue(taskId, deleteChild);
 
-        int i = this.updateStoryStageIdByTaskCount(issue);
+        int i = this.updateStoryLaneIdByTaskCount(issue);
         log.info("deleteTask_updateStoryStageIdByTaskCount=" + i);
     }
 
@@ -205,7 +205,7 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("更新任务失败！");
         }
 
-        int i = this.updateStoryStageIdByTaskCount(task);
+        int i = this.updateStoryLaneIdByTaskCount(task);
         log.info("editTask_updateStoryStageIdByTaskCound=" + i);
 
         // 拖到完成
@@ -259,6 +259,7 @@ public class TaskServiceImpl implements TaskService {
         return issueFactory.queryIssue(taskId, projectId);
     }
 
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
         //设置默认创建
@@ -282,7 +283,7 @@ public class TaskServiceImpl implements TaskService {
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
 
-        int i = this.updateStoryStageIdByTaskCount(task);
+        int i = this.updateStoryLaneIdByTaskCount(task);
         log.info("createTask_updateStoryStageIdByTaskCount=" + i);
 
         return taskId;
@@ -312,7 +313,7 @@ public class TaskServiceImpl implements TaskService {
 
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(issue)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + issue));
 
-        int i = this.updateStoryStageIdByTaskCount(task);
+        int i = this.updateStoryLaneIdByTaskCount(task);
         log.info("copyTask_updateStoryStageIdByTaskCount=" + i);
         return issue;
     }
@@ -374,12 +375,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
         // 拖拽的from必须和数据库中一致
-        if (!from.equals(task.getStageId()) || from.equals(to)) {
+        if (!from.equals(task.getLaneId()) || from.equals(to)) {
             throw new BusinessException("拖拽状态不正确或与原始状态不一致！");
         }
         /** 判断工作项流转规则是否允许 */
         Byte issueType = task.getIssueType();
-        if (!ruleFactory.getIssueRulesCheckFlag(issueType, task.getStageId(), null, to, null, task.getProjectId())) {
+        if (!ruleFactory.getIssueRulesCheckFlag(issueType, task.getLaneId(), null, to, null, task.getProjectId())) {
             throw new BusinessException("该工作项不允许流转到目标阶段！");
         }
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
@@ -414,16 +415,16 @@ public class TaskServiceImpl implements TaskService {
             //1）SM可以拖动看板下的任意卡片，当卡片已被团队成员领取时，拖动时不改变卡片领取人信息，当卡片从未领取拖动其他状态列时，未指定领取人时，需要提示：SM拖动卡片需要指定领取人
             //需要弹框，指定卡片领取人，需要预研交互
 
-            if (TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId()) && userId == null && memCount == 0) {
+            if (TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId()) && userId == null && memCount == 0) {
                 throw new BusinessException("SM拖动卡片需要指定领取人");
             }
             //sm自己领任务
-            if (TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId()) && userId == null && memCount > 0) {
-                task.setStageId(to);
+            if (TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId()) && userId == null && memCount > 0) {
+                task.setLaneId(to);
                 task.setHandler(loginUserId);
                 actionRemark = "sm自己领任务";
             } else {//sm指派或非指派拖拽
-                task.setStageId(to);
+                task.setLaneId(to);
                 task.setHandler(task.getHandler());
                 task.setAssessRemarks(task.getAssessRemarks() + "by s");
                 if (userId != null && userId > 0) {//sm指派任务的情况
@@ -437,14 +438,14 @@ public class TaskServiceImpl implements TaskService {
             1）团队成员角色可以将卡片从未领取拖到任意状态列，卡片状态根据卡片所在的状态列进行更新，卡片领取人，为拖动的团队成员
             2）当卡片从其他状态列拖动到未领取时，卡片领取人需要清除
             3）在非未领取状态列，团队成员只允许拖动领取人为自己的任务卡片，否则给出提示：当前任务已被他人领取，不允许拖动*/
-            if (TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())) {
-                task.setStageId(to);
+            if (TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId())) {
+                task.setLaneId(to);
                 task.setHandler(loginUserId);
-            } else if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId()) && !loginUserId.equals(task.getHandler())) {
+            } else if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId()) && !loginUserId.equals(task.getHandler())) {
                 throw new BusinessException("当前任务已被他人领取，不允许拖动!");
             }
-            if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId()) && TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(to)) {
-                task.setStageId(to);
+            if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId()) && TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(to)) {
+                task.setLaneId(to);
                 task.setHandler(null);
                 actionRemark += "领取人需要清除";
             }
@@ -454,8 +455,8 @@ public class TaskServiceImpl implements TaskService {
         }
 
         //上面是特殊情况，这里兜底
-        if (!task.getStageId().equals(to)) {
-            task.setStageId(to);
+        if (!task.getLaneId().equals(to)) {
+            task.setLaneId(to);
             task.setHandler(loginUserId);
         }
 
@@ -469,7 +470,7 @@ public class TaskServiceImpl implements TaskService {
         if (TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(to)) {
             task.setRemainWorkload(task.getPlanWorkload());
         }
-        if (null != task && TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(task.getStageId()) && !TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
+        if (null != task && TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(task.getLaneId()) && !TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
             task.setRemainWorkload(task.getPlanWorkload());
         }
         //创建历史记录
@@ -493,8 +494,8 @@ public class TaskServiceImpl implements TaskService {
 
         }
 
-        //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-        int storyCount = this.updateStoryStageIdByTaskCount(task);
+        //  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+        int storyCount = this.updateStoryLaneIdByTaskCount(task);
 
         logService.insertLog("dragTask", issueId, IssueTypeEnum.TYPE_TASK.CODE.longValue(), actionRemark + "from=" + TaskStatusEnum.getName(from) + from
                 + " to=" + TaskStatusEnum.getName(to) + to + " storyCount=" + storyCount + " taskCount=" + taskCount, "1");
@@ -506,7 +507,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-    private int updateStoryStageIdByTaskCount(Issue task) {
+    private int updateStoryLaneIdByTaskCount(Issue task) {
         if (task == null) {
             return -1;
         }
@@ -520,14 +521,14 @@ public class TaskServiceImpl implements TaskService {
         //根据故事查询所有有效的任务
         List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
         //完成的数量
-        long finishCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(t.getStageId())).count();
+        long finishCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(t.getLaneId())).count();
 
         Issue storyIssue = new Issue();
         storyIssue.setIssueId(storyId);
         if (finishCount == tasks.size()) {
-            storyIssue.setStageId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
         } else {
-            storyIssue.setStageId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
         }
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
         log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));

@@ -8,16 +8,21 @@ import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
+import java.util.Date;
 import java.util.List;
 
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.util.code.ReflectUtil;
 
 /**
  * @Author zhaofeng
@@ -160,4 +165,43 @@ public interface Sprintv3Service {
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
 
     List<IssueDTO>  queryNotRelationStorys(String title, Long teamId,List<Long> systemIds, Integer pageNum, Integer pageSize);
+
+
+    /**
+     * 分页模糊查询迭代下人员
+     * @param sprintId
+     * @param userName
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    List<STeamMember> querySprintVagueUser(Long sprintId,String userName,Integer pageNum,Integer pageSize);
+
+
+    /**
+     * 查询迭代下关联的系统
+     * @param sprintId
+     * @return
+     */
+    List<SsoSystemDTO> querySystemBySprint(Long sprintId);
+
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 是否在迭代周期内
+     * @param sprintDays
+     * @param sprintTime
+     * @Return boolean
+     */
+    boolean legalDate(String sprintDays, Date sprintTime);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 查询所有的迭代信息
+     * @param
+     * @Return java.util.List<com.yusys.agile.sprintv3.domain.SSprintWithBLOBs>
+     */
+    List<SSprintWithBLOBs> querySprintList();
 }

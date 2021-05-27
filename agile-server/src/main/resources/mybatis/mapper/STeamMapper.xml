@@ -493,4 +493,18 @@
         from s_team
         where team_id = #{teamId}
     </select>
+
+
+    <select id="querySprintVagueUser" resultType="com.yusys.agile.teamv3.domain.STeamMember">
+        select distinct a.user_id, a.user_account, a.user_name
+        from s_team_member a
+                     left join s_sprint_user_hour b on b.user_id = a.user_id
+                     left join s_sprint c on b.sprint_id = c.sprint_id
+        where b.sprint_id = #{sprintId}
+          and a.team_id = (select team_id from s_sprint where sprint_id = #{sprintId})
+          <if test="userName != null and  userName != ''">
+              and (a.user_name like concat('%', #{userName}, '%') or  a.user_account like like concat('%', #{userName}, '%'))
+          </if>
+          and c.state = 'U'
+    </select>
 </mapper>

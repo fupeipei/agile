@@ -283,7 +283,8 @@ public class StoryServiceImpl implements StoryService {
         //故事的迭代id为null 故事的状态为开发阶段的未开始
         issue.setSprintId(null);
         issue.setUpdateTime(new Date());
-        issue.setStageId(104L);
+        issue.setStageId(4L);
+        issue.setLaneId(104L);
         issue.setHandler(null);
         int i = issueMapper.updateByPrimaryKey(issue);
         if (i != 1) {
