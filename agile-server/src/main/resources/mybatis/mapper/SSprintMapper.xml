@@ -709,15 +709,16 @@
         select count(issue_id)
         from s_issue
         where sprint_id = #{sprintId}
-          and issue_type = 3
+          and issue_type = #{issueType}
+          and state = 'U'
     </select>
 
     <select id="querySprintFinishedStoryNumber" resultType="int">
         select count(issue_id)
         from s_issue
         where sprint_id = #{sprintId}
-          and issue_type = 3
-          and stage_id = 103
+          and issue_type = #{issueType}
+          and lane_id = #{status}
     </select>
 
     <select id="querySprintFinishedStoryPoint" resultType="int">
@@ -727,8 +728,8 @@
               (select issue_id
                from s_issue
                where sprint_id = #{sprintId}
-                 and stage_id = 103
-                 and issue_type = 3
+                 and lane_id = #{status}
+                 and issue_type = #{issueType}
                  and state = 'U')
     </select>
 
@@ -739,7 +740,7 @@
               (select issue_id
                from s_issue
                where sprint_id = #{sprintId}
-                 and issue_type = 3
+                 and issue_type = #{issueType}
                  and state = 'U')
     </select>
 
@@ -747,8 +748,8 @@
         select ifnull(sum(plan_workload), 0)
         from s_issue
         where sprint_id = #{sprintId}
-          and stage_id = 103
-          and issue_type = 4
+          and lane_id = #{status}
+          and issue_type = #{issueType}
           and state = 'U'
     </select>
 
@@ -756,7 +757,7 @@
         select ifnull(sum(plan_workload), 0)
         from s_issue a
         where a.sprint_id = #{sprintId}
-          and issue_type = 4
+          and issue_type = #{issueType}
           and state = 'U'
     </select>
 
@@ -764,8 +765,8 @@
         select count(issue_id)
         from s_issue
         where sprint_id = #{sprintId}
-          and stage_id = 103
-          and issue_type = 4
+          and lane_id = #{status}
+          and issue_type = #{issueType}
           and state = 'U'
     </select>
 
@@ -773,18 +774,19 @@
         select count(issue_id)
         from s_issue
         where sprint_id = #{sprintId}
-          and issue_type = 4
+          and issue_type = #{issueType}
           and state = 'U'
     </select>
 
     <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
-        SELECT DISTINCT ss.sprint_id,ss.sprint_name
+        SELECT DISTINCT ss.sprint_id, ss.sprint_name
         from agile.s_sprint ss
-        left join agile.s_team_system sts
-        on ss.team_id  = sts.team_id
-        where
-        ss.status in (2,3) and sts.system_id  = #{systemId};
+                     left join agile.s_team_system sts
+                on ss.team_id = sts.team_id
+        where ss.status in (2, 3)
+          and sts.system_id = #{systemId};
     </select>
+
     <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
         select *
         from s_sprint a
@@ -801,20 +803,34 @@
     </select>
 
     <select id="queryUserWorkload" resultMap="SprintMembersWorkHours">
-        select ifnull(sum(plan_workload),0), count(issue_id)
+        select ifnull(sum(plan_workload) + (select ifnull(sum(really_workload), 0)
+                                            from s_issue
+                                            where handler = #{userId}
+                                              and issue_type = #{issueType}
+                                              and lane_id = 110
+                                              and state = 'U'), 0),
+               count(issue_id)
         from s_issue a
         where a.handler = #{userId}
-          and a.issue_type = 4
-          and a.stage_id in (101, 102, 103)
+          and a.issue_type = #{issueType}
+          and a.lane_id in (108, 109)
           and a.state = 'U'
     </select>
 
+    <select id="unclaimedWorkHours" resultType="int">
+        select ifnull(sum(plan_workload), 0)
+        from s_issue a
+        where a.handler is null
+          and a.issue_type = #{issueType}
+          and a.lane_id = #{status}
+    </select>
+
     <select id="queryUserResidueWorkload" resultType="int">
-        select ifnull( sum(plan_workload),0)
+        select ifnull(sum(plan_workload), 0)
         from s_issue a
         where a.handler = #{userId}
-          and a.issue_type = 4
-          and a.stage_id = 102
+          and a.issue_type = #{issueType}
+          and a.lane_id = #{status}
           and a.state = 'U'
     </select>
 </mapper>
