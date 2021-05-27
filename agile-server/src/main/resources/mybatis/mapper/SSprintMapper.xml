@@ -719,6 +719,7 @@
         where sprint_id = #{sprintId}
           and issue_type = #{issueType}
           and lane_id = #{status}
+          and state = 'U'
     </select>
 
     <select id="querySprintFinishedStoryPoint" resultType="int">
