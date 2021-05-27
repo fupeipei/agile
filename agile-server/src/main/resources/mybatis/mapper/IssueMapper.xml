@@ -3089,4 +3089,12 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             and b.sprint_time = #{currTime}
         ]]>
     </select>
+
+    <select id="getPlanWorkload" resultType="int">
+    select ifnull(sum(plan_workload),0) from s_issue where sprint_id = #{sprintId} and state = 'U' and issue_type in(4,5);
+  </select>
+    <select id="getRemainWorkload" resultType="int">
+    select ifnull(sum(remain_workload),0) from s_issue where sprint_id = #{sprintId} and state = 'U'
+    AND ((issue_type = 4 and lane_id IN(107,108,109)) or (issue_type = 5 and stage_id IN(1000,1001)))
+  </select>
 </mapper>

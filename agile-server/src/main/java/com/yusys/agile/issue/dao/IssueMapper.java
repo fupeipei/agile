@@ -596,4 +596,22 @@ public interface IssueMapper {
      * @param currTime 当前日期
      */
     Integer countCurrTimeStoryPointsForSprintId(@Param("sprintId") Long sprintId,@Param("currTime") Date currTime);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 获取迭代中工作项计划工作量
+     * @param sprintId
+     * @Return java.lang.Integer
+     */
+    Integer getPlanWorkload(Long sprintId);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 获取迭代中工作项剩余工作量
+     * @param sprintId
+     * @Return int
+     */
+    int getRemainWorkload(Long sprintId);
 }

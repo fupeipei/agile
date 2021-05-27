@@ -86,7 +86,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from commission_record
+    from s_commission_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -97,21 +97,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from commission_record
+    from s_commission_record
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from commission_record
+    delete from s_commission_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.commission.domain.SCommissionRecordExample">
-    delete from commission_record
+    delete from s_commission_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.commission.domain.SCommissionRecord">
-    insert into commission_record (id, commisson_id, title, 
+    insert into s_commission_record (id, commisson_id, title,
       type, handler, issue_id, 
       project_id, stage_id, lane_id, 
       state, create_uid, create_time, 
@@ -125,7 +125,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.commission.domain.SCommissionRecord">
-    insert into commission_record
+    insert into s_commission_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -222,13 +222,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.commission.domain.SCommissionRecordExample" resultType="java.lang.Long">
-    select count(*) from commission_record
+    select count(*) from s_commission_record
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update commission_record
+    update s_commission_record
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -281,7 +281,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update commission_record
+    update s_commission_record
     set id = #{record.id,jdbcType=BIGINT},
       commisson_id = #{record.commissonId,jdbcType=BIGINT},
       title = #{record.title,jdbcType=VARCHAR},
@@ -302,7 +302,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.commission.domain.SCommissionRecord">
-    update commission_record
+    update s_commission_record
     <set>
       <if test="commissonId != null">
         commisson_id = #{commissonId,jdbcType=BIGINT},
@@ -350,7 +350,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.commission.domain.SCommissionRecord">
-    update commission_record
+    update s_commission_record
     set commisson_id = #{commissonId,jdbcType=BIGINT},
       title = #{title,jdbcType=VARCHAR},
       type = #{type,jdbcType=TINYINT},

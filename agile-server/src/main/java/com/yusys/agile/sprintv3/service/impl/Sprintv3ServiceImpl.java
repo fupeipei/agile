@@ -42,6 +42,7 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
@@ -728,7 +729,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
         return issueDTOS;
     }
-
     /**
      * 查询迭代用户
      *
