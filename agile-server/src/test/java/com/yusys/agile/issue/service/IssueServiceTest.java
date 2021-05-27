@@ -19,6 +19,9 @@ public class IssueServiceTest {
     @Test
     public  void getIssueListTest(){
         Map<String, Object> map = new HashMap<>();
+        map.put("issueType",3);
+        map.put("pageNum",1);
+        map.put("pageSize",10);
         PageInfo pageInfo = issueService.getIssueList(map);
     }
 }
