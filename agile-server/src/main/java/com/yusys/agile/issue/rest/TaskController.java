@@ -3,7 +3,7 @@ package com.yusys.agile.issue.rest;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
-import com.yusys.agile.issue.enums.TaskStageIdEnum;
+import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
 import com.yusys.agile.issue.service.TaskService;
 import com.alibaba.fastjson.JSON;
@@ -206,7 +206,7 @@ public class TaskController {
      */
     @GetMapping("/task/stages")
     public ControllerResponse getIssueTaskStages() {
-        Map<Long, String> taskAllStageId = TaskStageIdEnum.getTaskAllStageId();
+        Map<Long, String> taskAllStageId = TaskStatusEnum.getTaskAllStageId();
         return ControllerResponse.success(taskAllStageId);
     }
 

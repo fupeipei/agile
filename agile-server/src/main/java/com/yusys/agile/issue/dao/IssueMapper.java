@@ -577,10 +577,10 @@ public interface IssueMapper {
     /**
      * 查询没有关联迭代的故事
      * @param title
-     * @param systemId
+     * @param systemIds
      * @return
      */
-    List<IssueDTO> queryNotRelationStory(@Param("title") String title,@Param("systemId") Long systemId);
+    List<IssueDTO> queryNotRelationStory(@Param("title") String title,@Param("systemIds")Long systemIds);
     /**
      * 查询迭代下故事点数的总数
      * @author zhaofeng
