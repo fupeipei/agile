@@ -676,7 +676,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         //迭代相关人员
         List<STeamMember> userList = sTeamMapper.querySprintUser(sprintId);
         List<SprintMembersWorkHours> list = new ArrayList<>();
-
         //未领取
         SprintMembersWorkHours unclaimedWorkHours = new SprintMembersWorkHours();
         unclaimedWorkHours.setUserId(0);
@@ -690,10 +689,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             sprintMembersWorkHours.setUserId(userList.get(i).getUserId());
             sprintMembersWorkHours.setUserName(userList.get(i).getUserName());
             sprintMembersWorkHours.setUserAccount(userList.get(i).getUserAccount());
-            UserWorkloadQueryModel userWorkloadQueryModel = ssprintMapper.queryUserWorkload(userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE);
-            sprintMembersWorkHours.setActualWorkload(userWorkloadQueryModel.getFirstData());
-            sprintMembersWorkHours.setTaskNumber(userWorkloadQueryModel.getSecondData());
-            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
+            sprintMembersWorkHours.setActualWorkload(ssprintMapper.queryUserActualWorkload(sprintId, userList.get(i).getUserId()));
+            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
+            sprintMembersWorkHours.setTaskNumber(ssprintMapper.queryUserTaskNumber(sprintId, userList.get(i).getUserId()));
             list.add(sprintMembersWorkHours);
         }
         return list;
@@ -714,15 +712,15 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public List<IssueDTO> queryNotRelationStorys(String title, Long teamId, List<Long> systemIds, Integer pageNum, Integer pageSize) {
         List<IssueDTO> issueDTOS = new ArrayList<>();
-        List<Long> systemIdInfo=new ArrayList<>();
-        if(CollectionUtils.isEmpty(systemIds)){
+        List<Long> systemIdInfo = new ArrayList<>();
+        if (CollectionUtils.isEmpty(systemIds)) {
             //如果没有系统id 查询团队下的所有系统
             List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
-            for(SsoSystemRestDTO ssoSystemRestDTO:ssoSystemRestDTOS){
+            for (SsoSystemRestDTO ssoSystemRestDTO : ssoSystemRestDTOS) {
                 Long systemId = ssoSystemRestDTO.getSystemId();
                 systemIdInfo.add(systemId);
             }
-            PageHelper.startPage(pageNum,pageSize);
+            PageHelper.startPage(pageNum, pageSize);
             issueDTOS = issueMapper.queryNotRelationStory(title, systemIdInfo);
             issueDTOS.stream().map(issueDTO -> {
                 ssoSystemRestDTOS.forEach(ssoSystemRestDTO -> {
@@ -733,11 +731,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 return issueDTO;
             }).collect(Collectors.toList());
         } else {
-            PageHelper.startPage(pageNum,pageSize);
-            issueDTOS = issueMapper.queryNotRelationStory(title,systemIds);
+            PageHelper.startPage(pageNum, pageSize);
+            issueDTOS = issueMapper.queryNotRelationStory(title, systemIds);
             SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds.get(0));
             issueDTOS.stream().map(issueDTO -> {
-                issueDTO.setSystemCode( ssoSystem.getSystemCode());
+                issueDTO.setSystemCode(ssoSystem.getSystemCode());
                 return issueDTO;
             }).collect(Collectors.toList());
         }
@@ -747,7 +745,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Override
     public List<STeamMember> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         List<STeamMember> sTeamMembers = sTeamMapper.querySprintVagueUser(sprintId, userName);
         return sTeamMembers;
     }
@@ -767,7 +765,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         try {
             ssoSystemDTOS = ReflectUtil.copyProperties4List(ssoSystems, SsoSystemDTO.class);
         } catch (Exception e) {
-            log.error("数据转换异常:{}",e.getMessage());
+            log.error("数据转换异常:{}", e.getMessage());
         }
         return ssoSystemDTOS;
     }
@@ -792,7 +790,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 //工作项加入迭代
                 storyService.distributeSprint(issueId, sprintDTO.getSprintId());
             }
-        }else {
+        } else {
             throw new BusinessException("查不到工作项");
         }
         return true;
