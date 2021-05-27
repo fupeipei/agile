@@ -3048,8 +3048,14 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
                                    and a.issue_type=3
                                    and a.state='U'
                                    and a.is_archive != 1
-        <if test="systemId != null and systemId != ''">
-            and a.issue_id in(select b.issue_id from s_issue_system_relp b where  b.system_id =#{systemId})
+        <if test="systemIds != null and systemIds.size>0">
+            and a.issue_id in(
+            select b.issue_id from s_issue_system_relp b where  b.system_id in
+            <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">
+            #{systemId}
+        </foreach>
+            )
+
         </if>
         <if test="title != null and title != ''">
             AND (a.title LIKE CONCAT('%', #{title}, '%')or a.issue_id LIKE CONCAT('%', #{title}, '%'))

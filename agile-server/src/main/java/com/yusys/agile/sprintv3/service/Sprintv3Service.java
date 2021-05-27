@@ -149,5 +149,5 @@ public interface Sprintv3Service {
      */
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
 
-    List<IssueDTO>  queryNotRelationStorys(String title, Long systemId, Integer pageNum, Integer pageSize);
+    List<IssueDTO>  queryNotRelationStorys(String title, Long teamId,List<Long> systemIds, Integer pageNum, Integer pageSize);
 }
