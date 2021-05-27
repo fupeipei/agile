@@ -40,6 +40,7 @@ import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
@@ -80,7 +81,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Resource
     private STeamMapper sTeamMapper;
     @Resource
-    private STeamSystemMapper STeamSystemMapper;
+    private STeamSystemMapper sTeamSystemMapper;
     @Resource
     private STeamMemberMapper sTeamMemberMapper;
     @Autowired
@@ -93,6 +94,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private IssueMapper issueMapper;
     @Resource
     private Teamv3Service teamv3Service;
+
 
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
@@ -167,7 +169,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             List<UserSprintHourDTO> userSprintHourDTOS = this.queryUsersBySprintId(sprintId);
             teamDTO.setUsers(userSprintHourDTOS);
             //查询团队下的子系统
-            List<Long> systemIds = STeamSystemMapper.querySystemIdByTeamId(teamDTO.getTeamId());
+            List<Long> systemIds = sTeamSystemMapper.querySystemIdByTeamId(teamDTO.getTeamId());
             List<SsoSystemRestDTO> systemByIds = iFacadeSystemApi.getSystemByIds(systemIds);
             teamDTO.setTeamSystems(systemByIds);
 
@@ -729,6 +731,34 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
         return issueDTOS;
     }
+
+    @Override
+    public List<STeamMember> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<STeamMember> sTeamMembers = sTeamMapper.querySprintVagueUser(sprintId, userName);
+        return sTeamMembers;
+    }
+
+    @Override
+    public List<SsoSystemDTO> querySystemBySprint(Long sprintId) {
+        SSprintWithBLOBs sSprintWithBLOBs = ssprintMapper.selectByPrimaryKey(sprintId);
+        SprintListDTO sprintListDTO = ReflectUtil.copyProperties(sSprintWithBLOBs, SprintListDTO.class);
+        List<SprintListDTO> sprintListDTOS = Lists.newArrayList();
+        sprintListDTOS.add(sprintListDTO);
+
+        //系统
+        Long teamId = sSprintWithBLOBs.getTeamId();
+        List<Long> systemIds = sTeamSystemMapper.querySystemIdByTeamId(teamId);
+        List<SsoSystem> ssoSystems = iFacadeSystemApi.querySsoSystem(systemIds);
+        List<SsoSystemDTO> ssoSystemDTOS = null;
+        try {
+            ssoSystemDTOS = ReflectUtil.copyProperties4List(ssoSystems, SsoSystemDTO.class);
+        } catch (Exception e) {
+            log.error("数据转换异常:{}",e.getMessage());
+        }
+        return ssoSystemDTOS;
+    }
+
     /**
      * 查询迭代用户
      *
@@ -772,4 +802,5 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 .andStateEqualTo(StateEnum.U.getValue());
         return ssprintMapper.selectByExample(sSprintExample);
     }
+
 }

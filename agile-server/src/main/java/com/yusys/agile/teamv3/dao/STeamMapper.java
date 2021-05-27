@@ -128,4 +128,13 @@ public interface STeamMapper {
      * @return {@link String}
      */
     String queryTeamNameByTeamId(Long teamId);
+
+
+    /**
+     * 模糊查询迭代下人员
+     * @param sprintId
+     * @param userName
+     * @return
+     */
+    List<STeamMember>  querySprintVagueUser(@Param("sprintId") Long sprintId,@Param("userName") String userName);
 }

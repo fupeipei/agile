@@ -9,8 +9,10 @@ import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
+import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -212,6 +214,53 @@ public class Sprintv3Controller {
                                                      @RequestParam(name = "pageSize") Integer pageSize) {
 
         List<IssueDTO> result = sprintv3Service.queryNotRelationStorys(title, teamId,systemId,pageNum, pageSize);
+        return ControllerResponse.success(new PageInfo<>(result));
+
+    }
+
+
+    /**
+     * 模糊分页查询迭代下人员
+     * @param userName
+     * @param sprintId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/querySprintVagueUser")
+    public ControllerResponse querySprintVagueUser(@RequestParam(name = "userName", required = false) String userName,
+                                                     @RequestParam(name = "sprintId") Long sprintId,
+                                                     @RequestParam(name = "pageNum") Integer pageNum,
+                                                     @RequestParam(name = "pageSize") Integer pageSize) {
+
+        List<STeamMember> result = sprintv3Service.querySprintVagueUser(sprintId, userName, pageNum, pageSize);
+        return ControllerResponse.success(new PageInfo<>(result));
+
+    }
+
+
+    /**
+     * 查询系统下所有未开始进行中的迭代信息
+     * @param systemId
+     * @return
+     */
+    @GetMapping("/getEffectiveSprints")
+    public ControllerResponse getEffectiveSprints(@RequestParam(name = "systemId") Long systemId) {
+
+        List<SprintListDTO> result = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
+        return ControllerResponse.success(new PageInfo<>(result));
+
+    }
+
+
+    /**
+     * 查询迭代关联的系统
+     * @param sprintId
+     * @return
+     */
+    @GetMapping("/querySystemBySprint")
+    public ControllerResponse querySystemBySprint(@RequestParam(name = "sprintId") Long sprintId) {
+        List<SsoSystemDTO> result = sprintv3Service.querySystemBySprint(sprintId);
         return ControllerResponse.success(new PageInfo<>(result));
 
     }
