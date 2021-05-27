@@ -1129,7 +1129,7 @@
     </select>
 
     <update id="updateStatusByParentId">
-    update s_issue set sprint_id = null,stage_id=100,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
+    update s_issue set sprint_id = null,stage_id=107,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
   </update>
     <select id="getBySprint" resultMap="BaseResultMap">
         SELECT
@@ -2264,7 +2264,7 @@
     <update id="updateBySprintId">
     update s_issue
     set
-        stage_id=111,
+        stage_id=105,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
