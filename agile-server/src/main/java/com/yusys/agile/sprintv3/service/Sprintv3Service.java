@@ -8,12 +8,14 @@ import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
+import java.util.Date;
 import java.util.List;
 
 import com.yusys.agile.sprint.dto.SprintDTO;
@@ -151,4 +153,23 @@ public interface Sprintv3Service {
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
 
     List<IssueDTO>  queryNotRelationStorys(String title, Long teamId,Long systemIds, Integer pageNum, Integer pageSize);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 是否在迭代周期内
+     * @param sprintDays
+     * @param sprintTime
+     * @Return boolean
+     */
+    boolean legalDate(String sprintDays, Date sprintTime);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 查询所有的迭代信息
+     * @param
+     * @Return java.util.List<com.yusys.agile.sprintv3.domain.SSprintWithBLOBs>
+     */
+    List<SSprintWithBLOBs> querySprintList();
 }

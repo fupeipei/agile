@@ -35,7 +35,7 @@ public class BurnDownChartServiceTest {
     @Test
     public void getBySprintTest() {
         try {
-            Long sprintId = 89L;
+            Long sprintId = 100035L;
             BurnDownChartDTO chartDTO = burnDownChartService.getBySprint(sprintId);
             log.info("Junit测试--根据迭代ID查询迭代计划饼图数据成功：{}", chartDTO.toString());
         } catch (Exception e) {
