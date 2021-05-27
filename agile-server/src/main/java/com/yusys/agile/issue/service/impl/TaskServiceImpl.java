@@ -632,7 +632,7 @@ public class TaskServiceImpl implements TaskService {
             return ssoUserDTOList;
         }
         List<Long> userIds = userSprintHours.stream().map(UserSprintHour::getUserId).distinct().collect(Collectors.toList());
-        return iFacadeUserApi.queryUsersByUserIdsAndConditions(pageNum,pageSize,userName,userIds);
+        return iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds,pageNum,pageSize,userName);
     }    /**
      * @param from
      * @param to
