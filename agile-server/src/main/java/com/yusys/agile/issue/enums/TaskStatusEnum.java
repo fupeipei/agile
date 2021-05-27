@@ -1,5 +1,7 @@
 package com.yusys.agile.issue.enums;
 
+import lombok.Data;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,7 +19,8 @@ public enum TaskStatusEnum {
     public String NAME;
 
 
-    private TaskStatusEnum(String name, Long code) {
+
+    TaskStatusEnum(String name, Long code) {
         this.CODE = code;
         this.NAME = name;
     }

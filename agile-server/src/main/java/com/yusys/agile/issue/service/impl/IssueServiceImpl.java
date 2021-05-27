@@ -2434,8 +2434,8 @@ public class IssueServiceImpl implements IssueService {
             panoramasTaskDTO.setHandler(getHandlerName(task.getHandler()));
             Map stageMap = task.getStageId();
             Long stageId = (Long) stageMap.get("id");
-            TaskStatusEnum TaskStatusEnum = TaskStatusEnum.getByCode(stageId);
-            panoramasTaskDTO.setTaskStatus(TaskStatusEnum.NAME);
+            TaskStatusEnum taskStatusEnum = TaskStatusEnum.getByCode(stageId);
+            panoramasTaskDTO.setTaskStatus(taskStatusEnum.NAME);
             panoramasTaskDTOList.add(panoramasTaskDTO);
         }
     }
