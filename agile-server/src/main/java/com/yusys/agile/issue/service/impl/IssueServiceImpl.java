@@ -571,7 +571,7 @@ public class IssueServiceImpl implements IssueService {
         //迭代ID
         if (issue.getSprintId() != null) {
             if (mapMap.get("sprintMap").containsKey(issue.getSprintId())) {
-                Map<Long, List<SprintDTO>> sprintMap = mapMap.get("sprintMap");
+                Map<Long, List<SSprint>> sprintMap = mapMap.get("sprintMap");
                 map = new HashMap<String, String>();
                 map.put("name", sprintMap.get(issue.getSprintId()).get(0).getSprintName());
                 map.put("id", issue.getSprintId());

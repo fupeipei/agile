@@ -42,7 +42,6 @@ public class IssueController {
      * 功能描述  初始化Issue列表
      *
      * @param map
-     * @param projectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
