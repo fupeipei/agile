@@ -148,35 +148,35 @@ public class TaskServiceImpl implements TaskService {
         }
 
         //如果任务状态是未领取状态和已领取，编辑任务时,剩余工作量等于预计工作量 多了一项实际工时
-        if (null != task && (TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(issueDTO.getLaneId()) || TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE.equals(issueDTO.getLaneId()))) {
+        if (null != task && (TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(issueDTO.getLaneId()) || TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(issueDTO.getLaneId()))) {
             //实际工时
             task.setReallyWorkload(issueDTO.getReallyWorkload());
             task.setRemainWorkload(0);
         }
 
         //如果任务拖到进行中和已完成，多了一项剩余工时
-        if (null != task &&  (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getLaneId()) || TaskStageIdEnum.TYPE_MODIFYING_STATE.CODE.equals(issueDTO.getLaneId()))) {
+        if (null != task &&  (TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getLaneId()) || TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(issueDTO.getLaneId()))) {
             task.setRemainWorkload(issueDTO.getRemainWorkload());
             task.setReallyWorkload(0);
         }
 
         //如果任务在已领取中编辑，剩余工作量置为预计工作量
-        /*if (null != task && TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE.equals(issueDTO.getStageId())) {
+        /*if (null != task && TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(issueDTO.getStageId())) {
             task.setRemainWorkload(task.getPlanWorkload());
             task.setReallyWorkload(0);
         }*/
 
         //如果任务拖到已完成，剩余工作量置为0
-        /*if (null != task && TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId())) {
+        /*if (null != task && TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId())) {
             task.setRemainWorkload(0);
             task.setReallyWorkload(issueDTO.getPlanWorkload());
         }*/
         //如果任务拖到进行中，剩余工作量置为预计工作量
-        /*if (null != task && TaskStageIdEnum.TYPE_MODIFYING_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStageIdEnum.TYPE_MODIFYING_STATE.CODE.equals(oldTask.getStageId())) {
+        /*if (null != task && TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(oldTask.getStageId())) {
             task.setRemainWorkload(task.getPlanWorkload());
             task.setReallyWorkload(0);
         }*/
-        /*if (null != task && TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId()) && !TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId())) {
+        /*if (null != task && TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId()) && !TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId())) {
             task.setRemainWorkload(task.getPlanWorkload());
         }*/
 
@@ -190,7 +190,7 @@ public class TaskServiceImpl implements TaskService {
         log.info("editTask_updateStoryStageIdByTaskCound="+i);
 
         // 拖到完成
-        /*if (null != task && TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId())) {
+        /*if (null != task && TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId())) {
         }*/
 
     }
@@ -215,7 +215,7 @@ public class TaskServiceImpl implements TaskService {
             return Boolean.TRUE;
         //2.团队成员角色，只允许更新领取人为自己的卡片信息
         }else if (teamMember > 0
-                && !TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getLaneId())
+                && !TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getLaneId())
                 && Optional.ofNullable(oldTask.getHandler()).isPresent()
                 && oldTask.getHandler().equals(issueDTO.getHandler())
                 && securityDTO.getUserId().equals(oldTask.getHandler())){
@@ -260,7 +260,7 @@ public class TaskServiceImpl implements TaskService {
             //任务选择处理人就是已领取，否则就是未领取
             if (Optional.ofNullable(issueDTO.getHandler()).isPresent()){
                 issueDTO.setStageId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-                issueDTO.setLaneId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
+                issueDTO.setLaneId(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE);
             }
         }
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
@@ -398,11 +398,11 @@ public class TaskServiceImpl implements TaskService {
             //1）SM可以拖动看板下的任意卡片，当卡片已被团队成员领取时，拖动时不改变卡片领取人信息，当卡片从未领取拖动其他状态列时，未指定领取人时，需要提示：SM拖动卡片需要指定领取人
             //需要弹框，指定卡片领取人，需要预研交互
 
-            if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount==0){
+            if(TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount==0){
                 throw new BusinessException("SM拖动卡片需要指定领取人");
             }
             //sm自己领任务
-            if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount>0){
+            if(TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&userId==null&&memCount>0){
                 task.setStageId(to);
                 task.setHandler(loginUserId);
                 actionRemark="sm自己领任务";
@@ -422,13 +422,13 @@ public class TaskServiceImpl implements TaskService {
             1）团队成员角色可以将卡片从未领取拖到任意状态列，卡片状态根据卡片所在的状态列进行更新，卡片领取人，为拖动的团队成员
             2）当卡片从其他状态列拖动到未领取时，卡片领取人需要清除
             3）在非未领取状态列，团队成员只允许拖动领取人为自己的任务卡片，否则给出提示：当前任务已被他人领取，不允许拖动*/
-            if(TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())){
+            if(TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())){
                 task.setStageId(to);
                 task.setHandler(loginUserId);
-            }else if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&!loginUserId.equals(task.getHandler())){
+            }else if(!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&!loginUserId.equals(task.getHandler())){
                 throw new BusinessException("当前任务已被他人领取，不允许拖动!");
             }
-            if(!TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&TaskStageIdEnum.TYPE_ADD_STATE.CODE.equals(to)){
+            if(!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getStageId())&&TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(to)){
                 task.setStageId(to);
                 task.setHandler(null);
                 actionRemark+="领取人需要清除";
@@ -446,15 +446,15 @@ public class TaskServiceImpl implements TaskService {
 
 
         //如果任务拖到已完成，剩余工作量置为0
-        if (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
+        if (TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
             task.setRemainWorkload(0);
             task.setReallyWorkload(task.getPlanWorkload());
         }
         //如果任务拖到进行中，剩余工作量置为预计工作量
-        if (TaskStageIdEnum.TYPE_MODIFYING_STATE.CODE.equals(to)) {
+        if (TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(to)) {
             task.setRemainWorkload(task.getPlanWorkload());
         }
-        if (null != task && TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(task.getStageId()) && !TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
+        if (null != task && TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(task.getStageId()) && !TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
             task.setRemainWorkload(task.getPlanWorkload());
         }
         //创建历史记录
@@ -462,7 +462,7 @@ public class TaskServiceImpl implements TaskService {
         // 修改数据库
         int taskCount = issueMapper.updateByPrimaryKey(task);
 
-        if (TaskStageIdEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
+        if (TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(to)) {
 
             Long storyId = task.getParentId();
             // 故事的上层feature规整
@@ -481,8 +481,8 @@ public class TaskServiceImpl implements TaskService {
         //TODU  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
         int storyCount = this.updateStoryStageIdByTaskCount(task);
 
-        logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+TaskStageIdEnum.getName(from)+from
-                +" to="+TaskStageIdEnum.getName(to)+to+" storyCount="+storyCount+" taskCount="+taskCount,"1");
+        logService.insertLog("dragTask",issueId,IssueTypeEnum.TYPE_TASK.CODE.longValue(),actionRemark+"from="+TaskStatusEnum.getName(from)+from
+                +" to="+TaskStatusEnum.getName(to)+to+" storyCount="+storyCount+" taskCount="+taskCount,"1");
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
@@ -505,14 +505,14 @@ public class TaskServiceImpl implements TaskService {
         //根据故事查询所有有效的任务
         List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
         //完成的数量
-        long finishCount = tasks.stream().filter(t ->  t.getStageId().equals(TaskStageIdEnum.TYPE_CLOSED_STATE.CODE)).count();
+        long finishCount = tasks.stream().filter(t ->  t.getStageId().equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)).count();
 
         Issue storyIssue=new Issue();
         storyIssue.setIssueId(storyId);
         if(finishCount==tasks.size()){
-            storyIssue.setStageId(StoryStageIdEnum.TYPE_CLOSED_STATE.CODE);
+            storyIssue.setStageId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
         }else{
-            storyIssue.setStageId(StoryStageIdEnum.TYPE_MODIFYING_STATE.CODE);
+            storyIssue.setStageId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
         }
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
         log.info("根据故事id查询有效的、未完成的任务,finishCount="+finishCount+" 故事更新数量="+i+" storyIssue="+ JSONObject.toJSONString(storyIssue));
@@ -589,14 +589,14 @@ public class TaskServiceImpl implements TaskService {
         IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(
                 task.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.STAGEID.getDesc());
         if (null != task.getIssueId()) {
-            nameHistory.setOldValue(TaskStageIdEnum.getName(from));
-            if (to.equals(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE)) {
+            nameHistory.setOldValue(TaskStatusEnum.getName(from));
+            if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {
                 nameHistory.setNewValue("任务已领取");
             }
-            if (to.equals(TaskStageIdEnum.TYPE_MODIFYING_STATE.CODE)) {
+            if (to.equals(TaskStatusEnum.TYPE_MODIFYING_STATE.CODE)) {
                 nameHistory.setNewValue("任务开发中");
             }
-            if (to.equals(TaskStageIdEnum.TYPE_CLOSED_STATE.CODE)) {
+            if (to.equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)) {
                 nameHistory.setNewValue("任务开发完成");
             }
         }

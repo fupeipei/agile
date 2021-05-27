@@ -6,7 +6,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.CustomizeIssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
-import com.yusys.agile.issue.enums.TaskStageIdEnum;
+import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.CustomizeIssueService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.sysextendfield.dao.SysExtendFieldDetailMapper;
@@ -157,7 +157,7 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
             //处理任务阶段信息
             Long taskStageId = task.getStageId();
             if (null != taskStageId) {
-                String taskStageName = TaskStageIdEnum.getName(taskStageId);
+                String taskStageName = TaskStatusEnum.getName(taskStageId);
                 customizeIssue.setTaskStageId(taskStageId);
                 customizeIssue.setTaskStageName(taskStageName);
             }

@@ -416,7 +416,7 @@ public class ExcelServiceImpl implements ExcelService {
 
         if (IssueTypeEnum.TYPE_TASK.CODE.equals(excelType)) {
             issueDTO.setSprintId(sprintId);
-            issueDTO.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
+            issueDTO.setStageId(TaskStatusEnum.TYPE_ADD_STATE.CODE);
             // 故事id
             String storyStr = StringUtils.substringBefore(ExcelUtil.getStringData(currentRow.getCell(i)), "+");
             issueDTO.setParentId(StringUtils.isNotBlank(storyStr) ? Long.valueOf(storyStr) : null);

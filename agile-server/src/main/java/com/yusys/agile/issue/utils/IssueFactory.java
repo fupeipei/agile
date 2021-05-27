@@ -1100,7 +1100,7 @@ public class IssueFactory {
 
             if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType) || IssueTypeEnum.TYPE_FAULT.CODE.equals(issueType)) {
                 if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                    issueDTO.setStageName(TaskStageIdEnum.getName(issueDTO.getStageId()));
+                    issueDTO.setStageName(TaskStatusEnum.getName(issueDTO.getStageId()));
                 } else {
                     issueDTO.setStageName(FaultStatusEnum.getMsg(issueDTO.getStageId()));
                 }
