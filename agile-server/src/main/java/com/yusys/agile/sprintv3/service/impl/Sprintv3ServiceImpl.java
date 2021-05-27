@@ -730,6 +730,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 });
                 return issueDTO;
             }).collect(Collectors.toList());
+            //属性值翻译
+            issueDTOS.forEach(item -> {
+                //状态
+                item.setStoryStatusName(StoryStatusEnum.getName(item.getLaneId()));
+            });
         } else {
             PageHelper.startPage(pageNum, pageSize);
             issueDTOS = issueMapper.queryNotRelationStory(title, systemIds);
@@ -738,8 +743,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 issueDTO.setSystemCode(ssoSystem.getSystemCode());
                 return issueDTO;
             }).collect(Collectors.toList());
-        }
 
+            //属性值翻译
+            issueDTOS.forEach(item -> {
+                //状态
+                item.setStoryStatusName(StoryStatusEnum.getName(item.getLaneId()));
+            });
+        }
         return issueDTOS;
     }
 
