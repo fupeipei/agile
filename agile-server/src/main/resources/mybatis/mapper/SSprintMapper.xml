@@ -25,10 +25,6 @@
         <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays"/>
     </resultMap>
 
-    <resultMap id="SprintMembersWorkHours" type="com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel">
-        <result column="first" property="firstData"/>
-        <result column="second" property="secondData"/>
-    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
