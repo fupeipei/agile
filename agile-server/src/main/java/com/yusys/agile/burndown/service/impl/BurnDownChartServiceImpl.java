@@ -172,7 +172,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         com.yusys.agile.burndown.dto.BurnDownChartDTO burnDownChartDTO = new com.yusys.agile.burndown.dto.BurnDownChartDTO();
         // 预估工作量
         burnDownChartDTO.setPlanWorkload(sprintService.getWorkload(sprintId));
-        Integer actualRemainWorkload = sprintMapper.getPlanWorkload(sprintId);
+        Integer actualRemainWorkload = issueMapper.getPlanWorkload(sprintId);
         // 实际剩余工作量
         burnDownChartDTO.setActualRemainWorkload(actualRemainWorkload);
         // 每天的剩余工作量
@@ -657,7 +657,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
 
     private BurnDownChart getCurrent(Long sprintId, Long projectId, String sprintDays) {
         if (sprintService.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
-            int currentWorkload = sprintMapper.getRemainWorkload(sprintId);
+            int currentWorkload = issueMapper.getRemainWorkload(sprintId);
             return generateChart(projectId, sprintId, new Date(), currentWorkload);
         }
         return null;
