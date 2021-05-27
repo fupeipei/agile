@@ -3040,8 +3040,6 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         and
           r.state = 'U'
     </select>
-
-
     <select id="queryNotRelationStory" resultType="com.yusys.agile.issue.dto.IssueDTO">
         select a.title,a.priority,a.lane_id,a.issue_id,a.stage_id ,b.system_id
            from s_issue a,s_issue_system_relp b
@@ -3063,6 +3061,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             AND (a.title LIKE CONCAT('%', #{title}, '%')or a.issue_id LIKE CONCAT('%', #{title}, '%'))
         </if>
     </select>
+
 
     <select id="countStoryPointsForSprint" resultType="java.lang.Integer">
         select sum(se.`value`)

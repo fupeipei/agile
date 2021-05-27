@@ -16,6 +16,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.PageInfoDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
@@ -637,7 +638,12 @@ public class TaskServiceImpl implements TaskService {
             return ssoUserDTOList;
         }
         List<Long> userIds = userSprintHours.stream().map(UserSprintHour::getUserId).distinct().collect(Collectors.toList());
-        return iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, userName, pageNum, pageSize);
+        PageInfoDTO pageInfoDTO = new PageInfoDTO();
+        pageInfoDTO.setPageNum(pageNum);
+        pageInfoDTO.setPageSize(pageSize);
+        pageInfoDTO.setUserIds(userIds);
+        pageInfoDTO.setUserName(userName);
+        return iFacadeUserApi.queryUsersByUserIdsAndConditions(pageInfoDTO);
     }
 
     /**
