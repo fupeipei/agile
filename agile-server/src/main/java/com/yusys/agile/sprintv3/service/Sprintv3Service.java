@@ -49,6 +49,7 @@ public interface Sprintv3Service {
     /**
      * 新建迭代
      *
+     * @author 张宇
      * @param sprintV3DTO 迭代v3dto
      * @return {@link Long}
      */
@@ -66,12 +67,15 @@ public interface Sprintv3Service {
 
     /**
      * 每天改变迭代状态
+     *
+     * @author 张宇
      */
     void changeStatusDaily();
 
     /**
      * 取消迭代
      *
+     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link Object}
      */
@@ -80,6 +84,7 @@ public interface Sprintv3Service {
     /**
      * 迭代完成
      *
+     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link String}
      */
@@ -88,6 +93,7 @@ public interface Sprintv3Service {
     /**
      * 迭代视图 - 迭代详情
      *
+     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link SprintOverView}
      */
@@ -96,6 +102,7 @@ public interface Sprintv3Service {
     /**
      * 查询迭代用户
      *
+     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link List<STeamMember>}
      */
@@ -124,11 +131,11 @@ public interface Sprintv3Service {
     /**
      * 迭代视图 - 迭代统计详情
      *
+     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link SprintStatisticalInformation}
      */
     SprintStatisticalInformation sprintStatisticalInformation(long sprintId);
-
 
     /**
      * 查询所有的有效的迭代信息
@@ -147,7 +154,9 @@ public interface Sprintv3Service {
     List<SprintListDTO> getEffectiveSprintsBySystemId(Long systemId);
 
     /**
+     * 迭代成员工作小时
      *
+     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link List<SprintMembersWorkHours>}
      */
