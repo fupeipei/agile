@@ -6,7 +6,7 @@ import com.yusys.agile.issue.dao.IssueRuleMapper;
 import com.yusys.agile.issue.domain.IssueRule;
 import com.yusys.agile.issue.domain.IssueRuleExample;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
-import com.yusys.agile.issue.enums.TaskStageIdEnum;
+import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
@@ -102,10 +102,10 @@ public class IssueRuleFactory {
         List<IssueRule> insertRules = new ArrayList<>();
         //3.2 区别工作项类型，遍历枚举
         if (IssueTypeEnum.TYPE_TASK.CODE.equals(category)) {
-            for (TaskStageIdEnum taskStageIdEnumSource : TaskStageIdEnum.values()) {
-                Long fromStageId = taskStageIdEnumSource.CODE;
-                for (TaskStageIdEnum taskStageIdEnumTarget : TaskStageIdEnum.values()) {
-                    Long toStageId = taskStageIdEnumTarget.CODE;
+            for (TaskStatusEnum TaskStatusEnumSource : TaskStatusEnum.values()) {
+                Long fromStageId = TaskStatusEnumSource.CODE;
+                for (TaskStatusEnum TaskStatusEnumTarget : TaskStatusEnum.values()) {
+                    Long toStageId = TaskStatusEnumTarget.CODE;
                     //3.3 封装需要插入的流转规则数据集合
                     commonInsert(category, insertRules, projectId, issueRules, fromStageId, toStageId);
                 }

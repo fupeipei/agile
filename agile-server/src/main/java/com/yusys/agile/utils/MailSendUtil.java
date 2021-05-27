@@ -19,7 +19,7 @@ import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.domain.IssueHistoryRecordExample;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
-import com.yusys.agile.issue.enums.TaskStageIdEnum;
+import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.noticesettings.MailSwitchEnum;
 import com.yusys.agile.noticesettings.dao.MailSwitchMapper;
 import com.yusys.agile.noticesettings.domain.MailSwitch;
@@ -121,7 +121,7 @@ public class MailSendUtil {
             }
             switch (IssueTypeEnum.getByCode(issueType)) {
                 case TYPE_TASK:
-                    stageStatus = TaskStageIdEnum.getName(stageId);
+                    stageStatus = TaskStatusEnum.getName(stageId);
                     break;
                 case TYPE_FAULT:
                     stageStatus = FaultStatusEnum.getMsg(stageId);
@@ -334,7 +334,7 @@ public class MailSendUtil {
         //2.1、根据项目编码/阶段ID不等于7、103、1004，并且endDate小于等于当前时间的工作项列表数据
         List<Long> stageIdState = new ArrayList<Long>() {
             {
-                add(TaskStageIdEnum.TYPE_CLOSED_STATE.CODE);
+                add(TaskStatusEnum.TYPE_CLOSED_STATE.CODE);
                 add(StageConstant.FirstStageEnum.READY_STAGE.getValue());
                 add(StageConstant.FirstStageEnum.FINISH_STAGE.getValue());
                 add(FaultStatusEnum.CLOSED.CODE);

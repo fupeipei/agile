@@ -1003,10 +1003,10 @@ public class IssueServiceImpl implements IssueService {
                         case "二阶段状态id":
                             if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
                                 if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
-                                    issueHistoryRecordDTO.setOldValue(TaskStageIdEnum.getName(Long.valueOf(oldValue)));
+                                    issueHistoryRecordDTO.setOldValue(TaskStatusEnum.getName(Long.valueOf(oldValue)));
                                 }
                                 if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
-                                    issueHistoryRecordDTO.setNewValue(TaskStageIdEnum.getName(Long.valueOf(newValue)));
+                                    issueHistoryRecordDTO.setNewValue(TaskStatusEnum.getName(Long.valueOf(newValue)));
                                 }
                             } else if (IssueTypeEnum.TYPE_FAULT.CODE.equals(issueType)) {
                                 if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
@@ -1178,10 +1178,10 @@ public class IssueServiceImpl implements IssueService {
         Map map = new HashMap<String, String>();
         if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
 //            if(blockState!=null && Long.valueOf(blockState)==1L){
-//                map.put("name", TaskStageIdEnum.getByCode(9999L).NAME);
+//                map.put("name", TaskStatusEnum.getByCode(9999L).NAME);
 //                map.put("id", 9999L);
 //            }else{
-            map.put("name", TaskStageIdEnum.getByCode(stageId).NAME);
+            map.put("name", TaskStatusEnum.getByCode(stageId).NAME);
             map.put("id", stageId);
 //            }
         }
@@ -2208,7 +2208,7 @@ public class IssueServiceImpl implements IssueService {
         //拼接不属于代办的条件
         List<Long> stageIdList = Lists.newArrayList();
         stageIdList.add(StageConstant.FirstStageEnum.FINISH_STAGE.getValue());
-        stageIdList.add(TaskStageIdEnum.TYPE_CLOSED_STATE.CODE);
+        stageIdList.add(TaskStatusEnum.TYPE_CLOSED_STATE.CODE);
         stageIdList.add(FaultStatusEnum.CLOSED.CODE);
 
         IssueExample example = new IssueExample();
@@ -2434,8 +2434,8 @@ public class IssueServiceImpl implements IssueService {
             panoramasTaskDTO.setHandler(getHandlerName(task.getHandler()));
             Map stageMap = task.getStageId();
             Long stageId = (Long) stageMap.get("id");
-            TaskStageIdEnum taskStageIdEnum = TaskStageIdEnum.getByCode(stageId);
-            panoramasTaskDTO.setTaskStatus(taskStageIdEnum.NAME);
+            TaskStatusEnum TaskStatusEnum = TaskStatusEnum.getByCode(stageId);
+            panoramasTaskDTO.setTaskStatus(TaskStatusEnum.NAME);
             panoramasTaskDTOList.add(panoramasTaskDTO);
         }
     }

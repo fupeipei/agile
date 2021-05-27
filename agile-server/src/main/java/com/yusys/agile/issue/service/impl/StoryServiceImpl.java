@@ -576,7 +576,7 @@ public class StoryServiceImpl implements StoryService {
             issue.setIssueId(issue.getIssueId());
             issue.setSprintId(sprintId);
             if (IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())) {
-                issue.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
+                issue.setStageId(TaskStatusEnum.TYPE_ADD_STATE.CODE);
             } else {
                 issue.setStageId(FaultStatusEnum.NEW.CODE);
             }
@@ -867,7 +867,7 @@ public class StoryServiceImpl implements StoryService {
 
         for (IssueDTO tempStory : storys) {
             // 任务
-            Boolean taskExist = hasUnfinishedTaskOrFault(tempStory.getIssueId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStageIdEnum.TYPE_CLOSED_STATE.CODE);
+            Boolean taskExist = hasUnfinishedTaskOrFault(tempStory.getIssueId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_CLOSED_STATE.CODE);
             // 缺陷
             Boolean faultExist = hasUnfinishedTaskOrFault(tempStory.getIssueId(), IssueTypeEnum.TYPE_FAULT.CODE, FaultStatusEnum.CLOSED.CODE);
             if (taskExist || faultExist) {
