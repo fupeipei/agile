@@ -697,34 +697,36 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<IssueDTO> queryNotRelationStorys(String title, Long teamId, Long systemIds, Integer pageNum, Integer pageSize) {
-        List<Long> systemIdInfo = new ArrayList<>();
-        // 不传page信息时查全部数据
+    public List<IssueDTO> queryNotRelationStorys(String title, Long teamId, List<Long> systemIds, Integer pageNum, Integer pageSize) {
         List<IssueDTO> issueDTOS = new ArrayList<>();
-        if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
-        }
-        if (null == systemIds) {
+        List<Long> systemIdInfo=new ArrayList<>();
+        if(CollectionUtils.isEmpty(systemIds)){
             //如果没有系统id 查询团队下的所有系统
             List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
-            for (SsoSystemRestDTO ssoSystemRestDTO : ssoSystemRestDTOS) {
+            for(SsoSystemRestDTO ssoSystemRestDTO:ssoSystemRestDTOS){
                 Long systemId = ssoSystemRestDTO.getSystemId();
-                String systemCode = ssoSystemRestDTO.getSystemCode();
-                List<IssueDTO> issueDTOS1 = issueMapper.queryNotRelationStory(title, systemId);
-                if (CollectionUtils.isNotEmpty(issueDTOS1)) {
-                    for (IssueDTO issueDTO : issueDTOS1) {
-                        issueDTO.setSystemCode(systemCode);
+                systemIdInfo.add(systemId);
+            }
+            PageHelper.startPage(pageNum,pageSize);
+            issueDTOS = issueMapper.queryNotRelationStory(title, systemIdInfo);
+            issueDTOS.stream().map(issueDTO -> {
+                ssoSystemRestDTOS.forEach(ssoSystemRestDTO -> {
+                    if (issueDTO.getSystemId().equals(ssoSystemRestDTO.getSystemId())) {
+                        issueDTO.setSystemCode(ssoSystemRestDTO.getSystemCode());
                     }
-                    issueDTOS.addAll(issueDTOS1);
-                }
-            }
+                });
+                return issueDTO;
+            }).collect(Collectors.toList());
         } else {
+            PageHelper.startPage(pageNum,pageSize);
             issueDTOS = issueMapper.queryNotRelationStory(title,systemIds);
-            SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds);
-            for (IssueDTO issueDTO : issueDTOS) {
-                issueDTO.setSystemCode(ssoSystem.getSystemCode());
-            }
+            SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds.get(0));
+            issueDTOS.stream().map(issueDTO -> {
+                issueDTO.setSystemCode( ssoSystem.getSystemCode());
+                return issueDTO;
+            }).collect(Collectors.toList());
         }
+
         return issueDTOS;
     }
     /**

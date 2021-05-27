@@ -580,7 +580,7 @@ public interface IssueMapper {
      * @param systemIds
      * @return
      */
-    List<IssueDTO> queryNotRelationStory(@Param("title") String title,@Param("systemIds")Long systemIds);
+    List<IssueDTO> queryNotRelationStory(@Param("title") String title,@Param("systemIds")List<Long> systemIds);
     /**
      * 查询迭代下故事点数的总数
      * @author zhaofeng
