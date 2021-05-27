@@ -816,4 +816,18 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return ssprintMapper.selectByExample(sSprintExample);
     }
 
+    @Override
+    public boolean legalDate(String sprintDays, Date target) {
+        List<Date> dateList = convertStrToDate(sprintDays);
+        return DateUtil.isBetween(dateList, target);
+    }
+
+
+    @Override
+    public List<SSprintWithBLOBs> querySprintList() {
+        SSprintExample sSprintExample = new SSprintExample();
+        sSprintExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue());
+        return ssprintMapper.selectByExampleWithBLOBs(sSprintExample);
+    }
 }
