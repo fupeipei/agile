@@ -2,6 +2,7 @@ package com.yusys.agile.burndown.rest;
 
 import com.yusys.agile.burndown.service.BurnDownChartService;
 import com.yusys.agile.utils.result.ResultObject;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +37,8 @@ public class BurnDownChartController {
      * @Return com.yusys.agile.utils.result.ResultObject
      */
     @GetMapping("/burndowns/{sprintId}")
-    public ResultObject getBySprint(@PathVariable("sprintId") Long sprintId) {
-        return ResultObject.success(burnDownChartService.getBySprint(sprintId));
+    public ControllerResponse getBySprint(@PathVariable("sprintId") Long sprintId) {
+        return ControllerResponse.success(burnDownChartService.getBySprint(sprintId));
     }
 
     /**
@@ -69,8 +70,8 @@ public class BurnDownChartController {
      * @param sprintId 迭代ID
      */
     @GetMapping("/burndowns/storyPoint/{sprintId}")
-    public ResultObject getStoryPointBySprint(@PathVariable("sprintId") Long sprintId){
-        return ResultObject.success(burnDownChartService.getStoryPointBySprint(sprintId));
+    public ControllerResponse getStoryPointBySprint(@PathVariable("sprintId") Long sprintId){
+        return ControllerResponse.success(burnDownChartService.getStoryPointBySprint(sprintId));
     }
 
     /**
