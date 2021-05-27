@@ -571,7 +571,7 @@ public class IssueServiceImpl implements IssueService {
         //迭代ID
         if (issue.getSprintId() != null) {
             if (mapMap.get("sprintMap").containsKey(issue.getSprintId())) {
-                Map<Long, List<SprintDTO>> sprintMap = mapMap.get("sprintMap");
+                Map<Long, List<SSprint>> sprintMap = mapMap.get("sprintMap");
                 map = new HashMap<String, String>();
                 map.put("name", sprintMap.get(issue.getSprintId()).get(0).getSprintName());
                 map.put("id", issue.getSprintId());
@@ -2434,8 +2434,8 @@ public class IssueServiceImpl implements IssueService {
             panoramasTaskDTO.setHandler(getHandlerName(task.getHandler()));
             Map stageMap = task.getStageId();
             Long stageId = (Long) stageMap.get("id");
-            TaskStatusEnum TaskStatusEnum = TaskStatusEnum.getByCode(stageId);
-            panoramasTaskDTO.setTaskStatus(TaskStatusEnum.NAME);
+            TaskStatusEnum taskStatusEnum = TaskStatusEnum.getByCode(stageId);
+            panoramasTaskDTO.setTaskStatus(taskStatusEnum.NAME);
             panoramasTaskDTOList.add(panoramasTaskDTO);
         }
     }

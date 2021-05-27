@@ -67,15 +67,18 @@ public class IssueTemplateServiceImpl implements IssueTemplateService {
     public Map query(Byte issueType, SecurityDTO securityDTO) {
         Map map = new HashMap();
         IssueTemplateExample issueTemplateExample = new IssueTemplateExample();
-        issueTemplateExample.createCriteria()
-                .andApplyEqualTo(Byte.parseByte("1"))
-                .andProjectIdEqualTo(securityDTO.getProjectId())
+        IssueTemplateExample.Criteria criteria = issueTemplateExample.createCriteria();
+        criteria.andApplyEqualTo(Byte.parseByte("1"))
                 .andIssueTypeEqualTo(issueType);
+                if(securityDTO.getProjectId()!=null){
+                    criteria .andProjectIdEqualTo(securityDTO.getProjectId());
+                }
         if (issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample).isEmpty()) {
-            initIssueTemplate(securityDTO.getProjectId());
+           //暂时先注释掉
+            // initIssueTemplate(securityDTO.getProjectId());
         }
         map.put("issueTemplateData", issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample));
-        map.put("issueCustomRelationData", issueCustomRelationService.getIssueCustomRelations(securityDTO.getProjectId(), issueType));
+       // map.put("issueCustomRelationData", issueCustomRelationService.getIssueCustomRelations(securityDTO.getProjectId(), issueType));
         return map;
     }
 
