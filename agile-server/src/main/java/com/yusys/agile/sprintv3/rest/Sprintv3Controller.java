@@ -212,7 +212,7 @@ public class Sprintv3Controller {
                                                      @RequestParam(name = "pageSize") Integer pageSize) {
 
         List<IssueDTO> result = sprintv3Service.queryNotRelationStorys(title, teamId,systemId,pageNum, pageSize);
-        return ControllerResponse.success(new PageInfo<>(result));
+        return ControllerResponse.success(new PageInfo(result));
 
     }
 

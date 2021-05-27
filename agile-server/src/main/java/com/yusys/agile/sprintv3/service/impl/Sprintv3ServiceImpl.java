@@ -749,7 +749,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 //工作项加入迭代
                 storyService.distributeSprint(issueId, sprintDTO.getSprintId());
             }
-        } else {
+        }else {
             throw new BusinessException("查不到工作项");
         }
         return true;
