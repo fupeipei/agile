@@ -632,15 +632,8 @@ public class TaskServiceImpl implements TaskService {
             return ssoUserDTOList;
         }
         List<Long> userIds = userSprintHours.stream().map(UserSprintHour::getUserId).distinct().collect(Collectors.toList());
-        PageInfoDTO pageInfoDTO = new PageInfoDTO();
-        pageInfoDTO.setPageNum(pageNum);
-        pageInfoDTO.setPageSize(pageSize);
-        pageInfoDTO.setUserIds(userIds);
-        pageInfoDTO.setUserName(userName);
-        return null;
-    }
-
-    /**
+        return iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds,pageNum,pageSize,userName);
+    }    /**
      * @param from
      * @param to
      * @param task
