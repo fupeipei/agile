@@ -124,14 +124,8 @@ public class StoryServiceImpl implements StoryService {
         //设置默认创建
         Long[] stages = issueDTO.getStages();
         if(!Optional.ofNullable(stages).isPresent()){
-            List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
             stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
-            //创建用户故事默认放在开发中的未开始阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
-            if(CollectionUtils.isNotEmpty(stageInstances)){
-                Long sprintId = issueDTO.getSprintId();
-                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent()? stageInstances.get(1):stageInstances.get(0);
-                stages[1] = stageInstance.getStageId();
-            }
+            stages[1] = StoryStatusEnum.TYPE_ADD_STATE.CODE;
             issueDTO.setStages(stages);
         }
         Long storyId = issueFactory.createIssue(issueDTO, "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
