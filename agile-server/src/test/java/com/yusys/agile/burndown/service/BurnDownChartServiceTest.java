@@ -1,10 +1,7 @@
 package com.yusys.agile.burndown.service;
 
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.burndown.dto.BurnDownChartDTO;
-import com.yusys.agile.burndown.dto.BurnDownStoryDTO;
-import com.yusys.agile.burndown.dto.BurnDownTaskDTO;
-import com.yusys.agile.burndown.dto.HistogramTaskDTO;
+import com.yusys.agile.burndown.dto.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -70,6 +67,16 @@ public class BurnDownChartServiceTest {
         }
     }
 
+    @Test
+    public void testGetStoryPointsBySprint(){
+        try {
+            Long sprintId = 10L;
+            BurnDownStoryPointDTO storyPointBySprint = burnDownChartService.getStoryPointBySprint(sprintId);
+            log.info("Junit测试--根据迭代ID查询故事点数据成功：{}", storyPointBySprint);
+        } catch (Exception e) {
+            log.info("Junit测试--根据迭代ID查询故事点数据失败：{}", e);
+        }
+    }
     @Test
     @Transactional
     public void calculateStorys() {
