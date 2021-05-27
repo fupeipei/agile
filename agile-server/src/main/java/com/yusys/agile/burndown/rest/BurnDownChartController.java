@@ -37,8 +37,8 @@ public class BurnDownChartController {
      * @Return com.yusys.agile.utils.result.ResultObject
      */
     @GetMapping("/burndowns/{sprintId}")
-    public ResultObject getBySprint(@PathVariable("sprintId") Long sprintId) {
-        return ResultObject.success(burnDownChartService.getBySprint(sprintId));
+    public ControllerResponse getBySprint(@PathVariable("sprintId") Long sprintId) {
+        return ControllerResponse.success(burnDownChartService.getBySprint(sprintId));
     }
 
     /**
