@@ -55,7 +55,7 @@ public class TaskController {
     }
 
     @GetMapping("/queryTask/{taskId}")
-    public ControllerResponse queryTask(@PathVariable("taskId") Long taskId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse queryTask(@PathVariable("taskId") Long taskId) {
         return ControllerResponse.success(taskService.queryTask(taskId));
     }
 
