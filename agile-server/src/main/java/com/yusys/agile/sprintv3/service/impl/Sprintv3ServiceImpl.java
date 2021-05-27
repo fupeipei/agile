@@ -827,7 +827,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     public List<SSprintWithBLOBs> querySprintList() {
         SSprintExample sSprintExample = new SSprintExample();
         sSprintExample.createCriteria()
-                .andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(100035L);
+                .andStateEqualTo(StateEnum.U.getValue());
         return ssprintMapper.selectByExampleWithBLOBs(sSprintExample);
     }
 }
