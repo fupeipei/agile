@@ -17,6 +17,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import java.util.List;
 
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 
 /**
  * @Author zhaofeng

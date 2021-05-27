@@ -1,6 +1,7 @@
 package com.yusys.agile.issue.rest;
 
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -233,10 +234,14 @@ public class TaskController {
         return ControllerResponse.success(taskService.listStoryIdsByTaskIds(taskIds));
     }
 
-    @GetMapping("/task/listMemberUsers")
-    public ControllerResponse listMemberUsers(@RequestParam(name = "storyId") Long storyId,SecurityDTO securityDTO){
-        Long systemId = securityDTO.getSystemId();
-        List<UserSprintHourDTO> userSprintHourDTOList = taskService.listMemberUsers(systemId, storyId);
-        return ControllerResponse.success(userSprintHourDTOList);
+    @GetMapping("/task/getTaskPreInfo")
+    public ControllerResponse getTaskPreInfo(@RequestParam(value = "systemId") Long systemId
+            ,@RequestParam(value = "createType") Integer createType
+            ,@RequestParam(value = "storyId") Long storyId
+            ,@RequestParam(value="userName") String userName
+            ,@RequestParam(value="page") Integer page
+            , @RequestParam(value="pageSize") Integer pageSize){
+        StoryCreatePrepInfoDTO storyCreatePrepInfoDTO = taskService.getTaskPreInfo(userName,page,pageSize,systemId, storyId,createType);
+        return ControllerResponse.success(storyCreatePrepInfoDTO);
     }
 }

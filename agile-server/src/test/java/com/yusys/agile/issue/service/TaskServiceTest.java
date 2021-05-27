@@ -39,16 +39,15 @@ public class TaskServiceTest {
         issueDTO.setEndDate(new Date());
         issueDTO.setIssueType(IssueTypeEnum.TYPE_TASK.CODE);
 //        issueDTO.setImportance();
-        issueDTO.setSystemId(817701268263542784L);
+        issueDTO.setSystemId(814801485815332864L);
         issueDTO.setPlanWorkload(8);
-        issueDTO.setSprintId(100012L);
         issueDTO.setDescription("富文本内容");
         issueDTO.setAcceptanceCriteria("验收标准");
 //        附件
         List<IssueAttachmentDTO> issueAttachmentDTOS = Lists.newArrayList();
         IssueAttachmentDTO issueAttachmentDTO = new IssueAttachmentDTO();
-        issueAttachmentDTO.setAttachmentId(10001L);
         issueAttachmentDTO.setAttachmentDesc("附件描述");
+        issueAttachmentDTO.setUpdateUid(1111L);
         issueAttachmentDTOS.add(issueAttachmentDTO);
         issueDTO.setAttachments(issueAttachmentDTOS);
 
@@ -62,16 +61,14 @@ public class TaskServiceTest {
 
     @Test
     public void createIssue() {
-        Long[] stages = {1L,100L};
-        issueDTO.setStages(stages);
         Long taskId = taskService.createTask(issueDTO);
         Assert.assertNotNull(taskId);
     }
 
     @Test
     public void editTask() {
-        issueDTO.setIssueId(846818309043355648L);
-        Long[] stages = {1L,102L};
+        issueDTO.setIssueId(847116505917378560L);
+        Long[] stages = {1L,101L};
         issueDTO.setStages(stages);
         taskService.editTask(issueDTO,securityDTO);
         Assert.assertTrue("editTask成功",true);
