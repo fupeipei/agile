@@ -68,35 +68,35 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     }
 
     private void calculateWorkload(SSprintWithBLOBs sprint) {
-        Long sprintId = sprint.getSprintId();
         Date target = DateUtil.preDay(new Date());
         if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
-            List<Issue> tasks = issueMapper.getBySprint(sprintId);
+            List<Issue> tasks = issueMapper.getBySprint(sprint.getSprintId());
             if (CollectionUtils.isNotEmpty(tasks)) {
                 for (Issue task : tasks) {
                     if (task != null) {
                         int planWorkload = Optional.ofNullable(task.getPlanWorkload()).orElse(0);
                         int remainWorkload = Optional.ofNullable(task.getRemainWorkload()).orElse(0);
                         Long laneId = task.getLaneId();
-                        BurnDownChart chart = generateChart(sprintId, target, planWorkload - remainWorkload,
+                        BurnDownChart chart = generateChart(sprint, target, planWorkload - remainWorkload,
                                 task.getIssueId(), laneId);
                         burnDownChartDao.insert(chart);
                     }
                 }
             } else {
-                BurnDownChart chart = generateChart(sprintId, target, 0, -1L, -1L);
+                BurnDownChart chart = generateChart(sprint, target, 0, -1L, -1L);
                 burnDownChartDao.insert(chart);
             }
         }
     }
 
-    private BurnDownChart generateChart(Long sprintId, Date sprintTime, int finishedWorkload,
+    private BurnDownChart generateChart(SSprintWithBLOBs sprint, Date sprintTime, int finishedWorkload,
                                         Long taskId, Long taskState) {
         BurnDownChart chart = new BurnDownChart();
-        chart.setSprintId(sprintId);
+        chart.setSprintId(sprint.getSprintId());
         chart.setSprintTime(sprintTime);
         chart.setFinishedWorkload(finishedWorkload);
         chart.setTaskId(taskId.toString());
+        chart.setTenantCode(sprint.getTenantCode());
         if (null != taskState) {
             chart.setTaskState(taskState.byteValue());
         }
