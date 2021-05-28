@@ -1104,7 +1104,7 @@
   </select>
     <select id="countUnFinishedTasks4Sprint" resultType="int">
     SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1
-    AND ((issue_type = 4 and stage_id IN(100,101,102)) or (issue_type = 5 and stage_id IN(1000,1001)))
+    AND ((issue_type = 4 and stage_id IN(107,108,109)) or (issue_type = 5 and stage_id IN(1000,1001)))
   </select>
     <update id="deleteRelation">
         update
