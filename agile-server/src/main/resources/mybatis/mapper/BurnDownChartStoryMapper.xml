@@ -8,7 +8,7 @@
 
 	<select id="getStorysBySprint" resultType="com.yusys.agile.burndown.dto.BurnDownStory">
 		select #{planStory}-ifnull(count(*),0) remain_story,sprint_time
-		from s_burndown_chart_story where sprint_id = #{sprintId} and story_state = 7
+		from s_burndown_chart_story where sprint_id = #{sprintId} and lane_id = 106
 		group by sprint_time order by sprint_time
 	</select>
 
