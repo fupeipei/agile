@@ -1,5 +1,7 @@
 package com.yusys.agile.easyexcel.service;
 
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -11,6 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface IExcelService {
 
-    void downLoadTemplate(Byte excelType, HttpServletResponse response);
+    void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentFiled filed);
 
 }

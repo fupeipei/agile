@@ -25,7 +25,7 @@ public class StoryExcelModul {
     @ExcelProperty(value = "优先级", index = 4)
     private Integer priority;
 
-    @ExcelProperty(value = "父工资项", index = 5)
+    @ExcelProperty(value = "父工作项", index = 5)
     private String parentInfo;
 
     @ExcelProperty(value = "故事点", index = 6)

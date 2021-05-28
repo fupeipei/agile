@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.easyexcel.vo.StoryExcelModul;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
@@ -33,7 +34,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     private Sprintv3Service sprintv3Service;
 
     @Override
-    public void download(HttpServletResponse response) {
+    public void download(HttpServletResponse response, ExcelCommentFiled filed) {
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getSprintInfo();
         mapDropDown.put(3,sprintInfo);
@@ -45,7 +46,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
 //                    (new ClassPathResource(templateFileName).getInputStream()).registerWriteHandler(spinnerWriteHandler).build();
             EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response),StoryExcelModul.class)
                     .autoCloseStream(Boolean.TRUE)
-                    .sheet("stroys")
+                    .sheet("storys")
                     .registerWriteHandler(spinnerWriteHandler)
                     .doWrite(new ArrayList());
         } catch (IOException  e) {
