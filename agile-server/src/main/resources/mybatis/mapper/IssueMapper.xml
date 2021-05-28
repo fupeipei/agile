@@ -3082,7 +3082,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         select sum(se.`value`) from
             s_issue si,
             s_sys_extend_field_detail se,
-            burndown_chart_story b
+            s_burndown_chart_story b
         where 1=1
             and si.issue_id = se.issue_id
             and si.issue_id = b.story_id
