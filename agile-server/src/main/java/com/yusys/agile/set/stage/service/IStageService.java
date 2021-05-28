@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface IStageService {
 
-    List<StageInstance> getStageList();
+    List<StageInstance> getStageList(Integer stageType);
 
     List<StageInstance> getSecondStageListByParentId(Long stageParentId);
 }
