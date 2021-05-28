@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.yusys.agile.easyexcel.enums.ExcelTypeEnum;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
@@ -19,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 public class ExcelServiceImpl implements IExcelService {
 
     @Override
-    public void downLoadTemplate(Byte excelType, HttpServletResponse response) {
+    public void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentFiled filed) {
         String type = ExcelTypeEnum.getFieldName(excelType);
         DownloadExcelTempletService downloadExcelTempletService = ExcelTempletFactory.get(type);
-        downloadExcelTempletService.download(response);
+        downloadExcelTempletService.download(response,filed);
     }
 }

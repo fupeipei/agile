@@ -10,6 +10,8 @@ import com.yusys.agile.issue.service.IssueStatusService;
 import com.yusys.agile.sprint.dao.SprintMapper;
 import com.yusys.agile.sprint.domain.SprintWithBLOBs;
 import com.yusys.agile.sprint.service.SprintService;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SsoProjectDTO;
@@ -30,11 +32,9 @@ public class DashBoardServiceImpl implements DashBoardService {
     @Resource
     private IFacadeProjectApi iFacadeProjectApi;
     @Resource
-    private SprintMapper sprintMapper;
-    @Resource
     private IssueMapper issueMapper;
     @Resource
-    private SprintService sprintService;
+    private Sprintv3Service sprintv3Service;
     @Resource
     private IssueStatusService issueStatusService;
     @Resource
@@ -44,34 +44,22 @@ public class DashBoardServiceImpl implements DashBoardService {
      * 仪表盘-迭代-工作项状态个数统计
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void calculateIssueStatus() {
-        ControllerResponse<List<SsoProjectDTO>> controllerResponse = iFacadeProjectApi.listAllProjectsNoPage("");
-        List<SsoProjectDTO> projects = controllerResponse.getData();
-        if (CollectionUtils.isNotEmpty(projects)) {
-            for (SsoProjectDTO project : projects) {
-                if (project != null) {
-                    List<SprintWithBLOBs> sprints = sprintMapper.getByProjectId(project.getProjectId());
-                    calculateStatus(sprints, project.getProjectId());
+        //查询所有迭代
+        List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
+        if (CollectionUtils.isNotEmpty(sSprints)) {
+            for (SSprintWithBLOBs sprint : sSprints) {
+                if (null != sprint) {
+                    calculateStatus(null,sprint);
                 }
             }
         }
     }
-
-    private void calculateStatus(List<SprintWithBLOBs> sprints, Long projectId) {
-        if (sprints != null && !sprints.isEmpty()) {
-            for (SprintWithBLOBs sprint : sprints) {
-                if (sprint != null) {
-                    calculateStatus(projectId, sprint);
-                }
-            }
-        }
-    }
-
-    private void calculateStatus(Long projectId, SprintWithBLOBs sprint) {
+    private void calculateStatus(Long projectId, SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.currentDay();
-        if (sprintService.legalDate(sprint.getSprintDays(), target)) {
+        if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             //创建业务需求状况
             //createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_EPIC.CODE);
             //创建研发需求状况
