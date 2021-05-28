@@ -77,9 +77,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
                     if (task != null) {
                         int planWorkload = Optional.ofNullable(task.getPlanWorkload()).orElse(0);
                         int remainWorkload = Optional.ofNullable(task.getRemainWorkload()).orElse(0);
-                        Long stageId = task.getStageId();
+                        Long laneId = task.getLaneId();
                         BurnDownChart chart = generateChart(sprintId, target, planWorkload - remainWorkload,
-                                task.getIssueId(), stageId);
+                                task.getIssueId(), laneId);
                         burnDownChartDao.create(chart);
                     }
                 }
@@ -323,8 +323,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
             if (CollectionUtils.isNotEmpty(stories)) {
                 for (Issue story : stories) {
                     if (story != null) {
-                        Long stageId = story.getStageId();
-                        BurnDownChartStory burnDownChartStory = generateChartStory(projectId, sprintId, target, story.getIssueId(), stageId);
+                        Long laneId = story.getLaneId();
+                        BurnDownChartStory burnDownChartStory = generateChartStory(projectId, sprintId, target, story.getIssueId(), laneId);
                         burnDownChartStoryDao.create(burnDownChartStory);
                     }
                 }
