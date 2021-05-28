@@ -29,9 +29,9 @@ public class EasyExcelController {
 
 
     @GetMapping(value = "/downloadExcel/template/{excelType}")
-    public void download(@PathVariable Byte excelType, HttpServletRequest request, HttpServletResponse response) {
+    public void download(@PathVariable Byte excelType, HttpServletResponse response) {
         try {
-            downloadExcelTempletService.download();
+            downloadExcelTempletService.download(response);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
         }

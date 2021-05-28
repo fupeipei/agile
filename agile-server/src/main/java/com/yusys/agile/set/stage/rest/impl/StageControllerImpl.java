@@ -1,5 +1,6 @@
 package com.yusys.agile.set.stage.rest.impl;
 
+import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
@@ -28,28 +29,19 @@ public class StageControllerImpl {
     @Resource
     private StageService stageService;
 
+    @Resource
+    private IStageService iStageService;
+
     /**
-     * @param projectId
-     * @param paramProjectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @description 根据项目id查询阶段列表
      */
     @GetMapping("/getStageList")
-    public ControllerResponse queryStageList(@RequestHeader("projectId") Long projectId, @RequestParam(name = "projectId", required = false) Long paramProjectId) {
+    public ControllerResponse queryStageList(@RequestParam("stageType")Integer stageType) {
         try {
-            Long stageProjectId = null;
-            if (null != paramProjectId) {
-                stageProjectId = paramProjectId;
-            } else {
-                stageProjectId = projectId;
-            }
-            List<StageInstance> kanbanStageInstances = stageService.getStageList(stageProjectId);
+            List<StageInstance> kanbanStageInstances = iStageService.getStageList(stageType);
             return ControllerResponse.success(kanbanStageInstances);
         } catch (Exception e) {
-            LOGGER.error("queryStageList method occur exception param headerProjectId:{},paramProjectId:{},message:{}", projectId, paramProjectId, e.getMessage());
-            if (e instanceof StageException) {
-                return ControllerResponse.fail(e.getMessage());
-            }
             return ControllerResponse.fail("阶段列表获取异常");
         }
     }

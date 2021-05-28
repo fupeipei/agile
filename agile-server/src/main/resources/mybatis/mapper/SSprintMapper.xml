@@ -25,10 +25,6 @@
         <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays"/>
     </resultMap>
 
-    <resultMap id="SprintMembersWorkHours" type="com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel">
-        <result column="first" property="firstData"/>
-        <result column="second" property="secondData"/>
-    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -719,6 +715,7 @@
         where sprint_id = #{sprintId}
           and issue_type = #{issueType}
           and lane_id = #{status}
+          and state = 'U'
     </select>
 
     <select id="querySprintFinishedStoryPoint" resultType="int">
@@ -779,12 +776,14 @@
     </select>
 
     <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
-        SELECT DISTINCT ss.sprint_id, ss.sprint_name
+
+        SELECT DISTINCT ss.sprint_id, ss.sprint_name,st.team_id ,st.team_name
         from agile.s_sprint ss
-                     left join agile.s_team_system sts
-                on ss.team_id = sts.team_id
+        left join agile.s_team_system sts
+        on ss.team_id = sts.team_id
+        left join agile.s_team st  on st.team_id  = ss.team_id
         where ss.status in (2, 3)
-          and sts.system_id = #{systemId};
+        and sts.system_id = #{systemId};
     </select>
 
     <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
@@ -801,37 +800,62 @@
         from s_sprint_user_hour
         where sprint_id = #{sprintId}
     </select>
+    <!--    TYPE_ADD_STATE("未领取", 107L),
+        TYPE_RECEIVED_STATE("已领取", 108L),
+        TYPE_MODIFYING_STATE("进行中", 109L),
+        TYPE_CLOSED_STATE("已完成", 110L);-->
 
-    <select id="queryUserWorkload" resultMap="SprintMembersWorkHours">
-        select ifnull(sum(plan_workload) + (select ifnull(sum(really_workload), 0)
-                                            from s_issue
-                                            where handler = #{userId}
-                                              and issue_type = #{issueType}
-                                              and lane_id = 110
-                                              and state = 'U'), 0) as first,
-               count(issue_id)                                     as second
-        from s_issue a
-        where a.handler = #{userId}
-          and a.issue_type = #{issueType}
-          and a.lane_id in (108, 109)
-          and a.state = 'U'
+    <!--实际工作量计算方法：已领取（预计工时）+进行中（预计工时）+已完成（实际工时）任务卡片总和-->
+    <select id="queryUserActualWorkload" resultType="Integer">
+
+        select      (ifnull((select sum(plan_workload)
+                        from s_issue
+                        where handler = #{userId}
+                          and sprint_id = #{sprintId}
+                          and lane_id in (108, 109)
+                          and state = 'U'
+                      ),0)
+                      +
+                    ifnull((select sum(really_workload)
+                        from s_issue b
+                        where b.handler = #{userId}
+                          and b.sprint_id = #{sprintId}
+                          and lane_id = 110
+                          and state = 'U'
+                               ),0)
+                    )     AS  a
+
     </select>
 
     <select id="unclaimedWorkHours" resultType="int">
         select ifnull(sum(plan_workload), 0)
         from s_issue a
         where a.handler is null
-        and a.sprint_id = #{sprintId}
+          and a.sprint_id = #{sprintId}
           and a.issue_type = #{issueType}
           and a.lane_id = #{status}
     </select>
 
+    <!--    TYPE_ADD_STATE("未领取", 107L),
+        TYPE_RECEIVED_STATE("已领取", 108L),
+        TYPE_MODIFYING_STATE("进行中", 109L),
+        TYPE_CLOSED_STATE("已完成", 110L);-->
+    <!--剩余工作量计算方法：进行中（剩余工作量）任务卡片总和-->
     <select id="queryUserResidueWorkload" resultType="int">
         select ifnull(sum(plan_workload), 0)
-        from s_issue a
-        where a.handler = #{userId}
-          and a.issue_type = #{issueType}
-          and a.lane_id = #{status}
-          and a.state = 'U'
+        from s_issue
+        where handler = #{userId}
+          and sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and lane_id = #{status}
+          and state = 'U'
+    </select>
+
+    <select id="queryUserTaskNumber" resultType="int">
+        select count(issue_id)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and handler = #{userId}
+          and state = 'U'
     </select>
 </mapper>

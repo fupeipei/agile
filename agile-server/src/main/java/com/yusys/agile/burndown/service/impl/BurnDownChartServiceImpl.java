@@ -5,10 +5,7 @@ import com.yusys.agile.burndown.dao.BurnDownChartDao;
 import com.yusys.agile.burndown.dao.BurnDownChartStoryDao;
 import com.yusys.agile.burndown.domain.BurnDownChart;
 import com.yusys.agile.burndown.domain.BurnDownChartStory;
-import com.yusys.agile.burndown.dto.BurnDownStory;
-import com.yusys.agile.burndown.dto.BurnDownStoryDTO;
-import com.yusys.agile.burndown.dto.BurnDownStoryPoint;
-import com.yusys.agile.burndown.dto.BurnDownStoryPointDTO;
+import com.yusys.agile.burndown.dto.*;
 import com.yusys.agile.burndown.service.BurnDownChartService;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
@@ -17,6 +14,7 @@ import com.yusys.agile.sprint.domain.SprintWithBLOBs;
 import com.yusys.agile.sprint.service.SprintService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
@@ -45,6 +43,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     @Resource
     private SSprintMapper sSprintMapper;
     @Resource
+    private Sprintv3Service sprintv3Service;
+    @Resource
     private SprintMapper sprintMapper;
     @Resource
     private IssueMapper issueMapper;
@@ -54,57 +54,45 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     private IFacadeUserApi iFacadeUserApi;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void calculateWorkload() {
-        ControllerResponse<List<SsoProjectDTO>> controllerResponse = iFacadeProjectApi.listAllProjectsNoPage("");
-        List<SsoProjectDTO> projects = controllerResponse.getData();
-        if (CollectionUtils.isNotEmpty(projects)) {
-            for (SsoProjectDTO project : projects) {
-                if (project != null) {
-                    List<SprintWithBLOBs> sprints = sprintMapper.getByProjectId(project.getProjectId());
-                    calculateWorkload(sprints, project.getProjectId());
-                }
-            }
-        }
-    }
-
-    public void calculateWorkload(List<SprintWithBLOBs> sprints, Long projectId) {
-        if (CollectionUtils.isNotEmpty(sprints)) {
-            for (SprintWithBLOBs sprint : sprints) {
+        //查询所有迭代
+        List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
+        if (CollectionUtils.isNotEmpty(sSprints)) {
+            for (SSprintWithBLOBs sprint : sSprints) {
                 if (sprint != null) {
-                    calculateWorkload(projectId, sprint);
+                    calculateWorkload(sprint);
                 }
             }
         }
     }
 
-    private void calculateWorkload(Long projectId, SprintWithBLOBs sprint) {
+    private void calculateWorkload(SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.preDay(new Date());
-        if (sprintService.legalDate(sprint.getSprintDays(), target)) {
+        if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             List<Issue> tasks = issueMapper.getBySprint(sprintId);
             if (CollectionUtils.isNotEmpty(tasks)) {
                 for (Issue task : tasks) {
                     if (task != null) {
                         int planWorkload = Optional.ofNullable(task.getPlanWorkload()).orElse(0);
                         int remainWorkload = Optional.ofNullable(task.getRemainWorkload()).orElse(0);
-                        Long stageId = task.getStageId();
-                        BurnDownChart chart = generateChart(projectId, sprintId, target, planWorkload - remainWorkload,
-                                task.getIssueId(), stageId);
+                        Long laneId = task.getLaneId();
+                        BurnDownChart chart = generateChart(sprintId, target, planWorkload - remainWorkload,
+                                task.getIssueId(), laneId);
                         burnDownChartDao.create(chart);
                     }
                 }
             } else {
-                BurnDownChart chart = generateChart(projectId, sprintId, target, 0, -1L, -1L);
+                BurnDownChart chart = generateChart(sprintId, target, 0, -1L, -1L);
                 burnDownChartDao.create(chart);
             }
         }
     }
 
-    private BurnDownChart generateChart(Long projectId, Long sprintId, Date sprintTime, int finishedWorkload,
+    private BurnDownChart generateChart(Long sprintId, Date sprintTime, int finishedWorkload,
                                         Long taskId, Long taskState) {
         BurnDownChart chart = new BurnDownChart();
-        chart.setProjectId(projectId);
         chart.setSprintId(sprintId);
         chart.setSprintTime(sprintTime);
         chart.setFinishedWorkload(finishedWorkload);
@@ -115,17 +103,16 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         return chart;
     }
 
-    private BurnDownChart generateChart(Long projectId, Long sprintId, Date sprintTime, int remainWorkload) {
+    private BurnDownChart generateChart(Long sprintId, Date sprintTime, int remainWorkload) {
         BurnDownChart chart = new BurnDownChart();
-        chart.setProjectId(projectId);
         chart.setSprintId(sprintId);
         chart.setSprintTime(sprintTime);
         chart.setRemainWorkload(remainWorkload);
         return chart;
     }
 
-    private com.yusys.agile.burndown.dto.BurnDownTask generateTask(Date sprintTime, int remainTask) {
-        com.yusys.agile.burndown.dto.BurnDownTask task = new com.yusys.agile.burndown.dto.BurnDownTask();
+    private BurnDownTask generateTask(Date sprintTime, int remainTask) {
+        BurnDownTask task = new BurnDownTask();
         task.setSprintTime(sprintTime);
         task.setRemainTask(remainTask);
         return task;
@@ -147,17 +134,14 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
 
     /**
      * 创建每日剩余故事数
-     *
-     * @param projectId
      * @param sprintId
      * @param sprintTime
      * @param storyId
      * @param storyState
      * @return
      */
-    private BurnDownChartStory generateChartStory(Long projectId, Long sprintId, Date sprintTime, Long storyId, Long storyState) {
+    private BurnDownChartStory generateChartStory(Long sprintId, Date sprintTime, Long storyId, Long storyState) {
         BurnDownChartStory chartStory = new BurnDownChartStory();
-        chartStory.setProjectId(projectId);
         chartStory.setSprintId(sprintId);
         chartStory.setSprintTime(sprintTime);
         chartStory.setStoryId(storyId.toString());
@@ -168,8 +152,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     }
 
     @Override
-    public com.yusys.agile.burndown.dto.BurnDownChartDTO getBySprint(Long sprintId) {
-        com.yusys.agile.burndown.dto.BurnDownChartDTO burnDownChartDTO = new com.yusys.agile.burndown.dto.BurnDownChartDTO();
+    public BurnDownChartDTO getBySprint(Long sprintId) {
+        BurnDownChartDTO burnDownChartDTO = new BurnDownChartDTO();
         // 预估工作量
         burnDownChartDTO.setPlanWorkload(sprintService.getWorkload(sprintId));
         Integer actualRemainWorkload = issueMapper.getPlanWorkload(sprintId);
@@ -181,8 +165,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     }
 
     @Override
-    public com.yusys.agile.burndown.dto.BurnDownTaskDTO getTasksBySprint(Long sprintId) {
-        com.yusys.agile.burndown.dto.BurnDownTaskDTO burnDownTaskDTO = new com.yusys.agile.burndown.dto.BurnDownTaskDTO();
+    public BurnDownTaskDTO getTasksBySprint(Long sprintId) {
+        BurnDownTaskDTO burnDownTaskDTO = new BurnDownTaskDTO();
         Integer actualRemainTask = issueMapper.countTasks4Sprint(sprintId);
         burnDownTaskDTO.setActualRemainTask(actualRemainTask);
         burnDownTaskDTO.setPlanTask(actualRemainTask);
@@ -285,21 +269,20 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      */
     @Override
     public void calculateStorys() {
-        ControllerResponse<List<SsoProjectDTO>> controllerResponse = iFacadeProjectApi.listAllProjectsNoPage("");
-        List<SsoProjectDTO> projects = controllerResponse.getData();
-        if (CollectionUtils.isNotEmpty(projects)) {
-            for (SsoProjectDTO project : projects) {
-                if (project != null) {
-                    List<SprintWithBLOBs> sprints = sprintMapper.getByProjectId(project.getProjectId());
-                    calculateStorys(sprints, project.getProjectId());
+        //查询所有迭代
+        List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
+        if (CollectionUtils.isNotEmpty(sSprints)) {
+            for (SSprintWithBLOBs sprint : sSprints) {
+                if (sprint != null) {
+                    calculateStorys(sprint);
                 }
             }
         }
     }
 
     @Override
-    public List<com.yusys.agile.burndown.dto.HistogramTaskDTO> getTaskMemberAnalysis(Long sprintId) {
-        List<com.yusys.agile.burndown.dto.HistogramTaskDTO> taskDTOList;
+    public List<HistogramTaskDTO> getTaskMemberAnalysis(Long sprintId) {
+        List<HistogramTaskDTO> taskDTOList;
         taskDTOList = issueMapper.getTaskMemberAnalysis(sprintId);
         if (CollectionUtils.isNotEmpty(taskDTOList)) {
             taskDTOList.forEach(histogramTaskDTO -> {
@@ -318,17 +301,17 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         return taskDTOList;
     }
 
-    public void calculateStorys(List<SprintWithBLOBs> sprints, Long projectId) {
-        if (CollectionUtils.isNotEmpty(sprints)) {
-            for (SprintWithBLOBs sprint : sprints) {
-                if (sprint != null) {
-                    calculateStorys(projectId, sprint);
-                }
-            }
-        }
-    }
+//    public void calculateStorys(List<SprintWithBLOBs> sprints) {
+//        if (CollectionUtils.isNotEmpty(sprints)) {
+//            for (SprintWithBLOBs sprint : sprints) {
+//                if (sprint != null) {
+//                    calculateStorys(projectId, sprint);
+//                }
+//            }
+//        }
+//    }
 
-    private void calculateStorys(Long projectId, SprintWithBLOBs sprint) {
+    private void calculateStorys(SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.preDay(new Date());
         if (sprintService.legalDate(sprint.getSprintDays(), target)) {
@@ -336,13 +319,13 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
             if (CollectionUtils.isNotEmpty(stories)) {
                 for (Issue story : stories) {
                     if (story != null) {
-                        Long stageId = story.getStageId();
-                        BurnDownChartStory burnDownChartStory = generateChartStory(projectId, sprintId, target, story.getIssueId(), stageId);
+                        Long laneId = story.getLaneId();
+                        BurnDownChartStory burnDownChartStory = generateChartStory(sprintId, target, story.getIssueId(), laneId);
                         burnDownChartStoryDao.create(burnDownChartStory);
                     }
                 }
             } else {
-                BurnDownChartStory chartStory = generateChartStory(projectId, sprintId, target, -1L, -1L);
+                BurnDownChartStory chartStory = generateChartStory(sprintId, target, -1L, -1L);
                 burnDownChartStoryDao.create(chartStory);
             }
         }
@@ -356,7 +339,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @return
      */
     private List<BurnDownStory> getStorys(Long sprintId, Integer actualRemainStory) {
-        SprintWithBLOBs sprint = sprintMapper.selectByPrimaryKey(sprintId);
+        SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         Optional.ofNullable(sprint).orElseThrow(() -> new BusinessException("迭代计划不存在"));
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
@@ -372,41 +355,40 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         return stories;
     }
 
-    private List<com.yusys.agile.burndown.dto.BurnDownTask> getTasks(Long sprintId, Integer actualRemainTask) {
-        SprintWithBLOBs sprint = sprintMapper.selectByPrimaryKey(sprintId);
+    private List<BurnDownTask> getTasks(Long sprintId, Integer actualRemainTask) {
+        SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         Optional.ofNullable(sprint).orElseThrow(() -> new BusinessException("迭代计划不存在"));
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();
-        List<com.yusys.agile.burndown.dto.BurnDownTask> tasks = getTasks(start, end, sprintDays);
-        List<com.yusys.agile.burndown.dto.BurnDownTask> inSprintTasks = getSprintTasks(sprintId, actualRemainTask, sprintDays);
-        com.yusys.agile.burndown.dto.BurnDownTask currentTask = getCurrentTask(sprintId, sprintDays);
+        List<BurnDownTask> tasks = getTasks(start, end, sprintDays);
+        List<BurnDownTask> inSprintTasks = getSprintTasks(sprintId, actualRemainTask, sprintDays);
+        BurnDownTask currentTask = getCurrentTask(sprintId, sprintDays);
         setRemainTasks(tasks, inSprintTasks, currentTask, actualRemainTask);
         return tasks;
     }
 
-    private List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> getWorkloads(Long sprintId, Integer actualRemainWorkload) {
-        SprintWithBLOBs sprint = sprintMapper.selectByPrimaryKey(sprintId);
+    private List<BurnDownWorkloadDTO> getWorkloads(Long sprintId, Integer actualRemainWorkload) {
+        SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();
-        Long projectId = sprint.getProjectId();
-        List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> workloads = getWorkloads(start, end, sprintDays);
-        List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> inSprintWorkloads = getSprintWorkloads(sprintId, actualRemainWorkload,
+        List<BurnDownWorkloadDTO> workloads = getWorkloads(start, end, sprintDays);
+        List<BurnDownWorkloadDTO> inSprintWorkloads = getSprintWorkloads(sprintId, actualRemainWorkload,
                 sprintDays);
-        com.yusys.agile.burndown.dto.BurnDownWorkloadDTO currentWorkload = getCurrentWorkload(sprintId, projectId, sprintDays);
+        BurnDownWorkloadDTO currentWorkload = getCurrentWorkload(sprintId,sprintDays);
         setRemainWorkload(workloads, inSprintWorkloads, currentWorkload);
         return workloads;
     }
 
-    private void setRemainWorkload(List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> workloads, List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> inSprintWorkloads,
-                                   com.yusys.agile.burndown.dto.BurnDownWorkloadDTO currentWorkload) {
+    private void setRemainWorkload(List<BurnDownWorkloadDTO> workloads, List<BurnDownWorkloadDTO> inSprintWorkloads,
+                                   BurnDownWorkloadDTO currentWorkload) {
         if (CollectionUtils.isNotEmpty(workloads)) {
-            Iterator<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> workloadIt = workloads.iterator();
+            Iterator<BurnDownWorkloadDTO> workloadIt = workloads.iterator();
             if (CollectionUtils.isNotEmpty(inSprintWorkloads)) {
-                for (com.yusys.agile.burndown.dto.BurnDownWorkloadDTO sprintWorkload : inSprintWorkloads) {
+                for (BurnDownWorkloadDTO sprintWorkload : inSprintWorkloads) {
                     while (workloadIt.hasNext()) {
-                        com.yusys.agile.burndown.dto.BurnDownWorkloadDTO workload = workloadIt.next();
+                        BurnDownWorkloadDTO workload = workloadIt.next();
                         if (workload != null && sprintWorkload != null
                                 && DateUtil.equalsByDay(workload.getSprintTime(), sprintWorkload.getSprintTime())) {
                             workload.setRemainWorkload(sprintWorkload.getRemainWorkload());
@@ -497,13 +479,13 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     /**
      * 迭代中的剩余工作量
      */
-    private List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> getSprintWorkloads(Long sprintId, Integer actualRemainWorkload, String sprintDays) {
-        List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> workloads = Lists.newArrayList();
+    private List<BurnDownWorkloadDTO> getSprintWorkloads(Long sprintId, Integer actualRemainWorkload, String sprintDays) {
+        List<BurnDownWorkloadDTO> workloads = Lists.newArrayList();
         List<BurnDownChart> inSprint = getInSprint(sprintId, actualRemainWorkload);
         if (CollectionUtils.isNotEmpty(inSprint)) {
             for (BurnDownChart chart : inSprint) {
-                if (null != chart && sprintService.legalDate(sprintDays, chart.getSprintTime())) {
-                    com.yusys.agile.burndown.dto.BurnDownWorkloadDTO workload = new com.yusys.agile.burndown.dto.BurnDownWorkloadDTO();
+                if (null != chart && sprintv3Service.legalDate(sprintDays, chart.getSprintTime())) {
+                    BurnDownWorkloadDTO workload = new BurnDownWorkloadDTO();
                     workload.setSprintTime(chart.getSprintTime());
                     workload.setRemainWorkload(chart.getRemainWorkload());
                     workloads.add(workload);
@@ -516,13 +498,13 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     /**
      * 迭代中的剩余任务量
      */
-    private List<com.yusys.agile.burndown.dto.BurnDownTask> getSprintTasks(Long sprintId, Integer planTask,
+    private List<BurnDownTask> getSprintTasks(Long sprintId, Integer planTask,
                                                                            String sprintDays) {
-        List<com.yusys.agile.burndown.dto.BurnDownTask> tasks = Lists.newArrayList();
-        List<com.yusys.agile.burndown.dto.BurnDownTask> inSprint = burnDownChartDao.getTasksBySprint(sprintId, planTask);
+        List<BurnDownTask> tasks = Lists.newArrayList();
+        List<BurnDownTask> inSprint = burnDownChartDao.getTasksBySprint(sprintId, planTask);
         if (CollectionUtils.isNotEmpty(inSprint)) {
-            for (com.yusys.agile.burndown.dto.BurnDownTask task : inSprint) {
-                if (null != task && sprintService.legalDate(sprintDays, task.getSprintTime())) {
+            for (BurnDownTask task : inSprint) {
+                if (null != task && sprintv3Service.legalDate(sprintDays, task.getSprintTime())) {
                     tasks.add(task);
                 }
             }
@@ -557,11 +539,10 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     /**
      * 当日的剩余工作量
      */
-    private com.yusys.agile.burndown.dto.BurnDownWorkloadDTO getCurrentWorkload(Long sprintId, Long projectId,
-                                                                                String sprintDays) {
-        BurnDownChart current = getCurrent(sprintId, projectId, sprintDays);
+    private BurnDownWorkloadDTO getCurrentWorkload(Long sprintId,String sprintDays) {
+        BurnDownChart current = getCurrent(sprintId,sprintDays);
         if (null != current) {
-            com.yusys.agile.burndown.dto.BurnDownWorkloadDTO workload = new com.yusys.agile.burndown.dto.BurnDownWorkloadDTO();
+           BurnDownWorkloadDTO workload = new BurnDownWorkloadDTO();
             workload.setSprintTime(current.getSprintTime());
             workload.setRemainWorkload(current.getRemainWorkload());
             return workload;
@@ -572,8 +553,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     /**
      * 当日的剩余任务量
      */
-    private com.yusys.agile.burndown.dto.BurnDownTask getCurrentTask(Long sprintId, String sprintDays) {
-        if (sprintService.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
+    private BurnDownTask getCurrentTask(Long sprintId, String sprintDays) {
+        if (sprintv3Service.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
             int currentTask = issueMapper.countUnFinishedTasks4Sprint(sprintId);
             return generateTask(new Date(), currentTask);
         }
@@ -601,12 +582,12 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param sprintDays
      * @return
      */
-    private List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> getWorkloads(Date start, Date end, String sprintDays) {
-        List<com.yusys.agile.burndown.dto.BurnDownWorkloadDTO> workloads = Lists.newArrayList();
+    private List<BurnDownWorkloadDTO> getWorkloads(Date start, Date end, String sprintDays) {
+        List<BurnDownWorkloadDTO> workloads = Lists.newArrayList();
         if (null != start && null != end) {
             while (DateUtil.compare(end, start)) {
-                if (sprintService.legalDate(sprintDays, start)) {
-                    com.yusys.agile.burndown.dto.BurnDownWorkloadDTO workload = new com.yusys.agile.burndown.dto.BurnDownWorkloadDTO();
+                if (sprintv3Service.legalDate(sprintDays, start)) {
+                    BurnDownWorkloadDTO workload = new BurnDownWorkloadDTO();
                     workload.setSprintTime(DateUtil.formatDate(start));
                     workloads.add(workload);
                 }
@@ -616,12 +597,12 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         return workloads;
     }
 
-    private List<com.yusys.agile.burndown.dto.BurnDownTask> getTasks(Date start, Date end, String sprintDays) {
-        List<com.yusys.agile.burndown.dto.BurnDownTask> tasks = Lists.newArrayList();
+    private List<BurnDownTask> getTasks(Date start, Date end, String sprintDays) {
+        List<BurnDownTask> tasks = Lists.newArrayList();
         if (null != start && null != end) {
             while (DateUtil.compare(end, start)) {
-                if (sprintService.legalDate(sprintDays, start)) {
-                    com.yusys.agile.burndown.dto.BurnDownTask task = new com.yusys.agile.burndown.dto.BurnDownTask();
+                if (sprintv3Service.legalDate(sprintDays, start)) {
+                    BurnDownTask task = new BurnDownTask();
                     task.setSprintTime(DateUtil.formatDate(start));
                     tasks.add(task);
                 }
@@ -658,10 +639,10 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         return burnDownChartDao.getBySprint(sprintId, planWorkload);
     }
 
-    private BurnDownChart getCurrent(Long sprintId, Long projectId, String sprintDays) {
-        if (sprintService.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
+    private BurnDownChart getCurrent(Long sprintId,String sprintDays) {
+        if (sprintv3Service.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
             int currentWorkload = issueMapper.getRemainWorkload(sprintId);
-            return generateChart(projectId, sprintId, new Date(), currentWorkload);
+            return generateChart(sprintId, new Date(), currentWorkload);
         }
         return null;
     }

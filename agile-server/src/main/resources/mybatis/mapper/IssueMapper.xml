@@ -1104,7 +1104,7 @@
   </select>
     <select id="countUnFinishedTasks4Sprint" resultType="int">
     SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1
-    AND ((issue_type = 4 and stage_id IN(100,101,102)) or (issue_type = 5 and stage_id IN(1000,1001)))
+    AND ((issue_type = 4 and lane_id IN(107,108,109)) or (issue_type = 5 and lane_id IN(1000,1001)))
   </select>
     <update id="deleteRelation">
         update
@@ -1129,7 +1129,7 @@
     </select>
 
     <update id="updateStatusByParentId">
-    update s_issue set sprint_id = null,stage_id=107,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
+    update s_issue set sprint_id = null,lane_id=107,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
   </update>
     <select id="getBySprint" resultMap="BaseResultMap">
         SELECT
@@ -2264,7 +2264,8 @@
     <update id="updateBySprintId">
     update s_issue
     set
-        stage_id=105,
+        lane_id=105,
+        stage_id=4,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
@@ -3050,11 +3051,9 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
            from s_issue a,s_issue_system_relp b
            where a.issue_id =b.issue_id
                                    and a.sprint_id is null
-                                   and a.stage_id=104
                                    and a.issue_type=3
                                    and a.state='U'
                                    and a.is_archive != 1
-
         <if test="systemIds != null and systemIds.size>0">
         and a.issue_id in(
         select b.issue_id from s_issue_system_relp b where  b.system_id in
@@ -3083,7 +3082,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         select sum(se.`value`) from
             s_issue si,
             s_sys_extend_field_detail se,
-            burndown_chart_story b
+            s_burndown_chart_story b
         where 1=1
             and si.issue_id = se.issue_id
             and si.issue_id = b.story_id

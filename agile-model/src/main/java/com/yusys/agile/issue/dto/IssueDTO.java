@@ -274,4 +274,6 @@ public class IssueDTO {
 
     private Boolean parent;
 
+    private String StoryStatusName;
+
 }

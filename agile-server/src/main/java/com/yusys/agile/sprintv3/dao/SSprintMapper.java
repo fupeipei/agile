@@ -4,19 +4,11 @@ import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
-import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel;
-import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
-import com.yusys.agile.sprintv3.responseModel.SprintOverView;
-import com.yusys.agile.teamv3.domain.STeamMember;
-import com.yusys.portal.model.facade.entity.SsoUser;
-import org.apache.ibatis.annotations.Param;
 
 public interface SSprintMapper {
     long countByExample(SSprintExample example);
@@ -210,17 +202,6 @@ public interface SSprintMapper {
      */
     List<Long> querySprintUserIds(long sprintId);
 
-    /**
-     * 查询用户工作负载
-     *
-     * 实际工作量计算方法：已领取（预计工时）+进行中（预计工时）+已完成（实际工时）任务卡片总和
-     *
-     * @param userId    用户id
-     * @param IssueType 问题类型
-     * @return {@link UserWorkloadQueryModel}
-     */
-    UserWorkloadQueryModel queryUserWorkload(@Param("userId") long userId, @Param("issueType") Byte IssueType);
-
 
     /**
      * 查询迭代已完成的故事数量
@@ -242,32 +223,45 @@ public interface SSprintMapper {
      */
     int querySprintFinishedWorkload(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
+
     /**
      * 无人认领的工作时间
      *
-     * @param sprintId 迭代id
-     * @param code     代码
-     * @return {@link UserWorkloadQueryModel}
+     * @param sprintId  迭代id
+     * @param IssueType 问题类型
+     * @param Status    状态
+     * @return int
      */
-    UserWorkloadQueryModel queryUserWorkload(long userId);
+    int unclaimedWorkHours(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+
+
+    /**
+     * 查询用户实际工作负载
+     *
+     * @param sprintId 迭代id
+     * @param userId   用户id
+     * @return int
+     */
+    Integer queryUserActualWorkload(@Param("sprintId") long sprintId, @Param("userId") Long userId);
+
 
     /**
      * 查询用户剩余工作量
      *
+     * @param sprintId  迭代id
      * @param userId    用户id
      * @param IssueType 问题类型
      * @param Status    状态
      * @return int
      */
-    int queryUserResidueWorkload(@Param("userId") long userId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+    int queryUserResidueWorkload(@Param("sprintId") long sprintId, @Param("userId") Long userId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
     /**
-     * 无人认领的工作时间
+     * 查询用户的任务数量
      *
      * @param sprintId 迭代id
-     * @param code     代码
-     * @param code1    code1
-     * @return {@link UserWorkloadQueryModel}
+     * @param userId   用户id
+     * @return int
      */
-    int unclaimedWorkHours(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+    int queryUserTaskNumber(@Param("sprintId") long sprintId, @Param("userId") Long userId);
 }
