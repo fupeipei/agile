@@ -16,4 +16,45 @@
         update s_issue_status set in_sprint = #{inSprint},finished = #{finished},not_started=#{notStarted}
         where sprint_id = #{sprintId} and sprint_date = #{sprintDate} and issue_type = #{issueType}
     </update>
+
+    <select id="getTaskStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
+        select A.sprint_id,A.finished ,B.in_sprint,C.not_started from (
+        (
+        SELECT COUNT(1) AS finished ,a.sprint_id
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 110 AND a.issue_type = 4 AND a.sprint_id = #{sprintId}) A
+        left join
+        (
+        SELECT COUNT(1) AS in_sprint,a.sprint_id
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id in (108,109) AND a.issue_type = 4 AND a.sprint_id = #{sprintId}) B on A.sprint_id = B.sprint_id
+        left join
+        (
+        SELECT COUNT(1) AS not_started,a.sprint_id
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 107 AND a.issue_type = 4 AND a.sprint_id = #{sprintId}) C
+        on B.sprint_id = C.sprint_id
+        )
+    </select>
+
+    <select id="getStoryStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
+        select A.sprint_id,A.finished,B.in_sprint,C.not_started from (
+        (
+        SELECT COUNT(1) AS finished ,a.sprint_id
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 106 AND a.issue_type = 3 AND a.sprint_id = #{sprintId}) A
+        left join
+        (
+        SELECT COUNT(1) AS in_sprint,a.sprint_id
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 105 AND a.issue_type = 3 AND a.sprint_id = #{sprintId}) B on A.sprint_id = B.sprint_id
+        left join
+        (
+        SELECT COUNT(1) AS not_started,a.sprint_id
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 104 AND a.issue_type = 3 AND a.sprint_id = #{sprintId}) C
+        on B.sprint_id = C.sprint_id
+        )
+    </select>
+
 </mapper>
