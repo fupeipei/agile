@@ -1,4 +1,4 @@
-package com.yusys.agile.issue.excel.vo;
+package com.yusys.agile.easyexcel.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
