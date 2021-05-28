@@ -42,10 +42,11 @@ public class BurnDownChartController {
     }
 
     /**
-     * 查看迭代周期内的任务数燃尽图
-     *
-     * @param sprintId 迭代ID
-     * @return
+     * @Author maxp2
+     * @Date 2021/5/28
+     * @Description 查看迭代周期内的任务数燃尽图
+     * @param sprintId
+     * @Return com.yusys.agile.utils.result.ResultObject
      */
     @GetMapping("/burndowns/tasks/{sprintId}")
     public ResultObject getTasksBySprint(@PathVariable("sprintId") Long sprintId) {
