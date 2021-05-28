@@ -1,4 +1,7 @@
 package com.yusys.agile.issue.excel.service;
+
+import javax.servlet.http.HttpServletResponse;
+
 /**
  *  @Description: 模版下载Service
  *  @author: zhao_yd
@@ -8,5 +11,5 @@ package com.yusys.agile.issue.excel.service;
 
 public interface DownloadExcelTempletService {
 
-    void download();
+    void download(HttpServletResponse response);
 }
