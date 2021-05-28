@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service;
 
+import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
@@ -86,9 +87,9 @@ public interface TaskService {
      * @param to
      * @Date 2021/2/7
      * @Description 任务卡片拖拽
-     * @Return void
+     * @Return Issue
      */
-    void dragTask(Long issueId, Long from, Long to,Long userId);
+    Issue dragTask(Long issueId, Long from, Long to, Long userId);
 
     /**
      * @param code

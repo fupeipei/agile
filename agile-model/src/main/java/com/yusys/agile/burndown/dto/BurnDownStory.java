@@ -11,6 +11,7 @@ public class BurnDownStory {
      * 每日剩余故事数
      */
     private Integer remainStory;
+    private Date createTime;
 
     public String getTenantCode() {
         return tenantCode;
@@ -36,5 +37,13 @@ public class BurnDownStory {
 
     public void setRemainStory(Integer remainStory) {
         this.remainStory = remainStory;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
