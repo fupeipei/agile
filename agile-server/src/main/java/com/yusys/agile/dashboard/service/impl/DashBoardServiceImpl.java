@@ -2,6 +2,7 @@ package com.yusys.agile.dashboard.service.impl;
 
 import com.yusys.agile.dashboard.service.DashBoardService;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.dao.IssueStatusMapper;
 import com.yusys.agile.issue.domain.IssueProjectStatus;
 import com.yusys.agile.issue.domain.IssueStatus;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
@@ -39,6 +40,8 @@ public class DashBoardServiceImpl implements DashBoardService {
     private IssueStatusService issueStatusService;
     @Resource
     private IssueProjectStatusService issueProjectStatusService;
+    @Resource
+    private IssueStatusMapper statusMapper;
 
     /**
      * 仪表盘-迭代-工作项状态个数统计
@@ -76,17 +79,11 @@ public class DashBoardServiceImpl implements DashBoardService {
      * 创建工作项状况
      */
     private void createIssueStatus(Long projectId, Long sprintId, Date target, Byte issueType) {
-        Integer finished = 0;
-        Integer insprint = 0;
-        Integer notStarted = 0;
+        IssueStatus status;
         if (issueType.equals(IssueTypeEnum.TYPE_TASK.CODE)) {
-            finished = issueMapper.countFinishedTasks4Project(sprintId, projectId);
-            insprint = issueMapper.countInsprintTaskBySprint(sprintId, projectId);
-            notStarted = issueMapper.countNotStartTaskBySprint(sprintId, projectId);
+            status = statusMapper.getTaskStatus(sprintId);
         } else {
-            finished = issueMapper.countAchievedIssues4Sprint(sprintId, projectId, issueType);
-            insprint = issueMapper.countInsprintIssuesBySprint(sprintId, projectId, issueType);
-            notStarted = issueMapper.countNotStartIssuesBySprint(sprintId, projectId, issueType);
+          status = statusMapper.getStoryStatus(sprintId);
         }
         IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
         if (currentStatus == null) {
@@ -94,15 +91,15 @@ public class DashBoardServiceImpl implements DashBoardService {
             issueStatus.setSprintDate(target);
             issueStatus.setProjectId(projectId);
             issueStatus.setSprintId(sprintId);
-            issueStatus.setFinished(finished);
-            issueStatus.setInSprint(insprint);
-            issueStatus.setNotStarted(notStarted);
+            issueStatus.setFinished(status.getFinished());
+            issueStatus.setInSprint(status.getInSprint());
+            issueStatus.setNotStarted(status.getNotStarted());
             issueStatus.setIssueType(issueType);
             issueStatusService.create(issueStatus);
         } else {
-            currentStatus.setFinished(finished);
-            currentStatus.setInSprint(insprint);
-            currentStatus.setNotStarted(notStarted);
+            currentStatus.setFinished(status.getFinished());
+            currentStatus.setInSprint(status.getInSprint());
+            currentStatus.setNotStarted(status.getNotStarted());
             issueStatusService.update(currentStatus);
         }
     }
