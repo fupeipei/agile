@@ -1,12 +1,10 @@
-package com.yusys.agile.issue.excel.rest;
+package com.yusys.agile.easyexcel.rest;
 
-import com.yusys.agile.issue.excel.service.DownloadExcelTempletService;
-import com.yusys.agile.issue.excel.service.IExcelService;
+import com.yusys.agile.easyexcel.service.IExcelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -24,14 +22,11 @@ public class EasyExcelController {
 
     @Autowired
     private IExcelService excelService;
-    @Autowired
-    private DownloadExcelTempletService downloadExcelTempletService;
-
 
     @GetMapping(value = "/downloadExcel/template/{excelType}")
     public void download(@PathVariable Byte excelType, HttpServletResponse response) {
         try {
-            downloadExcelTempletService.download(response);
+            excelService.downLoadTemplate(excelType,response);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
         }
