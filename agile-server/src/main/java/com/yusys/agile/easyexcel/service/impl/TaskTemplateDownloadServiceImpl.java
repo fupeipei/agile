@@ -1,60 +1,55 @@
-package com.yusys.agile.issue.excel.service.impl;
+package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.yusys.agile.issue.excel.ExcelUtil;
-import com.yusys.agile.issue.excel.handler.SpinnerWriteHandler;
-import com.yusys.agile.issue.excel.service.DownloadExcelTempletService;
+import com.yusys.agile.easyexcel.ExcelUtil;
+import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
+import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- *  @Description: 故事模版下载
+ *  @Description: 任务模版下载
  *  @author: zhao_yd
- *  @Date: 2021/5/26 10:08 上午
+ *  @Date: 2021/5/28 3:56 下午
  *
  */
 
 @Slf4j
-@Service("storyDownloadService")
-public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletService {
+@Service("taskDownloadService")
+public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletService {
 
     @Autowired
     private Sprintv3Service sprintv3Service;
 
-
     @Override
-    public void download(HttpServletResponse response) {
+    public void download(HttpServletResponse response, ExcelCommentFiled filed) {
+        //todo 下拉填充数据
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getSprintInfo();
         mapDropDown.put(3,sprintInfo);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
-
-        String  templateFileName = "excelTemplate" + File.separator + "storyImportTemplate.xlsx";
-        File file = null;
         try {
-            EasyExcel.write(ExcelUtil.dealResponse(templateFileName,response)).excelType(ExcelTypeEnum.XLSX).registerWriteHandler(spinnerWriteHandler);
+            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
+                    .autoCloseStream(Boolean.TRUE)
+                    .sheet("tasks")
+                    .registerWriteHandler(spinnerWriteHandler)
+                    .doWrite(new ArrayList());
         } catch (IOException e) {
-            log.error("导出Story模版异常:{}",e.getMessage());
+            log.error("导出task模版异常:{}",e.getMessage());
         }
-
     }
-
 
     private String[] getSprintInfo(){
         Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
@@ -66,5 +61,4 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
         }
         return new String[]{};
     }
-
 }

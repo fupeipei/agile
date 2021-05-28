@@ -49,8 +49,8 @@ public class BurnDownChartController {
      * @Return com.yusys.agile.utils.result.ResultObject
      */
     @GetMapping("/burndowns/tasks/{sprintId}")
-    public ResultObject getTasksBySprint(@PathVariable("sprintId") Long sprintId) {
-        return ResultObject.success(burnDownChartService.getTasksBySprint(sprintId));
+    public ControllerResponse getTasksBySprint(@PathVariable("sprintId") Long sprintId) {
+        return ControllerResponse.success(burnDownChartService.getTasksBySprint(sprintId));
     }
 
     /**
@@ -60,8 +60,8 @@ public class BurnDownChartController {
      * @return
      */
     @GetMapping("/burndowns/storys/{sprintId}")
-    public ResultObject getStoryBySprint(@PathVariable("sprintId") Long springtId) {
-        return ResultObject.success(burnDownChartService.getStorysBySprint(springtId));
+    public ControllerResponse getStoryBySprint(@PathVariable("sprintId") Long springtId) {
+        return ControllerResponse.success(burnDownChartService.getStorysBySprint(springtId));
     }
 
     /**

@@ -7,6 +7,7 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueAttachmentDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.portal.common.exception.BusinessException;
@@ -70,7 +71,7 @@ public class TaskServiceTest {
 //        issueDTO.setImportance();
         issueDTO.setSystemId(814801485815332864L);
         issueDTO.setPlanWorkload(8);
-        issueDTO.setParentId(1111L);
+        issueDTO.setParentId(847061835316670464L);
         issueDTO.setDescription("富文本内容");
         issueDTO.setAcceptanceCriteria("验收标准");
 //        附件
@@ -89,11 +90,7 @@ public class TaskServiceTest {
         securityDTO.setUserAcct("hehy4");
 
         //数据准备
-        if(!isSqlLoaded){
-            SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
-            isSqlLoaded=true;
-        }
-
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
     }
 
     @Test
@@ -228,6 +225,18 @@ public class TaskServiceTest {
         Issue issue = taskService.dragTask(taskId, 107L, TaskStatusEnum.TYPE_RECEIVED_STATE.CODE, null);
         Issue issue1 = issueMapper.selectByPrimaryKey(taskId);
         Assert.assertEquals("Po本人拖拽成功",TaskStatusEnum.TYPE_RECEIVED_STATE.CODE+":"+secDTO.getUserId(),issue1.getLaneId()+":"+issue1.getHandler());
+    }
+
+    @Test
+    public void getTaskPreInfo(){
+        String userName = "";
+        Integer page = 1;
+        Integer pageSize = 10;
+        Long systemId = 814801485815332864L;
+        Long storyId = 847060328389558272L;
+        Integer createType = 1;
+        StoryCreatePrepInfoDTO taskPreInfo = taskService.getTaskPreInfo(userName, page, pageSize, systemId, storyId, createType);
+        System.out.println(taskPreInfo);
     }
 
 

@@ -209,9 +209,9 @@
             keyProperty="issueId">
         insert into s_issue
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                issue_id,
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--issue_id,-->
+            <!--</if>-->
             <if test="title != null">
                 title,
             </if>
@@ -364,9 +364,9 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                #{issueId,jdbcType=BIGINT},
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--#{issueId,jdbcType=BIGINT},-->
+            <!--</if>-->
             <if test="title != null">
                 #{title,jdbcType=VARCHAR},
             </if>
@@ -1097,7 +1097,7 @@
     SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U'  and  is_archive != 1
   </select>
     <select id="countInsprintBySprint" resultType="Integer">
-    SELECT COUNT(1) from s_issue a WHERE a.sprint_id = #{sprintId} AND a.issue_type = 3  AND state = 'U'   and  is_archive != 1 AND a.stage_id != 7
+    SELECT COUNT(1) from s_issue a WHERE a.sprint_id = #{sprintId} AND a.issue_type = 3  AND state = 'U'   and  is_archive != 1 AND a.lane_id != 106
   </select>
     <select id="countTasks4Sprint" resultType="int">
     SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U'  and  is_archive != 1
@@ -3088,6 +3088,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             and si.issue_id = b.story_id
             and si.sprint_id = #{sprintId}
             and si.issue_type=3 and si.is_archive != 1 and si.lane_id = 106
+            and se.field_id = 'storyPoint'
             and b.story_state = 106
             and b.sprint_time = #{currTime}
         ]]>

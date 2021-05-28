@@ -3,6 +3,7 @@ package com.yusys.agile.burndown.service;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.burndown.dto.*;
 import io.micrometer.core.instrument.util.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -109,6 +110,13 @@ public class BurnDownChartServiceTest {
 //        String sprintDays = "1621823328785|1621823328785|1621823328785";
 //        List<Date> dateList = convertStrToDate(sprintDays);
 
+    }
+
+    @Test
+    public void getTasksBySprint(){
+        Long sprint = 100035L;
+        BurnDownTaskDTO tasksBySprint = burnDownChartService.getTasksBySprint(sprint);
+        Assert.assertNotNull(tasksBySprint);
     }
 
 
