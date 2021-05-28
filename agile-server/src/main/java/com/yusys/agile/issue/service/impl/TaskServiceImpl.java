@@ -263,11 +263,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
         //设置默认创建
-        Long[] stages = issueDTO.getStages();
+        Long[] stages = null;
         if (Optional.ofNullable(issueDTO.getHandler()).isPresent()) {
             //任务选择处理人就是已领取，否则就是未领取
             stages = new Long[]{StageConstant.FirstStageEnum.READY_STAGE.getValue(), TaskStatusEnum.TYPE_RECEIVED_STATE.CODE};
-        } else if (!Optional.ofNullable(stages).isPresent()) {
+        } else {
             stages = new Long[2];
             stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
             stages[1] = TaskStatusEnum.TYPE_ADD_STATE.CODE;
@@ -278,8 +278,8 @@ public class TaskServiceImpl implements TaskService {
                 StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent() ? stageInstances.get(1) : stageInstances.get(0);
                 stages[1] = stageInstance.getStageId();
             }*/
-            issueDTO.setStages(stages);
         }
+        issueDTO.setStages(stages);
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
 
@@ -586,9 +586,9 @@ public class TaskServiceImpl implements TaskService {
         StoryCreatePrepInfoDTO storyCreatePrepInfoDTO = new StoryCreatePrepInfoDTO();
         Issue issue = issueMapper.selectByPrimaryKey(storyId);
         Long sysId = null;
-        Long sprintId = issue.getParentId();
+        Long sprintId = issue.getSprintId();
         if (CreateTypeEnum.LIST.CODE.equals(createType)) {
-            if (Optional.ofNullable(issue.getParentId()).isPresent()) {
+            if (Optional.ofNullable(issue.getSprintId()).isPresent()) {
                 //执行人：如果故事上有迭代，从迭代内选人，
                 try {
                     List<SsoUserDTO> ssoUserDTOList = this.querySpringtUsersBySprintId(sprintId, userName, page, pageSize);
@@ -611,8 +611,8 @@ public class TaskServiceImpl implements TaskService {
             sysId = Optional.ofNullable(issue.getSystemId()).orElse(systemId);
         }
         //迭代：前端不采集，后端以故事所属迭代为准,故事下可能没有迭代
-        SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(sprintId);
-        if (Optional.ofNullable(sSprintWithBLOBs).isPresent()) {
+        if (Optional.ofNullable(sprintId).isPresent()) {
+            SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(sprintId);
             List<SprintListDTO> sprintListDTOs = Lists.newArrayList();
             SprintListDTO sprintListDTO = ReflectUtil.copyProperties(sSprintWithBLOBs, SprintListDTO.class);
             sprintListDTOs.add(sprintListDTO);

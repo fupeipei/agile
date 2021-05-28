@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.issue.dto.IssueAttachmentDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.junit.Assert;
@@ -41,6 +42,7 @@ public class TaskServiceTest {
 //        issueDTO.setImportance();
         issueDTO.setSystemId(814801485815332864L);
         issueDTO.setPlanWorkload(8);
+        issueDTO.setParentId(847061835316670464L);
         issueDTO.setDescription("富文本内容");
         issueDTO.setAcceptanceCriteria("验收标准");
 //        附件
@@ -88,6 +90,18 @@ public class TaskServiceTest {
     public void deleteChildrenTask() {
         taskService.deleteTask(846446177436880896L, true);
         Assert.assertTrue("deleteChildrenTask成功",true);
+    }
+
+    @Test
+    public void getTaskPreInfo(){
+        String userName = "";
+        Integer page = 1;
+        Integer pageSize = 10;
+        Long systemId = 814801485815332864L;
+        Long storyId = 847060328389558272L;
+        Integer createType = 1;
+        StoryCreatePrepInfoDTO taskPreInfo = taskService.getTaskPreInfo(userName, page, pageSize, systemId, storyId, createType);
+        System.out.println(taskPreInfo);
     }
 
 

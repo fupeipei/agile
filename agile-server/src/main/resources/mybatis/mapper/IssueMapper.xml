@@ -209,9 +209,9 @@
             keyProperty="issueId">
         insert into s_issue
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                issue_id,
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--issue_id,-->
+            <!--</if>-->
             <if test="title != null">
                 title,
             </if>
@@ -364,9 +364,9 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                #{issueId,jdbcType=BIGINT},
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--#{issueId,jdbcType=BIGINT},-->
+            <!--</if>-->
             <if test="title != null">
                 #{title,jdbcType=VARCHAR},
             </if>
