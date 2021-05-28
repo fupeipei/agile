@@ -285,8 +285,8 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     }
 
     @Override
-    public List<com.yusys.agile.burndown.dto.HistogramTaskDTO> getTaskMemberAnalysis(Long sprintId) {
-        List<com.yusys.agile.burndown.dto.HistogramTaskDTO> taskDTOList;
+    public List<HistogramTaskDTO> getTaskMemberAnalysis(Long sprintId) {
+        List<HistogramTaskDTO> taskDTOList;
         taskDTOList = issueMapper.getTaskMemberAnalysis(sprintId);
         if (CollectionUtils.isNotEmpty(taskDTOList)) {
             taskDTOList.forEach(histogramTaskDTO -> {
