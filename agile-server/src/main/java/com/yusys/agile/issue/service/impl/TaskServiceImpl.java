@@ -362,7 +362,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void dragTask(Long issueId, Long from, Long to, Long userId) {
+    public Issue dragTask(Long issueId, Long from, Long to, Long userId) {
         if (null == issueId || null == from || null == to) {
             throw new BusinessException("入参为空！");
         }
@@ -503,6 +503,8 @@ public class TaskServiceImpl implements TaskService {
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(task, NumberConstant.THREE, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+
+        return task;
     }
 
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
