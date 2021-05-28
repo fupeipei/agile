@@ -84,8 +84,6 @@ public class StoryServiceImpl implements StoryService {
     @Resource
     private IssueFactory issueFactory;
     @Resource
-    private SSprintMapper sprintMapper;
-    @Resource
     private IssueMapper issueMapper;
     @Resource
     private BurnDownChartStoryDao burnDownChartStoryDao;
@@ -373,7 +371,7 @@ public class StoryServiceImpl implements StoryService {
         List<IssueDTO> issueDTOSTmp = new ArrayList<>();
         List<Long> systemIds = new ArrayList<>();
         Map<Long, String> systemMap = new HashedMap();
-        SSprint sprint = sprintMapper.selectByPrimaryKey(sprintId);
+        SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             issueDTOS.forEach(issueDTO -> systemIds.add(issueDTO.getSystemId()));
             List<SsoSystem> ssoSystems = iFacadeSystemApi.querySsoSystem(systemIds);
@@ -538,7 +536,7 @@ public class StoryServiceImpl implements StoryService {
         if (null == issue || !StringUtils.equals(issue.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }
-        SSprint sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
+        SSprint sprint = sSprintMapper.selectByPrimaryKeyNotText(sprintId);
         int count = 0;
         if (null != sprint) {
             if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
@@ -985,7 +983,7 @@ public class StoryServiceImpl implements StoryService {
      */
     @Override
     public void checkSprintParam(Long sprintId) {
-        SSprint sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
+        SSprint sprint = sSprintMapper.selectByPrimaryKeyNotText(sprintId);
         if (null != sprint) {
             if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
                 throw new BusinessException("只有未开始的任务可以关联工作项");
