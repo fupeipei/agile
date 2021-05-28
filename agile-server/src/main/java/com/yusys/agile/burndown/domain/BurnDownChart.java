@@ -3,7 +3,6 @@ package com.yusys.agile.burndown.domain;
 import java.util.Date;
 
 public class BurnDownChart {
-    private Long chartId;
     private Long projectId;
     private Long sprintId;
     private Integer remainWorkload;
@@ -13,14 +12,6 @@ public class BurnDownChart {
     private Byte taskState;
     private String tenantCode;
     private Date createTime;
-
-    public Long getChartId() {
-        return chartId;
-    }
-
-    public void setChartId(Long chartId) {
-        this.chartId = chartId;
-    }
 
     public String getTenantCode() {
         return tenantCode;

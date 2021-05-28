@@ -26,7 +26,6 @@ public class BurnDownChartServiceTest {
     private BurnDownChartService burnDownChartService;
 
     @Test
-    @Transactional
     public void calculateWorkloadTest() {
         try {
             burnDownChartService.calculateWorkload();
@@ -39,7 +38,7 @@ public class BurnDownChartServiceTest {
     @Test
     public void getBySprintTest() {
         try {
-            Long sprintId = 100035L;
+            Long sprintId = 100029L;
             BurnDownChartDTO chartDTO = burnDownChartService.getBySprint(sprintId);
             log.info("Junit测试--根据迭代ID查询迭代计划饼图数据成功：{}", chartDTO.toString());
         } catch (Exception e) {
