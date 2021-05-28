@@ -8,7 +8,7 @@
 	
 	<select id="getBySprint" resultType="com.yusys.agile.burndown.domain.BurnDownChart">
 		select #{planWorkload}-ifnull(sum(finished_workload),0) remain_workload,sprint_time 
-		from s_burndown_chart where sprint_id = #{sprintId} and task_state in (-1,100,101,102,103,1000,1001,1002,1004)
+		from s_burndown_chart where sprint_id = #{sprintId} and task_state in (-1,107,108,109,110,1000,1001,1002,1004)
 		group by sprint_time order by sprint_time
 	</select>
 	
@@ -18,7 +18,7 @@
 	
 	<select id="getTasksBySprint" resultType="com.yusys.agile.burndown.dto.BurnDownTask">
 		select #{planTask}-ifnull(count(*),0) remain_task,sprint_time 
-		from s_burndown_chart where sprint_id = #{sprintId} and task_state in (103,1002)
+		from s_burndown_chart where sprint_id = #{sprintId} and task_state in (110,1002)
 		group by sprint_time order by sprint_time;
 	</select>
 
