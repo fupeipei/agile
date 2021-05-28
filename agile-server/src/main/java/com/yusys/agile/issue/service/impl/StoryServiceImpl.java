@@ -276,7 +276,7 @@ public class StoryServiceImpl implements StoryService {
         if (!issue.getSprintId().equals(sprintId)) {
             return 1;
         }
-        Sprint sprint = sprintMapper.selectByPrimaryKey(sprintId);
+        SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         if (null == sprint || !StringUtils.equals(sprint.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }

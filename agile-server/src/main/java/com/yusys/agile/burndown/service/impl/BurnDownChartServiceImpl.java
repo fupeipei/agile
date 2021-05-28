@@ -134,17 +134,14 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
 
     /**
      * 创建每日剩余故事数
-     *
-     * @param projectId
      * @param sprintId
      * @param sprintTime
      * @param storyId
      * @param storyState
      * @return
      */
-    private BurnDownChartStory generateChartStory(Long projectId, Long sprintId, Date sprintTime, Long storyId, Long storyState) {
+    private BurnDownChartStory generateChartStory(Long sprintId, Date sprintTime, Long storyId, Long storyState) {
         BurnDownChartStory chartStory = new BurnDownChartStory();
-        chartStory.setProjectId(projectId);
         chartStory.setSprintId(sprintId);
         chartStory.setSprintTime(sprintTime);
         chartStory.setStoryId(storyId.toString());
@@ -272,13 +269,12 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      */
     @Override
     public void calculateStorys() {
-        ControllerResponse<List<SsoProjectDTO>> controllerResponse = iFacadeProjectApi.listAllProjectsNoPage("");
-        List<SsoProjectDTO> projects = controllerResponse.getData();
-        if (CollectionUtils.isNotEmpty(projects)) {
-            for (SsoProjectDTO project : projects) {
-                if (project != null) {
-                    List<SprintWithBLOBs> sprints = sprintMapper.getByProjectId(project.getProjectId());
-                    calculateStorys(sprints, project.getProjectId());
+        //查询所有迭代
+        List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
+        if (CollectionUtils.isNotEmpty(sSprints)) {
+            for (SSprintWithBLOBs sprint : sSprints) {
+                if (sprint != null) {
+                    calculateStorys(sprint);
                 }
             }
         }
@@ -305,17 +301,17 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         return taskDTOList;
     }
 
-    public void calculateStorys(List<SprintWithBLOBs> sprints, Long projectId) {
-        if (CollectionUtils.isNotEmpty(sprints)) {
-            for (SprintWithBLOBs sprint : sprints) {
-                if (sprint != null) {
-                    calculateStorys(projectId, sprint);
-                }
-            }
-        }
-    }
+//    public void calculateStorys(List<SprintWithBLOBs> sprints) {
+//        if (CollectionUtils.isNotEmpty(sprints)) {
+//            for (SprintWithBLOBs sprint : sprints) {
+//                if (sprint != null) {
+//                    calculateStorys(projectId, sprint);
+//                }
+//            }
+//        }
+//    }
 
-    private void calculateStorys(Long projectId, SprintWithBLOBs sprint) {
+    private void calculateStorys(SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.preDay(new Date());
         if (sprintService.legalDate(sprint.getSprintDays(), target)) {
@@ -324,12 +320,12 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
                 for (Issue story : stories) {
                     if (story != null) {
                         Long laneId = story.getLaneId();
-                        BurnDownChartStory burnDownChartStory = generateChartStory(projectId, sprintId, target, story.getIssueId(), laneId);
+                        BurnDownChartStory burnDownChartStory = generateChartStory(sprintId, target, story.getIssueId(), laneId);
                         burnDownChartStoryDao.create(burnDownChartStory);
                     }
                 }
             } else {
-                BurnDownChartStory chartStory = generateChartStory(projectId, sprintId, target, -1L, -1L);
+                BurnDownChartStory chartStory = generateChartStory(sprintId, target, -1L, -1L);
                 burnDownChartStoryDao.create(chartStory);
             }
         }
@@ -343,7 +339,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @return
      */
     private List<BurnDownStory> getStorys(Long sprintId, Integer actualRemainStory) {
-        SprintWithBLOBs sprint = sprintMapper.selectByPrimaryKey(sprintId);
+        SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         Optional.ofNullable(sprint).orElseThrow(() -> new BusinessException("迭代计划不存在"));
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
