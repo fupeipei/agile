@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
@@ -29,12 +30,11 @@ import java.util.stream.Collectors;
 @Service("taskDownloadService")
 public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletService {
 
-
     @Autowired
     private Sprintv3Service sprintv3Service;
 
     @Override
-    public void download(HttpServletResponse response) {
+    public void download(HttpServletResponse response, ExcelCommentFiled filed) {
         //todo 下拉填充数据
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getSprintInfo();
@@ -50,7 +50,6 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
             log.error("导出task模版异常:{}",e.getMessage());
         }
     }
-
 
     private String[] getSprintInfo(){
         Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();

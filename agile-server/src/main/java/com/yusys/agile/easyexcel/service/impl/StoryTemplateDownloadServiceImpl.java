@@ -4,12 +4,14 @@ import com.alibaba.excel.EasyExcel;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,19 +35,21 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     private Sprintv3Service sprintv3Service;
 
     @Override
-    public void download(HttpServletResponse response) {
+    public void download(HttpServletResponse response, ExcelCommentFiled filed) {
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getSprintInfo();
+        String[] storyPoints = getStoryPoint();
         mapDropDown.put(3,sprintInfo);
+        mapDropDown.put(6,storyPoints);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
-//            String  templateFileName = "excelTemplate" +  File.separator + "storyImportTemplate.xlsx";
-//             写入excel,springboot 使用new ClassPathResource();
-//            ExcelWriter excelWriter = EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response)).withTemplate
-//                    (new ClassPathResource(templateFileName).getInputStream()).registerWriteHandler(spinnerWriteHandler).build();
+//          String  templateFileName = "excelTemplate" +  File.separator + "storyImportTemplate.xlsx";
+//          写入excel,springboot 使用new ClassPathResource();
+//          ExcelWriter excelWriter = EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response)).withTemplate
+//          (new ClassPathResource(templateFileName).getInputStream()).registerWriteHandler(spinnerWriteHandler).build();
             EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
                     .autoCloseStream(Boolean.TRUE)
-                    .sheet("stroys")
+                    .sheet("storys")
                     .registerWriteHandler(spinnerWriteHandler)
                     .doWrite(new ArrayList());
         } catch (IOException  e) {
@@ -67,6 +71,14 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
            log.info("查询迭代信息异常:{}",e.getMessage());
        }
         return new String[]{};
+    }
+
+    private String[] getStoryPoint(){
+        List<String> list = Lists.newArrayList();
+        for(int i = 0;i<=80; i++){
+            list.add(String.valueOf(i));
+        }
+        return list.toArray(new String[0]);
     }
 
 }

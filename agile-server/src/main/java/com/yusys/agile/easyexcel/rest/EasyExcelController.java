@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.rest;
 
 import com.yusys.agile.easyexcel.service.IExcelService;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,13 @@ public class EasyExcelController {
     private IExcelService excelService;
 
     @GetMapping(value = "/downloadExcel/template/{excelType}")
-    public void download(@PathVariable Byte excelType, HttpServletResponse response) {
+    public void download(@PathVariable Byte excelType,
+                         HttpServletResponse response,
+                         @RequestParam(value = "sprintId",required = false)Long sprintId) {
         try {
-            excelService.downLoadTemplate(excelType,response);
+            ExcelCommentFiled filed = new ExcelCommentFiled();
+            filed.setSprintId(sprintId);
+            excelService.downLoadTemplate(excelType,response,filed);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
         }
