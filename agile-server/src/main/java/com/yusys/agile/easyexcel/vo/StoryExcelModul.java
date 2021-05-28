@@ -1,4 +1,4 @@
-package com.yusys.agile.issue.excel.vo;
+package com.yusys.agile.easyexcel.vo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;

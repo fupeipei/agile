@@ -1,4 +1,4 @@
-package com.yusys.agile.issue.excel;
+package com.yusys.agile.easyexcel;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
@@ -35,7 +35,6 @@ public class ExcelUtil {
      * xls
      */
     public static final String XLS = ".xls";
-
     /**
      * xlsx
      */

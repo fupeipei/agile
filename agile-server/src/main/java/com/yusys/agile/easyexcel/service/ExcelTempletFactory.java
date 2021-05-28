@@ -1,7 +1,7 @@
-package com.yusys.agile.issue.excel.service;
+package com.yusys.agile.easyexcel.service;
 
-import com.yusys.agile.issue.excel.service.impl.StoryTemplateDownloadServiceImpl;
-import com.yusys.agile.issue.excel.service.impl.TaskTemplateDownloadServiceImpl;
+import com.yusys.agile.easyexcel.service.impl.StoryTemplateDownloadServiceImpl;
+import com.yusys.agile.easyexcel.service.impl.TaskTemplateDownloadServiceImpl;
 
 /**
  *  @Description: 工厂类
