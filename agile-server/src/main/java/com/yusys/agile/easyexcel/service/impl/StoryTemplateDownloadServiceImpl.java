@@ -74,9 +74,9 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     }
 
     private String[] getStoryPoint(){
-        List<Integer> list = Lists.newArrayList();
-        for(int i = 0;i<=100; i++){
-            list.add(i);
+        List<String> list = Lists.newArrayList();
+        for(int i = 0;i<=80; i++){
+            list.add(String.valueOf(i));
         }
         return list.toArray(new String[0]);
     }
