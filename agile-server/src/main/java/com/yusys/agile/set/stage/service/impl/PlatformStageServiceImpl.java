@@ -141,7 +141,7 @@ public class PlatformStageServiceImpl implements IStageService {
                     result.add(kanbanStageInstance);
                 }
             }
-            stageInstance.setSecondStages(kanbanStageInstances);
+            stageInstance.setSecondStages(result);
         }
     }
 }
