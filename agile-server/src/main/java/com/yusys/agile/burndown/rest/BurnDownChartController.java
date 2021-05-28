@@ -32,7 +32,7 @@ public class BurnDownChartController {
     /**
      * @Author maxp2
      * @Date 2021/5/27
-     * @Description 计算迭代周期内的工作量燃尽图
+     * @Description 查看迭代周期内的工作量燃尽图
      * @param sprintId
      * @Return com.yusys.agile.utils.result.ResultObject
      */
@@ -42,7 +42,7 @@ public class BurnDownChartController {
     }
 
     /**
-     * 计算迭代周期内的任务数燃尽图
+     * 查看迭代周期内的任务数燃尽图
      *
      * @param sprintId 迭代ID
      * @return
