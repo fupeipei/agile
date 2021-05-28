@@ -3088,6 +3088,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             and si.issue_id = b.story_id
             and si.sprint_id = #{sprintId}
             and si.issue_type=3 and si.is_archive != 1 and si.lane_id = 106
+            and se.field_id = 'storyPoint'
             and b.story_state = 106
             and b.sprint_time = #{currTime}
         ]]>
