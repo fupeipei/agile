@@ -7,6 +7,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *  @Date:  4:56 下午
  *
  */
-
 public class SpinnerWriteHandler implements SheetWriteHandler {
 
     private Map<Integer,String []> mapDropDown = new ConcurrentHashMap<>();
@@ -32,6 +32,11 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
 
     @Override
     public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+
+    }
+
+    @Override
+    public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
         Sheet sheet = writeSheetHolder.getSheet();
         ///开始设置下拉框
         DataValidationHelper helper = sheet.getDataValidationHelper();//设置下拉框
@@ -61,11 +66,6 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
             cell.setCellStyle(setStyle(workbook));
         }
         row.setHeight((short) (205*7));
-    }
-
-    @Override
-    public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
-
     }
 
     /***
