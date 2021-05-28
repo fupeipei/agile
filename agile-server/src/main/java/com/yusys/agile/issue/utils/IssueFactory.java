@@ -163,6 +163,13 @@ public class IssueFactory {
             }
         }
         issue.setUpdateTime(new Date());
+
+        //如果系统为空取当前系统
+        if(!Optional.ofNullable(issueDTO.getSystemId()).isPresent()){
+            Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+            issue.setSystemId(systemId);
+        }
+
         issueMapper.insertSelective(issue);
 
         /**  赋值issue ,保存富文本 */
@@ -210,9 +217,6 @@ public class IssueFactory {
         if (count != 1) {
             throw new BusinessException("新增历史记录失败！");
         }
-
-        //处理系统信息
-        dealSystems(issueId, issueDTO.getSystemIds());
 
         //处理模块信息
         dealModules(issueId, issueDTO.getModuleIds());
