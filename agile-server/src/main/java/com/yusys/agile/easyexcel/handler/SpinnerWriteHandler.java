@@ -28,33 +28,84 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
 
     @Override
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
+//        Sheet sheet = writeSheetHolder.getSheet();
+//        ///开始设置下拉框
+//        DataValidationHelper helper = sheet.getDataValidationHelper();//设置下拉框
+//        if(MapUtils.isNotEmpty(mapDropDown)){
+//            for (Map.Entry<Integer, String[]> entry : mapDropDown.entrySet()) {
+//                if(entry.getValue().length >0 ){
+//                    /***起始行、终止行、起始列、终止列**/
+//                    CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, entry.getKey(), entry.getKey());
+//                    /***设置下拉框数据**/
+//                    DataValidationConstraint constraint = helper.createExplicitListConstraint(entry.getValue());
+//                    DataValidation dataValidation = helper.createValidation(constraint, addressList);
+//                    /***处理Excel兼容性问题**/
+//                    if (dataValidation instanceof XSSFDataValidation) {
+//                        dataValidation.setSuppressDropDownArrow(true);
+//                        dataValidation.setShowErrorBox(true);
+//                    } else {
+//                        dataValidation.setSuppressDropDownArrow(false);
+//                    }
+//                    sheet.addValidationData(dataValidation);
+//                }
+//            }
+//        }
+
+        //获取一个workbook
         Sheet sheet = writeSheetHolder.getSheet();
-        ///开始设置下拉框
-        DataValidationHelper helper = sheet.getDataValidationHelper();//设置下拉框
-        if(MapUtils.isNotEmpty(mapDropDown)){
-            for (Map.Entry<Integer, String[]> entry : mapDropDown.entrySet()) {
-                if(entry.getValue().length >0 ){
-                    /***起始行、终止行、起始列、终止列**/
-                    CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, entry.getKey(), entry.getKey());
-                    /***设置下拉框数据**/
-                    DataValidationConstraint constraint = helper.createExplicitListConstraint(entry.getValue());
-                    DataValidation dataValidation = helper.createValidation(constraint, addressList);
-                    /***处理Excel兼容性问题**/
-                    if (dataValidation instanceof XSSFDataValidation) {
-                        dataValidation.setSuppressDropDownArrow(true);
-                        dataValidation.setShowErrorBox(true);
-                    } else {
-                        dataValidation.setSuppressDropDownArrow(false);
-                    }
-                    sheet.addValidationData(dataValidation);
-                }
+        //设置下拉框
+        DataValidationHelper helper = sheet.getDataValidationHelper();
+        //定义sheet的名称
+        String hiddenName = "hidden";
+        //1.创建一个隐藏的sheet 名称为 hidden
+        Workbook workbook = writeWorkbookHolder.getWorkbook();
+        Sheet hidden = workbook.createSheet(hiddenName);
+        for (Map.Entry<Integer, String[]> entry : mapDropDown.entrySet()) {
+            //下拉框的起始行,结束行,起始列,结束列
+            CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, entry.getKey(), entry.getKey());
+            //获取excel列名
+            String excelLine = getExcelLine(entry.getKey());
+            //2.循环赋值
+            String[] values = entry.getValue();
+            for (int i = 0, length = values.length; i < length; i++) {
+                // 3:表示你开始的行数  3表示 你开始的列数
+                hidden.createRow(i).createCell(entry.getKey()).setCellValue(values[i]);
             }
+            //4.  =hidden!$H:$1:$H$50  sheet为hidden的 H1列开始H50行数据获取下拉数组
+            String refers = "="+hiddenName + "!$"+excelLine+
+                    "$1:$"+excelLine +"$"+ (values.length+1);
+            //5 将刚才设置的sheet引用到你的下拉列表中
+            DataValidationConstraint constraint = helper.createFormulaListConstraint(refers);
+            DataValidation dataValidation = helper.createValidation(constraint, addressList);
+            writeSheetHolder.getSheet().addValidationData(dataValidation);
+        }
+        //设置列为隐藏
+        int hiddenIndex = workbook.getSheetIndex("hidden");
+        if (!workbook.isSheetHidden(hiddenIndex)) {
+            workbook.setSheetHidden(hiddenIndex, true);
         }
     }
 
     @Override
     public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
 
+    }
+
+
+    /**
+     * 返回excel列标A-Z-AA-ZZ
+     * @param num
+     * @return
+     */
+    public static String getExcelLine(int num) {
+        String line = "";
+        int first = num/26;
+        int second = num % 26;
+        if (first>0) {
+            line = (char)('A'+first-1)+"";
+        }
+        line += (char)('A'+second)+"";
+        return line;
     }
 
 }
