@@ -2,18 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.burndown.dao.BurnDownChartStoryDao">
 	<insert id="create">
-		insert into burndown_chart_story (project_id,sprint_id,sprint_time,story_id,story_state,tenant_code)
-		values(#{projectId},#{sprintId},#{sprintTime},#{storyId},#{storyState},#{tenantCode})
+		insert into s_burndown_chart_story (project_id,sprint_id,sprint_time,story_id,story_state,tenant_code,create_time)
+		values(#{projectId},#{sprintId},#{sprintTime},#{storyId},#{storyState},#{tenantCode},#{createTime})
 	</insert>
 
 	<select id="getStorysBySprint" resultType="com.yusys.agile.burndown.dto.BurnDownStory">
 		select #{planStory}-ifnull(count(*),0) remain_story,sprint_time
-		from burndown_chart_story where sprint_id = #{sprintId} and story_state = 7
+		from s_burndown_chart_story where sprint_id = #{sprintId} and lane_id = 106
 		group by sprint_time order by sprint_time
 	</select>
 
 	<update id="cancelByStorys">
-		update burndown_chart_story set story_state = -1 where sprint_id = #{sprintId}
+		update s_burndown_chart_story set story_state = -1 where sprint_id = #{sprintId}
 		and story_id in (
 		<foreach collection="storyIds" item="storyId" separator=",">
 			#{storyId}

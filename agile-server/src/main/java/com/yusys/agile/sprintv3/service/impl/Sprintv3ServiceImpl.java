@@ -22,7 +22,6 @@ import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
-import com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel;
 import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
@@ -730,6 +729,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 });
                 return issueDTO;
             }).collect(Collectors.toList());
+            //属性值翻译
+            issueDTOS.forEach(item -> {
+                //状态
+                item.setStoryStatusName(StoryStatusEnum.getName(item.getLaneId()));
+            });
         } else {
             PageHelper.startPage(pageNum, pageSize);
             issueDTOS = issueMapper.queryNotRelationStory(title, systemIds);
@@ -738,8 +742,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 issueDTO.setSystemCode(ssoSystem.getSystemCode());
                 return issueDTO;
             }).collect(Collectors.toList());
-        }
 
+            //属性值翻译
+            issueDTOS.forEach(item -> {
+                //状态
+                item.setStoryStatusName(StoryStatusEnum.getName(item.getLaneId()));
+            });
+        }
         return issueDTOS;
     }
 

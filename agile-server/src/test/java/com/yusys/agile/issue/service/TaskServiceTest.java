@@ -7,14 +7,20 @@ import com.yusys.agile.issue.dto.IssueAttachmentDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
+import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
 import java.util.PrimitiveIterator;
@@ -29,6 +35,14 @@ public class TaskServiceTest {
     private IssueDTO issueDTO;
 
     private SecurityDTO securityDTO;
+
+    @Autowired
+    DataSource dataSource;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+
 
     @Before
     public void initTaskTestData() {
@@ -59,6 +73,9 @@ public class TaskServiceTest {
         securityDTO.setTenantCode("1");
         securityDTO.setUserName("何红玉1");
         securityDTO.setUserAcct("hehy4");
+
+        //数据准备
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
     }
 
     @Test
@@ -90,6 +107,33 @@ public class TaskServiceTest {
     public void deleteChildrenTask() {
         taskService.deleteTask(846446177436880896L, true);
         Assert.assertTrue("deleteChildrenTask成功",true);
+    }
+
+    @Test
+    public void dragTask() {
+        //SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+        //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
+
+//        TYPE_ADD_STATE("未领取", 107L),
+//        TYPE_RECEIVED_STATE("已领取", 108L),
+//        TYPE_MODIFYING_STATE("进行中", 109L),
+//        TYPE_CLOSED_STATE("已完成", 110L);
+
+
+        //角色id，PO:104，SM:103，TM:105
+        SecurityDTO secDTO = new SecurityDTO();
+        secDTO.setUserId(834451097091657728L);
+        //secDTO.setSystemId(817701268263542784L);
+        secDTO.setTenantCode("1");
+        secDTO.setUserName("杜杉");
+        secDTO.setUserAcct("dushan1");
+
+        UserThreadLocalUtil.setUserInfo(secDTO);
+        long taskId=119L;
+        //"未领取", 107L      "已领取", 108L
+        taskService.dragTask(taskId,107L,108L,null);
+        Assert.assertTrue("deleteTask成功",true);
+
     }
 
     @Test

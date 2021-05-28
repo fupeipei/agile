@@ -25,10 +25,6 @@
         <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays"/>
     </resultMap>
 
-    <resultMap id="SprintMembersWorkHours" type="com.yusys.agile.sprintv3.queryModel.UserWorkloadQueryModel">
-        <result column="first" property="firstData"/>
-        <result column="second" property="secondData"/>
-    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -719,6 +715,7 @@
         where sprint_id = #{sprintId}
           and issue_type = #{issueType}
           and lane_id = #{status}
+          and state = 'U'
     </select>
 
     <select id="querySprintFinishedStoryPoint" resultType="int">
@@ -779,12 +776,14 @@
     </select>
 
     <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
-        SELECT DISTINCT ss.sprint_id, ss.sprint_name
+
+        SELECT DISTINCT ss.sprint_id, ss.sprint_name,st.team_id ,st.team_name
         from agile.s_sprint ss
-                     left join agile.s_team_system sts
-                on ss.team_id = sts.team_id
+        left join agile.s_team_system sts
+        on ss.team_id = sts.team_id
+        left join agile.s_team st  on st.team_id  = ss.team_id
         where ss.status in (2, 3)
-          and sts.system_id = #{systemId};
+        and sts.system_id = #{systemId};
     </select>
 
     <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">

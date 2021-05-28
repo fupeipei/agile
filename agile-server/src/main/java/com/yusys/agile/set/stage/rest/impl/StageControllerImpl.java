@@ -37,9 +37,9 @@ public class StageControllerImpl {
      * @description 根据项目id查询阶段列表
      */
     @GetMapping("/getStageList")
-    public ControllerResponse queryStageList() {
+    public ControllerResponse queryStageList(@RequestParam("stageType")Integer stageType) {
         try {
-            List<StageInstance> kanbanStageInstances = iStageService.getStageList();
+            List<StageInstance> kanbanStageInstances = iStageService.getStageList(stageType);
             return ControllerResponse.success(kanbanStageInstances);
         } catch (Exception e) {
             return ControllerResponse.fail("阶段列表获取异常");
