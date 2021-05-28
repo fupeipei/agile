@@ -7,9 +7,12 @@ package com.yusys.agile.actionlog.service.impl;
 import com.yusys.agile.actionlog.dao.SActionLogMapper;
 import com.yusys.agile.actionlog.domain.SActionLog;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class SActionLogServiceImpl implements com.yusys.agile.actionlog.service.SActionLogService {
     private final SActionLogMapper sActionLogMapper;
 
@@ -93,12 +96,18 @@ public class SActionLogServiceImpl implements com.yusys.agile.actionlog.service.
                           Long objType,
                           String remark,
                           String result){
-        SActionLog build = SActionLog.builder()
-                .actionCode(actionCode)
-                .objId(objId)
-                .objType(objType)
-                .remark(remark)
-                .result(result).build();
-        return this.insert(build);
+        int insert=0;
+        try{
+            SActionLog build = SActionLog.builder()
+                    .actionCode(actionCode)
+                    .objId(objId)
+                    .objType(objType)
+                    .remark(remark)
+                    .result(result).build();
+             insert = this.insert(build);
+        }catch (Exception e){
+            log.error("操作日志报错_insertLog",e);
+        }
+        return insert;
     }
 }
