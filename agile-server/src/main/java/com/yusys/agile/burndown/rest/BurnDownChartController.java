@@ -60,8 +60,8 @@ public class BurnDownChartController {
      * @return
      */
     @GetMapping("/burndowns/storys/{sprintId}")
-    public ResultObject getStoryBySprint(@PathVariable("sprintId") Long springtId) {
-        return ResultObject.success(burnDownChartService.getStorysBySprint(springtId));
+    public ControllerResponse getStoryBySprint(@PathVariable("sprintId") Long springtId) {
+        return ControllerResponse.success(burnDownChartService.getStorysBySprint(springtId));
     }
 
     /**
