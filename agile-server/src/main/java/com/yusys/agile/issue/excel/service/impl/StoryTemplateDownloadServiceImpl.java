@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,17 +39,18 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
 
 
     @Override
-    public void download() {
+    public void download(HttpServletResponse response) {
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getSprintInfo();
         mapDropDown.put(3,sprintInfo);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
 
-        ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
+        String  templateFileName = "excelTemplate" + File.separator + "storyImportTemplate.xlsx";
+
+       // ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
         File file = null;
         try {
-            file = classPathResource.getFile();
-            EasyExcel.write(file).excelType(ExcelTypeEnum.XLSX).registerWriteHandler(spinnerWriteHandler);
+            EasyExcel.write(ExcelUtil.dealResponse(templateFileName,response)).excelType(ExcelTypeEnum.XLSX).registerWriteHandler(spinnerWriteHandler);
         } catch (IOException e) {
             log.error("导出Story模版异常:{}",e.getMessage());
         }

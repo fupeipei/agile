@@ -23,7 +23,7 @@
 	</select>
 
 	<update id="cancelByStorys">
-		update burndown_chart set task_state = -1,finished_workload=0 where sprint_id = #{sprintId}
+		update s_burndown_chart set task_state = -1,finished_workload=0 where sprint_id = #{sprintId}
 		and task_id in (
 			select issue_id from issue where parent_id in
 			<foreach collection="storyIds" item="storyId" separator="," open="(" close=")">
@@ -34,7 +34,7 @@
 
 	<update id="cancelByFaults">
 		update
-		  burndown_chart
+		s_burndown_chart
 		set
 		  task_state = -1,finished_workload = 0
 		where

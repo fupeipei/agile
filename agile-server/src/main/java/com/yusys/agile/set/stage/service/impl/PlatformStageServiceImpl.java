@@ -127,6 +127,7 @@ public class PlatformStageServiceImpl implements IStageService {
                             StoryStatusEnum.TYPE_MODIFYING_STATE.CODE == kanbanStageInstance.getStageId() ||
                             StoryStatusEnum.TYPE_CLOSED_STATE.CODE == kanbanStageInstance.getStageId()){
                         result.add(kanbanStageInstance);
+                        continue;
                     }
                 }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
                     if(TaskStatusEnum.TYPE_ADD_STATE.CODE == kanbanStageInstance.getStageId() ||
@@ -134,6 +135,7 @@ public class PlatformStageServiceImpl implements IStageService {
                             TaskStatusEnum.TYPE_MODIFYING_STATE.CODE == kanbanStageInstance.getStageId()||
                             TaskStatusEnum.TYPE_CLOSED_STATE.CODE == kanbanStageInstance.getStageId()){
                         result.add(kanbanStageInstance);
+                        continue;
                     }
                 }else {
                     result.add(kanbanStageInstance);
