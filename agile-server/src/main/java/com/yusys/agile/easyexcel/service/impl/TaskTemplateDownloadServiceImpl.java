@@ -5,7 +5,7 @@ import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
-import com.yusys.agile.easyexcel.vo.StoryExcelModul;
+import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -41,7 +41,7 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
         mapDropDown.put(3,sprintInfo);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
-            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModul.class)
+            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("tasks")
                     .registerWriteHandler(spinnerWriteHandler)
