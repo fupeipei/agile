@@ -24,14 +24,11 @@ public class EasyExcelController {
 
     @Autowired
     private IExcelService excelService;
-    @Autowired
-    private DownloadExcelTempletService downloadExcelTempletService;
-
 
     @GetMapping(value = "/downloadExcel/template/{excelType}")
     public void download(@PathVariable Byte excelType, HttpServletResponse response) {
         try {
-            downloadExcelTempletService.download(response);
+            excelService.downLoadTemplate(excelType,response);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
         }
