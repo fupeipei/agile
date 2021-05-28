@@ -46,8 +46,6 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
 
         String  templateFileName = "excelTemplate" + File.separator + "storyImportTemplate.xlsx";
-
-       // ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
         File file = null;
         try {
             EasyExcel.write(ExcelUtil.dealResponse(templateFileName,response)).excelType(ExcelTypeEnum.XLSX).registerWriteHandler(spinnerWriteHandler);
