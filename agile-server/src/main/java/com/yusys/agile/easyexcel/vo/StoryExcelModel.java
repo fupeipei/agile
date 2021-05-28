@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @HeadRowHeight(20)	// 表头行高
 @ColumnWidth(15)		// 表头行宽
-public class StoryExcelModul {
+public class StoryExcelModel {
 
     @ExcelProperty(value = "*故事名称", index = 0)
     private String storyName;

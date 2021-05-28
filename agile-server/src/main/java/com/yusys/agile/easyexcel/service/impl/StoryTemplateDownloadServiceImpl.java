@@ -4,7 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
-import com.yusys.agile.easyexcel.vo.StoryExcelModul;
+import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -43,7 +43,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
 //             写入excel,springboot 使用new ClassPathResource();
 //            ExcelWriter excelWriter = EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response)).withTemplate
 //                    (new ClassPathResource(templateFileName).getInputStream()).registerWriteHandler(spinnerWriteHandler).build();
-            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response),StoryExcelModul.class)
+            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("stroys")
                     .registerWriteHandler(spinnerWriteHandler)
