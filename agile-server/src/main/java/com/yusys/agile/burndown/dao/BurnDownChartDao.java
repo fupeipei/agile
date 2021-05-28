@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface BurnDownChartDao {
-    int create(BurnDownChart chart);
+    int insert(BurnDownChart chart);
 
     List<BurnDownChart> getBySprint(@Param("sprintId") Long sprintId,
                                     @Param("planWorkload") Integer planWorkload);

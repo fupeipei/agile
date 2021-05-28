@@ -54,7 +54,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     private IFacadeUserApi iFacadeUserApi;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public void calculateWorkload() {
         //查询所有迭代
         List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
@@ -80,12 +80,12 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
                         Long laneId = task.getLaneId();
                         BurnDownChart chart = generateChart(sprintId, target, planWorkload - remainWorkload,
                                 task.getIssueId(), laneId);
-                        burnDownChartDao.create(chart);
+                        burnDownChartDao.insert(chart);
                     }
                 }
             } else {
                 BurnDownChart chart = generateChart(sprintId, target, 0, -1L, -1L);
-                burnDownChartDao.create(chart);
+                burnDownChartDao.insert(chart);
             }
         }
     }

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.burndown.dao.BurnDownChartDao">
-	<insert id="create" parameterType="com.yusys.agile.burndown.domain.BurnDownChart" useGeneratedKeys="true"
-			keyProperty="chartId">
-		insert into s_burndown_chart(chart_id,project_id,sprint_id,finished_workload,sprint_time,task_id,task_state,tenant_code,create_time)
-		values(#{chartId},#{projectId},#{sprintId},#{finishedWorkload},#{sprintTime},#{taskId},#{taskState},#{tenantCode},#{createTime})
+	<insert id="insert">
+		insert into s_burndown_chart(project_id,sprint_id,finished_workload,sprint_time,task_id,task_state,tenant_code,create_time)
+		values(#{projectId},#{sprintId},#{finishedWorkload},#{sprintTime},#{taskId},#{taskState},#{tenantCode},#{createTime})
 	</insert>
 	
 	<select id="getBySprint" resultType="com.yusys.agile.burndown.domain.BurnDownChart">
