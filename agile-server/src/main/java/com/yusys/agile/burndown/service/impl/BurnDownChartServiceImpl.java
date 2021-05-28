@@ -183,6 +183,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     @Override
     public BurnDownStoryDTO getStorysBySprint(Long sprintId) {
         BurnDownStoryDTO burnDownStoryDTO = new BurnDownStoryDTO();
+        //查询迭代下的故事数
         Integer actualRemainStory = issueMapper.countStories4Sprint(sprintId);
         burnDownStoryDTO.setPlanStory(actualRemainStory);
         burnDownStoryDTO.setActualRemainStory(actualRemainStory);
@@ -344,7 +345,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();
-        /** 获得故事的迭代有效日期*/
+        //获得故事的迭代有效日期
         //取迭代日期
         List<BurnDownStory> stories = getStorys(start, end, sprintDays);
 
@@ -522,10 +523,11 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      */
     private List<BurnDownStory> getSprintStorys(Long sprintId, Integer planStory, String sprintDays) {
         List<BurnDownStory> stories = Lists.newArrayList();
+        //查询燃尽故事表中迭代日期剩余故事
         List<BurnDownStory> inSprint = burnDownChartStoryDao.getStorysBySprint(sprintId, planStory);
         if (CollectionUtils.isNotEmpty(inSprint)) {
             for (BurnDownStory story : inSprint) {
-                if (null != story && sprintService.legalDate(sprintDays, story.getSprintTime())) {
+                if (null != story && sprintv3Service.legalDate(sprintDays, story.getSprintTime())) {
                     BurnDownStory tempStory = new BurnDownStory();
                     tempStory.setSprintTime(story.getSprintTime());
                     tempStory.setRemainStory(story.getRemainStory());
@@ -569,7 +571,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @return
      */
     private BurnDownStory getCurrentStory(Long sprintId, String sprintDays) {
-        if (sprintService.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
+        if (sprintv3Service.legalDate(sprintDays, DateUtil.getTodayZeroTime())) {
             int currentStory = issueMapper.countInsprintBySprint(sprintId);
             return generateStory(new Date(), currentStory);
         }
@@ -621,10 +623,11 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @return
      */
     private List<BurnDownStory> getStorys(Date start, Date end, String sprintDays) {
+        //给故事设置迭代日期
         List<BurnDownStory> stories = new ArrayList<>();
         if (null != start && null != end) {
             while (DateUtil.compare(end, start)) {
-                if (sprintService.legalDate(sprintDays, start)) {
+                if (sprintv3Service.legalDate(sprintDays, start)) {
                     BurnDownStory burnDownStory = new BurnDownStory();
                     burnDownStory.setSprintTime(DateUtil.formatDate(start));
                     stories.add(burnDownStory);
