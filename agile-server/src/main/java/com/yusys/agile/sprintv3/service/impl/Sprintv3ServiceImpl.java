@@ -837,4 +837,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 .andStateEqualTo(StateEnum.U.getValue());
         return ssprintMapper.selectByExampleWithBLOBs(sSprintExample);
     }
+
+    @Override
+    public Integer getWorkload(Long sprintId) {
+        List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        int sprintHours = 0;
+        for (UserSprintHour userSprintHour : userSprintHours) {
+            sprintHours += userSprintHour.getReallyHours().intValue();
+        }
+        return sprintHours;
+    }
 }

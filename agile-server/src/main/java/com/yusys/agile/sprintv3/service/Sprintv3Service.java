@@ -204,4 +204,13 @@ public interface Sprintv3Service {
      * @Return java.util.List<com.yusys.agile.sprintv3.domain.SSprintWithBLOBs>
      */
     List<SSprintWithBLOBs> querySprintList();
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/30
+     * @Description 获取迭代中人员预估工作量
+     * @param sprintId
+     * @Return java.lang.Integer
+     */
+    Integer getWorkload(Long sprintId);
 }

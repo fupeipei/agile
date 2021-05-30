@@ -1914,7 +1914,7 @@ public class IssueServiceImpl implements IssueService {
             }
         }));
        //  mapResult.put("issueMap", issueMap);
-       // mapResult.put("issueParentMap", issueParentMap);
+        mapResult.put("issueParentMap", issueParentMap);
         //租户下的人员
         List<SsoUserDTO> userDTOS  = iFacadeUserApi.queryUsersByTenantCodeNoPage(tenantCode);
         Map<Long, String> userMap = Maps.newHashMap();
