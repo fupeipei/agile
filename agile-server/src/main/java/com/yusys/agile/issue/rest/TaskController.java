@@ -91,9 +91,9 @@ public class TaskController {
     }
 
     @PutMapping("/copyTask/{taskId}")
-    public ControllerResponse copyTask(@PathVariable(name = "taskId") Long taskId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse copyTask(@PathVariable(name = "taskId") Long taskId) {
         try {
-            Long newTaskId = taskService.copyTask(taskId, projectId);
+            Long newTaskId = taskService.copyTask(taskId, null);
             return ControllerResponse.success(newTaskId);
         } catch (Exception e) {
             LOGGER.error("复制任务失败：{}", e);
