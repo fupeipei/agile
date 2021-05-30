@@ -51,13 +51,12 @@ public interface IssueService {
      * 功能描述  查询当前Issue
      *
      * @param issueId
-     * @param projectId
      * @param issueQuery 1:不查询child，2：查询child
      * @param noLogin    免登录标识，"true"标识免登录调用，other非免登录调用
      * @return com.yusys.agile.requirement.SysExtendFieldDetailDTO;
      * @date 2020/4/21
      */
-    IssueListDTO getIssue(Long issueId, Long projectId, Byte issueQuery, String noLogin) throws Exception;
+    IssueListDTO getIssue(Long issueId, Byte issueQuery, String noLogin);
 
     /**
      * 功能描述  根据issueId查询当前Issue
