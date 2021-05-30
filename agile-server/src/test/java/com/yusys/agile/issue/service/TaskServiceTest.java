@@ -100,6 +100,14 @@ public class TaskServiceTest {
     }
 
     @Test
+    public void copyTask(){
+        Long taskId  = 847878567016624175L;
+        Long copyTaskId = taskService.copyTask(taskId, null);
+        Assert.assertTrue("任务复制成功",true);
+    }
+
+
+    @Test
     public void createIssueNoHandler() {
         issueDTO.setHandler(null);
         Long taskId = taskService.createTask(issueDTO);

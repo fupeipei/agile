@@ -333,24 +333,25 @@ public class IssueFactory {
 
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
+            if (Optional.ofNullable(projectId).isPresent()){
+                List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
+                // todo 自定义字段处理
+                List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
+                if (CollectionUtils.isNotEmpty(list)) {
 
-//            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
-//            // todo 自定义字段处理
-//            List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
-//            if (CollectionUtils.isNotEmpty(list)) {
-//
-//                List<IssueCustomField> fieldsAfterEdit = Lists.newArrayList();
-//                // IssueCustomFieldDTO转换成IssueCustomField
-//                for (IssueCustomFieldDTO temp : list) {
-//                    IssueCustomField issueCustomField = new IssueCustomField();
-//                    issueCustomField.setExtendId(temp.getDetailId());
-//                    issueCustomField.setFieldId(temp.getFieldId());
-//                    issueCustomField.setFieldValue(temp.getFieldValue());
-//                    issueCustomField.setIssueId(issueId);
-//                    fieldsAfterEdit.add(issueCustomField);
-//                }
-//                dealCustomFieldAndFieldHistory(projectId, issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
-//            }
+                    List<IssueCustomField> fieldsAfterEdit = Lists.newArrayList();
+                    // IssueCustomFieldDTO转换成IssueCustomField
+                    for (IssueCustomFieldDTO temp : list) {
+                        IssueCustomField issueCustomField = new IssueCustomField();
+                        issueCustomField.setExtendId(temp.getDetailId());
+                        issueCustomField.setFieldId(temp.getFieldId());
+                        issueCustomField.setFieldValue(temp.getFieldValue());
+                        issueCustomField.setIssueId(issueId);
+                        fieldsAfterEdit.add(issueCustomField);
+                    }
+                    dealCustomFieldAndFieldHistory(projectId, issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
+                }
+            }
 
             //历史记录处理
             dealHistory(history);
@@ -1020,9 +1021,10 @@ public class IssueFactory {
         issueDTO.setIssueId(null);
 
         //查询自定义字段并塞入对象中
-//        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
-//        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
-
+        if (Optional.ofNullable(projectId).isPresent()){
+            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
+            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+        }
         //查询工作项和产品关系表并保存
         List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
         if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
