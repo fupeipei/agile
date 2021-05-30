@@ -16,7 +16,7 @@ public enum VersionStateEnum {
     VERSION_STATE_RELEASED("released", "已发布");
 
     public String CODE;
-    public String NAME;
+    private String NAME;
 
     VersionStateEnum(String code, String name) {
         this.CODE = code;
@@ -51,19 +51,4 @@ public enum VersionStateEnum {
         return versionStateMap;
     }
 
-    public String getCODE() {
-        return CODE;
-    }
-
-    public void setCODE(String CODE) {
-        this.CODE = CODE;
-    }
-
-    public String getNAME() {
-        return NAME;
-    }
-
-    public void setNAME(String NAME) {
-        this.NAME = NAME;
-    }
 }

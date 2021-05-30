@@ -29,10 +29,10 @@ public enum TaskTypeEnum {
     TYPE_CHECK("验证", 11);*/
 
     public Integer CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private TaskTypeEnum(String name, Integer code) {
+    TaskTypeEnum(String name, Integer code) {
         this.CODE = code;
         this.NAME = name;
     }

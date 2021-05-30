@@ -1191,7 +1191,7 @@ public class IssueFactory {
                         sysExtendFieldDetail.setFieldId(sysExtendFieldList1.get(i).getFieldId());
                         sysExtendFieldDetail.setFieldName(sysExtendFieldList1.get(i).getFieldName());
                         sysExtendFieldDetail.setValue(jsonObject.getString(key));
-                        sysExtendFieldDetail.setState(IssueStateEnum.TYPE_VALID.NAME);
+                        sysExtendFieldDetail.setState(IssueStateEnum.getName(IssueStateEnum.TYPE_VALID.CODE));
                         sysExtendFieldDetailList.add(sysExtendFieldDetail);
                     }
                 }

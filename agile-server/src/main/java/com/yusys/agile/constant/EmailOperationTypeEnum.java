@@ -15,10 +15,6 @@ public enum EmailOperationTypeEnum {
     DELETE(2, "删除"),
     DRAG(3, "拖拽");
 
-    public String getNAME() {
-        return NAME;
-    }
-
 
     public Integer CODE;
     private String NAME;

@@ -17,7 +17,7 @@ public enum CustomFieldTypeEnum {
     private Integer CODE;
     private String MSG;
 
-    private CustomFieldTypeEnum(Integer CODE, String MSG) {
+    CustomFieldTypeEnum(Integer CODE, String MSG) {
         this.CODE = CODE;
         this.MSG = MSG;
     }
@@ -44,11 +44,4 @@ public enum CustomFieldTypeEnum {
         this.CODE = CODE;
     }
 
-    public String getMSG() {
-        return this.MSG;
-    }
-
-    public void setMSG(String MSG) {
-        this.MSG = MSG;
-    }
 }

@@ -784,7 +784,7 @@ public class FaultServiceImpl implements FaultService {
      */
     private void syncFixedFault(Long issueId, Long bugId, Long handler) throws Exception {
         FaultFixDTO faultFixDTO = new FaultFixDTO();
-        faultFixDTO.setSystemCode(FaultSourceEnum.YuDO2.NAME);
+        faultFixDTO.setSystemCode(FaultSourceEnum.getName(FaultSourceEnum.YuDO2.CODE));
         faultFixDTO.setBugId(bugId);
         faultFixDTO.setResolution(StringConstant.FIXED);
         faultFixDTO.setResolved_time(DateUtil.toString(DateUtil.FORMAT, new Date()));

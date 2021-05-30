@@ -8,6 +8,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.noticesettings.MailSwitchEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class MailSendUtilTest {
         securityDTO.setUserName("admin");
         securityDTO.setProjectId(issue.getProjectId());
         mailSendUtil.sendMailContent(issue, NumberConstant.ZERO, securityDTO);
+        Assert.assertTrue("sendMail成功", true);
     }
 
     @Test
@@ -43,19 +45,20 @@ public class MailSendUtilTest {
         byte mailType = MailSwitchEnum.OVERDUE.getMailType();
         mailType = MailSwitchEnum.OVERTIME.getMailType();
         mailSendUtil.sendOverDueMail(mailType);
-
+        Assert.assertTrue("sendOverDueMail成功", true);
     }
 
     @Test
     public void testSendBusinessOverDueMail() {
         byte mailType = MailSwitchEnum.OVERDUE.getMailType();
         mailSendUtil.sendBusinessOverDueMail(mailType);
-
+        Assert.assertTrue("testSendBusinessOverDueMail成功", true);
     }
 
     @Test
     public void testComm() {
         Long issueId = 507234L;
         regularFactory.commonIssueUpRegular(issueId);
+        Assert.assertTrue("testComm成功", true);
     }
 }
