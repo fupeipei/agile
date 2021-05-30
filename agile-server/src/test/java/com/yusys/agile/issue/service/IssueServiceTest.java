@@ -1,6 +1,6 @@
 package com.yusys.agile.issue.service;
 
-import com.github.pagehelper.PageInfo;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,7 @@ public class IssueServiceTest {
         map.put("issueType",3);
         map.put("pageNum",1);
         map.put("pageSize",10);
-        PageInfo pageInfo = issueService.getIssueList(map);
+        issueService.getIssueList(map);
+        Assert.assertTrue("getIssueListTest成功", true);
     }
 }

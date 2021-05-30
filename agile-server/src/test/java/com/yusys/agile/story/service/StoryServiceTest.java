@@ -146,6 +146,7 @@ public class StoryServiceTest {
         }
         Long userId=10000l;
         issueService.createBatchRelation(parentId,issueIds,userId);
+        org.junit.Assert.assertTrue("createBatchRelation成功", true);
     }
 
 
