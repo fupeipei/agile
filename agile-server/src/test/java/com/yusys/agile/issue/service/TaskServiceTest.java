@@ -8,6 +8,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueAttachmentDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
+import com.yusys.agile.issue.enums.CreateTypeEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
@@ -20,7 +21,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
@@ -29,7 +29,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
@@ -91,6 +90,7 @@ public class TaskServiceTest {
         securityDTO.setTenantCode("1");
         securityDTO.setUserName("何红玉1");
         securityDTO.setUserAcct("hehy4");
+        UserThreadLocalUtil.setUserInfo(securityDTO);
 
         //数据准备
         //SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
@@ -98,6 +98,13 @@ public class TaskServiceTest {
 
     @Test
     public void createIssue() {
+        Long taskId = taskService.createTask(issueDTO);
+        Assert.assertNotNull(taskId);
+    }
+
+    @Test
+    public void createIssueNoHandler() {
+        issueDTO.setHandler(null);
         Long taskId = taskService.createTask(issueDTO);
         Assert.assertNotNull(taskId);
     }
@@ -280,11 +287,23 @@ public class TaskServiceTest {
         String userName = "";
         Integer page = 1;
         Integer pageSize = 10;
-        Long systemId = 847156999467307008L;
-        Long storyId = 115L;
-        Integer createType = 1;
+        Long systemId = 816048836585721856L;
+        Long storyId = 507112L;
+        Integer createType = CreateTypeEnum.KANBAN.CODE;
         StoryCreatePrepInfoDTO taskPreInfo = taskService.getTaskPreInfo(userName, page, pageSize, systemId, storyId, createType);
-        System.out.println(taskPreInfo);
+        Assert.assertNotNull("查询成功",taskPreInfo);
+    }
+
+    @Test
+    public void getTaskPreInfoByCreateType(){
+        String userName = "";
+        Integer page = 1;
+        Integer pageSize = 10;
+        Long systemId = 816048836585721856L;
+        Long storyId = 507112L;
+        Integer createType = CreateTypeEnum.LIST.CODE;
+        StoryCreatePrepInfoDTO taskPreInfo = taskService.getTaskPreInfo(userName, page, pageSize, systemId, storyId, createType);
+        Assert.assertNotNull("查询成功",taskPreInfo);
     }
 
 
