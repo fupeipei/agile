@@ -4,6 +4,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
+import org.apache.poi.ss.usermodel.FillPatternType;
 
 /**
  * @ClassName TaskExcelModel
@@ -13,7 +14,7 @@ import lombok.Data;
  **/
 @Data
 @HeadRowHeight(20)	// 表头行高
-@ColumnWidth(15)		// 表头行宽
+@ColumnWidth(15)// 表头行宽
 public class TaskExcelModel {
 
     @ExcelProperty(value = "*故事ID", index = 0)
@@ -21,7 +22,10 @@ public class TaskExcelModel {
 
     @ExcelProperty(value = "*任务标题", index = 1)
     private String taskTitle;
-
+    /**
+     * 宽度为50
+     */
+    @ColumnWidth(40)
     @ExcelProperty(value = "任务描述", index = 2)
     private String taskDesc;
 

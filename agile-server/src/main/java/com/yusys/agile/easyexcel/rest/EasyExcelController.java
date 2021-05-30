@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class EasyExcelController {
 
     @Autowired
-    private IExcelService excelService;
+    private IExcelService iExcelService;
 
     @GetMapping(value = "/downloadExcel/template/{excelType}")
     public void download(@PathVariable Byte excelType,
@@ -31,7 +31,7 @@ public class EasyExcelController {
         try {
             ExcelCommentFiled filed = new ExcelCommentFiled();
             filed.setSprintId(sprintId);
-            excelService.downLoadTemplate(excelType,response,filed);
+            iExcelService.downLoadTemplate(excelType,response,filed);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
         }
