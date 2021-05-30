@@ -184,6 +184,8 @@ public class IssueFactory {
         if(!Optional.ofNullable(issueDTO.getSystemId()).isPresent()){
             Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             issue.setSystemId(systemId);
+            List<Long> systemIds = Lists.newArrayList();
+            issueDTO.setSystemIds(systemIds);
         }
 
         issueMapper.insertSelective(issue);

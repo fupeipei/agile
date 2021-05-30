@@ -7,13 +7,12 @@ import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.issue.dao.IssueAcceptanceMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
-import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.domain.IssueAcceptance;
-import com.yusys.agile.issue.domain.IssueExample;
-import com.yusys.agile.issue.domain.IssueHistoryRecord;
+import com.yusys.agile.issue.dao.IssueSystemRelpMapper;
+import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.dto.IssueAcceptanceDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
+import com.yusys.agile.issue.service.IssueSystemRelpService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -109,6 +108,12 @@ public class StoryServiceImpl implements StoryService {
     @Resource
     private STeamSystemMapper teamSystemMapper;
 
+    @Resource
+    private IssueSystemRelpMapper issueSystemRelpMapper;
+
+    @Resource
+    private IssueSystemRelpService issueSystemRelpService;
+
 
 
     /**
@@ -179,10 +184,33 @@ public class StoryServiceImpl implements StoryService {
             oldStory.setSprintId(issueDTO.getSprintId());
             issueMapper.updatePrint(oldStory);
         }
+        //如果故事上的系统修改了，那么需要修改任务上的系统信息
+        this.updateStoryOfTasks(issueDTO);
+    }
+
+
+    private void updateStoryOfTasks(IssueDTO issueDTO){
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andParentIdEqualTo(issueDTO.getIssueId())
+                .andStateEqualTo(StateEnum.U.getValue());
+        List<Issue> issues = issueMapper.selectByExample(issueExample);
+        if (CollectionUtils.isNotEmpty(issues)){
+            List<Long> newSystemIds = issueDTO.getSystemIds();
+            IssueSystemRelpExample issueSystemRelpExample = new IssueSystemRelpExample();
+            issueSystemRelpExample.createCriteria()
+                    .andIssueIdEqualTo(issueDTO.getIssueId());
+            List<IssueSystemRelp> issueSystemRelps = issueSystemRelpMapper.selectByExample(issueSystemRelpExample);
+            List<Long> oldTaskSystemIds = Optional.ofNullable(issueSystemRelps).orElse(new ArrayList<IssueSystemRelp>())
+                    .stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(newSystemIds) && CollectionUtils.isEqualCollection(oldTaskSystemIds,newSystemIds)){
+                issueSystemRelpService.deleteByIssueId(issueDTO.getIssueId());
+                issueSystemRelpService.batchInsert(issueDTO.getIssueId(), newSystemIds);
+            }
+        }
+
 
 
     }
-
     /**
      * 1、从列表新建故事
      *       执行人：当前系统内查询所有人
