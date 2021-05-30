@@ -530,7 +530,6 @@ public class StoryServiceImpl implements StoryService {
      * @return void
      * @date 2020/8/31
      */
-    @Transactional(rollbackFor = Exception.class)
     void distributeStoryToSprint(Long storyId, Long projectId, Long oldSprintId, Long sprintId) {
         Issue issue = issueMapper.selectByPrimaryKey(storyId);
         if (null == issue || !StringUtils.equals(issue.getState(), StateEnum.U.getValue())) {
@@ -771,6 +770,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void distributeSprints(List<Long> listStorys, Long sprintId) {
         for (Long id : listStorys) {
             distributeSprint(id, sprintId);

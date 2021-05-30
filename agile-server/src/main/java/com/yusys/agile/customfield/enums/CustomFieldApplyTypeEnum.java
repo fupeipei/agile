@@ -18,12 +18,12 @@ public enum CustomFieldApplyTypeEnum {
     private String CODE;
     private String MSG;
 
-    private CustomFieldApplyTypeEnum(String CODE, String MSG) {
+    CustomFieldApplyTypeEnum(String CODE, String MSG) {
         this.CODE = CODE;
         this.MSG = MSG;
     }
 
-    public static String getMsg(String code) {
+    public static String getMSG(String code) {
         CustomFieldApplyTypeEnum[] var1 = values();
         int var2 = var1.length;
 
@@ -45,11 +45,4 @@ public enum CustomFieldApplyTypeEnum {
         this.CODE = CODE;
     }
 
-    public String getMSG() {
-        return this.MSG;
-    }
-
-    public void setMSG(String MSG) {
-        this.MSG = MSG;
-    }
 }
