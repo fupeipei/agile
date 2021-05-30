@@ -104,10 +104,10 @@ public class IssueController {
      * @date 2020/4/21
      */
     @GetMapping("/issue/{issueId}")
-    public ControllerResponse getIssue(@PathVariable(name = "issueId") Long issueId, @RequestHeader(name = "projectId") Long projectId, Byte issueQuery) {
+    public ControllerResponse getIssue(@PathVariable(name = "issueId") Long issueId, Byte issueQuery) {
         IssueListDTO issueListDTO;
         try {
-            issueListDTO = issueService.getIssue(issueId, projectId, issueQuery, null);
+            issueListDTO = issueService.getIssue(issueId, issueQuery, null);
         } catch (Exception e) {
             LOGGER.error("查询异常：{}", e);
             return ControllerResponse.fail("查询异常：" + e.getMessage());
