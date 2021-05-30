@@ -19,6 +19,7 @@ import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.issue.service.*;
+import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
@@ -29,6 +30,7 @@ import com.yusys.agile.review.service.ReviewService;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
+import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.yusys.agile.versionmanager.service.VersionIssueRelateService;
@@ -137,9 +139,23 @@ public class IssueFactory {
             Long parentId = issueDTO.getParentId();
             //获取迭代ID
             Issue story = issueMapper.selectByPrimaryKey(parentId);
+            //如果有parentId，需要从parentId上查询systemId，sprintId，存入task 否则从本系统内
+            List<Long> systemIds = Lists.newArrayList();
             if (null != story) {
                 issue.setSprintId(story.getSprintId());
+                List<IssueSystemRelp> issueSystemRelps = issueSystemRelpService.listIssueSystemRelp(story.getIssueId());
+                if (CollectionUtils.isNotEmpty(issueSystemRelps)){
+                      systemIds = issueSystemRelps.stream()
+                            .map(IssueSystemRelp::getSystemId)
+                            .distinct()
+                            .collect(Collectors.toList());
+                }
+            }else {
+                Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+                systemIds.add(systemId);
+
             }
+            issueDTO.setSystemIds(systemIds);
             issue.setReallyWorkload(0);
         }
 
@@ -220,6 +236,9 @@ public class IssueFactory {
 
         //处理模块信息
         dealModules(issueId, issueDTO.getModuleIds());
+
+        //处理系统信息
+        dealSystems(issueId,issueDTO.getSystemIds());
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
@@ -591,9 +610,10 @@ public class IssueFactory {
                 sprintId = storyIssue.getSprintId();
             }
             //dealEpicFeatureData(storyIssue);
+            //如果不删除子任务  处理子任务
+            this.dealTaskData(issueId,deleteChild);
         }
         issueMapper.deleteAllChildRelation(issueId, sprintId);
-
         //更新工作项为失效
         upateIssue(issueId);
 
@@ -604,6 +624,29 @@ public class IssueFactory {
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+    }
+
+    /**
+     * 任务状态未领取，人删除，系统保留，迭代清空如果有
+     * @param issueId
+     * @param deleteChild
+     */
+    private void dealTaskData(Long issueId,Boolean deleteChild){
+        if (!deleteChild){
+            IssueExample issueExample = new IssueExample();
+            issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                    .andParentIdEqualTo(issueId);
+            List<Issue> taskIssueList = issueMapper.selectByExample(issueExample);
+            if (CollectionUtils.isNotEmpty(taskIssueList)){
+                for (Issue issue : taskIssueList) {
+                    issue.setSprintId(null);
+                    issue.setHandler(null);
+                    issue.setStageId(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
+                    issue.setLaneId(TaskStatusEnum.TYPE_ADD_STATE.CODE);
+                    issueMapper.updateByPrimaryKey(issue);
+                }
+            }
+        }
     }
 
     private void upateIssue(Long issueId) {
