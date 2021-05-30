@@ -191,7 +191,7 @@ public class Teamv3ServiceImplTest {
     public void testQuerySystemByTeamId(){
         Long teamId=100002L;
         List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
-        cn.hutool.core.lang.Assert.isTrue(ssoSystemRestDTOS.size()==1);
+        Assert.assertTrue(ssoSystemRestDTOS.size()==1);
     }
 
 }

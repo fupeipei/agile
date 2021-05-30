@@ -13,7 +13,16 @@ public enum  CreateTypeEnum {
 
 
     public Integer CODE;
-    public String NAME;
+
+    public String getNAME() {
+        return NAME;
+    }
+
+    public void setNAME(String NAME) {
+        this.NAME = NAME;
+    }
+
+    private String NAME;
 
 
     CreateTypeEnum(String name, Integer code) {

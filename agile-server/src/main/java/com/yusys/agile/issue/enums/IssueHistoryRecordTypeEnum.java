@@ -6,10 +6,10 @@ public enum IssueHistoryRecordTypeEnum {
     TYPE_ATTACHMENT("附件类型", new Byte("2"));
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private IssueHistoryRecordTypeEnum(String name, Byte code) {
+    IssueHistoryRecordTypeEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }

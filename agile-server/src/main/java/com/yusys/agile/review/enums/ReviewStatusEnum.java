@@ -14,17 +14,17 @@ public enum ReviewStatusEnum {
     FAIL("2", "不通过");
 
     public String CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private ReviewStatusEnum(String code, String name) {
+    ReviewStatusEnum(String code, String name) {
         this.CODE = code;
         this.NAME = name;
     }
 
     // 普通方法
     public static String getName(String code) {
-        for (IssueTypeEnum stateType : IssueTypeEnum.values()) {
+        for (ReviewStatusEnum stateType : ReviewStatusEnum.values()) {
             if (stateType.CODE.equals(code)) {
                 return stateType.NAME;
             }

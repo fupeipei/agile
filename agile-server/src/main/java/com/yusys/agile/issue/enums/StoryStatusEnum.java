@@ -13,10 +13,10 @@ public enum StoryStatusEnum {
     TYPE_CLOSED_STATE("已完成", 106L);
 
     public Long CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private StoryStatusEnum(String name, Long code) {
+    StoryStatusEnum(String name, Long code) {
         this.CODE = code;
         this.NAME = name;
     }

@@ -9,10 +9,9 @@ public enum IssueBlockStateEnum {
     BLOCK("阻塞中", new Byte("1"));
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
-
-    private IssueBlockStateEnum(String name, Byte code) {
+    IssueBlockStateEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }

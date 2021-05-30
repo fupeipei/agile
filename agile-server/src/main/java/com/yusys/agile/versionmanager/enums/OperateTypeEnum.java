@@ -10,7 +10,7 @@ public enum OperateTypeEnum {
     OPERATE_TYPE_DELETE(2, "删除");
 
     public Integer VALUE;
-    public String NAME;
+    private String NAME;
 
     OperateTypeEnum(Integer value, String name) {
         this.VALUE = value;
