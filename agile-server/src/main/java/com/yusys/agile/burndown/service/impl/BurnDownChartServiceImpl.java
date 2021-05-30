@@ -54,13 +54,13 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     private IFacadeUserApi iFacadeUserApi;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void calculateWorkload() {
         //查询所有迭代
         List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
         if (CollectionUtils.isNotEmpty(sSprints)) {
             for (SSprintWithBLOBs sprint : sSprints) {
-                if (sprint != null) {
+                if (null != sprint) {
                     calculateWorkload(sprint);
                 }
             }

@@ -1,4 +1,4 @@
-package com.yusys.agile.issue.excel.vo;
+package com.yusys.agile.easyexcel.vo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @HeadRowHeight(20)	// 表头行高
 @ColumnWidth(15)		// 表头行宽
-public class StoryExcelModul {
+public class StoryExcelModel {
 
     @ExcelProperty(value = "*故事名称", index = 0)
     private String storyName;
@@ -25,7 +25,7 @@ public class StoryExcelModul {
     @ExcelProperty(value = "优先级", index = 4)
     private Integer priority;
 
-    @ExcelProperty(value = "父工资项", index = 5)
+    @ExcelProperty(value = "父工作项", index = 5)
     private String parentInfo;
 
     @ExcelProperty(value = "故事点", index = 6)

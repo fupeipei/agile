@@ -1,4 +1,6 @@
-package com.yusys.agile.issue.excel.service;
+package com.yusys.agile.easyexcel.service;
+
+import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,5 +13,5 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface DownloadExcelTempletService {
 
-    void download(HttpServletResponse response);
+    void download(HttpServletResponse response, ExcelCommentFiled filed);
 }

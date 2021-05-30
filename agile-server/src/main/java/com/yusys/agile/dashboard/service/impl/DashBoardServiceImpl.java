@@ -2,6 +2,7 @@ package com.yusys.agile.dashboard.service.impl;
 
 import com.yusys.agile.dashboard.service.DashBoardService;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.dao.IssueStatusMapper;
 import com.yusys.agile.issue.domain.IssueProjectStatus;
 import com.yusys.agile.issue.domain.IssueStatus;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
@@ -10,6 +11,8 @@ import com.yusys.agile.issue.service.IssueStatusService;
 import com.yusys.agile.sprint.dao.SprintMapper;
 import com.yusys.agile.sprint.domain.SprintWithBLOBs;
 import com.yusys.agile.sprint.service.SprintService;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SsoProjectDTO;
@@ -30,48 +33,36 @@ public class DashBoardServiceImpl implements DashBoardService {
     @Resource
     private IFacadeProjectApi iFacadeProjectApi;
     @Resource
-    private SprintMapper sprintMapper;
-    @Resource
     private IssueMapper issueMapper;
     @Resource
-    private SprintService sprintService;
+    private Sprintv3Service sprintv3Service;
     @Resource
     private IssueStatusService issueStatusService;
     @Resource
     private IssueProjectStatusService issueProjectStatusService;
+    @Resource
+    private IssueStatusMapper statusMapper;
 
     /**
      * 仪表盘-迭代-工作项状态个数统计
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void calculateIssueStatus() {
-        ControllerResponse<List<SsoProjectDTO>> controllerResponse = iFacadeProjectApi.listAllProjectsNoPage("");
-        List<SsoProjectDTO> projects = controllerResponse.getData();
-        if (CollectionUtils.isNotEmpty(projects)) {
-            for (SsoProjectDTO project : projects) {
-                if (project != null) {
-                    List<SprintWithBLOBs> sprints = sprintMapper.getByProjectId(project.getProjectId());
-                    calculateStatus(sprints, project.getProjectId());
+        //查询所有迭代
+        List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
+        if (CollectionUtils.isNotEmpty(sSprints)) {
+            for (SSprintWithBLOBs sprint : sSprints) {
+                if (null != sprint) {
+                    calculateStatus(null,sprint);
                 }
             }
         }
     }
-
-    private void calculateStatus(List<SprintWithBLOBs> sprints, Long projectId) {
-        if (sprints != null && !sprints.isEmpty()) {
-            for (SprintWithBLOBs sprint : sprints) {
-                if (sprint != null) {
-                    calculateStatus(projectId, sprint);
-                }
-            }
-        }
-    }
-
-    private void calculateStatus(Long projectId, SprintWithBLOBs sprint) {
+    private void calculateStatus(Long projectId, SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.currentDay();
-        if (sprintService.legalDate(sprint.getSprintDays(), target)) {
+        if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             //创建业务需求状况
             //createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_EPIC.CODE);
             //创建研发需求状况
@@ -88,17 +79,11 @@ public class DashBoardServiceImpl implements DashBoardService {
      * 创建工作项状况
      */
     private void createIssueStatus(Long projectId, Long sprintId, Date target, Byte issueType) {
-        Integer finished = 0;
-        Integer insprint = 0;
-        Integer notStarted = 0;
+        IssueStatus status;
         if (issueType.equals(IssueTypeEnum.TYPE_TASK.CODE)) {
-            finished = issueMapper.countFinishedTasks4Project(sprintId, projectId);
-            insprint = issueMapper.countInsprintTaskBySprint(sprintId, projectId);
-            notStarted = issueMapper.countNotStartTaskBySprint(sprintId, projectId);
+            status = statusMapper.getTaskStatus(sprintId);
         } else {
-            finished = issueMapper.countAchievedIssues4Sprint(sprintId, projectId, issueType);
-            insprint = issueMapper.countInsprintIssuesBySprint(sprintId, projectId, issueType);
-            notStarted = issueMapper.countNotStartIssuesBySprint(sprintId, projectId, issueType);
+          status = statusMapper.getStoryStatus(sprintId);
         }
         IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
         if (currentStatus == null) {
@@ -106,15 +91,15 @@ public class DashBoardServiceImpl implements DashBoardService {
             issueStatus.setSprintDate(target);
             issueStatus.setProjectId(projectId);
             issueStatus.setSprintId(sprintId);
-            issueStatus.setFinished(finished);
-            issueStatus.setInSprint(insprint);
-            issueStatus.setNotStarted(notStarted);
+            issueStatus.setFinished(status.getFinished());
+            issueStatus.setInSprint(status.getInSprint());
+            issueStatus.setNotStarted(status.getNotStarted());
             issueStatus.setIssueType(issueType);
             issueStatusService.create(issueStatus);
         } else {
-            currentStatus.setFinished(finished);
-            currentStatus.setInSprint(insprint);
-            currentStatus.setNotStarted(notStarted);
+            currentStatus.setFinished(status.getFinished());
+            currentStatus.setInSprint(status.getInSprint());
+            currentStatus.setNotStarted(status.getNotStarted());
             issueStatusService.update(currentStatus);
         }
     }
