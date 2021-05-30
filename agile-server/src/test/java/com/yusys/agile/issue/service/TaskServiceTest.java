@@ -90,7 +90,7 @@ public class TaskServiceTest {
         securityDTO.setUserAcct("hehy4");
 
         //数据准备
-        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+        //SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
     }
 
     @Test
@@ -126,7 +126,7 @@ public class TaskServiceTest {
 
     @Test
     public void dragTask() {
-        //SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
         //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
 
 //        TYPE_ADD_STATE("未领取", 107L),
@@ -175,7 +175,7 @@ public class TaskServiceTest {
 
     @Test(expected = BusinessException.class)
     public void dragTaskSm() {
-        //SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
         //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
 
 //        TYPE_ADD_STATE("未领取", 107L),
@@ -202,7 +202,7 @@ public class TaskServiceTest {
 
     @Test(expected = BusinessException.class)
     public void dragTaskPo() {
-        //SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
         //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
 
 //        TYPE_ADD_STATE("未领取", 107L),
