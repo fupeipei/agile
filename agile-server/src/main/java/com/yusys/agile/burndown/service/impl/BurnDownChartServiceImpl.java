@@ -35,8 +35,6 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     private BurnDownChartDao burnDownChartDao;
     @Resource
     private BurnDownChartStoryDao burnDownChartStoryDao;
-    @Resource
-    private IFacadeProjectApi iFacadeProjectApi;
     /*
         新写的迭代mapper
      */
@@ -45,11 +43,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     @Resource
     private Sprintv3Service sprintv3Service;
     @Resource
-    private SprintMapper sprintMapper;
-    @Resource
     private IssueMapper issueMapper;
-    @Resource
-    private SprintService sprintService;
     @Resource
     private IFacadeUserApi iFacadeUserApi;
 
@@ -155,7 +149,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     public BurnDownChartDTO getBySprint(Long sprintId) {
         BurnDownChartDTO burnDownChartDTO = new BurnDownChartDTO();
         // 预估工作量
-        burnDownChartDTO.setPlanWorkload(sprintService.getWorkload(sprintId));
+        burnDownChartDTO.setPlanWorkload(sprintv3Service.getWorkload(sprintId));
         Integer actualRemainWorkload = issueMapper.getPlanWorkload(sprintId);
         // 实际剩余工作量
         burnDownChartDTO.setActualRemainWorkload(actualRemainWorkload);
@@ -315,7 +309,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     private void calculateStorys(SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.preDay(new Date());
-        if (sprintService.legalDate(sprint.getSprintDays(), target)) {
+        if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             List<Issue> stories = issueMapper.getStoryBySprintId(sprintId);
             if (CollectionUtils.isNotEmpty(stories)) {
                 for (Issue story : stories) {
