@@ -2,7 +2,6 @@ package com.yusys.agile.burndown.service;
 
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.burndown.dto.*;
-import io.micrometer.core.instrument.util.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
@@ -30,9 +25,9 @@ public class BurnDownChartServiceTest {
     public void calculateWorkloadTest() {
         try {
             burnDownChartService.calculateWorkload();
-            log.info("Junit测试--计算迭代计划数据更新成功");
+            Assert.assertTrue("calculateWorkloadTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--计算迭代计划数据更新成功失败：{}", e);
+            Assert.assertFalse("calculateWorkloadTest失败", true);
         }
     }
 
@@ -41,9 +36,9 @@ public class BurnDownChartServiceTest {
         try {
             Long sprintId = 100029L;
             BurnDownChartDTO chartDTO = burnDownChartService.getBySprint(sprintId);
-            log.info("Junit测试--根据迭代ID查询迭代计划饼图数据成功：{}", chartDTO.toString());
+            Assert.assertTrue("getBySprintTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据迭代ID查询迭代计划饼图数据失败：{}", e);
+            Assert.assertFalse("getBySprintTest失败", true);
         }
 
     }
@@ -52,10 +47,10 @@ public class BurnDownChartServiceTest {
     public void getTasksBySprintTest() {
         try {
             Long sprintId = 891L;
-            BurnDownTaskDTO taskDTO = burnDownChartService.getTasksBySprint(sprintId);
-            log.info("Junit测试--根据迭代ID查询任务饼图数据成功：{}", taskDTO.toString());
+            burnDownChartService.getTasksBySprint(sprintId);
+            Assert.assertTrue("getTasksBySprintTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据迭代ID查询任务饼图数据失败：{}", e);
+            Assert.assertFalse("getTasksBySprintTest失败", true);
         }
 
     }
@@ -64,10 +59,10 @@ public class BurnDownChartServiceTest {
     public void getStorysBySprintTest() {
         try {
             Long sprintId = 891L;
-            BurnDownStoryDTO burnDownStoryDTO = burnDownChartService.getStorysBySprint(sprintId);
-            log.info("Junit测试--根据迭代ID查询用户故事饼图数据成功：{}", burnDownStoryDTO.toString());
+            burnDownChartService.getStorysBySprint(sprintId);
+            Assert.assertTrue("getStorysBySprintTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据迭代ID查询用户故事饼图数据失败：{}", e);
+            Assert.assertFalse("getStorysBySprintTest失败", true);
         }
     }
 
@@ -75,10 +70,10 @@ public class BurnDownChartServiceTest {
     public void testGetStoryPointsBySprint() {
         try {
             Long sprintId = 100034L;
-            BurnDownStoryPointDTO storyPointBySprint = burnDownChartService.getStoryPointBySprint(sprintId);
-            log.info("Junit测试--根据迭代ID查询故事点数据成功：{}", storyPointBySprint);
+            burnDownChartService.getStoryPointBySprint(sprintId);
+            Assert.assertTrue("testGetStoryPointsBySprint成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据迭代ID查询故事点数据失败：{}", e);
+            Assert.assertFalse("testGetStoryPointsBySprint失败", true);
         }
     }
 
@@ -87,19 +82,19 @@ public class BurnDownChartServiceTest {
     public void calculateStorys() {
         try {
             burnDownChartService.calculateStorys();
-            log.info("Junit测试--计算用户故事数据更新成功");
+            Assert.assertTrue("calculateStorys成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--计算用户故事数据更新成功失败：{}", e);
+            Assert.assertFalse("calculateStorys失败", true);
         }
     }
 
     @Test
     public void getTaskMemberAnalysisTest() {
         try {
-            List<HistogramTaskDTO> taskMemberAnalysis = burnDownChartService.getTaskMemberAnalysis(130080L);
-            log.info("Junit测试--根据迭代ID获取当前迭代内团队成员工作量和任务数成功：{}", taskMemberAnalysis);
+            burnDownChartService.getTaskMemberAnalysis(130080L);
+            Assert.assertTrue("getTaskMemberAnalysisTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据迭代ID获取当前迭代内团队成员工作量和任务数失败：{}", e);
+            Assert.assertFalse("getTaskMemberAnalysisTest失败", true);
         }
     }
 
@@ -109,7 +104,7 @@ public class BurnDownChartServiceTest {
         BurnDownStoryDTO storysBySprint = burnDownChartService.getStorysBySprint(sprintId);
 //        String sprintDays = "1621823328785|1621823328785|1621823328785";
 //        List<Date> dateList = convertStrToDate(sprintDays);
-
+        Assert.assertTrue("testGetStorysBySprint成功", true);
     }
 
     @Test

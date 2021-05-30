@@ -14,9 +14,9 @@ public enum IssueApproveStatusEnum {
     APPROVED("2", "已审批");
 
     public String CODE;
-    public String NAME;
+    private String NAME;
 
-    private IssueApproveStatusEnum(String code, String name) {
+    IssueApproveStatusEnum(String code, String name) {
         this.CODE = code;
         this.NAME = name;
     }

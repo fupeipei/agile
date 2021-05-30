@@ -1181,7 +1181,7 @@ public class IssueServiceImpl implements IssueService {
 //                map.put("name", TaskStatusEnum.getByCode(9999L).NAME);
 //                map.put("id", 9999L);
 //            }else{
-            map.put("name", TaskStatusEnum.getByCode(stageId).NAME);
+            map.put("name", TaskStatusEnum.getName(stageId));
             map.put("id", stageId);
 //            }
         }
@@ -2434,8 +2434,7 @@ public class IssueServiceImpl implements IssueService {
             panoramasTaskDTO.setHandler(getHandlerName(task.getHandler()));
             Map stageMap = task.getStageId();
             Long stageId = (Long) stageMap.get("id");
-            TaskStatusEnum taskStatusEnum = TaskStatusEnum.getByCode(stageId);
-            panoramasTaskDTO.setTaskStatus(taskStatusEnum.NAME);
+            panoramasTaskDTO.setTaskStatus(TaskStatusEnum.getName(stageId));
             panoramasTaskDTOList.add(panoramasTaskDTO);
         }
     }

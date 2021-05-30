@@ -10,10 +10,10 @@ public enum PlanStatesEnum {
     ON_TIME("按期", "8888");
 
     public String CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private PlanStatesEnum(String name, String code) {
+    PlanStatesEnum(String name, String code) {
         this.CODE = code;
         this.NAME = name;
     }

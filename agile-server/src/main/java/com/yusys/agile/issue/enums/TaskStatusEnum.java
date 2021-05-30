@@ -16,7 +16,7 @@ public enum TaskStatusEnum {
     TYPE_CLOSED_STATE("已完成", 110L);
 
     public Long CODE;
-    public String NAME;
+    private String NAME;
 
 
 

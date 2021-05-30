@@ -17,10 +17,10 @@ public enum IssueCompletionEnum {
     FOUR("4", "80%"),
     FIVE("5", "100%");
     public String CODE;
-    public String NAME;
+    private  String NAME;
 
 
-    private IssueCompletionEnum(String code, String name) {
+    IssueCompletionEnum(String code, String name) {
         this.CODE = code;
         this.NAME = name;
     }

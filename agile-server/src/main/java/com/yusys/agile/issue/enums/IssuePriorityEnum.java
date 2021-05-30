@@ -13,10 +13,10 @@ public enum IssuePriorityEnum {
 
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private IssuePriorityEnum(Byte code, String name) {
+    IssuePriorityEnum(Byte code, String name) {
         this.CODE = code;
         this.NAME = name;
     }

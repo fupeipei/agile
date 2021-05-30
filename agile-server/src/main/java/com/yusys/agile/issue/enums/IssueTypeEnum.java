@@ -8,11 +8,11 @@ public enum IssueTypeEnum {
     TYPE_FAULT("Bug", new Byte("5"), "测试缺陷");
 
     public Byte CODE;
-    public String NAME;
-    public String DESC;
+    private String NAME;
+    private String DESC;
 
 
-    private IssueTypeEnum(String name, Byte code, String desc) {
+    IssueTypeEnum(String name, Byte code, String desc) {
         this.CODE = code;
         this.NAME = name;
         this.DESC = desc;

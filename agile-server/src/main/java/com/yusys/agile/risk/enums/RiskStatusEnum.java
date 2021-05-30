@@ -16,9 +16,9 @@ public enum RiskStatusEnum {
     DONE(new Byte("1"), "已完成");
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
-    private RiskStatusEnum(Byte code, String name) {
+    RiskStatusEnum(Byte code, String name) {
         this.CODE = code;
         this.NAME = name;
     }

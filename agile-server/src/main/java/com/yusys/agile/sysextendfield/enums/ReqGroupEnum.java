@@ -14,10 +14,10 @@ public enum ReqGroupEnum {
     CALL_MANAGEMENT_DEMAND_GROUP("话管需求组", "050");
 
     public String CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private ReqGroupEnum(String name, String code) {
+    ReqGroupEnum(String name, String code) {
         this.CODE = code;
         this.NAME = name;
     }

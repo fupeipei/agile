@@ -26,7 +26,7 @@ public enum VersionStatusEnum {
     private String CODE;
     private String NAME;
 
-    private VersionStatusEnum(String code, String name) {
+    VersionStatusEnum(String code, String name) {
         this.CODE = code;
         this.NAME = name;
     }
@@ -70,19 +70,4 @@ public enum VersionStatusEnum {
         return jsonObject;
     }
 
-    public String getCODE() {
-        return CODE;
-    }
-
-    public void setCODE(String CODE) {
-        this.CODE = CODE;
-    }
-
-    public String getNAME() {
-        return NAME;
-    }
-
-    public void setNAME(String NAME) {
-        this.NAME = NAME;
-    }
 }

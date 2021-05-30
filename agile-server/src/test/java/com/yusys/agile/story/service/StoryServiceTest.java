@@ -1,14 +1,11 @@
 package com.yusys.agile.story.service;
 
-import cn.hutool.core.lang.Assert;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
-import com.yusys.agile.sprint.domain.Sprint;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +78,7 @@ public class StoryServiceTest {
         jsonObject.put("storyPoint","11");
         log.info("转换为 object值为:{}",JSONObject.toJSONString(jsonObject));
         issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
-        Assert.isFalse(story == null);
+        org.junit.Assert.assertNull(story == null);
     }
 
     @Test
@@ -118,7 +115,7 @@ public class StoryServiceTest {
         Long sprintId= 130190l;
         Long storyId=507077l;
         int i = storyService.removeStory4Sprint(sprintId, storyId);
-        Assert.isTrue(i==1);
+        org.junit.Assert.assertTrue(i==1);
     }
 
 
@@ -133,7 +130,7 @@ public class StoryServiceTest {
        sprintDTO.setSprintId(10000L);
        System.out.println(sprintDTO);
        boolean b = sprintv3Service.arrangeIssue(sprintDTO);
-       Assert.isTrue(b==true);
+       org.junit.Assert.assertTrue(b==true);
 
    }
 
@@ -146,6 +143,7 @@ public class StoryServiceTest {
         }
         Long userId=10000l;
         issueService.createBatchRelation(parentId,issueIds,userId);
+        org.junit.Assert.assertTrue("createBatchRelation成功", true);
     }
 
 

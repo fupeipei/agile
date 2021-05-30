@@ -91,9 +91,6 @@ public class TaskServiceTest {
         securityDTO.setUserName("何红玉1");
         securityDTO.setUserAcct("hehy4");
         UserThreadLocalUtil.setUserInfo(securityDTO);
-
-        //数据准备
-        //SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
     }
 
     @Test
@@ -125,16 +122,6 @@ public class TaskServiceTest {
     public void deleteTask() {
         taskService.deleteTask(846446177436880896L, false);
         Assert.assertTrue("deleteTask成功",true);
-
-        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
-        //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
-
-//        TYPE_ADD_STATE("未领取", 107L),
-//        TYPE_RECEIVED_STATE("已领取", 108L),
-//        TYPE_MODIFYING_STATE("进行中", 109L),
-//        TYPE_CLOSED_STATE("已完成", 110L);
-
-
         //角色id，PO:104，SM:103，TM:105
         SecurityDTO secDTO = new SecurityDTO();
         secDTO.setUserId(834451097091657728L);
@@ -149,14 +136,12 @@ public class TaskServiceTest {
         taskService.deleteTask(126L,false);
         Issue issue1 = issueMapper.selectByPrimaryKey(219L);
         Assert.assertEquals("126L故事状态修改", StoryStatusEnum.TYPE_CLOSED_STATE.CODE,issue1.getLaneId());
-        log.info("126L故事状态修改成功");
 
 
         //故事下的非唯一任务被删除，故事状态不变。
         taskService.deleteTask(119L,false);
         issue1 = issueMapper.selectByPrimaryKey(115L);
         Assert.assertEquals("119L原状态保持不变", StoryStatusEnum.TYPE_MODIFYING_STATE.CODE,issue1.getLaneId());
-        log.info("119L原状态保持不变成功");
 
     }
 
@@ -168,15 +153,6 @@ public class TaskServiceTest {
 
     @Test
     public void dragTask() {
-        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
-        //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
-
-//        TYPE_ADD_STATE("未领取", 107L),
-//        TYPE_RECEIVED_STATE("已领取", 108L),
-//        TYPE_MODIFYING_STATE("进行中", 109L),
-//        TYPE_CLOSED_STATE("已完成", 110L);
-
-
         //角色id，PO:104，SM:103，TM:105
         SecurityDTO secDTO = new SecurityDTO();
         secDTO.setUserId(834451097091657728L);
@@ -230,15 +206,6 @@ public class TaskServiceTest {
 
     @Test(expected = BusinessException.class)
     public void dragTaskSm() {
-        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
-        //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
-
-//        TYPE_ADD_STATE("未领取", 107L),
-//        TYPE_RECEIVED_STATE("已领取", 108L),
-//        TYPE_MODIFYING_STATE("进行中", 109L),
-//        TYPE_CLOSED_STATE("已完成", 110L);
-
-
         //角色id，PO:104，SM:103，TM:105
         SecurityDTO secDTO = new SecurityDTO();
         secDTO.setUserId(841351045005778944L);
@@ -257,15 +224,6 @@ public class TaskServiceTest {
 
     @Test(expected = BusinessException.class)
     public void dragTaskPo() {
-        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
-        //  task   --119,118,117,116 ,  129  ,128,127,128  ，laneId都是  107
-
-//        TYPE_ADD_STATE("未领取", 107L),
-//        TYPE_RECEIVED_STATE("已领取", 108L),
-//        TYPE_MODIFYING_STATE("进行中", 109L),
-//        TYPE_CLOSED_STATE("已完成", 110L);
-
-
         //角色id，PO:104，SM:103，TM:105
         SecurityDTO secDTO = new SecurityDTO();
         secDTO.setUserId(834731929562857472L);

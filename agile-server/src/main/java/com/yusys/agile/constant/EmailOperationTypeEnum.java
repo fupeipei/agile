@@ -15,10 +15,11 @@ public enum EmailOperationTypeEnum {
     DELETE(2, "删除"),
     DRAG(3, "拖拽");
 
-    public Integer CODE;
-    public String NAME;
 
-    private EmailOperationTypeEnum(Integer code, String name) {
+    public Integer CODE;
+    private String NAME;
+
+    EmailOperationTypeEnum(Integer code, String name) {
         this.CODE = code;
         this.NAME = name;
     }
