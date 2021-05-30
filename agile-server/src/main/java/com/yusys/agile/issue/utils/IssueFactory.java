@@ -184,7 +184,10 @@ public class IssueFactory {
         if(!Optional.ofNullable(issueDTO.getSystemId()).isPresent()){
             Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             issue.setSystemId(systemId);
-            List<Long> systemIds = Lists.newArrayList();
+        }
+        if (CollectionUtils.isNotEmpty(issueDTO.getSystemIds())){
+            Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+            List<Long> systemIds = Lists.newArrayList(systemId);
             issueDTO.setSystemIds(systemIds);
         }
 
