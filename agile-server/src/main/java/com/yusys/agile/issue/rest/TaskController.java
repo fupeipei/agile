@@ -25,7 +25,7 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/v3/issue")
+@RequestMapping("/issue/task")
 public class TaskController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
 
@@ -129,7 +129,7 @@ public class TaskController {
      * @Date 2021/2/8
      * @Description 任务卡片拖拽
      */
-    @GetMapping("/task/stageId/{issueId}/{from}/{to}")
+    @GetMapping("/stageId/{issueId}/{from}/{to}")
     public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to, @RequestParam(value = "assignUserId",required = false) Long userId) {
         try {
             taskService.dragTask(issueId, from, to, userId);
@@ -204,7 +204,7 @@ public class TaskController {
      *
      * @return
      */
-    @GetMapping("/task/stages")
+    @GetMapping("/stages")
     public ControllerResponse getIssueTaskStages() {
         Map<Long, String> taskAllStageId = TaskStatusEnum.getTaskAllStageId();
         return ControllerResponse.success(taskAllStageId);
@@ -215,7 +215,7 @@ public class TaskController {
      *
      * @return
      */
-    @GetMapping("/task/types")
+    @GetMapping("/types")
     public ControllerResponse getIssueTaskTypes() {
         Map<Integer, String> taskAllStageId = TaskTypeEnum.getTaskAllTypes();
         return ControllerResponse.success(taskAllStageId);
@@ -228,13 +228,13 @@ public class TaskController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/8
      */
-    @PostMapping("/task/listStoryIdsByTaskIds")
+    @PostMapping("/listStoryIdsByTaskIds")
     public ControllerResponse listStoryIdsByTaskIds(@RequestBody List<Long> taskIds) {
 
         return ControllerResponse.success(taskService.listStoryIdsByTaskIds(taskIds));
     }
 
-    @GetMapping("/task/getTaskPreInfo")
+    @GetMapping("/getTaskPreInfo")
     public ControllerResponse getTaskPreInfo(@RequestParam(value = "systemId") Long systemId
             ,@RequestParam(value = "createType") Integer createType
             ,@RequestParam(value = "storyId") Long storyId
