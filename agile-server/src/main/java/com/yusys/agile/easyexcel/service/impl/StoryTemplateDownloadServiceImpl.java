@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -44,15 +45,18 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
         mapDropDown.put(6,storyPoints);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
-//          String  templateFileName = "excelTemplate" +  File.separator + "storyImportTemplate.xlsx";
-//          写入excel,springboot 使用new ClassPathResource();
-//          ExcelWriter excelWriter = EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response)).withTemplate
-//          (new ClassPathResource(templateFileName).getInputStream()).registerWriteHandler(spinnerWriteHandler).build();
-            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
+            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
+            EasyExcel.write(ExcelUtil.dealResponse("storyImportTemplate",response))
+                    .withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("storys")
                     .registerWriteHandler(spinnerWriteHandler)
                     .doWrite(new ArrayList());
+//            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
+//                    .autoCloseStream(Boolean.TRUE)
+//                    .sheet("storys")
+//                    .registerWriteHandler(spinnerWriteHandler)
+//                    .doWrite(new ArrayList());
         } catch (IOException  e) {
             log.error("导出Story模版异常:{}",e.getMessage());
         }
@@ -65,7 +69,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
            if(CollectionUtils.isNotEmpty(sprintListDTOS)){
                Set<String> collect = sprintListDTOS.stream().
-                       map(s-> s.getSprintId() + "+" + s.getSprintName()).collect(Collectors.toSet());
+                       map(s-> s.getSprintId() + "-" + s.getSprintName()).collect(Collectors.toSet());
                return collect.toArray(new String[0]);
            }
        }catch (Exception e){
