@@ -1,7 +1,6 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
-import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import com.google.common.collect.Lists;
@@ -45,7 +44,7 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
 
     @Override
     public void download(HttpServletResponse response, ExcelCommentFiled filed) {
-        //todo 下拉填充数据
+        //下拉填充数据
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getStoryNamesBySprintId(filed.getSprintId());
         // 任务类型
@@ -53,9 +52,9 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
         mapDropDown.put(0,sprintInfo);
         mapDropDown.put(3,taskTypeNames);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
-
+        ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
         try {
-            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
+            EasyExcel.write(ExcelUtil.dealResponse("taskImportTemplate",response)).withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("tasks")
                     .registerWriteHandler(spinnerWriteHandler)
@@ -67,8 +66,7 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
 
     /**
      * 功能描述:获取迭代下的故事名
-     *
-     * @param sprintId
+     * @param sprintId 迭代id
      * @return java.lang.String[]
      * @date 2021/2/1
      */
