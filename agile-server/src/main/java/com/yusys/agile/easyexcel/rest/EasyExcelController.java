@@ -54,6 +54,18 @@ public class EasyExcelController {
             }
             iExcelService.uploadStorys(systemId,file);
         }catch (Exception e){
+            return ControllerResponse.success("上传失败");
+        }
+        return ControllerResponse.success("上传成功");
+    };
+
+    @ApiOperation("任务导入")
+    @PostMapping("/uploadTasks")
+    public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file,
+                                           @RequestParam(value = "sprintId",required = false) Long sprintId){
+        try {
+            iExcelService.uploadTasks(sprintId,file);
+        }catch (Exception e){
             return ControllerResponse.success("上传成功");
         }
         return ControllerResponse.success("上传成功");
