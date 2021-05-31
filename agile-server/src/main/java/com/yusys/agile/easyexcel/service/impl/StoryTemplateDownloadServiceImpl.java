@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-@Service("storyTemplateDownloadServiceImpl")
+@Service("storyTemplateDownloadService")
 public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletService {
 
     @Autowired

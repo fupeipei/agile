@@ -1,7 +1,7 @@
 package com.yusys.agile.buildrecords.rest;
 
-import com.yusys.agile.buildrecords.service.BuildDeployService;
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.buildrecords.service.BuildDeployService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +15,8 @@ import javax.annotation.Resource;
 /**
  * @ClassName BuildRecordsController
  * @Description 工作项构建记录操作类
- * @Date 2021/2/1
- * @Version 1.0
+ * @Date 2021/05/31
+ * @Version 2.0
  */
 @RestController
 @RequestMapping("/issue/flow/records")
@@ -67,6 +67,7 @@ public class BuildRecordsController {
                                                     @RequestParam("pageSize") Integer pageSize) {
         //PageInfo pageInfo = iCmsChangeClient.queryDeployInstanceByTaskId(issueId.toString(), pageNum, pageSize);
         //return ControllerResponse.success(pageInfo);
+
         try {
             PageInfo pageInfo = buildDeployService.queryDeployRecord(issueId, pageNum, pageSize);
             return ControllerResponse.success(pageInfo);
@@ -75,4 +76,6 @@ public class BuildRecordsController {
             return ControllerResponse.fail("查询工作项部署记录失败");
         }
     }
+
+
 }
