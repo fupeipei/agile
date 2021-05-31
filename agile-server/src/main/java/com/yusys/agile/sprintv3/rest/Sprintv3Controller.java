@@ -78,6 +78,7 @@ public class Sprintv3Controller {
      *
      * @param sprintV3DTO 迭代v3dto
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "新建迭代")
     @PostMapping("/createSprint")
@@ -101,6 +102,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation("取消迭代")
     @GetMapping("/cancelSprint")
@@ -113,6 +115,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代完成")
     @GetMapping("/sprintFinish")
@@ -125,6 +128,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代视图 - 迭代详情")
     @GetMapping("/sprintOverView")
@@ -137,6 +141,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代视图 - 迭代统计详情")
     @GetMapping("/SprintStatisticalInformation")
@@ -149,6 +154,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代视图 - 成员工时")
     @GetMapping("/sprintMembersWorkHours")
@@ -209,11 +215,11 @@ public class Sprintv3Controller {
     @GetMapping("/queryNotRelationStorys")
     public ControllerResponse queryNotRelationStorys(@RequestParam(name = "title", required = false) String title,
                                                      @RequestParam(name = "teamId") Long teamId,
-                                                     @RequestParam(name = "systemId",required = false) List<Long> systemId,
+                                                     @RequestParam(name = "systemId", required = false) List<Long> systemId,
                                                      @RequestParam(name = "pageNum") Integer pageNum,
                                                      @RequestParam(name = "pageSize") Integer pageSize) {
 
-        List<IssueDTO> result = sprintv3Service.queryNotRelationStorys(title, teamId,systemId,pageNum, pageSize);
+        List<IssueDTO> result = sprintv3Service.queryNotRelationStorys(title, teamId, systemId, pageNum, pageSize);
         return ControllerResponse.success(new PageInfo(result));
 
     }
@@ -221,6 +227,7 @@ public class Sprintv3Controller {
 
     /**
      * 模糊分页查询迭代下人员
+     *
      * @param userName
      * @param sprintId
      * @param pageNum
@@ -229,9 +236,9 @@ public class Sprintv3Controller {
      */
     @GetMapping("/querySprintVagueUser")
     public ControllerResponse querySprintVagueUser(@RequestParam(name = "userName", required = false) String userName,
-                                                     @RequestParam(name = "sprintId") Long sprintId,
-                                                     @RequestParam(name = "pageNum") Integer pageNum,
-                                                     @RequestParam(name = "pageSize") Integer pageSize) {
+                                                   @RequestParam(name = "sprintId") Long sprintId,
+                                                   @RequestParam(name = "pageNum") Integer pageNum,
+                                                   @RequestParam(name = "pageSize") Integer pageSize) {
 
         List<STeamMember> result = sprintv3Service.querySprintVagueUser(sprintId, userName, pageNum, pageSize);
         return ControllerResponse.success(new PageInfo<>(result));
@@ -241,6 +248,7 @@ public class Sprintv3Controller {
 
     /**
      * 查询系统下所有未开始进行中的迭代信息
+     *
      * @param systemId
      * @return
      */
@@ -255,6 +263,7 @@ public class Sprintv3Controller {
 
     /**
      * 查询迭代关联的系统
+     *
      * @param sprintId
      * @return
      */
