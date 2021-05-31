@@ -32,4 +32,7 @@ public interface IExcelService {
      */
     void uploadStorys(Long systemId,MultipartFile file) throws Exception;
 
+
+
+    void uploadTasks( Long sprintId,MultipartFile file) throws Exception;
 }

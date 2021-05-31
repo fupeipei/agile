@@ -10,7 +10,9 @@ import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.enums.TaskTypeEnum;
 import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -39,6 +41,8 @@ public class ExcelServiceImpl implements IExcelService {
     private StoryService storyService;
     @Autowired
     private IssueFactory issueFactory;
+    @Autowired
+    private TaskService taskService;
 
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
@@ -69,6 +73,45 @@ public class ExcelServiceImpl implements IExcelService {
                 issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             }
         }
+    }
+
+    @Override
+    public void uploadTasks(Long sprintId, MultipartFile file) throws Exception {
+        InputStream inputStream = file.getInputStream();
+        //从第一行开始读，待表头
+        List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
+        //校验数据（必填项、数据格式等等）
+        //checkData(data);
+        List<JSONObject> jsonObjects = assembleIssue(data);
+        //存入数据库
+        if(CollectionUtils.isNotEmpty(jsonObjects)){
+            for(JSONObject jsonObject :jsonObjects){
+                IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
+                taskService.createTask(issueDTO);
+
+            }
+        }
+    }
+
+    private List<JSONObject> assembleIssue(List<List<String>> data) throws Exception {
+        List<JSONObject> jsonObjects = Lists.newArrayList();
+        for(int i = 1 ; i<data.size();i++){
+            List<String> issueFiles =  data.get(i);
+            IssueDTO issueDTO = new IssueDTO();
+            // 故事id
+            String storyInfo = issueFiles.get(0);
+            if(StringUtils.isNotBlank(storyInfo)){
+                String s = StringUtils.substringBefore(storyInfo, "+");
+                issueDTO.setParentId(Long.valueOf(s));
+            }
+            issueDTO.setTitle(issueFiles.get(1));
+            issueDTO.setDescription(StringUtils.isNotBlank(issueFiles.get(2)) ? issueFiles.get(2) : null);
+            issueDTO.setTaskType(TaskTypeEnum.getCode(issueFiles.get(3)));
+            issueDTO.setPlanWorkload(StringUtils.isNotBlank(issueFiles.get(4)) ? Integer.valueOf(issueFiles.get(4)) : null);
+            JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
+            jsonObjects.add(jsonObject);
+        }
+        return jsonObjects;
     }
 
     private List<JSONObject> analysis(List<List<String>> data) throws Exception {
