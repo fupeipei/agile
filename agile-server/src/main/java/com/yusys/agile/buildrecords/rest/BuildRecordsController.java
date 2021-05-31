@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  * @ClassName BuildRecordsController
  * @Description 工作项构建记录操作类
  * @Date 2021/05/31
- * @Version 1.0
+ * @Version 2.0
  */
 @RestController
 @RequestMapping("/issue/flow/records")
@@ -67,8 +67,6 @@ public class BuildRecordsController {
                                                     @RequestParam("pageSize") Integer pageSize) {
         //PageInfo pageInfo = iCmsChangeClient.queryDeployInstanceByTaskId(issueId.toString(), pageNum, pageSize);
         //return ControllerResponse.success(pageInfo);
-
-
 
         try {
             PageInfo pageInfo = buildDeployService.queryDeployRecord(issueId, pageNum, pageSize);
