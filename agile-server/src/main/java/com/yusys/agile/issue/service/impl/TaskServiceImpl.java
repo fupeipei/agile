@@ -290,6 +290,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void ckeckTaksParams(Long sprintId, String errorMsg) {
+        if (Optional.ofNullable(sprintId).isPresent()){
+            return;
+        }
         SSprintExample sSprintExample = new SSprintExample();
         sSprintExample.createCriteria().andSprintIdEqualTo(sprintId)
                 .andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
