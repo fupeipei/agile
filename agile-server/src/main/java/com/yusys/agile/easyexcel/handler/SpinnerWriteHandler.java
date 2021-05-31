@@ -29,30 +29,38 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
 
     @Override
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
-//        Sheet sheet = writeSheetHolder.getSheet();
-//        ///开始设置下拉框
-//        DataValidationHelper helper = sheet.getDataValidationHelper();//设置下拉框
-//        if(MapUtils.isNotEmpty(mapDropDown)){
-//            for (Map.Entry<Integer, String[]> entry : mapDropDown.entrySet()) {
-//                if(entry.getValue().length >0 ){
-//                    /***起始行、终止行、起始列、终止列**/
-//                    CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, entry.getKey(), entry.getKey());
-//                    /***设置下拉框数据**/
-//                    DataValidationConstraint constraint = helper.createExplicitListConstraint(entry.getValue());
-//                    DataValidation dataValidation = helper.createValidation(constraint, addressList);
-//                    /***处理Excel兼容性问题**/
-//                    if (dataValidation instanceof XSSFDataValidation) {
-//                        dataValidation.setSuppressDropDownArrow(true);
-//                        dataValidation.setShowErrorBox(true);
-//                    } else {
-//                        dataValidation.setSuppressDropDownArrow(false);
-//                    }
-//                    sheet.addValidationData(dataValidation);
-//                }
-//            }
-//        }
 
-        //获取一个workbook
+//        //获取一个workbook
+//        Sheet sheet = writeSheetHolder.getSheet();
+//        //设置下拉框
+//        DataValidationHelper helper = sheet.getDataValidationHelper();
+//        //定义sheet的名称
+//        String hiddenName = "hidden";
+//        //1.创建一个隐藏的sheet 名称为 hidden
+//        Workbook workbook = writeWorkbookHolder.getWorkbook();
+//        Sheet hidden = workbook.createSheet(hiddenName);
+//        for (Map.Entry<Integer, String[]> entry : mapDropDown.entrySet()) {
+//            //下拉框的起始行,结束行,起始列,结束列
+//            CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, entry.getKey(), entry.getKey());
+//            //获取excel列名
+//            String excelLine = getExcelLine(entry.getKey());
+//            //2.循环赋值
+//            String[] values = entry.getValue();
+//            for (int i = 0, length = values.length; i < length; i++) {
+//                // 3:表示你开始的行数  3表示 你开始的列数
+//                hidden.createRow(i).createCell(entry.getKey()).setCellValue(values[i]);
+//            }
+//            //4.=hidden!$H:$1:$H$50  sheet为hidden的 H1列开始H50行数据获取下拉数组
+//            String refers = "="+hiddenName + "!$"+excelLine+
+//                    "$1:$"+excelLine +"$"+ (values.length+1);
+//            //5 将刚才设置的sheet引用到你的下拉列表中
+//            DataValidationConstraint constraint = helper.createFormulaListConstraint(refers);
+//            DataValidation dataValidation = helper.createValidation(constraint, addressList);
+//            writeSheetHolder.getSheet().addValidationData(dataValidation);
+//        }
+//        //设置列为隐藏
+//        int hiddenIndex = workbook.getSheetIndex("hidden");
+//        if (!workbook.isSheetHidden(hiddenIndex)) {
 //        Sheet sheet = writeSheetHolder.getSheet();
 //        //设置下拉框
 //        DataValidationHelper helper = sheet.getDataValidationHelper();
@@ -85,7 +93,6 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
 //        if (!workbook.isSheetHidden(hiddenIndex)) {
 //            workbook.setSheetHidden(hiddenIndex, true);
 //        }
-
         DataValidationHelper helper = writeSheetHolder.getSheet().getDataValidationHelper();
 
         // k 为存在下拉数据集的单元格下表 v为下拉数据集
@@ -100,10 +107,11 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
             // 从第二个工作簿开始隐藏
             this.index++;
             int hiddenIndex = workbook.getSheetIndex(sheetName);
-       if (!workbook.isSheetHidden(hiddenIndex)) {
-            workbook.setSheetHidden(hiddenIndex, true);
-       }
-          //workbook.setSheetHidden(this.index, true);
+            if (!workbook.isSheetHidden(hiddenIndex)) {
+
+                workbook.setSheetHidden(hiddenIndex, true);
+            }
+            //workbook.setSheetHidden(this.index, true);
             // 2.循环赋值（为了防止下拉框的行数与隐藏域的行数相对应，将隐藏域加到结束行之后）
             for (int i = 0, length = v.length; i < length; i++) {
                 // i:表示你开始的行数 0表示你开始的列数
@@ -124,7 +132,6 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
             dataValidation3.createErrorBox("提示", "此值与单元格定义格式不一致");
             // validation.createPromptBox("填写说明：","填写内容只能为下拉数据集中的单位，其他单位将会导致无法入仓");
             writeSheetHolder.getSheet().addValidationData(dataValidation3);
-
         });
 
     }

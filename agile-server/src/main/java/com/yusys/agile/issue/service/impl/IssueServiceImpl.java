@@ -785,17 +785,20 @@ public class IssueServiceImpl implements IssueService {
      * 功能描述  根据issueId查询当前Issue
      *
      * @param issueId
-     * @param projectId
+     * @param systemId
      * @return Map
      * @date 2020/10/15
      */
     @Override
-    public Map getIssueByIssueId(Long issueId, Long projectId) throws Exception {
+    public Map getIssueByIssueId(Long issueId, Long systemId) throws Exception {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Map map = new HashMap<String, String>();
         if (issue != null) {
             map.put("issueType", issue.getIssueType());
-            map.put("projectId", issue.getProjectId());
+            if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) ||
+                    IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
+                map.put("systemId", issue.getSystemId());
+            }
         }
         return map;
     }
