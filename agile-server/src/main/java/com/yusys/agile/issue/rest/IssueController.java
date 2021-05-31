@@ -264,7 +264,7 @@ public class IssueController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/issue/detail/listRelation/{issueId}/{issueType}")
-    public ControllerResponse listRelation(@PathVariable("issueId") Long issueId, @PathVariable("issueType") Byte issueType, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse listRelation(@PathVariable("issueId") Long issueId, @PathVariable("issueType") Byte issueType) {
         //return ControllerResponse.success(issueService.listRelation(issueId, issueType, projectId));
         return ControllerResponse.success(issueService.listRelation(issueId, issueType));
     }

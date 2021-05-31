@@ -49,7 +49,7 @@ public class ExcelServiceImpl implements IExcelService {
     public void uploadStorys(Long systemId, MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         //从第一行开始读，待表头
-        List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
+        List<List<String>> data = ExcelUtil.readExcel(inputStream, 1);
         //校验数据（必填项、数据格式等等）
         checkData(data);
         List<JSONObject> jsonObjects = analysis(data);
@@ -91,6 +91,10 @@ public class ExcelServiceImpl implements IExcelService {
         return jsonObjects;
     }
 
+    /**
+     * 校验Excel数据
+     * @param data
+     */
     private void checkData(List<List<String>> data){
 
     }
