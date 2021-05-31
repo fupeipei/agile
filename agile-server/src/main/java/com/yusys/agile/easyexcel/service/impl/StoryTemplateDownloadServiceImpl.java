@@ -65,7 +65,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
            if(CollectionUtils.isNotEmpty(sprintListDTOS)){
                Set<String> collect = sprintListDTOS.stream().
-                       map(s-> s.getSprintId() + "+" + s.getSprintName()).collect(Collectors.toSet());
+                       map(s-> s.getSprintId() + "-" + s.getSprintName()).collect(Collectors.toSet());
                return collect.toArray(new String[0]);
            }
        }catch (Exception e){

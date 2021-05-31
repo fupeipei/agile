@@ -71,7 +71,7 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
                 // 3:表示你开始的行数  3表示 你开始的列数
                 hidden.createRow(i).createCell(entry.getKey()).setCellValue(values[i]);
             }
-            //4.  =hidden!$H:$1:$H$50  sheet为hidden的 H1列开始H50行数据获取下拉数组
+            //4.=hidden!$H:$1:$H$50  sheet为hidden的 H1列开始H50行数据获取下拉数组
             String refers = "="+hiddenName + "!$"+excelLine+
                     "$1:$"+excelLine +"$"+ (values.length+1);
             //5 将刚才设置的sheet引用到你的下拉列表中

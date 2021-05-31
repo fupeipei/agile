@@ -115,21 +115,20 @@ public class IssueController {
         return ControllerResponse.success(issueListDTO);
     }
 
+
     /**
-     * 功能描述  根据issueId查询当前Issue
-     *
+     * 根据issueId查询当前Issue
      * @param issueId
-     * @param projectId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/10/15
+     * @param systemId
+     * @return
      */
     @GetMapping("/issue/getIssueByIssueId/{issueId}")
-    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "systemId") Long systemId) {
         Map map = new HashMap<>();
         boolean b = StringUtil.isNumeric(issueId);
         if (b) {
             try {
-                map = issueService.getIssueByIssueId(Long.parseLong(issueId), projectId);
+                map = issueService.getIssueByIssueId(Long.parseLong(issueId), systemId);
             } catch (Exception e) {
                 LOGGER.error("查询异常：{}", e);
                 return ControllerResponse.fail("查询异常：" + e.getMessage());
