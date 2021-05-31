@@ -128,6 +128,9 @@ public class TaskServiceTest {
      */
     @Test
     public void deleteTask() {
+        //数据准备
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+
         taskService.deleteTask(846446177436880896L, false);
         Assert.assertTrue("deleteTask成功",true);
         //角色id，PO:104，SM:103，TM:105
@@ -162,6 +165,9 @@ public class TaskServiceTest {
     @Test
     public void dragTask() {
         //角色id，PO:104，SM:103，TM:105
+        //数据准备
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+
         SecurityDTO secDTO = new SecurityDTO();
         secDTO.setUserId(834451097091657728L);
         //secDTO.setSystemId(817701268263542784L);
@@ -214,6 +220,9 @@ public class TaskServiceTest {
 
     @Test(expected = BusinessException.class)
     public void dragTaskSm() {
+        //数据准备
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+
         //角色id，PO:104，SM:103，TM:105
         SecurityDTO secDTO = new SecurityDTO();
         secDTO.setUserId(841351045005778944L);
@@ -227,11 +236,39 @@ public class TaskServiceTest {
         //"未领取", 107L      "已领取", 108L
         Issue issue = taskService.dragTask(taskId, 107L, TaskStatusEnum.TYPE_RECEIVED_STATE.CODE, null);
         Issue issue1 = issueMapper.selectByPrimaryKey(taskId);
-        Assert.assertEquals("Sm本人拖拽成功",TaskStatusEnum.TYPE_RECEIVED_STATE.CODE+":"+secDTO.getUserId(),issue1.getLaneId()+":"+issue1.getHandler());
+        Assert.assertEquals("Sm本人拖拽没人报异常",TaskStatusEnum.TYPE_RECEIVED_STATE.CODE+":"+secDTO.getUserId(),issue1.getLaneId()+":"+issue1.getHandler());
     }
+
+    public void dragTaskSm2() {
+        //数据准备
+        SqlLoadTest.execute("classpath:/sql/sqlFileForTaskService.sql",dataSource,resourceLoader);
+
+        //角色id，PO:104，SM:103，TM:105
+        SecurityDTO secDTO = new SecurityDTO();
+        secDTO.setUserId(841351045005778944L);
+        //secDTO.setSystemId(817701268263542784L);
+        secDTO.setTenantCode("1");
+        secDTO.setUserName("顼权浩");
+        secDTO.setUserAcct("xuqh1");
+        UserThreadLocalUtil.setUserInfo(secDTO);
+
+        long taskId=118L;
+        Issue issue2 = new Issue();
+        issue2.setIssueId(taskId);
+        issue2.setHandler(45005778944L);
+        issueMapper.updateByPrimaryKeySelectiveWithNull(issue2);
+
+
+        //"未领取", 107L      "已领取", 108L
+        Issue issue = taskService.dragTask(taskId, 107L, TaskStatusEnum.TYPE_RECEIVED_STATE.CODE, null);
+        Issue issue1 = issueMapper.selectByPrimaryKey(taskId);
+        Assert.assertEquals("Sm拖拽有人成功",TaskStatusEnum.TYPE_RECEIVED_STATE.CODE+":"+secDTO.getUserId(),issue1.getLaneId()+":"+issue1.getHandler());
+    }
+
 
     @Test(expected = BusinessException.class)
     public void dragTaskPo() {
+
         //角色id，PO:104，SM:103，TM:105
         SecurityDTO secDTO = new SecurityDTO();
         secDTO.setUserId(834731929562857472L);
