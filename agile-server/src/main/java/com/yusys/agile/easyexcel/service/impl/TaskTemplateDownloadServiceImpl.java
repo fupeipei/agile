@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import com.google.common.collect.Lists;
@@ -44,7 +45,6 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
 
     @Override
     public void download(HttpServletResponse response, ExcelCommentFiled filed) {
-
         //todo 下拉填充数据
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getStoryNamesBySprintId(filed.getSprintId());
@@ -54,9 +54,8 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
         mapDropDown.put(3,taskTypeNames);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
 
-        ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
         try {
-            EasyExcel.write(ExcelUtil.dealResponse("taskImportTemplate",response)).withTemplate(classPathResource.getInputStream())
+            EasyExcel.write(ExcelUtil.dealResponse(UUID.randomUUID().toString(),response), StoryExcelModel.class)
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("tasks")
                     .registerWriteHandler(spinnerWriteHandler)
