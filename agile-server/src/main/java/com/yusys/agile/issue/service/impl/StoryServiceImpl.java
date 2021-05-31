@@ -301,11 +301,18 @@ public class StoryServiceImpl implements StoryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int removeStory4Sprint(Long sprintId, Long storyId) {
+        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+        SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
+        Long teamId = sprint.getTeamId();
+        boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
+        if(!b){
+            throw new BusinessException("暂无权限");
+        }
         Issue issue = issueMapper.selectByPrimaryKey(storyId);
         if (!issue.getSprintId().equals(sprintId)) {
             return 1;
         }
-        SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
+
         if (null == sprint || !StringUtils.equals(sprint.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }

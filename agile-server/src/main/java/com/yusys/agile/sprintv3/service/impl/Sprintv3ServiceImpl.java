@@ -45,6 +45,7 @@ import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.date.DateUtil;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -793,6 +794,12 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Override
     public boolean arrangeIssue(SprintDTO sprintDTO) {
+        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+        Long teamId = sprintDTO.getTeamId();
+        boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
+        if (!b) {
+            throw new BusinessException("暂无权限更改");
+        }
         List<Long> issueIds = sprintDTO.getIssueIds();
         if (CollectionUtils.isNotEmpty(issueIds)) {
             for (Long issueId : issueIds) {
@@ -802,6 +809,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         } else {
             throw new BusinessException("查不到工作项");
         }
+
+
         return true;
     }
 
