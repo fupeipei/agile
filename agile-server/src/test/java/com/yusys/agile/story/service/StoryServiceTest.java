@@ -78,7 +78,7 @@ public class StoryServiceTest {
         jsonObject.put("storyPoint","11");
         log.info("转换为 object值为:{}",JSONObject.toJSONString(jsonObject));
         issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
-        org.junit.Assert.assertNull(story == null);
+        org.junit.Assert.assertTrue(story == null);
     }
 
     @Test
