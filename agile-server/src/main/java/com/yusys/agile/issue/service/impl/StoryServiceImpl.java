@@ -143,8 +143,8 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public IssueDTO queryStory(Long storyId) {
-        Long projectId = issueFactory.getProjectIdByIssueId(storyId);
-        IssueDTO issueDTO = issueFactory.queryIssue(storyId, projectId);
+        Long systemId = issueFactory.getProjectIdByIssueId(storyId);
+        IssueDTO issueDTO = issueFactory.queryIssue(storyId, systemId);
         return issueDTO;
     }
 
