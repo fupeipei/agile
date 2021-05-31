@@ -1,9 +1,7 @@
 package com.yusys.agile.easyexcel.service;
 
-import cn.hutool.extra.spring.SpringUtil;
-import com.yusys.agile.easyexcel.service.impl.StoryTemplateDownloadServiceImpl;
-import com.yusys.agile.easyexcel.service.impl.TaskTemplateDownloadServiceImpl;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -27,10 +25,10 @@ public class ExcelTempletFactory implements ApplicationContextAware {
         DownloadExcelTempletService downloadExcelTempletService;
         switch (type){
             case STORY:
-                downloadExcelTempletService = (DownloadExcelTempletService) applicationContext.getBean("storyTemplateDownloadServiceImpl");
+                downloadExcelTempletService = (DownloadExcelTempletService) applicationContext.getBean("storyTemplateDownloadService");
                 break;
             case TASK:
-                downloadExcelTempletService = (DownloadExcelTempletService) applicationContext.getBean("taskTemplateDownloadServiceImpl");
+                downloadExcelTempletService = (DownloadExcelTempletService) applicationContext.getBean("taskTemplateDownloadService");
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);

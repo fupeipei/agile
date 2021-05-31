@@ -33,7 +33,7 @@ import java.util.*;
  */
 
 @Slf4j
-@Service("taskTemplateDownloadServiceImpl")
+@Service("taskTemplateDownloadService")
 public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletService {
     @Autowired
     private ResourceLoader resourceLoader;
