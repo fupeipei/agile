@@ -54,7 +54,7 @@ public class EasyExcelController {
             }
             iExcelService.uploadStorys(systemId,file);
         }catch (Exception e){
-            return ControllerResponse.success("上传成功");
+            return ControllerResponse.success("上传失败");
         }
         return ControllerResponse.success("上传成功");
     };
