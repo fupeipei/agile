@@ -699,7 +699,7 @@ public class TaskServiceImpl implements TaskService {
                 task.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.STAGEID.getDesc());
         if (null != task.getIssueId()) {
             nameHistory.setOldValue(TaskStatusEnum.getName(from));
-            if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {
+            if (TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(to)) {
                 if (null != task.getIssueId() && Optional.ofNullable(to).isPresent()) {
                     nameHistory.setOldValue(TaskStatusEnum.getName(from));
                     if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {
