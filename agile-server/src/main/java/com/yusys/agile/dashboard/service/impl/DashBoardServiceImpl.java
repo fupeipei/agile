@@ -94,12 +94,14 @@ public class DashBoardServiceImpl implements DashBoardService {
             issueStatus.setFinished(status.getFinished());
             issueStatus.setInSprint(status.getInSprint());
             issueStatus.setNotStarted(status.getNotStarted());
+            issueStatus.setFinishedStoryPoint(status.getFinishedStoryPoint());
             issueStatus.setIssueType(issueType);
             issueStatusService.create(issueStatus);
         } else {
             currentStatus.setFinished(status.getFinished());
             currentStatus.setInSprint(status.getInSprint());
             currentStatus.setNotStarted(status.getNotStarted());
+            currentStatus.setFinishedStoryPoint(status.getFinishedStoryPoint());
             issueStatusService.update(currentStatus);
         }
     }
