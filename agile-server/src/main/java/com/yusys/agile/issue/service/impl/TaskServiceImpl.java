@@ -38,6 +38,7 @@ import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.domain.STeamMemberExample;
+import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.agile.utils.ObjectUtil;
@@ -315,7 +316,7 @@ public class TaskServiceImpl implements TaskService {
 
     private List<STeamMember> checkIsTeamMember(Long teamId,Long userId){
         STeamMemberExample sTeamMemberExample = new STeamMemberExample();
-        sTeamMemberExample.createCriteria().andTeamIdEqualTo(teamId);
+        sTeamMemberExample.createCriteria().andTeamIdEqualTo(teamId).andRoleIdEqualTo(TeamRoleEnum.TEAM_MEMBER.getRoleId());
         List<STeamMember> sTeamMembers = sTeamMemberMapper.selectByExample(sTeamMemberExample);
         List<STeamMember> isTeamUsers = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(sTeamMembers)){
