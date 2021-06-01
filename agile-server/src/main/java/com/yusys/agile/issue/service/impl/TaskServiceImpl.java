@@ -135,6 +135,7 @@ public class TaskServiceImpl implements TaskService {
         if (null != issue) {
             this.checkIsSMRoleOrTeamUser(issue.getParentId(), "无法删除任务");
         }
+        this.checkIsSMRoleOrTeamUser(issue.getParentId(),"无法删除,只有SM或团队成员可以删除任务");
         issueFactory.deleteIssue(taskId, deleteChild);
 
         int i = this.updateStoryLaneIdByTaskCount(issue);
