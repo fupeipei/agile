@@ -61,10 +61,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     public List<TeamListDTO> listTeam(TeamQueryDTO dto, SecurityDTO security) {
         PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
         Long userId = security.getUserId();
-
+        String tenantCode = security.getTenantCode();
         //构建查询参数
         HashMap<String, Object> params = buildQueryParams(dto, userId);
-
+        params.put("tenantCode", tenantCode);
         //判断角色，如果是租户管理员，则查询租户下所有，否则按类型查询
         List<TeamListDTO> rest = Lists.newArrayList();
         boolean check = iFacadeUserApi.checkIsTenantAdmin(userId);

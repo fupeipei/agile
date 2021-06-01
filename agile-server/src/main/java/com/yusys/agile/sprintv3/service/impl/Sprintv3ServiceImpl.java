@@ -286,6 +286,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         params.put("team", dto.getTeam());
         //迭代名称或编号
         params.put("sprint", dto.getSprint());
+        //租户code
+        params.put("tenantCode", security.getTenantCode());
         return params;
     }
 
@@ -299,6 +301,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         params.put("system", security.getSystemId());
         //登录人id
         params.put("user", security.getUserId());
+        //租户code
+        params.put("tenantCode", security.getTenantCode());
         return params;
     }
 
