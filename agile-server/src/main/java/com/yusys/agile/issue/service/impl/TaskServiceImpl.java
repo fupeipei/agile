@@ -1,7 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -16,7 +15,6 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.PageInfoDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
@@ -25,11 +23,9 @@ import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRuleFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
@@ -39,6 +35,9 @@ import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.dto.TeamUserDTO;
+import com.yusys.agile.teamv3.dao.STeamMemberMapper;
+import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.teamv3.domain.STeamMemberExample;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.agile.utils.ObjectUtil;
@@ -64,7 +63,6 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -124,13 +122,17 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private SSprintUserHourMapper sSprintUserHourMapper;
 
+    @Autowired
+    private STeamMemberMapper sTeamMemberMapper;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteTask(Long taskId, Boolean deleteChild) {
+
         Issue issue = issueMapper.selectByPrimaryKey(taskId);
         if (null != issue) {
-            this.ckeckTaksParams(issue.getSprintId(), "无法删除任务");
+            this.checkIsSMRoleOrTeamUser(issue.getParentId(), "无法删除任务");
         }
         issueFactory.deleteIssue(taskId, deleteChild);
 
@@ -145,10 +147,8 @@ public class TaskServiceImpl implements TaskService {
         if (null == oldTask) {
             return;
         }
-        Boolean isPass = checkAuth(issueDTO, oldTask, securityDTO);
-        if (!isPass) {
-            throw new BusinessException("团队成员角色,只允许更新领取人为自己的卡片信息,但不允许更新领取人");
-        }
+        //校验权限
+        this.checkAuth(issueDTO, oldTask, securityDTO);
         //校验参数
         this.ckeckTaksParams(oldTask.getSprintId(), "无法编辑任务");
 
@@ -214,35 +214,38 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    public Boolean checkAuth(IssueDTO issueDTO, Issue oldTask, SecurityDTO securityDTO) {
+    public void checkAuth(IssueDTO issueDTO, Issue oldTask, SecurityDTO securityDTO) {
         //        校验权限 1.SM角色，可以更新卡片上的任意信息
         //                2.团队成员角色，只允许更新领取人为自己的卡片信息
         //根据task获得team，根据team及当前登录人员进行判断：
-        SprintDTO sprintDTO = sprintv3Service.viewEdit(oldTask.getSprintId());
-        if (null == sprintDTO.getSprintId()) {
-            throw new BusinessException("该任务下的迭代不存在" + oldTask.getSprintId());
-        }
-        QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO.getTeamId());
-        //该团队下的团队成员
-        List<TeamUserDTO> teamUsers = queryTeamResponse.getTeamUsers();
-        //该团队下的sm
-        List<TeamUserDTO> teamSmS = queryTeamResponse.getTeamSmS();
-        int sm = Optional.ofNullable(teamSmS).orElse(new ArrayList<>()).stream().filter(x -> x.getUserId().equals(securityDTO.getUserId())).collect(Collectors.toList()).size();
-        int teamMember = Optional.ofNullable(teamUsers).orElse(new ArrayList<>()).stream().filter(x -> x.getUserId().equals(securityDTO.getUserId())).collect(Collectors.toList()).size();
-        //1.SM角色，可以更新卡片上的任意信息
-        if (sm > 0) {
-            return Boolean.TRUE;
-            //2.团队成员角色，只允许更新领取人为自己的卡片信息
-        } else if (teamMember > 0
-                && !TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getLaneId())
-                && Optional.ofNullable(oldTask.getHandler()).isPresent()
-                && oldTask.getHandler().equals(issueDTO.getHandler())
-                && securityDTO.getUserId().equals(oldTask.getHandler())) {
-            return Boolean.TRUE;
-        } else if (sm == 0 && teamMember == 0) {
-            throw new BusinessException("您无权限进行该操作");
-        } else {
-            return Boolean.FALSE;
+        Long storyId = issueDTO.getParentId();
+        if (Optional.ofNullable(storyId).isPresent()) {
+            Issue issue = issueMapper.selectByPrimaryKey(storyId);
+            if (!Optional.ofNullable(issue).isPresent()) {
+                return;
+            }
+            SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(issue.getSprintId());
+            if (!Optional.ofNullable(sSprintWithBLOBs).isPresent()){
+                return;
+            }
+            Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+            boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, sSprintWithBLOBs.getTeamId());
+            List<STeamMember> sTeamMembers = checkIsTeamMember(sSprintWithBLOBs.getTeamId(),userId);
+            //1.SM角色，可以更新卡片上的任意信息
+            if (isSM){
+                return;
+                //2.团队成员角色，只允许更新领取人为自己的卡片信息
+            }else if (CollectionUtils.isNotEmpty(sTeamMembers)
+                    && !TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getLaneId())
+                    && Optional.ofNullable(oldTask.getHandler()).isPresent()
+                    && oldTask.getHandler().equals(issueDTO.getHandler())
+                    && securityDTO.getUserId().equals(oldTask.getHandler())){
+                return;
+            }else if (!isSM && CollectionUtils.isEmpty(sTeamMembers)) {
+                throw new BusinessException("您无权限进行该操作");
+            }else {
+                throw new BusinessException("团队成员角色，只允许更新领取人为自己的卡片信息");
+            }
         }
     }
 
@@ -255,13 +258,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public IssueDTO queryTask(Long taskId) {
-        Long projectId = issueFactory.getProjectIdByIssueId(taskId);
-        return issueFactory.queryIssue(taskId, projectId);
+        return issueFactory.queryIssue(taskId, null);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
+        this.checkIsSMRoleOrTeamUser(issueDTO.getParentId(),"只有SM或团队成员才可以新建任务");
         //设置默认创建
         Long[] stages = null;
         if (Optional.ofNullable(issueDTO.getHandler()).isPresent()) {
@@ -287,6 +290,38 @@ public class TaskServiceImpl implements TaskService {
         log.info("createTask_updateStoryStageIdByTaskCount=" + i);
 
         return taskId;
+    }
+
+    public void checkIsSMRoleOrTeamUser(Long storyId,String errorMsg){
+        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+        if (Optional.ofNullable(storyId).isPresent()){
+            //有迭代才会有团队
+            Issue issue = issueMapper.selectByPrimaryKey(storyId);
+            if (null == issue){
+                return;
+            }
+            SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(issue.getSprintId());
+            if (Optional.ofNullable(sSprintWithBLOBs).isPresent()) {
+                Long teamId = sSprintWithBLOBs.getTeamId();
+                boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, teamId);
+                List<STeamMember> isTeamUsers = checkIsTeamMember(teamId, userId);
+                if (!(isSM || CollectionUtils.isNotEmpty(isTeamUsers))) {
+                    throw new BusinessException(errorMsg);
+                }
+                this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(),errorMsg);
+            }
+        }
+    }
+
+    private List<STeamMember> checkIsTeamMember(Long teamId,Long userId){
+        STeamMemberExample sTeamMemberExample = new STeamMemberExample();
+        sTeamMemberExample.createCriteria().andTeamIdEqualTo(teamId);
+        List<STeamMember> sTeamMembers = sTeamMemberMapper.selectByExample(sTeamMemberExample);
+        List<STeamMember> isTeamUsers = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(sTeamMembers)){
+            isTeamUsers = sTeamMembers.stream().filter(x -> userId.equals(x.getUserId())).collect(Collectors.toList());
+        }
+        return isTeamUsers;
     }
 
     private void ckeckTaksParams(Long sprintId, String errorMsg) {

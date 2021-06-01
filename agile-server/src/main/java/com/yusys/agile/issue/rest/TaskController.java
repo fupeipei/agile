@@ -38,7 +38,7 @@ public class TaskController {
      * @return
      */
     @PostMapping("/createTask")
-    public ControllerResponse createTask(@RequestBody IssueDTO issueDTO) {
+    public ControllerResponse createTask(@RequestBody IssueDTO issueDTO,SecurityDTO securityDTO) {
         try {
             if (StringUtils.isEmpty(issueDTO.getTitle())) {
                 return ControllerResponse.fail("新选择任务标题");
