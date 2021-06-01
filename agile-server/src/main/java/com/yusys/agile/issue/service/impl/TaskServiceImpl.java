@@ -326,7 +326,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void ckeckTaksParams(Long sprintId, String errorMsg) {
-        if (Optional.ofNullable(sprintId).isPresent()){
+        if (!Optional.ofNullable(sprintId).isPresent()){
             return;
         }
         SSprintExample sSprintExample = new SSprintExample();
