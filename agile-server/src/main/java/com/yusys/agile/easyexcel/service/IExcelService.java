@@ -35,5 +35,5 @@ public interface IExcelService {
 
 
 
-    void uploadTasks( Long sprintId,MultipartFile file) throws Exception;
+    FileInfo uploadTasks( Long sprintId,MultipartFile file,HttpServletResponse response) throws Exception;
 }

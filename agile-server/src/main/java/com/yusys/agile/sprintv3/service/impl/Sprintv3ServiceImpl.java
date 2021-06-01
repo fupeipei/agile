@@ -52,11 +52,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_NO_START_STATE;
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_ONGOING_STATE;
 
@@ -565,6 +567,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @author 张宇
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String cancelSprint(long sprintId, long userId) {
         //迭代未开始
         if (!TYPE_NO_START_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
@@ -580,8 +583,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         if (0 == ssprintMapper.sprintExist(sprintId)) {
             throw new BusinessException("暂无该迭代");
         }
+
+        //修改故事状态
+        ssprintMapper.changeIssueStatusBySprintId(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_ADD_STATE.CODE);
+        ssprintMapper.changeIssueStatusBySprintId(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE);
+
         ssprintMapper.cancelSprint(sprintId);
-        return "迭代状态更新成功";
+        return "迭代取消,解除任务关联";
     }
 
     /**
@@ -798,7 +806,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Long teamId = sprintDTO.getTeamId();
         boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
         if (!b) {
-            throw new BusinessException("暂无权限更改");
+            throw new BusinessException("只有本迭代的PO权限才允许关联/移除用户故事");
         }
         List<Long> issueIds = sprintDTO.getIssueIds();
         if (CollectionUtils.isNotEmpty(issueIds)) {
