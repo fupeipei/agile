@@ -146,7 +146,9 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public IssueDTO queryStory(Long storyId) {
         Long systemId = issueFactory.getProjectIdByIssueId(storyId);
+        SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
         IssueDTO issueDTO = issueFactory.queryIssue(storyId, systemId);
+        issueDTO.setSystemCode(ssoSystem.getSystemCode());
         return issueDTO;
     }
 
