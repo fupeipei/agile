@@ -1,5 +1,6 @@
 package com.yusys.agile.easyexcel.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
@@ -31,6 +32,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
@@ -208,6 +210,14 @@ public class ExcelServiceImpl implements IExcelService {
         //3、写错误文件上传文件服务器
         if(hasError){
             log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
+//            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
+//            EasyExcel.write(ExcelUtil.dealResponse("storyImportTemplate",response))
+//                    .withTemplate(classPathResource.getInputStream())
+//                    .autoCloseStream(Boolean.TRUE)
+//                    .sheet("storys")
+//                    .doWrite(copyData);
+
+
 
         }
 
