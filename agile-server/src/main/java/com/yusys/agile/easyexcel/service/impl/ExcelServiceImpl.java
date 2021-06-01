@@ -13,7 +13,6 @@ import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
 import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.agile.file.service.FileService;
-import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -37,7 +36,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
@@ -195,7 +193,7 @@ public class ExcelServiceImpl implements IExcelService {
             throw new BusinessException("导入数据为空，请检查!");
         }
         //1、校验表头数据
-        boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
+        boolean result = checkHeadLine(data.get(0),type);
         if(!result){
             throw new BusinessException("导入模版不正确，请检查!");
         }
