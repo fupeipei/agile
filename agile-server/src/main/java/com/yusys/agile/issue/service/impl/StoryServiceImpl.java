@@ -377,7 +377,8 @@ public class StoryServiceImpl implements StoryService {
         IssueExample.Criteria criteria2 = example.createCriteria();
         criteria2.andStateEqualTo(StateEnum.U.getValue())
                 .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
-        if(Optional.of(issueId).isPresent()){
+
+        if(Optional.ofNullable(issueId).isPresent()){
             criteria.andIssueIdEqualTo(issueId);
             criteria2.andIssueIdEqualTo(issueId);
         }
