@@ -798,6 +798,12 @@ public class IssueServiceImpl implements IssueService {
             if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) ||
                     IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
                 map.put("systemId", issue.getSystemId());
+                try {
+                    SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(issue.getSystemId());
+                    map.put("systemName",Optional.ofNullable(ssoSystem).isPresent()? ssoSystem.getSystemName() : null);
+                }catch (Exception e){
+                    loggr.info("获取系统名称异常:{}",e.getMessage());
+                }
             }
         }
         return map;
