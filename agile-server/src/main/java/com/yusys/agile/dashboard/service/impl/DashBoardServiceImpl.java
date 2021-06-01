@@ -111,7 +111,7 @@ public class DashBoardServiceImpl implements DashBoardService {
         //获取状态
         IssueStatus status = statusMapper.getTaskStatus(sprintId);
         //查询当前记录是否存在，存在则修改，不存在则新增
-        Byte issueType = IssueTypeEnum.TYPE_STORY.CODE;
+        Byte issueType = IssueTypeEnum.TYPE_TASK.CODE;
         IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
         if (currentStatus == null) {
             IssueStatus issueStatus = new IssueStatus();

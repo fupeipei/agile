@@ -41,9 +41,8 @@
             where 1=1
             and a.is_archive != 1
             and a.state = 'U'
-            and a.lane_id = 110
             and a.issue_type = 4
-            and a.sprint_id = 100030
+            and a.sprint_id = #{sprintId}
             ) E on E.sprint_id = C.sprint_id
            left join
            (
@@ -52,9 +51,8 @@
             where 1=1
             and a.is_archive != 1
             and a.state = 'U'
-            and a.lane_id = 110
             and a.issue_type = 4
-            and a.sprint_id = 100030
+            and a.sprint_id = #{sprintId}
             ) F on F.sprint_id = E.sprint_id
 
         )
