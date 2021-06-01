@@ -192,7 +192,7 @@ public class ExcelServiceImpl implements IExcelService {
     private FileInfo checkData(List<List<String>> data, HttpServletResponse response) throws Exception {
         //1、校验表头数据
         boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
-        if(result){
+        if(!result){
             throw new BusinessException("导入模版不正确，请检查!");
         }
 
@@ -215,7 +215,7 @@ public class ExcelServiceImpl implements IExcelService {
         if(hasError){
             log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
+            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportError.xlsx");
             ExcelWriter writer = EasyExcel.write(os)
                     .withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
