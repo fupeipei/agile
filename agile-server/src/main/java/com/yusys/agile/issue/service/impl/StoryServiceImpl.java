@@ -362,6 +362,7 @@ public class StoryServiceImpl implements StoryService {
         List<Long> laneIds = issueDTO.getLaneIds();
         List<Integer> taskTypes = issueDTO.getTaskTypes();
         List<Long> handlers = issueDTO.getHandlers();
+        Long issueId = issueDTO.getIssueId();
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
@@ -370,11 +371,16 @@ public class StoryServiceImpl implements StoryService {
         IssueExample example = new IssueExample();
         example.setOrderByClause("priority desc,create_time desc");
 
-        IssueExample.Criteria criteria = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+        IssueExample.Criteria criteria = example.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue())
                 .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
-        IssueExample.Criteria criteria2 = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+        IssueExample.Criteria criteria2 = example.createCriteria();
+        criteria2.andStateEqualTo(StateEnum.U.getValue())
                 .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
-
+        if(Optional.of(issueId).isPresent()){
+            criteria.andIssueIdEqualTo(issueId);
+            criteria2.andIssueIdEqualTo(issueId);
+        }
         // 判断是根据id还是name
         doFilterCondition(filter, example, criteria, criteria2);
 
