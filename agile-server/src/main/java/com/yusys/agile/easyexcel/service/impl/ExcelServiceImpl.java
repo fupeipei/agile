@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -76,12 +77,15 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public void uploadStorys(Long systemId, MultipartFile file,HttpServletResponse response) throws Exception {
+    public FileInfo uploadStorys(Long systemId, MultipartFile file,HttpServletResponse response) throws Exception {
         InputStream inputStream = file.getInputStream();
         //从第一行开始读，待表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
-        checkData(data,response);
+        FileInfo fileInfo = checkData(data, response);
+        if(Optional.ofNullable(fileInfo).isPresent()){
+            return fileInfo;
+        }
         List<JSONObject> jsonObjects = analysisStoryData(data);
         //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
@@ -94,6 +98,7 @@ public class ExcelServiceImpl implements IExcelService {
                 issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             }
         }
+        return null;
     }
 
     @Override
