@@ -18,6 +18,7 @@ import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,7 @@ import java.util.List;
  *  @Date: 2021/5/25 8:45 下午
  *
  */
+@Slf4j
 @Service
 public class ExcelServiceImpl implements IExcelService {
 
@@ -132,8 +134,8 @@ public class ExcelServiceImpl implements IExcelService {
             issueDTO.setAcceptanceCriteria(issueFiles.get(2));
             String sprintInfo = issueFiles.get(3);
             if(StringUtils.isNotBlank(sprintInfo)){
-                String[] split = sprintInfo.split("-");
-                issueDTO.setSprintId(Long.valueOf(split[0]));
+                String sprintId = StringUtils.substringBefore(sprintInfo, "+");
+                issueDTO.setSprintId(Long.valueOf(sprintId));
             }
             issueDTO.setPriority(StringUtils.isNotBlank(issueFiles.get(4))? Byte.valueOf(issueFiles.get(4)) : null);
             issueDTO.setParentId(StringUtils.isNotBlank(issueFiles.get(5))? Long.valueOf(issueFiles.get(5)) : null);
@@ -162,7 +164,7 @@ public class ExcelServiceImpl implements IExcelService {
         //1、校验表头数据
         boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
         if(result){
-            throw new BusinessException("模板表头结构被更改，请重新下载模板!");
+            throw new BusinessException("导入模版不正确，请检查!");
         }
 
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
@@ -170,12 +172,19 @@ public class ExcelServiceImpl implements IExcelService {
         copyData.get(0).add("错误信息");
 
         //2、校验表格中的数据
+        boolean hasError = false;
         for(int i = 1;i<data.size(); i++){
             List<String> line = data.get(i);
             List<String> fileResult = copyData.get(i);
             if(StringUtils.isBlank(line.get(0))){
                 fileResult.add(headSize,"故事名称不能为空");
+                hasError = true;
+                continue;
             }
+        }
+        //3、写错误文件上传文件服务器
+        if(hasError){
+            log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
 
         }
 
