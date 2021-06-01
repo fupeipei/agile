@@ -192,13 +192,12 @@ public class ExcelServiceImpl implements IExcelService {
     private FileInfo checkData(List<List<String>> data, HttpServletResponse response) throws Exception {
         //1、校验表头数据
         boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
-        if(result){
+        if(!result){
             throw new BusinessException("导入模版不正确，请检查!");
         }
 
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
         int headSize = data.get(0).size();
-        copyData.get(0).add("错误信息");
 
         //2、校验表格中的数据
         boolean hasError = false;
@@ -213,9 +212,10 @@ public class ExcelServiceImpl implements IExcelService {
         }
         //3、写错误文件上传文件服务器
         if(hasError){
+            copyData.remove(0);
             log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
+            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportError.xlsx");
             ExcelWriter writer = EasyExcel.write(os)
                     .withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
