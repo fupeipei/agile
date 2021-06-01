@@ -40,7 +40,7 @@ public class EpicController {
     private SysExtendFieldDetailService sysExtendFieldDetailService;
 
     @PostMapping("/issue/createEpic")
-    public ControllerResponse createEpic(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse createEpic(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId",required = false) Long projectId) {
         try {
             //issueDTO.setProjectId(projectId);
             Long paramProjectId = issueDTO.getProjectId();
@@ -66,7 +66,7 @@ public class EpicController {
     }
 
     @GetMapping("/issue/queryEpic/{epicId}")
-    public ControllerResponse queryEpic(@PathVariable("epicId") Long epicId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse queryEpic(@PathVariable("epicId") Long epicId) {
         IssueDTO issueDTO = epicService.queryEpic(epicId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
@@ -87,7 +87,7 @@ public class EpicController {
     }
 
     @PostMapping("/issue/editEpic")
-    public ControllerResponse editEpic(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse editEpic(@RequestBody Map<String, Object> map) {
         try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
@@ -107,7 +107,7 @@ public class EpicController {
     }
 
     @PutMapping("/issue/copyEpic/{epicId}")
-    public ControllerResponse copyEpic(@PathVariable(name = "epicId") Long epicId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse copyEpic(@PathVariable(name = "epicId") Long epicId, @RequestHeader(name = "projectId",required = false) Long projectId) {
         try {
             Long newEpicId = epicService.copyEpic(epicId, projectId);
             return ControllerResponse.success(newEpicId);
@@ -179,7 +179,7 @@ public class EpicController {
      * @date 2020/10/13
      */
     @GetMapping("/issue/queryFeatureIdsByEpicId/{epicId}")
-    public ControllerResponse queryFeatureIdsByEpicId(@PathVariable(name = "epicId") Long epicId, @RequestHeader(name = "projectId", required = false) Long projectId) {
+    public ControllerResponse queryFeatureIdsByEpicId(@PathVariable(name = "epicId") Long epicId) {
         return ControllerResponse.success(epicService.queryFeatureIdsByEpicId(epicId));
     }
 
