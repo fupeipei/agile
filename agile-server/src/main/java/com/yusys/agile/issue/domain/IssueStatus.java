@@ -20,6 +20,10 @@ public class IssueStatus {
     private Integer notStarted;
     @ApiModelProperty("统计每天完成的故事点数")
     private Integer finishedStoryPoint;
+    @ApiModelProperty("统计每天完成的实际工作量")
+    private Integer reallyWorkload;
+    @ApiModelProperty("统计每天的计划工作量")
+    private Integer planWorkload;
     private Date createTime;
 
 }

@@ -18,7 +18,7 @@
     </update>
 
     <select id="getTaskStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
-        select A.sprint_id,A.finished ,B.in_sprint,C.not_started from (
+        select A.sprint_id,A.finished ,B.in_sprint,C.not_started,E.really_workload,F.plan_workload from (
         (
         SELECT COUNT(1) AS finished ,a.sprint_id
         FROM s_issue a
@@ -34,6 +34,29 @@
         FROM s_issue a
         WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 107 AND a.issue_type = 4 AND a.sprint_id = #{sprintId}) C
         on B.sprint_id = C.sprint_id
+           left join
+           (
+            select sum(a.really_workload) as really_workload, a.sprint_id
+            from s_issue a
+            where 1=1
+            and a.is_archive != 1
+            and a.state = 'U'
+            and a.lane_id = 110
+            and a.issue_type = 4
+            and a.sprint_id = 100030
+            ) E on E.sprint_id = C.sprint_id
+           left join
+           (
+            select sum(a.plan_workload) as plan_workload, a.sprint_id
+            from s_issue a
+            where 1=1
+            and a.is_archive != 1
+            and a.state = 'U'
+            and a.lane_id = 110
+            and a.issue_type = 4
+            and a.sprint_id = 100030
+            ) F on F.sprint_id = E.sprint_id
+
         )
     </select>
 
