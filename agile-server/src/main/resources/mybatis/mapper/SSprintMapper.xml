@@ -783,7 +783,7 @@
         on ss.team_id = sts.team_id
         left join agile.s_team st  on st.team_id  = ss.team_id
         where ss.status in (2, 3)
-        and sts.system_id = #{systemId} and  and ss.end_time > now()
+        and sts.system_id = #{systemId} and  ss.end_time > now()
     </select>
 
     <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
