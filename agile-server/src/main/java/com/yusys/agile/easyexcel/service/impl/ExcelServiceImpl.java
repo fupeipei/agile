@@ -1,6 +1,5 @@
 package com.yusys.agile.easyexcel.service.impl;
 
-import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
@@ -10,10 +9,13 @@ import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.utils.CollectionUtil;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +64,7 @@ public class ExcelServiceImpl implements IExcelService {
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
         checkData(data);
-        List<JSONObject> jsonObjects = analysis(data);
+        List<JSONObject> jsonObjects = analysisStoryData(data);
         //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
             for(JSONObject jsonObject :jsonObjects){
@@ -82,7 +85,7 @@ public class ExcelServiceImpl implements IExcelService {
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
         //checkData(data);
-        List<JSONObject> jsonObjects = assembleIssue(data);
+        List<JSONObject> jsonObjects = analysisTaskData(data);
         //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
             for(JSONObject jsonObject :jsonObjects){
@@ -93,7 +96,7 @@ public class ExcelServiceImpl implements IExcelService {
         }
     }
 
-    private List<JSONObject> assembleIssue(List<List<String>> data) throws Exception {
+    private List<JSONObject> analysisTaskData(List<List<String>> data) throws Exception {
         List<JSONObject> jsonObjects = Lists.newArrayList();
         for(int i = 1 ; i<data.size();i++){
             List<String> issueFiles =  data.get(i);
@@ -114,7 +117,7 @@ public class ExcelServiceImpl implements IExcelService {
         return jsonObjects;
     }
 
-    private List<JSONObject> analysis(List<List<String>> data) throws Exception {
+    private List<JSONObject> analysisStoryData(List<List<String>> data) throws Exception {
         List<JSONObject> jsonObjects = Lists.newArrayList();
         int headSize = data.get(0).size();
         for(int i = 1 ; i<data.size();i++){
@@ -155,7 +158,26 @@ public class ExcelServiceImpl implements IExcelService {
      * 校验Excel数据
      * @param data
      */
-    private void checkData(List<List<String>> data){
+    private void checkData(List<List<String>> data) throws IOException, ClassNotFoundException {
+        //1、校验表头数据
+        boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
+        if(result){
+            throw new BusinessException("模板表头结构被更改，请重新下载模板!");
+        }
+
+        List<List<String>> copyData = CollectionUtil.deepCopy(data);
+        int headSize = data.get(0).size();
+        copyData.get(0).add("错误信息");
+
+        //2、校验表格中的数据
+        for(int i = 1;i<data.size(); i++){
+            List<String> line = data.get(i);
+            List<String> fileResult = copyData.get(i);
+            if(StringUtils.isBlank(line.get(0))){
+                fileResult.add(headSize,"故事名称不能为空");
+            }
+
+        }
 
     }
 
