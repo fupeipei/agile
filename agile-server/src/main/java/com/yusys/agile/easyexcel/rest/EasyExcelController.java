@@ -47,19 +47,18 @@ public class EasyExcelController {
     @ApiOperation("故事导入")
     @PostMapping("/uploadStorys")
     public ControllerResponse uploadStorys(@RequestParam("file") MultipartFile file,
-                                           @RequestParam(value = "systemId", required = false) Long systemId,
-                                           HttpServletResponse response) {
+                                           @RequestParam(value = "systemId", required = false) Long systemId) {
         FileInfo fileInfo = null;
         try {
             if (!Optional.ofNullable(systemId).isPresent()) {
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
-            fileInfo = iExcelService.uploadStorys(systemId, file, response);
+            fileInfo = iExcelService.uploadStorys(systemId, file);
         } catch (Exception e) {
-            if (Optional.ofNullable(fileInfo).isPresent()) {
-                return ControllerResponse.fail(fileInfo);
-            }
             return ControllerResponse.fail("上传失败:" + e.getMessage());
+        }
+        if (Optional.ofNullable(fileInfo).isPresent()) {
+            return ControllerResponse.fail(fileInfo);
         }
         return ControllerResponse.success("上传成功");
     }
@@ -68,16 +67,15 @@ public class EasyExcelController {
 
     @ApiOperation("任务导入")
     @PostMapping("/uploadTasks")
-    public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file, @RequestParam(value = "sprintId") Long sprintId,
-                                          HttpServletResponse response) {
+    public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file) {
         FileInfo fileInfo = null;
         try {
-            fileInfo = iExcelService.uploadTasks(sprintId, file, response);
+            fileInfo = iExcelService.uploadTasks(file);
         } catch (Exception e) {
-            if (Optional.ofNullable(fileInfo).isPresent()) {
-                return ControllerResponse.fail(fileInfo);
-            }
-            return ControllerResponse.success("上传失败");
+            return ControllerResponse.fail("上传失败:" + e.getMessage());
+        }
+        if (Optional.ofNullable(fileInfo).isPresent()) {
+            return ControllerResponse.fail(fileInfo);
         }
         return ControllerResponse.success("上传成功");
     }

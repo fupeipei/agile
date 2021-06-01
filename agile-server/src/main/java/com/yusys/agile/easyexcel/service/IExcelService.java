@@ -31,9 +31,16 @@ public interface IExcelService {
      * @return
      * @throws Exception
      */
-    FileInfo uploadStorys(Long systemId, MultipartFile file, HttpServletResponse response) throws Exception;
+    FileInfo uploadStorys(Long systemId, MultipartFile file) throws Exception;
 
 
-
-    FileInfo uploadTasks( Long sprintId,MultipartFile file,HttpServletResponse response) throws Exception;
+    /**
+     * 任务上传
+     * @param
+     * @param file
+     * @param
+     * @return
+     * @throws Exception
+     */
+    FileInfo uploadTasks(MultipartFile file) throws Exception;
 }
