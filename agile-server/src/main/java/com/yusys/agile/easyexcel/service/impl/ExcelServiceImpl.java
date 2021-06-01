@@ -13,6 +13,7 @@ import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
 import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.agile.file.service.FileService;
+import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -30,10 +31,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.sl.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -45,7 +42,6 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  *  @Description: excel 实现类
@@ -102,27 +98,17 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public void uploadTasks(Long sprintId, MultipartFile file) throws Exception {
+    public FileInfo uploadTasks(Long sprintId, MultipartFile file,HttpServletResponse response) throws Exception {
         InputStream inputStream = file.getInputStream();
         //从第一行开始读，待表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
-        //checkData(data);
-        String fileName = file.getOriginalFilename();
-        fileName = new String(fileName.getBytes(), "UTF-8");
-        fileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
-        Sheet sheet = null;
-        Workbook wb = null;
-        FileInputStream fis = (FileInputStream) file.getInputStream();
-        if (com.yusys.agile.utils.ExcelUtil.isExcel2003(fileName)) {
-            wb = new HSSFWorkbook(fis);
-        } else if (com.yusys.agile.utils.ExcelUtil.isExcel2007(fileName)) {
-            wb = new XSSFWorkbook(fis);
+        FileInfo fileInfo =checkTasksData(data,response);
+        if(Optional.ofNullable(fileInfo).isPresent()){
+            return fileInfo;
         }
         List<JSONObject> jsonObjects = analysisTaskData(data);
         //checkData(data);
-        //List<JSONObject> jsonObjects = assembleIssue(data);
-        //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
             for(JSONObject jsonObject :jsonObjects){
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
@@ -130,12 +116,18 @@ public class ExcelServiceImpl implements IExcelService {
 
             }
         }
+        return null;
     }
 
     private List<JSONObject> analysisTaskData(List<List<String>> data) throws Exception {
         List<JSONObject> jsonObjects = Lists.newArrayList();
         for(int i = 1 ; i<data.size();i++){
             List<String> issueFiles =  data.get(i);
+            int headSize = data.get(0).size();
+            int size = issueFiles.size();
+            if(size < headSize){
+                fillNull(issueFiles,size,headSize);
+            }
             IssueDTO issueDTO = new IssueDTO();
             // 故事id
             String storyInfo = issueFiles.get(0);
@@ -230,6 +222,52 @@ public class ExcelServiceImpl implements IExcelService {
             writer.finish();
             byte[] content = os.toByteArray();
             FileItem fileItem = getFileItem("storyImportError.xlsx", content);
+            MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+            return fileService.upload(multipartFile);
+        }
+        return null;
+    }
+
+    /**
+     * 校验导入任务Excel的数据
+     * @param data
+     */
+    private FileInfo checkTasksData(List<List<String>> data, HttpServletResponse response) throws Exception {
+        //1、校验表头数据
+        boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_TASK.CODE);
+        if(result){
+            throw new BusinessException("导入模版不正确，请检查!");
+        }
+
+        List<List<String>> copyData = CollectionUtil.deepCopy(data);
+        int headSize = data.get(0).size();
+        copyData.get(0).add("错误信息");
+
+        //2、校验表格中的数据
+        boolean hasError = false;
+        for(int i = 1;i<data.size(); i++){
+            List<String> line = data.get(i);
+            List<String> fileResult = copyData.get(i);
+            if(StringUtils.isBlank(line.get(1))){
+                fileResult.add(headSize,"任务标题不能为空");
+                hasError = true;
+                continue;
+            }
+        }
+        //3、写错误文件上传文件服务器
+        if(hasError){
+            log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
+            ExcelWriter writer = EasyExcel.write(os)
+                    .withTemplate(classPathResource.getInputStream())
+                    .autoCloseStream(Boolean.TRUE)
+                    .build();
+            WriteSheet writeSheet = EasyExcel.writerSheet("tasks").build();
+            writer.write(copyData,writeSheet);
+            writer.finish();
+            byte[] content = os.toByteArray();
+            FileItem fileItem = getFileItem("taskImportError.xlsx", content);
             MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
             return fileService.upload(multipartFile);
         }
