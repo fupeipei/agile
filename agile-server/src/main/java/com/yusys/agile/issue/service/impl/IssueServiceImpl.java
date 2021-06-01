@@ -27,7 +27,9 @@ import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.service.ModuleService;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
@@ -175,6 +177,8 @@ public class IssueServiceImpl implements IssueService {
     private SytExtendFieldDetailFactory sytExtendFieldDetailFactory;
     @Autowired
     private StoryService storyService;
+    @Autowired
+    private SSprintMapper ssprintMapper;
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
         @Override
@@ -795,6 +799,12 @@ public class IssueServiceImpl implements IssueService {
         Map map = new HashMap<String, String>();
         if (issue != null) {
             map.put("issueType", issue.getIssueType());
+            Long sprintId = issue.getSprintId();
+            map.put("sprintId",sprintId);
+            SSprintWithBLOBs sprint = ssprintMapper.selectByPrimaryKey(sprintId);
+            if(Optional.ofNullable(sprint).isPresent()){
+                map.put("sprintName",sprint.getSprintName());
+            }
             if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) ||
                     IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
                 map.put("systemId", issue.getSystemId());

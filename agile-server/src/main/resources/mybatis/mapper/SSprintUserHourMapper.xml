@@ -296,7 +296,7 @@
         </foreach>
     </insert>
 
-    <select id="getUserIds4Sprint" resultType="com.yusys.agile.sprint.domain.UserSprintHour">
+    <select id="getUserIds4Sprint" resultType="com.yusys.agile.sprintv3.domain.SSprintUserHour">
         SELECT
         <include refid="Base_Column_List"/>
         FROM s_sprint_user_hour

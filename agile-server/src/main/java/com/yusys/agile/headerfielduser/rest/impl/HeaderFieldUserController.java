@@ -25,12 +25,11 @@ public class HeaderFieldUserController {
      * 功能描述
      *
      * @param headerFieldListDTO
-     * @param projectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/15
      */
     @PostMapping("/updateList")
-    public ControllerResponse updateHeaderFieldUserList(@RequestBody HeaderFieldListDTO headerFieldListDTO, @RequestHeader(name = "projectId") Long projectId) {
-        return ControllerResponse.success(headerFieldUserService.updateHeaderFieldUserList(headerFieldListDTO, projectId));
+    public ControllerResponse updateHeaderFieldUserList(@RequestBody HeaderFieldListDTO headerFieldListDTO) {
+        return ControllerResponse.success(headerFieldUserService.updateHeaderFieldUserList(headerFieldListDTO));
     }
 }

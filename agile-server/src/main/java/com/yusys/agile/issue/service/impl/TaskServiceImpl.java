@@ -1,6 +1,7 @@
 package com.yusys.agile.issue.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -15,6 +16,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.PageInfoDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
@@ -23,14 +25,19 @@ import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRuleFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
+import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
@@ -64,6 +71,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -122,7 +130,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private SSprintUserHourMapper sSprintUserHourMapper;
-
     @Autowired
     private STeamMemberMapper sTeamMemberMapper;
 
@@ -130,12 +137,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteTask(Long taskId, Boolean deleteChild) {
-
         Issue issue = issueMapper.selectByPrimaryKey(taskId);
         if (null != issue) {
-            this.checkIsSMRoleOrTeamUser(issue.getParentId(), "无法删除任务");
+            this.ckeckTaksParams(issue.getSprintId(), "无法删除任务");
         }
-        this.checkIsSMRoleOrTeamUser(issue.getParentId(),"无法删除,只有SM或团队成员可以删除任务");
         issueFactory.deleteIssue(taskId, deleteChild);
 
         int i = this.updateStoryLaneIdByTaskCount(issue);
@@ -429,7 +434,7 @@ public class TaskServiceImpl implements TaskService {
             task.setHandler(loginUserId);
         }
         //根据task获得team，根据team及当前登录人员进行判断：
-        SprintDTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
+        SprintV3DTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
         if (sprintDTO1 == null) {
             throw new BusinessException("根据迭代标识获取迭代信息为空" + task.getSprintId());
         }
@@ -674,11 +679,11 @@ public class TaskServiceImpl implements TaskService {
 
     private List<SsoUserDTO> querySpringtUsersBySprintId(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
         List<SsoUserDTO> ssoUserDTOList = Lists.newArrayList();
-        List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
         if (CollectionUtils.isEmpty(userSprintHours)) {
             return ssoUserDTOList;
         }
-        List<Long> userIds = userSprintHours.stream().map(UserSprintHour::getUserId).distinct().collect(Collectors.toList());
+        List<Long> userIds = userSprintHours.stream().map(SSprintUserHour::getUserId).distinct().collect(Collectors.toList());
         return iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds,pageNum,pageSize,userName);
     }    /**
      * @param from
