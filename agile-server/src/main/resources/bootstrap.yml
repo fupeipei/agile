@@ -9,19 +9,19 @@ fdfs:
     tracker_http_port: ${FASTDFS_TRACKER__PORT:18820}
     anti_steal_token: no
     secret_key: ${FASTDFS_HTTP_SECRET_KEY:FastDFS1234567890}
-  tracker_server: ${FASTDFS_TRACKER_SERVER:192.168.48.2:12050}
+  tracker_server: ${FASTDFS_TRACKER_SERVER:192.168.48.5:12050}
 multipart:
   temp:
     location: ${OSS_MULTIPART_TMP_LOCATION:/fdata/YuDO/tmp}
 file:
   #上传方式 sftp和fastdfs
   type: ${FILE_UPLOAD_TYPE:sftp}
-  server: ${FASTDFS_FILE_SERVER:http://192.168.48.2:18820/}
+  server: ${FASTDFS_FILE_SERVER:http://192.168.48.5:18820/}
   #linux服务器账号密码
-  ip: ${FILE_UPLOAD_SFTP_IP:192.168.48.2}
-  port: ${FILE_UPLOAD_SFTP_PORT:22022}
-  hostUser: ${FILE_UPLOAD_SFTP_HOST_USER:maxp2}
-  pwd: ${FILE_UPLOAD_SFTP_PWD:maxp2}
+  ip: ${FILE_UPLOAD_SFTP_IP:192.168.48.5}
+  port: ${FILE_UPLOAD_SFTP_PORT:22}
+  hostUser: ${FILE_UPLOAD_SFTP_HOST_USER:root}
+  pwd: ${FILE_UPLOAD_SFTP_PWD:qyxn_58FqYt}
   remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/home/maxp2/test}
 
 async:
