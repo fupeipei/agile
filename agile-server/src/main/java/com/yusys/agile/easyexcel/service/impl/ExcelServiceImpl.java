@@ -198,7 +198,6 @@ public class ExcelServiceImpl implements IExcelService {
 
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
         int headSize = data.get(0).size();
-        copyData.get(0).add("错误信息");
 
         //2、校验表格中的数据
         boolean hasError = false;
@@ -213,6 +212,7 @@ public class ExcelServiceImpl implements IExcelService {
         }
         //3、写错误文件上传文件服务器
         if(hasError){
+            copyData.remove(0);
             log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportError.xlsx");
