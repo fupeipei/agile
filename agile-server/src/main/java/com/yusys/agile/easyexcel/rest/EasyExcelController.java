@@ -2,6 +2,7 @@ package com.yusys.agile.easyexcel.rest;
 
 import com.yusys.agile.easyexcel.service.IExcelService;
 import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import io.swagger.annotations.ApiOperation;
@@ -49,13 +50,17 @@ public class EasyExcelController {
     public ControllerResponse uploadStorys(@RequestParam("file") MultipartFile file,
                                            @RequestParam(value = "systemId",required = false) Long systemId,
                                            HttpServletResponse response){
+        FileInfo fileInfo = null;
         try {
             if(!Optional.ofNullable(systemId).isPresent()){
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
-            iExcelService.uploadStorys(systemId,file,response);
+            fileInfo = iExcelService.uploadStorys(systemId, file, response);
         }catch (Exception e){
-            return ControllerResponse.success("上传失败:"+e.getMessage());
+            if(Optional.ofNullable(fileInfo).isPresent()){
+                return ControllerResponse.fail(fileInfo);
+            }
+            return ControllerResponse.fail("上传失败:"+e.getMessage());
         }
         return ControllerResponse.success("上传成功");
     };
