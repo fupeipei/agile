@@ -5,7 +5,6 @@ import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
-import com.yusys.agile.easyexcel.vo.StoryExcelModel;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -14,7 +13,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,8 +38,10 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     public void download(HttpServletResponse response, ExcelCommentFiled filed) {
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] sprintInfo = getSprintInfo();
+        String[] storyPriority = getStoryPriority();
         String[] storyPoints = getStoryPoint();
         mapDropDown.put(3,sprintInfo);
+        mapDropDown.put(4,storyPriority);
         mapDropDown.put(6,storyPoints);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
@@ -63,13 +63,17 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     }
 
 
+    /**
+     * 迭代信息下拉项
+     * @return
+     */
     private String[] getSprintInfo(){
        try {
            Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
            if(CollectionUtils.isNotEmpty(sprintListDTOS)){
                Set<String> collect = sprintListDTOS.stream().
-                       map(s-> s.getSprintId() + "-" + s.getSprintName()).collect(Collectors.toSet());
+                       map(s-> s.getSprintId() + "+" + s.getSprintName()).collect(Collectors.toSet());
                return collect.toArray(new String[0]);
            }
        }catch (Exception e){
@@ -78,12 +82,25 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
         return new String[]{};
     }
 
-    private String[] getStoryPoint(){
+
+    /**
+     * 优先级下拉项
+     * @return
+     */
+    private String[] getStoryPriority(){
         List<String> list = Lists.newArrayList();
         for(int i = 0;i<=100; i++){
             list.add(String.valueOf(i));
         }
         return list.toArray(new String[0]);
+    }
+
+    /**
+     * 故事点数下拉项
+     * @return
+     */
+    private String[] getStoryPoint(){
+        return new String[]{"1","3","5","8","13","20","40","100"};
     }
 
 }
