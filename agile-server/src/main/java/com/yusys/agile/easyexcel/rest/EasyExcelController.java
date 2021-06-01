@@ -45,7 +45,7 @@ public class EasyExcelController {
     }
 
 
-    @ApiOperation("故事导入导入")
+    @ApiOperation("故事导入")
     @PostMapping("/uploadStorys")
     public ControllerResponse uploadStorys(@RequestParam("file") MultipartFile file,
                                            @RequestParam(value = "systemId",required = false) Long systemId,
