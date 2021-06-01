@@ -64,10 +64,6 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         customFieldPoolMapper.insert(customFieldPool);
     }
 
-
-
-
-
     /**
      * 功能描述: 检查是否有重名
      *
