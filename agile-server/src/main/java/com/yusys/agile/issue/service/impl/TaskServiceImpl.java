@@ -1,7 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -25,14 +24,9 @@ import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRuleFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
-import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
@@ -41,7 +35,6 @@ import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
-import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.domain.STeamMemberExample;
@@ -71,7 +64,6 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -166,6 +158,11 @@ public class TaskServiceImpl implements TaskService {
             Long[] stages = issueDTO.getStages();
             if (null != stages) {
                 issueDTO.setStageId(stages[0]);
+                if (stages.length > 1){
+                    issueDTO.setLaneId(stages[1]);
+                }else {
+                    issueDTO.setLaneId(null);
+                }
                 if (!ObjectUtil.equals(oldTask.getLaneId(), issueDTO.getLaneId())) {
                     //创建任务状态变更历史记录
                     createIssueHistoryRecords(oldTask.getLaneId(), issueDTO.getLaneId(), oldTask);
