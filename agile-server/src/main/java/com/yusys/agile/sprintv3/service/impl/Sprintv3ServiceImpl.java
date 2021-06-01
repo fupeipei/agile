@@ -806,7 +806,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Long teamId = sprintDTO.getTeamId();
         boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
         if (!b) {
-            throw new BusinessException("暂无权限更改");
+            throw new BusinessException("只有本迭代的PO权限才允许关联/移除用户故事");
         }
         List<Long> issueIds = sprintDTO.getIssueIds();
         if (CollectionUtils.isNotEmpty(issueIds)) {
