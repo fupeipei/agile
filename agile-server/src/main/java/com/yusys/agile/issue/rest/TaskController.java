@@ -127,9 +127,9 @@ public class TaskController {
      * @param to
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @Date 2021/2/8
-     * @Description 任务卡片拖拽
+     * @Description 任务卡片拖拽LaneId
      */
-    @GetMapping("/stageId/{issueId}/{from}/{to}")
+    @GetMapping("/laneId/{issueId}/{from}/{to}")
     public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to, @RequestParam(value = "assignUserId",required = false) Long userId) {
         try {
             taskService.dragTask(issueId, from, to, userId);

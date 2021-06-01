@@ -128,9 +128,11 @@ public class StoryServiceImpl implements StoryService {
     public Long createStory(IssueDTO issueDTO) {
         //设置默认创建
         Long[] stages = issueDTO.getStages();
-        if(!Optional.ofNullable(stages).isPresent()){
-            stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
-            stages[1] = StoryStatusEnum.TYPE_ADD_STATE.CODE;
+        if(!Optional.ofNullable(issueDTO.getSprintId()).isPresent()){
+            stages = new Long[]{
+                    StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue(),
+                    StoryStatusEnum.TYPE_ADD_STATE.CODE};
+
             issueDTO.setStages(stages);
         }
         Long storyId = issueFactory.createIssue(issueDTO, "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
@@ -143,8 +145,8 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public IssueDTO queryStory(Long storyId) {
-        Long projectId = issueFactory.getProjectIdByIssueId(storyId);
-        IssueDTO issueDTO = issueFactory.queryIssue(storyId, projectId);
+        Long systemId = issueFactory.getProjectIdByIssueId(storyId);
+        IssueDTO issueDTO = issueFactory.queryIssue(storyId, systemId);
         return issueDTO;
     }
 
@@ -299,11 +301,18 @@ public class StoryServiceImpl implements StoryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int removeStory4Sprint(Long sprintId, Long storyId) {
+        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+        SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
+        Long teamId = sprint.getTeamId();
+        boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
+        if(!b){
+            throw new BusinessException("暂无权限");
+        }
         Issue issue = issueMapper.selectByPrimaryKey(storyId);
         if (!issue.getSprintId().equals(sprintId)) {
             return 1;
         }
-        SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
+
         if (null == sprint || !StringUtils.equals(sprint.getState(), StateEnum.U.getValue())) {
             throw new BusinessException(ExceptionCodeEnum.PARAM_ERROR.getDesc());
         }

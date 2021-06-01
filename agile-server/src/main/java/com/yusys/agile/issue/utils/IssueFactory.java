@@ -671,7 +671,7 @@ public class IssueFactory {
         issueHistoryRecordService.createHistory(nameHistory);
     }
 
-    public IssueDTO queryIssue(Long issueId, Long projectId) {
+    public IssueDTO queryIssue(Long issueId, Long systemId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         IssueDTO issueDTO = null;
         if (null != issue) {
@@ -1211,12 +1211,12 @@ public class IssueFactory {
      * @return
      */
     public Long getProjectIdByIssueId(Long issueId) {
-        Long projectId = null;
+        Long systemId = null;
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         if (null != issue) {
-            projectId = issue.getProjectId();
+            systemId = issue.getSystemId();
         }
-        return projectId;
+        return systemId;
     }
 
     public void batchSaveOrUpdateSysExtendFieldDetail(JSONObject jsonObject, IssueDTO issueDTO) {
