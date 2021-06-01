@@ -1041,4 +1041,15 @@ public class StoryServiceImpl implements StoryService {
             throw new BusinessException("迭代不存在");
         }
     }
+
+    @Override
+    public List<IssueDTO> queryStoryBySystemId(Long systemId,Integer pageNum,Integer pageSize) {
+        if (pageNum != null && pageSize != null) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andSystemIdEqualTo(systemId);
+        List<IssueDTO> storys = issueMapper.selectByExampleDTO(issueExample);
+        return storys;
+    }
 }
