@@ -22,6 +22,7 @@ import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  *  @Description: excel 实现类
@@ -73,12 +75,12 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadStorys(Long systemId, MultipartFile file,HttpServletResponse response) throws Exception {
+    public FileInfo uploadStorys(Long systemId, MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         //从第一行开始读，待表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
-        FileInfo fileInfo = checkData(data, response);
+        FileInfo fileInfo = checkData(data, (byte)3,"storyImportError.xlsx","storys");
         if(Optional.ofNullable(fileInfo).isPresent()){
             return fileInfo;
         }
@@ -98,12 +100,12 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadTasks(Long sprintId, MultipartFile file,HttpServletResponse response) throws Exception {
+    public FileInfo uploadTasks(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         //从第一行开始读，待表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
-        FileInfo fileInfo =checkTasksData(data,response);
+        FileInfo fileInfo = checkData(data, (byte)4,"taskImportError.xlsx","tasks");
         if(Optional.ofNullable(fileInfo).isPresent()){
             return fileInfo;
         }
@@ -119,7 +121,7 @@ public class ExcelServiceImpl implements IExcelService {
         return null;
     }
 
-    private List<JSONObject> analysisTaskData(List<List<String>> data) throws Exception {
+    private List<JSONObject> analysisTaskData(List<List<String>> data) {
         List<JSONObject> jsonObjects = Lists.newArrayList();
         for(int i = 1 ; i<data.size();i++){
             List<String> issueFiles =  data.get(i);
@@ -168,7 +170,9 @@ public class ExcelServiceImpl implements IExcelService {
             issueDTO.setBeginDate(StringUtils.isNotBlank(issueFiles.get(7))? DateUtil.formatStrToDate(issueFiles.get(7)) : null);
             issueDTO.setEndDate(StringUtils.isNotBlank(issueFiles.get(8))? DateUtil.formatStrToDate(issueFiles.get(8)) : null);
             issueDTO.setPlanWorkload(StringUtils.isNotBlank(issueFiles.get(9))? Integer.valueOf(issueFiles.get(9)) : null);
-            issueDTO.setTenantCode(UserThreadLocalUtil.getUserInfo().getTenantCode());
+            SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
+            issueDTO.setTenantCode(userInfo.getTenantCode());
+            issueDTO.setSystemId(userInfo.getSystemId());
             JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
             jsonObject.put("storyPoint",issueFiles.get(6));
             jsonObjects.add(jsonObject);
@@ -186,7 +190,10 @@ public class ExcelServiceImpl implements IExcelService {
      * 校验Excel数据
      * @param data
      */
-    private FileInfo checkData(List<List<String>> data, HttpServletResponse response) throws Exception {
+    private FileInfo checkData(List<List<String>> data, Byte type,String templateName,String sheetName) throws Exception {
+        if(data.size() <=1){
+            throw new BusinessException("导入数据为空，请检查!");
+        }
         //1、校验表头数据
         boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
         if(!result){
@@ -198,91 +205,65 @@ public class ExcelServiceImpl implements IExcelService {
 
         //2、校验表格中的数据
         boolean hasError = false;
-        for(int i = 1;i<data.size(); i++){
-            List<String> line = data.get(i);
-            List<String> fileResult = copyData.get(i);
-            if(StringUtils.isBlank(line.get(0))){
-                fileResult.add(headSize,"故事名称不能为空");
-                hasError = true;
-                continue;
-            }
-        }
+        hasError = checExcelData(data,copyData,headSize,hasError,type);
+
         //3、写错误文件上传文件服务器
         if(hasError){
             copyData.remove(0);
             log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportError.xlsx");
+            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/"+templateName);
             ExcelWriter writer = EasyExcel.write(os)
                     .withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
                     .build();
-            WriteSheet writeSheet = EasyExcel.writerSheet("storys").build();
+            WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
             writer.write(copyData,writeSheet);
             writer.finish();
             byte[] content = os.toByteArray();
-            FileItem fileItem = getFileItem("storyImportError.xlsx", content);
+            FileItem fileItem = getFileItem(UUID.randomUUID().toString()+".xlsx", content);
             MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
             return fileService.upload(multipartFile);
         }
         return null;
     }
 
-    /**
-     * 校验导入任务Excel的数据
-     * @param data
-     */
-    private FileInfo checkTasksData(List<List<String>> data, HttpServletResponse response) throws Exception {
-        //1、校验表头数据
-        boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_TASK.CODE);
-        if(!result){
-            throw new BusinessException("导入模版不正确，请检查!");
-        }
-
-        List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        int headSize = data.get(0).size();
-        copyData.get(0).add("错误信息");
-
-        //2、校验表格中的数据
-        boolean hasError = false;
+    public boolean checExcelData(List<List<String>> data,List<List<String>> copyData,int headSize, boolean hasError,byte type){
         for(int i = 1;i<data.size(); i++){
             List<String> line = data.get(i);
             List<String> fileResult = copyData.get(i);
-            if(StringUtils.isBlank(line.get(0))){
-                fileResult.add(headSize,"故事ID不能为空");
-                hasError = true;
-                continue;
+            if(fileResult.size() < headSize){
+                fillNull(fileResult,fileResult.size(),headSize);
             }
-            if(StringUtils.isBlank(line.get(1))){
-                fileResult.add(headSize,"任务标题不能为空");
-                hasError = true;
-                continue;
-            }
-            if(StringUtils.isBlank(line.get(3))){
-                fileResult.add(headSize,"任务类型不能为空");
-                hasError = true;
-                continue;
+
+            if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
+                if(StringUtils.isBlank(line.get(0))){
+                    fileResult.add(headSize,"故事名称不能为空");
+                    hasError = true;
+                    continue;
+                }
+            }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
+
+                if(StringUtils.isBlank(line.get(0))){
+                    fileResult.add(headSize,"故事ID不能为空");
+                    hasError = true;
+                    continue;
+                }
+                if(StringUtils.isBlank(line.get(1))){
+                    fileResult.add(headSize,"任务标题不能为空");
+                    hasError = true;
+                    continue;
+                }
+                if(StringUtils.isBlank(line.get(3))){
+                    fileResult.add(headSize,"任务类型不能为空");
+                    hasError = true;
+                    continue;
+                }
             }
         }
-        //3、写错误文件上传文件服务器
-        if(hasError){
-            log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
-            ExcelWriter writer = EasyExcel.write(os)
-                    .withTemplate(classPathResource.getInputStream())
-                    .autoCloseStream(Boolean.TRUE)
-                    .build();
-            WriteSheet writeSheet = EasyExcel.writerSheet("tasks").build();
-            writer.write(copyData,writeSheet);
-            writer.finish();
-            byte[] content = os.toByteArray();
-            FileItem fileItem = getFileItem("taskImportError.xlsx", content);
-            MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
-            return fileService.upload(multipartFile);
-        }
-        return null;
+        return hasError;
     }
+
 
 
     private FileItem getFileItem(String fileName, byte[] bytes) {
@@ -317,30 +298,6 @@ public class ExcelServiceImpl implements IExcelService {
         }
         List<String> list = Arrays.asList(headLine);
         return CollectionUtils.isEqualCollection(list, excelhead);
-    }
-
-
-
-
-    /**
-     * 功能描述: 判断单元格中数据是否是在下拉选择中
-     *
-     * @param value
-     * @param values
-     * @return boolean
-     * @date 2021/2/1
-     */
-    private boolean checkDataValue(String value, String[] values) {
-        if (null == values || values.length == 0) {
-            return false;
-        }
-        for (String date : values) {
-            if (value.equals(date)) {
-
-                return true;
-            }
-        }
-        return false;
     }
 
 
