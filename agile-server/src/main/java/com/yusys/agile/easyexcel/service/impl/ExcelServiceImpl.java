@@ -235,7 +235,7 @@ public class ExcelServiceImpl implements IExcelService {
     private FileInfo checkTasksData(List<List<String>> data, HttpServletResponse response) throws Exception {
         //1、校验表头数据
         boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_TASK.CODE);
-        if(result){
+        if(!result){
             throw new BusinessException("导入模版不正确，请检查!");
         }
 
@@ -248,8 +248,18 @@ public class ExcelServiceImpl implements IExcelService {
         for(int i = 1;i<data.size(); i++){
             List<String> line = data.get(i);
             List<String> fileResult = copyData.get(i);
+            if(StringUtils.isBlank(line.get(0))){
+                fileResult.add(headSize,"故事ID不能为空");
+                hasError = true;
+                continue;
+            }
             if(StringUtils.isBlank(line.get(1))){
                 fileResult.add(headSize,"任务标题不能为空");
+                hasError = true;
+                continue;
+            }
+            if(StringUtils.isBlank(line.get(3))){
+                fileResult.add(headSize,"任务类型不能为空");
                 hasError = true;
                 continue;
             }
