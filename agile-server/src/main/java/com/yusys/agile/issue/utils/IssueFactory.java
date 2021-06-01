@@ -185,7 +185,7 @@ public class IssueFactory {
             Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             issue.setSystemId(systemId);
         }
-        if (CollectionUtils.isNotEmpty(issueDTO.getSystemIds())){
+        if (CollectionUtils.isEmpty(issueDTO.getSystemIds())){
             Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             List<Long> systemIds = Lists.newArrayList(systemId);
             issueDTO.setSystemIds(systemIds);
