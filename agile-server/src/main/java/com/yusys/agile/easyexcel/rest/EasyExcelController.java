@@ -55,10 +55,10 @@ public class EasyExcelController {
             }
             fileInfo = iExcelService.uploadStorys(systemId, file);
         } catch (Exception e) {
-            if (Optional.ofNullable(fileInfo).isPresent()) {
-                return ControllerResponse.fail(fileInfo);
-            }
             return ControllerResponse.fail("上传失败:" + e.getMessage());
+        }
+        if (Optional.ofNullable(fileInfo).isPresent()) {
+            return ControllerResponse.fail(fileInfo);
         }
         return ControllerResponse.success("上传成功");
     }
@@ -72,10 +72,10 @@ public class EasyExcelController {
         try {
             fileInfo = iExcelService.uploadTasks(file);
         } catch (Exception e) {
-            if (Optional.ofNullable(fileInfo).isPresent()) {
-                return ControllerResponse.fail(fileInfo);
-            }
-            return ControllerResponse.fail("上传失败");
+            return ControllerResponse.fail("上传失败:" + e.getMessage());
+        }
+        if (Optional.ofNullable(fileInfo).isPresent()) {
+            return ControllerResponse.fail(fileInfo);
         }
         return ControllerResponse.success("上传成功");
     }
