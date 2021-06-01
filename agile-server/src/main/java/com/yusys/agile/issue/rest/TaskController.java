@@ -102,7 +102,7 @@ public class TaskController {
     }
 
     @GetMapping("/queryUnlinkedTask")
-    public ControllerResponse queryUnlinkedTask(@RequestHeader(name = "projectId") Long projectId, @RequestParam("pageNum") Integer pageNum,
+    public ControllerResponse queryUnlinkedTask(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("pageNum") Integer pageNum,
                                                 @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
                                                 @RequestParam(name = "projectId", required = false) Long paramProjectId) {
         Long finalProjectId = null;
@@ -147,7 +147,7 @@ public class TaskController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/queryTaskForStory")
-    public ControllerResponse queryTaskForStory(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "storyId") Long storyId) {
+    public ControllerResponse queryTaskForStory(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam(value = "storyId") Long storyId) {
         List<IssueDTO> result;
         try {
             result = taskService.queryTaskForStory(projectId, IssueTypeEnum.TYPE_TASK.CODE, storyId);
@@ -166,7 +166,7 @@ public class TaskController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/queryFaultForStory")
-    public ControllerResponse queryFaultForStory(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "storyId") Long storyId) {
+    public ControllerResponse queryFaultForStory(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam(value = "storyId") Long storyId) {
         List<IssueDTO> result;
         try {
             result = taskService.queryFaultForStory(projectId, IssueTypeEnum.TYPE_FAULT.CODE, storyId);

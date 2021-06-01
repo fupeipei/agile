@@ -457,7 +457,7 @@
         where team_id = #{teamId}
     </update>
 
-    <select id="getTeamsByTeamId" resultType="com.yusys.agile.team.domain.Team">
+    <select id="getTeamsByTeamId" resultType="com.yusys.agile.teamv3.domain.STeam">
         SELECT
         <include refid="Base_Column_List"/>
         FROM s_team
