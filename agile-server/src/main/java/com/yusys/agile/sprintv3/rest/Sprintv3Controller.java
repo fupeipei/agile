@@ -13,6 +13,7 @@ import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,6 +186,7 @@ public class Sprintv3Controller {
      */
     @PutMapping("/issues/{sprintId}/{issueId}")
     public ControllerResponse removeIssue4Sprint(@PathVariable Long sprintId, @PathVariable Long issueId) {
+
         if (storyService.removeStory4Sprint(sprintId, issueId) != 1) {
             return ControllerResponse.fail("移除迭代失败！");
         }
