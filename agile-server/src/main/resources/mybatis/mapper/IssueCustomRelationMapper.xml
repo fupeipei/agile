@@ -92,7 +92,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from issue_custom_relation
+    from  s_issue_custom_field 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -106,7 +106,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_custom_relation
+    from  s_issue_custom_field 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -119,21 +119,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from issue_custom_relation
+    from  s_issue_custom_field 
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_custom_relation
+    delete from  s_issue_custom_field 
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueCustomRelationExample">
-    delete from issue_custom_relation
+    delete from  s_issue_custom_field 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueCustomRelation" useGeneratedKeys="true" keyProperty="id">
-    insert into issue_custom_relation (id, issue_type, field_id, 
+    insert into  s_issue_custom_field  (id, issue_type, field_id, 
       field_name, required, field_type, 
       project_id, create_time, create__uid, 
       update_uid, update_time, tenant_code, sort,
@@ -145,7 +145,7 @@
       #{fieldContent,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueCustomRelation" useGeneratedKeys="true" keyProperty="id">
-    insert into issue_custom_relation
+    insert into  s_issue_custom_field 
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -236,13 +236,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueCustomRelationExample" resultType="java.lang.Long">
-    select count(*) from issue_custom_relation
+    select count(*) from  s_issue_custom_field 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_custom_relation
+    update  s_issue_custom_field 
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -292,7 +292,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update issue_custom_relation
+    update  s_issue_custom_field 
     set id = #{record.id,jdbcType=BIGINT},
       issue_type = #{record.issueType,jdbcType=TINYINT},
       field_id = #{record.fieldId,jdbcType=BIGINT},
@@ -312,7 +312,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_custom_relation
+    update  s_issue_custom_field 
     set id = #{record.id,jdbcType=BIGINT},
       issue_type = #{record.issueType,jdbcType=TINYINT},
       field_id = #{record.fieldId,jdbcType=BIGINT},
@@ -331,7 +331,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueCustomRelation">
-    update issue_custom_relation
+    update  s_issue_custom_field 
     <set>
       <if test="issueType != null">
         issue_type = #{issueType,jdbcType=TINYINT},
@@ -376,7 +376,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueCustomRelation">
-    update issue_custom_relation
+    update  s_issue_custom_field 
     set issue_type = #{issueType,jdbcType=TINYINT},
       field_id = #{fieldId,jdbcType=BIGINT},
       field_name = #{fieldName,jdbcType=VARCHAR},
@@ -393,7 +393,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueCustomRelation">
-    update issue_custom_relation
+    update  s_issue_custom_field 
     set issue_type = #{issueType,jdbcType=TINYINT},
       field_id = #{fieldId,jdbcType=BIGINT},
       field_name = #{fieldName,jdbcType=VARCHAR},
@@ -409,12 +409,12 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <delete id="deleteByProjectIdAndIssueType" >
-    delete from issue_custom_relation
+    delete from  s_issue_custom_field 
     where issue_type = #{issueType}
     and   project_id = #{projectId}
   </delete>
 <select id="getAppliedByissueType" resultType="Long">
-  select  field_id from issue_custom_relation
+  select  field_id from  s_issue_custom_field 
     where issue_type = #{issueType}
     and   project_id = #{projectId}
 </select>

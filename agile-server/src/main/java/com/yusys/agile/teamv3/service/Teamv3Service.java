@@ -2,9 +2,13 @@ package com.yusys.agile.teamv3.service;
 
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
+import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 
 import java.util.List;
 
@@ -22,13 +26,6 @@ public interface Teamv3Service {
      * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
      */
     List<TeamListDTO> listTeam(TeamQueryDTO dto, SecurityDTO security);
-    /*
-     * 查询所有
-     * @author zhaofeng
-     * @date 2021/5/8 11:03
-     * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
-     */
-    List<TeamListDTO> list();
 
     /**
      * 新增团队
@@ -36,7 +33,7 @@ public interface Teamv3Service {
      * @param team 团队
      * @return {@link String}
      */
-    String insertTeam(STeam team);
+    void insertTeam(STeam team);
 
     /**
      * 删除团队
@@ -44,7 +41,7 @@ public interface Teamv3Service {
      * @param teamId 团队id
      * @return {@link String}
      */
-    String deleteTeam(long teamId);
+    void deleteTeam(long teamId);
 
     /**
      * 更新团队
@@ -52,7 +49,7 @@ public interface Teamv3Service {
      * @param team 团队
      * @return {@link String}
      */
-    String updateTeam(STeam team);
+    void updateTeam(STeam team);
 
     /**
      * 查询团队
@@ -69,4 +66,11 @@ public interface Teamv3Service {
      * @param team
      */
     List<STeam> getTeamLikeNameOrCode(String team);
+
+    /**
+     * 通过团队id查询团队下的系统
+     * @param teamId 团队id
+     * @return
+     */
+    List<SsoSystemRestDTO> querySystemByTeamId(long teamId);
 }

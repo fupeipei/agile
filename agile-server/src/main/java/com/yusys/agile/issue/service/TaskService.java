@@ -1,7 +1,10 @@
 package com.yusys.agile.issue.service;
 
+import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 
 import java.util.List;
 
@@ -23,7 +26,7 @@ public interface TaskService {
      * @Param: * @param issueDTO
      * @Return: void
      */
-    void editTask(IssueDTO issueDTO);
+    void editTask(IssueDTO issueDTO, SecurityDTO securityDTO);
 
     /**
      * @Date: 18:09
@@ -84,9 +87,9 @@ public interface TaskService {
      * @param to
      * @Date 2021/2/7
      * @Description 任务卡片拖拽
-     * @Return void
+     * @Return Issue
      */
-    void dragTask(Long issueId, Long from, Long to);
+    Issue dragTask(Long issueId, Long from, Long to, Long userId);
 
     /**
      * @param code
@@ -127,4 +130,12 @@ public interface TaskService {
      * @date 2021/2/8
      */
     List<Long> listStoryIdsByTaskIds(List<Long> taskIds);
+
+    /**
+     *如果故事上有迭代，从迭代内选人，没有迭代从系统选人
+     * @param systemId
+     * @param storyId
+     * @return
+     */
+    StoryCreatePrepInfoDTO getTaskPreInfo(String userName,Integer page,Integer pageSize,Long systemId, Long storyId, Integer createType);
 }

@@ -1,8 +1,9 @@
 package com.yusys.agile.issue.utils;
 
-import com.yusys.agile.commission.domain.Commission;
-import com.yusys.agile.commission.dto.CommissionDTO;
+import com.yusys.agile.commission.domain.SCommission;
+import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
+import com.yusys.agile.common.exception.BaseBusinessException;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.consumer.dto.IssueMailSendDto;
@@ -18,19 +19,18 @@ import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.issue.service.*;
+import com.yusys.agile.set.stage.constant.StageConstant;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
-import com.yusys.agile.review.dto.StoryCheckResultDTO;
 import com.yusys.agile.review.service.ReviewService;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.domain.KanbanStageInstance;
-import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.StageService;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.Sprint;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
+import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.yusys.agile.versionmanager.service.VersionIssueRelateService;
@@ -91,8 +91,6 @@ public class IssueFactory {
     @Resource
     private IssueCustomFieldService issueCustomFieldService;
     @Resource
-    private StageService stageService;
-    @Resource
     private HeaderFieldService headerFieldService;
     @Resource
     private IssueSystemRelpService issueSystemRelpService;
@@ -111,19 +109,13 @@ public class IssueFactory {
     @Resource
     private RabbitTemplate rabbitTemplate;
     @Resource
-    private SprintMapper sprintMapper;
-    @Autowired
-    private ReviewService reviewService;
+    private SSprintMapper sSprintMapper;
     @Autowired
     private SysExtendFieldDetailService sysExtendFieldDetailService;
-    @Autowired
-    private VersionIssueRelateService versionIssueRelateService;
     @Resource
     private SysExtendFieldService sysExtendFieldService;
     @Resource
     private IssueTemplateService issueTemplateService;
-    @Resource
-    private KanbanStageInstanceMapper kanbanStageInstanceMapper;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -131,44 +123,42 @@ public class IssueFactory {
         Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
         issue.setIssueType(issueType);
 
-        //如果是快速新建过来没有选择阶段走if，新增页面过来走else
+        //处理阶段
         Long[] stages = issueDTO.getStages();
-        if (null == stages) {
-            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                List<StageInstance> stageInstanceList = stageService.getFirstStageFirstLane(issueDTO.getProjectId());
-                if (CollectionUtils.isNotEmpty(stageInstanceList)) {
-                    StageInstance stageInstance = stageInstanceList.get(0);
-                    issue.setStageId(stageInstance.getStageId());
-                    if (CollectionUtils.isNotEmpty(stageInstance.getSecondStages())) {
-                        KanbanStageInstance kanbanStageInstance = stageInstance.getSecondStages().get(0);
-                        issue.setLaneId(kanbanStageInstance.getStageId());
-                    }
-                }
-            } else {
-                //任务选择处理人就是已领取，否则就是未领取
-                if (null != issue.getHandler()) {
-                    issue.setStageId(TaskStageIdEnum.TYPE_RECEIVED_STATE.CODE);
-                } else {
-                    issue.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
-                }
-                //从故事获取迭代放入到任务上
-                //故事ID
-                Long parentId = issueDTO.getParentId();
-                //获取迭代ID
-                Issue story = issueMapper.selectByPrimaryKey(parentId);
-                // 任务可能不在故事里也不在迭代里
-                if (null != story) {
-                    issue.setSprintId(story.getSprintId());
-                }
-
-                issue.setReallyWorkload(0);
-            }
-        } else {
+        if (Optional.ofNullable(stages).isPresent()) {
             issue.setStageId(stages[0]);
             if (stages.length > 1) {
                 issue.setLaneId(stages[1]);
             }
         }
+
+        //处理任务
+        if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
+            //从故事获取迭代放入到任务上
+            //故事ID
+            Long parentId = issueDTO.getParentId();
+            //获取迭代ID
+            Issue story = issueMapper.selectByPrimaryKey(parentId);
+            //如果有parentId，需要从parentId上查询systemId，sprintId，存入task 否则从本系统内
+            List<Long> systemIds = Lists.newArrayList();
+            if (null != story) {
+                issue.setSprintId(story.getSprintId());
+                List<IssueSystemRelp> issueSystemRelps = issueSystemRelpService.listIssueSystemRelp(story.getIssueId());
+                if (CollectionUtils.isNotEmpty(issueSystemRelps)){
+                      systemIds = issueSystemRelps.stream()
+                            .map(IssueSystemRelp::getSystemId)
+                            .distinct()
+                            .collect(Collectors.toList());
+                }
+            }else {
+                Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+                systemIds.add(systemId);
+
+            }
+            issueDTO.setSystemIds(systemIds);
+            issue.setReallyWorkload(0);
+        }
+
         //处理预计工时，默认8小时且剩余工时等于预计工时
         Integer planWorklaod = issue.getPlanWorkload();
         planWorklaod = Optional.ofNullable(planWorklaod).orElse(8);
@@ -177,41 +167,47 @@ public class IssueFactory {
         issue.setReallyWorkload(0);
 
         if (null != issue.getSprintId()) {
-            Sprint sprint = sprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
+            SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKeyNotText(issue.getSprintId());
             if (null != sprint) {
-                if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE)) {
-                    throw new BusinessException("迭代已完成不能再关联工作项");
+                if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) ||
+                        sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                    throw new BusinessException("只有未开始的任务可以关联工作项");
+                }
+                if (sprint.getEndTime().before(new Date())) {
+                    throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
                 }
             }
         }
         issue.setUpdateTime(new Date());
-        issueMapper.insertSelective(issue);
 
-        // 评审拦截
-        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType) && null != issue.getSprintId()) {
-            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issue.getIssueId(), issueDTO.getProjectId());
-            if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
-                LOGGER.info("由于未通过评审，创建故事关联迭代失败！storyId = {}", issue.getIssueId());
-                throw new BusinessException("由于未通过评审，创建故事不能关联迭代！");
-            }
-
+        //如果系统为空取当前系统
+        if(!Optional.ofNullable(issueDTO.getSystemId()).isPresent()){
+            Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+            issue.setSystemId(systemId);
+        }
+        if (CollectionUtils.isEmpty(issueDTO.getSystemIds())){
+            Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+            List<Long> systemIds = Lists.newArrayList(systemId);
+            issueDTO.setSystemIds(systemIds);
         }
 
+        issueMapper.insertSelective(issue);
+
         /**  赋值issue ,保存富文本 */
-        //快速新建过来设置默认模板
+        //处理富文本信息、验收标准
         if (StringUtils.isBlank(issueDTO.getDescription())) {
-            IssueTemplate issueTemplate = issueTemplateService.getTemplateByProjectAndType(issueDTO.getProjectId(), issueType);
+            IssueTemplate issueTemplate = issueTemplateService.getTemplateByProjectAndType(issueDTO.getSystemId(), issueType);
             if (Optional.ofNullable(issueTemplate).isPresent()) {
                 issueDTO.setDescription(issueTemplate.getDescription());
             }
         }
-        issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), null);
+        issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(),null);
 
         final Long issueId = issue.getIssueId();
         issueDTO.setIssueId(issueId);
-        //新增故事验收标准
-        createAcceptance(issueDTO, issueType, issueId);
-        //create backlog attachment
+
+
+        //处理附件信息
         List<IssueAttachment> attachments;
         try {
             attachments = ReflectUtil.copyProperties4List(issueDTO.getAttachments(), IssueAttachment.class);
@@ -230,27 +226,24 @@ public class IssueFactory {
             }
         }
 
-        // -自定义字段
+        // 处理自定义字段
         List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
         if (CollectionUtils.isNotEmpty(list)) {
             String json = JSON.toJSONString(list);
             createIssueCustomFields(issueId, json);
         }
 
-        //create backlog history
+        //处理历史记录
         count = createHistory(issueId, newMsg);
         if (count != 1) {
             throw new BusinessException("新增历史记录失败！");
         }
 
-        //处理系统信息
-        dealSystems(issueId, issueDTO.getSystemIds());
-
         //处理模块信息
         dealModules(issueId, issueDTO.getModuleIds());
 
-        //todo 处理新建代办
-        dealCommissionCreate(issue);
+        //处理系统信息
+        dealSystems(issueId,issueDTO.getSystemIds());
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
@@ -259,56 +252,6 @@ public class IssueFactory {
         return issueId;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public Long createIssueForMoveData(IssueDTO issueDTO, String checkErrMsg, String newMsg, Byte issueType) {
-        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
-        issue.setIssueType(issueType);
-
-        issueMapper.insertSelective(issue);
-        Long issueId = issue.getIssueId();
-        issueDTO.setIssueId(issueId);
-        issueDTO.setIsArchive(issue.getIsArchive());
-        issueDTO.setIssueType(issue.getIssueType());
-
-        //处理系统信息
-        dealSystems(issueId, issueDTO.getSystemIds());
-        //处理模块信息
-        dealModules(issueId, issueDTO.getModuleIds());
-        return issueId;
-    }
-
-
-    /**
-     * @param issueDTO
-     * @param issueType
-     * @param issueId
-     * @Date 2021/2/1
-     * @Description 新增故事验收标准
-     * @Return void
-     */
-    private void createAcceptance(IssueDTO issueDTO, Byte issueType, Long issueId) {
-        List<IssueAcceptanceDTO> issueAcceptanceDTOS = issueDTO.getIssueAcceptanceDTOS();
-        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
-            IssueAcceptanceExample issueAcceptanceExample = new IssueAcceptanceExample();
-            IssueAcceptanceExample.Criteria criteria = issueAcceptanceExample.createCriteria();
-            criteria.andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.getValue());
-            List<IssueAcceptance> issueAcceptances = issueAcceptanceMapper.selectByExample(issueAcceptanceExample);
-            if (CollectionUtils.isNotEmpty(issueAcceptances)) {
-                for (IssueAcceptance issueAcceptance : issueAcceptances) {
-                    issueAcceptance.setState(StateEnum.E.getValue());
-                    issueAcceptanceMapper.updateByPrimaryKey(issueAcceptance);
-                }
-            }
-            if (CollectionUtils.isNotEmpty(issueAcceptanceDTOS)) {
-                for (IssueAcceptanceDTO issueAcceptanceDTO : issueAcceptanceDTOS) {
-                    IssueAcceptance issueAcceptance = ReflectUtil.copyProperties(issueAcceptanceDTO, IssueAcceptance.class);
-                    issueAcceptance.setAcceptanceId(null);
-                    issueAcceptance.setIssueId(issueId);
-                    issueAcceptanceMapper.insert(issueAcceptance);
-                }
-            }
-        }
-    }
 
     private void dealSystems(Long issueId, List<Long> systemIds) {
         if (CollectionUtils.isNotEmpty(systemIds)) {
@@ -322,15 +265,6 @@ public class IssueFactory {
         }
     }
 
-    /**
-     * @param issue
-     * @description 处理代办创建业务
-     * @date 2020/07/09
-     */
-    private void dealCommissionCreate(Issue issue) {
-        CommissionDTO commissionDTO = assembleCommissionObject(issue);
-        commissionService.saveCommission(commissionDTO);
-    }
 
     /**
      * @param issue
@@ -338,23 +272,21 @@ public class IssueFactory {
      * @description 组装代办对象
      * @date 2020/07/09
      */
-    public CommissionDTO assembleCommissionObject(Issue issue) {
-        CommissionDTO commissionDTO = new CommissionDTO();
-        commissionDTO.setIssueId(issue.getIssueId());
-        commissionDTO.setProjectId(issue.getProjectId());
-        commissionDTO.setTitle(issue.getTitle());
-        commissionDTO.setCurrentHandler(issue.getHandler());
-        commissionDTO.setStageId(issue.getStageId());
-        commissionDTO.setLaneId(issue.getLaneId());
-        commissionDTO.setType(issue.getIssueType());
-        commissionDTO.setState(StateEnum.U.getValue());
-        return commissionDTO;
+    public SCommissionDTO assembleCommissionObject(Issue issue) {
+        SCommissionDTO sCommissionDTO = new SCommissionDTO();
+        sCommissionDTO.setIssueId(issue.getIssueId());
+        sCommissionDTO.setProjectId(issue.getProjectId());
+        sCommissionDTO.setTitle(issue.getTitle());
+        sCommissionDTO.setCurrentHandler(issue.getHandler());
+        sCommissionDTO.setStageId(issue.getStageId());
+        sCommissionDTO.setLaneId(issue.getLaneId());
+        sCommissionDTO.setType(issue.getIssueType());
+        sCommissionDTO.setState(StateEnum.U.getValue());
+        return sCommissionDTO;
     }
 
     @ExceptionHandler(value = Throwable.class)
     public Issue editIssue(IssueDTO issueDTO, Issue oldIssue, Long projectId) {
-        Long oldStageId = oldIssue.getStageId();
-        Long oldLaneId = oldIssue.getLaneId();
         final Long issueId = issueDTO.getIssueId();
         final String state = oldIssue.getState();
         Byte issueType = oldIssue.getIssueType();
@@ -365,23 +297,23 @@ public class IssueFactory {
             Long[] stages = issueDTO.getStages();
 
             /** 判断当前业务需求、研发需求、用户故事、子任务制品数是否大于阶段下的制品数 */
-            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType()) && !IssueTypeEnum.TYPE_FAULT.CODE.equals(issue.getIssueType())) {
-                Long stageId = stages[0];
-                Long landId = null;
-                if (stages.length > 1) {
-                    landId = stages[1];
-                }
-                /** 判断工作项流转规则是否允许*/
-                if (!ruleFactory.getIssueRulesCheckFlag(issueType, oldIssue.getStageId(), oldIssue.getLaneId(), stageId, landId, projectId)) {
-                    //throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
-                }
-                /** 判断泳道ID不为空的情况*/
-                if ((!stageId.equals(oldIssue.getStageId()) && !Optional.ofNullable(landId).isPresent())
-                        || !(stageId.equals(oldIssue.getStageId()) && (Optional.ofNullable(landId).isPresent()
-                        && landId.equals(oldIssue.getLaneId())))) {
-                    issueRichTextFactory.dealStagesProductLimit(stageId, landId, projectId, issueType);
-                }
-            }
+//            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType()) && !IssueTypeEnum.TYPE_FAULT.CODE.equals(issue.getIssueType())) {
+//                Long stageId = stages[0];
+//                Long landId = null;
+//                if (stages.length > 1) {
+//                    landId = stages[1];
+//                }
+//                /** 判断工作项流转规则是否允许*/
+//                if (!ruleFactory.getIssueRulesCheckFlag(issueType, oldIssue.getStageId(), oldIssue.getLaneId(), stageId, landId, projectId)) {
+//                    throw new BaseBusinessException(601, "该工作项不允许流转到目标阶段！");
+//                }
+//                /** 判断泳道ID不为空的情况*/
+//                if ((!stageId.equals(oldIssue.getStageId()) && !Optional.ofNullable(landId).isPresent())
+//                        || !(stageId.equals(oldIssue.getStageId()) && (Optional.ofNullable(landId).isPresent()
+//                        && landId.equals(oldIssue.getLaneId())))) {
+//                    issueRichTextFactory.dealStagesProductLimit(stageId, landId, projectId, issueType);
+//                }
+//            }
 
             List<IssueHistoryRecord> history = new ArrayList<>();
             //处理阶段
@@ -399,38 +331,35 @@ public class IssueFactory {
             //处理附件并组织附件的变更的历史记录
             dealAttachments(issueDTO, issueId, history);
 
-            //编辑故事验收标准
-            createAcceptance(issueDTO, oldIssue.getIssueType(), issueId);
-
-
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
-            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
-            // todo 自定义字段处理
-            List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
-            if (CollectionUtils.isNotEmpty(list)) {
+            if (Optional.ofNullable(projectId).isPresent()){
+                List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
+                // todo 自定义字段处理
+                List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
+                if (CollectionUtils.isNotEmpty(list)) {
 
-                List<IssueCustomField> fieldsAfterEdit = Lists.newArrayList();
-                // IssueCustomFieldDTO转换成IssueCustomField
-                for (IssueCustomFieldDTO temp : list) {
-                    IssueCustomField issueCustomField = new IssueCustomField();
-                    issueCustomField.setExtendId(temp.getDetailId());
-                    issueCustomField.setFieldId(temp.getFieldId());
-                    issueCustomField.setFieldValue(temp.getFieldValue());
-                    issueCustomField.setIssueId(issueId);
-                    fieldsAfterEdit.add(issueCustomField);
+                    List<IssueCustomField> fieldsAfterEdit = Lists.newArrayList();
+                    // IssueCustomFieldDTO转换成IssueCustomField
+                    for (IssueCustomFieldDTO temp : list) {
+                        IssueCustomField issueCustomField = new IssueCustomField();
+                        issueCustomField.setExtendId(temp.getDetailId());
+                        issueCustomField.setFieldId(temp.getFieldId());
+                        issueCustomField.setFieldValue(temp.getFieldValue());
+                        issueCustomField.setIssueId(issueId);
+                        fieldsAfterEdit.add(issueCustomField);
+                    }
+                    dealCustomFieldAndFieldHistory(projectId, issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
                 }
-                dealCustomFieldAndFieldHistory(projectId, issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
             }
 
             //历史记录处理
             dealHistory(history);
 
             //富文本单独保存
-            issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), null);
+            issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(),null);
             issue.setProjectId(projectId);
 
-            //todo 处理代办编辑
             issue.setIssueType(issueType);
             dealCommissionEdit(issueId);
 
@@ -458,7 +387,7 @@ public class IssueFactory {
         for (IssueModuleRelp issueModuleRelp : oldModuleList) {
             oldModuledList.add(issueModuleRelp.getModuleId());
         }
-        if (!CollectionUtils.isEqualCollection(oldModuledList, newModuleList)) {
+        if (CollectionUtils.isNotEmpty(newModuleList) && !CollectionUtils.isEqualCollection(oldModuledList, newModuleList)) {
             IssueHistoryRecord attachHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.MODULE.getDesc());
             try {
                 attachHistory.setOldValue(JSON.toJSONString(oldModuledList));
@@ -479,7 +408,7 @@ public class IssueFactory {
         for (IssueSystemRelp issueSystemRelp : oldSystemList) {
             oldSystemIdList.add(issueSystemRelp.getSystemId());
         }
-        if (!CollectionUtils.isEqualCollection(oldSystemIdList, newSystemList)) {
+        if (CollectionUtils.isNotEmpty(newSystemList) && !CollectionUtils.isEqualCollection(oldSystemIdList, newSystemList)) {
             IssueHistoryRecord systemHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.SYSTEM.getDesc());
             try {
                 systemHistory.setOldValue(JSON.toJSONString(oldSystemIdList));
@@ -561,26 +490,26 @@ public class IssueFactory {
     public void dealCommissionEdit(Long issueId) {
         LOGGER.info("dealCommissionEdit param issueId:{}", issueId);
         boolean exist = false;
-        Commission commission = commissionService.getCommissionByIssueId(issueId);
-        if (Optional.ofNullable(commission).isPresent()) {
+        SCommission sCommission = commissionService.getCommissionByIssueId(issueId);
+        if (Optional.ofNullable(sCommission).isPresent()) {
             exist = true;
         }
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         if (Optional.ofNullable(issue).isPresent()) {
             Long currentHandler = issue.getHandler();
-            CommissionDTO commissionDTO = assembleCommissionObject(issue);
+            SCommissionDTO sCommissionDTO = assembleCommissionObject(issue);
             //工作项对应代办存在
             if (exist) {
-                commissionDTO.setState(commission.getState());
-                commissionDTO.setUpdateTime(new Date());
-                commissionDTO.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
+                sCommissionDTO.setState(sCommission.getState());
+                sCommissionDTO.setUpdateTime(new Date());
+                sCommissionDTO.setUpdateUid(UserThreadLocalUtil.getUserInfo().getUserId());
                 if (null != currentHandler) {
-                    Long oldCurrentHandler = commission.getCurrentHandler();
+                    Long oldCurrentHandler = sCommission.getCurrentHandler();
                     //更新代办
                     if (Optional.ofNullable(currentHandler).isPresent() && !currentHandler.equals(oldCurrentHandler)) {
-                        commissionService.updateCommission(commissionDTO);
+                        commissionService.updateCommission(sCommissionDTO);
                     } else if (Optional.ofNullable(oldCurrentHandler).isPresent() && !oldCurrentHandler.equals(currentHandler)) {
-                        commissionService.updateCommission(commissionDTO);
+                        commissionService.updateCommission(sCommissionDTO);
                     }
                 }
             }
@@ -588,7 +517,7 @@ public class IssueFactory {
             else {
                 //保存代办
                 if (null != currentHandler) {
-                    commissionService.saveCommission(commissionDTO);
+                    commissionService.saveCommission(sCommissionDTO);
                 }
             }
         }
@@ -687,20 +616,43 @@ public class IssueFactory {
                 sprintId = storyIssue.getSprintId();
             }
             //dealEpicFeatureData(storyIssue);
+            //如果不删除子任务  处理子任务
+            this.dealTaskData(issueId,deleteChild);
         }
         issueMapper.deleteAllChildRelation(issueId, sprintId);
-
         //更新工作项为失效
         upateIssue(issueId);
 
-        //todo 删除代办
-        commissionService.updateCommissionState(issueId, StateEnum.E.getValue());
+        commissionService.deleteCommission(issueId);
 
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
 
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+    }
+
+    /**
+     * 任务状态未领取，人删除，系统保留，迭代清空如果有
+     * @param issueId
+     * @param deleteChild
+     */
+    private void dealTaskData(Long issueId,Boolean deleteChild){
+        if (!deleteChild){
+            IssueExample issueExample = new IssueExample();
+            issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                    .andParentIdEqualTo(issueId);
+            List<Issue> taskIssueList = issueMapper.selectByExample(issueExample);
+            if (CollectionUtils.isNotEmpty(taskIssueList)){
+                for (Issue issue : taskIssueList) {
+                    issue.setSprintId(null);
+                    issue.setHandler(null);
+                    issue.setStageId(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
+                    issue.setLaneId(TaskStatusEnum.TYPE_ADD_STATE.CODE);
+                    issueMapper.updateByPrimaryKey(issue);
+                }
+            }
+        }
     }
 
     private void upateIssue(Long issueId) {
@@ -710,22 +662,6 @@ public class IssueFactory {
         issueMapper.updateByPrimaryKeySelective(record);
     }
 
-    /**
-     * @param issue
-     * @description 保存epic和feature删除的数据到需求分支同步表
-     * @date 2021/2/7
-     */
-    private void dealEpicFeatureData(Issue issue) {
-        Byte issueType = issue.getIssueType();
-        if (IssueTypeEnum.TYPE_EPIC.CODE.equals(issueType)) {
-            /*IssueExample issueExample = new IssueExample();
-            IssueExample.Criteria criteria = issueExample.createCriteria();*/
-            return;
-        } else if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(issueType)) {
-            Long featureId = issue.getIssueId();
-            Long epicId = issue.getParentId();
-        }
-    }
 
     public void createHistory(Long issueId) {
         IssueHistoryRecord nameHistory = new IssueHistoryRecord();
@@ -735,13 +671,13 @@ public class IssueFactory {
         issueHistoryRecordService.createHistory(nameHistory);
     }
 
-    public IssueDTO queryIssue(Long issueId, Long projectId) {
+    public IssueDTO queryIssue(Long issueId, Long systemId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         IssueDTO issueDTO = null;
         if (null != issue) {
             issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
-            SsoProject ssoProject = iFacadeProjectApi.getProjectInfoById(issue.getProjectId());
-            issueDTO.setProjectName(ssoProject.getProjectName());
+//            SsoProject ssoProject = iFacadeProjectApi.getProjectInfoById(issue.getProjectId());
+//            issueDTO.setProjectName(ssoProject.getProjectName());
 
             //系统
             List<Long> systemIds = new ArrayList<>();
@@ -784,8 +720,8 @@ public class IssueFactory {
             issueDTO.setAttachments(issueAttachmentDTOList);
 
             //查询自定义字段
-            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
-            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+//            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
+//            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
             //查询故事验收标准信息
             getAcceptanceList(issueId, issueDTO);
 
@@ -922,7 +858,7 @@ public class IssueFactory {
             records.add(nameHistory);
         }
         /** 富文本 */
-        IssueRichtext issueRichText = issueRichTextFactory.getIssueRichText(issueDTO.getIssueId());
+        SIssueRichtextWithBLOBs issueRichText = issueRichTextFactory.getIssueRichText(issueDTO.getIssueId());
         if (Optional.ofNullable(issueRichText).isPresent()) {
             if (!ObjectUtil.equals(issueDTO.getDescription(), issueRichText.getDescription())) {
                 IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_RICH_TEXT.CODE, IssueField.DESCRIPTION.getDesc());
@@ -958,7 +894,19 @@ public class IssueFactory {
             }
             records.add(nameHistory);
         }
-
+        /**
+         * 实际工时
+         */
+        if (!ObjectUtil.equals(issueDTO.getReallyWorkload(), oldIssue.getReallyWorkload())) {
+            IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.REALLYWORKLOAD.getDesc());
+            if (null != oldIssue.getReallyWorkload()) {
+                nameHistory.setOldValue(String.valueOf(oldIssue.getReallyWorkload()));
+            }
+            if (null != issueDTO.getReallyWorkload()) {
+                nameHistory.setNewValue(String.valueOf(issueDTO.getReallyWorkload()));
+            }
+            records.add(nameHistory);
+        }
         return records;
     }
 
@@ -1073,9 +1021,10 @@ public class IssueFactory {
         issueDTO.setIssueId(null);
 
         //查询自定义字段并塞入对象中
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
-        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
-
+        if (Optional.ofNullable(projectId).isPresent()){
+            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
+            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+        }
         //查询工作项和产品关系表并保存
         List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
         if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
@@ -1091,8 +1040,6 @@ public class IssueFactory {
     private void dealSysExtendFieldDetail(Long issueId, Long newIssueId, Byte issueType) {
         List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetail(issueId);
         if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
-            boolean hasReqScheduling = false;
-            boolean hasPlanStates = false;
             for (SysExtendFieldDetail sysExtendFieldDetail : sysExtendFieldDetailList) {
                 sysExtendFieldDetail.setIssueId(newIssueId);
                 if (VersionConstants.SysExtendFiledConstant.BIZNUM.equals(sysExtendFieldDetail.getFieldId())) {
@@ -1102,7 +1049,6 @@ public class IssueFactory {
                 }
 
                 if (VersionConstants.SysExtendFiledConstant.PLANSTATES.equals(sysExtendFieldDetail.getFieldId())) {
-                    hasPlanStates = false;
                     sysExtendFieldDetail.setValue(PlanStatesEnum.ON_TIME.CODE);
                 }
 
@@ -1209,7 +1155,7 @@ public class IssueFactory {
 
             if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType) || IssueTypeEnum.TYPE_FAULT.CODE.equals(issueType)) {
                 if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                    issueDTO.setStageName(TaskStageIdEnum.getName(issueDTO.getStageId()));
+                    issueDTO.setStageName(TaskStatusEnum.getName(issueDTO.getStageId()));
                 } else {
                     issueDTO.setStageName(FaultStatusEnum.getMsg(issueDTO.getStageId()));
                 }
@@ -1265,12 +1211,12 @@ public class IssueFactory {
      * @return
      */
     public Long getProjectIdByIssueId(Long issueId) {
-        Long projectId = null;
+        Long systemId = null;
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         if (null != issue) {
-            projectId = issue.getProjectId();
+            systemId = issue.getSystemId();
         }
-        return projectId;
+        return systemId;
     }
 
     public void batchSaveOrUpdateSysExtendFieldDetail(JSONObject jsonObject, IssueDTO issueDTO) {
@@ -1295,7 +1241,7 @@ public class IssueFactory {
                         sysExtendFieldDetail.setFieldId(sysExtendFieldList1.get(i).getFieldId());
                         sysExtendFieldDetail.setFieldName(sysExtendFieldList1.get(i).getFieldName());
                         sysExtendFieldDetail.setValue(jsonObject.getString(key));
-                        sysExtendFieldDetail.setState(IssueStateEnum.TYPE_VALID.NAME);
+                        sysExtendFieldDetail.setState(IssueStateEnum.getName(IssueStateEnum.TYPE_VALID.CODE));
                         sysExtendFieldDetailList.add(sysExtendFieldDetail);
                     }
                 }
@@ -1389,26 +1335,6 @@ public class IssueFactory {
         return false;
     }
 
-    public Long getEpicId(String issueId) {
-        Long epicId = null;
-        if (issueId.indexOf("CRM") != -1) {
-            SysExtendFieldDetail sysExtendFieldDetail = sysExtendFieldDetailService.getEpicIdByBizNum(issueId);
-            if (!Optional.ofNullable(sysExtendFieldDetail).isPresent()) {
-                throw new BusinessException("根据客户需求编号：" + issueId + "找不到对应得客户需求");
-            } else {
-                epicId = sysExtendFieldDetail.getIssueId();
-            }
-
-        } else {
-            Long lIssueId = Long.parseLong(issueId);
-            Issue issue = issueMapper.getIssue(lIssueId);
-            if (null != issue) {
-                epicId = getEpicId(lIssueId, issue.getIssueType());
-            }
-        }
-        return epicId;
-    }
-
 
     public Long getEpicIdForPlanDeployDate(String issueId, String bizNum) {
         Long epicId = null;
@@ -1464,44 +1390,6 @@ public class IssueFactory {
             }
         }
         return null;
-    }
-
-    /**
-     * @Date: 9:42
-     * @Description: 复制工作项
-     * @Param: * @param epicId
-     * @Return: void
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public Long copyEpicForRMS(Long issueId, Long projectId, String errMsg, String checkErrMsg, String newMsg, Byte issueType) {
-        IssueExample example = new IssueExample();
-        IssueExample.Criteria criteria = example.createCriteria();
-        criteria.andIssueIdEqualTo(issueId);
-        criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
-        List<Issue> issueList = issueMapper.selectByExample(example);
-        if (CollectionUtils.isEmpty(issueList)) {
-            throw new BusinessException(errMsg);
-        }
-        Issue issue = issueList.get(0);
-
-        IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
-        /** 查询当前Issue的富文本内容,并赋值 */
-        issueRichTextFactory.queryIssueRichText(issueDTO);
-        issueDTO.setIssueId(null);
-
-        //查询自定义字段并塞入对象中
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
-        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
-
-        //查询工作项和产品关系表并保存
-        List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
-        if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
-            issueDTO.setSystemIds(issueSystemRelpList.stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList()));
-        }
-
-        Long newIssueId = createIssue(issueDTO, checkErrMsg, newMsg, issueType);
-
-        return newIssueId;
     }
 
 }

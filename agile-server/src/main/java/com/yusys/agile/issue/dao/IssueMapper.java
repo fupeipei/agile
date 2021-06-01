@@ -9,6 +9,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IssueMapper {
@@ -572,4 +573,45 @@ public interface IssueMapper {
      * @date 2020/12/15
      */
     Issue getParentIssue(Long issueId);
+
+    /**
+     * 查询没有关联迭代的故事
+     * @param title
+     * @param systemIds
+     * @return
+     */
+    List<IssueDTO> queryNotRelationStory(@Param("title") String title,@Param("systemIds")List<Long> systemIds);
+    /**
+     * 查询迭代下故事点数的总数
+     * @author zhaofeng
+     * @date 2021/5/26 14:40
+     * @param sprintId
+     */
+    Integer countStoryPointsForSprint(@Param("sprintId") Long sprintId);
+    /**
+     * 查询当前日期完成的故事点总数
+     * @author zhaofeng
+     * @date 2021/5/26 15:40
+     * @param sprintId 迭代id
+     * @param currTime 当前日期
+     */
+    Integer countCurrTimeStoryPointsForSprintId(@Param("sprintId") Long sprintId,@Param("currTime") Date currTime);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 获取迭代中工作项计划工作量
+     * @param sprintId
+     * @Return java.lang.Integer
+     */
+    Integer getPlanWorkload(Long sprintId);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/27
+     * @Description 获取迭代中工作项剩余工作量
+     * @param sprintId
+     * @Return int
+     */
+    int getRemainWorkload(Long sprintId);
 }

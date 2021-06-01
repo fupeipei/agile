@@ -44,8 +44,7 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
         HeaderFieldUserExample headerFieldUserExample = new HeaderFieldUserExample();
         headerFieldUserExample.setOrderByClause(" header_user_id asc");
         HeaderFieldUserExample.Criteria criteria = headerFieldUserExample.createCriteria();
-        criteria.andUserIdEqualTo(securityDTO.getUserId())
-                .andProjectIdEqualTo(securityDTO.getProjectId());
+        criteria.andUserIdEqualTo(securityDTO.getUserId());
         if (category != null) {
             criteria.andCategoryEqualTo(category);
         }
@@ -61,13 +60,12 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
      * 功能描述  更新排序应用的列头,或者查询条件
      *
      * @param headerFieldListDTO
-     * @param projectId
      * @return java.lang.Integer
      * @date 2020/4/15
      */
     @Override
     @Transactional
-    public Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO, Long projectId) {
+    public Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO) {
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
         try {
             List<HeaderField> headerFields = headerFieldService.getAllHeaderField(headerFieldListDTO.getUpdateList());
@@ -76,7 +74,6 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
 
             HeaderFieldUserExample.Criteria criteriaDelete = headerFieldUserExample.createCriteria();
             criteriaDelete
-                    .andProjectIdEqualTo(projectId)
                     .andUserIdEqualTo(userId);
             if (headerFieldListDTO.getCategory() != null) {
                 criteriaDelete.andCategoryEqualTo(headerFieldListDTO.getCategory());
@@ -91,7 +88,6 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
                 headerFieldUser.setFieldId(headerFieldListDTO.getUpdateList().get(i));
                 headerFieldUser.setFieldType(headerFieldsMap.get(headerFieldListDTO.getUpdateList().get(i)).get(0).getFieldType());
                 headerFieldUser.setOrderNo(i);
-                headerFieldUser.setProjectId(projectId);
                 headerFieldUser.setUserId(userId);
                 headerFieldUser.setCategory(headerFieldListDTO.getCategory());
                 if (headerFieldListDTO.getIsFilter() != null && Byte.parseByte("1") == headerFieldListDTO.getIsFilter()) {
@@ -100,7 +96,6 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
                 headerFieldUserMapper.insertSelective(headerFieldUser);
             }
             SecurityDTO securityDTO = new SecurityDTO();
-            securityDTO.setProjectId(projectId);
             securityDTO.setUserId(userId);
             return headerFieldService.queryHeaderFields(securityDTO, headerFieldListDTO.getCategory(), headerFieldListDTO.getIsFilter());
         } catch (Exception e) {

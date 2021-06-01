@@ -90,7 +90,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from custom_field_pool
+    from s_custom_field_pool
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -104,7 +104,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from custom_field_pool
+    from s_custom_field_pool
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -117,21 +117,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from custom_field_pool
+    from s_custom_field_pool
     where field_id = #{fieldId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from custom_field_pool
+    delete from s_custom_field_pool
     where field_id = #{fieldId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.customfield.domain.CustomFieldPoolExample">
-    delete from custom_field_pool
+    delete from s_custom_field_pool
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool" useGeneratedKeys="true" keyProperty="fieldId">
-    insert into custom_field_pool (field_id, field_name, comment, 
+    insert into s_custom_field_pool (field_id, field_name, comment,
       field_type, state, project_id, 
       create_time, create_uid, update_time, 
       update_uid, tenant_code, field_content
@@ -143,7 +143,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool" useGeneratedKeys="true" keyProperty="fieldId">
-    insert into custom_field_pool
+    insert into s_custom_field_pool
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fieldId != null">
         field_id,
@@ -222,13 +222,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.customfield.domain.CustomFieldPoolExample" resultType="java.lang.Long">
-    select count(*) from custom_field_pool
+    select count(*) from s_custom_field_pool
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update custom_field_pool
+    update s_custom_field_pool
     <set>
       <if test="record.fieldId != null">
         field_id = #{record.fieldId,jdbcType=BIGINT},
@@ -272,7 +272,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update custom_field_pool
+    update s_custom_field_pool
     set field_id = #{record.fieldId,jdbcType=BIGINT},
       field_name = #{record.fieldName,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=VARCHAR},
@@ -290,7 +290,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update custom_field_pool
+    update s_custom_field_pool
     set field_id = #{record.fieldId,jdbcType=BIGINT},
       field_name = #{record.fieldName,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=VARCHAR},
@@ -307,7 +307,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool">
-    update custom_field_pool
+    update s_custom_field_pool
     <set>
       <if test="fieldName != null">
         field_name = #{fieldName,jdbcType=VARCHAR},
@@ -346,7 +346,7 @@
     where field_id = #{fieldId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool">
-    update custom_field_pool
+    update s_custom_field_pool
     set field_name = #{fieldName,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR},
       field_type = #{fieldType,jdbcType=INTEGER},
@@ -361,7 +361,7 @@
     where field_id = #{fieldId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool">
-    update custom_field_pool
+    update s_custom_field_pool
     set field_name = #{fieldName,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR},
       field_type = #{fieldType,jdbcType=INTEGER},
@@ -385,7 +385,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from custom_field_pool
+    from s_custom_field_pool
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>

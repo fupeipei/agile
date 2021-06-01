@@ -132,7 +132,7 @@
             distinct
         </if>
         <include refid="Base_Column_List"/>
-        from issue
+        from s_issue
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
@@ -146,7 +146,7 @@
             distinct
         </if>
         <include refid="Base_Column_List"/>
-        from issue
+        from s_issue
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
@@ -157,22 +157,22 @@
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from issue
+        from s_issue
         where issue_id = #{issueId,jdbcType=BIGINT}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue
+    delete from s_issue
     where issue_id = #{issueId,jdbcType=BIGINT}
   </delete>
     <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueExample">
-        delete from issue
+        delete from s_issue
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </delete>
     <insert id="insert" parameterType="com.yusys.agile.issue.domain.Issue" useGeneratedKeys="true"
             keyProperty="issueId">
-    insert into issue (issue_id, title, parent_id, 
+    insert into s_issue (issue_id, title, parent_id, 
       issue_type, sprint_id, module_id, 
       system_id, handler, begin_date, 
       end_date, plan_workload, really_workload, 
@@ -207,11 +207,11 @@
   </insert>
     <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.Issue" useGeneratedKeys="true"
             keyProperty="issueId">
-        insert into issue
+        insert into s_issue
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                issue_id,
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--issue_id,-->
+            <!--</if>-->
             <if test="title != null">
                 title,
             </if>
@@ -364,9 +364,9 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                #{issueId,jdbcType=BIGINT},
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--#{issueId,jdbcType=BIGINT},-->
+            <!--</if>-->
             <if test="title != null">
                 #{title,jdbcType=VARCHAR},
             </if>
@@ -520,13 +520,13 @@
         </trim>
     </insert>
     <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueExample" resultType="java.lang.Long">
-        select count(*) from issue
+        select count(*) from s_issue
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </select>
     <update id="updateByExampleSelective" parameterType="map">
-        update issue
+        update s_issue
         <set>
             <if test="record.issueId != null">
                 issue_id = #{record.issueId,jdbcType=BIGINT},
@@ -690,7 +690,7 @@
         </if>
     </update>
     <update id="updateByExampleWithBLOBs" parameterType="map">
-        update issue
+        update s_issue
         set issue_id = #{record.issueId,jdbcType=BIGINT},
         title = #{record.title,jdbcType=VARCHAR},
         parent_id = #{record.parentId,jdbcType=BIGINT},
@@ -747,7 +747,7 @@
         </if>
     </update>
     <update id="updateByExample" parameterType="map">
-        update issue
+        update s_issue
         set issue_id = #{record.issueId,jdbcType=BIGINT},
         title = #{record.title,jdbcType=VARCHAR},
         parent_id = #{record.parentId,jdbcType=BIGINT},
@@ -804,7 +804,7 @@
         </if>
     </update>
     <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.Issue">
-        update issue
+        update s_issue
         <set>
             <if test="title != null">
                 title = #{title,jdbcType=VARCHAR},
@@ -963,7 +963,7 @@
         where issue_id = #{issueId,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.Issue">
-    update issue
+    update s_issue
     set title = #{title,jdbcType=VARCHAR},
       parent_id = #{parentId,jdbcType=BIGINT},
       issue_type = #{issueType,jdbcType=TINYINT},
@@ -1017,7 +1017,7 @@
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
     <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.Issue">
-    update issue
+    update s_issue
     set title = #{title,jdbcType=VARCHAR},
       parent_id = #{parentId,jdbcType=BIGINT},
       issue_type = #{issueType,jdbcType=TINYINT},
@@ -1073,42 +1073,42 @@
 
 
     <update id="updateStatusAndParentId">
-    update issue set parent_id=null,state='E' where parent_id=#{issueId}
+    update s_issue set parent_id=null,state='E' where parent_id=#{issueId}
   </update>
 
     <select id="listAllCreateUsers" resultType="Long">
-    select DISTINCT create_uid from issue where issue_type=5 and create_uid is not NULL and  project_id = #{projectId};
+    select DISTINCT create_uid from s_issue where issue_type=5 and create_uid is not NULL and  project_id = #{projectId};
   </select>
 
     <select id="listAllFixedUsers" resultType="Long">
-    select DISTINCT fixed_uid from issue where issue_type=5 and fixed_uid is not NULL and  project_id = #{projectId};
+    select DISTINCT fixed_uid from s_issue where issue_type=5 and fixed_uid is not NULL and  project_id = #{projectId};
   </select>
 
     <select id="listAllTestUsers" resultType="Long">
-    select DISTINCT test_uid from issue where issue_type=5 and test_uid is not NULL and  project_id = #{projectId};
+    select DISTINCT test_uid from s_issue where issue_type=5 and test_uid is not NULL and  project_id = #{projectId};
   </select>
     <select id="getStoryBySprintId" resultType="com.yusys.agile.issue.domain.Issue">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM issue
+        from s_issue
         WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U' and is_archive != 1 ORDER BY priority DESC
     </select>
     <select id="countStories4Sprint" resultType="int">
-    SELECT COUNT(1) FROM issue WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U'  and  is_archive != 1  ;
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U'  and  is_archive != 1
   </select>
     <select id="countInsprintBySprint" resultType="Integer">
-    SELECT COUNT(1) FROM issue a WHERE a.sprint_id = #{sprintId} AND a.issue_type = 3  AND state = 'U'   and  is_archive != 1 AND a.stage_id != 7
+    SELECT COUNT(1) from s_issue a WHERE a.sprint_id = #{sprintId} AND a.issue_type = 3  AND state = 'U'   and  is_archive != 1 AND a.lane_id != 106
   </select>
     <select id="countTasks4Sprint" resultType="int">
-    SELECT COUNT(1) FROM issue WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U'  and  is_archive != 1
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U'  and  is_archive != 1
   </select>
     <select id="countUnFinishedTasks4Sprint" resultType="int">
-    SELECT COUNT(1) FROM issue WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1
-    AND ((issue_type = 4 and stage_id IN(100,101,102)) or (issue_type = 5 and stage_id IN(1000,1001)))
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1
+    AND ((issue_type = 4 and lane_id IN(107,108,109)) or (issue_type = 5 and lane_id IN(1000,1001)))
   </select>
     <update id="deleteRelation">
         update
-        issue
+        s_issue
         set parent_id = null
         <if test="sprintId != null">
             ,sprint_id = null
@@ -1116,11 +1116,11 @@
         where issue_id = #{issueId} and parent_id = #{parentId}
     </update>
     <update id="changeSprintIdByStoryId">
-    UPDATE issue SET sprint_id = #{sprintId},update_time = now() WHERE parent_id=#{issueId} AND state = 'U'  and  is_archive != 1
+    update s_issue SET sprint_id = #{sprintId},update_time = now() WHERE parent_id=#{issueId} AND state = 'U'  and  is_archive != 1
   </update>
 
     <select id="count4ArrangedByIds" resultType="int">
-        SELECT COUNT(1) FROM issue
+        SELECT COUNT(1) from s_issue
         WHERE issue_id IN(
         <foreach collection="issueIds" item="issueId" separator=",">
             #{issueId}
@@ -1129,16 +1129,16 @@
     </select>
 
     <update id="updateStatusByParentId">
-    update issue set sprint_id = null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
+    update s_issue set sprint_id = null,lane_id=107,handler=null,update_time = now() where parent_id=#{issueId} and state = 'U'  and  is_archive != 1
   </update>
     <select id="getBySprint" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM issue
+        from s_issue
         WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U' and is_archive != 1
     </select>
     <update id="createBatchRelation">
-        UPDATE issue SET parent_id = #{parentId},
+        update s_issue SET parent_id = #{parentId},stage_id=111,
         <if test="sprintId != null">
             sprint_id = #{sprintId},
         </if>
@@ -1154,7 +1154,7 @@
             distinct
         </if>
         <include refid="Base_Column_List"/>
-        from issue
+        from s_issue
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
@@ -1164,7 +1164,7 @@
     </select>
     <update id="deleteAllChildRelation">
         update
-        issue
+        s_issue
         set
         parent_id = null
         <if test="sprintId != null">
@@ -1176,7 +1176,7 @@
     <select id="selectTotalByExample" parameterType="com.yusys.agile.issue.domain.IssueExample">
         select
         count(*)
-        from issue
+        from s_issue
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
@@ -1188,8 +1188,8 @@
     <select id="getSecondStageNullIssueList" resultType="com.yusys.agile.issue.domain.Issue">
         select
         <include refid="Base_Column_List"/>
-        from
-        issue
+     FROM
+       s_issue
         where
         project_id = #{projectId}
         and
@@ -1202,7 +1202,7 @@
 
     <update id="batchUpdateIssueLaneId">
         update
-        issue
+        s_issue
         set
         lane_id = #{laneId}
         where
@@ -1218,7 +1218,7 @@
 
     <update id="updateIssueLaneStateNull" parameterType="com.yusys.agile.issue.domain.Issue">
     update
-    issue
+    s_issue
     set
     lane_id = null
     where
@@ -1234,8 +1234,8 @@
     <select id="getSecondLaneBindedIssues" resultType="com.yusys.agile.issue.domain.Issue">
         select
         <include refid="Base_Column_List"/>
-        from
-        issue
+     FROM
+       s_issue
         where
         project_id = #{projectId}
         and
@@ -1247,34 +1247,34 @@
     </select>
 
     <select id="countTasks4SprintId" resultType="int">
-    SELECT COUNT(1) FROM issue WHERE sprint_id = #{sprintId} AND issue_type = 4 AND state = 'U' and  is_archive != 1
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type = 4 AND state = 'U' and  is_archive != 1
   </select>
     <select id="countFinishedTasks4SprintId" resultType="int">
-    SELECT COUNT(1) FROM issue WHERE sprint_id = #{sprintId} AND state = 'U' and  is_archive != 1
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND state = 'U' and  is_archive != 1
     AND issue_type = 4 and stage_id = 103
   </select>
 
     <select id="countFaults4SprintId" resultType="int">
-    SELECT COUNT(1) FROM issue WHERE sprint_id = #{sprintId} AND issue_type = 5 AND state = 'U'  and  is_archive != 1
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type = 5 AND state = 'U'  and  is_archive != 1
   </select>
     <select id="countFinishedFaults4SprintId" resultType="int">
-    SELECT COUNT(1) FROM issue WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1
+    SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1
     AND issue_type = 5 and stage_id = 1004
   </select>
 
     <select id="sumPlanWorkload4Sprint" resultType="Integer">
-    SELECT ifnull(sum(plan_workload),0) FROM issue  WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1 AND issue_type IN(4,5)
+    SELECT ifnull(sum(plan_workload),0) from s_issue  WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1 AND issue_type IN(4,5)
   </select>
 
     <select id="sumRemainWorkload4Sprint" resultType="Integer">
-    SELECT ifnull(sum(remain_workload),0) FROM issue  WHERE sprint_id = #{sprintId} AND state = 'U' and  is_archive != 1
+    SELECT ifnull(sum(remain_workload),0) from s_issue  WHERE sprint_id = #{sprintId} AND state = 'U' and  is_archive != 1
     AND ((issue_type = 4 and stage_id IN(100,101,102)) or (issue_type = 5 and stage_id IN(1000,1001)))
   </select>
     <update id="updatePrint">
-    UPDATE issue set sprint_id = #{sprintId},update_time=#{updateTime},update_uid=#{updateUid} where issue_id = #{issueId}
+    update s_issue set sprint_id = #{sprintId},update_time=#{updateTime},update_uid=#{updateUid} where issue_id = #{issueId}
   </update>
     <update id="updateByPrimaryKeySelectiveWithNull">
-        update issue
+        update s_issue
         <set>
             <if test="title != null">
                 title = #{title,jdbcType=VARCHAR},
@@ -1403,7 +1403,7 @@
 
     <!-- 拖拽缺陷 -->
     <update id="updateFaultByPrimaryKeySelectiveWithNull">
-        update issue
+        update s_issue
         <set>
             <if test="title != null">
                 title = #{title,jdbcType=VARCHAR},
@@ -1541,12 +1541,12 @@
         where issue_id = #{issueId,jdbcType=BIGINT}
     </update>
     <update id="updateHandler">
-    update issue set handler = #{handler},update_time = #{updateTime},update_uid = #{updateUid} where issue_id = #{issueId}
+    update s_issue set handler = #{handler},update_time = #{updateTime},update_uid = #{updateUid} where issue_id = #{issueId}
   </update>
 
     <!--重新打开缺陷 -->
     <update id="reopenFault">
-    update issue
+    update s_issue
     set
     cause = #{cause},
     stage_id = #{stageId},
@@ -1565,9 +1565,9 @@
     <select id="listRelation" resultType="com.yusys.agile.issue.dto.IssueDTO">
     select
     a.issue_id,a.title,a.parent_id,a.issue_type,a.`handler`,
-    (select c.stage_name from kanban_stage_instance c where c.stage_id = a.stage_id and c.project_id=#{projectId} ) as stageName,
-    (select d.stage_name from kanban_stage_instance d where d.stage_id = a.lane_id and d.parent_id = a.stage_id and d.project_id=#{projectId}) as laneName
-    from issue a where a.state='U' and ((a.issue_id = (select parent_id from issue c where c.issue_id=#{issueId} and c.state='U')) or a.parent_id = #{issueId})
+    (select c.stage_name from s_kanban_stage_instance c where c.stage_id = a.stage_id and c.project_id=#{projectId} ) as stageName,
+    (select d.stage_name from s_kanban_stage_instance d where d.stage_id = a.lane_id and d.parent_id = a.stage_id and d.project_id=#{projectId}) as laneName
+    from s_issue a where a.state='U' and ((a.issue_id = (select parent_id from s_issue c where c.issue_id=#{issueId} and c.state='U')) or a.parent_id = #{issueId})
   </select>
     <select id="getTaskMemberAnalysis" resultType="com.yusys.agile.burndown.dto.HistogramTaskDTO">
         select
@@ -1575,8 +1575,8 @@
         sum(ifnull(remain_workload,plan_workload)) as sumRemainWorkLoad,
         sum(ifnull(really_workload,plan_workload)) as sumReallyWorkLoad,
         count(1) as taskNum
-        from
-        issue
+     FROM
+       s_issue
         <where>
             issue_type in(4,5)
             and sprint_id = #{sprintId}
@@ -1589,7 +1589,7 @@
     <select id="queryStoryForEpic" resultType="com.yusys.agile.issue.dto.IssueDTO">
         select
         a.issue_id, a.title, a.parent_id, a.issue_type, a.stage_id, a.lane_id,a.handler
-        from issue a,issue b,issue c
+        from s_issue a,s_issue b,s_issue c
         <where>
             a.parent_id = b.issue_id
             and b.parent_id = c.issue_id
@@ -1605,10 +1605,10 @@
     <select id="getTemplateParentIssueList" resultType="com.yusys.agile.issue.domain.Issue">
     select
       distinct p.issue_id, p.title
-    from
-      issue p
+    FROM
+    s_issue p
     left join
-      issue c
+      s_issue c
     on
       p.issue_id = c.parent_id
     and
@@ -1627,7 +1627,7 @@
 
     <!-- 看板修改故事状态及任务阻塞状态 -->
     <update id="updateByPrimaryKeySelectiveWithNotNull">
-        update issue
+        update s_issue
         <set>
             <if test="title != null">
                 title = #{title,jdbcType=VARCHAR},
@@ -1771,10 +1771,10 @@
         select
         distinct
         iu.*
-        from issue iu
-        left join issue_system_relp isr on iu.issue_id = isr.issue_id
-        left join issue_module_relp imr on iu.issue_id = imr.issue_id
-        left join issue_custom_field icf on iu.issue_id = icf.issue_id
+        from s_issue iu
+        left join s_issue_system_relp isr on iu.issue_id = isr.issue_id
+        left join s_issue_module_relp imr on iu.issue_id = imr.issue_id
+        left join s_issue_custom_field icf on iu.issue_id = icf.issue_id
         <where>
             iu.`state` = 'U'
             <if test="issueRecord.projectId != null ">
@@ -1795,7 +1795,7 @@
             </if>
             <if test="issueRecord.BAPerson != null">
                 and iu.issue_id in(
-                select parent_id from issue
+                select parent_id from s_issue
                 where is_archive != 1 and issue_type =2 and state='U'
                 and handler = #{issueRecord.BAPerson}
                 and project_id = #{issueRecord.projectId})
@@ -2100,7 +2100,7 @@
                     <foreach collection="issueRecord.systemIds.dataLong" open="(" close=")" separator="," item="iterm">
                         #{iterm}
                     </foreach>
-                    or not exists (select * from issue_system_relp isr1 where iu.issue_id =isr1.issue_id) )
+                    or not exists (select * from s_issue_system_relp isr1 where iu.issue_id =isr1.issue_id) )
                 </if>
                 <if test="issueRecord.systemIds.queryType ==2 and issueRecord.systemIds.dataLong.size()>0">
                     and isr.system_id in
@@ -2109,7 +2109,7 @@
                     </foreach>
                 </if>
                 <if test="issueRecord.systemIds.queryType ==3 ">
-                    and not exists (select * from issue_system_relp isr1 where iu.issue_id =isr1.issue_id)
+                    and not exists (select * from s_issue_system_relp isr1 where iu.issue_id =isr1.issue_id)
                 </if>
             </if>
             <if test="issueRecord.moduleIds!= null ">
@@ -2118,7 +2118,7 @@
                     <foreach collection="issueRecord.moduleIds.dataLong" open="(" close=")" separator="," item="iterm">
                         #{iterm}
                     </foreach>
-                    or not exists (select * from issue_module_relp imr1 where iu.issue_id =imr1.issue_id) )
+                    or not exists (select * from s_issue_module_relp imr1 where iu.issue_id =imr1.issue_id) )
                 </if>
                 <if test="issueRecord.moduleIds.queryType ==2 and issueRecord.moduleIds.dataLong.size()>0">
                     and imr.module_id in
@@ -2127,7 +2127,7 @@
                     </foreach>
                 </if>
                 <if test="issueRecord.moduleIds.queryType ==3 ">
-                    and not exists (select * from issue_module_relp imr1 where iu.issue_id =imr1.issue_id)
+                    and not exists (select * from s_issue_module_relp imr1 where iu.issue_id =imr1.issue_id)
                 </if>
             </if>
             <if test="issueRecord.createTime != null  ">
@@ -2188,7 +2188,7 @@
                         <if test="field.fieldType==0  or field.fieldType==2 or field.fieldType==5">
                             (cast( icf.field_value as signed ) between #{field.numBegin} and #{field.numEnd} AND
                             icf.field_id = #{field.fieldId}
-                            OR NOT EXISTS ( SELECT * FROM issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
+                            OR NOT EXISTS ( SELECT * from s_issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
                             icf1.field_id = #{field.fieldId} ))
                         </if>
                         <if test=" field.fieldType== 3">
@@ -2197,7 +2197,7 @@
                                 #{iterm}
                             </foreach>
                             and icf.field_id = #{field.fieldId}
-                            OR NOT EXISTS ( SELECT * FROM issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
+                            OR NOT EXISTS ( SELECT * from s_issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
                             icf1.field_id = #{field.fieldId} )
                             )
                         </if>
@@ -2208,7 +2208,7 @@
                                 icf.field_value like concat('%',#{iterm},'%')
                             </foreach>
                             and icf.field_id = #{field.fieldId}
-                            OR NOT EXISTS ( SELECT * FROM issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
+                            OR NOT EXISTS ( SELECT * from s_issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
                             icf1.field_id = #{field.fieldId} )
                             )
                         </if>
@@ -2239,7 +2239,7 @@
 
                     <if test="field.queryType==3">
                         (
-                        NOT EXISTS ( SELECT * FROM issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
+                        NOT EXISTS ( SELECT * from s_issue_custom_field icf1 WHERE iu.issue_id = icf1.issue_id AND
                         icf1.field_id = #{field.fieldId} )
                         )
                     </if>
@@ -2262,15 +2262,17 @@
     </select>
 
     <update id="updateBySprintId">
-    update issue
+    update s_issue
     set
+        lane_id=105,
+        stage_id=4,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
   </update>
 
     <select id="selectBySystemId" resultType="com.yusys.agile.issue.dto.IssueDTO">
     select iss.issue_id,iss.issue_type,iss.stage_id
-    from issue iss left join  issue_system_relp issy on iss.issue_id = issy.issue_id where
+    from s_issue iss left join  s_issue_system_relp issy on iss.issue_id = issy.issue_id where
     issy.system_id = #{systemId} and iss.project_id = #{projectId} and iss.issue_type = #{issueType} and iss.state = "U"
   </select>
 
@@ -2278,32 +2280,37 @@
     <!--按版本统计系统各个阶段需求个数  -->
     <select id="selectBySystemIdAndVersion" resultType="com.yusys.agile.issue.dto.IssueDTO">
     SELECT a.issue_id,a.issue_type,a.stage_id
-    FROM issue a
-    LEFT JOIN version_issue_relate b ON a.issue_id = b.issue_id
-    LEFT JOIN issue_system_relp d ON a.issue_id = d.issue_id
+    from s_issue a
+    LEFT JOIN s_version_issue_relate b ON a.issue_id = b.issue_id
+    LEFT JOIN s_issue_system_relp d ON a.issue_id = d.issue_id
     WHERE a.system_id = #{systemId} AND a.project_id = #{projectId} AND a.issue_type=#{issueType} AND a.state = "U" AND b.version_id=#{versionId}
   </select>
 
     <select id="sumTaskByHandler" resultType="Integer">
-	select count(1) from issue where project_id = #{projectId} and handler = #{userId}  and issue_type = 4 and state = "U"
+	select count(1) from s_issue where project_id = #{projectId} and handler = #{userId}  and issue_type = 4 and state = "U"
   </select>
 
     <select id="sumWorkloadByUser" resultType="Integer">
-    select ifnull(sum(plan_workload),0) from issue where project_id = #{projectId} and handler = #{userId}  and issue_type = 4 and state = "U"
+    select ifnull(sum(plan_workload),0)
+    from s_issue
+    where project_id = #{projectId}
+     and handler = #{userId}
+      and issue_type = 4
+       and state = "U"
   </select>
 
     <select id="getProjectMemberTaskList" resultType="com.yusys.agile.issue.domain.Issue">
         select
         issue_id,
         handler
-        from
-        issue
+     FROM
+       s_issue
         where
         issue_id >= (
         select
         issue_id
-        from
-        issue
+     FROM
+       s_issue
         where
         project_id = #{projectId}
         and
@@ -2342,17 +2349,17 @@
     </select>
     <!--根据业务需求查故事id集合-->
     <select id="getStoryIdsByEpic" resultType="java.lang.Long">
-      select issue_id from issue where parent_id in (select issue_id from issue where parent_id = #{id})
+      select issue_id from s_issue where parent_id in (select issue_id from s_issue where parent_id = #{id})
   </select>
     <!--根据研发需求查故事id集合-->
     <select id="getStroyIdsByFeature" resultType="java.lang.Long">
-    select issue_id from issue where parent_id = #{id}
+    select issue_id from s_issue where parent_id = #{id}
   </select>
     <select id="countUnfinishOrNotRepairIssue" resultType="int">
-      select count(1) from issue a where a.parent_id=#{storyId}  and a.issue_type in(4,5) and a.stage_id in(1000,1001,1002,100,101,102);
+      select count(1) from s_issue a where a.parent_id=#{storyId}  and a.issue_type in(4,5) and a.stage_id in(1000,1001,1002,100,101,102);
     </select>
     <select id="selectIssueIdByProjectId" resultType="java.lang.Long">
-    select issue_id from issue
+    select issue_id from s_issue
     <where>
      project_id = #{projectId} and state = 'U'  and  is_archive != 1
         <if test="title != null">
@@ -2371,8 +2378,8 @@
       parent_id,
       project_id,
       stage_id
-    from
-      issue
+    FROM
+    s_issue
     where
       issue_id = #{issueId}
     and
@@ -2382,8 +2389,8 @@
     <select id="getIssueTemplateParentList" resultType="com.yusys.agile.issue.domain.Issue">
     select
       issue_id, title
-    from
-      issue
+    FROM
+    s_issue
     where
       project_id = #{projectId}
     and
@@ -2398,15 +2405,15 @@
     select
       issue_id,
       stage_id
-    from
-      issue
+    FROM
+    s_issue
     where
       issue_id >=
     (
         select
           issue_id
-        from
-          issue
+     FROM
+       s_issue
         where
           project_id = #{projectId}
         and
@@ -2436,8 +2443,8 @@
         a.begin_date, a.end_date, a.plan_workload, a.really_workload,a.stage_id,
         a.lane_id, a.state, a.status,a.create_uid,
         a.create_time, a.update_uid, a.update_time,a.remain_workload
-        from issue a
-        inner join sys_extend_field_detail b on a.issue_id = b.issue_id
+        from s_issue a
+        inner join s_sys_extend_field_detail b on a.issue_id = b.issue_id
         <where>
             b.field_id = 'bizNum'
             <if test="issueType != null">
@@ -2454,7 +2461,7 @@
 
     <update id="updateIssueFeatureSyncResult">
     update
-      issue
+      s_issue
     set
       cmp_sync_result = #{cmpSyncResult}
     where
@@ -2464,8 +2471,8 @@
     <select id="getIssue" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from
-        issue
+     FROM
+       s_issue
         where
         issue_id = #{issueId}
         and
@@ -2475,7 +2482,7 @@
 
     <update id="batchUpdateIssueStageStatus">
         update
-          issue
+        s_issue
         set
           stage_id = #{stageId},
           lane_id = #{laneId},
@@ -2490,15 +2497,15 @@
     <select id="selectIssueList" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from
-        issue
+     FROM
+       s_issue
         where
         issue_id >=
         (
         select
         issue_id
-        from
-        issue
+     FROM
+       s_issue
         where
         issue_type = #{issueType}
         and
@@ -2528,7 +2535,7 @@
 
     <update id="batchUpdateIssueCmpSyncResult">
         update
-        issue
+        s_issue
         set
         cmp_sync_result = #{cmpSyncResult}
         where
@@ -2545,15 +2552,15 @@
             title,
             stage_id,
             create_time
-        from
-          issue
+     FROM
+       s_issue
         where
           issue_id &lt;=
         (
         select
           issue_id
-        from
-          issue
+     FROM
+       s_issue
         where
           state = 'U'
         <!--and
@@ -2605,7 +2612,7 @@
     <select id="selectIssueForVersion" resultType="com.yusys.agile.issue.dto.IssueDTO">
         select
         <include refid="Base_Column_List"/>
-        from issue a
+        from s_issue a
         <where>
             a.is_archive != 1
             and a.stage_id != 7
@@ -2620,7 +2627,7 @@
             </if>
             <if test="handler != null">
                 and a.issue_id in(
-                    select parent_id from issue
+                    select parent_id from s_issue
                     where is_archive != 1 and issue_type =2 and state='U'
                         and handler = #{handler}
                         and project_id = #{projectId})
@@ -2642,7 +2649,7 @@
     </select>
 
     <select id="countAchievedIssues4Sprint" resultType="int">
-        SELECT COUNT(1) FROM issue a
+        SELECT COUNT(1) from s_issue a
         <where>
             a.is_archive != 1  AND state = "U" AND stage_id = 7
             <if test="projectId != null">
@@ -2658,7 +2665,7 @@
     </select>
 
     <select id="countInsprintIssuesBySprint" resultType="Integer">
-        SELECT COUNT(1) FROM issue a
+        SELECT COUNT(1) from s_issue a
         <where>
             a.is_archive != 1  AND state = "U" AND stage_id in (2,3,4,5,6)
             <if test="projectId != null">
@@ -2674,7 +2681,7 @@
     </select>
 
     <select id="countNotStartIssuesBySprint" resultType="Integer">
-        SELECT COUNT(1) FROM issue a
+        SELECT COUNT(1) from s_issue a
         <where>
             a.is_archive != 1 AND state = "U" AND stage_id = 1
             <if test="projectId != null">
@@ -2690,7 +2697,7 @@
     </select>
 
     <select id="countInsprintTaskBySprint" resultType="Integer">
-        SELECT COUNT(1) FROM issue a
+        SELECT COUNT(1) from s_issue a
         <where>
             a.is_archive != 1 AND state = "U" AND stage_id in (101,102) AND issue_type = 4
             <if test="projectId != null">
@@ -2704,7 +2711,7 @@
     </select>
 
     <select id="countNotStartTaskBySprint" resultType="Integer">
-        SELECT COUNT(1) FROM issue a
+        SELECT COUNT(1) from s_issue a
         <where>
             a.is_archive != 1 AND state = "U" AND stage_id = 100 AND issue_type = 4
             <if test="projectId != null">
@@ -2717,7 +2724,7 @@
     </select>
 
     <select id="countFinishedTasks4Project" resultType="int">
-    SELECT COUNT(1) FROM issue a
+    SELECT COUNT(1) from s_issue a
     <where>
         a.is_archive != 1 AND state = "U" AND stage_id = 103 AND issue_type = 4
         <if test="projectId != null">
@@ -2732,8 +2739,8 @@
         WITH
         epic as (SELECT
         DISTINCT issue_id
-        FROM
-        issue
+     FROM
+       s_issue
         WHERE
          state = 'U'
         AND issue_id IN
@@ -2744,16 +2751,16 @@
         feature as (
         SELECT
         DISTINCT issue_id
-        FROM
-        issue
+     FROM
+       s_issue
         WHERE
         state = 'U'
         AND parent_id IN (select issue_id from epic)   ),
         story as (
         SELECT
         DISTINCT issue_id
-        FROM
-        issue
+     FROM
+       s_issue
         WHERE
         state = 'U'
         AND parent_id IN (select issue_id from feature)   ),
@@ -2761,8 +2768,8 @@
         task as (
         SELECT
         DISTINCT issue_id
-        FROM
-        issue
+     FROM
+       s_issue
         WHERE
         state = 'U'
         AND parent_id IN (select issue_id from story)   )
@@ -2778,14 +2785,14 @@
 
     <insert id="insertTmp" parameterType="com.yusys.agile.issue.domain.Issue" useGeneratedKeys="true"
             keyProperty="issueId">
-    insert into issue (issue_id, title, parent_id,
+    insert into s_issue (issue_id, title, parent_id,
       issue_type, project_id, state,operate_time )
     values (#{issueId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT},
       #{issueType,jdbcType=TINYINT},  #{projectId,jdbcType=BIGINT},'U' ,'20201112')
   </insert>
     <update id="updateTmp">
         update
-        issue
+        s_issue
         set
         operate_time = '20201112'
         where
@@ -2794,8 +2801,8 @@
     <select id="listLevelIssueIdforEpic" resultType="java.lang.Long">
        SELECT
         DISTINCT issue_id
-        FROM
-        issue
+     FROM
+       s_issue
         WHERE
         state = 'U'
         AND issue_type = 1
@@ -2810,8 +2817,8 @@
     <select id="listLevelIssueIdforFeature" resultType="java.lang.Long">
         SELECT
         DISTINCT issue_id
-        FROM
-        issue
+     FROM
+       s_issue
         WHERE
         state = 'U'
         AND issue_type = 2
@@ -2833,7 +2840,7 @@
         SELECT
         DISTINCT issue_id
         FROM
-        issue
+        s_issue
         WHERE
          state = 'U'
         AND issue_type =3
@@ -2855,7 +2862,7 @@
         SELECT
         DISTINCT issue_id
         FROM
-        issue
+       s_issue
         WHERE
          state = 'U'
         AND issue_type = 4
@@ -2879,14 +2886,14 @@
                 select
                     ksi.order_id
                 from
-                    kanban_stage_instance ksi
+                    s_kanban_stage_instance ksi
                 where
                     ksi.stage_id = su.stage_id
                     and ksi.state ='U'
                     and ksi.project_id=#{projectId}
             ) as orderId
-        from
-            issue su
+     FROM
+       s_issue su
         where
             su.state ='U'
             and su.parent_id = #{parentId}
@@ -2899,8 +2906,8 @@
     <select id="getNotCanceledAndOnlineIssueByIssueIdList" resultType="java.lang.Long">
         SELECT
         DISTINCT issue_id
-        FROM
-        issue
+     FROM
+       s_issue
         WHERE
         state = 'U'
         AND issue_type =1
@@ -2916,108 +2923,108 @@
     </select>
 
     <select id="getNotOnlineEpic" resultType="java.lang.Long">
-        SELECT
-	      a.issue_id
-        FROM
-	      issue a
-        WHERE
-	      a.state = 'U'
-	    AND a.stage_id != 7
-	    AND a.issue_type = 1
-	    AND NOT EXISTS (
-	      SELECT
-		    1
-	      FROM
-		    sys_extend_field_detail b
-	      WHERE
-		    b.issue_id = a.issue_id
-	      AND b.field_id = 'planStates'
-	      AND b.`value` IN ( '8880', '8884'))
-    </select>
-    <select id="noReqSchedulingEpicIdList" resultType="java.lang.Long">
-        SELECT
-	a.issue_id
-FROM
-	issue a
-WHERE
-	a.state = 'U'
-	AND a.issue_type = 1
-	AND NOT EXISTS (
-	SELECT
-		1
-	FROM
-		sys_extend_field_detail b
-	WHERE
-		b.issue_id = a.issue_id
-	AND b.field_id = 'reqScheduling'
-	)
-	AND NOT EXISTS (
-	      SELECT
-		    1
-	      FROM
-		    sys_extend_field_detail b
-	      WHERE
-		    b.issue_id = a.issue_id
-	      AND b.field_id = 'planStates'
-	      AND b.`value` IN ( '8880', '8881','8888'))
-	union
-	SELECT
-	a.issue_id
-FROM
-	issue a
-WHERE
-	a.state = 'U'
-	AND a.issue_type = 1
-	AND EXISTS (
-	SELECT
-		1
-	FROM
-		sys_extend_field_detail b
-	WHERE
-		b.issue_id = a.issue_id
-	AND b.field_id = 'reqScheduling'
-	and b.`value` = ''
-	)
-	AND NOT EXISTS (
-	      SELECT
-		    1
-	      FROM
-		    sys_extend_field_detail b
-	      WHERE
-		    b.issue_id = a.issue_id
-	      AND b.field_id = 'planStates'
-	      AND b.`value` IN ( '8880', '8881','8888'))
-	union
-	SELECT
-	a.issue_id
-FROM
-	issue a
-WHERE
-	a.state = 'U'
-	AND a.issue_type = 1
-	AND EXISTS (
-	SELECT
-		1
-	FROM
-		sys_extend_field_detail b
-	WHERE
-		b.issue_id = a.issue_id
-	AND b.field_id = 'reqScheduling'
-  AND b.`value` is null
-	)
-	AND NOT EXISTS (
-	      SELECT
-		    1
-	      FROM
-		    sys_extend_field_detail b
-	      WHERE
-		    b.issue_id = a.issue_id
-	      AND b.field_id = 'planStates'
-	      AND b.`value` IN ( '8880', '8881','8888'))
+    SELECT
+      a.issue_id
+    FROM
+    s_issue a
+    WHERE
+      a.state = 'U'
+    AND a.stage_id != 7
+    AND a.issue_type = 1
+    AND NOT EXISTS (
+    SELECT
+        1
+      FROM
+        s_sys_extend_field_detail b
+      WHERE
+        b.issue_id = a.issue_id
+      AND b.field_id = 'planStates'
+     AND b.`value` IN ( '8880', '8884'))
+     </select>
+     <select id="noReqSchedulingEpicIdList" resultType="java.lang.Long">
+                SELECT
+                a.issue_id
+            FROM
+                s_issue a
+            WHERE
+                a.state = 'U'
+                AND a.issue_type = 1
+                AND NOT EXISTS (
+                SELECT
+                    1
+                FROM
+                    s_sys_extend_field_detail b
+                WHERE
+                    b.issue_id = a.issue_id
+                AND b.field_id = 'reqScheduling'
+                )
+                AND NOT EXISTS (
+                      SELECT
+                        1
+                      FROM
+                        s_sys_extend_field_detail b
+                      WHERE
+                        b.issue_id = a.issue_id
+                      AND b.field_id = 'planStates'
+                      AND b.`value` IN ( '8880', '8881','8888'))
+                union
+                SELECT
+                a.issue_id
+            FROM
+                s_issue a
+            WHERE
+                a.state = 'U'
+                AND a.issue_type = 1
+                AND EXISTS (
+                SELECT
+                    1
+                FROM
+                    s_sys_extend_field_detail b
+                WHERE
+                    b.issue_id = a.issue_id
+                AND b.field_id = 'reqScheduling'
+                and b.`value` = ''
+                )
+                AND NOT EXISTS (
+                      SELECT
+                        1
+                      FROM
+                        s_sys_extend_field_detail b
+                      WHERE
+                        b.issue_id = a.issue_id
+                      AND b.field_id = 'planStates'
+                      AND b.`value` IN ( '8880', '8881','8888'))
+                union
+                SELECT
+                a.issue_id
+            FROM
+                s_issue a
+            WHERE
+                a.state = 'U'
+                AND a.issue_type = 1
+                AND EXISTS (
+                SELECT
+                    1
+                FROM
+                    s_sys_extend_field_detail b
+                WHERE
+                    b.issue_id = a.issue_id
+                AND b.field_id = 'reqScheduling'
+              AND b.`value` is null
+                )
+                AND NOT EXISTS (
+                      SELECT
+                        1
+                      FROM
+                        s_sys_extend_field_detail b
+                      WHERE
+                        b.issue_id = a.issue_id
+                      AND b.field_id = 'planStates'
+                      AND b.`value` IN ( '8880', '8881','8888'))
     </select>
     <select id="getAllTaskFunTester" resultType="java.lang.String">
-        select c.`value` from issue b,sys_extend_field_detail c  where b.issue_id = c.issue_id and c.field_id='externalHandlerId' and  b.parent_id in (
-select a.issue_id from issue a where a.parent_id = #{epicId} and a.state = 'U') and b.state = 'U';
+        select c.`value` from s_issue b,s_sys_extend_field_detail c  where b.issue_id = c.issue_id and c.field_id='externalHandlerId' and  b.parent_id in (
+select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U') and b.state = 'U';
     </select>
     
     <select id="getParentIssue" parameterType="java.lang.Long" resultType="com.yusys.agile.issue.domain.Issue">
@@ -3028,10 +3035,10 @@ select a.issue_id from issue a where a.parent_id = #{epicId} and a.state = 'U') 
           r.stage_id,
           r.lane_id,
           r.state
-        from
-          issue r
+     FROM
+       s_issue r
         left join
-          issue t
+        s_issue t
         on
           r.issue_id = t.parent_id
         where
@@ -3039,4 +3046,57 @@ select a.issue_id from issue a where a.parent_id = #{epicId} and a.state = 'U') 
         and
           r.state = 'U'
     </select>
+    <select id="queryNotRelationStory" resultType="com.yusys.agile.issue.dto.IssueDTO">
+        select a.title,a.priority,a.lane_id,a.issue_id,a.stage_id ,a.system_id
+        from s_issue a
+        where a.sprint_id is null
+        and a.issue_type=3
+        and a.state='U'
+        and a.is_archive != 1
+        <if test="systemIds != null and systemIds.size>0">
+            and a.system_id in
+            <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">
+                #{systemId}
+            </foreach>
+            )</if>
+        <if test="title != null and title != ''">
+            AND (a.title LIKE CONCAT('%', #{title}, '%')or a.issue_id LIKE CONCAT('%', #{title}, '%'))
+        </if>
+    </select>
+
+
+    <select id="countStoryPointsForSprint" resultType="java.lang.Integer">
+        select sum(se.`value`)
+        from
+        s_issue si,
+        s_sys_extend_field_detail se
+        where
+        si.issue_id = se.issue_id
+        and si.sprint_id = #{sprintId} and si.issue_type=3 and si.is_archive != 1
+    </select>
+
+    <select id="countCurrTimeStoryPointsForSprintId" resultType="java.lang.Integer">
+        <![CDATA[
+        select sum(se.`value`) from
+            s_issue si,
+            s_sys_extend_field_detail se,
+            s_burndown_chart_story b
+        where 1=1
+            and si.issue_id = se.issue_id
+            and si.issue_id = b.story_id
+            and si.sprint_id = #{sprintId}
+            and si.issue_type=3 and si.is_archive != 1 and si.lane_id = 106
+            and se.field_id = 'storyPoint'
+            and b.story_state = 106
+            and b.sprint_time = #{currTime}
+        ]]>
+    </select>
+
+    <select id="getPlanWorkload" resultType="int">
+    select ifnull(sum(plan_workload),0) from s_issue where sprint_id = #{sprintId} and state = 'U' and issue_type in(4,5);
+  </select>
+    <select id="getRemainWorkload" resultType="int">
+    select ifnull(sum(remain_workload),0) from s_issue where sprint_id = #{sprintId} and state = 'U'
+    AND ((issue_type = 4 and lane_id IN(107,108,109)) or (issue_type = 5 and stage_id IN(1000,1001)))
+  </select>
 </mapper>

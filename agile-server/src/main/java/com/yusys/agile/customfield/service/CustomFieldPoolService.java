@@ -58,4 +58,13 @@ public interface CustomFieldPoolService {
      * @date 2021/2/1
      */
     CustomFieldDTO getCustomField(Long fieldId);
+
+    /**
+     * 功能描述: 查询租户下自定义字池
+     *
+     * @param tenantCode
+     * @return java.util.List<com.yusys.agile.customfield.dto.CustomFieldDTO>
+     * @date 2021/2/1
+     */
+    List<CustomFieldDTO> listAllCustomFieldsByTenantCode(String tenantCode);
 }

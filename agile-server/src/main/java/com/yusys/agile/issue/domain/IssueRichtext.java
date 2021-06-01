@@ -14,6 +14,8 @@ public class IssueRichtext implements Serializable {
 
     private String description;
 
+    private String acceptanceCriteria;
+
     public String getTenantCode() {
         return tenantCode;
     }
@@ -64,5 +66,13 @@ public class IssueRichtext implements Serializable {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public String getAcceptanceCriteria() {
+        return acceptanceCriteria;
+    }
+
+    public void setAcceptanceCriteria(String acceptanceCriteria) {
+        this.acceptanceCriteria = acceptanceCriteria;
     }
 }

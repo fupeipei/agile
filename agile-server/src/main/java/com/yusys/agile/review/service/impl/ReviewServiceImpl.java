@@ -110,7 +110,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 要评审内容每次都插到库里
         Long issueId = reviewDTO.getIssueId();
-        issueRichTextFactory.dealIssueRichText(issueId, desc, null);
+        issueRichTextFactory.dealIssueRichText(issueId, desc, null,null);
 
         // 判断是否有未完成的评审，如果有未完成的评审，不能新增
         List<Review> reviewList = getReviewList(reviewDTO.getIssueId());

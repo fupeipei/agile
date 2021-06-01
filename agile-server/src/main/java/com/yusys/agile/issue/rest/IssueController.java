@@ -4,6 +4,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.service.IssueService;
+import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.utils.StringUtil;
@@ -34,20 +35,22 @@ public class IssueController {
     @Resource
     private IssueService issueService;
 
+    @Resource
+    private StoryService storyService;
+
     /**
      * 功能描述  初始化Issue列表
      *
      * @param map
-     * @param projectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
-    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map) {
         PageInfo result;
         try {
 
-            result = issueService.getIssueList(map, projectId);
+            result = issueService.getIssueList(map);
         } catch (Exception e) {
             LOGGER.error("查询Issue异常", e);
             return ControllerResponse.fail("查询Issue异常：" + e.getMessage());
@@ -55,6 +58,12 @@ public class IssueController {
         return ControllerResponse.success(result);
     }
 
+    /**
+     * 创建父级关联关系
+     * @param parentId 父级id
+     * @param issueId 工作项id
+     * @return
+     */
     @PutMapping("/issue/createRelation/{parentId}/{issueId}")
     public ControllerResponse createRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
@@ -67,6 +76,12 @@ public class IssueController {
         return ControllerResponse.success("建立关联成功！");
     }
 
+    /**
+     * 取消父级关联关系
+     * @param parentId 父级id
+     * @param issueId 工作项id
+     * @return
+     */
     @PutMapping("/issue/deleteRelation/{parentId}/{issueId}")
     public ControllerResponse deleteRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
@@ -89,10 +104,10 @@ public class IssueController {
      * @date 2020/4/21
      */
     @GetMapping("/issue/{issueId}")
-    public ControllerResponse getIssue(@PathVariable(name = "issueId") Long issueId, @RequestHeader(name = "projectId") Long projectId, Byte issueQuery) {
+    public ControllerResponse getIssue(@PathVariable(name = "issueId") Long issueId, Byte issueQuery) {
         IssueListDTO issueListDTO;
         try {
-            issueListDTO = issueService.getIssue(issueId, projectId, issueQuery, null);
+            issueListDTO = issueService.getIssue(issueId, issueQuery, null);
         } catch (Exception e) {
             LOGGER.error("查询异常：{}", e);
             return ControllerResponse.fail("查询异常：" + e.getMessage());
@@ -100,21 +115,20 @@ public class IssueController {
         return ControllerResponse.success(issueListDTO);
     }
 
+
     /**
-     * 功能描述  根据issueId查询当前Issue
-     *
+     * 根据issueId查询当前Issue
      * @param issueId
-     * @param projectId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/10/15
+     * @param systemId
+     * @return
      */
     @GetMapping("/issue/getIssueByIssueId/{issueId}")
-    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "systemId") Long systemId) {
         Map map = new HashMap<>();
         boolean b = StringUtil.isNumeric(issueId);
         if (b) {
             try {
-                map = issueService.getIssueByIssueId(Long.parseLong(issueId), projectId);
+                map = issueService.getIssueByIssueId(Long.parseLong(issueId), systemId);
             } catch (Exception e) {
                 LOGGER.error("查询异常：{}", e);
                 return ControllerResponse.fail("查询异常：" + e.getMessage());
@@ -142,16 +156,17 @@ public class IssueController {
         return ControllerResponse.success("操作成功");
     }
 
+
     /**
-     * @param issueDTO
-     * @Date: 9:06
-     * @Description: 批量建立关联关系
-     * @Param: * @param parentId
-     * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
+     *  批量建立关联关系
+     * @param issueDTO  issueDTO
+     * @param securityDTO securityDTO
+     * @return 返回成功失败
      */
     @PostMapping("/issue/createBatchRelation")
     public ControllerResponse createBatchRelation(@RequestBody IssueDTO issueDTO, SecurityDTO securityDTO) {
         try {
+            storyService.checkSprintParam(issueDTO.getSprintId());
             issueService.createBatchRelation(issueDTO.getParentId(), issueDTO.getListIssueIds(), securityDTO.getUserId());
         } catch (Exception e) {
             LOGGER.error("批量建立关联失败：{}", e);
@@ -249,7 +264,7 @@ public class IssueController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/issue/detail/listRelation/{issueId}/{issueType}")
-    public ControllerResponse listRelation(@PathVariable("issueId") Long issueId, @PathVariable("issueType") Byte issueType, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse listRelation(@PathVariable("issueId") Long issueId, @PathVariable("issueType") Byte issueType) {
         //return ControllerResponse.success(issueService.listRelation(issueId, issueType, projectId));
         return ControllerResponse.success(issueService.listRelation(issueId, issueType));
     }

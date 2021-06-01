@@ -22,11 +22,10 @@ public interface HeaderFieldUserService {
      * 功能描述
      *
      * @param headerFieldListDTO
-     * @param projectId
      * @return java.util.Map
      * @date 2020/4/17
      */
-    Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO, Long projectId);
+    Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO);
 
 
     Integer deleteCustomField(Long fieldId);

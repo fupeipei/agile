@@ -14,10 +14,10 @@ public enum IssueImportanceEnum {
 
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private IssueImportanceEnum(Byte code, String name) {
+    IssueImportanceEnum(Byte code, String name) {
         this.CODE = code;
         this.NAME = name;
     }

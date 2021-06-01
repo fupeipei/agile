@@ -4,10 +4,9 @@ import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.domain.STeamSystemExample;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface STeamSystemMapper {
     long countByExample(STeamSystemExample example);
@@ -42,13 +41,6 @@ public interface STeamSystemMapper {
     void bindingTeamAndSystem(@Param("team") STeam team, @Param("systemIds") List<Long> systemIds);
 
     /**
-     * 删除绑定的团队和系统
-     *
-     * @param teamId 团队id
-     */
-    void removeBindingTeamAndSystem(Long teamId);
-
-    /**
      * 通过团队id查询系统id
      *
      * @param teamId 团队id
@@ -58,4 +50,6 @@ public interface STeamSystemMapper {
 
 
     List<Long> queryTeamIdBySystemId(@Param("systemIds") List<Long> systemIds);
+
+    void deleteByTeamId(@Param("teamId") Long teamId);
 }

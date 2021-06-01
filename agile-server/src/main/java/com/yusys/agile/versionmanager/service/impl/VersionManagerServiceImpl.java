@@ -185,7 +185,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
             }
 
             versionManager.setCreateName(securityDTO.getUserName());
-            versionManager.setVersionState(VersionStateEnum.VERSION_STATE_UNCONFIRMED.getCODE());
+            versionManager.setVersionState(VersionStateEnum.getName(VersionStateEnum.VERSION_STATE_UNCONFIRMED.CODE));
             versionManagerMapper.insert(versionManager);
             managerDTO.setId(versionManager.getId());
         }

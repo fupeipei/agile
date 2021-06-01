@@ -25,8 +25,7 @@ public class StageConstant {
      */
     public enum FirstStageEnum {
         READY_STAGE("就绪阶段", 1L), ANALYSIS_STAGE("分析阶段", 2L), DESIGN_STAGE("设计阶段", 3L),
-        DEVELOP_STAGE("开发阶段", 4L), TEST_STAGE("测试阶段", 5L), ONLINE_STAGE("上线阶段", 6L), FINISH_STAGE("完成阶段", 7L),
-        COMBINED_TEST_STAGE("联调测试", 8L);
+        DEVELOP_STAGE("开发阶段", 4L), TEST_STAGE("测试阶段", 5L), SYS_TEST_STAGE("系统测试阶段", 6L), ONLINE_STAGE("发布阶段", 7L), FINISH_STAGE("完成阶段", 8L);
 
         private String name;
         private Long value;
@@ -55,7 +54,6 @@ public class StageConstant {
             return name;
         }
     }
-
 
     /**
      * @description 阶段层级

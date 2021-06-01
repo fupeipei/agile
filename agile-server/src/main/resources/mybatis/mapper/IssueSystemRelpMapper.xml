@@ -78,7 +78,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_system_relp
+    from  s_issue_system_relp
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -89,21 +89,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from issue_system_relp
+    from  s_issue_system_relp
     where relation_id = #{relationId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_system_relp
+    delete from  s_issue_system_relp
     where relation_id = #{relationId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueSystemRelpExample">
-    delete from issue_system_relp
+    delete from  s_issue_system_relp
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueSystemRelp">
-    insert into issue_system_relp (relation_id, issue_id, system_id, 
+    insert into  s_issue_system_relp (relation_id, issue_id, system_id, 
       create_time, create_uid, update_uid, 
       update_time,tenant_code)
     values (#{relationId,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{systemId,jdbcType=BIGINT}, 
@@ -111,7 +111,7 @@
       #{updateTime,jdbcType=TIMESTAMP},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueSystemRelp">
-    insert into issue_system_relp
+    insert into  s_issue_system_relp
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="relationId != null">
         relation_id,
@@ -166,13 +166,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueSystemRelpExample" resultType="java.lang.Long">
-    select count(*) from issue_system_relp
+    select count(*) from  s_issue_system_relp
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_system_relp
+    update  s_issue_system_relp
     <set>
       <if test="record.relationId != null">
         relation_id = #{record.relationId,jdbcType=BIGINT},
@@ -204,7 +204,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_system_relp
+    update  s_issue_system_relp
     set relation_id = #{record.relationId,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       system_id = #{record.systemId,jdbcType=BIGINT},
@@ -218,7 +218,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueSystemRelp">
-    update issue_system_relp
+    update  s_issue_system_relp
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -245,7 +245,7 @@
     where relation_id = #{relationId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueSystemRelp">
-    update issue_system_relp
+    update  s_issue_system_relp
     set issue_id = #{issueId,jdbcType=BIGINT},
       system_id = #{systemId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -257,13 +257,13 @@
   </update>
   <!--以下为自定义方法 -->
     <insert id="batchInsert">
-      insert into issue_system_relp (issue_id, system_id,create_time,create_uid,tenant_code)
+      insert into  s_issue_system_relp (issue_id, system_id,create_time,create_uid,tenant_code)
       values
       <foreach collection="systemIds" item="item"  separator=",">
         (#{item.issueId},#{item.systemId},#{item.createTime},#{item.createUid},#{item.tenantCode})
       </foreach>
     </insert>
   <delete id="deleteByIssueId">
-    delete from issue_system_relp where issue_id = #{issueId}
+    delete from  s_issue_system_relp where issue_id = #{issueId}
   </delete>
 </mapper>

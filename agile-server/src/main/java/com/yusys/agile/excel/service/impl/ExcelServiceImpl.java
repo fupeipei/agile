@@ -416,7 +416,7 @@ public class ExcelServiceImpl implements ExcelService {
 
         if (IssueTypeEnum.TYPE_TASK.CODE.equals(excelType)) {
             issueDTO.setSprintId(sprintId);
-            issueDTO.setStageId(TaskStageIdEnum.TYPE_ADD_STATE.CODE);
+            issueDTO.setStageId(TaskStatusEnum.TYPE_ADD_STATE.CODE);
             // 故事id
             String storyStr = StringUtils.substringBefore(ExcelUtil.getStringData(currentRow.getCell(i)), "+");
             issueDTO.setParentId(StringUtils.isNotBlank(storyStr) ? Long.valueOf(storyStr) : null);
@@ -1105,7 +1105,7 @@ public class ExcelServiceImpl implements ExcelService {
         //设置填充方案
         columnHeadStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         //设置预定义填充颜色
-        columnHeadStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte) 135, (byte) 206, (byte) 250}));
+        //columnHeadStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte) 135, (byte) 206, (byte) 250}));
         //列头标题
         XSSFRow columnHeadFieldRow = sheet.createRow(0);
         columnHeadFieldRow.setRowStyle(columnHeadStyle);
@@ -1466,7 +1466,7 @@ public class ExcelServiceImpl implements ExcelService {
     private List<Issue> queryIssueList(Long projectId, Map<String, Object> mapStr, List<Long> issueIdList, Byte type) throws Exception {
         List<Issue> issueList = null;
         if (ALL_TYPE.equals(type)) {
-            issueList = issueService.queryIssueList(mapStr, projectId);
+            issueList = issueService.queryIssueList(mapStr);
         } else if (PART_TYPE.equals(type)) {
             IssueExample example = new IssueExample();
             example.setOrderByClause("issue_id desc");
@@ -1491,7 +1491,7 @@ public class ExcelServiceImpl implements ExcelService {
             List<Long> allIssueId = issueMapper.listAllIssueId(Lists.newArrayList(issueRestltMap.keySet()));
             if (CollectionUtils.isNotEmpty(allIssueId)) {
                 //项目下的当前页
-                Map<String, Map> map = issueService.IssueMap(projectId, null);
+                Map<String, Map> map = issueService.IssueMap( null);
                 if (MapUtils.isNotEmpty(map)) {
                     IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(mapStr), IssueStringDTO.class);
                     for (Issue issue : issues) {

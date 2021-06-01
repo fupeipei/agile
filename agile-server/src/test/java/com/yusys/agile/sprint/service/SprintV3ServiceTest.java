@@ -1,10 +1,7 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.enums.SprintStatusEnum;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
@@ -12,81 +9,42 @@ import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
-import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
+import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.portal.common.exception.BusinessException;
-import com.yusys.agile.team.domain.Team;
-import com.yusys.agile.team.dto.TeamDTO;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
-import com.yusys.agile.teamv3.domain.STeam;
-import com.yusys.portal.facade.client.api.IFacadeSystemApi;
-import com.yusys.portal.facade.client.api.IFacadeUserApi;
-import com.yusys.portal.model.common.dto.ControllerResponse;
-import com.yusys.portal.model.common.enums.StateEnum;
-import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-import com.yusys.portal.util.date.DateUtil;
-import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeanUtils;
-import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
-import com.yusys.portal.model.facade.entity.SsoUser;
-import com.yusys.portal.util.code.ReflectUtil;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-import com.yusys.agile.team.dto.TeamDTO;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.UUID;
+
 
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class SprintV3ServiceTest {
 
-    @Resource
-    private SSprintMapper ssprintMapper;
-    @Resource
-    private SSprintUserHourMapper ssprintUserHourMapper;
-    @Resource
-    private STeamMapper sTeamMapper;
-    @Resource
-    private IFacadeUserApi iFacadeUserApi;
-    @Resource
-    private SSprintUserHourMapper sSprintUserHourMapper;
-    @Resource
-    private IFacadeSystemApi iFacadeSystemApi;
-    @Resource
-    private com.yusys.agile.teamv3.dao.STeamSystemMapper STeamSystemMapper;
-
     @Autowired
     private Sprintv3Service sprintv3Service;
 
     public SprintV3DTO initData() {
         SprintV3DTO sprintDTO = new SprintV3DTO();
-//        sprintDTO.setSprintId();
         sprintDTO.setSprintName(UUID.randomUUID().toString());
         sprintDTO.setSprintDesc("这是一条单元测试测试数据");
-//        sprintDTO.setFinishTime(now);
         sprintDTO.setTeamId(10086l);
         sprintDTO.setWorkHours(23);
         sprintDTO.setVersionNumber("versionNumber");
@@ -132,9 +90,45 @@ public class SprintV3ServiceTest {
         try {
             s = sprintv3Service.cancelSprint(1, 1);
         } catch (Exception e) {
-            s=e.toString();
+            s = e.toString();
         }
         Assert.assertNotNull(s);
+    }
+
+    /**
+     * 迭代完成
+     */
+    @Test
+    public void sprintFinish() {
+        long sprintId = 1l;
+        String s = null;
+        try {
+            s = sprintv3Service.sprintFinish(sprintId);
+        } catch (Exception e) {
+            s = e.toString();
+        }
+        Assert.assertNotNull(s);
+    }
+
+
+    /**
+     * 迭代视图 - 迭代统计详情
+     */
+    @Test
+    public void SprintStatisticalInformation() {
+        long sprintId = 10000;
+        SprintStatisticalInformation statisticalInformation = sprintv3Service.sprintStatisticalInformation(sprintId);
+        Assert.assertNotNull(statisticalInformation);
+    }
+
+    /**
+     * 迭代视图 - 成员工时
+     */
+    @Test
+    public void sprintMembersWorkHours(   ) {
+        long sprintId = 10000;
+        List<SprintMembersWorkHours> sprintMembersWorkHours = sprintv3Service.sprintMembersWorkHours(sprintId);
+        Assert.assertNotNull(sprintMembersWorkHours);
     }
 
     private SecurityDTO securityDTO;
@@ -154,9 +148,148 @@ public class SprintV3ServiceTest {
         SprintQueryDTO queryDTO = new SprintQueryDTO();
         queryDTO.setPageNum(1);
         queryDTO.setPageSize(10);
-        List<SprintListDTO> list = sprintv3Service.listSprint(queryDTO, securityDTO);
-        log.info("迭代列表数据【{}】", list);
+        sprintv3Service.listSprint(queryDTO, securityDTO);
+        Assert.assertTrue("testQueryList1成功", true);
     }
 
+    /**
+     * 测试迭代列表-分页+迭代编号
+     */
+    @Test
+    public void testQueryList2() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("100013");
+        sprintv3Service.listSprint(queryDTO, securityDTO);
+        Assert.assertTrue("testQueryList2成功", true);
+    }
 
+    /**
+     * 测试迭代列表-分页+迭代名称
+     */
+    @Test
+    public void testQueryList3() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("haha");
+        sprintv3Service.listSprint(queryDTO, securityDTO);
+        Assert.assertTrue("testQueryList3成功", true);
+    }
+
+    /**
+     * 测试迭代列表-分页+团队名称
+     */
+    @Test
+    public void testQueryList4() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setTeam("ceshi");
+        sprintv3Service.listSprint(queryDTO, securityDTO);
+        Assert.assertTrue("testQueryList4成功", true);
+    }
+
+    /**
+     * 测试迭代列表-分页+团队编号
+     */
+    @Test
+    public void testQueryList5() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setTeam("100013");
+        sprintv3Service.listSprint(queryDTO, securityDTO);
+        Assert.assertTrue("testQueryList5成功", true);
+    }
+
+    /**
+     * 测试迭代列表-分页+迭代名称+分页名称
+     */
+    @Test
+    public void testQueryList6() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("快克");
+        queryDTO.setTeam("ceshi");
+        sprintv3Service.listSprint(queryDTO, securityDTO);
+        Assert.assertTrue("testQueryList6成功", true);
+    }
+
+    /**
+     * 测试迭代列表-分页+迭代编号+分页编号
+     */
+    @Test
+    public void testQueryList7() {
+        SprintQueryDTO queryDTO = new SprintQueryDTO();
+        queryDTO.setPageNum(1);
+        queryDTO.setPageSize(10);
+        queryDTO.setSprint("100024");
+        queryDTO.setTeam("100013");
+        sprintv3Service.listSprint(queryDTO, securityDTO);
+        Assert.assertTrue("testQueryList7成功", true);
+    }
+
+    /**
+     * 按teamId查询有效迭代--分页情况
+     * 并且迭代状态为 未开始、进行中、已完成的
+     */
+    @Test
+    public void testGetSprintById() {
+        Long teamId = 100013L;
+        int pageSize = 10;
+        int pageNum = 1;
+        sprintv3Service.teamInSprint(teamId, pageSize, pageNum, "");
+        Assert.assertTrue("testGetSprintById成功", true);
+    }
+
+    /**
+     * 按teamId查询有效迭代--分页+迭代名称
+     */
+    @Test
+    public void testGetSprintById2() {
+        Long teamId = 100013L;
+        int pageSize = 10;
+        int pageNum = 1;
+        String sprint = "狒狒";
+        sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
+        Assert.assertTrue("testGetSprintById2成功", true);
+    }
+
+    /**
+     * 按teamId查询有效迭代--分页+迭代编号
+     */
+    @Test
+    public void testGetSprintById3() {
+        Long teamId = 100013L;
+        int pageSize = 10;
+        int pageNum = 1;
+        String sprint = "100012";
+        sprintv3Service.teamInSprint(teamId, pageSize, pageNum, sprint);
+        Assert.assertTrue("testGetSprintById3成功", true);
+    }
+
+    /**
+     * 根据迭代ID查询迭代下的人员
+     */
+    @Test
+    public void getUsersBySprintId() {
+        List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(100012L);
+        Assert.assertNotNull(userSprintHourDTOList);
+    }
+
+    @Test
+    public void testQueryNotRelationStorys(){
+        List<Long> systemIds=new ArrayList<>();
+        systemIds.add(816662916938469376L);
+        systemIds.add(888L);
+        String title="";
+        Long teamId=100020L;
+        Integer pageNum=1;
+        Integer pageSize=15;
+        sprintv3Service.queryNotRelationStorys(title, teamId, systemIds, pageNum, pageNum);
+        Assert.assertTrue("testQueryNotRelationStorys成功", true);
+    }
 }

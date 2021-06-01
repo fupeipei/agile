@@ -5,10 +5,10 @@ public enum IssueStateEnum {
     TYPE_INVALID("失效", "E");
 
     public String CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private IssueStateEnum(String name, String code) {
+    IssueStateEnum(String name, String code) {
         this.CODE = code;
         this.NAME = name;
     }

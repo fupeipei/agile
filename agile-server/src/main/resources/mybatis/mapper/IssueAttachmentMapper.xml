@@ -81,7 +81,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_attachment
+    from  s_issue_attachment  
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -92,21 +92,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from issue_attachment
+    from  s_issue_attachment  
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_attachment
+    delete from  s_issue_attachment  
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueAttachmentExample">
-    delete from issue_attachment
+    delete from  s_issue_attachment  
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueAttachment">
-    insert into issue_attachment (attachment_id, issue_id, file_uri, 
+    insert into  s_issue_attachment   (attachment_id, issue_id, file_uri, 
       stage_id, file_name, upload_time, 
       upload_uid, file_size,tenant_code)
     values (#{attachmentId,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{fileUri,jdbcType=VARCHAR}, 
@@ -114,7 +114,7 @@
       #{uploadUid,jdbcType=BIGINT}, #{fileSize,jdbcType=VARCHAR},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueAttachment">
-    insert into issue_attachment
+    insert into  s_issue_attachment  
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="attachmentId != null">
         attachment_id,
@@ -175,13 +175,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueAttachmentExample" resultType="java.lang.Long">
-    select count(*) from issue_attachment
+    select count(*) from  s_issue_attachment  
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_attachment
+    update  s_issue_attachment  
     <set>
       <if test="record.attachmentId != null">
         attachment_id = #{record.attachmentId,jdbcType=BIGINT},
@@ -216,7 +216,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_attachment
+    update  s_issue_attachment  
     set attachment_id = #{record.attachmentId,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       file_uri = #{record.fileUri,jdbcType=VARCHAR},
@@ -231,7 +231,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueAttachment">
-    update issue_attachment
+    update  s_issue_attachment  
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -264,7 +264,7 @@
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueAttachment">
-    update issue_attachment
+    update  s_issue_attachment  
     set issue_id = #{issueId,jdbcType=BIGINT},
       file_uri = #{fileUri,jdbcType=VARCHAR},
       stage_id = #{stageId,jdbcType=BIGINT},
@@ -277,7 +277,7 @@
   </update>
 
   <insert id="createBatchAttachment">
-    INSERT INTO issue_attachment (issue_id,file_uri,file_name,stage_id,upload_time,upload_uid,tenant_code,attachment_desc)
+    INSERT INTO  s_issue_attachment   (issue_id,file_uri,file_name,stage_id,upload_time,upload_uid,tenant_code,attachment_desc)
     VALUES
     <foreach collection="newAttachments" item="item"  separator=",">
       (#{item.issueId},#{item.fileUri},#{item.fileName},#{item.stageId},now(),#{item.uploadUid},#{item.tenantCode},#{item.attachmentDesc})

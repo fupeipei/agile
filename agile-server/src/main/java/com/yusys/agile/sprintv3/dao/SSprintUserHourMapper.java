@@ -39,4 +39,12 @@ public interface SSprintUserHourMapper {
     int deleteBySprintId(Long sprintId);
 
     List<SprintV3UserHourDTO> listUserHourBySprintId(@Param("sprintIds") List<Long> sprintIds);
+
+    /**
+     * 查询用户信息通过迭代id
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<Long>}
+     */
+    List<Long> queryUserInfoBySprintId(long sprintId);
 }

@@ -78,7 +78,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from issue_filter_related_checked
+    from s_issue_filter_related_checked
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -89,21 +89,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from issue_filter_related_checked
+    from s_issue_filter_related_checked
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from issue_filter_related_checked
+    delete from s_issue_filter_related_checked
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedCheckedExample">
-    delete from issue_filter_related_checked
+    delete from s_issue_filter_related_checked
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedChecked" useGeneratedKeys="true" keyProperty="id">
-    insert into issue_filter_related_checked (id, id_check, category, 
+    insert into s_issue_filter_related_checked (id, id_check, category, 
       filter_id, project_id, create_uid, 
       create_time,tenant_code)
     values (#{id,jdbcType=BIGINT}, #{idCheck,jdbcType=TINYINT}, #{category,jdbcType=TINYINT}, 
@@ -111,7 +111,7 @@
       #{createTime,jdbcType=TIMESTAMP},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedChecked">
-    insert into issue_filter_related_checked
+    insert into s_issue_filter_related_checked
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -166,13 +166,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedCheckedExample" resultType="java.lang.Long">
-    select count(*) from issue_filter_related_checked
+    select count(*) from s_issue_filter_related_checked
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update issue_filter_related_checked
+    update s_issue_filter_related_checked
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -204,7 +204,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update issue_filter_related_checked
+    update s_issue_filter_related_checked
     set id = #{record.id,jdbcType=BIGINT},
       id_check = #{record.idCheck,jdbcType=TINYINT},
       category = #{record.category,jdbcType=TINYINT},
@@ -218,7 +218,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedChecked">
-    update issue_filter_related_checked
+    update s_issue_filter_related_checked
     <set>
       <if test="idCheck != null">
         id_check = #{idCheck,jdbcType=TINYINT},
@@ -245,7 +245,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedChecked">
-    update issue_filter_related_checked
+    update s_issue_filter_related_checked
     set id_check = #{idCheck,jdbcType=TINYINT},
       category = #{category,jdbcType=TINYINT},
       filter_id = #{filterId,jdbcType=BIGINT},

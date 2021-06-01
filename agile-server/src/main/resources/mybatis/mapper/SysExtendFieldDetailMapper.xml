@@ -82,7 +82,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sys_extend_field_detail
+    from  s_sys_extend_field_detail 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -93,21 +93,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sys_extend_field_detail
+    from  s_sys_extend_field_detail 
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sys_extend_field_detail
+    delete from  s_sys_extend_field_detail 
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample">
-    delete from sys_extend_field_detail
+    delete from  s_sys_extend_field_detail 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail">
-    insert into sys_extend_field_detail (id, issue_id, field_id, 
+    insert into  s_sys_extend_field_detail  (id, issue_id, field_id, 
       field_name, value, state, 
       create_uid, create_time, update_uid, 
       update_time, tenant_code)
@@ -117,7 +117,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail">
-    insert into sys_extend_field_detail
+    insert into  s_sys_extend_field_detail 
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -190,13 +190,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample" resultType="java.lang.Long">
-    select count(*) from sys_extend_field_detail
+    select count(*) from  s_sys_extend_field_detail 
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sys_extend_field_detail
+    update  s_sys_extend_field_detail 
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -237,7 +237,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sys_extend_field_detail
+    update  s_sys_extend_field_detail 
     set id = #{record.id,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       field_id = #{record.fieldId,jdbcType=VARCHAR},
@@ -255,7 +255,7 @@
   </update>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail">
-    update sys_extend_field_detail
+    update  s_sys_extend_field_detail 
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -291,7 +291,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail">
-    update sys_extend_field_detail
+    update  s_sys_extend_field_detail 
     set issue_id = #{issueId,jdbcType=BIGINT},
       field_id = #{fieldId,jdbcType=VARCHAR},
       field_name = #{fieldName,jdbcType=VARCHAR},
@@ -305,7 +305,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
     <insert id="batchSave">
-      insert into sys_extend_field_detail (issue_id, field_id,
+      insert into  s_sys_extend_field_detail  (issue_id, field_id,
       field_name, `value`, state,
       create_uid, create_time, update_uid,
       update_time, tenant_code)
@@ -319,7 +319,7 @@
     </insert>
   <update id="updateApprovalStatusByBizNums">
     update
-    sys_extend_field_detail
+     s_sys_extend_field_detail 
     set
     approval_status = #{approvalStatus}
     where biz_num in
@@ -328,7 +328,7 @@
     </foreach>
   </update>
   <update id="updateSelective" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail">
-    update sys_extend_field_detail
+    update  s_sys_extend_field_detail 
     <set>
 
       <if test="fieldName != null">
@@ -362,7 +362,7 @@
   </update>
     <select id="countEmptyApprovalResultByBizBacklogIds" resultType="int">
       select count(1)
-      from sys_extend_field_detail a,issue b
+      from  s_sys_extend_field_detail  a,issue b
       where  a.issue_id = b.issue_id
       and b.state = 'U'
       and a.issue_id in
@@ -374,7 +374,7 @@
 
   <select id="countApprovalFailedBizBacklog" resultType="int">
     select count(1)
-    from sys_extend_field_detail a,issue b
+    from  s_sys_extend_field_detail  a,issue b
     where  a.issue_id = b.issue_id
     and b.state = 'U'
     and a.issue_id in
@@ -384,14 +384,14 @@
     and a.field_id='approvalResult' and  a.value = '不通过'
   </select>
     <update id="updateSuccessBizBacklogDeployType">
-      update sys_extend_field_detail set `value`=#{deployType} where field_id='type' and
+      update  s_sys_extend_field_detail  set `value`=#{deployType} where field_id='type' and
       issue_id in
       <foreach collection="successBizBacklogIds" index="index" item="item" open="(" separator="," close=")">
         #{item}
       </foreach>
     </update>
   <update id="updateByPrimaryKeySelectiveWithNull" parameterType="com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail">
-    update sys_extend_field_detail
+    update  s_sys_extend_field_detail 
     <set>
       value = #{value,jdbcType=VARCHAR},
       <if test="issueId != null">
@@ -430,7 +430,7 @@
 
     select
     distinct a.issue_id
-    from sys_extend_field_detail a
+    from  s_sys_extend_field_detail  a
     <where>
       1=1
       <if test="bizBacklogIds!=null">
@@ -458,7 +458,7 @@
   </select>
   <update id="batchUpdate" parameterType="java.util.List">
     <foreach collection="list" item="bean" index="index" open="" close="" separator=";">
-      UPDATE sys_extend_field_detail
+      UPDATE  s_sys_extend_field_detail 
       <set>
         `value` = #{bean.value,jdbcType=VARCHAR}
       </set>
@@ -474,7 +474,7 @@
       field_id,
       value
     from
-      sys_extend_field_detail
+       s_sys_extend_field_detail 
     where
       issue_id = #{issueId}
     and
@@ -482,7 +482,7 @@
   </select>
 
   <select id="getTmpSysExtendFieldMap"  resultMap="BaseResultMap">
-    select * from sys_extend_field_detail where
+    select * from  s_sys_extend_field_detail  where
     issue_id in (
     select DISTINCT a.issue_id  from issue a where a.issue_type  = 1 and a.state = 'U' and  (a.stage_id in (1) or a.stage_id is null )-- and title like '%-BOSS'
     and not exists (select 1 from issue b where b.issue_type= 2  and a.state = 'U' and b.parent_id = a.issue_id)  ORDER BY a.create_time desc )
@@ -528,19 +528,19 @@
     <select id="getPlanDeployDateListByFormalReqCode" resultMap="BaseResultMap">
       select
       <include refid="Base_Column_List" />
-      from sys_extend_field_detail b where b.field_id='planDeployDate' and  b.issue_id in(
-select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCode,jdbcType=VARCHAR}) order by b.`value`;
+      from  s_sys_extend_field_detail  b where b.field_id='planDeployDate' and  b.issue_id in(
+select a.issue_id from  s_sys_extend_field_detail  a where a.`value`= #{formalReqCode,jdbcType=VARCHAR}) order by b.`value`;
     </select>
   <select id="getBizNumListByFormalReqCode" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from sys_extend_field_detail b where b.field_id='bizNum' and  b.issue_id in(
-    select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCode,jdbcType=VARCHAR}) order by b.`value`;
+    from  s_sys_extend_field_detail  b where b.field_id='bizNum' and  b.issue_id in(
+    select a.issue_id from  s_sys_extend_field_detail  a where a.`value`= #{formalReqCode,jdbcType=VARCHAR}) order by b.`value`;
   </select>
 
   <delete id="batchDelEpicActualOnlineTime" parameterType="java.util.List">
     delete from
-      sys_extend_field_detail
+       s_sys_extend_field_detail 
     where
       field_id = 'actualOnlineTime'
     and
@@ -552,7 +552,7 @@ select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCod
 
   <insert id="batchInsertEpicActualOnlineTime" parameterType="java.util.List">
     insert into
-      sys_extend_field_detail
+       s_sys_extend_field_detail 
     (
       issue_id,
       field_id,
@@ -574,7 +574,7 @@ select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCod
     </foreach>
   </insert>
     <delete id="batchUpdateReqSchedulingByIssueIdList">
-      update sys_extend_field_detail set `value` = #{reqScheduling}
+      update  s_sys_extend_field_detail  set `value` = #{reqScheduling}
       <where>
         field_id = 'reqScheduling'
         <if test="notCanceledAndOnlineIssueIdList != null and notCanceledAndOnlineIssueIdList.size() > 0">
@@ -590,14 +590,14 @@ select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCod
     select
       <include refid="Base_Column_List" />
     from
-      sys_extend_field_detail
+       s_sys_extend_field_detail 
     where
       issue_id =
     (
       select
         issue_id
       from
-        sys_extend_field_detail
+         s_sys_extend_field_detail 
       where
         field_id = 'bizNum'
       and
@@ -606,23 +606,23 @@ select a.issue_id from sys_extend_field_detail a where a.`value`= #{formalReqCod
   </select>
     <select id="checkEpicIsNotAllOnline" resultMap="BaseResultMap">
       select <include refid="Base_Column_List" />
-      from sys_extend_field_detail a where a.field_id = 'formalReqCode' and a.`value` = #{formalReqCode}
+      from  s_sys_extend_field_detail  a where a.field_id = 'formalReqCode' and a.`value` = #{formalReqCode}
       and exists (select 1 from issue b where  b.stage_id != '7' and b.issue_id = a.issue_id and b.state = 'U')
     </select>
   <select id="getSysExtendFieldDetailByFormalReqCodeAndProp" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
-    from sys_extend_field_detail aa
+    from  s_sys_extend_field_detail  aa
     where aa.issue_id in (
-      select a.issue_id from sys_extend_field_detail a
+      select a.issue_id from  s_sys_extend_field_detail  a
       where exists (
-        select 1 from sys_extend_field_detail b where a.issue_id = b.issue_id and b.field_id = 'formalReqCode' and b.`value` = #{formalReqCode}
+        select 1 from  s_sys_extend_field_detail  b where a.issue_id = b.issue_id and b.field_id = 'formalReqCode' and b.`value` = #{formalReqCode}
       )
     )
     and aa.field_id = #{fieldId}
     and aa.`value`= #{fieldValue};
   </select>
   <select id="getNoDeployAndToBePublish" resultMap="BaseResultMap">
-    select a.* from sys_extend_field_detail a,issue b
+    select a.* from  s_sys_extend_field_detail  a,issue b
     where a.issue_id = b.issue_id
     and  a.field_id='planStates'
     and a.`value`='8884'

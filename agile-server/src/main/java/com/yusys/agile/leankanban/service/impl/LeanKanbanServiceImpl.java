@@ -1,6 +1,6 @@
 package com.yusys.agile.leankanban.service.impl;
 
-import com.yusys.agile.commission.domain.Commission;
+import com.yusys.agile.commission.domain.SCommission;
 import com.yusys.agile.commission.service.CommissionService;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.issue.dao.IssueHistoryRecordMapper;
@@ -27,7 +27,6 @@ import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.sprint.dao.SprintMapper;
 import com.yusys.agile.sprint.domain.SprintWithBLOBs;
 import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.utils.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.yusys.agile.utils.page.PageQuery;
@@ -181,15 +180,15 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
         issueHistoryRecordMapper.insert(record);
 
         //todo 更新代办状态
-        Commission commission = commissionService.getCommissionByIssueId(issueId);
-        if (null != commission) {
+        SCommission sCommission = commissionService.getCommissionByIssueId(issueId);
+        if (null != sCommission) {
             String state = null;
             if (String.valueOf(StageConstant.FirstStageEnum.FINISH_STAGE.getValue()).equals(String.valueOf(toStageId))) {
                 state = StateEnum.E.getValue();
             } else {
                 state = StateEnum.U.getValue();
             }
-            commissionService.updateCommissionState(issueId, state);
+            //commissionService.updateCommissionState(issueId, state);
         }
         return i;
     }
@@ -221,10 +220,10 @@ public class LeanKanbanServiceImpl implements LeanKanbanService {
                     map.put("stageId", stageId.toString());
                     map.put("queryFlag", "leankanban");
                     //计算总记录数
-                    issues = issueService.queryIssueList(map, projectId);
+                    issues = issueService.queryIssueList(map);
                     map.put("pageNum", null);
                     map.put("pageSize", null);
-                    issueTotal = issueService.queryIssueList(map, projectId);
+                    issueTotal = issueService.queryIssueList(map);
                 }
                 int count = pageResultDTO.getFrom() + pageResultDTO.getPageSize();
                 resultDTO.setHasNext(issueTotal.size() >= count ? true : false);

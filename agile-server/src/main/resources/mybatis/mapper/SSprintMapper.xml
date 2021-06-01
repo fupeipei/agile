@@ -19,10 +19,12 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
     </resultMap>
+
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.sprintv3.domain.SSprintWithBLOBs">
         <result column="sprint_desc" jdbcType="LONGVARCHAR" property="sprintDesc"/>
         <result column="sprint_days" jdbcType="LONGVARCHAR" property="sprintDays"/>
     </resultMap>
+
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -53,6 +55,7 @@
             </foreach>
         </where>
     </sql>
+
     <sql id="Update_By_Example_Where_Clause">
         <where>
             <foreach collection="example.oredCriteria" item="criteria" separator="or">
@@ -83,6 +86,7 @@
             </foreach>
         </where>
     </sql>
+
     <sql id="Base_Column_List">
         sprint_id,
         sprint_name,
@@ -101,10 +105,15 @@
         update_time,
         tenant_code
     </sql>
+
     <sql id="Blob_Column_List">
         sprint_desc,
         sprint_days
     </sql>
+
+    <sql id="sprintOverViewDetails">
+    </sql>
+
     <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.sprintv3.domain.SSprintExample"
             resultMap="ResultMapWithBLOBs">
         select
@@ -531,46 +540,85 @@
     </update>
 
     <sql id="query_list_column">
-        sprint_id,
-        sprint_name,
-        status,
-        start_time,
-        end_time,
-        finish_time,
-        sprint_days,
-        team_id,
-        work_hours,
-        version_number,
-        sync_state,
-        create_uid,
-        create_time,
-        tenant_code
+        sp.sprint_id      as sprint_id,
+        sp.sprint_name    as sprint_name,
+        sp.status         as status,
+        sp.start_time     as start_time,
+        sp.end_time       as end_time,
+        sp.finish_time    as finish_time,
+        sp.sprint_days    as sprint_days,
+        sp.team_id        as team_id,
+        sp.work_hours     as work_hours,
+        sp.version_number as version_number,
+        sp.sync_state     as sync_state,
+        sp.create_uid     as create_uid,
+        sp.create_time    as create_time,
+        sp.tenant_code    as tenant_code
     </sql>
     <sql id="query_list_param">
-        and state = 'U'
+        sp.team_id = st.team_id
+        and sp.state = 'U'
         <if test="params != null">
-            <if test="params.teamIds != null and params.teamIds.size != 0">
-                and (team_id in
-                <foreach collection="params.teamIds" item="teamId" open="(" close=")" separator=",">
-                    #{teamId}
-                </foreach>
+            <if test="params.team != null and params.team != ''">
+                and (st.team_id like concat('%',#{params.team},'%')
+                or st.team_name like concat('%',#{params.team},'%')
                 )
             </if>
             <if test="params.sprint != null and params.sprint != ''">
-                and (sprint_name like concat('%',#{params.sprint},'%')
-                or sprint_id like concat('%',#{params.sprint},'%')
+                and (sp.sprint_id like concat('%',#{params.sprint},'%')
+                or sp.sprint_name like concat('%',#{params.sprint},'%')
                 )
+            </if>
+        </if>
+    </sql>
+    <sql id="query_other_list_param">
+        and sp.team_id = st.team_id
+        and st.team_id = stm.team_id
+        and st.team_id = sts.team_id
+        and sp.state = 'U'
+        <if test="params != null">
+            <if test="params.team != null and params.team != ''">
+                and (st.team_id like concat('%',#{params.team},'%')
+                or st.team_name like concat('%',#{params.team},'%')
+                )
+            </if>
+            <if test="params.sprint != null and params.sprint != ''">
+                and (sp.sprint_id like concat('%',#{params.sprint},'%')
+                or sp.sprint_name like concat('%',#{params.sprint},'%')
+                )
+            </if>
+            <if test="params.system != null">
+                and sts.system_id = #{params.system}
+            </if>
+            <if test="params.user != null">
+                and stm.user_id = #{params.user}
             </if>
         </if>
     </sql>
     <select id="queryAllSprint" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
         select
         <include refid="query_list_column"/>
-        from s_sprint
+        from s_sprint sp,
+             s_team st
         <where>
             <include refid="query_list_param"/>
         </where>
-        order by create_time desc
+        order by sp.create_time desc
+    </select>
+    <select id="queryOtherSprint" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        select
+        <include refid="query_list_column"/>
+        from s_sprint sp,
+             s_team st,
+             s_team_member stm,
+             s_team_system sts
+        <where>
+            <include refid="query_other_list_param"/>
+            <if test="params.user != null">
+                and sp.create_uid = #{params.user}
+            </if>
+        </where>
+        order by sp.create_time desc
     </select>
 
     <update id="cancelSprint">
@@ -585,20 +633,229 @@
         where sprint_id = #{sprintId}
     </select>
 
-    <select id="joinSprint" resultType="int">
-        select count(a.sprint_id)
-        from s_sprint a
-                     left join s_sprint_user_hour b on a.sprint_id = b.sprint_id
-                     left join s_team_po c on b.user_id = c.user_id
-        where a.sprint_id = #{sprintId}
-          and c.user_id = #{userId}
-    </select>
-
-    <select id="creatUser" resultType="int">
+    <select id="creatUser" resultType="boolean">
+        <![CDATA[
         select count(sprint_id)
         from s_sprint
         where sprint_id = #{sprintId}
           and create_uid = #{userId}
+        ]]>
     </select>
 
+    <select id="querySprintUnfinishedStoryNumber" resultType="int">
+        select count(issue_id)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and issue_type = 3
+          and stage_id <![CDATA[<]]> 103
+    </select>
+
+    <update id="sprintFinish">
+        update s_sprint
+        set status = 4
+        where sprint_id = #{sprintId}
+    </update>
+
+    <select id="querySprintStatus" resultType="java.lang.Byte">
+        select status
+        from s_sprint
+        where sprint_id = #{sprintId}
+    </select>
+
+    <select id="checkSprintPo" resultType="boolean">
+        <![CDATA[
+        select count(sprint_id)
+        from s_sprint a
+                     left join s_team_member b on a.team_id = b.team_id
+        where a.sprint_id = #{sprintId}
+          and b.user_id = #{userId}
+          and b.role_id = 104
+        ]]>
+    </select>
+
+    <select id="selectByPrimaryKeyNotText" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        from s_sprint
+        where sprint_id = #{sprintId,jdbcType=BIGINT}
+    </select>
+
+    <select id="queryValidSprintById" resultMap="ResultMapWithBLOBs">
+        select status, sprint_name, sprint_id, work_hours, start_time, end_time, team_id
+        from s_sprint
+        where sprint_id = #{sprintId}
+          and state = 'U'
+    </select>
+
+    <select id="selectByIdAndName" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+        select
+        <include refid="Base_Column_List"/>
+        from s_sprint
+        where state = 'U'
+          and status in (2, 3, 4)
+          and team_id = #{teamId}
+          and (
+                sprint_name like concat('%', #{sprint}, '%')
+                        or sprint_id like concat('%', #{sprint}, '%')
+                )
+        order by create_time desc
+    </select>
+
+    <select id="querySprintStoryNumBer" resultType="int">
+        select count(issue_id)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and state = 'U'
+    </select>
+
+    <select id="querySprintFinishedStoryNumber" resultType="int">
+        select count(issue_id)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and lane_id = #{status}
+          and state = 'U'
+    </select>
+
+    <select id="querySprintFinishedStoryPoint" resultType="int">
+        select ifnull(sum(a.value), 0)
+        from s_sys_extend_field_detail a
+        where a.issue_id in
+              (select issue_id
+               from s_issue
+               where sprint_id = #{sprintId}
+                 and lane_id = #{status}
+                 and issue_type = #{issueType}
+                 and state = 'U')
+    </select>
+
+    <select id="querySprintStoryPoint" resultType="int">
+        select ifnull(sum(a.value), 0)
+        from s_sys_extend_field_detail a
+        where a.issue_id in
+              (select issue_id
+               from s_issue
+               where sprint_id = #{sprintId}
+                 and issue_type = #{issueType}
+                 and state = 'U')
+    </select>
+
+    <select id="querySprintFinishedWorkload" resultType="int">
+        select ifnull(sum(plan_workload), 0)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and lane_id = #{status}
+          and issue_type = #{issueType}
+          and state = 'U'
+    </select>
+
+    <select id="querySprintWorkload" resultType="int">
+        select ifnull(sum(plan_workload), 0)
+        from s_issue a
+        where a.sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and state = 'U'
+    </select>
+
+    <select id="querySprintFinishedTaskNumber" resultType="int">
+        select count(issue_id)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and lane_id = #{status}
+          and issue_type = #{issueType}
+          and state = 'U'
+    </select>
+
+    <select id="querySprintTaskNumber" resultType="int">
+        select count(issue_id)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and state = 'U'
+    </select>
+
+    <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
+
+        SELECT DISTINCT ss.sprint_id, ss.sprint_name,st.team_id ,st.team_name
+        from agile.s_sprint ss
+        left join agile.s_team_system sts
+        on ss.team_id = sts.team_id
+        left join agile.s_team st  on st.team_id  = ss.team_id
+        where ss.status in (2, 3)
+        and sts.system_id = #{systemId};
+    </select>
+
+    <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
+        select *
+        from s_sprint a
+                     left join s_sprint_user_hour b on a.sprint_id = b.sprint_id
+                     left join s_issue c on b.sprint_id = c.sprint_id
+        where a.sprint_id = 10000
+          and c.issue_type = 4
+    </select>
+
+    <select id="querySprintUserIds" resultType="java.lang.Long">
+        select distinct user_id
+        from s_sprint_user_hour
+        where sprint_id = #{sprintId}
+    </select>
+    <!--    TYPE_ADD_STATE("未领取", 107L),
+        TYPE_RECEIVED_STATE("已领取", 108L),
+        TYPE_MODIFYING_STATE("进行中", 109L),
+        TYPE_CLOSED_STATE("已完成", 110L);-->
+
+    <!--实际工作量计算方法：已领取（预计工时）+进行中（预计工时）+已完成（实际工时）任务卡片总和-->
+    <select id="queryUserActualWorkload" resultType="Integer">
+
+        select      (ifnull((select sum(plan_workload)
+                        from s_issue
+                        where handler = #{userId}
+                          and sprint_id = #{sprintId}
+                          and lane_id in (108, 109)
+                          and state = 'U'
+                      ),0)
+                      +
+                    ifnull((select sum(really_workload)
+                        from s_issue b
+                        where b.handler = #{userId}
+                          and b.sprint_id = #{sprintId}
+                          and lane_id = 110
+                          and state = 'U'
+                               ),0)
+                    )     AS  a
+
+    </select>
+
+    <select id="unclaimedWorkHours" resultType="int">
+        select ifnull(sum(plan_workload), 0)
+        from s_issue a
+        where a.handler is null
+          and a.sprint_id = #{sprintId}
+          and a.issue_type = #{issueType}
+          and a.lane_id = #{status}
+    </select>
+
+    <!--    TYPE_ADD_STATE("未领取", 107L),
+        TYPE_RECEIVED_STATE("已领取", 108L),
+        TYPE_MODIFYING_STATE("进行中", 109L),
+        TYPE_CLOSED_STATE("已完成", 110L);-->
+    <!--剩余工作量计算方法：进行中（剩余工作量）任务卡片总和-->
+    <select id="queryUserResidueWorkload" resultType="int">
+        select ifnull(sum(plan_workload), 0)
+        from s_issue
+        where handler = #{userId}
+          and sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and lane_id = #{status}
+          and state = 'U'
+    </select>
+
+    <select id="queryUserTaskNumber" resultType="int">
+        select count(issue_id)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and handler = #{userId}
+          and state = 'U'
+    </select>
 </mapper>

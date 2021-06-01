@@ -9,6 +9,7 @@ import com.yusys.agile.businesskanban.enums.BusinessLevel;
 import com.yusys.agile.businesskanban.enums.BusinessState;
 import com.yusys.agile.businesskanban.enums.BusinessType;
 import com.alibaba.fastjson.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -50,10 +51,10 @@ public class BusinessServiceTest {
             kanbanDTO.setCreateUid(9999L);
             kanbanDTO.setStatus((byte) 0);
             kanbanDTO.setDescText("事务看板卡片0000");
-            BusinessDTO business = businessService.createBusiness(kanbanDTO);
-            log.info("Junit测试--创建事务卡片成功：{}", business);
+            businessService.createBusiness(kanbanDTO);
+            Assert.assertTrue("createBusinessTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--创建事务卡片失败：{}", e);
+            Assert.assertFalse("createBusinessTest失败", true);
         }
     }
 
@@ -62,10 +63,10 @@ public class BusinessServiceTest {
     public void deleteBusinessTest() {
         try {
             Long businessId = 1L;
-            int num = businessService.deleteBusiness(businessId);
-            log.info("Junit测试--删除事务卡片成功：{}", num);
+            businessService.deleteBusiness(businessId);
+            Assert.assertTrue("deleteBusinessTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--删除事务卡片失败：{}", e);
+            Assert.assertFalse("deleteBusinessTest失败", true);
         }
     }
 
@@ -106,10 +107,10 @@ public class BusinessServiceTest {
                     "\"updateUid\": \"726827322836901888\"\n" +
                     "}";
             BusinessDTO kanbanDTO = JSONObject.parseObject(str, BusinessDTO.class);
-            BusinessWithBLOBs businessWithBLOBs = businessService.updateBusiness(kanbanDTO);
-            log.info("Junit测试--编辑事务卡片成功：{}", businessWithBLOBs.toString());
+            businessService.updateBusiness(kanbanDTO);
+            Assert.assertTrue("updateBusinessTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--编辑事务卡片失败：{}", e);
+            Assert.assertFalse("updateBusinessTest失败", true);
         }
     }
 
@@ -117,10 +118,10 @@ public class BusinessServiceTest {
     public void getByBusinessIdTest() {
         try {
             Long businessId = 1L;
-            List<BusinessHistoryRecordDTO> businessList = businessService.getByBusinessId(businessId, 1, 30);
-            log.info("Junit测试--根据事务卡片ID查询卡片历史数据成功：{}", businessList.toString());
+            businessService.getByBusinessId(businessId, 1, 30);
+            Assert.assertTrue("getByBusinessIdTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据事务卡片ID查询卡片历史数据失败：{}", e);
+            Assert.assertFalse("getByBusinessIdTest失败", true);
         }
     }
 
@@ -146,10 +147,10 @@ public class BusinessServiceTest {
             kanbanDTO.setCreateUid(9999L);
             kanbanDTO.setStatus((byte) 0);
             kanbanDTO.setDescText("事务看板卡片0000");
-            List<BusinessResultDTO> businessInfos = businessService.getBusinessInfo(kanbanDTO);
-            log.info("Junit测试--根据事务卡片条件查询卡片列表数据成功：{}", businessInfos.toString());
+            businessService.getBusinessInfo(kanbanDTO);
+            Assert.assertTrue("getBusinessInfoTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据事务卡片条件查询卡片列表数据失败：{}", e);
+            Assert.assertFalse("getBusinessInfoTest失败", true);
         }
     }
 
@@ -175,10 +176,10 @@ public class BusinessServiceTest {
             kanbanDTO.setCreateUid(9999L);
             kanbanDTO.setStatus((byte) 0);
             kanbanDTO.setDescText("事务看板卡片0000");
-            List<BusinessDTO> businessInfList = businessService.getBusinessInfList(kanbanDTO);
-            log.info("Junit测试--根据事务卡片条件查询卡片列表形式数据成功：{}", businessInfList.toString());
+            businessService.getBusinessInfList(kanbanDTO);
+            Assert.assertTrue("getBusinessInfListTest成功", true);
         } catch (Exception e) {
-            log.info("Junit测试--根据事务卡片条件查询卡片列表形式数据失败：{}", e);
+            Assert.assertFalse("getBusinessInfListTest失败", true);
         }
     }
 }

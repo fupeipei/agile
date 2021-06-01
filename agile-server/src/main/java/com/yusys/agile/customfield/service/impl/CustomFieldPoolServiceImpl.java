@@ -53,18 +53,15 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
                 || null == customFieldDTO.getProjectId()) {
             throw new BusinessException("入参错误！");
         }
-
         String fieldName = customFieldDTO.getFieldName();
         Long projectId = customFieldDTO.getProjectId();
         // 查询同一项目下是否有名字相同的自定义字段
         if (checkPoolSameName(fieldName, projectId, null)) {
             throw new BusinessException("该字段名[" + fieldName + "]在项目中已经存在！");
         }
-
         CustomFieldPool customFieldPool = ReflectUtil.copyProperties(customFieldDTO, CustomFieldPool.class);
         customFieldPool.setState(StateEnum.U.getValue());
         customFieldPoolMapper.insert(customFieldPool);
-
     }
 
     /**
@@ -140,7 +137,9 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
             PageHelper.startPage(pageNum, pageSize);
         }
         CustomFieldPoolExample example = new CustomFieldPoolExample();
-        CustomFieldPoolExample.Criteria criteria = example.createCriteria().andProjectIdEqualTo(projectId).andStateEqualTo(StateEnum.U.getValue());
+        CustomFieldPoolExample.Criteria criteria = example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andProjectIdEqualTo(projectId);
         if (StringUtils.isNotBlank(fieldName)) {
             criteria.andFieldNameLike(StringConstant.PERCENT_SIGN + fieldName + StringConstant.PERCENT_SIGN);
         }
@@ -168,5 +167,19 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         }
         CustomFieldDTO customFieldDTO = ReflectUtil.copyProperties(customFieldPool, CustomFieldDTO.class);
         return customFieldDTO;
+    }
+
+    @Override
+    public List<CustomFieldDTO> listAllCustomFieldsByTenantCode(String tenantCode) {
+        CustomFieldPoolExample example = new CustomFieldPoolExample();
+        CustomFieldPoolExample.Criteria criteria = example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue());
+        if (StringUtils.isNotBlank(tenantCode)) {
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
+        // 排序
+        example.setOrderByClause("create_time desc");
+
+        return customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
     }
 }

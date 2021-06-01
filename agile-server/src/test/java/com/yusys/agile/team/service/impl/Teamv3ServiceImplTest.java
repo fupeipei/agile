@@ -1,16 +1,13 @@
 package com.yusys.agile.team.service.impl;
 
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
-import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.domain.STeam;
-import com.yusys.agile.teamv3.domain.STeamUser;
+import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
-import com.yusys.portal.common.id.IdGenerator;
-import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,8 +16,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,35 +32,8 @@ public class Teamv3ServiceImplTest {
 
     @Autowired
     private Teamv3Service teamv3Service;
-    @Autowired
-    private STeamMapper sTeamMapper;
 
     private SecurityDTO securityDTO;
-
-    public STeam initTeam() {
-        STeam team = new STeam();
-        team.setTeamId(840617539415855106l);
-        team.setTeamName("测试团队");
-        List<Long> systems = new ArrayList();
-        systems.add(816662916938469376L);
-        team.setSystemIds(systems);
-        List<STeamUser> users = new ArrayList();
-        STeamUser user1 = new STeamUser();
-        user1.setUserId(816662609684729856L);
-        user1.setUserName("a5");
-        user1.setUserAccount("a5");
-        user1.setSystemId(816662916938469376L);
-        users.add(user1);
-        team.setTeamUsers(users);
-        List<Long> teamPOs = new ArrayList();
-        teamPOs.add(807202108292194304L);
-        teamPOs.add(816662609684729856L);
-        team.setTeamPoS(teamPOs);
-        List<Long> teamSmS = new ArrayList();
-        teamSmS.add(819577970802257920L);
-        team.setTeamSmS(teamSmS);
-        return team;
-    }
 
     @Before
     public void setUp() {
@@ -88,8 +56,8 @@ public class Teamv3ServiceImplTest {
         TeamQueryDTO dto = new TeamQueryDTO();
         dto.setPageSize(10);
         dto.setPageNum(1);
-        List<TeamListDTO> list = teamv3Service.listTeam(dto, this.securityDTO);
-        log.info("分页查询列表 list={}", list);
+        teamv3Service.listTeam(dto, this.securityDTO);
+        Assert.assertTrue("testList1成功", true);
     }
     /**
      * 测试分页查询-team
@@ -102,8 +70,8 @@ public class Teamv3ServiceImplTest {
         dto.setPageSize(10);
         dto.setPageNum(1);
         dto.setTeam("联");
-        List<TeamListDTO> list = teamv3Service.listTeam(dto, this.securityDTO);
-        log.info("分页查询列表 list={}", list);
+        teamv3Service.listTeam(dto, this.securityDTO);
+        Assert.assertTrue("testList2成功", true);
     }
     @Test
     public void testList3(){
@@ -112,34 +80,62 @@ public class Teamv3ServiceImplTest {
         dto.setPageNum(1);
         dto.setTeam("联");
         dto.setPo("zhaoydd");
-        List<TeamListDTO> list = teamv3Service.listTeam(dto, this.securityDTO);
-        log.info("分页查询列表 list={}", list);
+        teamv3Service.listTeam(dto, this.securityDTO);
+        Assert.assertTrue("testList3成功", true);
     }
     /**
-     * 新增团队
+     * 新增团队--团队名称重复情况
      */
     @Test
     public void insertTeam() {
-        for (int i=0; i<5; i++){
-            STeam team = new STeam();
-            team.setTeamName("联通ggxx"+i);
-            team.setTeamDesc("联通ggxx"+i);
-            team.setState(StateEnum.U.getValue());
-            team.setTeamPoS(Arrays.asList(841351045005778944L,816974204303933440L));
-            team.setTeamSmS(Arrays.asList(817430824963395584L,817436627609112576L));
-            List<STeamUser> users = new ArrayList();
-            STeamUser user1 = new STeamUser();
-            user1.setUserId(816662609684729856L);
-            user1.setUserName("a5");
-            user1.setUserAccount("a5");
-            user1.setSystemId(816662916938469376L);
-            users.add(user1);
-            team.setTeamUsers(users);
-            team.setSystemIds(Arrays.asList(816662916938469376L));
-            String s = teamv3Service.insertTeam(team);
-            log.info("当前第【{}】条数据{}插入成功",i, team);
+        STeam team = new STeam();
+        team.setTeamName("团队002");
+        team.setTeamDesc("描述");
+        team.setTenantCode("1");
+        STeamMember po1 = new STeamMember();
+        po1.setUserId(846427329554370560L);
+        po1.setUserName("张宇");
+        po1.setUserAccount("zhangyu");
+        team.setTeamPoS(Arrays.asList(po1));
+        STeamMember sm1 = new STeamMember();
+        sm1.setUserId(842765807724986368L);
+        sm1.setUserName("ceshieeee");
+        sm1.setUserAccount("ceshieeee");
+        team.setTeamSmS(Arrays.asList(sm1));
+        team.setSystemIds(Arrays.asList(816356430371512320L));
+        try {
+            teamv3Service.insertTeam(team);
+            Assert.assertTrue("insertTeam成功", true);
+        }catch (Exception e){
+            Assert.assertTrue(e.getMessage() != null);
         }
-
+    }
+    /**
+     * 新增团队--PO、SM重复情况
+     */
+    @Test
+    public void insertTeam2() {
+        STeam team = new STeam();
+        team.setTeamName("团队003");
+        team.setTeamDesc("描述");
+        team.setTenantCode("1");
+        STeamMember po1 = new STeamMember();
+        po1.setUserId(846427329554370560L);
+        po1.setUserName("张宇");
+        po1.setUserAccount("zhangyu");
+        team.setTeamPoS(Arrays.asList(po1));
+        STeamMember sm1 = new STeamMember();
+        sm1.setUserId(846427329554370560L);
+        sm1.setUserName("张宇");
+        sm1.setUserAccount("zhangyu");
+        team.setTeamSmS(Arrays.asList(sm1));
+        team.setSystemIds(Arrays.asList(816356430371512320L));
+        try {
+            teamv3Service.insertTeam(team);
+            Assert.assertTrue("insertTeam2成功", true);
+        }catch (Exception e){
+            Assert.assertTrue(e.getMessage() != null);
+        }
     }
 
     /**
@@ -147,9 +143,8 @@ public class Teamv3ServiceImplTest {
      */
     @Test
     public void deleteTeam() {
-        String s = teamv3Service.deleteTeam(1);
-        System.out.println(s);
-        Assert.assertNotNull(s);
+        teamv3Service.deleteTeam(1);
+        Assert.assertTrue("deleteTeam成功", true);
     }
 
     /**
@@ -157,10 +152,28 @@ public class Teamv3ServiceImplTest {
      */
     @Test
     public void updateTeam() {
-        STeam team = initTeam();
-        String s = teamv3Service.updateTeam(team);
-        System.out.println(s);
-        Assert.assertNotNull(s);
+        STeam team = new STeam();
+        team.setTeamId(100002L);
+        team.setTeamName("团队003");
+        team.setTeamDesc("描述");
+        team.setTenantCode("1");
+        STeamMember po1 = new STeamMember();
+        po1.setUserId(834731929562857472L);
+        po1.setUserName("刘行");
+        po1.setUserAccount("liuxing4");
+        team.setTeamPoS(Arrays.asList(po1));
+        STeamMember sm1 = new STeamMember();
+        sm1.setUserId(846427329554370560L);
+        sm1.setUserName("张宇");
+        sm1.setUserAccount("zhangyu");
+        team.setTeamSmS(Arrays.asList(sm1));
+        team.setSystemIds(Arrays.asList(816356430371512320L));
+        try {
+            teamv3Service.updateTeam(team);
+            Assert.assertTrue("updateTeam成功", true);
+        }catch (Exception e){
+            Assert.assertTrue(e.getMessage() != null);
+        }
     }
 
     /**
@@ -168,11 +181,17 @@ public class Teamv3ServiceImplTest {
      */
     @Test
     public void queryTeam() {
-        STeam team = initTeam();
-        QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(team.getTeamId());
-        System.out.println("******");
-        System.out.println(queryTeamResponse);
-        Assert.assertNotNull(queryTeamResponse);
+        Long teamId = 100007L;
+        QueryTeamResponse response = teamv3Service.queryTeam(teamId);
+        Assert.assertTrue("queryTeam成功", true);
+    }
+
+
+    @Test
+    public void testQuerySystemByTeamId(){
+        Long teamId=100002L;
+        List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
+        Assert.assertTrue(ssoSystemRestDTOS.size()==1);
     }
 
 }

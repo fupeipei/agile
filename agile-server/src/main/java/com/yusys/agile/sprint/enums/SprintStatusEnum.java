@@ -15,10 +15,10 @@ public enum SprintStatusEnum {
 
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private SprintStatusEnum(String name, Byte code) {
+    SprintStatusEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }

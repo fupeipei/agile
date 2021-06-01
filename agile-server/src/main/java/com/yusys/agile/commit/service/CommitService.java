@@ -9,5 +9,5 @@ public interface CommitService {
 
     CommitDTO getMemberCommitRecord(CommitDTO commitDTO);
 
-    //PageInfo<List<com.ai.cicd.model.cms.dto.CommitDTO>> getIssueCommitRecord(Long issueId, Byte issueType, Integer pageNumber, Integer pageSize);
+    PageInfo<List<CommitDTO>> getIssueCommitRecord(Long issueId, Byte issueType, Integer pageNumber, Integer pageSize);
 }

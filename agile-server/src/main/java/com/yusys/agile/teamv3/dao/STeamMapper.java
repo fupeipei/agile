@@ -4,11 +4,12 @@ import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
+import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.portal.model.facade.entity.SsoSystem;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface STeamMapper {
     long countByExample(STeamExample example);
@@ -81,10 +82,12 @@ public interface STeamMapper {
     /**
      * 团队名称数量
      *
+     *
+     * @param teamId
      * @param teamName 团队的名字
      * @return int
      */
-    int teamNameNumber(@Param("teamName") String teamName, @Param("tenantCode") String tenantCode);
+    int teamNameNumber(@Param("teamId") Long teamId, @Param("teamName") String teamName, @Param("tenantCode") String tenantCode);
 
     /**
      * 更新团队数据类型，U：有效数据，E:无效数据
@@ -99,4 +102,39 @@ public interface STeamMapper {
 
 
     List<STeam> getTeamLikeNameOrCode(@Param("team") String team);
+
+    /**
+     * 查询系统团队
+     *
+     * @param teamId 团队id
+     * @return {@link List<SsoSystem>}
+     */
+    List<Long> queryTeamSystem(Long teamId);
+
+    /**
+     * 查询用户信息,用户id
+     *
+     * @param sprintId 迭代id
+     * @param teamId   团队id
+     * @return {@link List<STeamMember>}
+     */
+    List<STeamMember> querySprintUser(@Param("sprintId") Long sprintId);
+//    List<STeamMember> queryUserInfoByUserId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
+
+    /**
+     * 通过团队id查询团队的名字
+     *
+     * @param teamId 团队id
+     * @return {@link String}
+     */
+    String queryTeamNameByTeamId(Long teamId);
+
+
+    /**
+     * 模糊查询迭代下人员
+     * @param sprintId
+     * @param userName
+     * @return
+     */
+    List<STeamMember>  querySprintVagueUser(@Param("sprintId") Long sprintId,@Param("userName") String userName);
 }
