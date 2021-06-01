@@ -53,19 +53,20 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
                 || null == customFieldDTO.getProjectId()) {
             throw new BusinessException("入参错误！");
         }
-
         String fieldName = customFieldDTO.getFieldName();
         Long projectId = customFieldDTO.getProjectId();
         // 查询同一项目下是否有名字相同的自定义字段
         if (checkPoolSameName(fieldName, projectId, null)) {
             throw new BusinessException("该字段名[" + fieldName + "]在项目中已经存在！");
         }
-
         CustomFieldPool customFieldPool = ReflectUtil.copyProperties(customFieldDTO, CustomFieldPool.class);
         customFieldPool.setState(StateEnum.U.getValue());
         customFieldPoolMapper.insert(customFieldPool);
-
     }
+
+
+
+
 
     /**
      * 功能描述: 检查是否有重名
