@@ -366,4 +366,25 @@ public class StoryController {
             return ControllerResponse.fail("查询故事下开发负责人异常");
         }
     }
+
+    /**
+     *功能描述 根据系统查询故事
+     * @author shenfeng
+     * @date 2021/6/1
+      * @param systemId
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     */
+    @GetMapping("/queryStoryBySystemId")
+    public ControllerResponse queryStoryBySystemId(@RequestHeader(name = "systemId", required = false) Long systemId,
+                                                   @RequestParam(name = "pageNum") Integer pageNum,
+                                                   @RequestParam(name = "pageSize") Integer pageSize) {
+        List<IssueDTO> result;
+        try {
+            result = storyService.queryStoryBySystemId(systemId,pageNum,pageSize);
+        } catch (Exception e) {
+            LOGGER.error("根据系统查询故事异常", e);
+            return ControllerResponse.fail("根据系统查询故事异常：" + e.getMessage());
+        }
+        return ControllerResponse.success(new PageInfo<>(result));
+    }
 }
