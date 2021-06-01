@@ -34,7 +34,7 @@ public interface SSprintUserHourMapper {
 
     int batchInsert(@Param("members") List<SprintV3UserHourDTO> members, @Param("sprintId") Long sprintId);
 
-    List<UserSprintHour> getUserIds4Sprint(Long sprintId);
+    List<SSprintUserHour> getUserIds4Sprint(Long sprintId);
 
     int deleteBySprintId(Long sprintId);
 

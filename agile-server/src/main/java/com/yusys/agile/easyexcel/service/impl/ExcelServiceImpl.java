@@ -8,6 +8,9 @@ import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
+import com.yusys.agile.excel.domain.Mistake;
+import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -21,15 +24,22 @@ import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.sl.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *  @Description: excel 实现类
@@ -49,7 +59,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
-
+    private static final int FIRST_ROW_NUM = 1;
     @Override
     public void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentFiled filed) {
         String type = ExcelTypeEnum.getFieldName(excelType);
@@ -85,7 +95,20 @@ public class ExcelServiceImpl implements IExcelService {
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
         //checkData(data);
+        String fileName = file.getOriginalFilename();
+        fileName = new String(fileName.getBytes(), "UTF-8");
+        fileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
+        Sheet sheet = null;
+        Workbook wb = null;
+        FileInputStream fis = (FileInputStream) file.getInputStream();
+        if (com.yusys.agile.utils.ExcelUtil.isExcel2003(fileName)) {
+            wb = new HSSFWorkbook(fis);
+        } else if (com.yusys.agile.utils.ExcelUtil.isExcel2007(fileName)) {
+            wb = new XSSFWorkbook(fis);
+        }
         List<JSONObject> jsonObjects = analysisTaskData(data);
+        checkData(data);
+        //List<JSONObject> jsonObjects = assembleIssue(data);
         //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
             for(JSONObject jsonObject :jsonObjects){
@@ -203,4 +226,30 @@ public class ExcelServiceImpl implements IExcelService {
         List<String> list = Arrays.asList(headLine);
         return CollectionUtils.isEqualCollection(list, excelhead);
     }
+
+
+
+
+    /**
+     * 功能描述: 判断单元格中数据是否是在下拉选择中
+     *
+     * @param value
+     * @param values
+     * @return boolean
+     * @date 2021/2/1
+     */
+    private boolean checkDataValue(String value, String[] values) {
+        if (null == values || values.length == 0) {
+            return false;
+        }
+        for (String date : values) {
+            if (value.equals(date)) {
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

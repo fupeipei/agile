@@ -2,6 +2,7 @@ package com.yusys.agile.teamv3.dao;
 
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamListDTO;
+import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
 import com.yusys.agile.teamv3.domain.STeamMember;
@@ -98,7 +99,7 @@ public interface STeamMapper {
      */
     void updateStateById(@Param("teamId") long teamId, @Param("state") String state);
 
-    List<Team> getTeamsByTeamId(Long teamId);
+    List<STeam> getTeamsByTeamId(Long teamId);
 
 
     List<STeam> getTeamLikeNameOrCode(@Param("team") String team);

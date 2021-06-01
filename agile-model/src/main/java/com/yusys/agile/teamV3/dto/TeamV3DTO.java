@@ -1,6 +1,7 @@
-package com.yusys.agile.team.dto;
+package com.yusys.agile.teamV3.dto;
 
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import lombok.Data;
 
@@ -8,12 +9,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 团队DTO
- *
- * @create 2021-06-01 17:25
- */
+ * @ClassName TeamV3DTO
+ * @Description: TODO
+ * @Author: libinbin
+ * @Date 2021/6/1
+ **/
 @Data
-public class TeamDTO {
+public class TeamV3DTO {
     private Long teamId;
 
     private String teamName;
@@ -28,10 +30,9 @@ public class TeamDTO {
 
     private Long createUid;
 
-    private List<UserSprintHourDTO> users;
+    private List<SprintV3UserHourDTO> users;
 
     private List<SsoSystemRestDTO> teamSystems;
 
     private String tenantCode;
-
 }
