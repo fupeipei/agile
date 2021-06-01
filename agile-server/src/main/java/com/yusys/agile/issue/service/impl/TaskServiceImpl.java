@@ -270,14 +270,12 @@ public class TaskServiceImpl implements TaskService {
     public Long createTask(IssueDTO issueDTO) {
         this.checkIsSMRoleOrTeamUser(issueDTO.getParentId(),"只有SM或团队成员才可以新建任务");
         //设置默认创建
-        Long[] stages = null;
-        if (Optional.ofNullable(issueDTO.getHandler()).isPresent()) {
-            //任务选择处理人就是已领取，否则就是未领取
-            stages = new Long[]{StageConstant.FirstStageEnum.READY_STAGE.getValue(), TaskStatusEnum.TYPE_RECEIVED_STATE.CODE};
-        } else {
+        Long[] stages = issueDTO.getStages();
+        if (!Optional.ofNullable(stages).isPresent()){
             stages = new Long[2];
             stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
             stages[1] = TaskStatusEnum.TYPE_ADD_STATE.CODE;
+        }
             //创建用户故事下任务默认放在开发中的就绪阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
             /*List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
             if (CollectionUtils.isNotEmpty(stageInstances)) {
@@ -285,7 +283,6 @@ public class TaskServiceImpl implements TaskService {
                 StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent() ? stageInstances.get(1) : stageInstances.get(0);
                 stages[1] = stageInstance.getStageId();
             }*/
-        }
         issueDTO.setStages(stages);
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));

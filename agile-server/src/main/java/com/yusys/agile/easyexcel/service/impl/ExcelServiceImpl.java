@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -76,12 +77,15 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public void uploadStorys(Long systemId, MultipartFile file,HttpServletResponse response) throws Exception {
+    public FileInfo uploadStorys(Long systemId, MultipartFile file,HttpServletResponse response) throws Exception {
         InputStream inputStream = file.getInputStream();
         //从第一行开始读，待表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
-        checkData(data,response);
+        FileInfo fileInfo = checkData(data, response);
+        if(Optional.ofNullable(fileInfo).isPresent()){
+            return fileInfo;
+        }
         List<JSONObject> jsonObjects = analysisStoryData(data);
         //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
@@ -94,6 +98,7 @@ public class ExcelServiceImpl implements IExcelService {
                 issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             }
         }
+        return null;
     }
 
     @Override
@@ -192,13 +197,12 @@ public class ExcelServiceImpl implements IExcelService {
     private FileInfo checkData(List<List<String>> data, HttpServletResponse response) throws Exception {
         //1、校验表头数据
         boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
-        if(result){
+        if(!result){
             throw new BusinessException("导入模版不正确，请检查!");
         }
 
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
         int headSize = data.get(0).size();
-        copyData.get(0).add("错误信息");
 
         //2、校验表格中的数据
         boolean hasError = false;
@@ -213,9 +217,10 @@ public class ExcelServiceImpl implements IExcelService {
         }
         //3、写错误文件上传文件服务器
         if(hasError){
+            copyData.remove(0);
             log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
+            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportError.xlsx");
             ExcelWriter writer = EasyExcel.write(os)
                     .withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
