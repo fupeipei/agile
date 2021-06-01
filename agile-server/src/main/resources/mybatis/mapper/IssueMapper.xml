@@ -3058,7 +3058,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">
                 #{systemId}
             </foreach>
-            )</if>
+            </if>
         <if test="title != null and title != ''">
             AND (a.title LIKE CONCAT('%', #{title}, '%')or a.issue_id LIKE CONCAT('%', #{title}, '%'))
         </if>
