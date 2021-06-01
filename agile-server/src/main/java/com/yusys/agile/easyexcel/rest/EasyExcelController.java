@@ -47,12 +47,13 @@ public class EasyExcelController {
     @ApiOperation("故事导入导入")
     @PostMapping("/uploadStorys")
     public ControllerResponse uploadStorys(@RequestParam("file") MultipartFile file,
-                                           @RequestParam(value = "systemId",required = false) Long systemId){
+                                           @RequestParam(value = "systemId",required = false) Long systemId,
+                                           HttpServletResponse response){
         try {
             if(!Optional.ofNullable(systemId).isPresent()){
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
-            iExcelService.uploadStorys(systemId,file);
+            iExcelService.uploadStorys(systemId,file,response);
         }catch (Exception e){
             return ControllerResponse.success("上传失败");
         }

@@ -26,7 +26,7 @@ import java.util.Map;
  * :
  *
  * @Date: 2020/4/16
- * @Description: TODO
+ * @Description:
  */
 @RestController
 public class IssueController {
@@ -98,7 +98,6 @@ public class IssueController {
      * 功能描述  查询当前Issue
      *
      * @param issueId
-     * @param projectId
      * @param issueQuery 1:不查询子，2：查询子
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
@@ -183,8 +182,8 @@ public class IssueController {
      * @date 2020/4/29
      */
     @PostMapping("/issueListByIds")
-    public ControllerResponse issueListByIds(@RequestBody JSONObject rootIds, @RequestHeader(name = "projectId") Long projectId) {
-        List<IssueListDTO> result = Lists.newArrayList();
+    public ControllerResponse issueListByIds(@RequestBody JSONObject rootIds, @RequestHeader(name = "projectId",required = false) Long projectId) {
+        List<IssueListDTO> result;
         try {
             result = issueService.issueListByIds(rootIds.getString("rootIds"), projectId);
         } catch (Exception e) {
@@ -265,7 +264,6 @@ public class IssueController {
      */
     @GetMapping("/issue/detail/listRelation/{issueId}/{issueType}")
     public ControllerResponse listRelation(@PathVariable("issueId") Long issueId, @PathVariable("issueType") Byte issueType) {
-        //return ControllerResponse.success(issueService.listRelation(issueId, issueType, projectId));
         return ControllerResponse.success(issueService.listRelation(issueId, issueType));
     }
 
@@ -278,7 +276,7 @@ public class IssueController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/stage/count")
-    public ControllerResponse countIssueByStageId(@RequestHeader(name = "projectId") Long projectId, Integer pageNum, Integer pageSize) {
+    public ControllerResponse countIssueByStageId(@RequestHeader(name = "projectId",required = false) Long projectId, Integer pageNum, Integer pageSize) {
         return ControllerResponse.success(issueService.countIssueByStageId(projectId, pageNum, pageSize));
     }
 
@@ -307,7 +305,7 @@ public class IssueController {
     public ControllerResponse dragDemand(@RequestParam("issueId") Long issueId,
                                          @RequestParam(value = "sprintId", required = false) Long sprintId,
                                          @RequestParam(value = "parentId") Long parentId,
-                                         @RequestHeader(name = "projectId") Long projectId) {
+                                         @RequestHeader(name = "projectId",required = false) Long projectId) {
         try {
             issueService.dragDemand(issueId, sprintId, parentId, projectId);
         } catch (Exception e) {
@@ -327,7 +325,7 @@ public class IssueController {
      * @date 2020/08/04
      */
     @RequestMapping("/issue/querySprintRelatedCommitTaskList")
-    public ControllerResponse querySprintRelatedCommitTaskList(@RequestHeader("projectId") Long projectId, @RequestParam("sprintId") Long sprintId, @RequestParam("queryStr") String queryStr, Integer pageNumber, Integer pageSize) {
+    public ControllerResponse querySprintRelatedCommitTaskList(@RequestHeader(value = "projectId",required = false) Long projectId, @RequestParam("sprintId") Long sprintId, @RequestParam("queryStr") String queryStr, Integer pageNumber, Integer pageSize) {
         try {
             return ControllerResponse.success(issueService.getSprintRelatedCommitTaskList(projectId, sprintId, queryStr, pageNumber, pageSize));
         } catch (Exception e) {
@@ -345,7 +343,7 @@ public class IssueController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/stage/countForSso")
-    public List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam(name = "projectId") Long projectId) {
+    public List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam(name = "projectId",required = false) Long projectId) {
         return issueService.countIssueByStageId(projectId, 1, 1000).getList();
     }
 

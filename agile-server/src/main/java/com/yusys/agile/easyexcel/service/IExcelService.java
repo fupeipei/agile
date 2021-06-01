@@ -30,7 +30,7 @@ public interface IExcelService {
      * @return
      * @throws Exception
      */
-    void uploadStorys(Long systemId,MultipartFile file) throws Exception;
+    void uploadStorys(Long systemId,MultipartFile file,HttpServletResponse response) throws Exception;
 
 
 

@@ -401,6 +401,9 @@
                 </foreach>
                 )
             </if>
+            <if test="params.tenantCode != null and params.tenantCode != ''">
+                and t.tenant_code = #{params.tenantCode}
+            </if>
         </if>
     </sql>
     <select id="queryAllTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
@@ -457,7 +460,7 @@
         where team_id = #{teamId}
     </update>
 
-    <select id="getTeamsByTeamId" resultType="com.yusys.agile.team.domain.Team">
+    <select id="getTeamsByTeamId" resultType="com.yusys.agile.teamv3.domain.STeam">
         SELECT
         <include refid="Base_Column_List"/>
         FROM s_team
