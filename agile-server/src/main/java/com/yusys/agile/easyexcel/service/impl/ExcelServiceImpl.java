@@ -1,6 +1,8 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
@@ -9,9 +11,8 @@ import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
-import com.yusys.agile.excel.domain.Mistake;
-import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.domain.IssueExample;
+import com.yusys.agile.file.domain.FileInfo;
+import com.yusys.agile.file.service.FileService;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -25,21 +26,22 @@ import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.sl.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -60,6 +62,8 @@ public class ExcelServiceImpl implements IExcelService {
     private IssueFactory issueFactory;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private FileService fileService;
 
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
@@ -72,12 +76,12 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public void uploadStorys(Long systemId, MultipartFile file) throws Exception {
+    public void uploadStorys(Long systemId, MultipartFile file,HttpServletResponse response) throws Exception {
         InputStream inputStream = file.getInputStream();
         //从第一行开始读，待表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
         //校验数据（必填项、数据格式等等）
-        checkData(data);
+        checkData(data,response);
         List<JSONObject> jsonObjects = analysisStoryData(data);
         //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
@@ -111,7 +115,7 @@ public class ExcelServiceImpl implements IExcelService {
             wb = new XSSFWorkbook(fis);
         }
         List<JSONObject> jsonObjects = analysisTaskData(data);
-        checkData(data);
+        //checkData(data);
         //List<JSONObject> jsonObjects = assembleIssue(data);
         //存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
@@ -185,7 +189,7 @@ public class ExcelServiceImpl implements IExcelService {
      * 校验Excel数据
      * @param data
      */
-    private void checkData(List<List<String>> data) throws IOException, ClassNotFoundException {
+    private FileInfo checkData(List<List<String>> data, HttpServletResponse response) throws Exception {
         //1、校验表头数据
         boolean result = checkHeadLine(data.get(0), IssueTypeEnum.TYPE_STORY.CODE);
         if(result){
@@ -210,17 +214,33 @@ public class ExcelServiceImpl implements IExcelService {
         //3、写错误文件上传文件服务器
         if(hasError){
             log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
-//            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
-//            EasyExcel.write(ExcelUtil.dealResponse("storyImportTemplate",response))
-//                    .withTemplate(classPathResource.getInputStream())
-//                    .autoCloseStream(Boolean.TRUE)
-//                    .sheet("storys")
-//                    .doWrite(copyData);
-
-
-
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
+            ExcelWriter writer = EasyExcel.write(os)
+                    .withTemplate(classPathResource.getInputStream())
+                    .autoCloseStream(Boolean.TRUE)
+                    .build();
+            WriteSheet writeSheet = EasyExcel.writerSheet("storys").build();
+            writer.write(copyData,writeSheet);
+            writer.finish();
+            byte[] content = os.toByteArray();
+            FileItem fileItem = getFileItem("storyImportError.xlsx", content);
+            MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+            return fileService.upload(multipartFile);
         }
+        return null;
+    }
 
+
+    private FileItem getFileItem(String fileName, byte[] bytes) {
+        FileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+        FileItem fileItem = diskFileItemFactory.createItem(fileName, "text/plain", true, fileName);
+        try (OutputStream outputStream = fileItem.getOutputStream()) {
+            outputStream.write(bytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+        return fileItem;
     }
 
 
