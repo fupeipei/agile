@@ -1044,15 +1044,20 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> queryStoryBySystemId(Long systemId,Integer pageNum,Integer pageSize) {
+    public List<IssueDTO> queryStoryBySystemId(Long systemId,String storyName,Integer pageNum,Integer pageSize) {
         if (pageNum != null && pageSize != null) {
             PageHelper.startPage(pageNum, pageSize);
         }
         IssueExample issueExample = new IssueExample();
         List<Long> listLageId = Lists.newArrayList(104L,105L);
-        issueExample.createCriteria().andSystemIdEqualTo(systemId).andStateEqualTo(StateEnum.U.getValue()).
+        IssueExample.Criteria criteria = issueExample.createCriteria();
+        criteria.andSystemIdEqualTo(systemId).andStateEqualTo(StateEnum.U.getValue()).
                 andStageIdEqualTo(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue()).
                 andLaneIdIn(listLageId);
+        if(StringUtils.isNotBlank(storyName)){
+            criteria.andTitleLike(storyName);
+        }
+
         List<IssueDTO> storys = issueMapper.selectByExampleDTO(issueExample);
         return storys;
     }

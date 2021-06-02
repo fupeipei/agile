@@ -624,7 +624,8 @@ public class IssueServiceImpl implements IssueService {
         //priority优先级
         if (issue.getPriority() != null) {
             map = new HashMap<String, String>();
-            map.put(issue.getPriority(),issue.getPriority());
+            map.put("name", issue.getPriority() );
+            map.put("id", issue.getPriority() );
             issueListDTO.setPriority(map);
         }
         //importance
@@ -1185,9 +1186,8 @@ public class IssueServiceImpl implements IssueService {
             map.put("id", stageId);
         } else {
             List<StageInstance> instanceList = iStageService.getSecondStageListByParentId(firstStageId);
-            List<KanbanStageInstance> secondStages = instanceList.get(0).getSecondStages();
-            for(int i=0;i<secondStages.size();i++){
-                KanbanStageInstance kanbanStageInstance = secondStages.get(i);
+            for(int i=0;i<instanceList.size();i++){
+                KanbanStageInstance kanbanStageInstance = instanceList.get(i);
                 if(kanbanStageInstance.getStageId().equals(stageId)){
                     map.put("name", kanbanStageInstance.getStageName());
                     map.put("id", stageId);

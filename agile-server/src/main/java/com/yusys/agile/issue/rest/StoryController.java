@@ -375,12 +375,13 @@ public class StoryController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/queryStoryBySystemId")
-    public ControllerResponse queryStoryBySystemId(@RequestHeader(name = "systemId", required = false) Long systemId,
+    public ControllerResponse queryStoryBySystemId(@RequestParam(name = "systemId") Long systemId,
+                                                   @RequestParam(name = "storyName", required = false) String storyName,
                                                    @RequestParam(name = "pageNum") Integer pageNum,
                                                    @RequestParam(name = "pageSize") Integer pageSize) {
         List<IssueDTO> result;
         try {
-            result = storyService.queryStoryBySystemId(systemId,pageNum,pageSize);
+            result = storyService.queryStoryBySystemId(systemId,storyName,pageNum,pageSize);
         } catch (Exception e) {
             LOGGER.error("根据系统查询故事异常", e);
             return ControllerResponse.fail("根据系统查询故事异常：" + e.getMessage());
