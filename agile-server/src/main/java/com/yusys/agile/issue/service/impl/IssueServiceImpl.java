@@ -624,7 +624,8 @@ public class IssueServiceImpl implements IssueService {
         //priority优先级
         if (issue.getPriority() != null) {
             map = new HashMap<String, String>();
-            map.put(issue.getPriority(),issue.getPriority());
+            map.put("name", issue.getPriority() );
+            map.put("id", issue.getPriority() );
             issueListDTO.setPriority(map);
         }
         //importance
