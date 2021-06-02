@@ -78,7 +78,6 @@ public class BurnDownChartServiceTest {
     }
 
     @Test
-    @Transactional
     public void calculateStorys() {
         try {
             burnDownChartService.calculateStorys();
