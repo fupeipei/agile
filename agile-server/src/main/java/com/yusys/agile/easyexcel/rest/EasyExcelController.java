@@ -56,7 +56,7 @@ public class EasyExcelController {
             ExcelCommentFile commentFile = new ExcelCommentFile();
             commentFile.setSystemId(systemId);
 
-            fileInfo = iExcelService.uploadStorys(systemId, file,commentFile);
+            fileInfo = iExcelService.uploadStorys(file,commentFile);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }

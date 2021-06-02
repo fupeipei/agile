@@ -71,23 +71,25 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadStorys(Long systemId, MultipartFile file,ExcelCommentFile commentFile) throws Exception {
-        String originalFilename = file.getOriginalFilename();
-        if(!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)){
-            throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
-        }
+    public FileInfo uploadStorys(MultipartFile file,ExcelCommentFile commentFile) throws Exception {
+        //1、检查文件类型
+        checkFileType(file);
+
         InputStream inputStream = file.getInputStream();
-        //1、从第一行开始读，带表头
+        //2、从第一行开始读，带表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
-        //2、校验数据（必填项、数据格式等等）
+
+        //3、校验数据（必填项、数据格式等等）
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
         boolean hasError = checkData(copyData, (byte) 3);
-        //3、传错误文件
+
+        //4、传错误文件
         if(hasError){
             return uploadFile(copyData, "storyImportError.xlsx", "storys",IssueTypeEnum.getName((byte)3),commentFile);
         }
         List<JSONObject> jsonObjects = analysisStoryData(data);
-        //4、存入数据库
+
+        //5、存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
             for(JSONObject jsonObject :jsonObjects){
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
@@ -103,10 +105,8 @@ public class ExcelServiceImpl implements IExcelService {
 
     @Override
     public FileInfo uploadTasks(MultipartFile file,ExcelCommentFile commentFile) throws Exception {
-        String originalFilename = file.getOriginalFilename();
-        if(!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)){
-            throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
-        }
+        //检查文件类型
+        checkFileType(file);
         List<List<String>> data = ExcelUtil.readExcel(file.getInputStream(), 0);
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
         boolean hasError = checkData(copyData, (byte) 4);
@@ -213,6 +213,13 @@ public class ExcelServiceImpl implements IExcelService {
         return checExcelData(copyData, copyData, headSize, false, type);
     }
 
+
+    private void checkFileType(MultipartFile file){
+        String originalFilename = file.getOriginalFilename();
+        if(!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)){
+            throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
+        }
+    }
 
     /**
      * 上传错误文件到服务器
