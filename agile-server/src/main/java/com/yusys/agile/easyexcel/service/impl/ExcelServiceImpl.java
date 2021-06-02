@@ -223,7 +223,6 @@ public class ExcelServiceImpl implements IExcelService {
      * @throws Exception
      */
     public FileInfo uploadFile(List<List<String>> copyData,String templateName,String sheetName,String type,ExcelCommentFile commentFile) throws Exception {
-
         //写错误文件上传文件服务器
         copyData.remove(0);
         log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
@@ -272,6 +271,7 @@ public class ExcelServiceImpl implements IExcelService {
                     hasError = true;
                     continue;
                 }
+
             }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
                 if(StringUtils.isBlank(line.get(0))){
                     fileResult.add(headSize,"故事ID不能为空");
