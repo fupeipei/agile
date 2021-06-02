@@ -897,7 +897,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 sprintName = StrUtil.builder().append(sprintName).append("(").append(teamName).append(")").toString();
                 sSprint.setSprintName(sprintName);
             }
-            String aa = "";
             try {
                 sprintListDTOList = ReflectUtil.copyProperties4List(sSprintList, SprintListDTO.class);
             } catch (Exception e) {
