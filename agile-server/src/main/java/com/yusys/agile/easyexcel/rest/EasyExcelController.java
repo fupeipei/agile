@@ -49,7 +49,7 @@ public class EasyExcelController {
     @ApiOperation("故事导入")
     @PostMapping("/uploadStorys")
     public ControllerResponse uploadStorys(@RequestParam("file") MultipartFile file,
-                                           @RequestParam(value = "systemId") Long systemId) {
+                                           @RequestParam(value = "systemId",required = false) Long systemId) {
         FileInfo fileInfo;
         try {
             if (!Optional.ofNullable(systemId).isPresent()) {
