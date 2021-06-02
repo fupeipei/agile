@@ -89,7 +89,7 @@ public class ExcelServiceTest {
         ExcelCommentFile filed = new ExcelCommentFile();
         MultipartFile multipartFile = new MockMultipartFile(file.getName(), inputStream);
         try {
-            excelService.uploadStorys(null,multipartFile,filed);
+            excelService.uploadStorys(multipartFile,filed);
         } catch (Exception e) {
             e.printStackTrace();
         }
