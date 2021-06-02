@@ -6,9 +6,14 @@ MySQL - 8.0.22
 /*!40101 SET NAMES utf8 */;
 
 delete FROM   agile.s_issue d  WHERE d.`sprint_id` IN(SELECT sprint_id FROM    agile.`s_sprint` WHERE team_id=200021);
+delete FROM   agile.s_issue d  WHERE d.`issue_id` IN(119,118,117,116 ,115,  129 ,128,127,128,126,  216,217,218,219);
+
 delete FROM    agile.`s_sprint` WHERE team_id=200021;
 delete FROM    agile.`s_team_member` WHERE team_id=200021;
 delete FROM    agile.`s_team` WHERE team_id=200021;
+
+commit;
+
 
 /*  task   119,118,117,116   129  ,128,127,128*/
 insert into agile.`s_issue` (`issue_id`, `title`, `parent_id`, `issue_type`, `sprint_id`, `module_id`, `system_id`, `handler`, `begin_date`, `end_date`, `plan_workload`, `really_workload`, `priority`, `importance`, `stage_id`, `lane_id`, `state`, `status`, `project_id`, `is_collect`, `completion`, `task_type`, `create_uid`, `create_time`, `update_uid`, `update_time`, `fault_type`, `fault_level`, `fixed_time`, `close_time`, `fixed_uid`, `test_uid`, `version_id`, `case_id`, `deadline`, `file`, `urgency`, `cause`, `detected_phase`, `manual_case_id`, `source`, `remain_workload`, `bug_id`, `order`, `block_state`, `reopen_times`, `assess_is_pass`, `assess_remarks`, `tenant_code`, `cmp_sync_result`, `is_archive`, `is_cancel`) values('119','迭代视图成员工时测试任务1.5','115','4','200031',NULL,'847157263800733696',NULL,NULL,NULL,'8','0',NULL,NULL,'111','107','U',NULL,'783336509438078976','0','',NULL,'783335106934124544','2020-12-01 14:30:12',NULL,'2021-05-25 16:26:03',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'8',NULL,NULL,'0',NULL,NULL,NULL,'1','-1','0','0');
