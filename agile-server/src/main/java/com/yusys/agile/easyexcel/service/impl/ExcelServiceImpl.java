@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.enums.ExcelTypeEnum;
+import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
@@ -38,10 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *  @Description: excel 实现类
@@ -74,16 +72,22 @@ public class ExcelServiceImpl implements IExcelService {
 
     @Override
     public FileInfo uploadStorys(Long systemId, MultipartFile file) throws Exception {
+        String originalFilename = file.getOriginalFilename();
+        if(!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)){
+            throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
+        }
         InputStream inputStream = file.getInputStream();
-        //从第一行开始读，待表头
+        //1、从第一行开始读，带表头
         List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
-        //校验数据（必填项、数据格式等等）
-        FileInfo fileInfo = checkData(data, (byte)3,"storyImportError.xlsx","storys");
-        if(Optional.ofNullable(fileInfo).isPresent()){
-            return fileInfo;
+        //2、校验数据（必填项、数据格式等等）
+        List<List<String>> copyData = CollectionUtil.deepCopy(data);
+        boolean hasError = checkData(copyData, (byte) 3);
+        //3、传错误文件
+        if(hasError){
+            return uploadFile(copyData, "storyImportError.xlsx", "storys");
         }
         List<JSONObject> jsonObjects = analysisStoryData(data);
-        //存入数据库
+        //4、存入数据库
         if(CollectionUtils.isNotEmpty(jsonObjects)){
             for(JSONObject jsonObject :jsonObjects){
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
@@ -99,16 +103,17 @@ public class ExcelServiceImpl implements IExcelService {
 
     @Override
     public FileInfo uploadTasks(MultipartFile file) throws Exception {
-        InputStream inputStream = file.getInputStream();
-        //从第一行开始读，待表头
-        List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
-        //校验数据（必填项、数据格式等等）
-        FileInfo fileInfo = checkData(data, (byte)4,"taskImportError.xlsx","tasks");
-        if(Optional.ofNullable(fileInfo).isPresent()){
-            return fileInfo;
+        String originalFilename = file.getOriginalFilename();
+        if(!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)){
+            throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
+        }
+        List<List<String>> data = ExcelUtil.readExcel(file.getInputStream(), 0);
+        List<List<String>> copyData = CollectionUtil.deepCopy(data);
+        boolean hasError = checkData(copyData, (byte) 4);
+        if(hasError){
+            return uploadFile(copyData, "taskImportError.xlsx","tasks");
         }
         List<JSONObject> jsonObjects = analysisTaskData(data);
-        //checkData(data);
         if(CollectionUtils.isNotEmpty(jsonObjects)){
             for(JSONObject jsonObject :jsonObjects){
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
@@ -144,6 +149,12 @@ public class ExcelServiceImpl implements IExcelService {
         return jsonObjects;
     }
 
+    /**
+     * 解析故事数据
+     * @param data
+     * @return
+     * @throws Exception
+     */
     private List<JSONObject> analysisStoryData(List<List<String>> data) throws Exception {
         List<JSONObject> jsonObjects = Lists.newArrayList();
         int headSize = data.get(0).size();
@@ -185,48 +196,64 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 校验Excel数据
-     * @param data
+     * @param copyData
      */
-    private FileInfo checkData(List<List<String>> data, Byte type,String templateName,String sheetName) throws Exception {
-        if(data.size() <=1){
+    private boolean checkData(List<List<String>> copyData, Byte type){
+        if(copyData.size() <=1){
             throw new BusinessException("导入数据为空，请检查!");
         }
         //1、校验表头数据
-        boolean result = checkHeadLine(data.get(0),type);
+        boolean result = checkHeadLine(copyData.get(0),type);
         if(!result){
             throw new BusinessException("导入模版不正确，请检查!");
         }
 
-        List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        int headSize = data.get(0).size();
-
-        //2、校验表格中的数据
-        boolean hasError = false;
-        hasError = checExcelData(data,copyData,headSize,hasError,type);
-
-        //3、写错误文件上传文件服务器
-        if(hasError){
-            copyData.remove(0);
-            log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ClassPathResource classPathResource = new ClassPathResource("excelTemplate/"+templateName);
-            ExcelWriter writer = EasyExcel.write(os)
-                    .withTemplate(classPathResource.getInputStream())
-                    .autoCloseStream(Boolean.TRUE)
-                    .build();
-            WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
-            writer.write(copyData,writeSheet);
-            writer.finish();
-            byte[] content = os.toByteArray();
-            FileItem fileItem = getFileItem(UUID.randomUUID().toString()+".xlsx", content);
-            MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
-            return fileService.upload(multipartFile);
-        }
-        return null;
+        int headSize = copyData.get(0).size();
+        //2、表格数据校验
+        return checExcelData(copyData, copyData, headSize, false, type);
     }
 
+
+    /**
+     * 上传错误文件到服务器
+     * @param copyData
+     * @param templateName
+     * @param sheetName
+     * @return
+     * @throws Exception
+     */
+    public FileInfo uploadFile(List<List<String>> copyData,String templateName,String sheetName) throws Exception {
+
+        //写错误文件上传文件服务器
+        copyData.remove(0);
+        log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ClassPathResource classPathResource = new ClassPathResource("excelTemplate/"+templateName);
+        ExcelWriter writer = EasyExcel.write(os)
+                .withTemplate(classPathResource.getInputStream())
+                .autoCloseStream(Boolean.TRUE)
+                .build();
+        WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
+        writer.write(copyData,writeSheet);
+        writer.finish();
+        byte[] content = os.toByteArray();
+        FileItem fileItem = getFileItem(UUID.randomUUID().toString()+".xlsx", content);
+        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+        return fileService.upload(multipartFile);
+    }
+
+
+    /**
+     * 检查Excel文件数据
+     * @param data
+     * @param copyData
+     * @param headSize
+     * @param hasError
+     * @param type
+     * @return
+     */
     public boolean checExcelData(List<List<String>> data,List<List<String>> copyData,int headSize, boolean hasError,byte type){
-        for(int i = 1;i<data.size(); i++){
+        for(int i = 1;i<data.size(); i++ ){
             List<String> line = data.get(i);
             List<String> fileResult = copyData.get(i);
             if(fileResult.size() < headSize){
