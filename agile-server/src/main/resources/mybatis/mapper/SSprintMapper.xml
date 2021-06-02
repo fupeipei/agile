@@ -811,23 +811,28 @@
         TYPE_MODIFYING_STATE("进行中", 109L),
         TYPE_CLOSED_STATE("已完成", 110L);-->
 
-    <!--实际工作量计算方法：已领取（预计工时）+进行中（预计工时）+已完成（实际工时）任务卡片总和-->
+    <!--实际工作量计算方法：进行中（预计工时-剩余工时）+已完成（实际工时）任务卡片总和-->
     <select id="queryUserActualWorkload" resultType="Integer">
         select (ifnull((select sum(plan_workload)
                         from s_issue
                         where handler = #{userId}
                           and sprint_id = #{sprintId}
-                          and lane_id in (108, 109)
-                          and state = 'U'
-                               ), 0)
-                +
+                          and lane_id = 109
+                          and state = 'U'), 0)
+                        -
                 ifnull((select sum(really_workload)
                         from s_issue b
                         where b.handler = #{userId}
                           and b.sprint_id = #{sprintId}
+                          and lane_id = 109
+                          and state = 'U'), 0)
+                +
+                ifnull((select sum(really_workload)
+                        from s_issue
+                        where handler = #{userId}
+                          and sprint_id = #{sprintId}
                           and lane_id = 110
-                          and state = 'U'
-                               ), 0)
+                          and state = 'U'), 0)
                        ) AS a
     </select>
 
@@ -840,7 +845,16 @@
           and a.lane_id = #{status}
     </select>
 
-    <!--    TYPE_ADD_STATE("未领取", 107L),
+    <select id="unclaimedTaskNumber" resultType="int">
+        select count(sprint_id)
+        from s_issue a
+        where a.handler is null
+          and a.sprint_id = #{sprintId}
+          and a.issue_type = #{issueType}
+          and a.lane_id = #{status}
+    </select>
+
+    <!-- TYPE_ADD_STATE("未领取", 107L),
         TYPE_RECEIVED_STATE("已领取", 108L),
         TYPE_MODIFYING_STATE("进行中", 109L),
         TYPE_CLOSED_STATE("已完成", 110L);-->
@@ -850,8 +864,7 @@
         from s_issue
         where handler = #{userId}
           and sprint_id = #{sprintId}
-          and issue_type = #{issueType}
-          and lane_id = #{status}
+          and lane_id = 109
           and state = 'U'
     </select>
 
