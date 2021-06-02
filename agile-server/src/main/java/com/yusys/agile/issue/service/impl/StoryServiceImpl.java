@@ -394,7 +394,7 @@ public class StoryServiceImpl implements StoryService {
         //查询故事下的Task的查询条件某一个不等于空的情况，判断Children的Task是为空，为空则进行过滤
         if(StringUtils.isNotBlank(taskKeyWord) || CollectionUtils.isNotEmpty(laneIds)
                 || CollectionUtils.isNotEmpty(taskTypes) || CollectionUtils.isNotEmpty(handlers)){
-            storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isNotEmpty(issue.getChildren())).collect(Collectors.toList());
+            storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isEmpty(issue.getChildren())).collect(Collectors.toList());
         }
         return storyList;
     }
