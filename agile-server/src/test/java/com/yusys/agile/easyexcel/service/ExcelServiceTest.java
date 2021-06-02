@@ -87,6 +87,7 @@ public class ExcelServiceTest {
         InputStream inputStream = classPathResource.getInputStream();
         File file = classPathResource.getFile();
         ExcelCommentFile filed = new ExcelCommentFile();
+        filed.setSystemId(831894869750956032L);
         MultipartFile multipartFile = new MockMultipartFile(file.getName(), inputStream);
         try {
             excelService.uploadStorys(multipartFile,filed);
