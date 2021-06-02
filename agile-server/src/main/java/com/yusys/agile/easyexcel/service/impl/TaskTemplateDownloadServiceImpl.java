@@ -1,13 +1,13 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import com.google.common.collect.Lists;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
@@ -43,14 +43,8 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
     private IssueMapper issueMapper;
 
     @Override
-    public void download(HttpServletResponse response, ExcelCommentFiled filed) {
-        //下拉填充数据
-        Map<Integer,String []> mapDropDown = new HashMap<>();
-        String[] sprintInfo = getStoryNamesBySprintId(filed.getSprintId());
-        // 任务类型
-        String[] taskTypeNames = TaskTypeEnum.getNames();
-        mapDropDown.put(0,sprintInfo);
-        mapDropDown.put(3,taskTypeNames);
+    public void download(HttpServletResponse response, ExcelCommentFile filed) {
+        Map<Integer, String[]> mapDropDown = getDropDownInfo(filed);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
         try {
@@ -62,6 +56,18 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
         } catch (IOException e) {
             log.error("导出task模版异常:{}",e.getMessage());
         }
+    }
+
+    @Override
+    public Map<Integer, String[]> getDropDownInfo(ExcelCommentFile filed) {
+        //下拉填充数据
+        Map<Integer,String []> mapDropDown = new HashMap<>();
+        String[] sprintInfo = getStoryNamesBySprintId(filed.getSprintId());
+        // 任务类型
+        String[] taskTypeNames = TaskTypeEnum.getNames();
+        mapDropDown.put(0,sprintInfo);
+        mapDropDown.put(3,taskTypeNames);
+        return mapDropDown;
     }
 
     /**

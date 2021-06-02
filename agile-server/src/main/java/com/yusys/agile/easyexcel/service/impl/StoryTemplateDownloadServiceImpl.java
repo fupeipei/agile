@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -36,14 +36,8 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     private Sprintv3Service sprintv3Service;
 
     @Override
-    public void download(HttpServletResponse response, ExcelCommentFiled filed) {
-        Map<Integer,String []> mapDropDown = new HashMap<>();
-        String[] sprintInfo = getSprintInfo();
-        String[] storyPriority = getStoryPriority();
-        String[] storyPoints = getStoryPoint();
-        mapDropDown.put(3,sprintInfo);
-        mapDropDown.put(4,storyPriority);
-        mapDropDown.put(6,storyPoints);
+    public void download(HttpServletResponse response, ExcelCommentFile filed) {
+        Map<Integer, String[]> mapDropDown = getDropDownInfo(filed);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
             ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
@@ -61,6 +55,18 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
         } catch (IOException  e) {
             log.error("导出Story模版异常:{}",e.getMessage());
         }
+    }
+
+    @Override
+    public Map<Integer, String[]> getDropDownInfo(ExcelCommentFile filed) {
+        Map<Integer,String []> mapDropDown = new HashMap<>();
+        String[] sprintInfo = getSprintInfo();
+        String[] storyPriority = getStoryPriority();
+        String[] storyPoints = getStoryPoint();
+        mapDropDown.put(3,sprintInfo);
+        mapDropDown.put(4,storyPriority);
+        mapDropDown.put(6,storyPoints);
+        return mapDropDown;
     }
 
 

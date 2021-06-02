@@ -1,8 +1,7 @@
 package com.yusys.agile.easyexcel.service;
 
-import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
 import com.yusys.agile.file.domain.FileInfo;
-import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,7 @@ public interface IExcelService {
      * @param response
      * @param filed
      */
-    void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentFiled filed);
+    void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentFile filed);
 
     /**
      * 用户故事上传
@@ -31,7 +30,7 @@ public interface IExcelService {
      * @return
      * @throws Exception
      */
-    FileInfo uploadStorys(Long systemId, MultipartFile file) throws Exception;
+    FileInfo uploadStorys(Long systemId, MultipartFile file,ExcelCommentFile commentFile) throws Exception;
 
 
     /**
@@ -42,5 +41,5 @@ public interface IExcelService {
      * @return
      * @throws Exception
      */
-    FileInfo uploadTasks(MultipartFile file) throws Exception;
+    FileInfo uploadTasks(MultipartFile file,ExcelCommentFile commentFile) throws Exception;
 }
