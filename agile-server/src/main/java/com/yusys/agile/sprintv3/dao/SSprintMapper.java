@@ -50,13 +50,18 @@ public interface SSprintMapper {
     void changeStatusTOProgressByIds(@Param("sprintIds") List<Long> sprintIds);
 
     /**
-     * 查询租户下所有
-     *
+     * 条件分页查询租户下所有迭代
+     * @author zhaofeng
+     * @date 2021/6/2 11:33
      * @param params
-     * @return
      */
     List<SprintListDTO> queryAllSprint(@Param("params") HashMap<String, Object> params);
-
+    /**
+     * 条件分页查询租户下与我相关的迭代
+     * @author zhaofeng
+     * @date 2021/6/2 11:33
+     * @param params
+     */
     List<SprintListDTO> queryOtherSprint(@Param("params") HashMap<String, Object> params);
 
     /**

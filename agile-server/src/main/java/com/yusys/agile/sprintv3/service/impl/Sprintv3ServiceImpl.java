@@ -208,7 +208,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public List<SprintListDTO> listSprint(SprintQueryDTO dto, SecurityDTO security) {
         Long userId = security.getUserId();
-        //如果是租户管理员
+        //如果是租户管理员，查询租下所有迭代
         boolean isTenantAdmin = iFacadeUserApi.checkIsTenantAdmin(userId);
         if (isTenantAdmin) {
             HashMap<String, Object> params = buildQueryParamsTenantAdmin(dto, security);
@@ -216,7 +216,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
             rest = buildResultList(rest);
             return rest;
-        } else {
+        } else { //不是租户管理员，查询与我相关的迭代
             HashMap<String, Object> params = buildQueryParamsOthers(dto, security);
             PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
             List<SprintListDTO> rest = ssprintMapper.queryOtherSprint(params);
