@@ -5,13 +5,9 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.IssueStatusMapper;
 import com.yusys.agile.issue.domain.IssueProjectStatus;
 import com.yusys.agile.issue.domain.IssueStatus;
-import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueProjectStatusService;
 import com.yusys.agile.issue.service.IssueStatusService;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.SprintWithBLOBs;
-import com.yusys.agile.sprint.service.SprintService;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
@@ -64,10 +60,6 @@ public class DashBoardServiceImpl implements DashBoardService {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.currentDay();
         if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
-            //创建业务需求状况
-            //createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_EPIC.CODE);
-            //创建研发需求状况
-            // createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_FEATURE.CODE);
             //创建故事状况
             createIssueStoryStatus(projectId, sprintId, target);
             //创建任务状况
