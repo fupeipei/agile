@@ -281,12 +281,12 @@ public class Sprintv3Controller {
      *功能描述
      * @author shenfeng
      * @date 2021/6/1
-      * @param systemID
+      * @param systemId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/querySprintBySystemId")
-    public ControllerResponse querySprintBySystemId(@RequestParam(name = "systemID") Long systemID) {
-        List<SprintListDTO> result = sprintv3Service.querySprintBySystemId(systemID);
+    public ControllerResponse querySprintBySystemId(@RequestParam(name = "systemId") Long systemId) {
+        List<SprintListDTO> result = sprintv3Service.querySprintBySystemId(systemId);
         return ControllerResponse.success(result);
 
     }
