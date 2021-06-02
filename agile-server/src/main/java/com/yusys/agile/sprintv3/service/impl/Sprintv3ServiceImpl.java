@@ -698,6 +698,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         unclaimedWorkHours.setUserAccount("未领取任务");
         unclaimedWorkHours.setUserName("未领取任务");
         unclaimedWorkHours.setResidueWorkload(ssprintMapper.unclaimedWorkHours(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE));
+        unclaimedWorkHours.setTaskNumber(ssprintMapper.unclaimedTaskNumber(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE));
         list.add(unclaimedWorkHours);
 
         for (int i = 0; i < userList.size(); i++) {
