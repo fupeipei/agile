@@ -753,7 +753,6 @@ public class IssueServiceImpl implements IssueService {
      * 功能描述 查询当前Issue
      *
      * @param issueId
-     * @param projectId
      * @param issueQuery 1:不查询child，2：查询child
      * @return com.yusys.agile.requirement.SysExtendFieldDetailDTO;
      * @date 2020/4/21
@@ -986,7 +985,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
         //Long projectId = securityDTO.getProjectId();
-        Long projectId = issueFactory.getProjectIdByIssueId(issueId);
+        Long systemId = issueFactory.getProjectIdByIssueId(issueId);
         try {
             PageHelper.startPage(pageNum, pageSize);
             //查询历史记录
@@ -999,7 +998,7 @@ public class IssueServiceImpl implements IssueService {
             Byte issueType = issue.getIssueType();
             Map<String, String> sprintMap = new HashMap<>();
             if (CollectionUtils.isNotEmpty(issueHistoryRecords)) {
-                Map<String, String> stagesInstanceMapInfo = recordFactory.getStagesInstanceMapInfo(projectId);
+                Map<String, String> stagesInstanceMapInfo = recordFactory.getStagesInstanceMapInfo(systemId);
                 issueHistoryRecords.forEach(issueHistoryRecordDTO -> {
                     //recordType 0 常规文本 1 富文本
                     if ("1".equals(issueHistoryRecordDTO.getRecordType())) {

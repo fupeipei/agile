@@ -362,6 +362,7 @@ public class StoryServiceImpl implements StoryService {
         List<Long> laneIds = issueDTO.getLaneIds();
         List<Integer> taskTypes = issueDTO.getTaskTypes();
         List<Long> handlers = issueDTO.getHandlers();
+        Long issueId = issueDTO.getIssueId();
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
@@ -370,11 +371,17 @@ public class StoryServiceImpl implements StoryService {
         IssueExample example = new IssueExample();
         example.setOrderByClause("priority desc,create_time desc");
 
-        IssueExample.Criteria criteria = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+        IssueExample.Criteria criteria = example.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue())
                 .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
-        IssueExample.Criteria criteria2 = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+        IssueExample.Criteria criteria2 = example.createCriteria();
+        criteria2.andStateEqualTo(StateEnum.U.getValue())
                 .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
 
+        if(Optional.ofNullable(issueId).isPresent()){
+            criteria.andIssueIdEqualTo(issueId);
+            criteria2.andIssueIdEqualTo(issueId);
+        }
         // 判断是根据id还是name
         doFilterCondition(filter, example, criteria, criteria2);
 
@@ -1034,5 +1041,16 @@ public class StoryServiceImpl implements StoryService {
         }else{
             throw new BusinessException("迭代不存在");
         }
+    }
+
+    @Override
+    public List<IssueDTO> queryStoryBySystemId(Long systemId,Integer pageNum,Integer pageSize) {
+        if (pageNum != null && pageSize != null) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andSystemIdEqualTo(systemId).andStateEqualTo(StateEnum.U.getValue());
+        List<IssueDTO> storys = issueMapper.selectByExampleDTO(issueExample);
+        return storys;
     }
 }
