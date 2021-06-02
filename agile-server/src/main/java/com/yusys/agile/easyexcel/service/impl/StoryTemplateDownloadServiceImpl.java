@@ -60,7 +60,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     @Override
     public Map<Integer, String[]> getDropDownInfo(ExcelCommentFile filed) {
         Map<Integer,String []> mapDropDown = new HashMap<>();
-        String[] sprintInfo = getSprintInfo();
+        String[] sprintInfo = getSprintInfo(filed.getSystemId());
         String[] storyPriority = getStoryPriority();
         String[] storyPoints = getStoryPoint();
         mapDropDown.put(3,sprintInfo);
@@ -74,9 +74,8 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
      * 迭代信息下拉项
      * @return
      */
-    private String[] getSprintInfo(){
+    private String[] getSprintInfo(Long systemId){
        try {
-           Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
            log.info("获取迭代信息：{}", JSONObject.toJSONString(sprintListDTOS));
            if(CollectionUtils.isNotEmpty(sprintListDTOS)){
