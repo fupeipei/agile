@@ -386,17 +386,16 @@ public class StoryServiceImpl implements StoryService {
         doFilterCondition(filter, example, criteria, criteria2);
 
         List<IssueDTO> issueDTOS = issueMapper.selectByExampleDTO(example);
-        List<IssueDTO> storyList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             //获取故事下的任务
             issueDTOS = getChildren(sprintId, issueDTOS, taskKeyWord, laneIds, taskTypes, handlers);
         }
         //查询故事下的Task的查询条件某一个不等于空的情况，判断Children的Task是为空，为空则进行过滤
-        if(StringUtils.isNotBlank(taskKeyWord) || CollectionUtils.isNotEmpty(laneIds)
-                || CollectionUtils.isNotEmpty(taskTypes) || CollectionUtils.isNotEmpty(handlers)){
-            storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isEmpty(issue.getChildren())).collect(Collectors.toList());
-        }
-        return storyList;
+//        if(StringUtils.isNotBlank(taskKeyWord) || CollectionUtils.isNotEmpty(laneIds)
+//                || CollectionUtils.isNotEmpty(taskTypes) || CollectionUtils.isNotEmpty(handlers)){
+//            storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isEmpty(issue.getChildren())).collect(Collectors.toList());
+//        }
+        return issueDTOS;
     }
 
     private void doFilterCondition(String filter, IssueExample example, IssueExample.Criteria criteria, IssueExample.Criteria criteria2) {
@@ -508,10 +507,10 @@ public class StoryServiceImpl implements StoryService {
                     issueDTO.setChildren(taskList);
                     issueDTOSTmp.add(issueDTO);
                 }
-                if (StringUtils.isEmpty(taskKeyWord) && CollectionUtils.isEmpty(taskList)) {
-                    issueDTO.setChildren(taskList);
-                    issueDTOSTmp.add(issueDTO);
-                }
+//                if (StringUtils.isEmpty(taskKeyWord) && CollectionUtils.isEmpty(taskList)) {
+//                    issueDTO.setChildren(taskList);
+//                    issueDTOSTmp.add(issueDTO);
+//                }
             }
         }
         return issueDTOSTmp;
