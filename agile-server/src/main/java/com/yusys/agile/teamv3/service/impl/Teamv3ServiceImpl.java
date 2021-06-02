@@ -285,6 +285,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Transactional(rollbackFor = Exception.class)
     public void updateTeam(STeam team) {
         Long teamId = team.getTeamId();
+        STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode) > 0) {
             throw new BusinessException("团队名称已存在");
@@ -318,7 +319,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             return sm.getUserId();
         }).collect(Collectors.toList());
         //插入团队
-        sTeamMapper.updateByPrimaryKeySelective(team);
+        sTeam.setTeamName(team.getTeamName());
+        sTeam.setTeamDesc(team.getTeamDesc());
+        sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
         teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
         //团队绑定PO

@@ -150,10 +150,11 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         BurnDownChartDTO burnDownChartDTO = new BurnDownChartDTO();
         // 预估工作量
         burnDownChartDTO.setPlanWorkload(sprintv3Service.getWorkload(sprintId));
+        //当前迭代中计划工作量总和就是实际剩余工作量
         Integer actualRemainWorkload = issueMapper.getPlanWorkload(sprintId);
         // 实际剩余工作量
         burnDownChartDTO.setActualRemainWorkload(actualRemainWorkload);
-        // 每天的剩余工作量
+        // 获取迭代中每一天的剩余工作量
         burnDownChartDTO.setWorkloads(getWorkloads(sprintId, actualRemainWorkload));
         return burnDownChartDTO;
     }
@@ -368,7 +369,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();
+        //获取迭代周期中的日期
         List<BurnDownWorkloadDTO> workloads = getWorkloads(start, end, sprintDays);
+        //获取迭代中每一天对应的剩余工作量
         List<BurnDownWorkloadDTO> inSprintWorkloads = getSprintWorkloads(sprintId, actualRemainWorkload,
                 sprintDays);
         BurnDownWorkloadDTO currentWorkload = getCurrentWorkload(sprintId,sprintDays);
@@ -577,6 +580,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * @param end
      * @param sprintDays
      * @return
+     * 获取迭代日期
      */
     private List<BurnDownWorkloadDTO> getWorkloads(Date start, Date end, String sprintDays) {
         List<BurnDownWorkloadDTO> workloads = Lists.newArrayList();
