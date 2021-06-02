@@ -277,5 +277,20 @@ public class Sprintv3Controller {
 
     }
 
+    /**
+     *功能描述
+     * @author shenfeng
+     * @date 2021/6/1
+      * @param systemID
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     */
+    @GetMapping("/querySprintBySystemId")
+    public ControllerResponse querySprintBySystemId(@RequestHeader(name = "systemID") Long systemID) {
+        List<SprintListDTO> result = sprintv3Service.querySprintBySystemId(systemID);
+        return ControllerResponse.success(result);
+
+    }
+
+
 }
 
