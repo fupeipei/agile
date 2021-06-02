@@ -2,6 +2,7 @@ package com.yusys.agile.sprintv3.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -24,13 +25,17 @@ import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.team.domain.Team;
+import com.yusys.agile.team.dto.TeamDTO;
 import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.teamv3.domain.STeamSystem;
+import com.yusys.agile.teamv3.service.STeamSystemService;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
@@ -90,6 +95,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private IssueMapper issueMapper;
     @Resource
     private Teamv3Service teamv3Service;
+    @Resource
+    private STeamSystemService teamSystemService;
+
 
 
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
@@ -200,7 +208,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public List<SprintListDTO> listSprint(SprintQueryDTO dto, SecurityDTO security) {
         Long userId = security.getUserId();
-        //如果是租户管理员
+        //如果是租户管理员，查询租下所有迭代
         boolean isTenantAdmin = iFacadeUserApi.checkIsTenantAdmin(userId);
         if (isTenantAdmin) {
             HashMap<String, Object> params = buildQueryParamsTenantAdmin(dto, security);
@@ -208,7 +216,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
             rest = buildResultList(rest);
             return rest;
-        } else {
+        } else { //不是租户管理员，查询与我相关的迭代
             HashMap<String, Object> params = buildQueryParamsOthers(dto, security);
             PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
             List<SprintListDTO> rest = ssprintMapper.queryOtherSprint(params);
@@ -690,6 +698,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         unclaimedWorkHours.setUserAccount("未领取任务");
         unclaimedWorkHours.setUserName("未领取任务");
         unclaimedWorkHours.setResidueWorkload(ssprintMapper.unclaimedWorkHours(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE));
+        unclaimedWorkHours.setTaskNumber(ssprintMapper.unclaimedTaskNumber(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE));
         list.add(unclaimedWorkHours);
 
         for (int i = 0; i < userList.size(); i++) {
@@ -863,5 +872,39 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             sprintHours += userSprintHour.getReallyHours().intValue();
         }
         return sprintHours;
+    }
+
+    @Override
+    public List<SprintListDTO> querySprintBySystemId(Long systemId) {
+        List<SprintListDTO> sprintListDTOList = Lists.newArrayList();
+        List<STeamSystem> sTeamSystemList = teamSystemService.listTeamBySystem(systemId);
+        List<Long> teamIdList;
+        if(CollectionUtils.isNotEmpty(sTeamSystemList)){
+            teamIdList = sTeamSystemList.stream().map(STeamSystem::getTeamId).collect(Collectors.toList());
+
+            Map<Long,String> mapTeamName = new HashMap<>();
+            List<STeam> sTeamList = sTeamMapper.listTeamByIds(teamIdList);
+            for(STeam sTeam : sTeamList){
+                mapTeamName.put(sTeam.getTeamId(), sTeam.getTeamName());
+            }
+
+            SSprintExample sSprintExample = new SSprintExample();
+            sSprintExample.createCriteria().andTeamIdIn(teamIdList).andStateEqualTo(StateEnum.U.getValue());
+            List<SSprint> sSprintList = ssprintMapper.selectByExample(sSprintExample);
+
+            for(SSprint sSprint : sSprintList){
+                String sprintName = sSprint.getSprintName();
+                String teamName = mapTeamName.get(sSprint.getTeamId());
+                sprintName = StrUtil.builder().append(sprintName).append("(").append(teamName).append(")").toString();
+                sSprint.setSprintName(sprintName);
+            }
+            String aa = "";
+            try {
+                sprintListDTOList = ReflectUtil.copyProperties4List(sSprintList, SprintListDTO.class);
+            } catch (Exception e) {
+               log.error("sprintListDTOList transfer errer:{}", e.getMessage());
+            }
+        }
+        return sprintListDTOList;
     }
 }
