@@ -285,7 +285,7 @@ public class Sprintv3Controller {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/querySprintBySystemId")
-    public ControllerResponse querySprintBySystemId(@RequestHeader(name = "systemID") Long systemID) {
+    public ControllerResponse querySprintBySystemId(@RequestParam(name = "systemID") Long systemID) {
         List<SprintListDTO> result = sprintv3Service.querySprintBySystemId(systemID);
         return ControllerResponse.success(result);
 
