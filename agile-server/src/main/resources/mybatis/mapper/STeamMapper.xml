@@ -365,27 +365,29 @@
         <if test="params != null">
             <if test="params.team != null and params.team != ''">
                 and (t.team_name like concat('%',#{params.team},'%')
-                or t.team_id like concat('%',#{params.team},'%')
+                  or t.team_id like concat('%',#{params.team},'%')
                 )
             </if>
             <if test="params.po != null and params.po != ''">
                 and exists (
-                select * from s_team_member tm where t.team_id=tm.team_id
-                and (
-                tm.user_name like concat('%',#{params.po},'%')
-                or tm.user_account like concat('%',#{params.po},'%')
-                and tm.role_id=104
-                )
+                    select * from s_team_member tm where t.team_id=tm.team_id
+                    and (
+                        (tm.user_name like concat('%',#{params.po},'%')
+                         or tm.user_account like concat('%',#{params.po},'%')
+                        )
+                        and tm.role_id=104
+                    )
                 )
             </if>
             <if test="params.sm != null and params.sm != ''">
                 and exists (
-                select * from s_team_member tm where t.team_id=tm.team_id
-                and (
-                tm.user_name like concat('%',#{params.sm},'%')
-                or tm.user_account like concat('%',#{params.sm},'%')
-                and tm.role_id=103
-                )
+                    select * from s_team_member tm where t.team_id=tm.team_id
+                        and (
+                        (tm.user_name like concat('%',#{params.sm},'%')
+                         or tm.user_account like concat('%',#{params.sm},'%')
+                        )
+                        and tm.role_id=103
+                    )
                 )
             </if>
             <if test="params.systemIds != null and params.systemIds.size != 0">
