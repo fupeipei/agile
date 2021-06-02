@@ -674,6 +674,14 @@ public class IssueServiceImpl implements IssueService {
         if (issue.getLaneId() != null) {
             issueListDTO.setLaneId(getSecondStageMapByTypeAndId(issue.getLaneId(),issue.getIssueType(),issue.getStageId()));
         }
+        //  将阶段与状态拼成   ""/"" 形式
+        if (issue.getStageId() != null) {
+           String name = issueListDTO.getStageId().get("name").toString();
+            if (issue.getLaneId() != null) {
+                name = name.trim()+"/"+issueListDTO.getLaneId().get("name").toString().trim();
+            }
+            issueListDTO.getStageId().put("name",name);
+        }
 
         // 缺陷类型
         if (null != issue.getFaultType()) {
