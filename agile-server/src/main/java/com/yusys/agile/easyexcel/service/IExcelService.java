@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service;
 
 import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,9 +31,16 @@ public interface IExcelService {
      * @return
      * @throws Exception
      */
-    void uploadStorys(Long systemId,MultipartFile file) throws Exception;
+    FileInfo uploadStorys(Long systemId, MultipartFile file) throws Exception;
 
 
-
-    void uploadTasks( Long sprintId,MultipartFile file) throws Exception;
+    /**
+     * 任务上传
+     * @param
+     * @param file
+     * @param
+     * @return
+     * @throws Exception
+     */
+    FileInfo uploadTasks(MultipartFile file) throws Exception;
 }

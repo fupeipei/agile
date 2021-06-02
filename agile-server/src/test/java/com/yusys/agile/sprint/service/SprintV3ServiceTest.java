@@ -276,7 +276,7 @@ public class SprintV3ServiceTest {
      */
     @Test
     public void getUsersBySprintId() {
-        List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(100012L);
+        List<SprintV3UserHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(100012L);
         Assert.assertNotNull(userSprintHourDTOList);
     }
 

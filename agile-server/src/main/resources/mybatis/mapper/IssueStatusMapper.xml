@@ -18,7 +18,7 @@
     </update>
 
     <select id="getTaskStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
-        select A.sprint_id,A.finished ,B.in_sprint,C.not_started from (
+        select A.sprint_id,A.finished ,B.in_sprint,C.not_started,E.really_workload,F.plan_workload from (
         (
         SELECT COUNT(1) AS finished ,a.sprint_id
         FROM s_issue a
@@ -34,11 +34,32 @@
         FROM s_issue a
         WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 107 AND a.issue_type = 4 AND a.sprint_id = #{sprintId}) C
         on B.sprint_id = C.sprint_id
+           left join
+           (
+            select sum(a.really_workload) as really_workload, a.sprint_id
+            from s_issue a
+            where 1=1
+            and a.is_archive != 1
+            and a.state = 'U'
+            and a.issue_type = 4
+            and a.sprint_id = #{sprintId}
+            ) E on E.sprint_id = C.sprint_id
+           left join
+           (
+            select sum(a.plan_workload) as plan_workload, a.sprint_id
+            from s_issue a
+            where 1=1
+            and a.is_archive != 1
+            and a.state = 'U'
+            and a.issue_type = 4
+            and a.sprint_id = #{sprintId}
+            ) F on F.sprint_id = E.sprint_id
+
         )
     </select>
 
     <select id="getStoryStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
-        select A.sprint_id,A.finished,B.in_sprint,C.not_started from (
+        select A.sprint_id,A.finished,B.in_sprint,C.not_started,E.finished_story_point from (
         (
         SELECT COUNT(1) AS finished ,a.sprint_id
         FROM s_issue a
@@ -55,6 +76,18 @@
         WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 104 AND a.issue_type = 3 AND a.sprint_id = #{sprintId}) C
         on B.sprint_id = C.sprint_id
         )
+        left join
+        (
+            select sum(se.value) as finished_story_point,si.sprint_id
+            from s_issue si, s_sys_extend_field_detail se
+            where 1=1
+            and si.issue_id = se.issue_id
+            and si.sprint_id = #{sprintId}
+            and si.state = "U"
+            and si.lane_id = 106
+            and si.issue_type = 3
+            and se.field_id = 'storyPoint'
+           ) E on E.sprint_id = C.sprint_id
     </select>
 
 </mapper>

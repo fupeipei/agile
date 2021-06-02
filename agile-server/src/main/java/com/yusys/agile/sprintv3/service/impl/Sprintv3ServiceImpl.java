@@ -11,9 +11,7 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.StoryService;
-import com.yusys.agile.sprint.domain.UserSprintHour;
 import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
@@ -27,7 +25,7 @@ import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.domain.Team;
-import com.yusys.agile.team.dto.TeamDTO;
+import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
@@ -97,12 +95,12 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
     @Override
-    public SprintDTO viewEdit(Long sprintId) {
+    public SprintV3DTO viewEdit(Long sprintId) {
         SSprintWithBLOBs sprint = ssprintMapper.selectByPrimaryKey(sprintId);
         if (null == sprint || !StringUtils.equals(sprint.getState(), StateEnum.U.getValue())) {
-            return new SprintDTO();
+            return new SprintV3DTO();
         }
-        SprintDTO sprintDTO = ReflectUtil.copyProperties(sprint, SprintDTO.class);
+        SprintV3DTO sprintDTO = ReflectUtil.copyProperties(sprint, SprintV3DTO.class);
         STeam team = sTeamMapper.selectByPrimaryKey(sprint.getTeamId());
         if (null != team) {
             sprintDTO.setTeamName(sTeamMapper.selectByPrimaryKey(sprint.getTeamId()).getTeamName());
@@ -114,7 +112,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             sprintDTO.setSprintDayList(dateList);
         }
         //获取团队信息
-        List<TeamDTO> teamDTOS = getOptionalMembers4Team(sprint.getTeamId(), sprintId);
+        List<TeamV3DTO> teamDTOS = getOptionalMembers4Team(sprint.getTeamId(), sprintId);
         sprintDTO.setTeamDTOList(teamDTOS);
 
         return sprintDTO;
@@ -145,26 +143,26 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @Description 获取团队以及团队中人员信息
      * @Return java.util.List<com.yusys.agile.team.dto.TeamDTO>
      */
-    private List<TeamDTO> getOptionalMembers4Team(Long teamId, Long sprintId) {
+    private List<TeamV3DTO> getOptionalMembers4Team(Long teamId, Long sprintId) {
         //通过projectId查询所有团队
-        List<Team> teams = sTeamMapper.getTeamsByTeamId(teamId);
+        List<STeam> teams = sTeamMapper.getTeamsByTeamId(teamId);
         // 空的直接返回
         if (CollectionUtils.isEmpty(teams)) {
-            List<TeamDTO> teamDTOS = new ArrayList<>();
-            List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
-            List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+            List<TeamV3DTO> teamDTOS = new ArrayList<>();
+            List<SprintV3UserHourDTO> userSprintHourDTOS = new ArrayList<>();
+            List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
             if (CollectionUtils.isNotEmpty(userSprintHours)) {
                 getUser(userSprintHourDTOS, userSprintHours);
             }
-            TeamDTO teamDTO = new TeamDTO();
+            TeamV3DTO teamDTO = new TeamV3DTO();
             teamDTO.setUsers(userSprintHourDTOS);
             teamDTOS.add(teamDTO);
             return teamDTOS;
         }
-        List<TeamDTO> teamDTOS = new ArrayList<>();
-        for (Team team : teams) {
-            TeamDTO teamDTO = ReflectUtil.copyProperties(team, TeamDTO.class);
-            List<UserSprintHourDTO> userSprintHourDTOS = this.queryUsersBySprintId(sprintId);
+        List<TeamV3DTO> teamDTOS = new ArrayList<>();
+        for (STeam team : teams) {
+            TeamV3DTO teamDTO = ReflectUtil.copyProperties(team, TeamV3DTO.class);
+            List<SprintV3UserHourDTO> userSprintHourDTOS = this.queryUsersBySprintId(sprintId);
             teamDTO.setUsers(userSprintHourDTOS);
             //查询团队下的子系统
             List<Long> systemIds = sTeamSystemMapper.querySystemIdByTeamId(teamDTO.getTeamId());
@@ -176,20 +174,20 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         return teamDTOS;
     }
 
-    private List<UserSprintHourDTO> queryUsersBySprintId(Long sprintId) {
-        List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
+    private List<SprintV3UserHourDTO> queryUsersBySprintId(Long sprintId) {
+        List<SprintV3UserHourDTO> userSprintHourDTOS = new ArrayList<>();
         //通过迭代id查询迭代时长表的userid，然后再查人员
-        List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
         if (CollectionUtils.isNotEmpty(userSprintHours)) {
             getUser(userSprintHourDTOS, userSprintHours);
         }
         return userSprintHourDTOS;
     }
 
-    private void getUser(List<UserSprintHourDTO> userSprintHourDTOS, List<UserSprintHour> userSprintHours) {
-        for (UserSprintHour userSprintHour : userSprintHours) {
+    private void getUser(List<SprintV3UserHourDTO> userSprintHourDTOS, List<SSprintUserHour> userSprintHours) {
+        for (SSprintUserHour userSprintHour : userSprintHours) {
             SsoUser user = iFacadeUserApi.queryUserById(userSprintHour.getUserId());
-            UserSprintHourDTO userSprintHourDTO = ReflectUtil.copyProperties(userSprintHour, UserSprintHourDTO.class);
+            SprintV3UserHourDTO userSprintHourDTO = ReflectUtil.copyProperties(userSprintHour, SprintV3UserHourDTO.class);
             if (null != user) {
                 userSprintHourDTO.setUserId(user.getUserId());
                 userSprintHourDTO.setUserName(user.getUserName());
@@ -290,6 +288,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         params.put("team", dto.getTeam());
         //迭代名称或编号
         params.put("sprint", dto.getSprint());
+        //租户code
+        params.put("tenantCode", security.getTenantCode());
         return params;
     }
 
@@ -303,6 +303,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         params.put("system", security.getSystemId());
         //登录人id
         params.put("user", security.getUserId());
+        //租户code
+        params.put("tenantCode", security.getTenantCode());
         return params;
     }
 
@@ -420,7 +422,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateSprint(SprintDTO sprintDTO, SecurityDTO securityDTO) {
+    public void updateSprint(SprintV3DTO sprintDTO, SecurityDTO securityDTO) {
         if (!canEdit(sprintDTO.getSprintId())) {
             throw new BusinessException("只有【未开始】状态的迭代才允许修改");
         }
@@ -434,7 +436,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @Description 对传来的参数做判断
      * @Return void
      */
-    private void checkParameter(@RequestBody SprintDTO sprintDTO) {
+    private void checkParameter(@RequestBody SprintV3DTO sprintDTO) {
         String str1 = "迭代名称过长,不能大于100!";
         String str2 = "团队名称过长，不能大于100!";
         // String str3 = "请选择团队";
@@ -445,7 +447,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, str4);
     }
 
-    public void editSprint(SprintDTO sprintDTO) {
+    public void editSprint(SprintV3DTO sprintDTO) {
         final SSprintWithBLOBs sprint = ReflectUtil.copyProperties(sprintDTO, SSprintWithBLOBs.class);
         final Long sprintId = sprint.getSprintId();
         final SSprintWithBLOBs origin = ssprintMapper.selectByPrimaryKey(sprintId);
@@ -482,7 +484,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @Description 时间戳排序，结束时间取最后日期后一天
      * @Return java.util.Date
      */
-    private Date getDate(SprintDTO sprintDTO, SSprintWithBLOBs sprint) {
+    private Date getDate(SprintV3DTO sprintDTO, SSprintWithBLOBs sprint) {
         List<Date> sprintDays = sprintDTO.getSprintDayList();
         List<Date> dateList = sprintDays.stream().sorted().collect(Collectors.toList());
         sprint.setSprintDays(convertDateToStr(dateList));
@@ -510,7 +512,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @Description 判断版本号只能是英文数字_.常用字符
      * @Return void
      */
-    private void versionNumberRegex(SprintDTO sprintDTO) {
+    private void versionNumberRegex(SprintV3DTO sprintDTO) {
         String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(sprintDTO.getVersionNumber());
@@ -527,10 +529,10 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @Description 创建迭代人员
      * @Return void
      */
-    private void createUserSprintHour(SprintDTO sprintDTO, Long sprintId, Long userId) {
-        List<UserSprintHourDTO> sprintHourDTOS = sprintDTO.getMembers();
+    private void createUserSprintHour(SprintV3DTO sprintDTO, Long sprintId, Long userId) {
+        List<SprintV3UserHourDTO> sprintHourDTOS = sprintDTO.getMembers();
         if (CollectionUtils.isNotEmpty(sprintHourDTOS)) {
-            for (UserSprintHourDTO userSprintHourDTO : sprintHourDTOS) {
+            for (SprintV3UserHourDTO userSprintHourDTO : sprintHourDTOS) {
                 SSprintUserHour userSprintHour = ReflectUtil.copyProperties(userSprintHourDTO, SSprintUserHour.class);
                 userSprintHour.setSprintId(sprintId);
                 userSprintHour.setCreateUid(userId);
@@ -565,6 +567,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      * @author 张宇
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String cancelSprint(long sprintId, long userId) {
         //迭代未开始
         if (!TYPE_NO_START_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
@@ -580,8 +583,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         if (0 == ssprintMapper.sprintExist(sprintId)) {
             throw new BusinessException("暂无该迭代");
         }
+
+        //修改故事状态
+        ssprintMapper.changeIssueStatusBySprintId(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_ADD_STATE.CODE);
+        ssprintMapper.changeIssueStatusBySprintId(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE);
+
         ssprintMapper.cancelSprint(sprintId);
-        return "迭代状态更新成功";
+        return "迭代取消,解除任务关联";
     }
 
     /**
@@ -698,8 +706,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<UserSprintHourDTO> getUsersBySprintId(Long sprintId) {
-        List<UserSprintHourDTO> userSprintHourDTOList = this.queryUsersBySprintId(sprintId);
+    public List<SprintV3UserHourDTO> getUsersBySprintId(Long sprintId) {
+        List<SprintV3UserHourDTO> userSprintHourDTOList = this.queryUsersBySprintId(sprintId);
         return userSprintHourDTOList;
     }
 
@@ -798,7 +806,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Long teamId = sprintDTO.getTeamId();
         boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
         if (!b) {
-            throw new BusinessException("暂无权限更改");
+            throw new BusinessException("只有本迭代的PO权限才允许关联/移除用户故事");
         }
         List<Long> issueIds = sprintDTO.getIssueIds();
         if (CollectionUtils.isNotEmpty(issueIds)) {
@@ -849,9 +857,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
     @Override
     public Integer getWorkload(Long sprintId) {
-        List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
         int sprintHours = 0;
-        for (UserSprintHour userSprintHour : userSprintHours) {
+        for (SSprintUserHour userSprintHour : userSprintHours) {
             sprintHours += userSprintHour.getReallyHours().intValue();
         }
         return sprintHours;

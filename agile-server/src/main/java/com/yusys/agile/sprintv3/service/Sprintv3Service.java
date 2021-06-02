@@ -6,6 +6,7 @@ import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
@@ -36,7 +37,7 @@ public interface Sprintv3Service {
      * @Description 查看迭代编辑页面
      * @Return com.yusys.agile.sprint.dto.SprintDTO
      */
-    SprintDTO viewEdit(Long sprintId);
+    SprintV3DTO viewEdit(Long sprintId);
 
     /**
      * 条件分页-查询列表
@@ -65,7 +66,7 @@ public interface Sprintv3Service {
      */
     boolean canEdit(Long sprintId);
 
-    void updateSprint(SprintDTO sprintDTO, SecurityDTO securityDTO);
+    void updateSprint(SprintV3DTO sprintDTO, SecurityDTO securityDTO);
 
     /**
      * 每天改变迭代状态
@@ -147,7 +148,7 @@ public interface Sprintv3Service {
      */
     List<SSprint> queryAllSprint();
 
-    List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
+    List<SprintV3UserHourDTO> getUsersBySprintId(Long sprintId);
 
     /**
      * 根据系统id获取未开始和执行中的迭代信息

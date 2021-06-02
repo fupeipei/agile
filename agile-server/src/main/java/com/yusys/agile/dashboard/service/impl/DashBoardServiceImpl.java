@@ -5,6 +5,7 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.IssueStatusMapper;
 import com.yusys.agile.issue.domain.IssueProjectStatus;
 import com.yusys.agile.issue.domain.IssueStatus;
+import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueProjectStatusService;
 import com.yusys.agile.issue.service.IssueStatusService;
@@ -68,23 +69,21 @@ public class DashBoardServiceImpl implements DashBoardService {
             //创建研发需求状况
             // createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_FEATURE.CODE);
             //创建故事状况
-            createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_STORY.CODE);
+            createIssueStoryStatus(projectId, sprintId, target);
             //创建任务状况
-            createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_TASK.CODE);
+            createIssueTaskStatus(projectId, sprintId, target);
         }
     }
 
 
     /**
-     * 创建工作项状况
+     * 创建工作项-用户故事状况
      */
-    private void createIssueStatus(Long projectId, Long sprintId, Date target, Byte issueType) {
-        IssueStatus status;
-        if (issueType.equals(IssueTypeEnum.TYPE_TASK.CODE)) {
-            status = statusMapper.getTaskStatus(sprintId);
-        } else {
-          status = statusMapper.getStoryStatus(sprintId);
-        }
+    private void createIssueStoryStatus(Long projectId, Long sprintId, Date target) {
+        //获取状态
+        IssueStatus status = statusMapper.getStoryStatus(sprintId);
+        //查询当前记录是否存在，存在则修改，不存在则新增
+        Byte issueType = IssueTypeEnum.TYPE_STORY.CODE;
         IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
         if (currentStatus == null) {
             IssueStatus issueStatus = new IssueStatus();
@@ -94,12 +93,44 @@ public class DashBoardServiceImpl implements DashBoardService {
             issueStatus.setFinished(status.getFinished());
             issueStatus.setInSprint(status.getInSprint());
             issueStatus.setNotStarted(status.getNotStarted());
+            issueStatus.setFinishedStoryPoint(status.getFinishedStoryPoint());
             issueStatus.setIssueType(issueType);
             issueStatusService.create(issueStatus);
         } else {
             currentStatus.setFinished(status.getFinished());
             currentStatus.setInSprint(status.getInSprint());
             currentStatus.setNotStarted(status.getNotStarted());
+            currentStatus.setFinishedStoryPoint(status.getFinishedStoryPoint());
+            issueStatusService.update(currentStatus);
+        }
+    }
+    /**
+     * 创建工作项-任务状况
+     */
+    private void createIssueTaskStatus(Long projectId, Long sprintId, Date target) {
+        //获取状态
+        IssueStatus status = statusMapper.getTaskStatus(sprintId);
+        //查询当前记录是否存在，存在则修改，不存在则新增
+        Byte issueType = IssueTypeEnum.TYPE_TASK.CODE;
+        IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
+        if (currentStatus == null) {
+            IssueStatus issueStatus = new IssueStatus();
+            issueStatus.setSprintDate(target);
+            issueStatus.setProjectId(projectId);
+            issueStatus.setSprintId(sprintId);
+            issueStatus.setFinished(status.getFinished());
+            issueStatus.setInSprint(status.getInSprint());
+            issueStatus.setNotStarted(status.getNotStarted());
+            issueStatus.setReallyWorkload(status.getReallyWorkload());
+            issueStatus.setPlanWorkload(status.getPlanWorkload());
+            issueStatus.setIssueType(issueType);
+            issueStatusService.create(issueStatus);
+        } else {
+            currentStatus.setFinished(status.getFinished());
+            currentStatus.setInSprint(status.getInSprint());
+            currentStatus.setNotStarted(status.getNotStarted());
+            currentStatus.setReallyWorkload(status.getReallyWorkload());
+            currentStatus.setPlanWorkload(status.getPlanWorkload());
             issueStatusService.update(currentStatus);
         }
     }

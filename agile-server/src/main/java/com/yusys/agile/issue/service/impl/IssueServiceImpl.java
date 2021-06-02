@@ -27,7 +27,9 @@ import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.service.ModuleService;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
@@ -175,6 +177,8 @@ public class IssueServiceImpl implements IssueService {
     private SytExtendFieldDetailFactory sytExtendFieldDetailFactory;
     @Autowired
     private StoryService storyService;
+    @Autowired
+    private SSprintMapper ssprintMapper;
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
         @Override
@@ -749,7 +753,6 @@ public class IssueServiceImpl implements IssueService {
      * 功能描述 查询当前Issue
      *
      * @param issueId
-     * @param projectId
      * @param issueQuery 1:不查询child，2：查询child
      * @return com.yusys.agile.requirement.SysExtendFieldDetailDTO;
      * @date 2020/4/21
@@ -795,6 +798,12 @@ public class IssueServiceImpl implements IssueService {
         Map map = new HashMap<String, String>();
         if (issue != null) {
             map.put("issueType", issue.getIssueType());
+            Long sprintId = issue.getSprintId();
+            map.put("sprintId",sprintId);
+            SSprintWithBLOBs sprint = ssprintMapper.selectByPrimaryKey(sprintId);
+            if(Optional.ofNullable(sprint).isPresent()){
+                map.put("sprintName",sprint.getSprintName());
+            }
             if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) ||
                     IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
                 map.put("systemId", issue.getSystemId());
@@ -976,7 +985,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
         //Long projectId = securityDTO.getProjectId();
-        Long projectId = issueFactory.getProjectIdByIssueId(issueId);
+        Long systemId = issueFactory.getProjectIdByIssueId(issueId);
         try {
             PageHelper.startPage(pageNum, pageSize);
             //查询历史记录
@@ -989,7 +998,7 @@ public class IssueServiceImpl implements IssueService {
             Byte issueType = issue.getIssueType();
             Map<String, String> sprintMap = new HashMap<>();
             if (CollectionUtils.isNotEmpty(issueHistoryRecords)) {
-                Map<String, String> stagesInstanceMapInfo = recordFactory.getStagesInstanceMapInfo(projectId);
+                Map<String, String> stagesInstanceMapInfo = recordFactory.getStagesInstanceMapInfo(systemId);
                 issueHistoryRecords.forEach(issueHistoryRecordDTO -> {
                     //recordType 0 常规文本 1 富文本
                     if ("1".equals(issueHistoryRecordDTO.getRecordType())) {

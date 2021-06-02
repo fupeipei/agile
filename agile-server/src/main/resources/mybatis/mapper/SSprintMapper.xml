@@ -528,7 +528,7 @@
         from s_sprint
         where start_time <![CDATA[<=]]> #{now}
           AND status = 2
-          and state = "U"
+          and state = 'U'
     </select>
     <update id="changeStatusTOProgressByIds">
         UPDATE s_sprint
@@ -569,6 +569,9 @@
                 or sp.sprint_name like concat('%',#{params.sprint},'%')
                 )
             </if>
+            <if test="params.tenantCode != null and params.tenantCode != ''">
+                and sp.tenant_code=#{params.tenantCode}
+            </if>
         </if>
     </sql>
     <sql id="query_other_list_param">
@@ -592,6 +595,9 @@
             </if>
             <if test="params.user != null">
                 and stm.user_id = #{params.user}
+            </if>
+            <if test="params.tenantCode != null and params.tenantCode != ''">
+                and sp.tenant_code=#{params.tenantCode}
             </if>
         </if>
     </sql>
@@ -776,14 +782,14 @@
     </select>
 
     <select id="selectBySystemId" resultType="com.yusys.agile.sprintV3.dto.SprintListDTO">
-
-        SELECT DISTINCT ss.sprint_id, ss.sprint_name,st.team_id ,st.team_name
+        SELECT DISTINCT ss.sprint_id, ss.sprint_name, st.team_id, st.team_name
         from agile.s_sprint ss
-        left join agile.s_team_system sts
-        on ss.team_id = sts.team_id
-        left join agile.s_team st  on st.team_id  = ss.team_id
+                     left join agile.s_team_system sts
+                on ss.team_id = sts.team_id
+                     left join agile.s_team st on st.team_id = ss.team_id
         where ss.status in (2, 3)
-        and sts.system_id = #{systemId};
+          and sts.system_id = #{systemId}
+          and ss.end_time > now()
     </select>
 
     <select id="querySprintMember" resultType="com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours">
@@ -807,24 +813,22 @@
 
     <!--实际工作量计算方法：已领取（预计工时）+进行中（预计工时）+已完成（实际工时）任务卡片总和-->
     <select id="queryUserActualWorkload" resultType="Integer">
-
-        select      (ifnull((select sum(plan_workload)
+        select (ifnull((select sum(plan_workload)
                         from s_issue
                         where handler = #{userId}
                           and sprint_id = #{sprintId}
                           and lane_id in (108, 109)
                           and state = 'U'
-                      ),0)
-                      +
-                    ifnull((select sum(really_workload)
+                               ), 0)
+                +
+                ifnull((select sum(really_workload)
                         from s_issue b
                         where b.handler = #{userId}
                           and b.sprint_id = #{sprintId}
                           and lane_id = 110
                           and state = 'U'
-                               ),0)
-                    )     AS  a
-
+                               ), 0)
+                       ) AS a
     </select>
 
     <select id="unclaimedWorkHours" resultType="int">
@@ -858,4 +862,18 @@
           and handler = #{userId}
           and state = 'U'
     </select>
+
+
+    <update id="changeIssueStatusBySprintId">
+        update s_issue
+        set lane_id         = #{status},
+            handler         = null,
+            system_id       = null,
+            system_id       = null,
+            really_workload = 0,
+            sprint_id       = null
+        where issue_type = #{IssueType}
+          and sprint_id = #{sprintId}
+          and state = 'U'
+    </update>
 </mapper>

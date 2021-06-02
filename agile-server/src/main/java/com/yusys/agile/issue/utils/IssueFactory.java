@@ -143,17 +143,13 @@ public class IssueFactory {
             List<Long> systemIds = Lists.newArrayList();
             if (null != story) {
                 issue.setSprintId(story.getSprintId());
-                List<IssueSystemRelp> issueSystemRelps = issueSystemRelpService.listIssueSystemRelp(story.getIssueId());
-                if (CollectionUtils.isNotEmpty(issueSystemRelps)){
-                      systemIds = issueSystemRelps.stream()
-                            .map(IssueSystemRelp::getSystemId)
-                            .distinct()
-                            .collect(Collectors.toList());
-                }
+                issue.setSystemId(story.getSystemId());
+                systemIds.add(story.getSystemId());
+                issueDTO.setSystemId(story.getSystemId());
             }else {
                 Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
                 systemIds.add(systemId);
-
+                issueDTO.setSystemId(systemId);
             }
             issueDTO.setSystemIds(systemIds);
             issue.setReallyWorkload(0);
@@ -184,9 +180,6 @@ public class IssueFactory {
         if(!Optional.ofNullable(issueDTO.getSystemId()).isPresent()){
             Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             issue.setSystemId(systemId);
-        }
-        if (CollectionUtils.isEmpty(issueDTO.getSystemIds())){
-            Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             List<Long> systemIds = Lists.newArrayList(systemId);
             issueDTO.setSystemIds(systemIds);
         }
@@ -681,10 +674,7 @@ public class IssueFactory {
 
             //系统
             List<Long> systemIds = new ArrayList<>();
-            List<IssueSystemRelp> listIssueSystemRelp = issueSystemRelpService.listIssueSystemRelp(issueId);
-            for (IssueSystemRelp issueSystemRelp : listIssueSystemRelp) {
-                systemIds.add(issueSystemRelp.getSystemId());
-            }
+            systemIds.add(issue.getSystemId());
             issueDTO.setSystemIds(systemIds);
 
             //模块

@@ -1772,7 +1772,6 @@
         distinct
         iu.*
         from s_issue iu
-        left join s_issue_system_relp isr on iu.issue_id = isr.issue_id
         left join s_issue_module_relp imr on iu.issue_id = imr.issue_id
         left join s_issue_custom_field icf on iu.issue_id = icf.issue_id
         <where>
@@ -2093,25 +2092,25 @@
                     and iu.handler is null
                 </if>
             </if>
-
             <if test="issueRecord.systemIds!= null ">
                 <if test="issueRecord.systemIds.queryType ==1 and issueRecord.systemIds.dataLong.size()>0">
-                    and ( isr.system_id in
+                    and ( iu.system_id in
                     <foreach collection="issueRecord.systemIds.dataLong" open="(" close=")" separator="," item="iterm">
                         #{iterm}
                     </foreach>
-                    or not exists (select * from s_issue_system_relp isr1 where iu.issue_id =isr1.issue_id) )
+                    or iu.system_id is null )
                 </if>
                 <if test="issueRecord.systemIds.queryType ==2 and issueRecord.systemIds.dataLong.size()>0">
-                    and isr.system_id in
+                    and iu.system_id in
                     <foreach collection="issueRecord.systemIds.dataLong" open="(" close=")" separator="," item="iterm">
                         #{iterm}
                     </foreach>
                 </if>
                 <if test="issueRecord.systemIds.queryType ==3 ">
-                    and not exists (select * from s_issue_system_relp isr1 where iu.issue_id =isr1.issue_id)
+                    and iu.system_id is null
                 </if>
             </if>
+
             <if test="issueRecord.moduleIds!= null ">
                 <if test="issueRecord.moduleIds.queryType ==1 and issueRecord.moduleIds.dataLong.size()>0">
                     and ( imr.module_id in
@@ -3058,7 +3057,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">
                 #{systemId}
             </foreach>
-            )</if>
+            </if>
         <if test="title != null and title != ''">
             AND (a.title LIKE CONCAT('%', #{title}, '%')or a.issue_id LIKE CONCAT('%', #{title}, '%'))
         </if>

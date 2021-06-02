@@ -8,6 +8,7 @@ import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -89,7 +90,7 @@ public class Sprintv3Controller {
     }
 
     @PostMapping("/updateSprint")
-    public ControllerResponse updateSprint(@RequestBody SprintDTO sprintDTO, SecurityDTO securityDTO) {
+    public ControllerResponse updateSprint(@RequestBody SprintV3DTO sprintDTO, SecurityDTO securityDTO) {
         try {
             sprintv3Service.updateSprint(sprintDTO, securityDTO);
         } catch (Exception e) {
@@ -201,7 +202,7 @@ public class Sprintv3Controller {
      */
     @GetMapping("/getUsersBySprintId/{sprintId}")
     public ControllerResponse getUsersBySprintId(@PathVariable Long sprintId) {
-        List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(sprintId);
+        List<SprintV3UserHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(sprintId);
         return ControllerResponse.success(userSprintHourDTOList);
     }
 

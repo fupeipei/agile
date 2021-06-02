@@ -15,6 +15,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.PageInfoDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
@@ -24,17 +25,16 @@ import com.yusys.agile.issue.utils.IssueRuleFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.service.IStageService;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
-import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.domain.STeamMemberExample;
@@ -122,7 +122,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private SSprintUserHourMapper sSprintUserHourMapper;
-
     @Autowired
     private STeamMemberMapper sTeamMemberMapper;
 
@@ -130,12 +129,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteTask(Long taskId, Boolean deleteChild) {
-
         Issue issue = issueMapper.selectByPrimaryKey(taskId);
         if (null != issue) {
-            this.checkIsSMRoleOrTeamUser(issue.getParentId(), "无法删除任务");
+            this.ckeckTaksParams(issue.getSprintId(), "无法删除任务");
         }
-        this.checkIsSMRoleOrTeamUser(issue.getParentId(),"无法删除,只有SM或团队成员可以删除任务");
         issueFactory.deleteIssue(taskId, deleteChild);
 
         int i = this.updateStoryLaneIdByTaskCount(issue);
@@ -161,6 +158,11 @@ public class TaskServiceImpl implements TaskService {
             Long[] stages = issueDTO.getStages();
             if (null != stages) {
                 issueDTO.setStageId(stages[0]);
+                if (stages.length > 1){
+                    issueDTO.setLaneId(stages[1]);
+                }else {
+                    issueDTO.setLaneId(null);
+                }
                 if (!ObjectUtil.equals(oldTask.getLaneId(), issueDTO.getLaneId())) {
                     //创建任务状态变更历史记录
                     createIssueHistoryRecords(oldTask.getLaneId(), issueDTO.getLaneId(), oldTask);
@@ -268,14 +270,12 @@ public class TaskServiceImpl implements TaskService {
     public Long createTask(IssueDTO issueDTO) {
         this.checkIsSMRoleOrTeamUser(issueDTO.getParentId(),"只有SM或团队成员才可以新建任务");
         //设置默认创建
-        Long[] stages = null;
-        if (Optional.ofNullable(issueDTO.getHandler()).isPresent()) {
-            //任务选择处理人就是已领取，否则就是未领取
-            stages = new Long[]{StageConstant.FirstStageEnum.READY_STAGE.getValue(), TaskStatusEnum.TYPE_RECEIVED_STATE.CODE};
-        } else {
+        Long[] stages = issueDTO.getStages();
+        if (!Optional.ofNullable(stages).isPresent()){
             stages = new Long[2];
             stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
             stages[1] = TaskStatusEnum.TYPE_ADD_STATE.CODE;
+        }
             //创建用户故事下任务默认放在开发中的就绪阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
             /*List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
             if (CollectionUtils.isNotEmpty(stageInstances)) {
@@ -283,7 +283,6 @@ public class TaskServiceImpl implements TaskService {
                 StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent() ? stageInstances.get(1) : stageInstances.get(0);
                 stages[1] = stageInstance.getStageId();
             }*/
-        }
         issueDTO.setStages(stages);
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
@@ -327,7 +326,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void ckeckTaksParams(Long sprintId, String errorMsg) {
-        if (Optional.ofNullable(sprintId).isPresent()){
+        if (!Optional.ofNullable(sprintId).isPresent()){
             return;
         }
         SSprintExample sSprintExample = new SSprintExample();
@@ -429,7 +428,7 @@ public class TaskServiceImpl implements TaskService {
             task.setHandler(loginUserId);
         }
         //根据task获得team，根据team及当前登录人员进行判断：
-        SprintDTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
+        SprintV3DTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
         if (sprintDTO1 == null) {
             throw new BusinessException("根据迭代标识获取迭代信息为空" + task.getSprintId());
         }
@@ -674,11 +673,11 @@ public class TaskServiceImpl implements TaskService {
 
     private List<SsoUserDTO> querySpringtUsersBySprintId(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
         List<SsoUserDTO> ssoUserDTOList = Lists.newArrayList();
-        List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
         if (CollectionUtils.isEmpty(userSprintHours)) {
             return ssoUserDTOList;
         }
-        List<Long> userIds = userSprintHours.stream().map(UserSprintHour::getUserId).distinct().collect(Collectors.toList());
+        List<Long> userIds = userSprintHours.stream().map(SSprintUserHour::getUserId).distinct().collect(Collectors.toList());
         return iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds,pageNum,pageSize,userName);
     }    /**
      * @param from
@@ -694,7 +693,7 @@ public class TaskServiceImpl implements TaskService {
                 task.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.STAGEID.getDesc());
         if (null != task.getIssueId()) {
             nameHistory.setOldValue(TaskStatusEnum.getName(from));
-            if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {
+            if (TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(to)) {
                 if (null != task.getIssueId() && Optional.ofNullable(to).isPresent()) {
                     nameHistory.setOldValue(TaskStatusEnum.getName(from));
                     if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {

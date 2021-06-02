@@ -5,6 +5,7 @@ import com.yusys.agile.project.dto.ProjectStoryDTO;
 import com.yusys.agile.project.dto.ProjectTaskDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.team.dto.TeamDTO;
+import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -123,7 +124,7 @@ public class SprintV3DTO {
      */
     private List<SprintV3UserHourDTO> members;
 
-//    private List<TeamDTO> teamDTOList;
+    private List<TeamV3DTO> teamDTOList;
 
     private Double sprintRate;
 

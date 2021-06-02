@@ -1,5 +1,7 @@
 package com.yusys.agile.sprintv3.dao;
 
+import com.yusys.agile.issue.enums.IssueTypeEnum;
+import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
@@ -264,4 +266,18 @@ public interface SSprintMapper {
      * @return int
      */
     int queryUserTaskNumber(@Param("sprintId") long sprintId, @Param("userId") Long userId);
+
+
+    /**
+     * 改变问题状态通过迭代id
+     * story级别: 一阶段状态,二阶段状态置初值, 领取人,系统id置空
+     * task级别:二阶段状态置107未领取, 领取人,真实,系统id工作时间置空
+     *
+     * @param sprintId  迭代id
+     * @param IssueType 问题类型
+     * @param Status    状态
+     * @return int
+     */
+    int changeIssueStatusBySprintId(@Param("sprintId") long sprintId, @Param("IssueType") Byte IssueType, @Param("status") Long Status);
+
 }
