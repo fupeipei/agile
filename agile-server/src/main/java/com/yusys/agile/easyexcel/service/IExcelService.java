@@ -25,12 +25,11 @@ public interface IExcelService {
 
     /**
      * 用户故事上传
-     * @param systemId 系统id
      * @param file
      * @return
      * @throws Exception
      */
-    FileInfo uploadStorys(Long systemId, MultipartFile file,ExcelCommentFile commentFile) throws Exception;
+    FileInfo uploadStorys(MultipartFile file,ExcelCommentFile commentFile) throws Exception;
 
 
     /**

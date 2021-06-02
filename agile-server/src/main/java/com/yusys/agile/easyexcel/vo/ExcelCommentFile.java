@@ -13,4 +13,6 @@ public class ExcelCommentFile {
 
     private Long sprintId;
 
+    private Long systemId;
+
 }

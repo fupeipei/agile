@@ -47,14 +47,16 @@ public class EasyExcelController {
     @ApiOperation("故事导入")
     @PostMapping("/uploadStorys")
     public ControllerResponse uploadStorys(@RequestParam("file") MultipartFile file,
-                                           @RequestParam(value = "systemId", required = false) Long systemId) {
-        FileInfo fileInfo = null;
+                                           @RequestParam(value = "systemId") Long systemId) {
+        FileInfo fileInfo;
         try {
             if (!Optional.ofNullable(systemId).isPresent()) {
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
             ExcelCommentFile commentFile = new ExcelCommentFile();
-            fileInfo = iExcelService.uploadStorys(systemId, file,commentFile);
+            commentFile.setSystemId(systemId);
+
+            fileInfo = iExcelService.uploadStorys(file,commentFile);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }
@@ -69,7 +71,7 @@ public class EasyExcelController {
     @ApiOperation("任务导入")
     @PostMapping("/uploadTasks")
     public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file,@RequestParam("sprintId")Long sprintId) {
-        FileInfo fileInfo = null;
+        FileInfo fileInfo;
         try {
             ExcelCommentFile commentFile = new ExcelCommentFile();
             commentFile.setSprintId(sprintId);
