@@ -95,9 +95,9 @@ public class IssueTemplateController {
 
 
     @GetMapping("/issueTemplate/init")
-    public ControllerResponse initIssueTemplate(Long projectId) {
+    public ControllerResponse initIssueTemplate(Long systemId) {
         try {
-            issueTemplateService.initIssueTemplate(projectId);
+            issueTemplateService.initIssueTemplate(systemId);
         } catch (Exception e) {
             logger.error(e.getMessage());
             return ControllerResponse.fail(e.getMessage());
