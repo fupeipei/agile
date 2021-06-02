@@ -1049,7 +1049,10 @@ public class StoryServiceImpl implements StoryService {
             PageHelper.startPage(pageNum, pageSize);
         }
         IssueExample issueExample = new IssueExample();
-        issueExample.createCriteria().andSystemIdEqualTo(systemId).andStateEqualTo(StateEnum.U.getValue());
+        List<Long> listLageId = Lists.newArrayList(104L,105L);
+        issueExample.createCriteria().andSystemIdEqualTo(systemId).andStateEqualTo(StateEnum.U.getValue()).
+                andStageIdEqualTo(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue()).
+                andLaneIdIn(listLageId);
         List<IssueDTO> storys = issueMapper.selectByExampleDTO(issueExample);
         return storys;
     }
