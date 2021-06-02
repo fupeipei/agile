@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
@@ -71,6 +72,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
        try {
            Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
+           log.info("获取迭代信息：{}", JSONObject.toJSONString(sprintListDTOS));
            if(CollectionUtils.isNotEmpty(sprintListDTOS)){
                Set<String> collect = sprintListDTOS.stream().
                        map(s-> s.getSprintId() + "+" + s.getSprintName()).collect(Collectors.toSet());
@@ -102,5 +104,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     private String[] getStoryPoint(){
         return new String[]{"1","3","5","8","13","20","40","100"};
     }
+
+
 
 }

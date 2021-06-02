@@ -55,6 +55,7 @@ public class ExcelUtil {
         long startTime = System.currentTimeMillis();
         List<List<String>> list = new ArrayList<>();
         try {
+            //todo 内存优化可以使用 ExcelListener
             List<LinkedHashMap> data = EasyExcel.read(inputStream).sheet().headRowNumber(size).doReadSync();
             for (LinkedHashMap map : data) {
                 // 将该行数据添加至返回结果list
