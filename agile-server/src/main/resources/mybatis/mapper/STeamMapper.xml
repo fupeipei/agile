@@ -282,12 +282,6 @@
             <if test="state != null">
                 state = #{state,jdbcType=VARCHAR},
             </if>
-            <if test="createUid != null">
-                create_uid = #{createUid,jdbcType=BIGINT},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
             <if test="updateUid != null">
                 update_uid = #{updateUid,jdbcType=BIGINT},
             </if>
