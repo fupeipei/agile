@@ -624,7 +624,8 @@ public class IssueServiceImpl implements IssueService {
         //priority优先级
         if (issue.getPriority() != null) {
             map = new HashMap<String, String>();
-            map.put(issue.getPriority(),issue.getPriority());
+            map.put("name", issue.getPriority() );
+            map.put("id", issue.getPriority() );
             issueListDTO.setPriority(map);
         }
         //importance
@@ -672,6 +673,14 @@ public class IssueServiceImpl implements IssueService {
         //laneId
         if (issue.getLaneId() != null) {
             issueListDTO.setLaneId(getSecondStageMapByTypeAndId(issue.getLaneId(),issue.getIssueType(),issue.getStageId()));
+        }
+        //  将阶段与状态拼成   ""/"" 形式
+        if (issue.getStageId() != null) {
+           String name = issueListDTO.getStageId().get("name").toString();
+            if (issue.getLaneId() != null) {
+                name = name.trim()+"/"+issueListDTO.getLaneId().get("name").toString().trim();
+            }
+            issueListDTO.getStageId().put("name",name);
         }
 
         // 缺陷类型

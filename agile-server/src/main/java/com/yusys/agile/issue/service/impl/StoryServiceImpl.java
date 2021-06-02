@@ -390,6 +390,11 @@ public class StoryServiceImpl implements StoryService {
             //获取故事下的任务
             issueDTOS = getChildren(sprintId, issueDTOS, taskKeyWord, laneIds, taskTypes, handlers);
         }
+        //查询故事下的Task的查询条件某一个不等于空的情况，判断Children的Task是为空，为空则进行过滤
+//        if(StringUtils.isNotBlank(taskKeyWord) || CollectionUtils.isNotEmpty(laneIds)
+//                || CollectionUtils.isNotEmpty(taskTypes) || CollectionUtils.isNotEmpty(handlers)){
+//            storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isEmpty(issue.getChildren())).collect(Collectors.toList());
+//        }
         return issueDTOS;
     }
 
@@ -502,10 +507,10 @@ public class StoryServiceImpl implements StoryService {
                     issueDTO.setChildren(taskList);
                     issueDTOSTmp.add(issueDTO);
                 }
-                if (StringUtils.isEmpty(taskKeyWord) && CollectionUtils.isEmpty(taskList)) {
-                    issueDTO.setChildren(taskList);
-                    issueDTOSTmp.add(issueDTO);
-                }
+//                if (StringUtils.isEmpty(taskKeyWord) && CollectionUtils.isEmpty(taskList)) {
+//                    issueDTO.setChildren(taskList);
+//                    issueDTOSTmp.add(issueDTO);
+//                }
             }
         }
         return issueDTOSTmp;
