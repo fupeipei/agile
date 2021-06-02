@@ -1185,9 +1185,8 @@ public class IssueServiceImpl implements IssueService {
             map.put("id", stageId);
         } else {
             List<StageInstance> instanceList = iStageService.getSecondStageListByParentId(firstStageId);
-            List<KanbanStageInstance> secondStages = instanceList.get(0).getSecondStages();
-            for(int i=0;i<secondStages.size();i++){
-                KanbanStageInstance kanbanStageInstance = secondStages.get(i);
+            for(int i=0;i<instanceList.size();i++){
+                KanbanStageInstance kanbanStageInstance = instanceList.get(i);
                 if(kanbanStageInstance.getStageId().equals(stageId)){
                     map.put("name", kanbanStageInstance.getStageName());
                     map.put("id", stageId);
