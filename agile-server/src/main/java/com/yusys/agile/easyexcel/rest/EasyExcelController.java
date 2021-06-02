@@ -66,8 +66,6 @@ public class EasyExcelController {
         return ControllerResponse.success("上传成功");
     }
 
-    ;
-
     @ApiOperation("任务导入")
     @PostMapping("/uploadTasks")
     public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file,@RequestParam("sprintId")Long sprintId) {
@@ -85,5 +83,4 @@ public class EasyExcelController {
         return ControllerResponse.success("上传成功");
     }
 
-    ;
 }
