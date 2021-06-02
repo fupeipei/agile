@@ -22,7 +22,7 @@ file:
   port: ${FILE_UPLOAD_SFTP_PORT:22}
   hostUser: ${FILE_UPLOAD_SFTP_HOST_USER:root}
   pwd: ${FILE_UPLOAD_SFTP_PWD:qyxn_58FqYt}
-  remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/home/errorExcel/test}
+  remoteDir: ${FILE_UPLOAD_LSFTP_REMOTE_DIR:/root/YuDO-oss/upload}
 
 async:
   executor:

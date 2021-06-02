@@ -218,4 +218,13 @@ public interface Sprintv3Service {
      * @Return java.lang.Integer
      */
     Integer getWorkload(Long sprintId);
+
+    /**
+     *功能描述 根据系统查询迭代
+     * @author shenfeng
+     * @date 2021/6/1
+      * @param systemID
+     * @return java.util.List<com.yusys.agile.sprintV3.dto.SprintListDTO>
+     */
+    List<SprintListDTO> querySprintBySystemId(Long systemID);
 }
