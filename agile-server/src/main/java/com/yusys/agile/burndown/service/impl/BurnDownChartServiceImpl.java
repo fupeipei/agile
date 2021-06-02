@@ -264,6 +264,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      * 计算每日剩余故事数
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void calculateStorys() {
         //查询所有迭代
         List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();

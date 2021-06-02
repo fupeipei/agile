@@ -12,7 +12,7 @@ public class IssueTemplate implements Serializable {
 
     private Byte apply;
 
-    private Long projectId;
+    private Long systemId;
 
     private Date createTime;
 
@@ -60,12 +60,12 @@ public class IssueTemplate implements Serializable {
         this.apply = apply;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Long getSystemId() {
+        return systemId;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
     }
 
     public Date getCreateTime() {

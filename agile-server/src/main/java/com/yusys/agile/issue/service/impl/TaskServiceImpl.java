@@ -424,9 +424,9 @@ public class TaskServiceImpl implements TaskService {
         }
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
         //Long loginUserId=807906052370849792L;
-        if (null != loginUserId) {
+       /* if (null != loginUserId) {
             task.setHandler(loginUserId);
-        }
+        }*/
         //根据task获得team，根据team及当前登录人员进行判断：
         SprintV3DTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
         if (sprintDTO1 == null) {

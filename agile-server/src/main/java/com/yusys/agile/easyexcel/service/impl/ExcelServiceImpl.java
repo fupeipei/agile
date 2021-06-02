@@ -113,7 +113,6 @@ public class ExcelServiceImpl implements IExcelService {
             for(JSONObject jsonObject :jsonObjects){
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
                 taskService.createTask(issueDTO);
-
             }
         }
         return null;
@@ -233,7 +232,9 @@ public class ExcelServiceImpl implements IExcelService {
             if(fileResult.size() < headSize){
                 fillNull(fileResult,fileResult.size(),headSize);
             }
-
+            if(line.size()<copyData.size()){
+                fillNull(line,line.size(),copyData.size());
+            }
             if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
                 if(StringUtils.isBlank(line.get(0))){
                     fileResult.add(headSize,"故事名称不能为空");
@@ -241,7 +242,6 @@ public class ExcelServiceImpl implements IExcelService {
                     continue;
                 }
             }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
-
                 if(StringUtils.isBlank(line.get(0))){
                     fileResult.add(headSize,"故事ID不能为空");
                     hasError = true;
