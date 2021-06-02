@@ -216,6 +216,21 @@ public class TaskServiceTest {
         taskService.dragTask(126L,107L, TaskStatusEnum.TYPE_CLOSED_STATE.CODE, null);
         issue1 = issueMapper.selectByPrimaryKey(219L);
         Assert.assertEquals("126L故事状态修改", StoryStatusEnum.TYPE_CLOSED_STATE.CODE,issue1.getLaneId());
+
+
+        secDTO = new SecurityDTO();
+        secDTO.setUserId(834451097091657728L);
+        //secDTO.setSystemId(817701268263542784L);
+        secDTO.setTenantCode("1");
+        secDTO.setUserName("杜杉");
+        secDTO.setUserAcct("dushan1");
+        UserThreadLocalUtil.setUserInfo(secDTO);
+        taskId=118L;
+
+        //"未领取", 107L      "已领取", 108L
+        issue = taskService.dragTask(taskId, TaskStatusEnum.TYPE_RECEIVED_STATE.CODE, TaskStatusEnum.TYPE_CLOSED_STATE.CODE, null);
+        issue1 = issueMapper.selectByPrimaryKey(taskId);
+        Assert.assertEquals("sm拖拽不修改处理人成功",TaskStatusEnum.TYPE_CLOSED_STATE.CODE+":"+842399068826558464L,issue1.getLaneId()+":"+issue1.getHandler());
     }
 
     @Test(expected = BusinessException.class)
