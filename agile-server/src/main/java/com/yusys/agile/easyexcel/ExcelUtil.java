@@ -7,13 +7,6 @@ import com.yusys.portal.util.excel.vo.ExcelVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.DVConstraint;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +50,7 @@ public class ExcelUtil {
         try {
             //todo 内存优化可以使用 ExcelListener
             List<LinkedHashMap> data = EasyExcel.read(inputStream).sheet().headRowNumber(size).doReadSync();
+
             for (LinkedHashMap map : data) {
                 // 将该行数据添加至返回结果list
                 list.add(convertRowDataToList(map));
