@@ -215,6 +215,7 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         String sprintDays = sprint.getSprintDays();
         Date startTime = sprint.getStartTime();
         Date endTime = sprint.getEndTime();
+        Integer _count = count;
         List<BurnDownStoryPoint> rest  = Lists.newArrayList();
         if (null != startTime && null != endTime) {
             /*
@@ -232,6 +233,12 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
                     Integer currCount = issueMapper.countCurrTimeStoryPointsForSprintId(sprintId, startTime);
                     if(currCount != null){
                         count -= currCount;
+                    }
+                    //如果是当前，由于定时任务不会执行，所以必须查一次
+                    if(DateUtil.equalsByDay(startTime, DateUtil.currentDay())){
+                        Integer finish = issueMapper.countFinishedStoryPoint(sprintId);
+                        _count -= finish;
+                        burnDownStoryPoint.setRemainStoryPoint(_count);
                     }
                     //如果startTime > 今天 则不赋值
                     if(!startTime.after(DateUtil.currentDay())){
