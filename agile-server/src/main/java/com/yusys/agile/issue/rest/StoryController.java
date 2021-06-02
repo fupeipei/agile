@@ -375,7 +375,7 @@ public class StoryController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/queryStoryBySystemId")
-    public ControllerResponse queryStoryBySystemId(@RequestHeader(name = "systemId", required = false) Long systemId,
+    public ControllerResponse queryStoryBySystemId(@RequestParam(name = "systemId", required = false) Long systemId,
                                                    @RequestParam(name = "pageNum") Integer pageNum,
                                                    @RequestParam(name = "pageSize") Integer pageSize) {
         List<IssueDTO> result;
