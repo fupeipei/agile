@@ -483,8 +483,6 @@ public class TaskServiceImpl implements TaskService {
             } else if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId()) && !loginUserId.equals(task.getHandler())) {
                 throw new BusinessException("当前任务已被他人领取，不允许拖动!");
             }
-
-
         } else {
             throw new BusinessException("不是团队成员不允许该操作!");
         }
@@ -498,7 +496,9 @@ public class TaskServiceImpl implements TaskService {
         //上面是特殊情况，这里兜底
         if (!task.getLaneId().equals(to)) {
             task.setLaneId(to);
-            task.setHandler(loginUserId);
+            if(task.getHandler() ==null){
+                task.setHandler(loginUserId);
+            }
         }
 
 
