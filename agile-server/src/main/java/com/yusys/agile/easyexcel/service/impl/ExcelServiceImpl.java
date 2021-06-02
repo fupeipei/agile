@@ -71,7 +71,7 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadStorys(Long systemId, MultipartFile file,ExcelCommentFile commentFile) throws Exception {
+    public FileInfo uploadStorys(MultipartFile file,ExcelCommentFile commentFile) throws Exception {
         String originalFilename = file.getOriginalFilename();
         if(!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)){
             throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
