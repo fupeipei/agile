@@ -76,6 +76,8 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
      */
     private String[] getSprintInfo(Long systemId){
        try {
+
+           log.info("获取迭代信息下拉 systemId：{}",systemId);
            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
            log.info("获取迭代信息：{}", JSONObject.toJSONString(sprintListDTOS));
            if(CollectionUtils.isNotEmpty(sprintListDTOS)){
