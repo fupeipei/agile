@@ -50,13 +50,18 @@ public interface SSprintMapper {
     void changeStatusTOProgressByIds(@Param("sprintIds") List<Long> sprintIds);
 
     /**
-     * 查询租户下所有
-     *
+     * 条件分页查询租户下所有迭代
+     * @author zhaofeng
+     * @date 2021/6/2 11:33
      * @param params
-     * @return
      */
     List<SprintListDTO> queryAllSprint(@Param("params") HashMap<String, Object> params);
-
+    /**
+     * 条件分页查询租户下与我相关的迭代
+     * @author zhaofeng
+     * @date 2021/6/2 11:33
+     * @param params
+     */
     List<SprintListDTO> queryOtherSprint(@Param("params") HashMap<String, Object> params);
 
     /**
@@ -64,6 +69,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int cancelSprint(long sprintId);
 
@@ -72,6 +78,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int sprintExist(@Param("sprintId") long sprintId);
 
@@ -81,6 +88,7 @@ public interface SSprintMapper {
      * @param sprintId 迭代id
      * @param userId   用户id
      * @return int
+     * @author 张宇
      */
     boolean creatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
@@ -90,6 +98,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int querySprintUnfinishedStoryNumber(long sprintId);
 
@@ -98,6 +107,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int querySprintStoryNumBer(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
 
@@ -105,6 +115,7 @@ public interface SSprintMapper {
      * 迭代完成
      *
      * @param sprintId 迭代id
+     * @author 张宇
      */
     void sprintFinish(long sprintId);
 
@@ -120,6 +131,7 @@ public interface SSprintMapper {
      * 检查迭代Po
      *
      * @return boolean
+     * @author 张宇
      */
     boolean checkSprintPo(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
@@ -128,6 +140,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return {@link SSprintWithBLOBs}
+     * @author 张宇
      */
     SSprintWithBLOBs queryValidSprintById(long sprintId);
 
@@ -154,6 +167,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int querySprintFinishedStoryPoint(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
@@ -162,15 +176,16 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int querySprintStoryPoint(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
-
 
     /**
      * 查询迭代工作负载数量
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int querySprintWorkload(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
 
@@ -179,6 +194,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int querySprintFinishedTaskNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
@@ -187,6 +203,7 @@ public interface SSprintMapper {
      *
      * @param sprintId 迭代id
      * @return int
+     * @author 张宇
      */
     int querySprintTaskNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType);
 
@@ -204,7 +221,6 @@ public interface SSprintMapper {
      */
     List<Long> querySprintUserIds(long sprintId);
 
-
     /**
      * 查询迭代已完成的故事数量
      *
@@ -212,6 +228,7 @@ public interface SSprintMapper {
      * @param IssueType 问题类型
      * @param Status    状态
      * @return int
+     * @author 张宇
      */
     int querySprintFinishedStoryNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
@@ -222,9 +239,9 @@ public interface SSprintMapper {
      * @param IssueType 问题类型
      * @param Status    状态
      * @return int
+     * @author 张宇
      */
     int querySprintFinishedWorkload(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
-
 
     /**
      * 无人认领的工作时间
@@ -233,12 +250,24 @@ public interface SSprintMapper {
      * @param IssueType 问题类型
      * @param Status    状态
      * @return int
+     * @author 张宇
      */
     int unclaimedWorkHours(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
+    /**
+     * 无人认领的任务数量
+     *
+     * @param sprintId  迭代id
+     * @param IssueType 问题类型
+     * @param Status    状态
+     * @return int
+     * @author 张宇
+     */
+    int unclaimedTaskNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
     /**
      * 查询用户实际工作负载
+     * 实际工作量计算方法：进行中（预计工时-剩余工时）+已完成（实际工时）任务卡片总和
      *
      * @param sprintId 迭代id
      * @param userId   用户id
@@ -246,9 +275,9 @@ public interface SSprintMapper {
      */
     Integer queryUserActualWorkload(@Param("sprintId") long sprintId, @Param("userId") Long userId);
 
-
     /**
      * 查询用户剩余工作量
+     * 剩余工作量计算方法：进行中（剩余工作量）任务卡片总和
      *
      * @param sprintId  迭代id
      * @param userId    用户id

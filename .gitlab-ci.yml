@@ -1,10 +1,10 @@
 stages:
-  #- build_maven
+  - build_maven
   #- deploy_dev
-  #- execute_dev_sql
-  #- deploy_test
-  #- execute_test_sql
-  #- check_db_info
+  - execute_dev_sql
+  - deploy_test
+  - execute_test_sql
+  - check_db_info
 
 build_maven:
   stage: build_maven

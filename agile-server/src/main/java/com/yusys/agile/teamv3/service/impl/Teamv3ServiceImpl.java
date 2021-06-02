@@ -61,10 +61,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     public List<TeamListDTO> listTeam(TeamQueryDTO dto, SecurityDTO security) {
         PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
         Long userId = security.getUserId();
-        String tenantCode = security.getTenantCode();
         //构建查询参数
-        HashMap<String, Object> params = buildQueryParams(dto, userId);
-        params.put("tenantCode", tenantCode);
+        HashMap<String, Object> params = buildQueryParams(dto, security);
         //判断角色，如果是租户管理员，则查询租户下所有，否则按类型查询
         List<TeamListDTO> rest = Lists.newArrayList();
         boolean check = iFacadeUserApi.checkIsTenantAdmin(userId);
@@ -167,7 +165,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
      * @author zhaofeng
      * @date 2021/5/8 14:11
      */
-    private HashMap<String, Object> buildQueryParams(TeamQueryDTO dto, Long userId) {
+    private HashMap<String, Object> buildQueryParams(TeamQueryDTO dto, SecurityDTO security) {
         HashMap<String, Object> params = new HashMap<>();
         //按系统名称或code获取systemids
         String system = dto.getSystem();
@@ -185,22 +183,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         } else {
             params.put("systemIds", null);
         }
-        //按po名称或账号获取poids
-        String po = dto.getPo();
-        if (!StringUtils.isEmpty(po)) {
-            params.put("po", po);
-        } else {
-            params.put("po", null);
-        }
-        //按sm名称或账号获取smids
-        String sm = dto.getSm();
-        if (!StringUtils.isEmpty(sm)) {
-            params.put("sm", sm);
-        } else {
-            params.put("sm", null);
-        }
+        //按po名称或账号
+        params.put("po", dto.getPo());
+        //按sm名称或账号
+        params.put("sm", dto.getSm());
+        //团队名称或编号
         params.put("team", dto.getTeam());
-        params.put("userId", userId);
+        params.put("userId", security.getUserId());
+        params.put("tenantCode", security.getTenantCode());
         return params;
     }
 
@@ -295,6 +285,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Transactional(rollbackFor = Exception.class)
     public void updateTeam(STeam team) {
         Long teamId = team.getTeamId();
+        STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode) > 0) {
             throw new BusinessException("团队名称已存在");
@@ -328,7 +319,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             return sm.getUserId();
         }).collect(Collectors.toList());
         //插入团队
-        sTeamMapper.updateByPrimaryKeySelective(team);
+        sTeam.setTeamName(team.getTeamName());
+        sTeam.setTeamDesc(team.getTeamDesc());
+        sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
         teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
         //团队绑定PO
