@@ -1,89 +1,89 @@
-stages:
-  #- build_maven
-  #- deploy_dev
-  #- execute_dev_sql
-  #- deploy_test
-  #- execute_test_sql
-  #- check_db_info
-
-build_maven:
-  stage: build_maven
-  image: maven:3.5.2-jdk-8
-  script:
-    - mvn clean deploy -U -s "settings.xml" -Dmaven.test.skip=true
-    - tag=`date +%Y%m%d`-`echo $CI_BUILD_REF | cut -c 1-8`
-    - echo $tag > docker-tag
-    - sed -i s/latest/$tag/g docker-compose.yaml
-    - docker-compose build 
-    - docker login 192.168.48.2:5002 -uadmin -pHarbor12345
-    - cat docker-compose.yaml |grep image|grep -v web |awk '{print $2}' |xargs -I {} docker push {}
-  artifacts:
-    paths:
-      - docker-tag
-    expire_in: 3 days 
-  only:
-    #- dev
-    - master
-
-#deploy_dev:
+##stages:
+#  #- build_maven
+#  #- deploy_dev
+#  #- execute_dev_sql
+#  #- deploy_test
+#  #- execute_test_sql
+#  #- check_db_info
+#
+##build_maven:
+#  #stage: build_maven
+#  #image: maven:3.5.2-jdk-8
+#  #script:
+#    - mvn clean deploy -U -s "settings.xml" -Dmaven.test.skip=true
+#    - tag=`date +%Y%m%d`-`echo $CI_BUILD_REF | cut -c 1-8`
+#    - echo $tag > docker-tag
+#    - sed -i s/latest/$tag/g docker-compose.yaml
+#    - docker-compose build
+#    - docker login 192.168.48.2:5002 -uadmin -pHarbor12345
+#    - cat docker-compose.yaml |grep image|grep -v web |awk '{print $2}' |xargs -I {} docker push {}
+#  artifacts:
+#    paths:
+#      - docker-tag
+#    expire_in: 3 days
+#  only:
+#    #- dev
+#    - master
+#
+##deploy_dev:
+##  when: manual
+##  stage: deploy_dev
+##  image: 192.168.48.2:5002/library/git-mysql:alpine
+##  dependencies:
+##    - build_maven
+##  script:
+##    - tag=`cat docker-tag`
+##    - echo $tag
+##    - ssh -p 22 root@192.168.48.5 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
+##    - ssh -p 22 root@192.168.48.5 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
+##  only:
+##    - dev
+#
+#execute_dev_sql:
 #  when: manual
-#  stage: deploy_dev
+#  stage: execute_dev_sql
+#  image: 192.168.48.2:5002/library/git-mysql:alpine
+#  script:
+#    - env_name=dev
+#    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
+#    - cd devops_sql
+#    - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
+#  only:
+#    - dev
+#
+#
+#deploy_test:
+#  when: manual
+#  stage: deploy_test
 #  image: 192.168.48.2:5002/library/git-mysql:alpine
 #  dependencies:
 #    - build_maven
 #  script:
 #    - tag=`cat docker-tag`
 #    - echo $tag
-#    - ssh -p 22 root@192.168.48.5 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
-#    - ssh -p 22 root@192.168.48.5 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
+#    - ssh -p 22 root@192.168.48.14 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
+#    - ssh -p 22 root@192.168.48.14 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
+#  only:
+#    - master
+#
+#execute_test_sql:
+#  stage: execute_test_sql
+#  image: 192.168.48.2:5002/library/git-mysql:alpine
+#  script:
+#    - env_name=test
+#    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
+#    - cd devops_sql
+#    - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
+#  only:
+#    - master
+#
+#check_db_info:
+#  stage: check_db_info
+#  image: 10.1.195.244:5002/library/git-mysql:alpine
+#  script:
+#    - env_name=dev
+#    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
+#    - cd devops_sql/mysql
+#    - ./checkdb.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
 #  only:
 #    - dev
-
-execute_dev_sql:
-  when: manual
-  stage: execute_dev_sql
-  image: 192.168.48.2:5002/library/git-mysql:alpine
-  script:
-    - env_name=dev
-    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
-    - cd devops_sql
-    - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
-  only:
-    - dev
-    
-
-deploy_test:
-  when: manual
-  stage: deploy_test
-  image: 192.168.48.2:5002/library/git-mysql:alpine
-  dependencies:
-    - build_maven
-  script:
-    - tag=`cat docker-tag`
-    - echo $tag
-    - ssh -p 22 root@192.168.48.14 "cd /root/devops && sed -i '/^agile_version=/c'agile_version=$tag'' .env && docker-compose -f docker-compose-agile.yaml stop  agile    && docker-compose -f docker-compose-agile.yaml up -d  agile "
-    - ssh -p 22 root@192.168.48.14 "cd /root/devops && docker-compose -f docker-compose.yaml stop portal-web && docker-compose -f docker-compose.yaml up -d portal-web"
-  only:
-    - master
-
-execute_test_sql:
-  stage: execute_test_sql
-  image: 192.168.48.2:5002/library/git-mysql:alpine
-  script:
-    - env_name=test
-    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
-    - cd devops_sql
-    - ./execute_sql.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
-  only:
-    - master
-    
-check_db_info:
-  stage: check_db_info
-  image: 10.1.195.244:5002/library/git-mysql:alpine
-  script:
-    - env_name=dev
-    - git clone git@192.168.48.2:yusys_devops/devops_sql.git
-    - cd devops_sql/mysql
-    - ./checkdb.sh $CI_PROJECT_NAME `echo $CI_BUILD_REF | cut -c 1-8` $env_name $CI_PROJECT_ID
-  only:
-    - dev
