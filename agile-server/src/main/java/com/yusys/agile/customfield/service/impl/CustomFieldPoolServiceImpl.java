@@ -8,7 +8,9 @@ import com.yusys.agile.customfield.domain.SCustomFieldPool;
 import com.yusys.agile.customfield.domain.SCustomFieldPoolExample;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
+import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
+import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.util.code.ReflectUtil;
@@ -30,11 +32,6 @@ import java.util.List;
  */
 @Service("customFieldPoolService")
 public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
-
-    /**
-     * log
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomFieldPoolServiceImpl.class);
 
     @Autowired
     private SCustomFieldPoolMapper customFieldPoolMapper;
@@ -174,39 +171,38 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
 
 
     /**
-     * 功能描述: 删除自定义字段
-     *
+     * 删除自定义字段
+     * @author zhaofeng
+     * @date 2021/6/3 16:59
      * @param fieldId
-     * @return void
-     * @date 2021/2/1
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteCustomField(Long fieldId) throws Exception {
+    public void deleteCustomField(Long fieldId){
+        //逻辑删除字段属性值，以便后续数据恢复
         issueCustomRelationService.deleteIssueCustomRelationByFieldId(fieldId);
-        customFieldPoolMapper.deleteByPrimaryKey(fieldId);
+        customFieldPoolMapper.updateStateById(fieldId, StateEnum.E.getValue());
     }
 
 
     @Override
-    public List<CustomFieldDTO> listAllCustomFields(String fieldName, Integer pageNum, Integer pageSize, Long projectId) {
+    public List<CustomFieldDTO> listAllCustomFields(Long systemId, String fieldName, Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
         }
         SCustomFieldPoolExample example = new SCustomFieldPoolExample();
         SCustomFieldPoolExample.Criteria criteria = example.createCriteria()
-                .andStateEqualTo(StateEnum.U.getValue())
-                .andProjectIdEqualTo(projectId);
+                .andStateEqualTo(StateEnum.U.getValue());
         if (StringUtils.isNotBlank(fieldName)) {
             criteria.andFieldNameLike(StringConstant.PERCENT_SIGN + fieldName + StringConstant.PERCENT_SIGN);
         }
+        if(systemId != null){
+            criteria.andSystemIdEqualTo(systemId);
+        }
         // 排序
         example.setOrderByClause("create_time desc");
-
         return customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
-
-
     }
 
 

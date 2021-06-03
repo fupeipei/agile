@@ -105,77 +105,62 @@ public class CustomFieldPoolController {
 //    }
 
     /**
-     * 功能描述: 删除自定义字段
-     *
+     * 删除自定义字段
+     * @author zhaofeng
+     * @date 2021/6/3 16:59
      * @param fieldId
-     * @return
-     * @date 2021/2/1
      */
     @DeleteMapping("/deleteCustomField/{fieldId}")
     public ControllerResponse deleteCustomField(@PathVariable Long fieldId) {
-        try {
-            customFieldPoolService.deleteCustomField(fieldId);
-        } catch (Exception e) {
-            LOGGER.error("删除自定义字段失败！e:{}" + e);
-            return ControllerResponse.fail("删除自定义字段失败！" + e.getMessage());
-        }
-
+        customFieldPoolService.deleteCustomField(fieldId);
         return ControllerResponse.success();
-
     }
 
     /**
-     * 功能描述: 查询自定义字段
-     *
+     * 查询自定义字段
+     * @author zhaofeng
+     * @date 2021/6/3 14:44
      * @param fieldId
-     * @return
-     * @date 2021/2/1
      */
     @GetMapping("/getCustomField/{fieldId}")
-    public ControllerResponse getCustomField(@PathVariable Long fieldId) {
-        return ControllerResponse.success(customFieldPoolService.getCustomField(fieldId));
+    public ControllerResponse getCustomField(@PathVariable("fieldId") Long fieldId) {
+        CustomFieldDTO field = customFieldPoolService.getCustomField(fieldId);
+        return ControllerResponse.success(field);
     }
 
     /**
-     * 功能描述: 分页查询自定义字段
-     *
-     * @param fieldName
+     * 分页查询自定义字段
+     * @author zhaofeng
+     * @date 2021/6/3 16:10
+     * @param systemId  系统id，可不传
+     * @param fieldName 字段名称，可不传
      * @param pageNum
      * @param pageSize
-     * @return
-     * @date 2021/2/1
      */
     @GetMapping("/listAllCustomFields")
-    public ControllerResponse listAllCustomFields(@RequestParam(name = "fieldName", required = false) String fieldName,
-                                                  @RequestParam(name = "pageNum") Integer pageNum,
-                                                  @RequestParam(name = "pageSize") Integer pageSize,
-                                                  @RequestHeader(name = "projectId") Long projectId) {
-        return ControllerResponse.success(new PageInfo<>(customFieldPoolService.listAllCustomFields(fieldName, pageNum, pageSize, projectId)));
+    public ControllerResponse listAllCustomFields(
+            @RequestParam(name = "systemId", required = false) Long systemId,
+            @RequestParam(name = "fieldName", required = false) String fieldName,
+            @RequestParam(name = "pageNum") Integer pageNum,
+            @RequestParam(name = "pageSize") Integer pageSize) {
+        List<CustomFieldDTO> list = customFieldPoolService.listAllCustomFields(systemId, fieldName, pageNum, pageSize);
+        return ControllerResponse.success(new PageInfo<>(list));
     }
 
 
     /**
-     * 功能描述: 根据项目和类型查询展示的自定义字段
-     *
-     * @param issueType
-     * @param projectId
-     * @return
-     * @date 2021/2/1
+     * 按系统id和工作项类型查询，如果系统id没传，则只按工作项类型查询
+     * @author zhaofeng
+     * @date 2021/6/3 15:09
+     * @param issueType 工作项类型
+     * @param systemId  系统id
      */
     @GetMapping("/listCustomFieldsByIssueType")
-    public ControllerResponse listCustomFieldsByIssueType(@RequestParam(name = "issueType") Byte issueType, @RequestHeader(name = "projectId") Long projectId, @RequestParam(name = "projectId", required = false) Long paramProjectId) {
-        Long finalProjectId = null;
-        if (null != paramProjectId) {
-            finalProjectId = paramProjectId;
-        } else {
-            finalProjectId = projectId;
-        }
-        // 某类型的工作项展示的的自定义字段
-        List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldDTO(finalProjectId, issueType);
-        Map map = new HashMap<>();
-        map.put("list", customFieldDTOList);
-        return ControllerResponse.success(map);
-
+    public ControllerResponse listCustomFieldsByIssueType(
+            @RequestParam(name = "issueType") Byte issueType,
+            @RequestParam(name = "systemId", required = false) Long systemId) {
+        List<CustomFieldDTO> list = customRelationService.getCustomFieldList(systemId, issueType);
+        return ControllerResponse.success(list);
     }
 
 

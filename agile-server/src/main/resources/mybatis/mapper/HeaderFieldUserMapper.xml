@@ -353,4 +353,10 @@
       tenant_code = #{tenantCode,jdbcType=VARCHAR}
     where header_user_id = #{headerUserId,jdbcType=BIGINT}
   </update>
+
+  <update id="updateStateByFieldId">
+    update s_header_field_user
+    set state = #{state}
+    where field_id = #{fieldId}
+    </update>
 </mapper>

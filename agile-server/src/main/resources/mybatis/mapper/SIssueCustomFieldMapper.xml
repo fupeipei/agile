@@ -352,5 +352,11 @@
     DELETE FROM s_issue_custom_field WHERE field_id = #{fieldId}
   </delete>
 
+  <update id="updateStateByCustomRelationId">
+    update s_issue_custom_field
+    set state = #{state}
+    where field_id = #{fieldId}
+  </update>
+
 
 </mapper>

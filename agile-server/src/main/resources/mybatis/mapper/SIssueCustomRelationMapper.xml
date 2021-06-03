@@ -450,11 +450,17 @@
     where issue_type = #{issueType}
     and   project_id = #{projectId}
   </delete>
+
 <select id="getAppliedByissueType" resultType="Long">
   select  field_id from  s_issue_custom_field
     where issue_type = #{issueType}
-    and   project_id = #{projectId}
 </select>
+
+<update id="updateStateByFieldId">
+    update s_issue_custom_relation
+    set state = #{state}
+    where field_id = #{fieldId}
+</update>
 
 
 </mapper>
