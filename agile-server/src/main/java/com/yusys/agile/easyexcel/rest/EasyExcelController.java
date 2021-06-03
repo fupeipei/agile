@@ -110,6 +110,11 @@ public class EasyExcelController {
             if(!Optional.ofNullable(systemId).isPresent()){
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
+
+            if(Optional.ofNullable(systemId).isPresent()){
+                map.put("systemId",systemId.toString());
+            }
+
            iExcelService.exportIssues(issueType, systemId, map,response);
         } catch (Exception e) {
             log.error("导出工作项异常:{}", e.getMessage());

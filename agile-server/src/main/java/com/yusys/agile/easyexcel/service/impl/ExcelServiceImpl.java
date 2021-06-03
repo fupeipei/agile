@@ -445,7 +445,7 @@ public class ExcelServiceImpl implements IExcelService {
         securityDTO.setUserId(userId);
         Map<String, List<HeaderField>> headerMap = headerFieldService.queryHeaderFields(securityDTO, issueType, null);
         if (MapUtils.isNotEmpty(headerMap)) {
-            headerFields = headerMap.get("visibleFields");
+            headerFields = headerMap.get("fields");
         }
         return headerFields;
     }
