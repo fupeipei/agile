@@ -1,7 +1,7 @@
 package com.yusys.agile.easyexcel.rest;
 
 import com.yusys.agile.easyexcel.service.IExcelService;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
 import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -33,10 +33,12 @@ public class EasyExcelController {
     @GetMapping(value = "/downloadExcel/template/{excelType}")
     public void download(@PathVariable Byte excelType,
                          HttpServletResponse response,
-                         @RequestParam(value = "sprintId", required = false) Long sprintId) {
+                         @RequestParam(value = "sprintId", required = false) Long sprintId,
+                         @RequestParam(value = "systemId", required = false) Long systemId) {
         try {
-            ExcelCommentFiled filed = new ExcelCommentFiled();
+            ExcelCommentFile filed = new ExcelCommentFile();
             filed.setSprintId(sprintId);
+            filed.setSystemId(systemId);
             iExcelService.downLoadTemplate(excelType, response, filed);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
@@ -47,13 +49,16 @@ public class EasyExcelController {
     @ApiOperation("故事导入")
     @PostMapping("/uploadStorys")
     public ControllerResponse uploadStorys(@RequestParam("file") MultipartFile file,
-                                           @RequestParam(value = "systemId", required = false) Long systemId) {
-        FileInfo fileInfo = null;
+                                           @RequestParam(value = "systemId",required = false) Long systemId) {
+        FileInfo fileInfo;
         try {
             if (!Optional.ofNullable(systemId).isPresent()) {
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
-            fileInfo = iExcelService.uploadStorys(systemId, file);
+            ExcelCommentFile commentFile = new ExcelCommentFile();
+            commentFile.setSystemId(systemId);
+
+            fileInfo = iExcelService.uploadStorys(file,commentFile);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }
@@ -62,15 +67,15 @@ public class EasyExcelController {
         }
         return ControllerResponse.success("上传成功");
     }
-
-    ;
 
     @ApiOperation("任务导入")
     @PostMapping("/uploadTasks")
-    public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file) {
-        FileInfo fileInfo = null;
+    public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file,@RequestParam("sprintId")Long sprintId) {
+        FileInfo fileInfo;
         try {
-            fileInfo = iExcelService.uploadTasks(file);
+            ExcelCommentFile commentFile = new ExcelCommentFile();
+            commentFile.setSprintId(sprintId);
+            fileInfo = iExcelService.uploadTasks(file,commentFile);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }
@@ -80,5 +85,4 @@ public class EasyExcelController {
         return ControllerResponse.success("上传成功");
     }
 
-    ;
 }

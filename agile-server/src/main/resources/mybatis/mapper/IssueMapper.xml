@@ -3098,4 +3098,16 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
     select ifnull(sum(remain_workload),0) from s_issue where sprint_id = #{sprintId} and state = 'U'
     AND ((issue_type = 4 and lane_id IN(107,108,109)) or (issue_type = 5 and stage_id IN(1000,1001)))
   </select>
+
+  <select id="countFinishedStoryPoint" resultType="java.lang.Integer">
+    select ifnull(sum(a.value), 0)
+        from s_sys_extend_field_detail a
+        where a.issue_id in
+              (select issue_id
+               from s_issue
+               where sprint_id = #{sprintId}
+                 and issue_type = 3
+                 and lane_id = 106
+                 and state = 'U')
+  </select>
 </mapper>

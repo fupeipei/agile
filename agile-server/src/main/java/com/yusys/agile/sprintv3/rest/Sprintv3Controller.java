@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
@@ -14,7 +13,6 @@ import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
-import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +41,7 @@ public class Sprintv3Controller {
      * @Date 2021/5/10
      * @Description查看迭代编辑页面
      */
+    @ApiOperation(value = "查看迭代详情")
     @GetMapping("/getSprint")
     public ControllerResponse viewEdit(Long sprintId) {
         return ControllerResponse.success(sprintv3Service.viewEdit(sprintId));
@@ -89,6 +88,7 @@ public class Sprintv3Controller {
         return ControllerResponse.success(sprintv3Service.createSprint(sprintV3DTO));
     }
 
+    @ApiOperation(value = "编辑迭代")
     @PostMapping("/updateSprint")
     public ControllerResponse updateSprint(@RequestBody SprintV3DTO sprintDTO, SecurityDTO securityDTO) {
         try {
@@ -166,10 +166,10 @@ public class Sprintv3Controller {
 
     /**
      * 迭代添加工作项（故事或缺陷）
-     *
      * @param sprintDTO 迭代dto
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
+    @ApiOperation(value = "关联迭代")
     @PostMapping("/relation/issue")
     public ControllerResponse arrangeIssue(@RequestBody SprintDTO sprintDTO) {
         if (sprintv3Service.arrangeIssue(sprintDTO)) {
@@ -180,14 +180,13 @@ public class Sprintv3Controller {
 
     /**
      * 通过迭代id和故事id将故事移出迭代
-     *
      * @param sprintId 迭代id
      * @param issueId  工作项id
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
+    @ApiOperation(value = "迭代移除用户故事")
     @PutMapping("/issues/{sprintId}/{issueId}")
     public ControllerResponse removeIssue4Sprint(@PathVariable Long sprintId, @PathVariable Long issueId) {
-
         if (storyService.removeStory4Sprint(sprintId, issueId) != 1) {
             return ControllerResponse.fail("移除迭代失败！");
         }
@@ -215,6 +214,7 @@ public class Sprintv3Controller {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "查询系统下未迭代的故事")
     @GetMapping("/queryNotRelationStorys")
     public ControllerResponse queryNotRelationStorys(@RequestParam(name = "title", required = false) String title,
                                                      @RequestParam(name = "teamId") Long teamId,
@@ -281,12 +281,12 @@ public class Sprintv3Controller {
      *功能描述
      * @author shenfeng
      * @date 2021/6/1
-      * @param systemID
+      * @param systemId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/querySprintBySystemId")
-    public ControllerResponse querySprintBySystemId(@RequestHeader(name = "systemID") Long systemID) {
-        List<SprintListDTO> result = sprintv3Service.querySprintBySystemId(systemID);
+    public ControllerResponse querySprintBySystemId(@RequestParam(name = "systemId") Long systemId) {
+        List<SprintListDTO> result = sprintv3Service.querySprintBySystemId(systemId);
         return ControllerResponse.success(result);
 
     }
