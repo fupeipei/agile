@@ -2,7 +2,7 @@ package com.yusys.agile.headerfield.service;
 
 
 import com.yusys.agile.headerfield.domain.HeaderField;
-import com.yusys.agile.issue.domain.IssueCustomField;
+import com.yusys.agile.issue.domain.SIssueCustomField;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -29,7 +29,7 @@ public interface HeaderFieldService {
      * 需求编码：task_200409_174881
      * 描述: 组织工作项自定义字段历史数据
      */
-    List<IssueHistoryRecord> generateHistory(List<IssueCustomField> newFieldList, List<IssueCustomFieldDTO> oldFieldList, Byte issueType, Long issueId, Long projectId);
+    List<IssueHistoryRecord> generateHistory(List<SIssueCustomField> newFieldList, List<IssueCustomFieldDTO> oldFieldList, Byte issueType, Long issueId, Long projectId);
 
     /**
      * 功能描述  根据key获取列头数据

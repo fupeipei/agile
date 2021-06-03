@@ -12,11 +12,23 @@ import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
+import com.yusys.agile.easyexcel.vo.ExcelVo;
+import com.yusys.agile.externalapiconfig.dao.ExternalApiConfigMapper;
+import com.yusys.agile.fault.domain.ExternalApiConfig;
+import com.yusys.agile.fault.domain.ExternalApiConfigExample;
 import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.agile.file.service.FileService;
+import com.yusys.agile.headerfield.domain.HeaderField;
+import com.yusys.agile.headerfield.service.HeaderFieldService;
+import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.IssueListDTO;
+import com.yusys.agile.issue.dto.IssueStringDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -27,19 +39,25 @@ import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *  @Description: excel 实现类
@@ -59,10 +77,27 @@ public class ExcelServiceImpl implements IExcelService {
     private TaskService taskService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private HeaderFieldService headerFieldService;
+    @Autowired
+    private IssueService issueService;
+    @Autowired
+    private IssueMapper issueMapper;
+    @Autowired
+    private ExternalApiConfigMapper externalApiConfigMapper;
 
+    private static final String MAX_ISSUE_EXPORT_THRESHOLD_KEY = "ISSUE_MAX_EXPORT_THRESHOLD";
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
-    private static final int FIRST_ROW_NUM = 1;
+    /**
+     * 全量导出
+     */
+    private static final Byte ALL_TYPE = 1;
+    /**
+     * 局部导出
+     */
+    private static final Byte PART_TYPE = 2;
+
     @Override
     public void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentField filed) {
         String type = ExcelTypeEnum.getFieldName(excelType);
@@ -122,6 +157,7 @@ public class ExcelServiceImpl implements IExcelService {
         }
         return null;
     }
+
 
     private List<JSONObject> analysisTaskData(List<List<String>> data) {
         List<JSONObject> jsonObjects = Lists.newArrayList();
@@ -335,6 +371,123 @@ public class ExcelServiceImpl implements IExcelService {
         List<String> list = Arrays.asList(headLine);
         return CollectionUtils.isEqualCollection(list, excelhead);
     }
+
+
+
+    @Override
+    public void exportIssues(Byte issueType, Long systemId, Map<String, Object> map,HttpServletResponse response) throws Exception {
+
+        List<HeaderField> headerFieldList = queryHeaderFieldList(issueType);
+        if (CollectionUtils.isNotEmpty(headerFieldList)) {
+
+            //获取表头数据
+            List<String> headers = headerFieldList.stream().map(
+                    headerField -> headerField.getFieldName()).collect(Collectors.toList());
+
+            List<Issue> issueList = null;
+            //选中数据导出
+            String ageSize = getIssueMaxPageSize(MAX_ISSUE_EXPORT_THRESHOLD_KEY);
+            if (null != ageSize) {
+                map.put("pageSize", ageSize);
+            }
+            IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(map), IssueStringDTO.class);
+            List<Long> issueIdList = issueStringDTO.getIssueIds();
+            if (CollectionUtils.isNotEmpty(issueIdList)) {
+                issueList = queryIssueList( null, issueIdList, PART_TYPE);
+            } else {
+                issueList = queryIssueList(map, null, ALL_TYPE);
+            }
+            List<List<String>> dataResult = Lists.newArrayList();
+            if (CollectionUtils.isNotEmpty(issueList)) {
+                List<String> fieldList = Lists.newArrayList();
+                for(Issue issue:issueList){
+                    Class<?> issueClass = issue.getClass();
+                    Field[] fields = issueClass.getDeclaredFields();
+
+                    for(HeaderField headerField:headerFieldList){
+                        for(Field field : fields){
+                            try {
+                                field.setAccessible(true);
+                                String fieldCode = headerField.getFieldCode();
+                                String name = field.getName();
+                                if(StringUtils.equals(fieldCode,name)){
+                                    fieldList.add(field.get(name).toString());
+                                }
+                            }catch (Exception e){
+                                log.info("反射获取issue数据异常:{}",e.getMessage());
+                            }
+                        }
+                    }
+                    dataResult.add(fieldList);
+                }
+            }
+
+            ExcelVo vo = new ExcelVo();
+            vo.setFileName(UUID.randomUUID().toString());
+            vo.setFileType(ExcelUtil.XLSX);
+            vo.setCellText(headers);
+            vo.setStringList(dataResult);
+            ExcelUtil.export(vo,response);
+        }
+    }
+
+
+    /**
+     * 查询列表头字段
+     * @param issueType
+     * @return
+     */
+    private List<HeaderField> queryHeaderFieldList(Byte issueType) {
+        List<HeaderField> headerFields = null;
+        SecurityDTO securityDTO = new SecurityDTO();
+        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+        securityDTO.setUserId(userId);
+        Map<String, List<HeaderField>> headerMap = headerFieldService.queryHeaderFields(securityDTO, issueType, null);
+        if (MapUtils.isNotEmpty(headerMap)) {
+            headerFields = headerMap.get("visibleFields");
+        }
+        return headerFields;
+    }
+
+    /**
+     * 查询issue列表
+     * @param mapStr
+     * @param issueIdList
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    private List<Issue> queryIssueList(Map<String, Object> mapStr, List<Long> issueIdList, Byte type) throws Exception {
+        List<Issue> issueList = null;
+        if (ALL_TYPE.equals(type)) {
+            issueList = issueService.queryIssueList(mapStr);
+        } else if (PART_TYPE.equals(type)) {
+            IssueExample example = new IssueExample();
+            example.setOrderByClause("issue_id desc");
+            example.createCriteria().andIssueIdIn(issueIdList);
+            issueList = issueMapper.selectByExample(example);
+        }
+        return issueList;
+    }
+
+
+    /**
+     * 查询工作项每页显示最大记录数
+     * @param fieldName
+     * @return
+     */
+    private String getIssueMaxPageSize(String fieldName) {
+        String issuePageSizeThreshold = null;
+        ExternalApiConfigExample example = new ExternalApiConfigExample();
+        example.createCriteria().andFieldNameEqualTo(fieldName);
+        List<ExternalApiConfig> externalApiConfigList = externalApiConfigMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(externalApiConfigList)) {
+            issuePageSizeThreshold = externalApiConfigList.get(0).getFieldValue();
+        }
+        return issuePageSizeThreshold;
+    }
+
+
 
 
 }

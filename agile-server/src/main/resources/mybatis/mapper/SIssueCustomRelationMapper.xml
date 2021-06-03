@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.customfield.dao.CustomFieldPoolMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.customfield.domain.CustomFieldPool">
-    <id column="field_id" jdbcType="BIGINT" property="fieldId" />
+<mapper namespace="com.yusys.agile.issue.dao.SIssueCustomRelationMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.issue.domain.SIssueCustomRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="issue_type" jdbcType="TINYINT" property="issueType" />
+    <result column="field_id" jdbcType="BIGINT" property="fieldId" />
     <result column="field_name" jdbcType="VARCHAR" property="fieldName" />
-    <result column="comment" jdbcType="VARCHAR" property="comment" />
-    <result column="field_type" jdbcType="INTEGER" property="fieldType" />
-    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="required" jdbcType="VARCHAR" property="required" />
+    <result column="field_type" jdbcType="TINYINT" property="fieldType" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="system_id" jdbcType="BIGINT" property="systemId" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create__uid" jdbcType="BIGINT" property="createUid" />
     <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.customfield.domain.CustomFieldPool">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.issue.domain.SIssueCustomRelation">
     <result column="field_content" jdbcType="LONGVARCHAR" property="fieldContent" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -76,13 +80,13 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    field_id, field_name, comment, field_type, state, project_id, create_time, create_uid, 
-    update_time, update_uid, tenant_code
+    id, issue_type, field_id, field_name, required, field_type, sort, project_id, system_id, 
+    state, create_time, create__uid, update_uid, update_time, tenant_code
   </sql>
   <sql id="Blob_Column_List">
     field_content
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.customfield.domain.CustomFieldPoolExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelationExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -90,7 +94,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from s_custom_field_pool
+    from s_issue_custom_relation
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -98,13 +102,13 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.yusys.agile.customfield.domain.CustomFieldPoolExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelationExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from s_custom_field_pool
+    from s_issue_custom_relation
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -117,63 +121,77 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from s_custom_field_pool
-    where field_id = #{fieldId,jdbcType=BIGINT}
+    from s_issue_custom_relation
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from s_custom_field_pool
-    where field_id = #{fieldId,jdbcType=BIGINT}
+    delete from s_issue_custom_relation
+    where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.customfield.domain.CustomFieldPoolExample">
-    delete from s_custom_field_pool
+  <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelationExample">
+    delete from s_issue_custom_relation
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool" useGeneratedKeys="true" keyProperty="fieldId">
-    insert into s_custom_field_pool (field_id, field_name, comment,
-      field_type, state, project_id, 
-      create_time, create_uid, update_time, 
-      update_uid, tenant_code, field_content
-      )
-    values (#{fieldId,jdbcType=BIGINT}, #{fieldName,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
-      #{fieldType,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR}, #{projectId,jdbcType=BIGINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateUid,jdbcType=BIGINT}, #{tenantCode,jdbcType=VARCHAR}, #{fieldContent,jdbcType=LONGVARCHAR}
-      )
+  <insert id="insert" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation">
+    insert into s_issue_custom_relation (id, issue_type, field_id, 
+      field_name, required, field_type, 
+      sort, project_id, system_id, 
+      state, create_time, create__uid, 
+      update_uid, update_time, tenant_code, 
+      field_content)
+    values (#{id,jdbcType=BIGINT}, #{issueType,jdbcType=TINYINT}, #{fieldId,jdbcType=BIGINT}, 
+      #{fieldName,jdbcType=VARCHAR}, #{required,jdbcType=VARCHAR}, #{fieldType,jdbcType=TINYINT}, 
+      #{sort,jdbcType=INTEGER}, #{projectId,jdbcType=BIGINT}, #{systemId,jdbcType=BIGINT}, 
+      #{state,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT}, 
+      #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, 
+      #{fieldContent,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool" useGeneratedKeys="true" keyProperty="fieldId">
-    insert into s_custom_field_pool
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation">
+    insert into s_issue_custom_relation
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="issueType != null">
+        issue_type,
+      </if>
       <if test="fieldId != null">
         field_id,
       </if>
       <if test="fieldName != null">
         field_name,
       </if>
-      <if test="comment != null">
-        comment,
+      <if test="required != null">
+        required,
       </if>
       <if test="fieldType != null">
         field_type,
       </if>
-      <if test="state != null">
-        state,
+      <if test="sort != null">
+        sort,
       </if>
       <if test="projectId != null">
         project_id,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="state != null">
+        state,
       </if>
       <if test="createTime != null">
         create_time,
       </if>
       <if test="createUid != null">
-        create_uid,
-      </if>
-      <if test="updateTime != null">
-        update_time,
+        create__uid,
       </if>
       <if test="updateUid != null">
         update_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
       </if>
       <if test="tenantCode != null">
         tenant_code,
@@ -183,23 +201,35 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="issueType != null">
+        #{issueType,jdbcType=TINYINT},
+      </if>
       <if test="fieldId != null">
         #{fieldId,jdbcType=BIGINT},
       </if>
       <if test="fieldName != null">
         #{fieldName,jdbcType=VARCHAR},
       </if>
-      <if test="comment != null">
-        #{comment,jdbcType=VARCHAR},
+      <if test="required != null">
+        #{required,jdbcType=VARCHAR},
       </if>
       <if test="fieldType != null">
-        #{fieldType,jdbcType=INTEGER},
+        #{fieldType,jdbcType=TINYINT},
       </if>
-      <if test="state != null">
-        #{state,jdbcType=VARCHAR},
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
       </if>
       <if test="projectId != null">
         #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -207,11 +237,11 @@
       <if test="createUid != null">
         #{createUid,jdbcType=BIGINT},
       </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateUid != null">
         #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="tenantCode != null">
         #{tenantCode,jdbcType=VARCHAR},
@@ -221,44 +251,56 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.customfield.domain.CustomFieldPoolExample" resultType="java.lang.Long">
-    select count(*) from s_custom_field_pool
+  <select id="countByExample" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelationExample" resultType="java.lang.Long">
+    select count(*) from s_issue_custom_relation
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update s_custom_field_pool
+    update s_issue_custom_relation
     <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.issueType != null">
+        issue_type = #{record.issueType,jdbcType=TINYINT},
+      </if>
       <if test="record.fieldId != null">
         field_id = #{record.fieldId,jdbcType=BIGINT},
       </if>
       <if test="record.fieldName != null">
         field_name = #{record.fieldName,jdbcType=VARCHAR},
       </if>
-      <if test="record.comment != null">
-        comment = #{record.comment,jdbcType=VARCHAR},
+      <if test="record.required != null">
+        required = #{record.required,jdbcType=VARCHAR},
       </if>
       <if test="record.fieldType != null">
-        field_type = #{record.fieldType,jdbcType=INTEGER},
+        field_type = #{record.fieldType,jdbcType=TINYINT},
       </if>
-      <if test="record.state != null">
-        state = #{record.state,jdbcType=VARCHAR},
+      <if test="record.sort != null">
+        sort = #{record.sort,jdbcType=INTEGER},
       </if>
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
+      <if test="record.systemId != null">
+        system_id = #{record.systemId,jdbcType=BIGINT},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.createUid != null">
-        create_uid = #{record.createUid,jdbcType=BIGINT},
-      </if>
-      <if test="record.updateTime != null">
-        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+        create__uid = #{record.createUid,jdbcType=BIGINT},
       </if>
       <if test="record.updateUid != null">
         update_uid = #{record.updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.tenantCode != null">
         tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
@@ -272,17 +314,21 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update s_custom_field_pool
-    set field_id = #{record.fieldId,jdbcType=BIGINT},
+    update s_issue_custom_relation
+    set id = #{record.id,jdbcType=BIGINT},
+      issue_type = #{record.issueType,jdbcType=TINYINT},
+      field_id = #{record.fieldId,jdbcType=BIGINT},
       field_name = #{record.fieldName,jdbcType=VARCHAR},
-      comment = #{record.comment,jdbcType=VARCHAR},
-      field_type = #{record.fieldType,jdbcType=INTEGER},
-      state = #{record.state,jdbcType=VARCHAR},
+      required = #{record.required,jdbcType=VARCHAR},
+      field_type = #{record.fieldType,jdbcType=TINYINT},
+      sort = #{record.sort,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=BIGINT},
+      system_id = #{record.systemId,jdbcType=BIGINT},
+      state = #{record.state,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      create_uid = #{record.createUid,jdbcType=BIGINT},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      create__uid = #{record.createUid,jdbcType=BIGINT},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
       field_content = #{record.fieldContent,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
@@ -290,51 +336,67 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update s_custom_field_pool
-    set field_id = #{record.fieldId,jdbcType=BIGINT},
+    update s_issue_custom_relation
+    set id = #{record.id,jdbcType=BIGINT},
+      issue_type = #{record.issueType,jdbcType=TINYINT},
+      field_id = #{record.fieldId,jdbcType=BIGINT},
       field_name = #{record.fieldName,jdbcType=VARCHAR},
-      comment = #{record.comment,jdbcType=VARCHAR},
-      field_type = #{record.fieldType,jdbcType=INTEGER},
-      state = #{record.state,jdbcType=VARCHAR},
+      required = #{record.required,jdbcType=VARCHAR},
+      field_type = #{record.fieldType,jdbcType=TINYINT},
+      sort = #{record.sort,jdbcType=INTEGER},
       project_id = #{record.projectId,jdbcType=BIGINT},
+      system_id = #{record.systemId,jdbcType=BIGINT},
+      state = #{record.state,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      create_uid = #{record.createUid,jdbcType=BIGINT},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      create__uid = #{record.createUid,jdbcType=BIGINT},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool">
-    update s_custom_field_pool
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation">
+    update s_issue_custom_relation
     <set>
+      <if test="issueType != null">
+        issue_type = #{issueType,jdbcType=TINYINT},
+      </if>
+      <if test="fieldId != null">
+        field_id = #{fieldId,jdbcType=BIGINT},
+      </if>
       <if test="fieldName != null">
         field_name = #{fieldName,jdbcType=VARCHAR},
       </if>
-      <if test="comment != null">
-        comment = #{comment,jdbcType=VARCHAR},
+      <if test="required != null">
+        required = #{required,jdbcType=VARCHAR},
       </if>
       <if test="fieldType != null">
-        field_type = #{fieldType,jdbcType=INTEGER},
+        field_type = #{fieldType,jdbcType=TINYINT},
       </if>
-      <if test="state != null">
-        state = #{state,jdbcType=VARCHAR},
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
       </if>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="createUid != null">
-        create_uid = #{createUid,jdbcType=BIGINT},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        create__uid = #{createUid,jdbcType=BIGINT},
       </if>
       <if test="updateUid != null">
         update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="tenantCode != null">
         tenant_code = #{tenantCode,jdbcType=VARCHAR},
@@ -343,56 +405,56 @@
         field_content = #{fieldContent,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where field_id = #{fieldId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool">
-    update s_custom_field_pool
-    set field_name = #{fieldName,jdbcType=VARCHAR},
-      comment = #{comment,jdbcType=VARCHAR},
-      field_type = #{fieldType,jdbcType=INTEGER},
-      state = #{state,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation">
+    update s_issue_custom_relation
+    set issue_type = #{issueType,jdbcType=TINYINT},
+      field_id = #{fieldId,jdbcType=BIGINT},
+      field_name = #{fieldName,jdbcType=VARCHAR},
+      required = #{required,jdbcType=VARCHAR},
+      field_type = #{fieldType,jdbcType=TINYINT},
+      sort = #{sort,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=BIGINT},
+      system_id = #{systemId,jdbcType=BIGINT},
+      state = #{state,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_uid = #{createUid,jdbcType=BIGINT},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create__uid = #{createUid,jdbcType=BIGINT},
       update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{tenantCode,jdbcType=VARCHAR},
       field_content = #{fieldContent,jdbcType=LONGVARCHAR}
-    where field_id = #{fieldId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.customfield.domain.CustomFieldPool">
-    update s_custom_field_pool
-    set field_name = #{fieldName,jdbcType=VARCHAR},
-      comment = #{comment,jdbcType=VARCHAR},
-      field_type = #{fieldType,jdbcType=INTEGER},
-      state = #{state,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation">
+    update s_issue_custom_relation
+    set issue_type = #{issueType,jdbcType=TINYINT},
+      field_id = #{fieldId,jdbcType=BIGINT},
+      field_name = #{fieldName,jdbcType=VARCHAR},
+      required = #{required,jdbcType=VARCHAR},
+      field_type = #{fieldType,jdbcType=TINYINT},
+      sort = #{sort,jdbcType=INTEGER},
       project_id = #{projectId,jdbcType=BIGINT},
+      system_id = #{systemId,jdbcType=BIGINT},
+      state = #{state,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_uid = #{createUid,jdbcType=BIGINT},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create__uid = #{createUid,jdbcType=BIGINT},
       update_uid = #{updateUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{tenantCode,jdbcType=VARCHAR}
-    where field_id = #{fieldId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 
-
-  <!-- 分页查询 -->
-  <select id="selectDTOByExampleWithBLOBs" resultType="com.yusys.agile.customfield.dto.CustomFieldDTO">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from s_custom_field_pool
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
+  <delete id="deleteByProjectIdAndIssueType" >
+    delete from  s_issue_custom_field
+    where issue_type = #{issueType}
+    and   project_id = #{projectId}
+  </delete>
+<select id="getAppliedByissueType" resultType="Long">
+  select  field_id from  s_issue_custom_field
+    where issue_type = #{issueType}
+    and   project_id = #{projectId}
+</select>
 
 
 </mapper>

@@ -22,7 +22,7 @@ import com.yusys.agile.headerfield.domain.HeaderFieldExample;
 import com.yusys.agile.headerfield.util.HeaderFieldUtil;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.domain.IssueCustomField;
+import com.yusys.agile.issue.domain.SIssueCustomField;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
@@ -399,10 +399,10 @@ public class FaultServiceImpl implements FaultService {
 
         // 自定义字段
         if (CollectionUtils.isNotEmpty(faultDTO.getCustomFieldDetailDTOList())) {
-            List<IssueCustomField> customFields = Lists.newArrayList();
+            List<SIssueCustomField> customFields = Lists.newArrayList();
             // IssueCustomFieldDTO转换成IssueCustomField
             for (IssueCustomFieldDTO temp : faultDTO.getCustomFieldDetailDTOList()) {
-                IssueCustomField issueCustomField = new IssueCustomField();
+                SIssueCustomField issueCustomField = new SIssueCustomField();
                 issueCustomField.setExtendId(temp.getDetailId());
                 issueCustomField.setFieldId(temp.getFieldId());
                 issueCustomField.setFieldValue(temp.getFieldValue());

@@ -3,9 +3,9 @@ package com.yusys.agile.issue.service.impl;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.headerfield.service.HeaderFieldService;
-import com.yusys.agile.issue.dao.IssueCustomRelationMapper;
-import com.yusys.agile.issue.domain.IssueCustomRelation;
-import com.yusys.agile.issue.domain.IssueCustomRelationExample;
+import com.yusys.agile.issue.dao.SIssueCustomRelationMapper;
+import com.yusys.agile.issue.domain.SIssueCustomRelation;
+import com.yusys.agile.issue.domain.SIssueCustomRelationExample;
 import com.yusys.agile.issue.domain.IssueCustomRelationList;
 import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class IssueCustomRelationServiceImpl implements IssueCustomRelationService {
 
     @Resource
-    IssueCustomRelationMapper issueCustomRelationMapper;
+    SIssueCustomRelationMapper issueCustomRelationMapper;
     @Resource
     IssueCustomFieldService issueCustomFieldService;
     @Resource
@@ -52,12 +52,12 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      * @date 2021/2/31
      */
     @Override
-    public List<IssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType) {
+    public List<SIssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType) {
         List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields("", null, null, projectId);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        List<IssueCustomRelation> result = Lists.newArrayList();
-        IssueCustomRelationExample issueCustomRelationExample = new IssueCustomRelationExample();
-        IssueCustomRelationExample.Criteria criteria = issueCustomRelationExample.createCriteria();
+        List<SIssueCustomRelation> result = Lists.newArrayList();
+        SIssueCustomRelationExample issueCustomRelationExample = new SIssueCustomRelationExample();
+        SIssueCustomRelationExample.Criteria criteria = issueCustomRelationExample.createCriteria();
         criteria.andProjectIdEqualTo(projectId);
         if (issueType != null) {
             criteria.andIssueTypeEqualTo(issueType);
@@ -67,7 +67,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         if (result.isEmpty()) {
             return result;
         }
-        for (IssueCustomRelation issueCustomRelation : result) {
+        for (SIssueCustomRelation issueCustomRelation : result) {
             if (listMap.containsKey(issueCustomRelation.getFieldId())) {
                 CustomFieldDTO customFieldDTO = listMap.get(issueCustomRelation.getFieldId()).get(0);
                 issueCustomRelation.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
@@ -87,7 +87,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      */
     @Override
     public void deleteIssueCustomRelation(Long id) {
-        IssueCustomRelation issueCustomRelation = issueCustomRelationMapper.selectByPrimaryKey(id);
+        SIssueCustomRelation issueCustomRelation = issueCustomRelationMapper.selectByPrimaryKey(id);
         //工作项自定义字段表
         issueCustomRelationMapper.deleteByPrimaryKey(id);
         //列头
@@ -114,7 +114,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         List<Long> longList = issueCustomRelationMapper.getAppliedByissueType(securityDTO.getProjectId(), idList.getIssueType());
         if (idList.getIssueCustomRelationList() != null && idList.getIssueCustomRelationList().size() > 0) {
             for (int i = 0; i < idList.getIssueCustomRelationList().size(); i++) {
-                IssueCustomRelation issueCustomRelation = idList.getIssueCustomRelationList().get(i);
+                SIssueCustomRelation issueCustomRelation = idList.getIssueCustomRelationList().get(i);
                 issueCustomRelation.setIssueType(idList.getIssueType());
                 issueCustomRelation.setProjectId(securityDTO.getProjectId());
                 issueCustomRelation.setSort(i + longList.size() + 1);
@@ -140,18 +140,18 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
      * @date 2020/8/3
      */
     @Override
-    public List<IssueCustomRelation> getUnApplied(SecurityDTO securityDTO, Byte issueType, String fieldName) {
-        List<IssueCustomRelation> result = Lists.newArrayList();
+    public List<SIssueCustomRelation> getUnApplied(SecurityDTO securityDTO, Byte issueType, String fieldName) {
+        List<SIssueCustomRelation> result = Lists.newArrayList();
         List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(fieldName, null, null, securityDTO.getProjectId());
         if (customFieldDTOList != null && customFieldDTOList.size() > 0) {
-            IssueCustomRelationExample example = new IssueCustomRelationExample();
+            SIssueCustomRelationExample example = new SIssueCustomRelationExample();
             example.createCriteria()
                     .andProjectIdEqualTo(securityDTO.getProjectId())
                     .andIssueTypeEqualTo(issueType);
             List<Long> idList = issueCustomRelationMapper.getAppliedByissueType(securityDTO.getProjectId(), issueType);
             for (CustomFieldDTO customFieldDTO : customFieldDTOList) {
                 if (!idList.contains(customFieldDTO.getFieldId())) {
-                    IssueCustomRelation issueCustomRelation = new IssueCustomRelation();
+                    SIssueCustomRelation issueCustomRelation = new SIssueCustomRelation();
                     issueCustomRelation.setFieldId(customFieldDTO.getFieldId());
                     issueCustomRelation.setFieldName(customFieldDTO.getFieldName());
                     issueCustomRelation.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
@@ -168,8 +168,8 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
     @Override
     public List<CustomFieldDTO> getCustomFieldDTO(Long projectId, Byte issueType) {
         List<CustomFieldDTO> result = Lists.newArrayList();
-        List<IssueCustomRelation> issueCustomRelationList = getIssueCustomRelations(projectId, issueType);
-        for (IssueCustomRelation issueCustomRelation : issueCustomRelationList) {
+        List<SIssueCustomRelation> issueCustomRelationList = getIssueCustomRelations(projectId, issueType);
+        for (SIssueCustomRelation issueCustomRelation : issueCustomRelationList) {
             CustomFieldDTO customFieldDTO = new CustomFieldDTO();
             customFieldDTO.setFieldId(issueCustomRelation.getId());
             JSONObject jsonObject = JSON.parseObject(issueCustomRelation.getFieldContent());
@@ -189,9 +189,9 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
 
     @Override
     public void deleteIssueCustomRelationByFieldId(Long fieldId) {
-        IssueCustomRelationExample issueCustomRelation = new IssueCustomRelationExample();
+        SIssueCustomRelationExample issueCustomRelation = new SIssueCustomRelationExample();
         issueCustomRelation.createCriteria().andFieldIdEqualTo(fieldId);
-        List<IssueCustomRelation> issueCustomRelationList = issueCustomRelationMapper.selectByExample(issueCustomRelation);
+        List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationMapper.selectByExample(issueCustomRelation);
         //工作项自定义字段表
         issueCustomRelationMapper.deleteByExample(issueCustomRelation);
         //数据表
