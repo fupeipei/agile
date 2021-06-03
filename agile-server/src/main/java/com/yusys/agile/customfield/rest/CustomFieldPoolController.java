@@ -5,6 +5,8 @@ import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.util.Map;
  * @create 2021/2/1
  */
 @RestController
+@Api(tags = "自定义字段")
 @RequestMapping("/field")
 public class CustomFieldPoolController {
 
@@ -44,6 +47,7 @@ public class CustomFieldPoolController {
      * @author 张宇
      */
     @PostMapping("/addCustomField")
+    @ApiOperation(value = "添加自定义字段")
     public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO) {
         customFieldPoolService.addCustomField(customFieldDTO);
         return ControllerResponse.success();

@@ -439,12 +439,13 @@
         <if test="systemId != null">
             and system_id = #{systemId}
         </if>
+        and state = 'U'
     </select>
 
     <update id="editCustomField">
         update s_custom_field_pool
         set field_name = #{fieldName},
-         comment = #{comment}
-        where field_id =#{fieldId}
+            comment    = #{comment}
+        where field_id = #{fieldId}
     </update>
 </mapper>
