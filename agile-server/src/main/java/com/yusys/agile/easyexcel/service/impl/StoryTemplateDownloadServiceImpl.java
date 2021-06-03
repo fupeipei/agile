@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
+import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -36,8 +36,8 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     private Sprintv3Service sprintv3Service;
 
     @Override
-    public void download(HttpServletResponse response, ExcelCommentFile filed) {
-        Map<Integer, String[]> mapDropDown = getDropDownInfo(filed);
+    public void download(HttpServletResponse response, ExcelCommentField field) {
+        Map<Integer, String[]> mapDropDown = getDropDownInfo(field);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
             ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
@@ -58,9 +58,9 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
     }
 
     @Override
-    public Map<Integer, String[]> getDropDownInfo(ExcelCommentFile filed) {
+    public Map<Integer, String[]> getDropDownInfo(ExcelCommentField field) {
         Map<Integer,String []> mapDropDown = new HashMap<>();
-        String[] sprintInfo = getSprintInfo(filed.getSystemId());
+        String[] sprintInfo = getSprintInfo(field.getSystemId());
         String[] storyPriority = getStoryPriority();
         String[] storyPoints = getStoryPoint();
         mapDropDown.put(3,sprintInfo);

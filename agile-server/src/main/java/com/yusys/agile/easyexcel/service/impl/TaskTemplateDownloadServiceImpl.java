@@ -1,7 +1,7 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
+import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import com.google.common.collect.Lists;
@@ -43,8 +43,8 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
     private IssueMapper issueMapper;
 
     @Override
-    public void download(HttpServletResponse response, ExcelCommentFile filed) {
-        Map<Integer, String[]> mapDropDown = getDropDownInfo(filed);
+    public void download(HttpServletResponse response, ExcelCommentField field) {
+        Map<Integer, String[]> mapDropDown = getDropDownInfo(field);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
         try {
@@ -59,10 +59,10 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
     }
 
     @Override
-    public Map<Integer, String[]> getDropDownInfo(ExcelCommentFile filed) {
+    public Map<Integer, String[]> getDropDownInfo(ExcelCommentField field) {
         //下拉填充数据
         Map<Integer,String []> mapDropDown = new HashMap<>();
-        String[] sprintInfo = getStoryNamesBySprintId(filed.getSprintId());
+        String[] sprintInfo = getStoryNamesBySprintId(field.getSprintId());
         // 任务类型
         String[] taskTypeNames = TaskTypeEnum.getNames();
         mapDropDown.put(0,sprintInfo);
