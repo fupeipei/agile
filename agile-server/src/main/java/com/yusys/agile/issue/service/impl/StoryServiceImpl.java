@@ -504,16 +504,13 @@ public class StoryServiceImpl implements StoryService {
                     issueDTOSTmp.add(issueDTO);
                 }else{
                     //查询故事下的Task的查询条件某一个不等于空的情况，判断Children的Task是为空，为空则进行过滤
-                    if(StringUtils.isNotBlank(taskKeyWord) || CollectionUtils.isNotEmpty(laneIds)
-                            || CollectionUtils.isNotEmpty(taskTypes) || CollectionUtils.isNotEmpty(handlers)){
+                    if((StringUtils.isBlank(taskKeyWord) && CollectionUtils.isEmpty(laneIds)
+                            && CollectionUtils.isEmpty(taskTypes) && CollectionUtils.isEmpty(handlers)) && CollectionUtils.isEmpty(taskList)){
                         //storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isEmpty(issue.getChildren())).collect(Collectors.toList());
+                        issueDTO.setChildren(taskList);
                         issueDTOSTmp.add(issueDTO);
                     }
                 }
-//                if (StringUtils.isEmpty(taskKeyWord) && CollectionUtils.isEmpty(taskList)) {
-//                    issueDTO.setChildren(taskList);
-//                    issueDTOSTmp.add(issueDTO);
-//                }
             }
         }
         return issueDTOSTmp;
