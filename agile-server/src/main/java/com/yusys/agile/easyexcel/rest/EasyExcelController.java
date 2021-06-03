@@ -1,7 +1,7 @@
 package com.yusys.agile.easyexcel.rest;
 
 import com.yusys.agile.easyexcel.service.IExcelService;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
+import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -36,10 +36,10 @@ public class EasyExcelController {
                          @RequestParam(value = "sprintId", required = false) Long sprintId,
                          @RequestParam(value = "systemId", required = false) Long systemId) {
         try {
-            ExcelCommentFile filed = new ExcelCommentFile();
-            filed.setSprintId(sprintId);
-            filed.setSystemId(systemId);
-            iExcelService.downLoadTemplate(excelType, response, filed);
+            ExcelCommentField field = new ExcelCommentField();
+            field.setSprintId(sprintId);
+            field.setSystemId(systemId);
+            iExcelService.downLoadTemplate(excelType, response, field);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
         }
@@ -55,10 +55,10 @@ public class EasyExcelController {
             if (!Optional.ofNullable(systemId).isPresent()) {
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
-            ExcelCommentFile commentFile = new ExcelCommentFile();
-            commentFile.setSystemId(systemId);
+            ExcelCommentField field = new ExcelCommentField();
+            field.setSystemId(systemId);
 
-            fileInfo = iExcelService.uploadStorys(file,commentFile);
+            fileInfo = iExcelService.uploadStorys(file,field);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }
@@ -73,9 +73,9 @@ public class EasyExcelController {
     public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file,@RequestParam("sprintId")Long sprintId) {
         FileInfo fileInfo;
         try {
-            ExcelCommentFile commentFile = new ExcelCommentFile();
-            commentFile.setSprintId(sprintId);
-            fileInfo = iExcelService.uploadTasks(file,commentFile);
+            ExcelCommentField field = new ExcelCommentField();
+            field.setSprintId(sprintId);
+            fileInfo = iExcelService.uploadTasks(file,field);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }
