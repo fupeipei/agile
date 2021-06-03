@@ -234,15 +234,15 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
                     if(currCount != null){
                         count -= currCount;
                     }
+                    //如果startTime > 今天 则不赋值
+                    if(!startTime.after(DateUtil.currentDay())){
+                        burnDownStoryPoint.setRemainStoryPoint(count);
+                    }
                     //如果是当前，由于定时任务不会执行，所以必须查一次
                     if(DateUtil.equalsByDay(startTime, DateUtil.currentDay())){
                         Integer finish = issueMapper.countFinishedStoryPoint(sprintId);
                         _count -= finish;
                         burnDownStoryPoint.setRemainStoryPoint(_count);
-                    }
-                    //如果startTime > 今天 则不赋值
-                    if(!startTime.after(DateUtil.currentDay())){
-                        burnDownStoryPoint.setRemainStoryPoint(count);
                     }
                     rest.add(burnDownStoryPoint);
                 }
