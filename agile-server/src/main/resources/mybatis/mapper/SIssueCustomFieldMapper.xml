@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.issue.dao.IssueCustomFieldMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.issue.domain.IssueCustomField">
-    <result column="extend_id" jdbcType="BIGINT" property="extendId" />
+<mapper namespace="com.yusys.agile.issue.dao.SIssueCustomFieldMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.issue.domain.SIssueCustomField">
+    <id column="extend_id" jdbcType="BIGINT" property="extendId" />
     <result column="field_id" jdbcType="BIGINT" property="fieldId" />
     <result column="field_value" jdbcType="VARCHAR" property="fieldValue" />
     <result column="issue_id" jdbcType="BIGINT" property="issueId" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -71,10 +72,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    extend_id, field_id, field_value, issue_id, create_time, create_uid, update_time, 
-    update_uid,tenant_code
+    extend_id, field_id, field_value, issue_id, state, create_time, create_uid, update_time, 
+    update_uid, tenant_code
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.IssueCustomFieldExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.SIssueCustomFieldExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -88,21 +89,33 @@
       order by ${orderByClause}
     </if>
   </select>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueCustomFieldExample">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from s_issue_custom_field
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from s_issue_custom_field
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.SIssueCustomFieldExample">
     delete from s_issue_custom_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueCustomField">
+  <insert id="insert" parameterType="com.yusys.agile.issue.domain.SIssueCustomField">
     insert into s_issue_custom_field (extend_id, field_id, field_value, 
-      issue_id, create_time, create_uid, 
-      update_time, update_uid,tenant_code)
+      issue_id, state, create_time, 
+      create_uid, update_time, update_uid, 
+      tenant_code)
     values (#{extendId,jdbcType=BIGINT}, #{fieldId,jdbcType=BIGINT}, #{fieldValue,jdbcType=VARCHAR}, 
-      #{issueId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT},#{tenantCode})
+      #{issueId,jdbcType=BIGINT}, #{state,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
+      #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueCustomField">
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomField">
     insert into s_issue_custom_field
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="extendId != null">
@@ -116,6 +129,9 @@
       </if>
       <if test="issueId != null">
         issue_id,
+      </if>
+      <if test="state != null">
+        state,
       </if>
       <if test="createTime != null">
         create_time,
@@ -146,6 +162,9 @@
       <if test="issueId != null">
         #{issueId,jdbcType=BIGINT},
       </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -159,11 +178,11 @@
         #{updateUid,jdbcType=BIGINT},
       </if>
       <if test="tenantCode != null">
-        #{tenantCode},
+        #{tenantCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueCustomFieldExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.yusys.agile.issue.domain.SIssueCustomFieldExample" resultType="java.lang.Long">
     select count(*) from s_issue_custom_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -184,6 +203,9 @@
       <if test="record.issueId != null">
         issue_id = #{record.issueId,jdbcType=BIGINT},
       </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -197,7 +219,7 @@
         update_uid = #{record.updateUid,jdbcType=BIGINT},
       </if>
       <if test="record.tenantCode != null">
-        tenant_code = #{record.tenantCode,jdbcType=BIGINT},
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -210,16 +232,64 @@
       field_id = #{record.fieldId,jdbcType=BIGINT},
       field_value = #{record.fieldValue,jdbcType=VARCHAR},
       issue_id = #{record.issueId,jdbcType=BIGINT},
+      state = #{record.state,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
-    tenant_code = #{record.tenantCode}
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-    <select id="listCustomField" resultType="com.yusys.agile.issue.dto.IssueCustomFieldDTO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomField">
+    update s_issue_custom_field
+    <set>
+      <if test="fieldId != null">
+        field_id = #{fieldId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldValue != null">
+        field_value = #{fieldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="issueId != null">
+        issue_id = #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.SIssueCustomField">
+    update s_issue_custom_field
+    set field_id = #{fieldId,jdbcType=BIGINT},
+      field_value = #{fieldValue,jdbcType=VARCHAR},
+      issue_id = #{issueId,jdbcType=BIGINT},
+      state = #{state,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </update>
+
+  <select id="listCustomField" resultType="com.yusys.agile.issue.dto.IssueCustomFieldDTO">
       select a.*,b.field_code,b.field_name,b.field_type,b.field_content,b.required,b.state,b.is_select from s_issue_custom_field a,header_field b
       where a.field_id = b.field_id and a.issue_id=#{issueId}
       and b.is_select = 1

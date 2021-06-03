@@ -16,7 +16,6 @@ import java.util.Map;
 
 /**
  * 项目内自定义字段
- * <p>
  * 项目内工作项只是用作字段池
  *
  * @create 2021/2/1
@@ -38,47 +37,68 @@ public class CustomFieldPoolController {
 
 
     /**
-     * 功能描述: 新增自定义字段
+     * 添加自定义字段
      *
-     * @param customFieldDTO
-     * @return
-     * @date 2021/2/1
+     * @param customFieldDTO 自定义字段dto
+     * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @PostMapping("/addCustomField")
-    public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "projectId") Long projectId) {
-        try {
-            customFieldDTO.setProjectId(projectId);
-            customFieldPoolService.addCustomField(customFieldDTO);
-        } catch (Exception e) {
-            LOGGER.error("新增自定义字段失败！e:{}" + e);
-            return ControllerResponse.fail("新增自定义字段失败！" + e.getMessage());
-        }
-
+    public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO) {
+        customFieldPoolService.addCustomField(customFieldDTO);
         return ControllerResponse.success();
-
     }
-
+//    /**
+//     * 功能描述: 新增自定义字段
+//     *
+//     * @param customFieldDTO
+//     * @return
+//     * @date 2021/2/1
+//     */
+//    public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "projectId") Long projectId) {
+//        try {
+//            customFieldDTO.setProjectId(projectId);
+//            customFieldPoolService.addCustomField(customFieldDTO);
+//        } catch (Exception e) {
+//            LOGGER.error("新增自定义字段失败！e:{}" + e);
+//            return ControllerResponse.fail("新增自定义字段失败！" + e.getMessage());
+//        }
+//
+//        return ControllerResponse.success();
+//
+//    }
 
     /**
-     * 功能描述: 修改自定义字段
+     * 编辑自定义字段
      *
-     * @param customFieldDTO
-     * @return
-     * @date 2021/2/1
+     * @param customFieldDTO 自定义字段dto
+     * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @PostMapping("/editCustomField")
-    public ControllerResponse editCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "projectId") Long projectId) {
-        try {
-            customFieldDTO.setProjectId(projectId);
-            customFieldPoolService.editCustomField(customFieldDTO);
-        } catch (Exception e) {
-            LOGGER.error("修改自定义字段失败！e:{}" + e);
-            return ControllerResponse.fail("修改自定义字段失败！" + e.getMessage());
-        }
-
+    public ControllerResponse editCustomField(@RequestBody CustomFieldDTO customFieldDTO) {
+        customFieldPoolService.editCustomField(customFieldDTO);
         return ControllerResponse.success();
-
     }
+//    /**
+//     * 功能描述: 修改自定义字段
+//     *
+//     * @param customFieldDTO
+//     * @return
+//     * @date 2021/2/1
+//     */
+//    public ControllerResponse editCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "projectId") Long projectId) {
+//        try {
+//            customFieldDTO.setProjectId(projectId);
+//            customFieldPoolService.editCustomField(customFieldDTO);
+//        } catch (Exception e) {
+//            LOGGER.error("修改自定义字段失败！e:{}" + e);
+//            return ControllerResponse.fail("修改自定义字段失败！" + e.getMessage());
+//        }
+//
+//        return ControllerResponse.success();
+//
+//    }
 
     /**
      * 功能描述: 删除自定义字段

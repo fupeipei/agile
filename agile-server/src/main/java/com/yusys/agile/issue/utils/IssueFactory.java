@@ -332,10 +332,10 @@ public class IssueFactory {
                 List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
                 if (CollectionUtils.isNotEmpty(list)) {
 
-                    List<IssueCustomField> fieldsAfterEdit = Lists.newArrayList();
+                    List<SIssueCustomField> fieldsAfterEdit = Lists.newArrayList();
                     // IssueCustomFieldDTO转换成IssueCustomField
                     for (IssueCustomFieldDTO temp : list) {
-                        IssueCustomField issueCustomField = new IssueCustomField();
+                        SIssueCustomField issueCustomField = new SIssueCustomField();
                         issueCustomField.setExtendId(temp.getDetailId());
                         issueCustomField.setFieldId(temp.getFieldId());
                         issueCustomField.setFieldValue(temp.getFieldValue());
@@ -363,7 +363,7 @@ public class IssueFactory {
         return issue;
     }
 
-    public void dealCustomFieldAndFieldHistory(Long projectId, Long issueId, List<IssueHistoryRecord> history, List<IssueCustomFieldDTO> fieldsBeforeEdit, List<IssueCustomField> fieldsAfterEdit, Byte issueType) {
+    public void dealCustomFieldAndFieldHistory(Long projectId, Long issueId, List<IssueHistoryRecord> history, List<IssueCustomFieldDTO> fieldsBeforeEdit, List<SIssueCustomField> fieldsAfterEdit, Byte issueType) {
 
         // 修改自定义字段明细数据
         issueCustomFieldService.editCustomFields(fieldsAfterEdit);
@@ -950,7 +950,7 @@ public class IssueFactory {
         if (!StringUtils.isEmpty(json) && !EMPTY_STR.equals(json)) {
             List<FieldJson> fieldJsonDTOS = JSON.parseArray(json, FieldJson.class);
             if (fieldJsonDTOS != null && !fieldJsonDTOS.isEmpty()) {
-                List<IssueCustomField> fields = new ArrayList<>();
+                List<SIssueCustomField> fields = new ArrayList<>();
                 for (FieldJson fieldJsonDTO : fieldJsonDTOS) {
                     createIssueCustomField(issueId, fields, fieldJsonDTO.getFieldId(), fieldJsonDTO.getFieldValue());
                 }
@@ -962,8 +962,8 @@ public class IssueFactory {
     }
 
 
-    private void createIssueCustomField(Long issueId, List<IssueCustomField> fields, Long fieldId, String fieldValue) {
-        IssueCustomField issueCustomField = new IssueCustomField();
+    private void createIssueCustomField(Long issueId, List<SIssueCustomField> fields, Long fieldId, String fieldValue) {
+        SIssueCustomField issueCustomField = new SIssueCustomField();
         issueCustomField.setIssueId(issueId);
         issueCustomField.setFieldId(fieldId);
         issueCustomField.setFieldValue(fieldValue);

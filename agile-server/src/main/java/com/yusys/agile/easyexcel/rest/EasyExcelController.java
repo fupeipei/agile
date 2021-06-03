@@ -1,18 +1,23 @@
 package com.yusys.agile.easyexcel.rest;
 
 import com.yusys.agile.easyexcel.service.IExcelService;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
+import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.file.domain.FileInfo;
+import com.yusys.agile.utils.ExcelUtil;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 
 /**
@@ -36,10 +41,10 @@ public class EasyExcelController {
                          @RequestParam(value = "sprintId", required = false) Long sprintId,
                          @RequestParam(value = "systemId", required = false) Long systemId) {
         try {
-            ExcelCommentFile filed = new ExcelCommentFile();
-            filed.setSprintId(sprintId);
-            filed.setSystemId(systemId);
-            iExcelService.downLoadTemplate(excelType, response, filed);
+            ExcelCommentField field = new ExcelCommentField();
+            field.setSprintId(sprintId);
+            field.setSystemId(systemId);
+            iExcelService.downLoadTemplate(excelType, response, field);
         } catch (Exception e) {
             log.error("excel模版下载失败：{}", e);
         }
@@ -55,10 +60,10 @@ public class EasyExcelController {
             if (!Optional.ofNullable(systemId).isPresent()) {
                 systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             }
-            ExcelCommentFile commentFile = new ExcelCommentFile();
-            commentFile.setSystemId(systemId);
+            ExcelCommentField field = new ExcelCommentField();
+            field.setSystemId(systemId);
 
-            fileInfo = iExcelService.uploadStorys(file,commentFile);
+            fileInfo = iExcelService.uploadStorys(file,field);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }
@@ -73,9 +78,9 @@ public class EasyExcelController {
     public ControllerResponse uploadTasks(@RequestParam("file") MultipartFile file,@RequestParam("sprintId")Long sprintId) {
         FileInfo fileInfo;
         try {
-            ExcelCommentFile commentFile = new ExcelCommentFile();
-            commentFile.setSprintId(sprintId);
-            fileInfo = iExcelService.uploadTasks(file,commentFile);
+            ExcelCommentField field = new ExcelCommentField();
+            field.setSprintId(sprintId);
+            fileInfo = iExcelService.uploadTasks(file,field);
         } catch (Exception e) {
             return ControllerResponse.fail("上传失败:" + e.getMessage());
         }
@@ -83,6 +88,37 @@ public class EasyExcelController {
             return ControllerResponse.fail(fileInfo);
         }
         return ControllerResponse.success("上传成功");
+    }
+
+
+    /**
+     * 导出工作项
+     * @param issueType
+     * @param map
+     * @param response
+     */
+    @PostMapping("/export/issues/{issueType}")
+    public void exportIssueDatas(@PathVariable("issueType") Byte issueType,
+                                 @RequestBody Map<String, Object> map,
+                                 HttpServletResponse response,
+                                 @RequestParam(value = "systemId",required = false) Long systemId) {
+        try {
+            if(issueType == null){
+                throw new BusinessException("工作项类型不能为空!");
+            }
+
+            if(!Optional.ofNullable(systemId).isPresent()){
+                systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+            }
+
+            if(Optional.ofNullable(systemId).isPresent()){
+                map.put("systemId",systemId.toString());
+            }
+
+           iExcelService.exportIssues(issueType, systemId, map,response);
+        } catch (Exception e) {
+            log.error("导出工作项异常:{}", e.getMessage());
+        }
     }
 
 }

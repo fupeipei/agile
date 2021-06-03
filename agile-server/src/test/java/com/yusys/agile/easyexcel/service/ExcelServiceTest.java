@@ -4,7 +4,7 @@ import com.yusys.agile.AgileApplication;
 import com.yusys.agile.easyexcel.service.impl.ExcelServiceImpl;
 import com.yusys.agile.easyexcel.service.impl.StoryTemplateDownloadServiceImpl;
 import com.yusys.agile.easyexcel.service.impl.TaskTemplateDownloadServiceImpl;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
+import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +41,7 @@ public class ExcelServiceTest {
     @Test
     public void testTaskTemplateDownload() {
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
-        ExcelCommentFile filed = new ExcelCommentFile();
+        ExcelCommentField filed = new ExcelCommentField();
         filed.setSprintId(100029L);
         Byte excelType = 4;
         //iExcelService.downLoadTemplate(excelType,httpServletResponse,filed);
@@ -56,7 +56,7 @@ public class ExcelServiceTest {
         ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
         InputStream inputStream = classPathResource.getInputStream();
         File file = classPathResource.getFile();
-        ExcelCommentFile filed = new ExcelCommentFile();
+        ExcelCommentField filed = new ExcelCommentField();
         filed.setSprintId(100029L);
         MultipartFile multipartFile = new MockMultipartFile(file.getName(), inputStream);
         try {
@@ -71,7 +71,7 @@ public class ExcelServiceTest {
     @Test
     public void storyTemplateDownload() {
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
-        ExcelCommentFile filed = new ExcelCommentFile();
+        ExcelCommentField filed = new ExcelCommentField();
         filed.setSprintId(100029L);
         Byte excelType = 4;
         //iExcelService.downLoadTemplate(excelType,httpServletResponse,filed);
@@ -86,7 +86,7 @@ public class ExcelServiceTest {
         ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
         InputStream inputStream = classPathResource.getInputStream();
         File file = classPathResource.getFile();
-        ExcelCommentFile filed = new ExcelCommentFile();
+        ExcelCommentField filed = new ExcelCommentField();
         filed.setSystemId(831894869750956032L);
         MultipartFile multipartFile = new MockMultipartFile(file.getName(), inputStream);
         try {

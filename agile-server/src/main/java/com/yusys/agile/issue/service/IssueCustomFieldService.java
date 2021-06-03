@@ -1,6 +1,6 @@
 package com.yusys.agile.issue.service;
 
-import com.yusys.agile.issue.domain.IssueCustomField;
+import com.yusys.agile.issue.domain.SIssueCustomField;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public interface IssueCustomFieldService {
      * @Param: * @param fields
      * @Return: int
      */
-    int createBatch(List<IssueCustomField> fields);
+    int createBatch(List<SIssueCustomField> fields);
 
     /**
      * @param issueId
@@ -41,7 +41,7 @@ public interface IssueCustomFieldService {
      * @return void
      * @date 2021/2/21
      */
-    void editCustomFields(List<IssueCustomField> fieldsAfterEdit);
+    void editCustomFields(List<SIssueCustomField> fieldsAfterEdit);
 
     void deleteCustomFileByIssueCustomRelationId(Long issueCustomRelationId);
 
@@ -54,5 +54,5 @@ public interface IssueCustomFieldService {
      * @date 2020/8/10
      */
 
-    List<IssueCustomField> selectIssueIdByProjectId(Long projectId);
+    List<SIssueCustomField> selectIssueIdByProjectId(Long projectId);
 }
