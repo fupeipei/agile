@@ -24,7 +24,6 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStringDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -45,12 +44,9 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import javax.servlet.http.HttpServletResponse;
@@ -288,7 +284,6 @@ public class ExcelServiceImpl implements IExcelService {
         return fileService.upload(multipartFile);
     }
 
-
     /**
      * 检查Excel文件数据
      * @param data
@@ -336,8 +331,6 @@ public class ExcelServiceImpl implements IExcelService {
         return hasError;
     }
 
-
-
     private FileItem getFileItem(String fileName, byte[] bytes) {
         FileItemFactory diskFileItemFactory = new DiskFileItemFactory();
         FileItem fileItem = diskFileItemFactory.createItem(fileName, "text/plain", true, fileName);
@@ -348,7 +341,6 @@ public class ExcelServiceImpl implements IExcelService {
         }
         return fileItem;
     }
-
 
     /**
      * 功能描述: 校验列头
@@ -379,12 +371,11 @@ public class ExcelServiceImpl implements IExcelService {
 
         List<HeaderField> headerFieldList = queryHeaderFieldList(issueType);
         if (CollectionUtils.isNotEmpty(headerFieldList)) {
-
             //获取表头数据
             List<String> headers = headerFieldList.stream().map(
                     headerField -> headerField.getFieldName()).collect(Collectors.toList());
 
-            List<Issue> issueList = null;
+            List<Issue> issueList;
             //选中数据导出
             String ageSize = getIssueMaxPageSize(MAX_ISSUE_EXPORT_THRESHOLD_KEY);
             if (null != ageSize) {
@@ -397,38 +388,48 @@ public class ExcelServiceImpl implements IExcelService {
             } else {
                 issueList = queryIssueList(map, null, ALL_TYPE);
             }
-            List<List<String>> dataResult = Lists.newArrayList();
-            if (CollectionUtils.isNotEmpty(issueList)) {
-                List<String> fieldList = Lists.newArrayList();
-                for(Issue issue:issueList){
-                    Class<?> issueClass = issue.getClass();
-                    Field[] fields = issueClass.getDeclaredFields();
 
-                    for(HeaderField headerField:headerFieldList){
-                        for(Field field : fields){
-                            try {
-                                field.setAccessible(true);
-                                String fieldCode = headerField.getFieldCode();
-                                String name = field.getName();
-                                if(StringUtils.equals(fieldCode,name)){
-                                    fieldList.add(field.get(name).toString());
-                                }
-                            }catch (Exception e){
-                                log.info("反射获取issue数据异常:{}",e.getMessage());
-                            }
-                        }
-                    }
-                    dataResult.add(fieldList);
-                }
-            }
-
+            List<List<String>> excelData = getExcelData(issueList, headerFieldList);
             ExcelVo vo = new ExcelVo();
             vo.setFileName(UUID.randomUUID().toString());
             vo.setFileType(ExcelUtil.XLSX);
             vo.setCellText(headers);
-            vo.setStringList(dataResult);
+            vo.setStringList(excelData);
             ExcelUtil.export(vo,response);
         }
+    }
+
+    private List<List<String>> getExcelData( List<Issue> issueList,
+                                             List<HeaderField> headerFieldList){
+        List<List<String>> dataResult = Lists.newArrayList();
+
+        if (CollectionUtils.isNotEmpty(issueList)) {
+            List<String> fieldList = Lists.newArrayList();
+
+            for(Issue issue:issueList){
+
+                Class<?> issueClass = issue.getClass();
+                Field[] fields = issueClass.getDeclaredFields();
+
+                for(HeaderField headerField:headerFieldList){
+                    for(Field field : fields){
+                        try {
+                            field.setAccessible(true);
+                            String fieldCode = headerField.getFieldCode();
+                            String name = field.getName();
+                            if(StringUtils.equals(fieldCode,name)){
+                                fieldList.add(field.get(name).toString());
+                            }
+                        }catch (Exception e){
+                            log.info("反射获取issue数据异常:{}",e.getMessage());
+                        }
+                    }
+                }
+
+                dataResult.add(fieldList);
+            }
+        }
+        return dataResult;
     }
 
 
