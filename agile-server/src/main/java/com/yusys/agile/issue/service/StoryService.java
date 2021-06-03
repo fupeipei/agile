@@ -251,5 +251,5 @@ public interface StoryService {
       * @param systemId
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> queryStoryBySystemId(Long systemId,Integer pageNum,Integer pageSize);
+    List<IssueDTO> queryStoryBySystemId(Long systemId,String storyName,Integer pageNum,Integer pageSize);
 }

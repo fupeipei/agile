@@ -48,11 +48,7 @@
     </select>
 
     <select id="getStoryStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
-        select  (
-        SELECT COUNT(1) AS total
-        FROM s_issue a
-        WHERE a.is_archive != 1 AND a.state = "U" AND a.issue_type = 3 AND a.sprint_id = #{sprintId}) total
-        ,
+        select
         (
         SELECT COUNT(1) AS finished
         FROM s_issue a

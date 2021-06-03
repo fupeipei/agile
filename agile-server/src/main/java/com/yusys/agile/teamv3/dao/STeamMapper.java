@@ -109,6 +109,7 @@ public interface STeamMapper {
      *
      * @param teamId 团队id
      * @return {@link List<SsoSystem>}
+     * @author 张宇
      */
     List<Long> queryTeamSystem(Long teamId);
 
@@ -118,6 +119,7 @@ public interface STeamMapper {
      * @param sprintId 迭代id
      * @param teamId   团队id
      * @return {@link List<STeamMember>}
+     * @author 张宇
      */
     List<STeamMember> querySprintUser(@Param("sprintId") Long sprintId);
 //    List<STeamMember> queryUserInfoByUserId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
@@ -127,6 +129,7 @@ public interface STeamMapper {
      *
      * @param teamId 团队id
      * @return {@link String}
+     * @author 张宇
      */
     String queryTeamNameByTeamId(Long teamId);
 

@@ -889,7 +889,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             }
 
             SSprintExample sSprintExample = new SSprintExample();
-            sSprintExample.createCriteria().andTeamIdIn(teamIdList).andStateEqualTo(StateEnum.U.getValue());
+            List<Byte> listStatus = Lists.newArrayList(new Byte("2"),new Byte("3"));
+            sSprintExample.createCriteria().andTeamIdIn(teamIdList).andStateEqualTo(StateEnum.U.getValue()).andStatusIn(listStatus);
             List<SSprint> sSprintList = ssprintMapper.selectByExample(sSprintExample);
 
             for(SSprint sSprint : sSprintList){

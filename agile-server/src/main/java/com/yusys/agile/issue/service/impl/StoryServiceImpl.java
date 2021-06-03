@@ -390,6 +390,11 @@ public class StoryServiceImpl implements StoryService {
             //获取故事下的任务
             issueDTOS = getChildren(sprintId, issueDTOS, taskKeyWord, laneIds, taskTypes, handlers);
         }
+        //查询故事下的Task的查询条件某一个不等于空的情况，判断Children的Task是为空，为空则进行过滤
+//        if(StringUtils.isNotBlank(taskKeyWord) || CollectionUtils.isNotEmpty(laneIds)
+//                || CollectionUtils.isNotEmpty(taskTypes) || CollectionUtils.isNotEmpty(handlers)){
+//            storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isEmpty(issue.getChildren())).collect(Collectors.toList());
+//        }
         return issueDTOS;
     }
 
@@ -502,10 +507,10 @@ public class StoryServiceImpl implements StoryService {
                     issueDTO.setChildren(taskList);
                     issueDTOSTmp.add(issueDTO);
                 }
-                if (StringUtils.isEmpty(taskKeyWord) && CollectionUtils.isEmpty(taskList)) {
-                    issueDTO.setChildren(taskList);
-                    issueDTOSTmp.add(issueDTO);
-                }
+//                if (StringUtils.isEmpty(taskKeyWord) && CollectionUtils.isEmpty(taskList)) {
+//                    issueDTO.setChildren(taskList);
+//                    issueDTOSTmp.add(issueDTO);
+//                }
             }
         }
         return issueDTOSTmp;
@@ -1044,12 +1049,20 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> queryStoryBySystemId(Long systemId,Integer pageNum,Integer pageSize) {
+    public List<IssueDTO> queryStoryBySystemId(Long systemId,String storyName,Integer pageNum,Integer pageSize) {
         if (pageNum != null && pageSize != null) {
             PageHelper.startPage(pageNum, pageSize);
         }
         IssueExample issueExample = new IssueExample();
-        issueExample.createCriteria().andSystemIdEqualTo(systemId).andStateEqualTo(StateEnum.U.getValue());
+        List<Long> listLageId = Lists.newArrayList(104L,105L);
+        IssueExample.Criteria criteria = issueExample.createCriteria();
+        criteria.andSystemIdEqualTo(systemId).andStateEqualTo(StateEnum.U.getValue()).
+                andStageIdEqualTo(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue()).
+                andLaneIdIn(listLageId);
+        if(StringUtils.isNotBlank(storyName)){
+            criteria.andTitleLike(storyName);
+        }
+
         List<IssueDTO> storys = issueMapper.selectByExampleDTO(issueExample);
         return storys;
     }

@@ -1,8 +1,9 @@
 package com.yusys.agile.easyexcel.service;
 
-import com.yusys.agile.easyexcel.vo.ExcelCommentFiled;
+import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  *  @Description: 模版下载Service
@@ -13,5 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface DownloadExcelTempletService {
 
-    void download(HttpServletResponse response, ExcelCommentFiled filed);
+    void download(HttpServletResponse response, ExcelCommentFile filed);
+
+    Map<Integer,String []> getDropDownInfo(ExcelCommentFile filed);
 }

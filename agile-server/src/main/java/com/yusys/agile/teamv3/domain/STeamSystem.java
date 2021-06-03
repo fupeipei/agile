@@ -14,7 +14,7 @@ public class STeamSystem implements Serializable {
 
     private Date createTime;
 
-    private Integer updateUid;
+    private Long updateUid;
 
     private Date updateTime;
 
@@ -62,11 +62,11 @@ public class STeamSystem implements Serializable {
         this.createTime = createTime;
     }
 
-    public Integer getUpdateUid() {
+    public Long getUpdateUid() {
         return updateUid;
     }
 
-    public void setUpdateUid(Integer updateUid) {
+    public void setUpdateUid(Long updateUid) {
         this.updateUid = updateUid;
     }
 

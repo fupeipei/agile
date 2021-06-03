@@ -614,4 +614,11 @@ public interface IssueMapper {
      * @Return int
      */
     int getRemainWorkload(Long sprintId);
+    /**
+     * 获取完成的故事点总数
+     * @author zhaofeng
+     * @date 2021/6/2 20:55
+     * @param sprintId
+     */
+    Integer countFinishedStoryPoint(@Param("sprintId") Long sprintId);
 }
