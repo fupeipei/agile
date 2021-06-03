@@ -45,7 +45,8 @@ public class CustomFieldPoolController {
      */
     @PostMapping("/addCustomField")
     public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO) {
-        return ControllerResponse.success(customFieldPoolService.addCustomField(customFieldDTO));
+        customFieldPoolService.addCustomField(customFieldDTO);
+        return ControllerResponse.success();
     }
 //    /**
 //     * 功能描述: 新增自定义字段
@@ -76,7 +77,8 @@ public class CustomFieldPoolController {
      */
     @PostMapping("/editCustomField")
     public ControllerResponse editCustomField(@RequestBody CustomFieldDTO customFieldDTO) {
-        return ControllerResponse.success(customFieldPoolService.editCustomField(customFieldDTO));
+        customFieldPoolService.editCustomField(customFieldDTO);
+        return ControllerResponse.success();
     }
 //    /**
 //     * 功能描述: 修改自定义字段
@@ -171,8 +173,6 @@ public class CustomFieldPoolController {
         return ControllerResponse.success(map);
 
     }
-
-
 
 
 }
