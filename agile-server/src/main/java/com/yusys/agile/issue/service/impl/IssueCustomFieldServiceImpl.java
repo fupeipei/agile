@@ -2,9 +2,9 @@ package com.yusys.agile.issue.service.impl;
 
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
-import com.yusys.agile.issue.dao.IssueCustomFieldMapper;
-import com.yusys.agile.issue.domain.IssueCustomField;
-import com.yusys.agile.issue.domain.IssueCustomFieldExample;
+import com.yusys.agile.issue.dao.SIssueCustomFieldMapper;
+import com.yusys.agile.issue.domain.SIssueCustomField;
+import com.yusys.agile.issue.domain.SIssueCustomFieldExample;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
@@ -31,7 +31,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     private static final Logger log = LoggerFactory.getLogger(IssueCustomFieldServiceImpl.class);
 
     @Resource
-    private IssueCustomFieldMapper issueCustomFieldMapper;
+    private SIssueCustomFieldMapper issueCustomFieldMapper;
 
 
     @Autowired
@@ -75,9 +75,9 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         issueCustomFieldDTO.setSubjectId(issueId);
 
         // 查询实际数据，可能没有
-        IssueCustomFieldExample example = new IssueCustomFieldExample();
+        SIssueCustomFieldExample example = new SIssueCustomFieldExample();
         example.createCriteria().andFieldIdEqualTo(customFieldDTO.getFieldId()).andIssueIdEqualTo(issueId);
-        List<IssueCustomField> issueCustomFields = issueCustomFieldMapper.selectByExample(example);
+        List<SIssueCustomField> issueCustomFields = issueCustomFieldMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(issueCustomFields)) {
             issueCustomFieldDTO.setDetailId(issueCustomFields.get(0).getExtendId());
             issueCustomFieldDTO.setFieldValue(issueCustomFields.get(0).getFieldValue());
@@ -88,7 +88,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     }
 
     @Override
-    public int createBatch(List<IssueCustomField> fields) {
+    public int createBatch(List<SIssueCustomField> fields) {
         return issueCustomFieldMapper.createBatch(fields);
     }
 
@@ -111,12 +111,12 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
      * @date 2021/2/21
      */
     @Override
-    public void editCustomFields(List<IssueCustomField> fieldsAfterEdit) {
-        List<IssueCustomField> addCustomFieldList = Lists.newArrayList();
-        for (IssueCustomField tempIssueCustomField : fieldsAfterEdit) {
+    public void editCustomFields(List<SIssueCustomField> fieldsAfterEdit) {
+        List<SIssueCustomField> addCustomFieldList = Lists.newArrayList();
+        for (SIssueCustomField tempIssueCustomField : fieldsAfterEdit) {
             // 修改
             if (null != tempIssueCustomField.getExtendId()) {
-                IssueCustomFieldExample example = new IssueCustomFieldExample();
+                SIssueCustomFieldExample example = new SIssueCustomFieldExample();
                 example.createCriteria().andExtendIdEqualTo(tempIssueCustomField.getExtendId());
                 issueCustomFieldMapper.updateByExampleSelective(tempIssueCustomField, example);
             } else {
@@ -142,12 +142,12 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     }
 
     @Override
-    public List<IssueCustomField> selectIssueIdByProjectId(Long projectId) {
+    public List<SIssueCustomField> selectIssueIdByProjectId(Long projectId) {
         List<Long> issueIds = issueService.selectIssueIdByProjectId(projectId, null);
         if (issueIds.isEmpty()) {
             return Lists.newArrayList();
         }
-        IssueCustomFieldExample issueCustomFieldExample = new IssueCustomFieldExample();
+        SIssueCustomFieldExample issueCustomFieldExample = new SIssueCustomFieldExample();
         issueCustomFieldExample.createCriteria()
                 .andIssueIdIn(issueIds);
         return issueCustomFieldMapper.selectByExample(issueCustomFieldExample);

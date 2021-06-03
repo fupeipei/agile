@@ -1,13 +1,13 @@
 package com.yusys.agile.customfield.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.yusys.agile.constant.StringConstant;
-import com.yusys.agile.customfield.dao.CustomFieldPoolMapper;
-import com.yusys.agile.customfield.domain.CustomFieldPool;
-import com.yusys.agile.customfield.domain.CustomFieldPoolExample;
+import com.yusys.agile.customfield.dao.SCustomFieldPoolMapper;
+import com.yusys.agile.customfield.domain.SCustomFieldPool;
+import com.yusys.agile.customfield.domain.SCustomFieldPoolExample;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
-import com.github.pagehelper.PageHelper;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.util.code.ReflectUtil;
@@ -35,7 +35,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomFieldPoolServiceImpl.class);
 
     @Autowired
-    private CustomFieldPoolMapper customFieldPoolMapper;
+    private SCustomFieldPoolMapper customFieldPoolMapper;
 
     @Autowired
     private IssueCustomRelationService issueCustomRelationService;
@@ -59,7 +59,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         if (checkPoolSameName(fieldName, projectId, null)) {
             throw new BusinessException("该字段名[" + fieldName + "]在项目中已经存在！");
         }
-        CustomFieldPool customFieldPool = ReflectUtil.copyProperties(customFieldDTO, CustomFieldPool.class);
+        SCustomFieldPool customFieldPool = ReflectUtil.copyProperties(customFieldDTO, SCustomFieldPool.class);
         customFieldPool.setState(StateEnum.U.getValue());
         customFieldPoolMapper.insert(customFieldPool);
     }
@@ -73,15 +73,15 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
      * @date 2021/2/1
      */
     private boolean checkPoolSameName(String fieldName, Long projectId, Long fieldId) {
-        CustomFieldPoolExample example = new CustomFieldPoolExample();
-        CustomFieldPoolExample.Criteria criteria = example.createCriteria().andFieldNameEqualTo(fieldName)
+        SCustomFieldPoolExample example = new SCustomFieldPoolExample();
+        SCustomFieldPoolExample.Criteria criteria = example.createCriteria().andFieldNameEqualTo(fieldName)
                 .andProjectIdEqualTo(projectId).andStateEqualTo(StateEnum.U.getValue());
         // 去除本身的名字校验
         if (null != fieldId) {
             criteria.andFieldIdNotEqualTo(fieldId);
         }
 
-        List<CustomFieldPool> sameNameList = customFieldPoolMapper.selectByExample(example);
+        List<SCustomFieldPool> sameNameList = customFieldPoolMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(sameNameList)) {
             return true;
         }
@@ -108,7 +108,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
             throw new BusinessException("该字段名[" + fieldName + "]在项目中已经存在！");
         }
         //只允许修改名字和备注
-        CustomFieldPool customFieldPool = new CustomFieldPool();
+        SCustomFieldPool customFieldPool = new SCustomFieldPool();
         customFieldPool.setFieldId(customFieldDTO.getFieldId());
         customFieldPool.setFieldName(StringUtils.isNotBlank(fieldName) ? fieldName : null);
         customFieldPool.setComment(StringUtils.isNotBlank(customFieldDTO.getComment()) ? customFieldDTO.getComment() : null);
@@ -136,8 +136,8 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
         }
-        CustomFieldPoolExample example = new CustomFieldPoolExample();
-        CustomFieldPoolExample.Criteria criteria = example.createCriteria()
+        SCustomFieldPoolExample example = new SCustomFieldPoolExample();
+        SCustomFieldPoolExample.Criteria criteria = example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
                 .andProjectIdEqualTo(projectId);
         if (StringUtils.isNotBlank(fieldName)) {
@@ -161,7 +161,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
      */
     @Override
     public CustomFieldDTO getCustomField(Long fieldId) {
-        CustomFieldPool customFieldPool = customFieldPoolMapper.selectByPrimaryKey(fieldId);
+        SCustomFieldPool customFieldPool = customFieldPoolMapper.selectByPrimaryKey(fieldId);
         if (null == customFieldPool) {
             return null;
         }
@@ -171,8 +171,8 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
 
     @Override
     public List<CustomFieldDTO> listAllCustomFieldsByTenantCode(String tenantCode) {
-        CustomFieldPoolExample example = new CustomFieldPoolExample();
-        CustomFieldPoolExample.Criteria criteria = example.createCriteria()
+        SCustomFieldPoolExample example = new SCustomFieldPoolExample();
+        SCustomFieldPoolExample.Criteria criteria = example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue());
         if (StringUtils.isNotBlank(tenantCode)) {
             criteria.andTenantCodeEqualTo(tenantCode);

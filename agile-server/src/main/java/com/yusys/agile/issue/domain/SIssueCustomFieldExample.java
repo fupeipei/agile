@@ -1,17 +1,17 @@
-package com.yusys.agile.customfield.domain;
+package com.yusys.agile.issue.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CustomFieldPoolExample {
+public class SIssueCustomFieldExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public CustomFieldPoolExample() {
+    public SIssueCustomFieldExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -105,6 +105,66 @@ public class CustomFieldPoolExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
+        public Criteria andExtendIdIsNull() {
+            addCriterion("extend_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdIsNotNull() {
+            addCriterion("extend_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdEqualTo(Long value) {
+            addCriterion("extend_id =", value, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdNotEqualTo(Long value) {
+            addCriterion("extend_id <>", value, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdGreaterThan(Long value) {
+            addCriterion("extend_id >", value, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("extend_id >=", value, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdLessThan(Long value) {
+            addCriterion("extend_id <", value, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdLessThanOrEqualTo(Long value) {
+            addCriterion("extend_id <=", value, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdIn(List<Long> values) {
+            addCriterion("extend_id in", values, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdNotIn(List<Long> values) {
+            addCriterion("extend_id not in", values, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdBetween(Long value1, Long value2) {
+            addCriterion("extend_id between", value1, value2, "extendId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtendIdNotBetween(Long value1, Long value2) {
+            addCriterion("extend_id not between", value1, value2, "extendId");
+            return (Criteria) this;
+        }
+
         public Criteria andFieldIdIsNull() {
             addCriterion("field_id is null");
             return (Criteria) this;
@@ -165,203 +225,133 @@ public class CustomFieldPoolExample {
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameIsNull() {
-            addCriterion("field_name is null");
+        public Criteria andFieldValueIsNull() {
+            addCriterion("field_value is null");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameIsNotNull() {
-            addCriterion("field_name is not null");
+        public Criteria andFieldValueIsNotNull() {
+            addCriterion("field_value is not null");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameEqualTo(String value) {
-            addCriterion("field_name =", value, "fieldName");
+        public Criteria andFieldValueEqualTo(String value) {
+            addCriterion("field_value =", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameNotEqualTo(String value) {
-            addCriterion("field_name <>", value, "fieldName");
+        public Criteria andFieldValueNotEqualTo(String value) {
+            addCriterion("field_value <>", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameGreaterThan(String value) {
-            addCriterion("field_name >", value, "fieldName");
+        public Criteria andFieldValueGreaterThan(String value) {
+            addCriterion("field_value >", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameGreaterThanOrEqualTo(String value) {
-            addCriterion("field_name >=", value, "fieldName");
+        public Criteria andFieldValueGreaterThanOrEqualTo(String value) {
+            addCriterion("field_value >=", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameLessThan(String value) {
-            addCriterion("field_name <", value, "fieldName");
+        public Criteria andFieldValueLessThan(String value) {
+            addCriterion("field_value <", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameLessThanOrEqualTo(String value) {
-            addCriterion("field_name <=", value, "fieldName");
+        public Criteria andFieldValueLessThanOrEqualTo(String value) {
+            addCriterion("field_value <=", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameLike(String value) {
-            addCriterion("field_name like", value, "fieldName");
+        public Criteria andFieldValueLike(String value) {
+            addCriterion("field_value like", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameNotLike(String value) {
-            addCriterion("field_name not like", value, "fieldName");
+        public Criteria andFieldValueNotLike(String value) {
+            addCriterion("field_value not like", value, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameIn(List<String> values) {
-            addCriterion("field_name in", values, "fieldName");
+        public Criteria andFieldValueIn(List<String> values) {
+            addCriterion("field_value in", values, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameNotIn(List<String> values) {
-            addCriterion("field_name not in", values, "fieldName");
+        public Criteria andFieldValueNotIn(List<String> values) {
+            addCriterion("field_value not in", values, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameBetween(String value1, String value2) {
-            addCriterion("field_name between", value1, value2, "fieldName");
+        public Criteria andFieldValueBetween(String value1, String value2) {
+            addCriterion("field_value between", value1, value2, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andFieldNameNotBetween(String value1, String value2) {
-            addCriterion("field_name not between", value1, value2, "fieldName");
+        public Criteria andFieldValueNotBetween(String value1, String value2) {
+            addCriterion("field_value not between", value1, value2, "fieldValue");
             return (Criteria) this;
         }
 
-        public Criteria andCommentIsNull() {
-            addCriterion("comment is null");
+        public Criteria andIssueIdIsNull() {
+            addCriterion("issue_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andCommentIsNotNull() {
-            addCriterion("comment is not null");
+        public Criteria andIssueIdIsNotNull() {
+            addCriterion("issue_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andCommentEqualTo(String value) {
-            addCriterion("comment =", value, "comment");
+        public Criteria andIssueIdEqualTo(Long value) {
+            addCriterion("issue_id =", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentNotEqualTo(String value) {
-            addCriterion("comment <>", value, "comment");
+        public Criteria andIssueIdNotEqualTo(Long value) {
+            addCriterion("issue_id <>", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentGreaterThan(String value) {
-            addCriterion("comment >", value, "comment");
+        public Criteria andIssueIdGreaterThan(Long value) {
+            addCriterion("issue_id >", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentGreaterThanOrEqualTo(String value) {
-            addCriterion("comment >=", value, "comment");
+        public Criteria andIssueIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("issue_id >=", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentLessThan(String value) {
-            addCriterion("comment <", value, "comment");
+        public Criteria andIssueIdLessThan(Long value) {
+            addCriterion("issue_id <", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentLessThanOrEqualTo(String value) {
-            addCriterion("comment <=", value, "comment");
+        public Criteria andIssueIdLessThanOrEqualTo(Long value) {
+            addCriterion("issue_id <=", value, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentLike(String value) {
-            addCriterion("comment like", value, "comment");
+        public Criteria andIssueIdIn(List<Long> values) {
+            addCriterion("issue_id in", values, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentNotLike(String value) {
-            addCriterion("comment not like", value, "comment");
+        public Criteria andIssueIdNotIn(List<Long> values) {
+            addCriterion("issue_id not in", values, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentIn(List<String> values) {
-            addCriterion("comment in", values, "comment");
+        public Criteria andIssueIdBetween(Long value1, Long value2) {
+            addCriterion("issue_id between", value1, value2, "issueId");
             return (Criteria) this;
         }
 
-        public Criteria andCommentNotIn(List<String> values) {
-            addCriterion("comment not in", values, "comment");
-            return (Criteria) this;
-        }
-
-        public Criteria andCommentBetween(String value1, String value2) {
-            addCriterion("comment between", value1, value2, "comment");
-            return (Criteria) this;
-        }
-
-        public Criteria andCommentNotBetween(String value1, String value2) {
-            addCriterion("comment not between", value1, value2, "comment");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeIsNull() {
-            addCriterion("field_type is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeIsNotNull() {
-            addCriterion("field_type is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeEqualTo(Integer value) {
-            addCriterion("field_type =", value, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeNotEqualTo(Integer value) {
-            addCriterion("field_type <>", value, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeGreaterThan(Integer value) {
-            addCriterion("field_type >", value, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("field_type >=", value, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeLessThan(Integer value) {
-            addCriterion("field_type <", value, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("field_type <=", value, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeIn(List<Integer> values) {
-            addCriterion("field_type in", values, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeNotIn(List<Integer> values) {
-            addCriterion("field_type not in", values, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeBetween(Integer value1, Integer value2) {
-            addCriterion("field_type between", value1, value2, "fieldType");
-            return (Criteria) this;
-        }
-
-        public Criteria andFieldTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("field_type not between", value1, value2, "fieldType");
+        public Criteria andIssueIdNotBetween(Long value1, Long value2) {
+            addCriterion("issue_id not between", value1, value2, "issueId");
             return (Criteria) this;
         }
 
@@ -432,66 +422,6 @@ public class CustomFieldPoolExample {
 
         public Criteria andStateNotBetween(String value1, String value2) {
             addCriterion("state not between", value1, value2, "state");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdIsNull() {
-            addCriterion("project_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdIsNotNull() {
-            addCriterion("project_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdEqualTo(Long value) {
-            addCriterion("project_id =", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdNotEqualTo(Long value) {
-            addCriterion("project_id <>", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdGreaterThan(Long value) {
-            addCriterion("project_id >", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("project_id >=", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdLessThan(Long value) {
-            addCriterion("project_id <", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdLessThanOrEqualTo(Long value) {
-            addCriterion("project_id <=", value, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdIn(List<Long> values) {
-            addCriterion("project_id in", values, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdNotIn(List<Long> values) {
-            addCriterion("project_id not in", values, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdBetween(Long value1, Long value2) {
-            addCriterion("project_id between", value1, value2, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andProjectIdNotBetween(Long value1, Long value2) {
-            addCriterion("project_id not between", value1, value2, "projectId");
             return (Criteria) this;
         }
 

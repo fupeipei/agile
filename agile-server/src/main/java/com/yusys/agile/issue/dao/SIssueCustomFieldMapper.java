@@ -1,26 +1,34 @@
 package com.yusys.agile.issue.dao;
 
-import com.yusys.agile.issue.domain.IssueCustomField;
-import com.yusys.agile.issue.domain.IssueCustomFieldExample;
+import com.yusys.agile.issue.domain.SIssueCustomField;
+import com.yusys.agile.issue.domain.SIssueCustomFieldExample;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface IssueCustomFieldMapper {
-    long countByExample(IssueCustomFieldExample example);
+public interface SIssueCustomFieldMapper {
+    long countByExample(SIssueCustomFieldExample example);
 
-    int deleteByExample(IssueCustomFieldExample example);
+    int deleteByExample(SIssueCustomFieldExample example);
 
-    int insert(IssueCustomField record);
+    int deleteByPrimaryKey(Long extendId);
 
-    int insertSelective(IssueCustomField record);
+    int insert(SIssueCustomField record);
 
-    List<IssueCustomField> selectByExample(IssueCustomFieldExample example);
+    int insertSelective(SIssueCustomField record);
 
-    int updateByExampleSelective(@Param("record") IssueCustomField record, @Param("example") IssueCustomFieldExample example);
+    List<SIssueCustomField> selectByExample(SIssueCustomFieldExample example);
 
-    int updateByExample(@Param("record") IssueCustomField record, @Param("example") IssueCustomFieldExample example);
+    SIssueCustomField selectByPrimaryKey(Long extendId);
+
+    int updateByExampleSelective(@Param("record") SIssueCustomField record, @Param("example") SIssueCustomFieldExample example);
+
+    int updateByExample(@Param("record") SIssueCustomField record, @Param("example") SIssueCustomFieldExample example);
+
+    int updateByPrimaryKeySelective(SIssueCustomField record);
+
+    int updateByPrimaryKey(SIssueCustomField record);
 
     /**
      * @Date: 18:10
@@ -36,7 +44,7 @@ public interface IssueCustomFieldMapper {
      * @Param: * @param fields
      * @Return: int
      */
-    int createBatch(@Param("fields") List<IssueCustomField> fields);
+    int createBatch(@Param("fields") List<SIssueCustomField> fields);
 
     /**
      * @param issueId
@@ -57,9 +65,7 @@ public interface IssueCustomFieldMapper {
      * @return int
      * @date 2021/2/22
      */
-    int updateByExampleSelectiveWithNull(@Param("record") IssueCustomField record, @Param("example") IssueCustomFieldExample example);
+    int updateByExampleSelectiveWithNull(@Param("record") SIssueCustomField record, @Param("example") SIssueCustomFieldExample example);
 
     void deleteInFieldIdListByFieldIds(@Param("fieldId") Long fieldId);
-
-
 }
