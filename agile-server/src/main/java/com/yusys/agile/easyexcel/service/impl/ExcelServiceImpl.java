@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.enums.ExcelTypeEnum;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
-import com.yusys.agile.easyexcel.vo.ExcelCommentFile;
+import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
@@ -64,14 +64,14 @@ public class ExcelServiceImpl implements IExcelService {
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
     private static final int FIRST_ROW_NUM = 1;
     @Override
-    public void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentFile filed) {
+    public void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentField filed) {
         String type = ExcelTypeEnum.getFieldName(excelType);
         DownloadExcelTempletService downloadExcelTempletService = ExcelTempletFactory.get(type);
         downloadExcelTempletService.download(response,filed);
     }
 
     @Override
-    public FileInfo uploadStorys(MultipartFile file,ExcelCommentFile commentFile) throws Exception {
+    public FileInfo uploadStorys(MultipartFile file,ExcelCommentField field) throws Exception {
         //1、检查文件类型
         checkFileType(file);
 
@@ -85,7 +85,7 @@ public class ExcelServiceImpl implements IExcelService {
 
         //4、传错误文件
         if(hasError){
-            return uploadFile(copyData, "storyImportError.xlsx", "storys",IssueTypeEnum.getName((byte)3),commentFile);
+            return uploadFile(copyData, "storyImportError.xlsx", "storys",IssueTypeEnum.getName((byte)3),field);
         }
         List<JSONObject> jsonObjects = analysisStoryData(data);
 
@@ -104,14 +104,14 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadTasks(MultipartFile file,ExcelCommentFile commentFile) throws Exception {
+    public FileInfo uploadTasks(MultipartFile file,ExcelCommentField field) throws Exception {
         //检查文件类型
         checkFileType(file);
         List<List<String>> data = ExcelUtil.readExcel(file.getInputStream(), 0);
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
         boolean hasError = checkData(copyData, (byte) 4);
         if(hasError){
-            return uploadFile(copyData, "taskImportError.xlsx","tasks",IssueTypeEnum.getName((byte)4),commentFile);
+            return uploadFile(copyData, "taskImportError.xlsx","tasks",IssueTypeEnum.getName((byte)4),field);
         }
         List<JSONObject> jsonObjects = analysisTaskData(data);
         if(CollectionUtils.isNotEmpty(jsonObjects)){
@@ -229,14 +229,14 @@ public class ExcelServiceImpl implements IExcelService {
      * @return
      * @throws Exception
      */
-    public FileInfo uploadFile(List<List<String>> copyData,String templateName,String sheetName,String type,ExcelCommentFile commentFile) throws Exception {
+    public FileInfo uploadFile(List<List<String>> copyData,String templateName,String sheetName,String type,ExcelCommentField field) throws Exception {
         //写错误文件上传文件服务器
         copyData.remove(0);
         log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         DownloadExcelTempletService templetService = ExcelTempletFactory.get(type);
-        SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(templetService.getDropDownInfo(commentFile));
+        SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(templetService.getDropDownInfo(field));
         ClassPathResource classPathResource = new ClassPathResource("excelTemplate/"+templateName);
         ExcelWriter writer = EasyExcel.write(os)
                 .withTemplate(classPathResource.getInputStream())

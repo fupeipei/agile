@@ -9,7 +9,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ExcelCommentFile {
+public class ExcelCommentField {
 
     private Long sprintId;
 
