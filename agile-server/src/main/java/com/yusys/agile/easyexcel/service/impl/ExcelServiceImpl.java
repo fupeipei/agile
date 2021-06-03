@@ -404,10 +404,10 @@ public class ExcelServiceImpl implements IExcelService {
         List<List<String>> dataResult = Lists.newArrayList();
 
         if (CollectionUtils.isNotEmpty(issueList)) {
-            List<String> fieldList = Lists.newArrayList();
 
             for(Issue issue:issueList){
 
+                List<String> fieldList = Lists.newArrayList();
                 Class<?> issueClass = issue.getClass();
                 Field[] fields = issueClass.getDeclaredFields();
 
@@ -418,14 +418,15 @@ public class ExcelServiceImpl implements IExcelService {
                             String fieldCode = headerField.getFieldCode();
                             String name = field.getName();
                             if(StringUtils.equals(fieldCode,name)){
-                                fieldList.add(field.get(name).toString());
+                                Object o = field.get(issue);
+                                fieldList.add(String.valueOf(o));
+                                break;
                             }
                         }catch (Exception e){
                             log.info("反射获取issue数据异常:{}",e.getMessage());
                         }
                     }
                 }
-
                 dataResult.add(fieldList);
             }
         }
