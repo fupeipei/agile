@@ -149,12 +149,12 @@
         </if>
     </delete>
     <insert id="insert" parameterType="com.yusys.agile.customfield.domain.SCustomFieldPool">
-        insert into s_custom_field_pool (field_name, comment,
+        insert into s_custom_field_pool (field_id, field_name, comment,
                                          field_type, state, project_id,
                                          system_id, create_time, create_uid,
                                          update_time, update_uid, tenant_code,
                                          field_content)
-        values (#{fieldName,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR},
+        values (#{fieldId,jdbcType=BIGINT}, #{fieldName,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR},
                 #{fieldType,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR}, #{projectId,jdbcType=BIGINT},
                 #{systemId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT},
                 #{updateTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{tenantCode,jdbcType=VARCHAR},
@@ -439,12 +439,21 @@
         <if test="systemId != null">
             and system_id = #{systemId}
         </if>
+        and state = 'U'
     </select>
+    <update id="updateStateById">
+        update s_custom_field_pool
+        set state = #{state}
+        where field_id = #{fieldId}
+    </update>
+
 
     <update id="editCustomField">
         update s_custom_field_pool
-        set field_name = #{fieldName},
-         comment = #{comment}
-        where field_id =#{fieldId}
+        set field_name  = #{fieldName},
+            comment     = #{comment},
+            update_time = update_time,
+            update_uid  = update_uid
+            where field_id = #{fieldId}
     </update>
 </mapper>

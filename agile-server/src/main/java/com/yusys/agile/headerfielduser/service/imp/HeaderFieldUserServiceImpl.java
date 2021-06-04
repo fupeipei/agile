@@ -7,6 +7,7 @@ import com.yusys.agile.headerfielduser.domain.HeaderFieldUser;
 import com.yusys.agile.headerfielduser.domain.HeaderFieldUserExample;
 import com.yusys.agile.headerfielduser.dto.HeaderFieldListDTO;
 import com.yusys.agile.headerfielduser.service.HeaderFieldUserService;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.slf4j.Logger;
@@ -106,9 +107,7 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
 
     @Override
     public Integer deleteCustomField(Long fieldId) {
-        HeaderFieldUserExample headerFieldUserExample = new HeaderFieldUserExample();
-        headerFieldUserExample.createCriteria()
-                .andFieldIdEqualTo(fieldId);
-        return headerFieldUserMapper.deleteByExample(headerFieldUserExample);
+        //逻辑删除
+        return headerFieldUserMapper.updateStateByFieldId(fieldId, StateEnum.E.getValue());
     }
 }

@@ -127,7 +127,7 @@ public class DashBoardServiceImpl implements DashBoardService {
         }
     }
 
-
+    
     @Override
     @Transactional
     public void calculateProjectStatus() {

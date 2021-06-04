@@ -10,6 +10,7 @@ import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.service.IssueService;
 import com.google.common.collect.Lists;
+import com.yusys.portal.model.common.enums.StateEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         //List<IssueCustomFieldDTO> issueCustomFieldDTOList  = issueCustomFieldMapper.listCustomField(issueId);
         //List<HeaderFieldDTO> headerFieldDTOS = customFieldPoolService.listAllCustomFields(null, issueType.toString(), StateEnum.U.getValue(), null, null, projectId);
         // 某类型的工作项展示的的自定义字段
-        List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldDTO(projectId, issueType);
+        List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldList(projectId, issueType);
         List<IssueCustomFieldDTO> issueCustomFieldDTOList = Lists.newArrayList();
         for (CustomFieldDTO customFieldDTO : customFieldDTOList) {
             IssueCustomFieldDTO issueCustomFieldDTO = assembleIssueCustomFieldDTO(customFieldDTO, issueId);
@@ -138,7 +139,8 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
 
     @Override
     public void deleteCustomFileByIssueCustomRelationId(Long issueCustomRelationId) {
-        issueCustomFieldMapper.deleteInFieldIdListByFieldIds(issueCustomRelationId);
+        //逻辑删除（修改数据有效状态）
+        issueCustomFieldMapper.updateStateByCustomRelationId(issueCustomRelationId, StateEnum.E.getValue());
     }
 
     @Override

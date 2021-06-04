@@ -35,4 +35,12 @@ public interface HeaderFieldUserMapper {
     int updateByPrimaryKeyWithBLOBs(HeaderFieldUser record);
 
     int updateByPrimaryKey(HeaderFieldUser record);
+    /**
+     * 逻辑删除
+     * @author zhaofeng
+     * @date 2021/6/3 17:58
+     * @param fieldId
+     * @param state
+     */
+    Integer updateStateByFieldId(@Param("fieldId") Long fieldId,@Param("state") String state);
 }

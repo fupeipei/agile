@@ -35,13 +35,11 @@ public interface SCustomFieldPoolMapper {
     int updateByPrimaryKeyWithBLOBs(SCustomFieldPool record);
 
     int updateByPrimaryKey(SCustomFieldPool record);
-
     /**
-     * 功能描述: 分页查询
-     *
+     * 条件查询
+     * @author zhaofeng
+     * @date 2021/6/3 17:13
      * @param example
-     * @return java.util.List<com.yusys.agile.customfield.dto.CustomFieldDTO>
-     * @date 2021/2/31
      */
     List<CustomFieldDTO> selectDTOByExampleWithBLOBs(SCustomFieldPoolExample example);
 
@@ -66,4 +64,12 @@ public interface SCustomFieldPoolMapper {
      */
     void editCustomField(@Param("fieldId") Long FieldId, @Param("fieldName") String fieldName, @Param("comment") String comment);
 
+    /**
+     * 修改数据有效状态
+     * @author zhaofeng
+     * @date 2021/6/3 17:13
+     * @param fieldId 主键
+     * @param state   状态值
+     */
+    void updateStateById(@Param("fieldId") Long fieldId,@Param("state") String state);
 }
