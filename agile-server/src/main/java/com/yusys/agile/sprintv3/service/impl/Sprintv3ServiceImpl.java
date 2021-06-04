@@ -772,7 +772,20 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public List<STeamMember> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
+        //按迭代查询userid
         List<STeamMember> sTeamMembers = sTeamMapper.querySprintVagueUser(sprintId, userName);
+        List<Long> userIds = sTeamMembers.stream().map(item -> item.getUserId()).collect(Collectors.toList());
+        //按userids查询详细信息
+        List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
+        //比对，赋值
+        sTeamMembers.stream().forEach(m->{
+            ssoUsers.stream().forEach(u->{
+                if(Objects.equals(m.getUserId(), u.getUserId())){
+                    m.setUserAccount(u.getUserAccount());
+                    m.setUserName(u.getUserName());
+                }
+            });
+        });
         return sTeamMembers;
     }
 
