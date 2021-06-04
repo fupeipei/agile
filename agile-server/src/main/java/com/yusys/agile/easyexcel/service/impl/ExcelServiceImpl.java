@@ -179,7 +179,7 @@ public class ExcelServiceImpl implements IExcelService {
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
         SSprint sprint= sSprintMapper.selectByPrimaryKey(sprintId);
         Long teamId = sprint.getTeamId();
-        checkIsPo(userId,teamId);
+        checkIsSm(userId,teamId);
         //检查文件类型
         checkFileType(file);
         List<List<String>> data = ExcelUtil.readExcel(file.getInputStream(), 0);
@@ -639,8 +639,8 @@ public class ExcelServiceImpl implements IExcelService {
         return issuePageSizeThreshold;
     }
 
-    private void checkIsPo(Long userId, Long teamId) {
-        boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
+    private void checkIsSm(Long userId, Long teamId) {
+        boolean b = iFacadeUserApi.checkIsTeamSm(userId, teamId);
         if (!b) {
             throw new BusinessException("只有本迭代的PO权限才允许操作");
         }
