@@ -362,7 +362,6 @@ public class StoryServiceImpl implements StoryService {
         List<Long> laneIds = issueDTO.getLaneIds();
         List<Integer> taskTypes = issueDTO.getTaskTypes();
         List<Long> handlers = issueDTO.getHandlers();
-        Long issueId = issueDTO.getIssueId();
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
@@ -378,10 +377,6 @@ public class StoryServiceImpl implements StoryService {
         criteria2.andStateEqualTo(StateEnum.U.getValue())
                 .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
 
-        if(Optional.ofNullable(issueId).isPresent()){
-            criteria.andIssueIdEqualTo(issueId);
-            criteria2.andIssueIdEqualTo(issueId);
-        }
         // 判断是根据id还是name
         doFilterCondition(filter, example, criteria, criteria2);
 
@@ -421,7 +416,12 @@ public class StoryServiceImpl implements StoryService {
         Map<Long, String> systemMap = new HashedMap();
         SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
-            issueDTOS.forEach(issueDTO -> systemIds.add(issueDTO.getSystemId()));
+            issueDTOS.forEach(issueDTO -> {
+                if(Optional.ofNullable(issueDTO.getSystemId()).isPresent()){
+                    systemIds.add(issueDTO.getSystemId());
+                }
+            });
+
             List<SsoSystem> ssoSystems = iFacadeSystemApi.querySsoSystem(systemIds);
             if(CollectionUtils.isNotEmpty(ssoSystems)){
                 ssoSystems.forEach(ssoSystem -> systemMap.put(ssoSystem.getSystemId(), ssoSystem.getSystemCode()));
@@ -440,19 +440,6 @@ public class StoryServiceImpl implements StoryService {
                 criteria2.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
                         andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
 
-                //任务查询加上“阻塞中”状态   start
-                boolean b = false;
-                if (CollectionUtils.isNotEmpty(laneIds)) {
-                    b = laneIds.contains(9999L);
-                }
-                IssueExample.Criteria criteria3 = issueExample.createCriteria();
-                criteria3.andStateEqualTo(StateEnum.U.getValue()).andSprintIdEqualTo(sprintId).
-                        andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE).andParentIdEqualTo(issueDTO.getIssueId());
-                if (b) {
-                    //过滤掉“阻塞中”的状态：9999
-                    laneIds = laneIds.stream().filter(id -> id != 9999).collect(Collectors.toList());
-                }
-                //任务查询加上“阻塞中”状态   end
                 if (CollectionUtils.isNotEmpty(laneIds)) {
                     criteria1.andLaneIdIn(laneIds);
                     criteria2.andLaneIdIn(laneIds);
@@ -468,18 +455,6 @@ public class StoryServiceImpl implements StoryService {
 
                 // 判断是根据id还是name
                 doFilterCondition(taskKeyWord, issueExample, criteria1, criteria2);
-
-                //任务查询加上“阻塞中”状态   start
-                if (b) {
-                    criteria3.andBlockStateEqualTo((byte) 1L);
-                    if (CollectionUtils.isEmpty(laneIds)) {
-                        criteria1.andBlockStateEqualTo((byte) 1L);
-                    } else {
-                        issueExample.or(criteria3);
-                    }
-                }
-                //任务查询加上“阻塞中”状态   end
-
                 List<IssueDTO> taskList = issueMapper.selectByExampleDTO(issueExample);
                 if (CollectionUtils.isNotEmpty(taskList)) {
                     for (IssueDTO task : taskList) {
@@ -504,12 +479,13 @@ public class StoryServiceImpl implements StoryService {
                     issueDTOSTmp.add(issueDTO);
                 }else{
                     //查询故事下的Task的查询条件某一个不等于空的情况，判断Children的Task是为空，为空则进行过滤
-                    if((StringUtils.isBlank(taskKeyWord) && CollectionUtils.isEmpty(laneIds)
-                            && CollectionUtils.isEmpty(taskTypes) && CollectionUtils.isEmpty(handlers)) && CollectionUtils.isEmpty(taskList)){
-                        //storyList = issueDTOS.stream().filter(issue -> CollectionUtils.isEmpty(issue.getChildren())).collect(Collectors.toList());
+                    Boolean checkFlag =  StringUtils.isBlank(taskKeyWord) && CollectionUtils.isEmpty(laneIds)
+                            && CollectionUtils.isEmpty(taskTypes) && CollectionUtils.isEmpty(handlers) && CollectionUtils.isEmpty(taskList);
+                    if(checkFlag){
                         issueDTO.setChildren(taskList);
                         issueDTOSTmp.add(issueDTO);
                     }
+
                 }
             }
         }
