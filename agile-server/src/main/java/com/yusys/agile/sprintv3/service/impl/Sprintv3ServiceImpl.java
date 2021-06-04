@@ -783,11 +783,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
         //通过迭代id查询迭代时长表的userid，然后再查人员
         List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
-        List<Long> userIds=new ArrayList<>();
-        for(SSprintUserHour userSprintHourDTO:userSprintHours){
-            Long userId = userSprintHourDTO.getUserId();
-            userIds.add(userId);
-        }
+        List<Long> userIds = userSprintHours.stream().map(item -> item.getUserId()).collect(Collectors.toList());
         List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, pageNum, pageSize, userName);
         return ssoUserDTOS;
     }
