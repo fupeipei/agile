@@ -659,7 +659,7 @@
         select status
         from s_sprint
         where sprint_id = #{sprintId}
-        and state = 'U'
+          and state = 'U'
     </select>
 
 
@@ -896,5 +896,11 @@
                    from s_issue
                    where sprint_id = #{sprintId}
                      and state = 'U') > 0, true, false)
+    </select>
+
+    <select id="querySprintMembersId" resultType="java.lang.Long">
+        select user_id
+        from s_sprint_user_hour
+        where sprint_id = #{sprintId}
     </select>
 </mapper>
