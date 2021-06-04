@@ -362,7 +362,6 @@ public class StoryServiceImpl implements StoryService {
         List<Long> laneIds = issueDTO.getLaneIds();
         List<Integer> taskTypes = issueDTO.getTaskTypes();
         List<Long> handlers = issueDTO.getHandlers();
-        Long issueId = issueDTO.getIssueId();
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
@@ -378,10 +377,6 @@ public class StoryServiceImpl implements StoryService {
         criteria2.andStateEqualTo(StateEnum.U.getValue())
                 .andSprintIdEqualTo(sprintId).andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
 
-        if(Optional.ofNullable(issueId).isPresent()){
-            criteria.andIssueIdEqualTo(issueId);
-            criteria2.andIssueIdEqualTo(issueId);
-        }
         // 判断是根据id还是name
         doFilterCondition(filter, example, criteria, criteria2);
 
@@ -426,6 +421,7 @@ public class StoryServiceImpl implements StoryService {
                     systemIds.add(issueDTO.getSystemId());
                 }
             });
+
             List<SsoSystem> ssoSystems = iFacadeSystemApi.querySsoSystem(systemIds);
             if(CollectionUtils.isNotEmpty(ssoSystems)){
                 ssoSystems.forEach(ssoSystem -> systemMap.put(ssoSystem.getSystemId(), ssoSystem.getSystemCode()));
@@ -459,7 +455,6 @@ public class StoryServiceImpl implements StoryService {
 
                 // 判断是根据id还是name
                 doFilterCondition(taskKeyWord, issueExample, criteria1, criteria2);
-
                 List<IssueDTO> taskList = issueMapper.selectByExampleDTO(issueExample);
                 if (CollectionUtils.isNotEmpty(taskList)) {
                     for (IssueDTO task : taskList) {
@@ -473,9 +468,9 @@ public class StoryServiceImpl implements StoryService {
                         }
                         if (null != task.getHandler()) {
                             SsoUser ssoUser = iFacadeUserApi.queryUserById(task.getHandler());
-                            SsoUserDTO userDTO = ReflectUtil.copyProperties(ssoUser, SsoUserDTO.class);
                             if (null != ssoUser) {
                                 ssoUser.setUserPassword(null);
+                                SsoUserDTO userDTO = ReflectUtil.copyProperties(ssoUser, SsoUserDTO.class);
                                 task.setOwner(userDTO);
                             }
                         }
@@ -490,6 +485,7 @@ public class StoryServiceImpl implements StoryService {
                         issueDTO.setChildren(taskList);
                         issueDTOSTmp.add(issueDTO);
                     }
+
                 }
             }
         }
