@@ -32,22 +32,16 @@ import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
-<<<<<<< HEAD
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
-import com.yusys.agile.sprintv3.service.Sprintv3Service;
+
 import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
-=======
-import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
-import com.yusys.agile.utils.CollectionUtil;
-import com.yusys.portal.common.exception.BusinessException;
->>>>>>> addca15a374ce4b3a44d6bec82e5f2996ee95bdf
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
@@ -68,25 +62,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-<<<<<<< HEAD
 import javax.annotation.Resource;
-=======
->>>>>>> addca15a374ce4b3a44d6bec82e5f2996ee95bdf
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-<<<<<<< HEAD
 import java.lang.reflect.Type;
 import java.util.*;
-=======
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
->>>>>>> addca15a374ce4b3a44d6bec82e5f2996ee95bdf
 import java.util.stream.Collectors;
 
 /**
@@ -117,16 +105,11 @@ public class ExcelServiceImpl implements IExcelService {
     @Autowired
     private SSprintMapper sSprintMapper;
     @Autowired
-<<<<<<< HEAD
     private IFacadeSystemApi iFacadeSystemApi;
     @Resource
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
     private IStageService stageService;
- 
-=======
-    private IFacadeUserApi iFacadeUserApi;
->>>>>>> addca15a374ce4b3a44d6bec82e5f2996ee95bdf
 
     private static final String MAX_ISSUE_EXPORT_THRESHOLD_KEY = "ISSUE_MAX_EXPORT_THRESHOLD";
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
