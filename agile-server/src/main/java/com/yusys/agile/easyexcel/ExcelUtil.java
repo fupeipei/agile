@@ -103,7 +103,7 @@ public class ExcelUtil {
         ExcelWriter excelWriter = null;
         try {
             // 文件名
-            String fileName = vo.getFileName() + vo.getFileType();
+            String fileName = vo.getFileName();
 
             // 通过fileName创建一个Excel工作簿
             excelWriter = EasyExcel.write(dealResponse(fileName, response)).build();

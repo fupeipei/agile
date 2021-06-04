@@ -166,6 +166,7 @@ public class Sprintv3Controller {
 
     /**
      * 迭代添加工作项（故事或缺陷）
+     *
      * @param sprintDTO 迭代dto
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
@@ -180,6 +181,7 @@ public class Sprintv3Controller {
 
     /**
      * 通过迭代id和故事id将故事移出迭代
+     *
      * @param sprintId 迭代id
      * @param issueId  工作项id
      * @return com.yusys.portal.model.common.dto.ControllerResponse
@@ -278,11 +280,12 @@ public class Sprintv3Controller {
     }
 
     /**
-     *功能描述
+     * 功能描述
+     *
+     * @param systemId
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @author shenfeng
      * @date 2021/6/1
-      * @param systemId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/querySprintBySystemId")
     public ControllerResponse querySprintBySystemId(@RequestParam(name = "systemId") Long systemId) {

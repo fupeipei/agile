@@ -277,13 +277,19 @@ public class ExcelServiceImpl implements IExcelService {
      * @param copyData
      */
     private boolean checkData(List<List<String>> copyData, Byte type) {
+
+        //1、校验表头数据
+        if(copyData.size() > 0){
+            boolean result = checkHeadLine(copyData.get(0), type);
+            if (!result) {
+                throw new BusinessException("导入模版不正确，请检查!");
+            }
+        }else {
+            throw new BusinessException("导入文件为空，请检查!");
+        }
+
         if (copyData.size() <= 1) {
             throw new BusinessException("导入数据为空，请检查!");
-        }
-        //1、校验表头数据
-        boolean result = checkHeadLine(copyData.get(0), type);
-        if (!result) {
-            throw new BusinessException("导入模版不正确，请检查!");
         }
 
         int headSize = copyData.get(0).size();

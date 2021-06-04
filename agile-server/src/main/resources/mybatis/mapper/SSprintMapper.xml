@@ -639,14 +639,6 @@
         where sprint_id = #{sprintId}
     </select>
 
-    <select id="creatUser" resultType="boolean">
-        <![CDATA[
-        select count(sprint_id)
-        from s_sprint
-        where sprint_id = #{sprintId}
-          and create_uid = #{userId}
-        ]]>
-    </select>
 
     <select id="querySprintUnfinishedStoryNumber" resultType="int">
         select count(issue_id)
@@ -654,6 +646,7 @@
         where sprint_id = #{sprintId}
           and issue_type = 3
           and stage_id <![CDATA[<]]> 103
+          and state = 'U'
     </select>
 
     <update id="sprintFinish">
@@ -666,18 +659,9 @@
         select status
         from s_sprint
         where sprint_id = #{sprintId}
+          and state = 'U'
     </select>
 
-    <select id="checkSprintPo" resultType="boolean">
-        <![CDATA[
-        select count(sprint_id)
-        from s_sprint a
-                     left join s_team_member b on a.team_id = b.team_id
-        where a.sprint_id = #{sprintId}
-          and b.user_id = #{userId}
-          and b.role_id = 104
-        ]]>
-    </select>
 
     <select id="selectByPrimaryKeyNotText" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
         select
@@ -853,22 +837,23 @@
 
     <select id="unclaimedWorkHours" resultType="int">
         select ifnull(sum(plan_workload), 0)
-        from s_issue a
-        where a.handler is null
-          and a.sprint_id = #{sprintId}
-          and a.issue_type = #{issueType}
-          and a.lane_id = #{status}
+        from s_issue
+        where handler is null
+          and sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and lane_id = #{status}
+          and state = 'U'
     </select>
 
     <select id="unclaimedTaskNumber" resultType="int">
         select count(sprint_id)
-        from s_issue a
-        where a.handler is null
-          and a.sprint_id = #{sprintId}
-          and a.issue_type = #{issueType}
-          and a.lane_id = #{status}
+        from s_issue
+        where handler is null
+          and sprint_id = #{sprintId}
+          and issue_type = #{issueType}
+          and lane_id = #{status}
+          and state = 'U'
     </select>
-
 
     <select id="queryUserTaskNumber" resultType="int">
         select count(issue_id)
@@ -878,7 +863,6 @@
           and issue_type = #{issueType}
           and state = 'U'
     </select>
-
 
     <update id="changeIssueStatusBySprintId">
         update s_issue
@@ -892,4 +876,31 @@
           and sprint_id = #{sprintId}
           and state = 'U'
     </update>
+
+    <select id="checkIdentityInPoSmOrCreatUser" resultType="boolean">
+        select if((select count(*)
+                   from s_sprint a
+                                left join s_team_member b on a.team_id = b.team_id
+                   where b.user_id = #{userId}
+                     and b.role_id in (103, 104)
+                     and a.sprint_id = #{sprintId})
+                          +
+                  (select count(*)
+                   from s_sprint a
+                   where sprint_id = #{sprintId}
+                     and create_uid = #{userId}) > 0, true, false)
+    </select>
+
+    <select id="sprintBindingIssue" resultType="boolean">
+        select if((select count(issue_id)
+                   from s_issue
+                   where sprint_id = #{sprintId}
+                     and state = 'U') > 0, true, false)
+    </select>
+
+    <select id="querySprintMembersId" resultType="java.lang.Long">
+        select user_id
+        from s_sprint_user_hour
+        where sprint_id = #{sprintId}
+    </select>
 </mapper>

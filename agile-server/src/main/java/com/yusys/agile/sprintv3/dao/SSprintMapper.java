@@ -85,15 +85,6 @@ public interface SSprintMapper {
      */
     int sprintExist(@Param("sprintId") long sprintId);
 
-    /**
-     * 迭代创建人
-     *
-     * @param sprintId 迭代id
-     * @param userId   用户id
-     * @return int
-     * @author 张宇
-     */
-    boolean creatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
     /**
      * 迭代未完成的故事
@@ -131,13 +122,6 @@ public interface SSprintMapper {
      */
     Byte querySprintStatus(long sprintId);
 
-    /**
-     * 检查迭代Po
-     *
-     * @return boolean
-     * @author 张宇
-     */
-    boolean checkSprintPo(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
     /**
      * 查询有效的迭代通过id
@@ -317,4 +301,31 @@ public interface SSprintMapper {
      */
     int changeIssueStatusBySprintId(@Param("sprintId") long sprintId, @Param("IssueType") Byte IssueType, @Param("status") Long Status);
 
+    /**
+     * 身份校验(是否为Po,Sm,SprintCreatUser)
+     *
+     * @param sprintId 迭代id
+     * @param userId   用户id
+     * @return boolean
+     * @author 张宇
+     */
+    boolean checkIdentityInPoSmOrCreatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
+
+    /**
+     * 迭代是否已经绑定问题
+     *
+     * @param sprintId 迭代id
+     * @return boolean
+     * @author 张宇
+     */
+    boolean sprintBindingIssue(long sprintId);
+
+    /**
+     * 查询迭代成员id
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<Long>}
+     * @author 张宇
+     */
+    List<Long> querySprintMembersId(long sprintId);
 }
