@@ -50,6 +50,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void calculateWorkload() {
+        Date target = DateUtil.preDay(new Date());
+        //重复执行定时任务时，按target 日期删除旧数据
+        burnDownChartDao.deleteByTargetData(target);
         //查询所有迭代
         List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
         if (CollectionUtils.isNotEmpty(sSprints)) {
@@ -63,8 +66,6 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
 
     private void calculateWorkload(SSprintWithBLOBs sprint) {
         Date target = DateUtil.preDay(new Date());
-        //重复执行定时任务时，按target 日期删除旧数据
-        burnDownChartDao.deleteByTargetData(target);
         if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             List<Issue> tasks = issueMapper.getBySprint(sprint.getSprintId());
             if (CollectionUtils.isNotEmpty(tasks)) {
@@ -276,6 +277,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void calculateStorys() {
+        Date target = DateUtil.preDay(new Date());
+        //重复执行定时任务时，按target 日期删除旧数据
+        burnDownChartStoryDao.deleteByTarget(target);
         //查询所有迭代
         List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
         if (CollectionUtils.isNotEmpty(sSprints)) {
@@ -321,8 +325,6 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     private void calculateStorys(SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
         Date target = DateUtil.preDay(new Date());
-        //重复执行定时任务时，按target 日期删除旧数据
-        burnDownChartStoryDao.deleteByTarget(target);
         if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             List<Issue> stories = issueMapper.getStoryBySprintId(sprintId);
             if (CollectionUtils.isNotEmpty(stories)) {
