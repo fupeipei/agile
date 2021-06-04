@@ -271,9 +271,9 @@ public class ExcelUtil {
     /**
      * response响应统一处理
      * @param fileName
-     * @param responsereturn
-     *      * @throws IOException
-     * @
+     * @param response
+     * @return
+     * @throws IOException
      */
     public static OutputStream dealResponse(String fileName, HttpServletResponse response) throws IOException {
 
