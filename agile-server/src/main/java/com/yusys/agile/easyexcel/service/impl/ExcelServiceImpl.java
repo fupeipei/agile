@@ -642,7 +642,7 @@ public class ExcelServiceImpl implements IExcelService {
     private void checkIsSm(Long userId, Long teamId) {
         boolean b = iFacadeUserApi.checkIsTeamSm(userId, teamId);
         if (!b) {
-            throw new BusinessException("只有本迭代的PO权限才允许操作");
+            throw new BusinessException("只有本迭代的SM权限才允许操作");
         }
     }
 
