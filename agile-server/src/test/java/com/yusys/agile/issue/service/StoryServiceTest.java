@@ -85,14 +85,14 @@ public class StoryServiceTest {
 
     @Test
     public void testDeleteStory() {
-        doNothing().when(storyService).deleteStory(Mockito.anyLong(),Mockito.anyBoolean());
+        doNothing().when(storyService).deleteStory(Mockito.anyLong(),Mockito.anyBoolean(),Mockito.anyLong());
         Assert.assertTrue("删除用户故事成功", true);
     }
 
     @Test
     public void testEditStory() {
         IssueDTO issueDTO = new IssueDTO();
-        doNothing().when(storyService).editStory(issueDTO);
+        doNothing().when(storyService).editStory(issueDTO,Mockito.anyLong());
         Assert.assertTrue("修改用户故事成功", true);
     }
 
