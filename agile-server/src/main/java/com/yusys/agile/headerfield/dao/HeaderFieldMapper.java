@@ -45,4 +45,12 @@ public interface HeaderFieldMapper {
      * @date 2021/2/16
      */
     List<HeaderFieldDTO> selectDTOByExampleWithBLOBs(HeaderFieldExample example);
+    /**
+     * 逻辑删除
+     * @author zhaofeng
+     * @date 2021/6/3 17:54
+     * @param fieldCode
+     * @param state
+     */
+    void updateStateByFieldCode(@Param("fieldCode") String fieldCode,@Param("state") String state);
 }

@@ -23,6 +23,7 @@ import com.yusys.agile.issue.enums.IssueHistoryRecordTypeEnum;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.utils.ObjectUtil;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -288,14 +289,17 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
 
     @Override
     public Integer deleteCustomFieldByFieldId(Long fieldId) {
+        String fieldCode = fieldId.toString();
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();
         headerFieldExample.createCriteria()
-                .andFieldCodeEqualTo(fieldId.toString())
+                .andFieldCodeEqualTo(fieldCode)
                 .andIsCustomEqualTo(Byte.parseByte("1"));
         List<HeaderField> headerFields = headerFieldMapper.selectByExample(headerFieldExample);
-        for (int i = 0; i < headerFields.size(); i++) {
-            headerFieldUserService.deleteCustomField(headerFields.get(i).getFieldId());
-            headerFieldMapper.deleteByPrimaryKey(headerFields.get(i).getFieldId());
+        //逻辑删除 headerField By fieldCode
+        headerFieldMapper.updateStateByFieldCode(fieldCode, StateEnum.E.getValue());
+        for (HeaderField headerField : headerFields) {
+            Long headerFieldId = headerField.getFieldId();
+            headerFieldUserService.deleteCustomField(headerFieldId);
         }
         return headerFields.size();
     }
@@ -341,7 +345,7 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
 
     @Override
     public List<HeaderField> getAllHeaderFieldByProjectId(Long projectId) {
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields("", null, null, projectId);
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(projectId, null, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(projectId, null);
         Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));

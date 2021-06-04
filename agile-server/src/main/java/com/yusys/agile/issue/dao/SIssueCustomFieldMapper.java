@@ -66,6 +66,19 @@ public interface SIssueCustomFieldMapper {
      * @date 2021/2/22
      */
     int updateByExampleSelectiveWithNull(@Param("record") SIssueCustomField record, @Param("example") SIssueCustomFieldExample example);
-
+    /**
+     * 物理删除关联关系
+     * @author zhaofeng
+     * @date 2021/6/3 17:32
+     * @param fieldId
+     */
     void deleteInFieldIdListByFieldIds(@Param("fieldId") Long fieldId);
+    /**
+     * 逻辑删除（修改数据有效状态）
+     * @author zhaofeng
+     * @date 2021/6/3 17:31
+     * @param fieldId
+     * @param state
+     */
+    void updateStateByCustomRelationId(@Param("fieldId") Long fieldId,@Param("state") String state);
 }
