@@ -45,4 +45,8 @@
 			#{item}
 		</foreach>
 	</update>
+
+	<delete id="deleteByTargetData">
+	    delete from s_burndown_chart s where s.sprint_time=#{target};
+    </delete>
 </mapper>
