@@ -818,6 +818,7 @@
                         where handler = #{userId}
                           and sprint_id = #{sprintId}
                           and lane_id = 109
+                          and issue_type = #{issueType}
                           and state = 'U'), 0)
                         -
                 ifnull((select sum(remain_workload)
@@ -836,10 +837,10 @@
                        ) AS a
     </select>
 
-     <!-- TYPE_ADD_STATE("未领取", 107L),
-        TYPE_RECEIVED_STATE("已领取", 108L),
-        TYPE_MODIFYING_STATE("进行中", 109L),
-        TYPE_CLOSED_STATE("已完成", 110L);-->
+    <!-- TYPE_ADD_STATE("未领取", 107L),
+       TYPE_RECEIVED_STATE("已领取", 108L),
+       TYPE_MODIFYING_STATE("进行中", 109L),
+       TYPE_CLOSED_STATE("已完成", 110L);-->
     <!--剩余工作量计算方法：进行中 已领取（剩余工作量）任务卡片总和-->
     <select id="queryUserResidueWorkload" resultType="int">
         select ifnull(sum(plan_workload), 0)
@@ -869,12 +870,12 @@
     </select>
 
 
-
     <select id="queryUserTaskNumber" resultType="int">
         select count(issue_id)
         from s_issue
         where sprint_id = #{sprintId}
           and handler = #{userId}
+          and issue_type = #{issueType}
           and state = 'U'
     </select>
 
