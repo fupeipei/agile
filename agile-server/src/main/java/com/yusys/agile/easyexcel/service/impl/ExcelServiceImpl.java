@@ -285,7 +285,7 @@ public class ExcelServiceImpl implements IExcelService {
                 throw new BusinessException("导入模版不正确，请检查!");
             }
         }else {
-            throw new BusinessException("导入模版不正确，请检查!");
+            throw new BusinessException("导入文件为空，请检查!");
         }
 
         if (copyData.size() <= 1) {
