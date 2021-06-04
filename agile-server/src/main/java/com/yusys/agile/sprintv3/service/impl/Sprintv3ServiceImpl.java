@@ -98,8 +98,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Resource
     private STeamSystemService teamSystemService;
 
-
-
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
     @Override
@@ -706,9 +704,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             sprintMembersWorkHours.setUserId(userList.get(i).getUserId());
             sprintMembersWorkHours.setUserName(userList.get(i).getUserName());
             sprintMembersWorkHours.setUserAccount(userList.get(i).getUserAccount());
-            sprintMembersWorkHours.setActualWorkload(ssprintMapper.queryUserActualWorkload(sprintId, userList.get(i).getUserId()));
+            sprintMembersWorkHours.setActualWorkload(ssprintMapper.queryUserActualWorkload(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
             sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
-            sprintMembersWorkHours.setTaskNumber(ssprintMapper.queryUserTaskNumber(sprintId, userList.get(i).getUserId()));
+            sprintMembersWorkHours.setTaskNumber(ssprintMapper.queryUserTaskNumber(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
             list.add(sprintMembersWorkHours);
         }
         return list;
