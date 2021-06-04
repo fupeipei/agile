@@ -133,9 +133,7 @@ public class TaskServiceImpl implements TaskService {
         if (null != issue) {
             IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
             //校验权限
-            this.checkAuth(issueDTO, issue, "delete");
-            //校验参数
-            this.ckeckTaksParams(issue.getSprintId(), "无法删除任务");
+            this.checkAuth(issueDTO, issue, "delete","无法删除任务");
         }
         issueFactory.deleteIssue(taskId, deleteChild);
 
@@ -151,10 +149,7 @@ public class TaskServiceImpl implements TaskService {
             return;
         }
         //校验权限
-        this.checkAuth(issueDTO, oldTask, "edit");
-        //校验参数
-        this.ckeckTaksParams(oldTask.getSprintId(), "无法编辑任务");
-
+        this.checkAuth(issueDTO, oldTask, "edit","无法编辑任务");
         Long projectId = oldTask.getProjectId();
         Issue task = issueFactory.editIssue(issueDTO, oldTask, projectId);
 
@@ -222,7 +217,7 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    public void checkAuth(IssueDTO issueDTO, Issue oldTask, String checkType) {
+    private void checkAuth(IssueDTO issueDTO, Issue oldTask, String checkType,String errorMsg) {
         //        校验权限 1.SM角色，可以更新卡片上的任意信息
         //                2.团队成员角色，只允许更新领取人为自己的卡片信息
         //根据task获得team，根据team及当前登录人员进行判断：
@@ -242,29 +237,27 @@ public class TaskServiceImpl implements TaskService {
             //1.SM角色，可以更新卡片上的任意信息
             if (isSM) {
                 return;
-
-            } else if (!isSM && CollectionUtils.isEmpty(sTeamMembers)) {
-                throw new BusinessException("您无权限进行该操作");
-                //2.当卡片没有领取时可以自己领取该卡片
-            } else if (CollectionUtils.isNotEmpty(sTeamMembers)
-                    && TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getLaneId())) {
-                if ("edit".equals(checkType) && Optional.ofNullable(issueDTO.getHandler()).isPresent()
-                        && userId.equals(issueDTO.getHandler())) {
-                    return;
-                }
-                if ("delete".equals(checkType)) {
-                    return;
-                }
-                //2.团队成员角色，只允许更新领取人为自己的卡片信息
-            } else if ("edit".equals(checkType)
-                    && CollectionUtils.isNotEmpty(sTeamMembers)
+            } else if (CollectionUtils.isEmpty(sTeamMembers)) {
+                throw new BusinessException("您无权限对此功能进行操作");
+                //2.当卡片没有领取时可以自己领取该卡片,且必须是是本人领取
+            }else if ("edit".equals(checkType)
                     && Optional.ofNullable(oldTask.getHandler()).isPresent()
-                    && oldTask.getHandler().equals(issueDTO.getHandler())
-                    && userId.equals(issueDTO.getHandler())) {
-                return;
-            } else {
-                throw new BusinessException("团队成员角色,只允许更新领取人为自己的卡片信息");
+                    && !userId.equals(oldTask.getHandler())){
+                throw new BusinessException("当前任务已被他人领取,不允许修改");
+            }else if (("edit".equals(checkType)
+                    && !Optional.ofNullable(oldTask.getHandler()).isPresent()
+                    && Optional.ofNullable(issueDTO.getHandler()).isPresent()
+                    && !userId.equals(issueDTO.getHandler()))
+                    || ("create".equals(checkType)
+                    && Optional.ofNullable(issueDTO.getHandler()).isPresent()
+                    && !userId.equals(issueDTO.getHandler()))){
+                throw new BusinessException("只有SM角色才允许分配任务");
+            }else if ("delete".equals(checkType)
+                    && Optional.ofNullable(oldTask.getHandler()).isPresent()
+                    && !userId.equals(oldTask.getHandler())){
+                throw new BusinessException("当前任务已被他人领取,不允许删除");
             }
+            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg);
         }
     }
 
@@ -283,7 +276,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
-        this.checkIsSMRoleOrTeamUser(issueDTO.getParentId(), "只有SM或团队成员才可以新建任务");
+        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
+        this.checkAuth(issueDTO,issue,"create","无法新建任务");
         //设置默认创建
         Long[] stages = issueDTO.getStages();
         if (!Optional.ofNullable(stages).isPresent()) {
@@ -306,27 +300,6 @@ public class TaskServiceImpl implements TaskService {
         log.info("createTask_updateStoryStageIdByTaskCount=" + i);
 
         return taskId;
-    }
-
-    public void checkIsSMRoleOrTeamUser(Long storyId, String errorMsg) {
-        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
-        if (Optional.ofNullable(storyId).isPresent()) {
-            //有迭代才会有团队
-            Issue issue = issueMapper.selectByPrimaryKey(storyId);
-            if (null == issue) {
-                return;
-            }
-            SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(issue.getSprintId());
-            if (Optional.ofNullable(sSprintWithBLOBs).isPresent()) {
-                Long teamId = sSprintWithBLOBs.getTeamId();
-                boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, teamId);
-                List<STeamMember> isTeamUsers = checkIsTeamMember(teamId, userId);
-                if (!(isSM || CollectionUtils.isNotEmpty(isTeamUsers))) {
-                    throw new BusinessException(errorMsg);
-                }
-                this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg);
-            }
-        }
     }
 
     private List<STeamMember> checkIsTeamMember(Long teamId, Long userId) {
