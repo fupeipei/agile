@@ -69,12 +69,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -111,9 +113,17 @@ public class ExcelServiceImpl implements IExcelService {
     @Autowired
     private IStageService stageService;
 
+    /**
+     * 缓存数据
+     */
+    private static Map<Long,String> systemMap = new ConcurrentHashMap<>();
+
+    private static Map<Long,String> userMap = new ConcurrentHashMap<>();
+
     private static final String MAX_ISSUE_EXPORT_THRESHOLD_KEY = "ISSUE_MAX_EXPORT_THRESHOLD";
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
+
     /**
      * 全量导出
      */
@@ -491,37 +501,46 @@ public class ExcelServiceImpl implements IExcelService {
                         t.setAccessible(true);
                         String result = null;
                         if("issueType".equals(name)){
-                            result = IssueTypeEnum.getName((Byte) s.get(name));
+                            result = IssueTypeEnum.getName((Byte) s.get(issue));
                         }else if("sprintId".equals(name)){
-                            Long sprintId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
+                            Long sprintId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
                             if(Optional.ofNullable(sprintId).isPresent()){
                                 SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
                                 result = sprint.getSprintName();
                             }
+
                         }else if("systemId".equals(name)){
-                            Long systemId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
-                            if(Optional.ofNullable(systemId).isPresent()){
+                            Long systemId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
+                            if(Optional.ofNullable(systemId).isPresent() && !systemMap.containsKey(systemId)){
                                 try {
                                     SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
-                                    result = ssoSystem.getSystemName();
+                                    systemMap.put(systemId,ssoSystem.getSystemName());
                                 }catch (Exception e){
                                     log.info("远程获取系统信息异常:{}",e.getMessage());
                                 }
+                                result = systemMap.get(systemId);
                             }
+
                         }else if("createUid".equals(name) || "handler".equals(name) || "updateUid".equals(name)){
-                            Long userId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
-                            if(Optional.ofNullable(userId).isPresent()){
+                            Long userId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
+                            if(Optional.ofNullable(userId).isPresent() && !userMap.containsKey(userId)){
                                 try {
                                     SsoUser user = iFacadeUserApi.queryUserById(userId);
-                                    result = user == null? null : user.getUserName();
+                                    userMap.put(userId,user.getUserName());
                                 }catch (Exception e){
                                     log.info("远程获取人员信息异常：{}",e.getMessage());
                                 }
+                                result = userMap.get(userId);
                             }
+
                         }else if("stageId".equals(name)){
-                            Long stageId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
+                            Long stageId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
                             String firstStageName = StageConstant.FirstStageEnum.getFirstStageName(stageId);
-                            Long laneId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get("laneId")));
+
+                            Method method = sourceClass.getMethod("getLaneId", new Class[]{});
+                            method.setAccessible(true);
+                            Object resultValue = method.invoke(issue, new Object[]{});
+                            Long laneId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(resultValue));
                             KanbanStageInstance stageInfo = stageService.getStageInfoByStageId(laneId);
                             StringBuffer buffer = new StringBuffer();
                             if(Optional.ofNullable(firstStageName).isPresent()){
@@ -531,16 +550,17 @@ public class ExcelServiceImpl implements IExcelService {
                                 }
                             }
                             result = buffer.length() > 0 ? buffer.toString() : null;
+
                         }else if("taskType".equals(name)){
-                            Integer taskType = s.get(name) == null ? null : Integer.valueOf(String.valueOf(s.get(name)));
+                            Integer taskType = s.get(issue) == null ? null : Integer.valueOf(String.valueOf(s.get(issue)));
                             String tasKName  = TaskTypeEnum.getName(taskType);
                             result = tasKName;
                         }
 
                         Type genericType = s.getGenericType();
                         String typeName = genericType.getTypeName();
-                        if("Date".equals(typeName)){
-                            String value = s.get(name) == null ? null :String.valueOf(s.get(name));
+                        if("java.util.Date".equals(typeName)){
+                            String value = s.get(issue) == null ? null :String.valueOf(s.get(issue));
                             if(Optional.ofNullable(value).isPresent()){
                                 try {
                                     String formatDate = DateUtil.formatDateToStr2(DateUtil.formatStrToDate(value));
