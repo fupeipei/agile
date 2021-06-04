@@ -781,9 +781,10 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public  List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
 
-        List<SprintV3UserHourDTO> userSprintHourDTOS = this.queryUsersBySprintId(sprintId);
+        //通过迭代id查询迭代时长表的userid，然后再查人员
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
         List<Long> userIds=new ArrayList<>();
-        for(SprintV3UserHourDTO userSprintHourDTO:userSprintHourDTOS){
+        for(SSprintUserHour userSprintHourDTO:userSprintHours){
             Long userId = userSprintHourDTO.getUserId();
             userIds.add(userId);
         }
