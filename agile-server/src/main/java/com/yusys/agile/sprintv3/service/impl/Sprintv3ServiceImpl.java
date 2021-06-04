@@ -587,7 +587,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             }
             //迭代开始,但是未绑定任务
             ssprintMapper.cancelSprint(sprintId);
-            return "迭代取消,解除任务关联";
+            return "迭代取消";
         }
 
         //迭代未开始,但已经绑定任务
