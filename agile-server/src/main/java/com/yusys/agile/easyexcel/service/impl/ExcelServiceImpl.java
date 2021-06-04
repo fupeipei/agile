@@ -8,10 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.enums.ExcelTypeEnum;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
-import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.easyexcel.service.DownloadExcelTempletService;
 import com.yusys.agile.easyexcel.service.ExcelTempletFactory;
 import com.yusys.agile.easyexcel.service.IExcelService;
+import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.easyexcel.vo.ExcelVo;
 import com.yusys.agile.externalapiconfig.dao.ExternalApiConfigMapper;
 import com.yusys.agile.fault.domain.ExternalApiConfig;
@@ -31,8 +31,11 @@ import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -49,17 +52,23 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- *  @Description: excel 实现类
- *  @author: zhao_yd
- *  @Date: 2021/5/25 8:45 下午
- *
+ * @Description: excel 实现类
+ * @author: zhao_yd
+ * @Date: 2021/5/25 8:45 下午
  */
 @Slf4j
 @Service
@@ -81,6 +90,10 @@ public class ExcelServiceImpl implements IExcelService {
     private IssueMapper issueMapper;
     @Autowired
     private ExternalApiConfigMapper externalApiConfigMapper;
+    @Autowired
+    private SSprintMapper sSprintMapper;
+    @Autowired
+    private IFacadeUserApi iFacadeUserApi;
 
     private static final String MAX_ISSUE_EXPORT_THRESHOLD_KEY = "ISSUE_MAX_EXPORT_THRESHOLD";
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
@@ -98,11 +111,11 @@ public class ExcelServiceImpl implements IExcelService {
     public void downLoadTemplate(Byte excelType, HttpServletResponse response, ExcelCommentField filed) {
         String type = ExcelTypeEnum.getFieldName(excelType);
         DownloadExcelTempletService downloadExcelTempletService = ExcelTempletFactory.get(type);
-        downloadExcelTempletService.download(response,filed);
+        downloadExcelTempletService.download(response, filed);
     }
 
     @Override
-    public FileInfo uploadStorys(MultipartFile file,ExcelCommentField field) throws Exception {
+    public FileInfo uploadStorys(MultipartFile file, ExcelCommentField field) throws Exception {
         //1、检查文件类型
         checkFileType(file);
 
@@ -115,14 +128,14 @@ public class ExcelServiceImpl implements IExcelService {
         boolean hasError = checkData(copyData, (byte) 3);
 
         //4、传错误文件
-        if(hasError){
-            return uploadFile(copyData, "storyImportError.xlsx", "storys",IssueTypeEnum.getName((byte)3),field);
+        if (hasError) {
+            return uploadFile(copyData, "storyImportError.xlsx", "storys", IssueTypeEnum.getName((byte) 3), field);
         }
         List<JSONObject> jsonObjects = analysisStoryData(data);
 
         //5、存入数据库
-        if(CollectionUtils.isNotEmpty(jsonObjects)){
-            for(JSONObject jsonObject :jsonObjects){
+        if (CollectionUtils.isNotEmpty(jsonObjects)) {
+            for (JSONObject jsonObject : jsonObjects) {
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
                 Long issueId = storyService.createStory(issueDTO);
                 //批量新增或者批量更新扩展字段值
@@ -135,18 +148,23 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadTasks(MultipartFile file,ExcelCommentField field) throws Exception {
+    public FileInfo uploadTasks(MultipartFile file, ExcelCommentField field) throws Exception {
+        Long sprintId = field.getSprintId();
+        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+        SSprint sprint= sSprintMapper.selectByPrimaryKey(sprintId);
+        Long teamId = sprint.getTeamId();
+        checkIsPo(userId,teamId);
         //检查文件类型
         checkFileType(file);
         List<List<String>> data = ExcelUtil.readExcel(file.getInputStream(), 0);
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
         boolean hasError = checkData(copyData, (byte) 4);
-        if(hasError){
-            return uploadFile(copyData, "taskImportError.xlsx","tasks",IssueTypeEnum.getName((byte)4),field);
+        if (hasError) {
+            return uploadFile(copyData, "taskImportError.xlsx", "tasks", IssueTypeEnum.getName((byte) 4), field);
         }
         List<JSONObject> jsonObjects = analysisTaskData(data);
-        if(CollectionUtils.isNotEmpty(jsonObjects)){
-            for(JSONObject jsonObject :jsonObjects){
+        if (CollectionUtils.isNotEmpty(jsonObjects)) {
+            for (JSONObject jsonObject : jsonObjects) {
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
                 taskService.createTask(issueDTO);
             }
@@ -157,17 +175,17 @@ public class ExcelServiceImpl implements IExcelService {
 
     private List<JSONObject> analysisTaskData(List<List<String>> data) {
         List<JSONObject> jsonObjects = Lists.newArrayList();
-        for(int i = 1 ; i<data.size();i++){
-            List<String> issueFiles =  data.get(i);
+        for (int i = 1; i < data.size(); i++) {
+            List<String> issueFiles = data.get(i);
             int headSize = data.get(0).size();
             int size = issueFiles.size();
-            if(size < headSize){
-                fillNull(issueFiles,size,headSize);
+            if (size < headSize) {
+                fillNull(issueFiles, size, headSize);
             }
             IssueDTO issueDTO = new IssueDTO();
             // 故事id
             String storyInfo = issueFiles.get(0);
-            if(StringUtils.isNotBlank(storyInfo)){
+            if (StringUtils.isNotBlank(storyInfo)) {
                 String s = StringUtils.substringBefore(storyInfo, "+");
                 issueDTO.setParentId(Long.valueOf(s));
             }
@@ -183,6 +201,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 解析故事数据
+     *
      * @param data
      * @return
      * @throws Exception
@@ -190,53 +209,54 @@ public class ExcelServiceImpl implements IExcelService {
     private List<JSONObject> analysisStoryData(List<List<String>> data) throws Exception {
         List<JSONObject> jsonObjects = Lists.newArrayList();
         int headSize = data.get(0).size();
-        for(int i = 1 ; i<data.size();i++){
-            List<String> issueFiles =  data.get(i);
+        for (int i = 1; i < data.size(); i++) {
+            List<String> issueFiles = data.get(i);
             int size = issueFiles.size();
-            if(size < headSize){
-                fillNull(issueFiles,size,headSize);
+            if (size < headSize) {
+                fillNull(issueFiles, size, headSize);
             }
             IssueDTO issueDTO = new IssueDTO();
             issueDTO.setTitle(issueFiles.get(0));
             issueDTO.setDescription(issueFiles.get(1));
             issueDTO.setAcceptanceCriteria(issueFiles.get(2));
             String sprintInfo = issueFiles.get(3);
-            if(StringUtils.isNotBlank(sprintInfo)){
+            if (StringUtils.isNotBlank(sprintInfo)) {
                 String sprintId = StringUtils.substringBefore(sprintInfo, "+");
                 issueDTO.setSprintId(Long.valueOf(sprintId));
             }
-            issueDTO.setPriority(StringUtils.isNotBlank(issueFiles.get(4))? Byte.valueOf(issueFiles.get(4)) : null);
-            issueDTO.setParentId(StringUtils.isNotBlank(issueFiles.get(5))? Long.valueOf(issueFiles.get(5)) : null);
-            issueDTO.setBeginDate(StringUtils.isNotBlank(issueFiles.get(7))? DateUtil.formatStrToDate(issueFiles.get(7)) : null);
-            issueDTO.setEndDate(StringUtils.isNotBlank(issueFiles.get(8))? DateUtil.formatStrToDate(issueFiles.get(8)) : null);
-            issueDTO.setPlanWorkload(StringUtils.isNotBlank(issueFiles.get(9))? Integer.valueOf(issueFiles.get(9)) : null);
+            issueDTO.setPriority(StringUtils.isNotBlank(issueFiles.get(4)) ? Byte.valueOf(issueFiles.get(4)) : null);
+            issueDTO.setParentId(StringUtils.isNotBlank(issueFiles.get(5)) ? Long.valueOf(issueFiles.get(5)) : null);
+            issueDTO.setBeginDate(StringUtils.isNotBlank(issueFiles.get(7)) ? DateUtil.formatStrToDate(issueFiles.get(7)) : null);
+            issueDTO.setEndDate(StringUtils.isNotBlank(issueFiles.get(8)) ? DateUtil.formatStrToDate(issueFiles.get(8)) : null);
+            issueDTO.setPlanWorkload(StringUtils.isNotBlank(issueFiles.get(9)) ? Integer.valueOf(issueFiles.get(9)) : null);
             SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
             issueDTO.setTenantCode(userInfo.getTenantCode());
             issueDTO.setSystemId(userInfo.getSystemId());
             JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
-            jsonObject.put("storyPoint",issueFiles.get(6));
+            jsonObject.put("storyPoint", issueFiles.get(6));
             jsonObjects.add(jsonObject);
         }
         return jsonObjects;
     }
 
-    private void fillNull(List<String> issueFiles,int size,int headSize) {
-        for(int i = size;i<headSize;i++){
-            issueFiles.add(i,null);
+    private void fillNull(List<String> issueFiles, int size, int headSize) {
+        for (int i = size; i < headSize; i++) {
+            issueFiles.add(i, null);
         }
     }
 
     /**
      * 校验Excel数据
+     *
      * @param copyData
      */
-    private boolean checkData(List<List<String>> copyData, Byte type){
-        if(copyData.size() <=1){
+    private boolean checkData(List<List<String>> copyData, Byte type) {
+        if (copyData.size() <= 1) {
             throw new BusinessException("导入数据为空，请检查!");
         }
         //1、校验表头数据
-        boolean result = checkHeadLine(copyData.get(0),type);
-        if(!result){
+        boolean result = checkHeadLine(copyData.get(0), type);
+        if (!result) {
             throw new BusinessException("导入模版不正确，请检查!");
         }
 
@@ -246,46 +266,48 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
 
-    private void checkFileType(MultipartFile file){
+    private void checkFileType(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
-        if(!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)){
+        if (!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)) {
             throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
         }
     }
 
     /**
      * 上传错误文件到服务器
+     *
      * @param copyData
      * @param templateName
      * @param sheetName
      * @return
      * @throws Exception
      */
-    public FileInfo uploadFile(List<List<String>> copyData,String templateName,String sheetName,String type,ExcelCommentField field) throws Exception {
+    public FileInfo uploadFile(List<List<String>> copyData, String templateName, String sheetName, String type, ExcelCommentField field) throws Exception {
         //写错误文件上传文件服务器
         copyData.remove(0);
-        log.info("错误数据信息:{}",JSONObject.toJSONString(copyData));
+        log.info("错误数据信息:{}", JSONObject.toJSONString(copyData));
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         DownloadExcelTempletService templetService = ExcelTempletFactory.get(type);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(templetService.getDropDownInfo(field));
-        ClassPathResource classPathResource = new ClassPathResource("excelTemplate/"+templateName);
+        ClassPathResource classPathResource = new ClassPathResource("excelTemplate/" + templateName);
         ExcelWriter writer = EasyExcel.write(os)
                 .withTemplate(classPathResource.getInputStream())
                 .autoCloseStream(Boolean.TRUE)
                 .registerWriteHandler(spinnerWriteHandler)
                 .build();
         WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
-        writer.write(copyData,writeSheet);
+        writer.write(copyData, writeSheet);
         writer.finish();
         byte[] content = os.toByteArray();
-        FileItem fileItem = getFileItem(UUID.randomUUID().toString()+".xlsx", content);
+        FileItem fileItem = getFileItem(UUID.randomUUID().toString() + ".xlsx", content);
         MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
         return fileService.upload(multipartFile);
     }
 
     /**
      * 检查Excel文件数据
+     *
      * @param data
      * @param copyData
      * @param headSize
@@ -293,36 +315,36 @@ public class ExcelServiceImpl implements IExcelService {
      * @param type
      * @return
      */
-    public boolean checExcelData(List<List<String>> data,List<List<String>> copyData,int headSize, boolean hasError,byte type){
-        for(int i = 1;i<data.size(); i++ ){
+    public boolean checExcelData(List<List<String>> data, List<List<String>> copyData, int headSize, boolean hasError, byte type) {
+        for (int i = 1; i < data.size(); i++) {
             List<String> line = data.get(i);
             List<String> fileResult = copyData.get(i);
-            if(fileResult.size() < headSize){
-                fillNull(fileResult,fileResult.size(),headSize);
+            if (fileResult.size() < headSize) {
+                fillNull(fileResult, fileResult.size(), headSize);
             }
-            if(line.size()<copyData.size()){
-                fillNull(line,line.size(),copyData.size());
+            if (line.size() < copyData.size()) {
+                fillNull(line, line.size(), copyData.size());
             }
-            if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
-                if(StringUtils.isBlank(line.get(0))){
-                    fileResult.add(headSize,"故事名称不能为空");
+            if (IssueTypeEnum.TYPE_STORY.CODE.equals(type)) {
+                if (StringUtils.isBlank(line.get(0))) {
+                    fileResult.add(headSize, "故事名称不能为空");
                     hasError = true;
                     continue;
                 }
 
-            }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
-                if(StringUtils.isBlank(line.get(0))){
-                    fileResult.add(headSize,"故事ID不能为空");
+            } else if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
+                if (StringUtils.isBlank(line.get(0))) {
+                    fileResult.add(headSize, "故事ID不能为空");
                     hasError = true;
                     continue;
                 }
-                if(StringUtils.isBlank(line.get(1))){
-                    fileResult.add(headSize,"任务标题不能为空");
+                if (StringUtils.isBlank(line.get(1))) {
+                    fileResult.add(headSize, "任务标题不能为空");
                     hasError = true;
                     continue;
                 }
-                if(StringUtils.isBlank(line.get(3))){
-                    fileResult.add(headSize,"任务类型不能为空");
+                if (StringUtils.isBlank(line.get(3))) {
+                    fileResult.add(headSize, "任务类型不能为空");
                     hasError = true;
                     continue;
                 }
@@ -344,6 +366,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 功能描述: 校验列头
+     *
      * @param excelhead
      * @param excelType
      * @return
@@ -365,9 +388,8 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
 
-
     @Override
-    public void exportIssues(Byte issueType, Long systemId, Map<String, Object> map,HttpServletResponse response) throws Exception {
+    public void exportIssues(Byte issueType, Long systemId, Map<String, Object> map, HttpServletResponse response) throws Exception {
 
         List<HeaderField> headerFieldList = queryHeaderFieldList(issueType);
         if (CollectionUtils.isNotEmpty(headerFieldList)) {
@@ -384,7 +406,7 @@ public class ExcelServiceImpl implements IExcelService {
             IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(map), IssueStringDTO.class);
             List<Long> issueIdList = issueStringDTO.getIssueIds();
             if (CollectionUtils.isNotEmpty(issueIdList)) {
-                issueList = queryIssueList( null, issueIdList, PART_TYPE);
+                issueList = queryIssueList(null, issueIdList, PART_TYPE);
             } else {
                 issueList = queryIssueList(map, null, ALL_TYPE);
             }
@@ -395,35 +417,35 @@ public class ExcelServiceImpl implements IExcelService {
             vo.setFileType(ExcelUtil.XLSX);
             vo.setCellText(headers);
             vo.setStringList(excelData);
-            ExcelUtil.export(vo,response);
+            ExcelUtil.export(vo, response);
         }
     }
 
-    private List<List<String>> getExcelData( List<Issue> issueList,
-                                             List<HeaderField> headerFieldList){
+    private List<List<String>> getExcelData(List<Issue> issueList,
+                                            List<HeaderField> headerFieldList) {
         List<List<String>> dataResult = Lists.newArrayList();
 
         if (CollectionUtils.isNotEmpty(issueList)) {
 
-            for(Issue issue:issueList){
+            for (Issue issue : issueList) {
 
                 List<String> fieldList = Lists.newArrayList();
                 Class<?> issueClass = issue.getClass();
                 Field[] fields = issueClass.getDeclaredFields();
 
-                for(HeaderField headerField:headerFieldList){
-                    for(Field field : fields){
+                for (HeaderField headerField : headerFieldList) {
+                    for (Field field : fields) {
                         try {
                             field.setAccessible(true);
                             String fieldCode = headerField.getFieldCode();
                             String name = field.getName();
-                            if(StringUtils.equals(fieldCode,name)){
+                            if (StringUtils.equals(fieldCode, name)) {
                                 Object o = field.get(issue);
                                 fieldList.add(String.valueOf(o));
                                 break;
                             }
-                        }catch (Exception e){
-                            log.info("反射获取issue数据异常:{}",e.getMessage());
+                        } catch (Exception e) {
+                            log.info("反射获取issue数据异常:{}", e.getMessage());
                         }
                     }
                 }
@@ -436,6 +458,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 查询列表头字段
+     *
      * @param issueType
      * @return
      */
@@ -453,6 +476,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 查询issue列表
+     *
      * @param mapStr
      * @param issueIdList
      * @param type
@@ -475,6 +499,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 查询工作项每页显示最大记录数
+     *
      * @param fieldName
      * @return
      */
@@ -489,7 +514,11 @@ public class ExcelServiceImpl implements IExcelService {
         return issuePageSizeThreshold;
     }
 
-
-
+    private void checkIsPo(Long userId, Long teamId) {
+        boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
+        if (!b) {
+            throw new BusinessException("只有本迭代的PO权限才允许操作");
+        }
+    }
 
 }
