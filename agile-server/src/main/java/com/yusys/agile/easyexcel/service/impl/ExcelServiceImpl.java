@@ -460,6 +460,7 @@ public class ExcelServiceImpl implements IExcelService {
         if (CollectionUtils.isNotEmpty(issueList)) {
 
             List<IssueExportDTO> exportDTOList = transformaData(issueList);
+            log.info("issue数据转换后:{}",JSONObject.toJSONString(exportDTOList));
             for(IssueExportDTO issue:exportDTOList){
 
                 List<String> fieldList = Lists.newArrayList();
