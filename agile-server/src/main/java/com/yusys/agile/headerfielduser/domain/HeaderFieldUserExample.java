@@ -8,10 +8,10 @@ public class HeaderFieldUserExample {
 
     protected boolean distinct;
 
-    protected List<Criteria> oredCriteria;
+    protected List<HeaderFieldUserExample.Criteria> oredCriteria;
 
     public HeaderFieldUserExample() {
-        oredCriteria = new ArrayList<Criteria>();
+        oredCriteria = new ArrayList<HeaderFieldUserExample.Criteria>();
     }
 
     public void setOrderByClause(String orderByClause) {
@@ -30,30 +30,30 @@ public class HeaderFieldUserExample {
         return distinct;
     }
 
-    public List<Criteria> getOredCriteria() {
+    public List<HeaderFieldUserExample.Criteria> getOredCriteria() {
         return oredCriteria;
     }
 
-    public void or(Criteria criteria) {
+    public void or(HeaderFieldUserExample.Criteria criteria) {
         oredCriteria.add(criteria);
     }
 
-    public Criteria or() {
-        Criteria criteria = createCriteriaInternal();
+    public HeaderFieldUserExample.Criteria or() {
+        HeaderFieldUserExample.Criteria criteria = createCriteriaInternal();
         oredCriteria.add(criteria);
         return criteria;
     }
 
-    public Criteria createCriteria() {
-        Criteria criteria = createCriteriaInternal();
+    public HeaderFieldUserExample.Criteria createCriteria() {
+        HeaderFieldUserExample.Criteria criteria = createCriteriaInternal();
         if (oredCriteria.size() == 0) {
             oredCriteria.add(criteria);
         }
         return criteria;
     }
 
-    protected Criteria createCriteriaInternal() {
-        Criteria criteria = new Criteria();
+    protected HeaderFieldUserExample.Criteria createCriteriaInternal() {
+        HeaderFieldUserExample.Criteria criteria = new HeaderFieldUserExample.Criteria();
         return criteria;
     }
 
@@ -64,22 +64,22 @@ public class HeaderFieldUserExample {
     }
 
     protected abstract static class GeneratedCriteria {
-        protected List<Criterion> criteria;
+        protected List<HeaderFieldUserExample.Criterion> criteria;
 
         protected GeneratedCriteria() {
             super();
-            criteria = new ArrayList<Criterion>();
+            criteria = new ArrayList<HeaderFieldUserExample.Criterion>();
         }
 
         public boolean isValid() {
             return criteria.size() > 0;
         }
 
-        public List<Criterion> getAllCriteria() {
+        public List<HeaderFieldUserExample.Criterion> getAllCriteria() {
             return criteria;
         }
 
-        public List<Criterion> getCriteria() {
+        public List<HeaderFieldUserExample.Criterion> getCriteria() {
             return criteria;
         }
 
@@ -87,565 +87,705 @@ public class HeaderFieldUserExample {
             if (condition == null) {
                 throw new RuntimeException("Value for condition cannot be null");
             }
-            criteria.add(new Criterion(condition));
+            criteria.add(new HeaderFieldUserExample.Criterion(condition));
         }
 
         protected void addCriterion(String condition, Object value, String property) {
             if (value == null) {
                 throw new RuntimeException("Value for " + property + " cannot be null");
             }
-            criteria.add(new Criterion(condition, value));
+            criteria.add(new HeaderFieldUserExample.Criterion(condition, value));
         }
 
         protected void addCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
                 throw new RuntimeException("Between values for " + property + " cannot be null");
             }
-            criteria.add(new Criterion(condition, value1, value2));
+            criteria.add(new HeaderFieldUserExample.Criterion(condition, value1, value2));
         }
 
-        public Criteria andHeaderUserIdIsNull() {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdIsNull() {
             addCriterion("header_user_id is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdIsNotNull() {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdIsNotNull() {
             addCriterion("header_user_id is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdEqualTo(Long value) {
             addCriterion("header_user_id =", value, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdNotEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdNotEqualTo(Long value) {
             addCriterion("header_user_id <>", value, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdGreaterThan(Long value) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdGreaterThan(Long value) {
             addCriterion("header_user_id >", value, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdGreaterThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdGreaterThanOrEqualTo(Long value) {
             addCriterion("header_user_id >=", value, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdLessThan(Long value) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdLessThan(Long value) {
             addCriterion("header_user_id <", value, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdLessThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdLessThanOrEqualTo(Long value) {
             addCriterion("header_user_id <=", value, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdIn(List<Long> values) {
             addCriterion("header_user_id in", values, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdNotIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdNotIn(List<Long> values) {
             addCriterion("header_user_id not in", values, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdBetween(Long value1, Long value2) {
             addCriterion("header_user_id between", value1, value2, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andHeaderUserIdNotBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andHeaderUserIdNotBetween(Long value1, Long value2) {
             addCriterion("header_user_id not between", value1, value2, "headerUserId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdIsNull() {
+        public HeaderFieldUserExample.Criteria andFieldIdIsNull() {
             addCriterion("field_id is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdIsNotNull() {
+        public HeaderFieldUserExample.Criteria andFieldIdIsNotNull() {
             addCriterion("field_id is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andFieldIdEqualTo(Long value) {
             addCriterion("field_id =", value, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdNotEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andFieldIdNotEqualTo(Long value) {
             addCriterion("field_id <>", value, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdGreaterThan(Long value) {
+        public HeaderFieldUserExample.Criteria andFieldIdGreaterThan(Long value) {
             addCriterion("field_id >", value, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdGreaterThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andFieldIdGreaterThanOrEqualTo(Long value) {
             addCriterion("field_id >=", value, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdLessThan(Long value) {
+        public HeaderFieldUserExample.Criteria andFieldIdLessThan(Long value) {
             addCriterion("field_id <", value, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdLessThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andFieldIdLessThanOrEqualTo(Long value) {
             addCriterion("field_id <=", value, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andFieldIdIn(List<Long> values) {
             addCriterion("field_id in", values, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdNotIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andFieldIdNotIn(List<Long> values) {
             addCriterion("field_id not in", values, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andFieldIdBetween(Long value1, Long value2) {
             addCriterion("field_id between", value1, value2, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldIdNotBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andFieldIdNotBetween(Long value1, Long value2) {
             addCriterion("field_id not between", value1, value2, "fieldId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdIsNull() {
+        public HeaderFieldUserExample.Criteria andUserIdIsNull() {
             addCriterion("user_id is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdIsNotNull() {
+        public HeaderFieldUserExample.Criteria andUserIdIsNotNull() {
             addCriterion("user_id is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andUserIdEqualTo(Long value) {
             addCriterion("user_id =", value, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdNotEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andUserIdNotEqualTo(Long value) {
             addCriterion("user_id <>", value, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThan(Long value) {
+        public HeaderFieldUserExample.Criteria andUserIdGreaterThan(Long value) {
             addCriterion("user_id >", value, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andUserIdGreaterThanOrEqualTo(Long value) {
             addCriterion("user_id >=", value, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdLessThan(Long value) {
+        public HeaderFieldUserExample.Criteria andUserIdLessThan(Long value) {
             addCriterion("user_id <", value, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdLessThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andUserIdLessThanOrEqualTo(Long value) {
             addCriterion("user_id <=", value, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andUserIdIn(List<Long> values) {
             addCriterion("user_id in", values, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdNotIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andUserIdNotIn(List<Long> values) {
             addCriterion("user_id not in", values, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andUserIdBetween(Long value1, Long value2) {
             addCriterion("user_id between", value1, value2, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andUserIdNotBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andUserIdNotBetween(Long value1, Long value2) {
             addCriterion("user_id not between", value1, value2, "userId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdIsNull() {
+        public HeaderFieldUserExample.Criteria andProjectIdIsNull() {
             addCriterion("project_id is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdIsNotNull() {
+        public HeaderFieldUserExample.Criteria andProjectIdIsNotNull() {
             addCriterion("project_id is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andProjectIdEqualTo(Long value) {
             addCriterion("project_id =", value, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdNotEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andProjectIdNotEqualTo(Long value) {
             addCriterion("project_id <>", value, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdGreaterThan(Long value) {
+        public HeaderFieldUserExample.Criteria andProjectIdGreaterThan(Long value) {
             addCriterion("project_id >", value, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdGreaterThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andProjectIdGreaterThanOrEqualTo(Long value) {
             addCriterion("project_id >=", value, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdLessThan(Long value) {
+        public HeaderFieldUserExample.Criteria andProjectIdLessThan(Long value) {
             addCriterion("project_id <", value, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdLessThanOrEqualTo(Long value) {
+        public HeaderFieldUserExample.Criteria andProjectIdLessThanOrEqualTo(Long value) {
             addCriterion("project_id <=", value, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andProjectIdIn(List<Long> values) {
             addCriterion("project_id in", values, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdNotIn(List<Long> values) {
+        public HeaderFieldUserExample.Criteria andProjectIdNotIn(List<Long> values) {
             addCriterion("project_id not in", values, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andProjectIdBetween(Long value1, Long value2) {
             addCriterion("project_id between", value1, value2, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andProjectIdNotBetween(Long value1, Long value2) {
+        public HeaderFieldUserExample.Criteria andProjectIdNotBetween(Long value1, Long value2) {
             addCriterion("project_id not between", value1, value2, "projectId");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoIsNull() {
+        public HeaderFieldUserExample.Criteria andOrderNoIsNull() {
             addCriterion("order_no is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoIsNotNull() {
+        public HeaderFieldUserExample.Criteria andOrderNoIsNotNull() {
             addCriterion("order_no is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoEqualTo(Integer value) {
+        public HeaderFieldUserExample.Criteria andOrderNoEqualTo(Integer value) {
             addCriterion("order_no =", value, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoNotEqualTo(Integer value) {
+        public HeaderFieldUserExample.Criteria andOrderNoNotEqualTo(Integer value) {
             addCriterion("order_no <>", value, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoGreaterThan(Integer value) {
+        public HeaderFieldUserExample.Criteria andOrderNoGreaterThan(Integer value) {
             addCriterion("order_no >", value, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoGreaterThanOrEqualTo(Integer value) {
+        public HeaderFieldUserExample.Criteria andOrderNoGreaterThanOrEqualTo(Integer value) {
             addCriterion("order_no >=", value, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoLessThan(Integer value) {
+        public HeaderFieldUserExample.Criteria andOrderNoLessThan(Integer value) {
             addCriterion("order_no <", value, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoLessThanOrEqualTo(Integer value) {
+        public HeaderFieldUserExample.Criteria andOrderNoLessThanOrEqualTo(Integer value) {
             addCriterion("order_no <=", value, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoIn(List<Integer> values) {
+        public HeaderFieldUserExample.Criteria andOrderNoIn(List<Integer> values) {
             addCriterion("order_no in", values, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoNotIn(List<Integer> values) {
+        public HeaderFieldUserExample.Criteria andOrderNoNotIn(List<Integer> values) {
             addCriterion("order_no not in", values, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoBetween(Integer value1, Integer value2) {
+        public HeaderFieldUserExample.Criteria andOrderNoBetween(Integer value1, Integer value2) {
             addCriterion("order_no between", value1, value2, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andOrderNoNotBetween(Integer value1, Integer value2) {
+        public HeaderFieldUserExample.Criteria andOrderNoNotBetween(Integer value1, Integer value2) {
             addCriterion("order_no not between", value1, value2, "orderNo");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeIsNull() {
+        public HeaderFieldUserExample.Criteria andFieldTypeIsNull() {
             addCriterion("field_type is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeIsNotNull() {
+        public HeaderFieldUserExample.Criteria andFieldTypeIsNotNull() {
             addCriterion("field_type is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andFieldTypeEqualTo(Byte value) {
             addCriterion("field_type =", value, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeNotEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andFieldTypeNotEqualTo(Byte value) {
             addCriterion("field_type <>", value, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeGreaterThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andFieldTypeGreaterThan(Byte value) {
             addCriterion("field_type >", value, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeGreaterThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andFieldTypeGreaterThanOrEqualTo(Byte value) {
             addCriterion("field_type >=", value, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeLessThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andFieldTypeLessThan(Byte value) {
             addCriterion("field_type <", value, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeLessThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andFieldTypeLessThanOrEqualTo(Byte value) {
             addCriterion("field_type <=", value, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andFieldTypeIn(List<Byte> values) {
             addCriterion("field_type in", values, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeNotIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andFieldTypeNotIn(List<Byte> values) {
             addCriterion("field_type not in", values, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andFieldTypeBetween(Byte value1, Byte value2) {
             addCriterion("field_type between", value1, value2, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andFieldTypeNotBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andFieldTypeNotBetween(Byte value1, Byte value2) {
             addCriterion("field_type not between", value1, value2, "fieldType");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyIsNull() {
+        public HeaderFieldUserExample.Criteria andApplyIsNull() {
             addCriterion("apply is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyIsNotNull() {
+        public HeaderFieldUserExample.Criteria andApplyIsNotNull() {
             addCriterion("apply is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andApplyEqualTo(Byte value) {
             addCriterion("apply =", value, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyNotEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andApplyNotEqualTo(Byte value) {
             addCriterion("apply <>", value, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyGreaterThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andApplyGreaterThan(Byte value) {
             addCriterion("apply >", value, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyGreaterThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andApplyGreaterThanOrEqualTo(Byte value) {
             addCriterion("apply >=", value, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyLessThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andApplyLessThan(Byte value) {
             addCriterion("apply <", value, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyLessThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andApplyLessThanOrEqualTo(Byte value) {
             addCriterion("apply <=", value, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andApplyIn(List<Byte> values) {
             addCriterion("apply in", values, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyNotIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andApplyNotIn(List<Byte> values) {
             addCriterion("apply not in", values, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andApplyBetween(Byte value1, Byte value2) {
             addCriterion("apply between", value1, value2, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andApplyNotBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andApplyNotBetween(Byte value1, Byte value2) {
             addCriterion("apply not between", value1, value2, "apply");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryIsNull() {
+        public HeaderFieldUserExample.Criteria andCategoryIsNull() {
             addCriterion("category is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryIsNotNull() {
+        public HeaderFieldUserExample.Criteria andCategoryIsNotNull() {
             addCriterion("category is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andCategoryEqualTo(Byte value) {
             addCriterion("category =", value, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryNotEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andCategoryNotEqualTo(Byte value) {
             addCriterion("category <>", value, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryGreaterThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andCategoryGreaterThan(Byte value) {
             addCriterion("category >", value, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryGreaterThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andCategoryGreaterThanOrEqualTo(Byte value) {
             addCriterion("category >=", value, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryLessThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andCategoryLessThan(Byte value) {
             addCriterion("category <", value, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryLessThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andCategoryLessThanOrEqualTo(Byte value) {
             addCriterion("category <=", value, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andCategoryIn(List<Byte> values) {
             addCriterion("category in", values, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryNotIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andCategoryNotIn(List<Byte> values) {
             addCriterion("category not in", values, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andCategoryBetween(Byte value1, Byte value2) {
             addCriterion("category between", value1, value2, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andCategoryNotBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andCategoryNotBetween(Byte value1, Byte value2) {
             addCriterion("category not between", value1, value2, "category");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterIsNull() {
+        public HeaderFieldUserExample.Criteria andIsFilterIsNull() {
             addCriterion("is_filter is null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterIsNotNull() {
+        public HeaderFieldUserExample.Criteria andIsFilterIsNotNull() {
             addCriterion("is_filter is not null");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andIsFilterEqualTo(Byte value) {
             addCriterion("is_filter =", value, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterNotEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andIsFilterNotEqualTo(Byte value) {
             addCriterion("is_filter <>", value, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterGreaterThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andIsFilterGreaterThan(Byte value) {
             addCriterion("is_filter >", value, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterGreaterThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andIsFilterGreaterThanOrEqualTo(Byte value) {
             addCriterion("is_filter >=", value, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterLessThan(Byte value) {
+        public HeaderFieldUserExample.Criteria andIsFilterLessThan(Byte value) {
             addCriterion("is_filter <", value, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterLessThanOrEqualTo(Byte value) {
+        public HeaderFieldUserExample.Criteria andIsFilterLessThanOrEqualTo(Byte value) {
             addCriterion("is_filter <=", value, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andIsFilterIn(List<Byte> values) {
             addCriterion("is_filter in", values, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterNotIn(List<Byte> values) {
+        public HeaderFieldUserExample.Criteria andIsFilterNotIn(List<Byte> values) {
             addCriterion("is_filter not in", values, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andIsFilterBetween(Byte value1, Byte value2) {
             addCriterion("is_filter between", value1, value2, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
         }
 
-        public Criteria andIsFilterNotBetween(Byte value1, Byte value2) {
+        public HeaderFieldUserExample.Criteria andIsFilterNotBetween(Byte value1, Byte value2) {
             addCriterion("is_filter not between", value1, value2, "isFilter");
-            return (Criteria) this;
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateIsNull() {
+            addCriterion("state is null");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateIsNotNull() {
+            addCriterion("state is not null");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateEqualTo(String value) {
+            addCriterion("state =", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateNotEqualTo(String value) {
+            addCriterion("state <>", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateGreaterThan(String value) {
+            addCriterion("state >", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateGreaterThanOrEqualTo(String value) {
+            addCriterion("state >=", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateLessThan(String value) {
+            addCriterion("state <", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateLessThanOrEqualTo(String value) {
+            addCriterion("state <=", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateLike(String value) {
+            addCriterion("state like", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateNotLike(String value) {
+            addCriterion("state not like", value, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateIn(List<String> values) {
+            addCriterion("state in", values, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateNotIn(List<String> values) {
+            addCriterion("state not in", values, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateBetween(String value1, String value2) {
+            addCriterion("state between", value1, value2, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andStateNotBetween(String value1, String value2) {
+            addCriterion("state not between", value1, value2, "state");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeIsNull() {
+            addCriterion("tenant_code is null");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeIsNotNull() {
+            addCriterion("tenant_code is not null");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeEqualTo(String value) {
+            addCriterion("tenant_code =", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeNotEqualTo(String value) {
+            addCriterion("tenant_code <>", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeGreaterThan(String value) {
+            addCriterion("tenant_code >", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeGreaterThanOrEqualTo(String value) {
+            addCriterion("tenant_code >=", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeLessThan(String value) {
+            addCriterion("tenant_code <", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeLessThanOrEqualTo(String value) {
+            addCriterion("tenant_code <=", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeLike(String value) {
+            addCriterion("tenant_code like", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeNotLike(String value) {
+            addCriterion("tenant_code not like", value, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeIn(List<String> values) {
+            addCriterion("tenant_code in", values, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeNotIn(List<String> values) {
+            addCriterion("tenant_code not in", values, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeBetween(String value1, String value2) {
+            addCriterion("tenant_code between", value1, value2, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
+        }
+
+        public HeaderFieldUserExample.Criteria andTenantCodeNotBetween(String value1, String value2) {
+            addCriterion("tenant_code not between", value1, value2, "tenantCode");
+            return (HeaderFieldUserExample.Criteria) this;
         }
     }
 
-    public static class Criteria extends GeneratedCriteria {
+    public static class Criteria extends HeaderFieldUserExample.GeneratedCriteria {
 
         protected Criteria() {
             super();
