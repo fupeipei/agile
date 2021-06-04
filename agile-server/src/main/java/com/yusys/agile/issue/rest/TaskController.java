@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +48,8 @@ public class TaskController {
                 return ControllerResponse.fail("请选择任务类型");
             }
             return ControllerResponse.success(taskService.createTask(issueDTO));
+        }catch (BusinessException b){
+            return ControllerResponse.fail(b.getMessage());
         } catch (Exception e) {
             LOGGER.error("新增任务失败：{}", e);
             return ControllerResponse.fail("新增任务失败：" + e.getMessage());
@@ -69,6 +72,8 @@ public class TaskController {
     public ControllerResponse deleteTask(@PathVariable("taskId") Long taskId, @RequestParam(name = "deleteChild") Boolean deleteChild) {
         try {
             taskService.deleteTask(taskId, deleteChild);
+        } catch (BusinessException b){
+            return ControllerResponse.fail(b.getMessage());
         } catch (Exception e) {
             LOGGER.error("删除任务失败：{}", e);
             return ControllerResponse.fail("删除任务失败：" + e.getMessage());
@@ -86,8 +91,14 @@ public class TaskController {
 //        //暂时先将扩展字段扔掉
 //        JSONObject jsonObject = new JSONObject(map);
 //        IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-        taskService.editTask(issueDTO,securityDTO);
-        return ControllerResponse.success("编辑任务成功！");
+        try {
+            taskService.editTask(issueDTO,securityDTO);
+            return ControllerResponse.success("编辑任务成功！");
+        } catch (BusinessException b){
+            return ControllerResponse.fail(b.getMessage());
+        } catch (Exception e) {
+            return ControllerResponse.fail("修改任务失败"+e.getMessage());
+        }
     }
 
     @PutMapping("/copyTask/{taskId}")
