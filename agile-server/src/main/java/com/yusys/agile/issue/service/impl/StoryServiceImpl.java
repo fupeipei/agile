@@ -468,9 +468,9 @@ public class StoryServiceImpl implements StoryService {
                         }
                         if (null != task.getHandler()) {
                             SsoUser ssoUser = iFacadeUserApi.queryUserById(task.getHandler());
-                            SsoUserDTO userDTO = ReflectUtil.copyProperties(ssoUser, SsoUserDTO.class);
                             if (null != ssoUser) {
                                 ssoUser.setUserPassword(null);
+                                SsoUserDTO userDTO = ReflectUtil.copyProperties(ssoUser, SsoUserDTO.class);
                                 task.setOwner(userDTO);
                             }
                         }
