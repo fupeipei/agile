@@ -37,19 +37,18 @@ public interface CustomFieldPoolService {
      * @return void
      * @date 2021/2/1
      */
-    void deleteCustomField(Long fieldId) throws Exception;
+    void deleteCustomField(Long fieldId);
 
     /**
-     * 功能描述: 列表查询自定义字段
-     *
+     * 列表查询自定义字段
+     * @author zhaofeng
+     * @date 2021/6/3 14:49
+     * @param systemId
      * @param fieldName
      * @param pageNum
      * @param pageSize
-     * @param projectId
-     * @return java.util.List<com.yusys.agile.customfield.dto.CustomFieldDTO>
-     * @date 2021/2/1
      */
-    List<CustomFieldDTO> listAllCustomFields(String fieldName, Integer pageNum, Integer pageSize, Long projectId);
+    List<CustomFieldDTO> listAllCustomFields(Long systemId, String fieldName, Integer pageNum, Integer pageSize);
 
 
     /**
