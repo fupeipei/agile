@@ -634,11 +634,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         if (ObjectUtil.isEmpty(sprint)) {
             throw new BusinessException("迭代失效或暂无此迭代");
         }
+
         BeanUtils.copyProperties(sprint, sprintOverView);
         sprintOverView.setTeamName(sTeamMapper.queryTeamNameByTeamId(sprint.getTeamId()));
-        //List<STeamMember> sprintUSer = sTeamMapper.queryUserInfoByUserId(sprintId, sprint.getTeamId());
-        List<STeamMember> sprintUSer = querySprintUser(sprintId);
-        sprintOverView.setSprintUSer(sprintUSer);
+
+        List<Long> sprintMembersId = ssprintMapper.querySprintMembersId(sprintId);
+        List<SsoUser> users = iFacadeUserApi.queryUserList(sprintMembersId);
+        sprintOverView.setSprintUSer(users);
+
         List<Long> sprintSystemIds = sTeamMapper.queryTeamSystem(sprint.getTeamId());
         List<SsoSystemRestDTO> ssoSystemRestDTOS = iFacadeSystemApi.getSystemByIds(sprintSystemIds);
         sprintOverView.setSprintSystem(ssoSystemRestDTOS);
@@ -689,7 +692,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId) {
         //迭代相关人员
-        List<STeamMember> userList = sTeamMapper.querySprintUser(sprintId);
+        List<Long> sprintMembersId = ssprintMapper.querySprintMembersId(sprintId);
+        List<SsoUser> users = iFacadeUserApi.queryUserList(sprintMembersId);
+
+        if (ObjectUtil.isEmpty(users)) {
+            throw new BusinessException("人员查询异常");
+        }
+
         List<SprintMembersWorkHours> list = new ArrayList<>();
         //未领取
         SprintMembersWorkHours unclaimedWorkHours = new SprintMembersWorkHours();
@@ -700,14 +709,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         unclaimedWorkHours.setTaskNumber(ssprintMapper.unclaimedTaskNumber(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE));
         list.add(unclaimedWorkHours);
 
-        for (int i = 0; i < userList.size(); i++) {
+        for (int i = 0; i < users.size(); i++) {
             SprintMembersWorkHours sprintMembersWorkHours = new SprintMembersWorkHours();
-            sprintMembersWorkHours.setUserId(userList.get(i).getUserId());
-            sprintMembersWorkHours.setUserName(userList.get(i).getUserName());
-            sprintMembersWorkHours.setUserAccount(userList.get(i).getUserAccount());
-            sprintMembersWorkHours.setActualWorkload(ssprintMapper.queryUserActualWorkload(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
-            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
-            sprintMembersWorkHours.setTaskNumber(ssprintMapper.queryUserTaskNumber(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
+            sprintMembersWorkHours.setUserId(users.get(i).getUserId());
+            sprintMembersWorkHours.setUserName(users.get(i).getUserName());
+            sprintMembersWorkHours.setUserAccount(users.get(i).getUserAccount());
+            sprintMembersWorkHours.setActualWorkload(ssprintMapper.queryUserActualWorkload(sprintId, users.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
+            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(sprintId, users.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
+            sprintMembersWorkHours.setTaskNumber(ssprintMapper.queryUserTaskNumber(sprintId, users.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
             list.add(sprintMembersWorkHours);
         }
         return list;

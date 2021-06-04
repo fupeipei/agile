@@ -319,4 +319,13 @@ public interface SSprintMapper {
      * @author 张宇
      */
     boolean sprintBindingIssue(long sprintId);
+
+    /**
+     * 查询迭代成员id
+     *
+     * @param sprintId 迭代id
+     * @return {@link List<Long>}
+     * @author 张宇
+     */
+    List<Long> querySprintMembersId(long sprintId);
 }
