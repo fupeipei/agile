@@ -153,18 +153,43 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public void deleteStory(Long storyId, Boolean deleteChild) {
+    public void deleteStory(Long storyId, Boolean deleteChild,Long userId) {
+        if(null != userId){
+            Issue story = issueMapper.selectByPrimaryKey(storyId);
+            if(Optional.ofNullable(story).isPresent() && Optional.ofNullable(story.getSprintId()).isPresent()){
+                Long teamId = getTeamIdBySprintId(story.getSprintId());
+                if(!iFacadeUserApi.checkIsTeamPo(userId, teamId)){
+                    throw  new BusinessException("非迭代PO不允许移除故事！");
+                }
+            }
+        }
+
         issueFactory.deleteIssue(storyId, deleteChild);
+    }
+
+    private Long getTeamIdBySprintId(Long sprintId) {
+        if(Optional.ofNullable(sprintId).isPresent()){
+            SSprintWithBLOBs sprintWithBLOBs = sSprintMapper.selectByPrimaryKey(sprintId);
+            return sprintWithBLOBs.getTeamId();
+        }
+        return null;
     }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void editStory(IssueDTO issueDTO) {
+    public void editStory(IssueDTO issueDTO,Long userId) {
         Issue oldStory = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         if(null == oldStory){
             return;
         }
+
+        Long teamId = getTeamIdBySprintId(oldStory.getSprintId());
+        if(!iFacadeUserApi.checkIsTeamPo(userId, teamId)){
+            throw  new BusinessException("非迭代PO不允许编辑故事！");
+        }
+
+
         Long projectId = oldStory.getProjectId();
 
         //校验故事下有未完成任务或未修复缺陷不允许改为完成阶段
