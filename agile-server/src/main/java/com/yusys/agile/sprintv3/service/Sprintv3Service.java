@@ -179,7 +179,7 @@ public interface Sprintv3Service {
      * @param pageSize
      * @return
      */
-    List<STeamMember> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize);
+    List<SsoUserDTO>  querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize);
 
 
     /**
