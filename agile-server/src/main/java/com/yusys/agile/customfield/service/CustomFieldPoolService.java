@@ -10,23 +10,25 @@ import java.util.List;
  * @create 2021/2/1
  */
 public interface CustomFieldPoolService {
-    /**
-     * 功能描述: 新增自定义字段
-     *
-     * @param customFieldDTO
-     * @return void
-     * @date 2021/2/1
-     */
-    void addCustomField(CustomFieldDTO customFieldDTO) throws Exception;
 
     /**
-     * 功能描述:修改自定义字段
+     * 添加自定义字段
      *
-     * @param customFieldDTO
-     * @return void
-     * @date 2021/2/1
+     * @param customFieldDTO 自定义字段dto
+     * @return {@link String}
+     * @author 张宇
      */
-    void editCustomField(CustomFieldDTO customFieldDTO) throws Exception;
+    String addCustomField(CustomFieldDTO customFieldDTO);
+
+
+    /**
+     * 编辑自定义字段
+     *
+     * @param customFieldDTO 自定义字段dto
+     * @return {@link String}
+     * @author 张宇
+     */
+    String editCustomField(CustomFieldDTO customFieldDTO);
 
     /**
      * 功能描述: 删除自定义字段
@@ -35,19 +37,18 @@ public interface CustomFieldPoolService {
      * @return void
      * @date 2021/2/1
      */
-    void deleteCustomField(Long fieldId) throws Exception;
+    void deleteCustomField(Long fieldId);
 
     /**
-     * 功能描述: 列表查询自定义字段
-     *
+     * 列表查询自定义字段
+     * @author zhaofeng
+     * @date 2021/6/3 14:49
+     * @param systemId
      * @param fieldName
      * @param pageNum
      * @param pageSize
-     * @param projectId
-     * @return java.util.List<com.yusys.agile.customfield.dto.CustomFieldDTO>
-     * @date 2021/2/1
      */
-    List<CustomFieldDTO> listAllCustomFields(String fieldName, Integer pageNum, Integer pageSize, Long projectId);
+    List<CustomFieldDTO> listAllCustomFields(Long systemId, String fieldName, Integer pageNum, Integer pageSize);
 
 
     /**

@@ -80,17 +80,19 @@ public class IssueTemplateController {
     }
 
     /**
-     * 功能描述 分页查询未应用的自定义字段
-     *
-     * @param securityDTO
+     * 分页查询未应用的自定义字段，不传系统id时，查询系统外的
+     * @author zhaofeng
+     * @date 2021/6/3 16:19
      * @param issueType
      * @param fieldName
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/8/3
+     * @param systemId 系统id
      */
     @GetMapping("/issueCustomRelation/getUnApplied")
-    public ControllerResponse getUnApplied(SecurityDTO securityDTO, Byte issueType, String fieldName) {
-        return ControllerResponse.success(issueCustomRelationService.getUnApplied(securityDTO, issueType, fieldName));
+    public ControllerResponse getUnApplied(
+            @RequestParam(name = "issueType") Byte issueType,
+            @RequestParam(name = "fieldName", required = false) String fieldName,
+            @RequestParam(name = "systemId", required = false) Long systemId) {
+        return ControllerResponse.success(issueCustomRelationService.getUnApplied(systemId, issueType, fieldName));
     }
 
 

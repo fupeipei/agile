@@ -278,7 +278,7 @@ public interface SSprintMapper {
      * @return int
      * @author 张宇
      */
-    Integer queryUserActualWorkload(@Param("sprintId") long sprintId, @Param("userId") Long userId);
+    Integer queryUserActualWorkload(@Param("sprintId") long sprintId, @Param("userId") Long userId, @Param("issueType") Byte IssueType);
 
     /**
      * 查询用户剩余工作量
@@ -301,7 +301,7 @@ public interface SSprintMapper {
      * @return int
      * @author 张宇
      */
-    int queryUserTaskNumber(@Param("sprintId") long sprintId, @Param("userId") Long userId);
+    int queryUserTaskNumber(@Param("sprintId") long sprintId, @Param("userId") Long userId, @Param("issueType") Byte IssueType);
 
 
     /**

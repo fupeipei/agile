@@ -1323,9 +1323,6 @@ public class IssueServiceImpl implements IssueService {
             issueRecord.setPageNum(StringUtil.StringtoInteger(issueStringDTO.getPageNum()));
             issueRecord.setPageSize(StringUtil.StringtoInteger(issueStringDTO.getPageSize()));
         }
-        if (map.containsKey("BAPerson")) {
-            issueRecord.setBAPerson(map.get("BAPerson").toString());
-        }
         if (StringUtils.isNotEmpty(issueStringDTO.getIssueType())) {
             issueRecord.setIssueTypes(dealData(issueStringDTO.getIssueType(), BYTE));
         }

@@ -9,14 +9,18 @@ import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @Description: 用户故事单元测试
@@ -146,7 +150,12 @@ public class StoryServiceTest {
         org.junit.Assert.assertTrue("createBatchRelation成功", true);
     }
 
-
+    @Test
+    public void testListStorysAndTasks() {
+        IssueDTO issueDTO = new IssueDTO();
+        List<IssueDTO>  list = storyService.listStorysAndTasks(issueDTO);
+        Assert.assertTrue("查询迭代下的用户故事和任务list", true);
+    }
 
 }
 

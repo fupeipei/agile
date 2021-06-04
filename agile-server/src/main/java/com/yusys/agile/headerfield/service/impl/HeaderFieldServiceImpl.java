@@ -1,7 +1,9 @@
 package com.yusys.agile.headerfield.service.impl;
 
-import com.yusys.agile.constant.StringConstant;
-import com.yusys.agile.customfield.domain.CustomFieldPoolExample;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
@@ -13,29 +15,26 @@ import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.headerfield.service.HeaderFieldService;
 import com.yusys.agile.headerfielduser.domain.HeaderFieldUser;
 import com.yusys.agile.headerfielduser.service.HeaderFieldUserService;
-import com.yusys.agile.issue.domain.IssueCustomField;
-import com.yusys.agile.issue.domain.IssueCustomRelation;
+import com.yusys.agile.issue.domain.SIssueCustomField;
+import com.yusys.agile.issue.domain.SIssueCustomRelation;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.enums.IssueHistoryRecordTypeEnum;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.utils.ObjectUtil;
-import com.yusys.agile.versionmanager.constants.VersionConstants;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -194,7 +193,7 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
      * @date 2020/4/17
      */
     @Override
-    public List<IssueHistoryRecord> generateHistory(List<IssueCustomField> newFieldList, List<IssueCustomFieldDTO> oldFieldList, Byte issueType, Long issueId, Long projectId) {
+    public List<IssueHistoryRecord> generateHistory(List<SIssueCustomField> newFieldList, List<IssueCustomFieldDTO> oldFieldList, Byte issueType, Long issueId, Long projectId) {
         HeaderFieldExample example = new HeaderFieldExample();
         HeaderFieldExample.Criteria criteria = example.createCriteria();
         criteria.andProjectIdEqualTo(projectId).andCategoryEqualTo(issueType);
@@ -209,7 +208,7 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
         Map<Long, String> oldFieldMap = new HashMap<>();
         oldFieldMap.putAll(newFieldMap);
         if (newFieldList != null && !newFieldList.isEmpty()) {
-            for (IssueCustomField newField : newFieldList) {
+            for (SIssueCustomField newField : newFieldList) {
                 newFieldMap.put(newField.getFieldId(), newField.getFieldValue());
             }
         }
@@ -290,14 +289,17 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
 
     @Override
     public Integer deleteCustomFieldByFieldId(Long fieldId) {
+        String fieldCode = fieldId.toString();
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();
         headerFieldExample.createCriteria()
-                .andFieldCodeEqualTo(fieldId.toString())
+                .andFieldCodeEqualTo(fieldCode)
                 .andIsCustomEqualTo(Byte.parseByte("1"));
         List<HeaderField> headerFields = headerFieldMapper.selectByExample(headerFieldExample);
-        for (int i = 0; i < headerFields.size(); i++) {
-            headerFieldUserService.deleteCustomField(headerFields.get(i).getFieldId());
-            headerFieldMapper.deleteByPrimaryKey(headerFields.get(i).getFieldId());
+        //逻辑删除 headerField By fieldCode
+        headerFieldMapper.updateStateByFieldCode(fieldCode, StateEnum.E.getValue());
+        for (HeaderField headerField : headerFields) {
+            Long headerFieldId = headerField.getFieldId();
+            headerFieldUserService.deleteCustomField(headerFieldId);
         }
         return headerFields.size();
     }
@@ -343,10 +345,10 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
 
     @Override
     public List<HeaderField> getAllHeaderFieldByProjectId(Long projectId) {
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields("", null, null, projectId);
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(projectId, null, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        List<IssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(projectId, null);
-        Map<Long, List<IssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(IssueCustomRelation::getId));
+        List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(projectId, null);
+        Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
         List<HeaderField> headerFields = Lists.newArrayList();
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();
         HeaderFieldExample.Criteria criteria = headerFieldExample.createCriteria();
@@ -381,8 +383,8 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
      */
     public List<HeaderField> orderHeaderFieldDTO( List<CustomFieldDTO> customFieldDTOList){
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        List<IssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(null, null);
-        Map<Long, List<IssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(IssueCustomRelation::getId));
+        List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(null, null);
+        Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
         List<HeaderField> headerFields = Lists.newArrayList();
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();
         HeaderFieldExample.Criteria criteria = headerFieldExample.createCriteria();
