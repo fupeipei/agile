@@ -2,17 +2,10 @@ package com.yusys.agile.easyexcel.service;
 
 import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.file.domain.FileInfo;
-import com.yusys.agile.utils.ExcelUtil;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  *  @Description: excel服务
@@ -52,7 +45,7 @@ public interface IExcelService {
 
 
     /**
-     *
+     * 工作项导出
      * @param issueType
      * @param systemId
      * @param map
