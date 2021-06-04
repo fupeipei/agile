@@ -50,6 +50,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void calculateWorkload() {
+        Date target = DateUtil.preDay(new Date());
+        //重复执行定时任务时，按target 日期删除旧数据
+        burnDownChartDao.deleteByTargetData(target);
         //查询所有迭代
         List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
         if (CollectionUtils.isNotEmpty(sSprints)) {
@@ -231,12 +234,13 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
                     burnDownStoryPoint.setSprintTime(DateUtil.formatDate(startTime));
                     //查询当前startTime完成的故事点总数
                     Integer currCount = issueMapper.countCurrTimeStoryPointsForSprintId(sprintId, startTime);
+                    Integer temp = count;
                     if(currCount != null){
-                        count -= currCount;
+                        temp -= currCount;
                     }
                     //如果startTime > 今天 则不赋值
                     if(!startTime.after(DateUtil.currentDay())){
-                        burnDownStoryPoint.setRemainStoryPoint(count);
+                        burnDownStoryPoint.setRemainStoryPoint(temp);
                     }
                     //如果是当前，由于定时任务不会执行，所以必须查一次
                     if(DateUtil.equalsByDay(startTime, DateUtil.currentDay())){
@@ -273,6 +277,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void calculateStorys() {
+        Date target = DateUtil.preDay(new Date());
+        //重复执行定时任务时，按target 日期删除旧数据
+        burnDownChartStoryDao.deleteByTarget(target);
         //查询所有迭代
         List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
         if (CollectionUtils.isNotEmpty(sSprints)) {

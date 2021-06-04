@@ -56,7 +56,6 @@ public class CustomFieldPoolServiceTest {
         CustomFieldDTO customFieldDTO = initData();
         String s = customFieldPoolService.editCustomField(customFieldDTO);
         Assert.assertNotNull(s);
-
     }
 
     @Test

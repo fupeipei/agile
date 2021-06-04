@@ -13,6 +13,7 @@ import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -99,9 +100,9 @@ public class StoryController {
 
 
     @DeleteMapping("/delete/{storyId}")
-    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild) {
+    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild,SecurityDTO securityDTO) {
         try {
-            storyService.deleteStory(storyId, deleteChild);
+            storyService.deleteStory(storyId, deleteChild,securityDTO.getUserId());
         } catch (Exception e) {
             LOGGER.error("删除用户故事失败：{}", e);
             return ControllerResponse.fail("删除用户故事失败：" + e.getMessage());
@@ -111,12 +112,12 @@ public class StoryController {
 
 
     @PostMapping("/edit")
-    public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
+    public ControllerResponse editStory(@RequestBody Map<String, Object> map,SecurityDTO securityDTO) {
         try {
             //保存工作项基础字段
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-            storyService.editStory(issueDTO);
+            storyService.editStory(issueDTO,securityDTO.getUserId());
             //批量新增或者批量更新扩展字段值
             issueDTO.setIssueType(new Byte("3"));
             issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);

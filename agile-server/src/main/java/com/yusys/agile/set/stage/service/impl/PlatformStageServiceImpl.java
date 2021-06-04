@@ -104,6 +104,20 @@ public class PlatformStageServiceImpl implements IStageService {
         return stageInstances;
     }
 
+    @Override
+    public KanbanStageInstance getStageInfoByStageId(Long stageId) {
+        KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
+        kanbanStageInstanceExample.createCriteria()
+                .andStateEqualTo(StageConstant.STATE_VALIDATE)
+                .andStageIdEqualTo(stageId);
+        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
+        if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
+            return kanbanStageInstances.get(0);
+        }
+        return null;
+    }
+
 
     /**
      * 批量处理二级状态数据
