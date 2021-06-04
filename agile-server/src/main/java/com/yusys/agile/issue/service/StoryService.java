@@ -37,14 +37,14 @@ public interface StoryService {
      * @param storyId
      * @param deleteChild
      */
-    void deleteStory(Long storyId, Boolean deleteChild);
+    void deleteStory(Long storyId, Boolean deleteChild,Long userId);
 
 
     /**
      * 编辑用户故事
      * @param issueDTO
      */
-    void editStory(IssueDTO issueDTO);
+    void editStory(IssueDTO issueDTO,Long userId);
 
 
     /**
