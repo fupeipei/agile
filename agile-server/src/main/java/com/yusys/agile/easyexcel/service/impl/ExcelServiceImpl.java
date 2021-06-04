@@ -333,7 +333,6 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 检查Excel文件数据
-     *
      * @param data
      * @param copyData
      * @param headSize
@@ -392,7 +391,6 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 功能描述: 校验列头
-     *
      * @param excelhead
      * @param excelType
      * @return
@@ -518,8 +516,8 @@ public class ExcelServiceImpl implements IExcelService {
                                 }catch (Exception e){
                                     log.info("远程获取系统信息异常:{}",e.getMessage());
                                 }
-                                result = systemMap.get(systemId);
                             }
+                            result = systemMap.get(systemId);
 
                         }else if("createUid".equals(name) || "handler".equals(name) || "updateUid".equals(name)){
                             Long userId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
@@ -530,8 +528,8 @@ public class ExcelServiceImpl implements IExcelService {
                                 }catch (Exception e){
                                     log.info("远程获取人员信息异常：{}",e.getMessage());
                                 }
-                                result = userMap.get(userId);
                             }
+                            result = userMap.get(userId);
 
                         }else if("stageId".equals(name)){
                             Long stageId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
@@ -560,10 +558,10 @@ public class ExcelServiceImpl implements IExcelService {
                         Type genericType = s.getGenericType();
                         String typeName = genericType.getTypeName();
                         if("java.util.Date".equals(typeName)){
-                            String value = s.get(issue) == null ? null :String.valueOf(s.get(issue));
-                            if(Optional.ofNullable(value).isPresent()){
+                            Date date = s.get(issue) == null ? null :(Date)s.get(issue);
+                            if(Optional.ofNullable(date).isPresent()){
                                 try {
-                                    String formatDate = DateUtil.formatDateToStr2(DateUtil.formatStrToDate(value));
+                                    String formatDate = DateUtil.formatDateToStr2(date);
                                     result = formatDate;
                                 }catch (Exception e){
                                     log.info("日期转换异常:{}",e.getMessage());
