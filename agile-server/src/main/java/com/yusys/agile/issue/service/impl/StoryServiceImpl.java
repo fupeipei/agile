@@ -485,7 +485,6 @@ public class StoryServiceImpl implements StoryService {
                         issueDTO.setChildren(taskList);
                         issueDTOSTmp.add(issueDTO);
                     }
-
                 }
             }
         }
