@@ -24,6 +24,7 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.dto.IssueExportDTO;
 import com.yusys.agile.issue.dto.IssueStringDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -31,9 +32,19 @@ import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.set.stage.constant.StageConstant;
+import com.yusys.agile.set.stage.domain.KanbanStageInstance;
+import com.yusys.agile.set.stage.service.IStageService;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeSystemApi;
+import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +60,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,6 +95,15 @@ public class ExcelServiceImpl implements IExcelService {
     private IssueMapper issueMapper;
     @Autowired
     private ExternalApiConfigMapper externalApiConfigMapper;
+    @Autowired
+    private SSprintMapper sSprintMapper;
+    @Autowired
+    private IFacadeSystemApi iFacadeSystemApi;
+    @Resource
+    private IFacadeUserApi iFacadeUserApi;
+    @Autowired
+    private IStageService stageService;
+ 
 
     private static final String MAX_ISSUE_EXPORT_THRESHOLD_KEY = "ISSUE_MAX_EXPORT_THRESHOLD";
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
@@ -399,27 +422,26 @@ public class ExcelServiceImpl implements IExcelService {
         }
     }
 
-    private List<List<String>> getExcelData( List<Issue> issueList,
-                                             List<HeaderField> headerFieldList){
+    private List<List<String>> getExcelData(List<Issue> issueList, List<HeaderField> headerFieldList){
         List<List<String>> dataResult = Lists.newArrayList();
-
         if (CollectionUtils.isNotEmpty(issueList)) {
-
-            for(Issue issue:issueList){
+            List<IssueExportDTO> exportDTOList = transformaData(issueList);
+            for(IssueExportDTO issue:exportDTOList){
 
                 List<String> fieldList = Lists.newArrayList();
                 Class<?> issueClass = issue.getClass();
                 Field[] fields = issueClass.getDeclaredFields();
-
                 for(HeaderField headerField:headerFieldList){
+
                     for(Field field : fields){
                         try {
                             field.setAccessible(true);
                             String fieldCode = headerField.getFieldCode();
                             String name = field.getName();
+
                             if(StringUtils.equals(fieldCode,name)){
                                 Object o = field.get(issue);
-                                fieldList.add(String.valueOf(o));
+                                fieldList.add(o == null ? null:String.valueOf(o));
                                 break;
                             }
                         }catch (Exception e){
@@ -431,6 +453,95 @@ public class ExcelServiceImpl implements IExcelService {
             }
         }
         return dataResult;
+    }
+
+    private List<IssueExportDTO> transformaData(List<Issue> issues){
+        List<IssueExportDTO> exportDTOList = Lists.newArrayList();
+        if(CollectionUtils.isNotEmpty(issues)){
+            for(Issue issue : issues){
+                IssueExportDTO target = new IssueExportDTO();
+                Class<?> sourceClass = issue.getClass();
+                Class<?> targetClass = target.getClass();
+                Field[] sourceFields = sourceClass.getDeclaredFields();
+                Field t;
+
+                for (Field s : sourceFields) {
+                    try {
+                        s.setAccessible(true);
+                        String name = s.getName();
+                        t = targetClass.getDeclaredField(name);
+                        t.setAccessible(true);
+                        String result = null;
+                        if("issueType".equals(name)){
+                            result = IssueTypeEnum.getName((Byte) s.get(name));
+                        }else if("sprintId".equals(name)){
+                            Long sprintId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
+                            if(Optional.ofNullable(sprintId).isPresent()){
+                                SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
+                                result = sprint.getSprintName();
+                            }
+                        }else if("systemId".equals(name)){
+                            Long systemId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
+                            if(Optional.ofNullable(systemId).isPresent()){
+                                try {
+                                    SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
+                                    result = ssoSystem.getSystemName();
+                                }catch (Exception e){
+                                    log.info("远程获取系统信息异常:{}",e.getMessage());
+                                }
+                            }
+                        }else if("createUid".equals(name) || "handler".equals(name) || "updateUid".equals(name)){
+                            Long userId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
+                            if(Optional.ofNullable(userId).isPresent()){
+                                try {
+                                    SsoUser user = iFacadeUserApi.queryUserById(userId);
+                                    result = user == null? null : user.getUserName();
+                                }catch (Exception e){
+                                    log.info("远程获取人员信息异常：{}",e.getMessage());
+                                }
+                            }
+                        }else if("stageId".equals(name)){
+                            Long stageId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get(name)));
+                            String firstStageName = StageConstant.FirstStageEnum.getFirstStageName(stageId);
+                            Long laneId = s.get(name) == null ? null : Long.valueOf(String.valueOf(s.get("laneId")));
+                            KanbanStageInstance stageInfo = stageService.getStageInfoByStageId(laneId);
+                            StringBuffer buffer = new StringBuffer();
+                            if(Optional.ofNullable(firstStageName).isPresent()){
+                                buffer.append(firstStageName);
+                                if(Optional.ofNullable(stageInfo).isPresent()){
+                                    buffer.append("/").append(stageInfo.getStageName());
+                                }
+                            }
+                            result = buffer.length() > 0 ? buffer.toString() : null;
+                        }else if("taskType".equals(name)){
+                            Integer taskType = s.get(name) == null ? null : Integer.valueOf(String.valueOf(s.get(name)));
+                            String tasKName  = TaskTypeEnum.getName(taskType);
+                            result = tasKName;
+                        }
+
+                        Type genericType = s.getGenericType();
+                        String typeName = genericType.getTypeName();
+                        if("Date".equals(typeName)){
+                            String value = s.get(name) == null ? null :String.valueOf(s.get(name));
+                            if(Optional.ofNullable(value).isPresent()){
+                                try {
+                                    String formatDate = DateUtil.formatDateToStr2(DateUtil.formatStrToDate(value));
+                                    result = formatDate;
+                                }catch (Exception e){
+                                    log.info("日期转换异常:{}",e.getMessage());
+                                }
+                            }
+                        }
+                        t.set(target, result == null? (s.get(issue) == null ? null :s.get(issue).toString()) : result);
+                    } catch (Exception e) {
+                        log.warn("|类转换异常|{}", s.toString());
+                        continue;
+                    }
+                }
+                exportDTOList.add(target);
+            }
+        }
+        return exportDTOList;
     }
 
 
