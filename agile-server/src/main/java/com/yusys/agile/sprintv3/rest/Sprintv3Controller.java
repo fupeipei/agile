@@ -13,6 +13,7 @@ import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,8 +246,8 @@ public class Sprintv3Controller {
                                                    @RequestParam(name = "pageNum") Integer pageNum,
                                                    @RequestParam(name = "pageSize") Integer pageSize) {
 
-        List<STeamMember> result = sprintv3Service.querySprintVagueUser(sprintId, userName, pageNum, pageSize);
-        return ControllerResponse.success(new PageInfo<>(result));
+        List<SsoUserDTO>  result = sprintv3Service.querySprintVagueUser(sprintId, userName, pageNum, pageSize);
+        return ControllerResponse.success(result);
 
     }
 

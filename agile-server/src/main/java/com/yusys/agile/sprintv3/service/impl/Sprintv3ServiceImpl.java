@@ -41,6 +41,7 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
@@ -587,7 +588,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             }
             //迭代开始,但是未绑定任务
             ssprintMapper.cancelSprint(sprintId);
-            return "迭代取消";
+            return "迭代取消,解除任务关联";
         }
 
         //迭代未开始,但已经绑定任务
@@ -634,7 +635,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         if (ObjectUtil.isEmpty(sprint)) {
             throw new BusinessException("迭代失效或暂无此迭代");
         }
-
         BeanUtils.copyProperties(sprint, sprintOverView);
         sprintOverView.setTeamName(sTeamMapper.queryTeamNameByTeamId(sprint.getTeamId()));
 
@@ -779,23 +779,16 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<STeamMember> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        //按迭代查询userid
-        List<STeamMember> sTeamMembers = sTeamMapper.querySprintVagueUser(sprintId, userName);
-        List<Long> userIds = sTeamMembers.stream().map(item -> item.getUserId()).collect(Collectors.toList());
-        //按userids查询详细信息
-        List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
-        //比对，赋值
-        sTeamMembers.stream().forEach(m->{
-            ssoUsers.stream().forEach(u->{
-                if(Objects.equals(m.getUserId(), u.getUserId())){
-                    m.setUserAccount(u.getUserAccount());
-                    m.setUserName(u.getUserName());
-                }
-            });
-        });
-        return sTeamMembers;
+    public  List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
+
+        List<SprintV3UserHourDTO> userSprintHourDTOS = this.queryUsersBySprintId(sprintId);
+        List<Long> userIds=new ArrayList<>();
+        for(SprintV3UserHourDTO userSprintHourDTO:userSprintHourDTOS){
+            Long userId = userSprintHourDTO.getUserId();
+            userIds.add(userId);
+        }
+        List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, pageNum, pageSize, userName);
+        return ssoUserDTOS;
     }
 
     @Override
