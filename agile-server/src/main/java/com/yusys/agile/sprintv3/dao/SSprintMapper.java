@@ -94,7 +94,7 @@ public interface SSprintMapper {
      * @return int
      * @author 张宇
      */
-    int querySprintUnfinishedStoryNumber(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+    boolean querySprintExistUnfinishedStory(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
     /**
      * 查询迭代故事
