@@ -362,6 +362,37 @@ public class ExcelServiceImpl implements IExcelService {
                     hasError = true;
                     continue;
                 }
+                if(StringUtils.isNotBlank(line.get(7))){
+                    try {
+                        String startDate = line.get(7);
+                        DateUtil.formatStrToDate(startDate);
+                    }catch (Exception e){
+                        fileResult.add(headSize, "开始日期格式错误");
+                        hasError = true;
+                        continue;
+                    }
+                }
+                if(StringUtils.isNotBlank(line.get(8))){
+                    try {
+                        String endDate = line.get(8);
+                        DateUtil.formatStrToDate(endDate);
+                    }catch (Exception e){
+                        fileResult.add(headSize, "结束日期格式错误");
+                        hasError = true;
+                        continue;
+                    }
+                }
+
+                if(StringUtils.isNotBlank(line.get(9))){
+                    try {
+                        String str = line.get(9);
+                        Integer integer = Integer.valueOf(str);
+                    }catch (Exception e){
+                        fileResult.add(headSize, "预计工时格式错误");
+                        hasError = true;
+                        continue;
+                    }
+                }
 
             } else if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
                 if (StringUtils.isBlank(line.get(0))) {
