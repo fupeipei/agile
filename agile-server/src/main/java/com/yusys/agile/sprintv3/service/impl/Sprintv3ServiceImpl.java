@@ -610,7 +610,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public String sprintFinish(long sprintId) {
         //迭代下未完成的故事数
-        if (0 != ssprintMapper.querySprintUnfinishedStoryNumber(sprintId)) {
+        if (ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_MODIFYING_STATE.CODE)) {
             throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
         }
         //只有进行中的迭代允许完成
@@ -779,7 +779,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public  List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
+    public List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
 
         //通过迭代id查询迭代时长表的userid，然后再查人员
         List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);

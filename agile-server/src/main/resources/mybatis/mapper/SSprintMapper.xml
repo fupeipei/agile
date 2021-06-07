@@ -640,12 +640,12 @@
     </select>
 
 
-    <select id="querySprintUnfinishedStoryNumber" resultType="int">
-        select count(issue_id)
+    <select id="querySprintExistUnfinishedStory" resultType="java.lang.Boolean">
+        select if(count(issue_id) > 0, true, false)
         from s_issue
         where sprint_id = #{sprintId}
-          and issue_type = 3
-          and stage_id <![CDATA[<]]> 103
+          and issue_type = #{issueType}
+          and lane_id = #{status}
           and state = 'U'
     </select>
 

@@ -151,7 +151,7 @@ public class ExcelServiceImpl implements IExcelService {
 
         //3、校验数据（必填项、数据格式等等）
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        boolean hasError = checkData(copyData, (byte) 3);
+        boolean hasError = checkData(data,copyData, (byte) 3);
 
         //4、传错误文件
         if (hasError) {
@@ -184,7 +184,7 @@ public class ExcelServiceImpl implements IExcelService {
         checkFileType(file);
         List<List<String>> data = ExcelUtil.readExcel(file.getInputStream(), 0);
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        boolean hasError = checkData(copyData, (byte) 4);
+        boolean hasError = checkData(data,copyData, (byte) 4);
         if (hasError) {
             return uploadFile(copyData, "taskImportError.xlsx", "tasks", IssueTypeEnum.getName((byte) 4), field);
         }
@@ -276,7 +276,7 @@ public class ExcelServiceImpl implements IExcelService {
      *
      * @param copyData
      */
-    private boolean checkData(List<List<String>> copyData, Byte type) {
+    private boolean checkData(List<List<String>> data,List<List<String>> copyData, Byte type) {
 
         //1、校验表头数据
         if(copyData.size() > 0){
@@ -294,7 +294,7 @@ public class ExcelServiceImpl implements IExcelService {
 
         int headSize = copyData.get(0).size();
         //2、表格数据校验
-        return checExcelData(copyData, copyData, headSize, false, type);
+        return checExcelData(data, copyData, headSize, false, type);
     }
 
 
