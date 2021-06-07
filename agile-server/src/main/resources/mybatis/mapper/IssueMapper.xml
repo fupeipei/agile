@@ -2263,7 +2263,7 @@
     <update id="updateBySprintId">
     update s_issue
     set
-        lane_id=105,
+        lane_id=104,
         stage_id=4,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
