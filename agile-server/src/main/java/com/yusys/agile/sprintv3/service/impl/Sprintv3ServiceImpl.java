@@ -349,9 +349,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, "迭代名称过长,不能大于100!");
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, "工作时间超长，不能大于24小时!");
         List<Date> sprintDayList = sprintDTO.getSprintDayList();
-        int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
+        int sprintNameNumber = ssprintMapper.CheckSprintNameExistInTeam(sprintDTO.getSprintName(), sprintDTO.getTeamId());
         if (sprintNameNumber > 0) {
-            throw new BusinessException("当前租户下迭代名称重复");
+            throw new BusinessException("当前团队下迭代名称重复");
         }
         //迭代开始结束时间判断
         try {

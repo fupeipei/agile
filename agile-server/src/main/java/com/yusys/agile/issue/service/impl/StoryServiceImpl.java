@@ -189,6 +189,16 @@ public class StoryServiceImpl implements StoryService {
             throw  new BusinessException("非迭代PO不允许编辑故事！");
         }
 
+        //校验故事在迭代内不允许更改阶段和状态
+        if(Optional.ofNullable(oldStory.getSprintId()).isPresent()){
+           Long[] stages = issueDTO.getStages();
+           if(!oldStory.getStageId().equals(stages[0])){
+               throw  new BusinessException("故事在迭代内不允许变更阶段！");
+           }
+           if(!oldStory.getLaneId().equals(stages[1])){
+               throw  new BusinessException("故事在迭代内不允许变更状态！");
+           }
+        }
 
         Long projectId = oldStory.getProjectId();
 
