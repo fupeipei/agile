@@ -644,8 +644,8 @@
         select count(issue_id)
         from s_issue
         where sprint_id = #{sprintId}
-          and issue_type = 3
-          and stage_id <![CDATA[<]]> 103
+          and issue_type = #{issueType}
+          and lane_id <![CDATA[<]]> #{status}
           and state = 'U'
     </select>
 
