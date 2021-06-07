@@ -89,7 +89,8 @@ public class StoryServiceTest {
     public void deleteStroyTest() {
         Long storyId = 1L;
         boolean deleteChild = false;
-        storyService.deleteStory(storyId, deleteChild);
+        Long userId=1000L;
+        storyService.deleteStory(storyId, deleteChild,userId);
         org.junit.Assert.assertTrue("deleteStroyTest通过", true);
     }
 
@@ -97,18 +98,20 @@ public class StoryServiceTest {
     public void deleteStroyWithChildTest() {
         Long storyId = 1L;
         boolean deleteChild = true;
-        storyService.deleteStory(storyId, deleteChild);
+        Long userId=1000L;
+        storyService.deleteStory(storyId, deleteChild,userId);
         org.junit.Assert.assertTrue("deleteStroyWithChildTest通过", true);
     }
 
     @Test
     public void editStroyTest() {
+        Long userId=1000L;
         IssueDTO issueDTO = new IssueDTO();
         issueDTO.setIssueId(507077L);
         issueDTO.setTitle("测试");
         Long[] stages = {4L,105L};
         issueDTO.setStages(stages);
-        storyService.editStory(issueDTO);
+        storyService.editStory(issueDTO,userId);
         org.junit.Assert.assertTrue("editStroyTest通过", true);
     }
 
