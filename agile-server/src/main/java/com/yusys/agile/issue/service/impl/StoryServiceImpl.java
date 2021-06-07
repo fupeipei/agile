@@ -629,7 +629,7 @@ public class StoryServiceImpl implements StoryService {
             issue.setIssueId(issue.getIssueId());
             issue.setSprintId(sprintId);
             if (IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())) {
-                issue.setStageId(TaskStatusEnum.TYPE_ADD_STATE.CODE);
+                issue.setStageId(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
             } else {
                 issue.setStageId(FaultStatusEnum.NEW.CODE);
             }

@@ -41,6 +41,7 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
@@ -587,7 +588,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             }
             //迭代开始,但是未绑定任务
             ssprintMapper.cancelSprint(sprintId);
-            return "迭代取消";
+            return "迭代取消,解除任务关联";
         }
 
         //迭代未开始,但已经绑定任务
@@ -636,9 +637,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
         BeanUtils.copyProperties(sprint, sprintOverView);
         sprintOverView.setTeamName(sTeamMapper.queryTeamNameByTeamId(sprint.getTeamId()));
-        //List<STeamMember> sprintUSer = sTeamMapper.queryUserInfoByUserId(sprintId, sprint.getTeamId());
-        List<STeamMember> sprintUSer = querySprintUser(sprintId);
-        sprintOverView.setSprintUSer(sprintUSer);
+
+        List<Long> sprintMembersId = ssprintMapper.querySprintMembersId(sprintId);
+        List<SsoUser> users = iFacadeUserApi.queryUserList(sprintMembersId);
+        sprintOverView.setSprintUSer(users);
+
         List<Long> sprintSystemIds = sTeamMapper.queryTeamSystem(sprint.getTeamId());
         List<SsoSystemRestDTO> ssoSystemRestDTOS = iFacadeSystemApi.getSystemByIds(sprintSystemIds);
         sprintOverView.setSprintSystem(ssoSystemRestDTOS);
@@ -689,7 +692,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId) {
         //迭代相关人员
-        List<STeamMember> userList = sTeamMapper.querySprintUser(sprintId);
+        List<Long> sprintMembersId = ssprintMapper.querySprintMembersId(sprintId);
+        List<SsoUser> users = iFacadeUserApi.queryUserList(sprintMembersId);
+
+        if (ObjectUtil.isEmpty(users)) {
+            throw new BusinessException("人员查询异常");
+        }
+
         List<SprintMembersWorkHours> list = new ArrayList<>();
         //未领取
         SprintMembersWorkHours unclaimedWorkHours = new SprintMembersWorkHours();
@@ -700,14 +709,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         unclaimedWorkHours.setTaskNumber(ssprintMapper.unclaimedTaskNumber(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE));
         list.add(unclaimedWorkHours);
 
-        for (int i = 0; i < userList.size(); i++) {
+        for (int i = 0; i < users.size(); i++) {
             SprintMembersWorkHours sprintMembersWorkHours = new SprintMembersWorkHours();
-            sprintMembersWorkHours.setUserId(userList.get(i).getUserId());
-            sprintMembersWorkHours.setUserName(userList.get(i).getUserName());
-            sprintMembersWorkHours.setUserAccount(userList.get(i).getUserAccount());
-            sprintMembersWorkHours.setActualWorkload(ssprintMapper.queryUserActualWorkload(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
-            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
-            sprintMembersWorkHours.setTaskNumber(ssprintMapper.queryUserTaskNumber(sprintId, userList.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
+            sprintMembersWorkHours.setUserId(users.get(i).getUserId());
+            sprintMembersWorkHours.setUserName(users.get(i).getUserName());
+            sprintMembersWorkHours.setUserAccount(users.get(i).getUserAccount());
+            sprintMembersWorkHours.setActualWorkload(ssprintMapper.queryUserActualWorkload(sprintId, users.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
+            sprintMembersWorkHours.setResidueWorkload(ssprintMapper.queryUserResidueWorkload(sprintId, users.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_MODIFYING_STATE.CODE));
+            sprintMembersWorkHours.setTaskNumber(ssprintMapper.queryUserTaskNumber(sprintId, users.get(i).getUserId(), IssueTypeEnum.TYPE_TASK.CODE));
             list.add(sprintMembersWorkHours);
         }
         return list;
@@ -770,10 +779,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<STeamMember> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<STeamMember> sTeamMembers = sTeamMapper.querySprintVagueUser(sprintId, userName);
-        return sTeamMembers;
+    public  List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
+
+        //通过迭代id查询迭代时长表的userid，然后再查人员
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        List<Long> userIds = userSprintHours.stream().map(item -> item.getUserId()).collect(Collectors.toList());
+        List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, pageNum, pageSize, userName);
+        return ssoUserDTOS;
     }
 
     @Override
