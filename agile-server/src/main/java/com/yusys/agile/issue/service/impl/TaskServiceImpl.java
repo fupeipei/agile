@@ -566,6 +566,22 @@ public class TaskServiceImpl implements TaskService {
         }
         Long storyId = task.getParentId();
 
+        IssueExample example1 = new IssueExample();
+        example1.createCriteria()
+                .andIssueIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> story = Optional.ofNullable(issueMapper.selectByExample(example1)).orElse(new ArrayList<>());
+
+        //未开始的数量
+        long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
+        log.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
+        if(unStartCount>0){
+            return -2;
+        }
+
         IssueExample example = new IssueExample();
         example.createCriteria()
                 .andParentIdEqualTo(storyId)
