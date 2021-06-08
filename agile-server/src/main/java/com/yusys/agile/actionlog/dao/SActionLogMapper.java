@@ -84,4 +84,5 @@ public interface SActionLogMapper {
     * @return int int
     */
     int updateByPrimaryKey(SActionLog record);
+
 }
