@@ -98,8 +98,9 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
      */
     private String[] getStoryPriority(){
         List<String> list = Lists.newArrayList();
-        for(int i = 100;i<=1; i--){
-            list.add(String.valueOf(i));
+        int count = 100;
+        for(int i = 0;i< 100; i++){
+            list.add(String.valueOf(count-i));
         }
         return list.toArray(new String[0]);
     }
