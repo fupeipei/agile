@@ -78,6 +78,7 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
      */
     private String[] getStoryNamesBySprintId(Long sprintId) {
         IssueExample example = new IssueExample();
+        example.setOrderByClause("issue_id desc");
         IssueExample.Criteria criteria = example.createCriteria().andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE)
                 .andSprintIdEqualTo(sprintId).andStateEqualTo(StateEnum.U.getValue());
         List<Issue> storyList = issueMapper.selectByExample(example);
