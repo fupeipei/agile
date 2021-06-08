@@ -3,6 +3,7 @@ package com.yusys.agile.customfield.service;
 
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,12 +12,54 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {AgileApplication.class})
 public class CustomFieldPoolServiceTest {
 
     @Autowired
     private CustomFieldPoolService customFieldPoolService;
+
+
+    /**
+     * 测试分页
+     * @author zhaofeng
+     * @date 2021/6/8 19:57
+     */
+    @Test
+    public void testListAllCustomFields1(){
+        List<CustomFieldDTO> list = customFieldPoolService.listAllCustomFields(850397896869163008L,
+                null, 1, 10);
+        log.info("list = {}", list);
+        Assert.assertTrue("testListAllCustomFields1成功", true);
+    }
+    /**
+     * 测试分页-条件
+     * @author zhaofeng
+     * @date 2021/6/8 19:57
+     */
+    @Test
+    public void testListAllCustomFields2(){
+        List<CustomFieldDTO> list = customFieldPoolService.listAllCustomFields(850397896869163008L,
+                "本", 1, 10);
+        log.info("list = {}", list);
+        Assert.assertTrue("testListAllCustomFields1成功", true);
+    }
+    /**
+     * 测试分页-条件-系统id为空
+     * @author zhaofeng
+     * @date 2021/6/8 19:57
+     */
+    @Test
+    public void testListAllCustomFields3(){
+        List<CustomFieldDTO> list = customFieldPoolService.listAllCustomFields(null,
+                "本", 1, 10);
+        log.info("list = {}", list);
+        Assert.assertTrue("testListAllCustomFields1成功", true);
+    }
+
 
     /**
      * 初始化数据
@@ -58,19 +101,4 @@ public class CustomFieldPoolServiceTest {
         Assert.assertNotNull(s);
     }
 
-    @Test
-    public void deleteCustomField() {
-    }
-
-    @Test
-    public void listAllCustomFields() {
-    }
-
-    @Test
-    public void getCustomField() {
-    }
-
-    @Test
-    public void listAllCustomFieldsByTenantCode() {
-    }
 }
