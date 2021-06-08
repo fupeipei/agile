@@ -560,7 +560,7 @@ public class TaskServiceImpl implements TaskService {
         return task;
     }
 
-    //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+    //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中
     private int updateStoryLaneIdByTaskCount(Issue task) {
         if (task == null || task.getParentId() == null) {
             log.info("task或task.getParentId()为空" + JSONObject.toJSONString(task));
