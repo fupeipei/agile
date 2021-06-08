@@ -353,8 +353,8 @@ public class ExcelServiceImpl implements IExcelService {
             if (fileResult.size() < headSize) {
                 fillNull(fileResult, fileResult.size(), headSize);
             }
-            if (line.size() < copyData.size()) {
-                fillNull(line, line.size(), copyData.size());
+            if (line.size() < headSize) {
+                fillNull(line, line.size(), headSize);
             }
             if (IssueTypeEnum.TYPE_STORY.CODE.equals(type)) {
                 if (StringUtils.isBlank(line.get(0))) {
