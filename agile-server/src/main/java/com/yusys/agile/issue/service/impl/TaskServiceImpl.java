@@ -27,6 +27,7 @@ import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
@@ -231,13 +232,16 @@ public class TaskServiceImpl implements TaskService {
             if (!Optional.ofNullable(sSprintWithBLOBs).isPresent()) {
                 return;
             }
+            //校验参数
+            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg);
             Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
             boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, sSprintWithBLOBs.getTeamId());
-            List<STeamMember> sTeamMembers = checkIsTeamMember(sSprintWithBLOBs.getTeamId(), userId);
+            //查询该迭代下的成员
+            List<SprintV3UserHourDTO> sprintUsers = sprintv3Service.getUsersBySprintId(sSprintWithBLOBs.getSprintId());
             //1.SM角色，可以更新卡片上的任意信息
             if (isSM) {
                 return;
-            } else if (CollectionUtils.isEmpty(sTeamMembers)) {
+            } else if (CollectionUtils.isEmpty(sprintUsers)) {
                 throw new BusinessException("您无权限对此功能进行操作");
                 //2.当卡片没有领取时可以自己领取该卡片,且必须是是本人领取
             }else if ("edit".equals(checkType)
@@ -257,7 +261,6 @@ public class TaskServiceImpl implements TaskService {
                     && !userId.equals(oldTask.getHandler())){
                 throw new BusinessException("当前任务已被他人领取,不允许删除");
             }
-            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg);
         }
     }
 
