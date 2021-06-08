@@ -1072,7 +1072,7 @@ public class StoryServiceImpl implements StoryService {
         if(StringUtils.isNotBlank(storyName)){
             criteria.andTitleLike(storyName);
         }
-
+        issueExample.setOrderByClause("create_time desc");
         List<IssueDTO> storys = issueMapper.selectByExampleDTO(issueExample);
         return storys;
     }
