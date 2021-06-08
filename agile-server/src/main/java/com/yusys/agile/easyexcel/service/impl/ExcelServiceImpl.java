@@ -410,6 +410,16 @@ public class ExcelServiceImpl implements IExcelService {
                     hasError = true;
                     continue;
                 }
+                if(StringUtils.isNotBlank(line.get(4))){
+                    try {
+                        String str = line.get(4);
+                        Integer integer = Integer.valueOf(str);
+                    }catch (Exception e){
+                        fileResult.add(headSize, "预计工时格式错误");
+                        hasError = true;
+                        continue;
+                    }
+                }
             }
         }
         return hasError;
