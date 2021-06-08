@@ -349,9 +349,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, "迭代名称过长,不能大于100!");
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, "工作时间超长，不能大于24小时!");
         List<Date> sprintDayList = sprintDTO.getSprintDayList();
-        int sprintNameNumber = ssprintMapper.CheckSprintName(sprintDTO.getSprintName(), sprintDTO.getTenantCode());
+        int sprintNameNumber = ssprintMapper.CheckSprintNameExistInTeam(sprintDTO.getSprintName(), sprintDTO.getTeamId());
         if (sprintNameNumber > 0) {
-            throw new BusinessException("当前租户下迭代名称重复");
+            throw new BusinessException("当前团队下迭代名称重复");
         }
         //迭代开始结束时间判断
         try {
@@ -610,7 +610,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     public String sprintFinish(long sprintId) {
         //迭代下未完成的故事数
-        if (0 != ssprintMapper.querySprintUnfinishedStoryNumber(sprintId)) {
+        if (ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_MODIFYING_STATE.CODE)) {
             throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
         }
         //只有进行中的迭代允许完成
@@ -779,14 +779,11 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public  List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
+    public List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
 
-        List<SprintV3UserHourDTO> userSprintHourDTOS = this.queryUsersBySprintId(sprintId);
-        List<Long> userIds=new ArrayList<>();
-        for(SprintV3UserHourDTO userSprintHourDTO:userSprintHourDTOS){
-            Long userId = userSprintHourDTO.getUserId();
-            userIds.add(userId);
-        }
+        //通过迭代id查询迭代时长表的userid，然后再查人员
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        List<Long> userIds = userSprintHours.stream().map(item -> item.getUserId()).collect(Collectors.toList());
         List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, pageNum, pageSize, userName);
         return ssoUserDTOS;
     }

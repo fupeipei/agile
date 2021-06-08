@@ -59,3 +59,23 @@ insert into agile.`s_team_member` (`id`, `team_id`, `user_id`, `user_account`, `
 insert into agile.`s_team_member` (`id`, `team_id`, `user_id`, `user_account`, `user_name`, `role_id`, `system_id`, `create_uid`, `create_time`, `update_uid`, `update_time`, `tenant_code`) values('99138','200021','842765807724986368','ceshieeee','ceshieeee','105','847156999467307008','846427329554370560','2021-05-26 17:11:46',NULL,NULL,'1');
 insert into agile.`s_team_member` (`id`, `team_id`, `user_id`, `user_account`, `user_name`, `role_id`, `system_id`, `create_uid`, `create_time`, `update_uid`, `update_time`, `tenant_code`) values('99139','200021','846427329554370560','zhangyu','张宇','105','847156999467307008','846427329554370560','2021-05-26 17:11:46',NULL,NULL,'1');
 
+/*
+SQLyog Ultimate v12.09 (64 bit)
+MySQL - 8.0.22
+*********************************************************************
+*/
+/*!40101 SET NAMES utf8 */;
+
+delete from agile.`s_sprint_user_hour` where `sprint_id`=200031;
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99130','846427329554370560','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99131','842765807724986368','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99132','829657090306064384','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99133','832576760378724352','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99134','834451097091657728','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99135','834731929562857472','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99136','841351045005778944','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99137','842399068826558464','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99138','842765807724986368','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99139','846427329554370560','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99234','834451097091657728','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');
+insert into agile.`s_sprint_user_hour` (`hour_id`, `user_id`, `sprint_id`, `really_hours`, `create_time`, `create_uid`, `update_time`, `update_uid`, `tenant_code`) values('99235','834451097091657728','200031','32','2021-06-07 17:10:37','1',NULL,NULL,'1');

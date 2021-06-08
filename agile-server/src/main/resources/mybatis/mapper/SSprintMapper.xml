@@ -511,11 +511,11 @@
         where sprint_id = #{sprintId,jdbcType=BIGINT}
     </update>
 
-    <select id="CheckSprintName" resultType="int">
-        select count(sprint_id)
+    <select id="CheckSprintNameExistInTeam" resultType="int">
+        select if(count(sprint_id > 0), true, false)
         from s_sprint
         where sprint_name = #{sprintName}
-          and tenant_code = #{tenantCode}
+          and team_id = #{teamId}
     </select>
 
     <update id="arrangeTeam">
@@ -640,12 +640,12 @@
     </select>
 
 
-    <select id="querySprintUnfinishedStoryNumber" resultType="int">
-        select count(issue_id)
+    <select id="querySprintExistUnfinishedStory" resultType="java.lang.Boolean">
+        select if(count(issue_id) > 0, true, false)
         from s_issue
         where sprint_id = #{sprintId}
-          and issue_type = 3
-          and stage_id <![CDATA[<]]> 103
+          and issue_type = #{issueType}
+          and lane_id = #{status}
           and state = 'U'
     </select>
 
@@ -868,8 +868,6 @@
         update s_issue
         set lane_id         = #{status},
             handler         = null,
-            system_id       = null,
-            system_id       = null,
             really_workload = 0,
             sprint_id       = null
         where issue_type = #{IssueType}

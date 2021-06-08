@@ -189,6 +189,16 @@ public class StoryServiceImpl implements StoryService {
             throw  new BusinessException("非迭代PO不允许编辑故事！");
         }
 
+        //校验故事在迭代内不允许更改阶段和状态
+        if(Optional.ofNullable(oldStory.getSprintId()).isPresent()){
+           Long[] stages = issueDTO.getStages();
+           if(!oldStory.getStageId().equals(stages[0])){
+               throw  new BusinessException("故事在迭代内不允许变更阶段！");
+           }
+           if(!oldStory.getLaneId().equals(stages[1])){
+               throw  new BusinessException("故事在迭代内不允许变更状态！");
+           }
+        }
 
         Long projectId = oldStory.getProjectId();
 
@@ -541,7 +551,7 @@ public class StoryServiceImpl implements StoryService {
         int count = 0;
         if (null != sprint) {
             if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
-                throw new BusinessException("只有未开始的任务可以关联工作项");
+                throw new BusinessException("只有未开始/进行中的迭代才能关联工作项");
             }
             if (sprint.getEndTime().before(new Date())) {
                 throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许新增用户故事");
@@ -628,7 +638,7 @@ public class StoryServiceImpl implements StoryService {
         for (Issue issue : issues) {
             issue.setIssueId(issue.getIssueId());
             issue.setSprintId(sprintId);
-            if (IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())) {
+                if (IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())) {
                 issue.setStageId(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
             } else {
                 issue.setStageId(FaultStatusEnum.NEW.CODE);

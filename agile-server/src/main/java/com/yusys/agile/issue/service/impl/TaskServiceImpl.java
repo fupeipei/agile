@@ -35,6 +35,7 @@ import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.domain.STeamMember;
@@ -424,14 +425,31 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("根据迭代标识获取迭代信息为空" + task.getSprintId());
         }
 
+        List<SprintMembersWorkHours> sprintMembersWorkHours = sprintv3Service.sprintMembersWorkHours(task.getSprintId());
+
+        if (sprintMembersWorkHours == null||sprintMembersWorkHours.size()==0) {
+            throw new BusinessException("根据迭代标识获取迭代成员信息为空" + task.getSprintId());
+        }
+
         QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO1.getTeamId());
         //判断当前登录人员是否为sm
         long smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
                 stream().
                 filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
+
+        //团队成员，暂时注释掉
+        /*
         long memCount = Optional.ofNullable(queryTeamResponse.getTeamUsers()).orElse(new ArrayList<>())
                 .stream()
                 .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
+
+         */
+
+        long memCount = Optional.ofNullable(sprintMembersWorkHours).orElse(new ArrayList<>())
+                .stream()
+                .filter(sprintMen -> sprintMen.getUserId() == loginUserId.longValue()).count();
+
+
         long poCount = Optional.ofNullable(queryTeamResponse.getTeamPoS()).orElse(new ArrayList<>())
                 .stream()
                 .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();

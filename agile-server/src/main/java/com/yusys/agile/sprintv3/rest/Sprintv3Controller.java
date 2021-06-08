@@ -247,7 +247,7 @@ public class Sprintv3Controller {
                                                    @RequestParam(name = "pageSize") Integer pageSize) {
 
         List<SsoUserDTO>  result = sprintv3Service.querySprintVagueUser(sprintId, userName, pageNum, pageSize);
-        return ControllerResponse.success(result);
+        return ControllerResponse.success(new PageInfo(result));
 
     }
 
