@@ -58,7 +58,7 @@ public class DashBoardServiceImpl implements DashBoardService {
     }
     private void calculateStatus(Long projectId, SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
-        Date target = DateUtil.currentDay();
+        Date target = DateUtil.preDay(new Date());
         if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             //创建故事状况
             createIssueStoryStatus(projectId, sprintId, target);
@@ -144,7 +144,7 @@ public class DashBoardServiceImpl implements DashBoardService {
 
 
     private void calculateProjectStatus(Long projectId) {
-        Date target = DateUtil.currentDay();
+        Date target = DateUtil.preDay(new Date());
         //创建业务需求状况
         createIssueProjectStatus(projectId, target, IssueTypeEnum.TYPE_EPIC.CODE);
         //创建研发需求状况

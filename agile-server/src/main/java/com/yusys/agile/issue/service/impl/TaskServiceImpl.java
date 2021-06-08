@@ -234,7 +234,7 @@ public class TaskServiceImpl implements TaskService {
                 return;
             }
             //校验参数
-            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg);
+            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg,checkType);
             Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
             boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, sSprintWithBLOBs.getTeamId());
             //查询该迭代下的成员
@@ -317,8 +317,10 @@ public class TaskServiceImpl implements TaskService {
         return isTeamUsers;
     }
 
-    private void ckeckTaksParams(Long sprintId, String errorMsg) {
-        if (!Optional.ofNullable(sprintId).isPresent()) {
+    private void ckeckTaksParams(Long sprintId, String errorMsg,String checkType) {
+        //不允许新建删除  允许修改，
+        //需要将删除权限加上。已完成／迭代结束日期《当前时间的迭代，不允许删除任务
+        if (!Optional.ofNullable(sprintId).isPresent() || "edit".equals(checkType)) {
             return;
         }
         SSprintExample sSprintExample = new SSprintExample();

@@ -551,7 +551,7 @@ public class StoryServiceImpl implements StoryService {
         int count = 0;
         if (null != sprint) {
             if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
-                throw new BusinessException("只有未开始/进行中的迭代才能关联工作项");
+                throw new BusinessException("迭代状态进行中/未开始才允许关联用户故事");
             }
             if (sprint.getEndTime().before(new Date())) {
                 throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许新增用户故事");
@@ -1072,7 +1072,7 @@ public class StoryServiceImpl implements StoryService {
         if(StringUtils.isNotBlank(storyName)){
             criteria.andTitleLike(storyName);
         }
-
+        issueExample.setOrderByClause("create_time desc");
         List<IssueDTO> storys = issueMapper.selectByExampleDTO(issueExample);
         return storys;
     }

@@ -160,5 +160,22 @@ public class StoryServiceTest {
         Assert.assertTrue("查询迭代下的用户故事和任务list", true);
     }
 
+    @Test
+    public void testListStoryBySystemId() {
+        storyService.queryStoryBySystemId(1L,"",1,100);
+        Assert.assertTrue("查询当前系统下故事成功", true);
+    }
+
+    @Test
+    public void testListStoryBySystemIdWithName() {
+        storyService.queryStoryBySystemId(1L,"test",1,100);
+        Assert.assertTrue("查询当前系统下故事成功", true);
+    }
+
+    @Test
+    public void testListStoryBySystemIdWithoutPage() {
+        storyService.queryStoryBySystemId(1L,"test",null,null);
+        Assert.assertTrue("查询当前系统下故事成功", true);
+    }
 }
 
