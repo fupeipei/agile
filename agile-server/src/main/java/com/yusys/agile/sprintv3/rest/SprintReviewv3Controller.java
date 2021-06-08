@@ -1,34 +1,35 @@
-package com.yusys.agile.sprint.rest;
+package com.yusys.agile.sprintv3.rest;
 
-import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.google.common.base.Preconditions;
 import com.yusys.agile.sprint.dto.SprintReviewDTO;
-import com.yusys.agile.sprint.service.SprintReviewService;
+import com.yusys.agile.sprintv3.service.SprintReviewv3Service;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
 /**
- * @Date 2021/2/25
- * 废弃
+ * @Author maxp2
+ * @Date: 2021/6/8
  */
 @RestController
-@RequestMapping("/sprint")
-public class SprintReviewController {
+@RequestMapping("/sprint/review")
+public class SprintReviewv3Controller {
     @Resource
-    private SprintReviewService sprintReviewService;
+    private SprintReviewv3Service sprintReviewv3Service;
 
     /**
-     * @param sprintReviewDTO
-     * @Date 2021/2/25
+     * @Author maxp2
+     * @Date 2021/6/8
      * @Description 新增迭代回顾信息
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @param sprintReviewDTO
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/createSprintReview")
     public ControllerResponse createSprintReview(@RequestBody SprintReviewDTO sprintReviewDTO) {
         Preconditions.checkArgument(sprintReviewDTO.getReviewDesc().length() <= 200, "迭代回顾描述过长，不能大于200");
-        int i = sprintReviewService.createSprintReview(sprintReviewDTO);
+        int i = sprintReviewv3Service.createSprintReview(sprintReviewDTO);
         if (i == 0) {
             return ControllerResponse.fail("新增迭代回顾信息失败!");
         }
@@ -36,26 +37,28 @@ public class SprintReviewController {
     }
 
     /**
-     * @param sprintId
-     * @Date 2021/2/25
+     * @Author maxp2
+     * @Date 2021/6/8
      * @Description 根据迭代id获取迭代回顾信息
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @param sprintId
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/listSprintReview/{sprintId}")
     public ControllerResponse getSprintReviewList(@PathVariable Long sprintId) {
-        return ControllerResponse.success(sprintReviewService.getSprintReviewList(sprintId));
+        return ControllerResponse.success(sprintReviewv3Service.getSprintReviewList(sprintId));
     }
 
     /**
-     * @param sprintReviewDTO
-     * @Date 2021/2/25
+     * @Author maxp2
+     * @Date 2021/6/8
      * @Description 编辑迭代回顾信息
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @param sprintReviewDTO
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/updateSprintReview")
     public ControllerResponse editSprintReview(@RequestBody SprintReviewDTO sprintReviewDTO) {
         Preconditions.checkArgument(sprintReviewDTO.getReviewDesc().length() <= 200, "迭代回顾描述过长，不能大于200");
-        int i = sprintReviewService.editSprintReview(sprintReviewDTO);
+        int i = sprintReviewv3Service.editSprintReview(sprintReviewDTO);
         if (i == 0) {
             ControllerResponse.fail("编辑迭代回顾信息失败！");
         }
@@ -63,14 +66,15 @@ public class SprintReviewController {
     }
 
     /**
-     * @param reviewId
-     * @Date 2021/2/25
+     * @Author maxp2
+     * @Date 2021/6/8
      * @Description 删除迭代回顾信息
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @param reviewId
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @DeleteMapping("/deleteSprintReview/{reviewId}")
     public ControllerResponse deleteSprintReview(@PathVariable Long reviewId) {
-        int i = sprintReviewService.deleteSprintReview(reviewId);
+        int i = sprintReviewv3Service.deleteSprintReview(reviewId);
         if (i == 0) {
             ControllerResponse.fail("删除迭代回顾信息失败！");
         }
@@ -78,37 +82,40 @@ public class SprintReviewController {
     }
 
     /**
+     * @Author maxp2
+     * @Date 2021/6/8
+     * @Description 迭代回顾附件信息上传及保存
      * @param file
      * @param sprintId
-     * @Date 2021/2/26
-     * @Description 迭代回顾附件信息上传及保存
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/uploadAttachment/{sprintId}")
     public ControllerResponse uploadAttachment(@RequestParam("file") MultipartFile file, @PathVariable Long sprintId) {
-        return ControllerResponse.success(sprintReviewService.uploadAttachment(file, sprintId));
+        return ControllerResponse.success(sprintReviewv3Service.uploadAttachment(file, sprintId));
     }
 
     /**
-     * @param sprintId
-     * @Date 2021/2/26
+     * @Author maxp2
+     * @Date 2021/6/8
      * @Description 获取迭代回顾附件信息
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @param sprintId
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/listSprintAttachment/{sprintId}")
     public ControllerResponse getAttachmentList(@PathVariable Long sprintId) {
-        return ControllerResponse.success(sprintReviewService.getSprintAttachmentList(sprintId));
+        return ControllerResponse.success(sprintReviewv3Service.getSprintAttachmentList(sprintId));
     }
 
     /**
-     * @param attachmentId
-     * @Date 2021/2/27
+     * @Author maxp2
+     * @Date 2021/6/8
      * @Description 通过附件id删除附件
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @param attachmentId
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @DeleteMapping("/deleteAttachment/{attachmentId}")
     public ControllerResponse deleteAttachment(@PathVariable Long attachmentId) {
-        int i = sprintReviewService.deleteAttachment(attachmentId);
+        int i = sprintReviewv3Service.deleteAttachment(attachmentId);
         if (i == 0) {
             ControllerResponse.fail("附件删除失败！");
         }
