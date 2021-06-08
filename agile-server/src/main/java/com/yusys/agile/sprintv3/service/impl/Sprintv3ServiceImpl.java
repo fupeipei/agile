@@ -901,13 +901,16 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
 
             SSprintExample sSprintExample = new SSprintExample();
             List<Byte> listStatus = Lists.newArrayList(new Byte("2"), new Byte("3"));
-            sSprintExample.createCriteria().andTeamIdIn(teamIdList).andStateEqualTo(StateEnum.U.getValue()).andStatusIn(listStatus);
+            sSprintExample.createCriteria().andTeamIdIn(teamIdList).andStateEqualTo(StateEnum.U.getValue())
+                    .andStatusIn(listStatus).andEndTimeGreaterThan(new Date());
             List<SSprint> sSprintList = ssprintMapper.selectByExample(sSprintExample);
 
             for (SSprint sSprint : sSprintList) {
                 String sprintName = sSprint.getSprintName();
                 String teamName = mapTeamName.get(sSprint.getTeamId());
-                sprintName = StrUtil.builder().append(sprintName).append("(").append(teamName).append(")").toString();
+                sprintName = StrUtil.builder().append(sprintName)
+                        .append("(").append(teamName).append(")")
+                        .append("(").append(sSprint.getSprintId()).append(")").toString();
                 sSprint.setSprintName(sprintName);
             }
             try {

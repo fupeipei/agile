@@ -292,4 +292,10 @@ public class SprintV3ServiceTest {
         sprintv3Service.queryNotRelationStorys(title, teamId, systemIds, pageNum, pageNum);
         Assert.assertTrue("testQueryNotRelationStorys成功", true);
     }
+
+    @Test
+    public void testListSprintBysystemId(){
+        sprintv3Service.querySprintBySystemId(1L);
+        Assert.assertTrue("获取当前系统下的迭代列表成功", true);
+    }
 }

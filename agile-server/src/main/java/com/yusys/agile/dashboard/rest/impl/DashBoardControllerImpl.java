@@ -42,7 +42,7 @@ public class DashBoardControllerImpl implements DashBoardController {
     public void calculateProjectStatus() {
         LOG.info("dashboard calculate start time:{}", new Date());
         //项目中每天工作项状态
-        dashBoardService.calculateProjectStatus();
+        //dashBoardService.calculateProjectStatus();
         LOG.info("dashboard calculate end time:{}", new Date());
     }
 }
