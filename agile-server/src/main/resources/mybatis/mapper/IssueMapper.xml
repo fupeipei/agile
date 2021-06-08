@@ -209,9 +209,9 @@
             keyProperty="issueId">
         insert into s_issue
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                issue_id,
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--issue_id,-->
+            <!--</if>-->
             <if test="title != null">
                 title,
             </if>
@@ -364,9 +364,9 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="issueId != null">
-                #{issueId,jdbcType=BIGINT},
-            </if>
+            <!--<if test="issueId != null">-->
+                <!--#{issueId,jdbcType=BIGINT},-->
+            <!--</if>-->
             <if test="title != null">
                 #{title,jdbcType=VARCHAR},
             </if>
@@ -1097,14 +1097,14 @@
     SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type = 3 AND state = 'U'  and  is_archive != 1
   </select>
     <select id="countInsprintBySprint" resultType="Integer">
-    SELECT COUNT(1) from s_issue a WHERE a.sprint_id = #{sprintId} AND a.issue_type = 3  AND state = 'U'   and  is_archive != 1 AND a.stage_id != 7
+    SELECT COUNT(1) from s_issue a WHERE a.sprint_id = #{sprintId} AND a.issue_type = 3  AND state = 'U'   and  is_archive != 1 AND a.lane_id != 106
   </select>
     <select id="countTasks4Sprint" resultType="int">
     SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U'  and  is_archive != 1
   </select>
     <select id="countUnFinishedTasks4Sprint" resultType="int">
     SELECT COUNT(1) from s_issue WHERE sprint_id = #{sprintId} AND state = 'U'  and  is_archive != 1
-    AND ((issue_type = 4 and stage_id IN(100,101,102)) or (issue_type = 5 and stage_id IN(1000,1001)))
+    AND ((issue_type = 4 and lane_id IN(107,108,109)) or (issue_type = 5 and lane_id IN(1000,1001)))
   </select>
     <update id="deleteRelation">
         update
@@ -1772,7 +1772,6 @@
         distinct
         iu.*
         from s_issue iu
-        left join s_issue_system_relp isr on iu.issue_id = isr.issue_id
         left join s_issue_module_relp imr on iu.issue_id = imr.issue_id
         left join s_issue_custom_field icf on iu.issue_id = icf.issue_id
         <where>
@@ -2093,25 +2092,25 @@
                     and iu.handler is null
                 </if>
             </if>
-
             <if test="issueRecord.systemIds!= null ">
                 <if test="issueRecord.systemIds.queryType ==1 and issueRecord.systemIds.dataLong.size()>0">
-                    and ( isr.system_id in
+                    and ( iu.system_id in
                     <foreach collection="issueRecord.systemIds.dataLong" open="(" close=")" separator="," item="iterm">
                         #{iterm}
                     </foreach>
-                    or not exists (select * from s_issue_system_relp isr1 where iu.issue_id =isr1.issue_id) )
+                    or iu.system_id is null )
                 </if>
                 <if test="issueRecord.systemIds.queryType ==2 and issueRecord.systemIds.dataLong.size()>0">
-                    and isr.system_id in
+                    and iu.system_id in
                     <foreach collection="issueRecord.systemIds.dataLong" open="(" close=")" separator="," item="iterm">
                         #{iterm}
                     </foreach>
                 </if>
                 <if test="issueRecord.systemIds.queryType ==3 ">
-                    and not exists (select * from s_issue_system_relp isr1 where iu.issue_id =isr1.issue_id)
+                    and iu.system_id is null
                 </if>
             </if>
+
             <if test="issueRecord.moduleIds!= null ">
                 <if test="issueRecord.moduleIds.queryType ==1 and issueRecord.moduleIds.dataLong.size()>0">
                     and ( imr.module_id in
@@ -2264,7 +2263,7 @@
     <update id="updateBySprintId">
     update s_issue
     set
-        lane_id=105,
+        lane_id=104,
         stage_id=4,
       sprint_id = #{sprintId,jdbcType=BIGINT}
     where issue_id = #{issueId,jdbcType=BIGINT}
@@ -3047,22 +3046,18 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
           r.state = 'U'
     </select>
     <select id="queryNotRelationStory" resultType="com.yusys.agile.issue.dto.IssueDTO">
-        select a.title,a.priority,a.lane_id,a.issue_id,a.stage_id ,b.system_id
-           from s_issue a,s_issue_system_relp b
-           where a.issue_id =b.issue_id
-                                   and a.sprint_id is null
-                                   and a.lane_id=104
-                                   and a.issue_type=3
-                                   and a.state='U'
-                                   and a.is_archive != 1
-
+        select a.title,a.priority,a.lane_id,a.issue_id,a.stage_id ,a.system_id
+        from s_issue a
+        where a.sprint_id is null
+        and a.issue_type=3
+        and a.state='U'
+        and a.is_archive != 1
         <if test="systemIds != null and systemIds.size>0">
-        and a.issue_id in(
-        select b.issue_id from s_issue_system_relp b where  b.system_id in
-        <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">
-            #{systemId}
-        </foreach>
-        )</if>
+            and a.system_id in
+            <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">
+                #{systemId}
+            </foreach>
+            </if>
         <if test="title != null and title != ''">
             AND (a.title LIKE CONCAT('%', #{title}, '%')or a.issue_id LIKE CONCAT('%', #{title}, '%'))
         </if>
@@ -3084,12 +3079,13 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         select sum(se.`value`) from
             s_issue si,
             s_sys_extend_field_detail se,
-            burndown_chart_story b
+            s_burndown_chart_story b
         where 1=1
             and si.issue_id = se.issue_id
             and si.issue_id = b.story_id
             and si.sprint_id = #{sprintId}
             and si.issue_type=3 and si.is_archive != 1 and si.lane_id = 106
+            and se.field_id = 'storyPoint'
             and b.story_state = 106
             and b.sprint_time = #{currTime}
         ]]>
@@ -3101,5 +3097,17 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
     <select id="getRemainWorkload" resultType="int">
     select ifnull(sum(remain_workload),0) from s_issue where sprint_id = #{sprintId} and state = 'U'
     AND ((issue_type = 4 and lane_id IN(107,108,109)) or (issue_type = 5 and stage_id IN(1000,1001)))
+  </select>
+
+  <select id="countFinishedStoryPoint" resultType="java.lang.Integer">
+    select ifnull(sum(a.value), 0)
+        from s_sys_extend_field_detail a
+        where a.issue_id in
+              (select issue_id
+               from s_issue
+               where sprint_id = #{sprintId}
+                 and issue_type = 3
+                 and lane_id = 106
+                 and state = 'U')
   </select>
 </mapper>

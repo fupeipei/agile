@@ -3,7 +3,7 @@ package com.yusys.agile.versionmanager.enums;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * @ClassName VersionStatusEnum
+ * @ClassName VersionIsRemoveEnum
  * @Description 版本、需求是否移除
  * @Date 2020/8/19 09:54
  * @Version 1.0
@@ -18,7 +18,7 @@ public enum VersionIsRemoveEnum {
     private String CODE;
     private String NAME;
 
-    private VersionIsRemoveEnum(String code, String name) {
+    VersionIsRemoveEnum(String code, String name) {
         this.CODE = code;
         this.NAME = name;
     }
@@ -62,19 +62,4 @@ public enum VersionIsRemoveEnum {
         return jsonObject;
     }
 
-    public String getCODE() {
-        return CODE;
-    }
-
-    public void setCODE(String CODE) {
-        this.CODE = CODE;
-    }
-
-    public String getNAME() {
-        return NAME;
-    }
-
-    public void setNAME(String NAME) {
-        this.NAME = NAME;
-    }
 }

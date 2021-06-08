@@ -11,17 +11,17 @@ public enum FaultSourceEnum {
     YuDO2("YuDO2", new Byte("0"));
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private FaultSourceEnum(String name, Byte code) {
+    FaultSourceEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }
 
     // 普通方法
     public static String getName(Byte code) {
-        for (IssueTypeEnum stateType : IssueTypeEnum.values()) {
+        for (FaultSourceEnum stateType : FaultSourceEnum.values()) {
             if (stateType.CODE.equals(code)) {
                 return stateType.NAME;
             }
@@ -30,7 +30,7 @@ public enum FaultSourceEnum {
     }
 
     public static Byte getId(String name) {
-        for (IssueTypeEnum stateType : IssueTypeEnum.values()) {
+        for (FaultSourceEnum stateType : FaultSourceEnum.values()) {
             if (stateType.NAME.equals(name)) {
                 return stateType.CODE;
             }

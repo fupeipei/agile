@@ -1,6 +1,9 @@
 package com.yusys.agile.customfield.dto;
 
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -8,22 +11,55 @@ import java.util.Date;
  *
  * @create 2021/2/1
  */
+@Data
 public class CustomFieldDTO {
+    /**
+     * 自定义字段id
+     */
+    @ApiModelProperty(value = "自定义字段id")
     private Long fieldId;
 
+    /**
+     * 自定义字段名
+     */
+    @ApiModelProperty(value = "自定义字段名")
     private String fieldName;
 
+    /**
+     * 备注
+     */
+    @ApiModelProperty(value = "备注")
     private String comment;
 
+    /**
+     * 自定义字段内容
+     */
+    @ApiModelProperty(value = "自定义字段内容")
+    private String fieldContent;
+
+    /**
+     * 字段类型 0单选 1多选 2数字 3日期 4文本 5成员
+     */
+    @ApiModelProperty(value = "字段类型 0单选 1多选 2数字 3日期 4文本 5成员")
     private Integer fieldType;
+
+    /**
+     * 数据有效状态 U正常 E失效
+     */
+    @ApiModelProperty(value = "数据有效状态 U正常 E失效")
+    private String state;
+
+    /**
+     * 系统id
+     */
+    @ApiModelProperty(value = "系统id")
+    private Long systemId;
 
     private String category;
 
     private String required;
 
     private String apply;
-
-    private String state;
 
     private Integer sort;
 
@@ -35,8 +71,6 @@ public class CustomFieldDTO {
 
     private Date modifyDate;
 
-    private String fieldContent;
-
     /**
      * 应用类型名称
      */
@@ -44,153 +78,5 @@ public class CustomFieldDTO {
 
     private Long projectId;
 
-    public Long getFieldId() {
-        return fieldId;
-    }
 
-    public void setFieldId(Long fieldId) {
-        this.fieldId = fieldId;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public Integer getFieldType() {
-        return fieldType;
-    }
-
-    public void setFieldType(Integer fieldType) {
-        this.fieldType = fieldType;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getRequired() {
-        return required;
-    }
-
-    public void setRequired(String required) {
-        this.required = required;
-    }
-
-    public String getApply() {
-        return apply;
-    }
-
-    public void setApply(String apply) {
-        this.apply = apply;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public String getOperatorId() {
-        return operatorId;
-    }
-
-    public void setOperatorId(String operatorId) {
-        this.operatorId = operatorId;
-    }
-
-    public String getOperatorName() {
-        return operatorName;
-    }
-
-    public void setOperatorName(String operatorName) {
-        this.operatorName = operatorName;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getModifyDate() {
-        return modifyDate;
-    }
-
-    public void setModifyDate(Date modifyDate) {
-        this.modifyDate = modifyDate;
-    }
-
-    public String getFieldContent() {
-        return fieldContent;
-    }
-
-    public void setFieldContent(String fieldContent) {
-        this.fieldContent = fieldContent;
-    }
-
-    public String getApplyTypeName() {
-        return applyTypeName;
-    }
-
-    public void setApplyTypeName(String applyTypeName) {
-        this.applyTypeName = applyTypeName;
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    @Override
-    public String toString() {
-        return "CustomFieldDTO{" +
-                "fieldId=" + fieldId +
-                ", fieldName='" + fieldName + '\'' +
-                ", comment='" + comment + '\'' +
-                ", fieldType=" + fieldType +
-                ", category='" + category + '\'' +
-                ", required='" + required + '\'' +
-                ", apply='" + apply + '\'' +
-                ", state='" + state + '\'' +
-                ", sort=" + sort +
-                ", operatorId='" + operatorId + '\'' +
-                ", operatorName='" + operatorName + '\'' +
-                ", createDate=" + createDate +
-                ", modifyDate=" + modifyDate +
-                ", fieldContent='" + fieldContent + '\'' +
-                ", applyTypeName='" + applyTypeName + '\'' +
-                ", projectId=" + projectId +
-                '}';
-    }
 }

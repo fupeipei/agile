@@ -22,7 +22,7 @@ import com.yusys.agile.headerfield.domain.HeaderFieldExample;
 import com.yusys.agile.headerfield.util.HeaderFieldUtil;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.domain.IssueCustomField;
+import com.yusys.agile.issue.domain.SIssueCustomField;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
@@ -399,10 +399,10 @@ public class FaultServiceImpl implements FaultService {
 
         // 自定义字段
         if (CollectionUtils.isNotEmpty(faultDTO.getCustomFieldDetailDTOList())) {
-            List<IssueCustomField> customFields = Lists.newArrayList();
+            List<SIssueCustomField> customFields = Lists.newArrayList();
             // IssueCustomFieldDTO转换成IssueCustomField
             for (IssueCustomFieldDTO temp : faultDTO.getCustomFieldDetailDTOList()) {
-                IssueCustomField issueCustomField = new IssueCustomField();
+                SIssueCustomField issueCustomField = new SIssueCustomField();
                 issueCustomField.setExtendId(temp.getDetailId());
                 issueCustomField.setFieldId(temp.getFieldId());
                 issueCustomField.setFieldValue(temp.getFieldValue());
@@ -784,7 +784,7 @@ public class FaultServiceImpl implements FaultService {
      */
     private void syncFixedFault(Long issueId, Long bugId, Long handler) throws Exception {
         FaultFixDTO faultFixDTO = new FaultFixDTO();
-        faultFixDTO.setSystemCode(FaultSourceEnum.YuDO2.NAME);
+        faultFixDTO.setSystemCode(FaultSourceEnum.getName(FaultSourceEnum.YuDO2.CODE));
         faultFixDTO.setBugId(bugId);
         faultFixDTO.setResolution(StringConstant.FIXED);
         faultFixDTO.setResolved_time(DateUtil.toString(DateUtil.FORMAT, new Date()));

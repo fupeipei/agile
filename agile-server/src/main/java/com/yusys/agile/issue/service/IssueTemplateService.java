@@ -12,8 +12,11 @@ import java.util.Map;
  * @Description: TODO
  */
 public interface IssueTemplateService {
-
-    void initIssueTemplate(Long projectId);
+    /**
+     * @author hanhe
+     * @param systemId
+     */
+    void initIssueTemplate(Long systemId);
 
     Map query(Byte issueType, SecurityDTO securityDTO);
 

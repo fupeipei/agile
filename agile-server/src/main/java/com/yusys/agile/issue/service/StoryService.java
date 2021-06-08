@@ -37,14 +37,14 @@ public interface StoryService {
      * @param storyId
      * @param deleteChild
      */
-    void deleteStory(Long storyId, Boolean deleteChild);
+    void deleteStory(Long storyId, Boolean deleteChild,Long userId);
 
 
     /**
      * 编辑用户故事
      * @param issueDTO
      */
-    void editStory(IssueDTO issueDTO);
+    void editStory(IssueDTO issueDTO,Long userId);
 
 
     /**
@@ -242,5 +242,14 @@ public interface StoryService {
      * 判断迭代已完成，已取消，以及迭代结束日期小于当前时间的迭代
      * @param sprintId 迭代id
      */
-  void checkSprintParam(Long sprintId);
+    void checkSprintParam(Long sprintId);
+
+    /**
+     *功能描述 根据系统查询故事
+     * @author shenfeng
+     * @date 2021/6/1
+      * @param systemId
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     */
+    List<IssueDTO> queryStoryBySystemId(Long systemId,String storyName,Integer pageNum,Integer pageSize);
 }

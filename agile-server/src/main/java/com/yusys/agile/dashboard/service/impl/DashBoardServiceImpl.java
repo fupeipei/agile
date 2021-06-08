@@ -2,14 +2,14 @@ package com.yusys.agile.dashboard.service.impl;
 
 import com.yusys.agile.dashboard.service.DashBoardService;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.dao.IssueStatusMapper;
 import com.yusys.agile.issue.domain.IssueProjectStatus;
 import com.yusys.agile.issue.domain.IssueStatus;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueProjectStatusService;
 import com.yusys.agile.issue.service.IssueStatusService;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.SprintWithBLOBs;
-import com.yusys.agile.sprint.service.SprintService;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SsoProjectDTO;
@@ -30,96 +30,104 @@ public class DashBoardServiceImpl implements DashBoardService {
     @Resource
     private IFacadeProjectApi iFacadeProjectApi;
     @Resource
-    private SprintMapper sprintMapper;
-    @Resource
     private IssueMapper issueMapper;
     @Resource
-    private SprintService sprintService;
+    private Sprintv3Service sprintv3Service;
     @Resource
     private IssueStatusService issueStatusService;
     @Resource
     private IssueProjectStatusService issueProjectStatusService;
+    @Resource
+    private IssueStatusMapper statusMapper;
 
     /**
      * 仪表盘-迭代-工作项状态个数统计
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void calculateIssueStatus() {
-        ControllerResponse<List<SsoProjectDTO>> controllerResponse = iFacadeProjectApi.listAllProjectsNoPage("");
-        List<SsoProjectDTO> projects = controllerResponse.getData();
-        if (CollectionUtils.isNotEmpty(projects)) {
-            for (SsoProjectDTO project : projects) {
-                if (project != null) {
-                    List<SprintWithBLOBs> sprints = sprintMapper.getByProjectId(project.getProjectId());
-                    calculateStatus(sprints, project.getProjectId());
+        //查询所有迭代
+        List<SSprintWithBLOBs> sSprints  = sprintv3Service.querySprintList();
+        if (CollectionUtils.isNotEmpty(sSprints)) {
+            for (SSprintWithBLOBs sprint : sSprints) {
+                if (null != sprint) {
+                    calculateStatus(null,sprint);
                 }
             }
         }
     }
-
-    private void calculateStatus(List<SprintWithBLOBs> sprints, Long projectId) {
-        if (sprints != null && !sprints.isEmpty()) {
-            for (SprintWithBLOBs sprint : sprints) {
-                if (sprint != null) {
-                    calculateStatus(projectId, sprint);
-                }
-            }
-        }
-    }
-
-    private void calculateStatus(Long projectId, SprintWithBLOBs sprint) {
+    private void calculateStatus(Long projectId, SSprintWithBLOBs sprint) {
         Long sprintId = sprint.getSprintId();
-        Date target = DateUtil.currentDay();
-        if (sprintService.legalDate(sprint.getSprintDays(), target)) {
-            //创建业务需求状况
-            //createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_EPIC.CODE);
-            //创建研发需求状况
-            // createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_FEATURE.CODE);
+        Date target = DateUtil.preDay(new Date());
+        if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
             //创建故事状况
-            createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_STORY.CODE);
+            createIssueStoryStatus(projectId, sprintId, target);
             //创建任务状况
-            createIssueStatus(projectId, sprintId, target, IssueTypeEnum.TYPE_TASK.CODE);
+            createIssueTaskStatus(projectId, sprintId, target);
         }
     }
 
 
     /**
-     * 创建工作项状况
+     * 创建工作项-用户故事状况
      */
-    private void createIssueStatus(Long projectId, Long sprintId, Date target, Byte issueType) {
-        Integer finished = 0;
-        Integer insprint = 0;
-        Integer notStarted = 0;
-        if (issueType.equals(IssueTypeEnum.TYPE_TASK.CODE)) {
-            finished = issueMapper.countFinishedTasks4Project(sprintId, projectId);
-            insprint = issueMapper.countInsprintTaskBySprint(sprintId, projectId);
-            notStarted = issueMapper.countNotStartTaskBySprint(sprintId, projectId);
-        } else {
-            finished = issueMapper.countAchievedIssues4Sprint(sprintId, projectId, issueType);
-            insprint = issueMapper.countInsprintIssuesBySprint(sprintId, projectId, issueType);
-            notStarted = issueMapper.countNotStartIssuesBySprint(sprintId, projectId, issueType);
-        }
+    private void createIssueStoryStatus(Long projectId, Long sprintId, Date target) {
+        //获取状态
+        IssueStatus status = statusMapper.getStoryStatus(sprintId);
+        //查询当前记录是否存在，存在则修改，不存在则新增
+        Byte issueType = IssueTypeEnum.TYPE_STORY.CODE;
         IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
         if (currentStatus == null) {
             IssueStatus issueStatus = new IssueStatus();
             issueStatus.setSprintDate(target);
             issueStatus.setProjectId(projectId);
             issueStatus.setSprintId(sprintId);
-            issueStatus.setFinished(finished);
-            issueStatus.setInSprint(insprint);
-            issueStatus.setNotStarted(notStarted);
+            issueStatus.setFinished(status.getFinished());
+            issueStatus.setInSprint(status.getInSprint());
+            issueStatus.setNotStarted(status.getNotStarted());
+            issueStatus.setFinishedStoryPoint(status.getFinishedStoryPoint());
             issueStatus.setIssueType(issueType);
             issueStatusService.create(issueStatus);
         } else {
-            currentStatus.setFinished(finished);
-            currentStatus.setInSprint(insprint);
-            currentStatus.setNotStarted(notStarted);
+            currentStatus.setFinished(status.getFinished());
+            currentStatus.setInSprint(status.getInSprint());
+            currentStatus.setNotStarted(status.getNotStarted());
+            currentStatus.setFinishedStoryPoint(status.getFinishedStoryPoint());
+            issueStatusService.update(currentStatus);
+        }
+    }
+    /**
+     * 创建工作项-任务状况
+     */
+    private void createIssueTaskStatus(Long projectId, Long sprintId, Date target) {
+        //获取状态
+        IssueStatus status = statusMapper.getTaskStatus(sprintId);
+        //查询当前记录是否存在，存在则修改，不存在则新增
+        Byte issueType = IssueTypeEnum.TYPE_TASK.CODE;
+        IssueStatus currentStatus = issueStatusService.getBySprintAndDate(sprintId, target, issueType);
+        if (currentStatus == null) {
+            IssueStatus issueStatus = new IssueStatus();
+            issueStatus.setSprintDate(target);
+            issueStatus.setProjectId(projectId);
+            issueStatus.setSprintId(sprintId);
+            issueStatus.setFinished(status.getFinished());
+            issueStatus.setInSprint(status.getInSprint());
+            issueStatus.setNotStarted(status.getNotStarted());
+            issueStatus.setReallyWorkload(status.getReallyWorkload());
+            issueStatus.setPlanWorkload(status.getPlanWorkload());
+            issueStatus.setIssueType(issueType);
+            issueStatusService.create(issueStatus);
+        } else {
+            currentStatus.setFinished(status.getFinished());
+            currentStatus.setInSprint(status.getInSprint());
+            currentStatus.setNotStarted(status.getNotStarted());
+            currentStatus.setReallyWorkload(status.getReallyWorkload());
+            currentStatus.setPlanWorkload(status.getPlanWorkload());
             issueStatusService.update(currentStatus);
         }
     }
 
-
+    
     @Override
     @Transactional
     public void calculateProjectStatus() {
@@ -136,7 +144,7 @@ public class DashBoardServiceImpl implements DashBoardService {
 
 
     private void calculateProjectStatus(Long projectId) {
-        Date target = DateUtil.currentDay();
+        Date target = DateUtil.preDay(new Date());
         //创建业务需求状况
         createIssueProjectStatus(projectId, target, IssueTypeEnum.TYPE_EPIC.CODE);
         //创建研发需求状况

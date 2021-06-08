@@ -371,27 +371,29 @@
         <if test="params != null">
             <if test="params.team != null and params.team != ''">
                 and (t.team_name like concat('%',#{params.team},'%')
-                or t.team_id like concat('%',#{params.team},'%')
+                  or t.team_id like concat('%',#{params.team},'%')
                 )
             </if>
             <if test="params.po != null and params.po != ''">
                 and exists (
-                select * from s_team_member tm where t.team_id=tm.team_id
-                and (
-                tm.user_name like concat('%',#{params.po},'%')
-                or tm.user_account like concat('%',#{params.po},'%')
-                and tm.role_id=104
-                )
+                    select * from s_team_member tm where t.team_id=tm.team_id
+                    and (
+                        (tm.user_name like concat('%',#{params.po},'%')
+                         or tm.user_account like concat('%',#{params.po},'%')
+                        )
+                        and tm.role_id=104
+                    )
                 )
             </if>
             <if test="params.sm != null and params.sm != ''">
                 and exists (
-                select * from s_team_member tm where t.team_id=tm.team_id
-                and (
-                tm.user_name like concat('%',#{params.sm},'%')
-                or tm.user_account like concat('%',#{params.sm},'%')
-                and tm.role_id=103
-                )
+                    select * from s_team_member tm where t.team_id=tm.team_id
+                        and (
+                        (tm.user_name like concat('%',#{params.sm},'%')
+                         or tm.user_account like concat('%',#{params.sm},'%')
+                        )
+                        and tm.role_id=103
+                    )
                 )
             </if>
             <if test="params.systemIds != null and params.systemIds.size != 0">
@@ -400,6 +402,9 @@
                     #{systemId}
                 </foreach>
                 )
+            </if>
+            <if test="params.tenantCode != null and params.tenantCode != ''">
+                and t.tenant_code = #{params.tenantCode}
             </if>
         </if>
     </sql>
@@ -457,7 +462,7 @@
         where team_id = #{teamId}
     </update>
 
-    <select id="getTeamsByTeamId" resultType="com.yusys.agile.team.domain.Team">
+    <select id="getTeamsByTeamId" resultType="com.yusys.agile.teamv3.domain.STeam">
         SELECT
         <include refid="Base_Column_List"/>
         FROM s_team
@@ -496,15 +501,8 @@
 
 
     <select id="querySprintVagueUser" resultType="com.yusys.agile.teamv3.domain.STeamMember">
-        select distinct a.user_id, a.user_account, a.user_name
-        from s_team_member a
-                     left join s_sprint_user_hour b on b.user_id = a.user_id
-                     left join s_sprint c on b.sprint_id = c.sprint_id
-        where b.sprint_id = #{sprintId}
-          and a.team_id = (select team_id from s_sprint where sprint_id = #{sprintId})
-          <if test="userName != null and  userName != ''">
-              and (a.user_name like concat('%', #{userName}, '%') or  a.user_account like like concat('%', #{userName}, '%'))
-          </if>
-          and c.state = 'U'
+        select user_id
+        from s_sprint_user_hour
+        where sprint_id = #{sprintId}
     </select>
 </mapper>

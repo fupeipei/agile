@@ -1,19 +1,19 @@
 package com.yusys.agile.issue.rest;
 
-import com.yusys.agile.consumer.constant.AgileConstant;
-import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
-import com.yusys.agile.issue.service.StoryService;
-import com.yusys.agile.issue.utils.IssueFactory;
-import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
-import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.yusys.agile.consumer.constant.AgileConstant;
+import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
+import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -100,9 +100,9 @@ public class StoryController {
 
 
     @DeleteMapping("/delete/{storyId}")
-    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild) {
+    public ControllerResponse deleteStory(@PathVariable("storyId") Long storyId, Boolean deleteChild,SecurityDTO securityDTO) {
         try {
-            storyService.deleteStory(storyId, deleteChild);
+            storyService.deleteStory(storyId, deleteChild,securityDTO.getUserId());
         } catch (Exception e) {
             LOGGER.error("删除用户故事失败：{}", e);
             return ControllerResponse.fail("删除用户故事失败：" + e.getMessage());
@@ -112,12 +112,12 @@ public class StoryController {
 
 
     @PostMapping("/edit")
-    public ControllerResponse editStory(@RequestBody Map<String, Object> map) {
+    public ControllerResponse editStory(@RequestBody Map<String, Object> map,SecurityDTO securityDTO) {
         try {
             //保存工作项基础字段
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-            storyService.editStory(issueDTO);
+            storyService.editStory(issueDTO,securityDTO.getUserId());
             //批量新增或者批量更新扩展字段值
             issueDTO.setIssueType(new Byte("3"));
             issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
@@ -129,7 +129,7 @@ public class StoryController {
     }
 
     @PutMapping("/copy/{storyId}")
-    public ControllerResponse copyStory(@PathVariable(name = "storyId") Long storyId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse copyStory(@PathVariable(name = "storyId") Long storyId, @RequestHeader(name = "projectId",required = false) Long projectId) {
         try {
             Long newStoryId = storyService.copyStory(storyId, projectId);
             return ControllerResponse.success(newStoryId);
@@ -150,7 +150,7 @@ public class StoryController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/query/unlinked/stories")
-    public ControllerResponse queryUnlinkedStory(@RequestHeader(name = "projectId") Long projectId, @RequestParam("pageNum") Integer pageNum,
+    public ControllerResponse queryUnlinkedStory(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("pageNum") Integer pageNum,
                                                  @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
                                                  @RequestParam(name = "projectId", required = false) Long paramProjectId) {
         Long finalProjectId = null;
@@ -190,7 +190,7 @@ public class StoryController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/edit/storyOrTask")
-    public ControllerResponse editStoryOrTask(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse editStoryOrTask(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId",required = false) Long projectId) {
         int i = storyService.editStoryOrTask(issueDTO, projectId);
         if (i == 0) {
             return ControllerResponse.fail("编辑工作项失败！");
@@ -206,7 +206,7 @@ public class StoryController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/listStoryAcceptance")
-    public ControllerResponse listStoryAcceptance(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse listStoryAcceptance(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId",required = false) Long projectId) {
         List<IssueDTO> result = storyService.listStoryAcceptance(issueDTO, projectId, issueDTO.getPageNum(), issueDTO.getPageSize());
         return ControllerResponse.success(new PageInfo<>(result));
     }
@@ -264,7 +264,7 @@ public class StoryController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/query/story/for/epic")
-    public ControllerResponse queryStoryForEpic(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "epicId") Long epicId) {
+    public ControllerResponse queryStoryForEpic(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam(value = "epicId") Long epicId) {
         List<IssueDTO> result;
         try {
             result = storyService.queryStoryForEpic(projectId, epicId);
@@ -283,7 +283,7 @@ public class StoryController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/query/story/for/feature")
-    public ControllerResponse queryStoryForFeature(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "featureId") Long featureId) {
+    public ControllerResponse queryStoryForFeature(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam(value = "featureId") Long featureId) {
         List<IssueDTO> result;
         try {
             result = storyService.queryStoryForFeature(projectId, featureId);
@@ -316,7 +316,7 @@ public class StoryController {
      * @date 2020/8/19
      */
     @GetMapping("/list/unfinished/story")
-    public ControllerResponse listUnFinisherStorysByProjectId(@RequestParam("projectId") Long projectId,
+    public ControllerResponse listUnFinisherStorysByProjectId(@RequestParam(value = "projectId",required = false) Long projectId,
                                                               @RequestParam(value = "name", required = false) String name,
                                                               @RequestParam(value = "pageNum", required = false) Integer pageNum,
                                                               @RequestParam(value = "pageSize", required = false) Integer pageSize) {
@@ -366,5 +366,27 @@ public class StoryController {
             LOGGER.error("查询故事下开发负责人异常,异常信息:{}", e.getMessage());
             return ControllerResponse.fail("查询故事下开发负责人异常");
         }
+    }
+
+    /**
+     *功能描述 根据系统查询故事
+     * @author shenfeng
+     * @date 2021/6/1
+      * @param systemId
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     */
+    @GetMapping("/queryStoryBySystemId")
+    public ControllerResponse queryStoryBySystemId(@RequestParam(name = "systemId") Long systemId,
+                                                   @RequestParam(name = "storyName", required = false) String storyName,
+                                                   @RequestParam(name = "pageNum") Integer pageNum,
+                                                   @RequestParam(name = "pageSize") Integer pageSize) {
+        List<IssueDTO> result;
+        try {
+            result = storyService.queryStoryBySystemId(systemId,storyName,pageNum,pageSize);
+        } catch (Exception e) {
+            LOGGER.error("根据系统查询故事异常", e);
+            return ControllerResponse.fail("根据系统查询故事异常：" + e.getMessage());
+        }
+        return ControllerResponse.success(new PageInfo<>(result));
     }
 }

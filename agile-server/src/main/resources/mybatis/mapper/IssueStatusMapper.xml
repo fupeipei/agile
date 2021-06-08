@@ -3,17 +3,78 @@
 <mapper namespace="com.yusys.agile.issue.dao.IssueStatusMapper">
 
     <select id="getBySprintAndDate" resultType="com.yusys.agile.issue.domain.IssueStatus">
-        select project_id,sprint_id,sprint_date,issue_type,in_sprint,finished,not_started,create_time
+        select project_id,sprint_id,sprint_date,issue_type,in_sprint,finished,not_started,finished_story_point,really_workload,plan_workload,create_time
         from s_issue_status where sprint_id = #{sprintId} and sprint_date = #{sprintDate} and  issue_type = #{issueType}
     </select>
 
     <insert id="create">
-        insert into s_issue_status(project_id,sprint_id,sprint_date,issue_type,in_sprint,finished,not_started,create_time) values
-            (#{projectId},#{sprintId},#{sprintDate},#{issueType},#{inSprint},#{finished},#{notStarted},now())
+        insert into s_issue_status(project_id,sprint_id,sprint_date,issue_type,in_sprint,finished,not_started,finished_story_point,really_workload,plan_workload,create_time) values
+            (#{projectId},#{sprintId},#{sprintDate},#{issueType},#{inSprint},#{finished},#{notStarted},#{finishedStoryPoint},#{reallyWorkload},#{planWorkload},now())
     </insert>
 
     <update id="update">
-        update s_issue_status set in_sprint = #{inSprint},finished = #{finished},not_started=#{notStarted}
+        update s_issue_status set in_sprint = #{inSprint},finished = #{finished},not_started=#{notStarted},finished_story_point=#{finishedStoryPoint},really_workload=#{reallyWorkload},plan_workload=#{planWorkload}
         where sprint_id = #{sprintId} and sprint_date = #{sprintDate} and issue_type = #{issueType}
     </update>
+
+    <select id="getTaskStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
+        SELECT
+         (
+        SELECT COUNT(1) AS finished
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 110 AND a.issue_type = 4 AND a.sprint_id = #{sprintId}) finished
+        ,
+         (
+        SELECT COUNT(1) AS in_sprint
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id IN (108,109) AND a.issue_type = 4 AND a.sprint_id =#{sprintId}) in_sprint
+        ,
+         (
+        SELECT COUNT(1) AS not_started
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 107 AND a.issue_type = 4 AND a.sprint_id =#{sprintId}) not_started
+        ,
+         (
+        SELECT SUM(a.really_workload) AS really_workload
+        FROM s_issue a
+        WHERE 1=1 AND a.is_archive != 1 AND a.state = 'U' AND a.issue_type = 4 AND a.sprint_id = #{sprintId}
+        ) really_workload
+        ,
+         (
+        SELECT SUM(a.plan_workload) AS plan_workload
+        FROM s_issue a
+        WHERE 1=1 AND a.is_archive != 1 AND a.state = 'U' AND a.issue_type = 4 AND a.sprint_id = #{sprintId}
+        ) plan_workload
+    </select>
+
+    <select id="getStoryStatus" resultType="com.yusys.agile.issue.domain.IssueStatus">
+        select
+        (
+        SELECT COUNT(1) AS finished
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 106 AND a.issue_type = 3 AND a.sprint_id = #{sprintId})finished
+        ,
+        (
+        SELECT COUNT(1) AS in_sprint
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id =105 AND a.issue_type = 3 AND a.sprint_id = #{sprintId}) in_sprint
+        ,
+        (
+        SELECT COUNT(1) AS not_started
+        FROM s_issue a
+        WHERE a.is_archive != 1 AND a.state = "U" AND a.lane_id = 104 AND a.issue_type = 3 AND a.sprint_id = #{sprintId}) not_started
+        ,
+        (
+            select sum(se.value) as finished_story_point
+            from s_issue si, s_sys_extend_field_detail se
+            where 1=1
+            and si.issue_id = se.issue_id
+            and si.sprint_id =#{sprintId}
+            and si.state = "U"
+            and si.lane_id = 106
+            and si.issue_type = 3
+            and se.field_id = 'storyPoint'
+           ) finished_story_point
+    </select>
+
 </mapper>

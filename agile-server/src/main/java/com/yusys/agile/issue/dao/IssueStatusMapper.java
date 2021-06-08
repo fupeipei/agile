@@ -14,4 +14,22 @@ public interface IssueStatusMapper {
     Integer create(IssueStatus status);
 
     Integer update(IssueStatus status);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/28
+     * @Description 统计迭代下任务数
+     * @param sprintId
+     * @Return com.yusys.agile.issue.domain.IssueStatus
+     */
+    IssueStatus getTaskStatus(@Param("sprintId") Long sprintId);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/28
+     * @Description 统计迭代下故事数
+     * @param sprintId
+     * @Return com.yusys.agile.issue.domain.IssueStatus
+     */
+    IssueStatus getStoryStatus(@Param("sprintId") Long sprintId);
 }

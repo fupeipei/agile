@@ -1105,7 +1105,7 @@ public class ExcelServiceImpl implements ExcelService {
         //设置填充方案
         columnHeadStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         //设置预定义填充颜色
-        columnHeadStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte) 135, (byte) 206, (byte) 250}));
+        //columnHeadStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte) 135, (byte) 206, (byte) 250}));
         //列头标题
         XSSFRow columnHeadFieldRow = sheet.createRow(0);
         columnHeadFieldRow.setRowStyle(columnHeadStyle);

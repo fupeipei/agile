@@ -5,10 +5,10 @@ public enum QueryTypeEnum {
     TYPE_INVALID("展开child", new Byte("2"));
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private QueryTypeEnum(String name, Byte code) {
+    QueryTypeEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }

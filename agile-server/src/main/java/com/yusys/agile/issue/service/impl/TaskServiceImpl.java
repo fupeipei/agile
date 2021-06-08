@@ -1,7 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -25,20 +24,23 @@ import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRuleFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
+import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
-import com.yusys.agile.team.dto.TeamUserDTO;
+import com.yusys.agile.teamv3.dao.STeamMemberMapper;
+import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.teamv3.domain.STeamMemberExample;
+import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.agile.utils.ObjectUtil;
@@ -64,7 +66,6 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -123,6 +124,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private SSprintUserHourMapper sSprintUserHourMapper;
+    @Autowired
+    private STeamMemberMapper sTeamMemberMapper;
 
 
     @Override
@@ -130,7 +133,9 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTask(Long taskId, Boolean deleteChild) {
         Issue issue = issueMapper.selectByPrimaryKey(taskId);
         if (null != issue) {
-            this.ckeckTaksParams(issue.getSprintId(), "无法删除任务");
+            IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
+            //校验权限
+            this.checkAuth(issueDTO, issue, "delete","无法删除任务");
         }
         issueFactory.deleteIssue(taskId, deleteChild);
 
@@ -145,13 +150,8 @@ public class TaskServiceImpl implements TaskService {
         if (null == oldTask) {
             return;
         }
-        Boolean isPass = checkAuth(issueDTO, oldTask, securityDTO);
-        if (!isPass) {
-            throw new BusinessException("团队成员角色,只允许更新领取人为自己的卡片信息,但不允许更新领取人");
-        }
-        //校验参数
-        this.ckeckTaksParams(oldTask.getSprintId(), "无法编辑任务");
-
+        //校验权限
+        this.checkAuth(issueDTO, oldTask, "edit","无法编辑任务");
         Long projectId = oldTask.getProjectId();
         Issue task = issueFactory.editIssue(issueDTO, oldTask, projectId);
 
@@ -159,6 +159,11 @@ public class TaskServiceImpl implements TaskService {
             Long[] stages = issueDTO.getStages();
             if (null != stages) {
                 issueDTO.setStageId(stages[0]);
+                if (stages.length > 1) {
+                    issueDTO.setLaneId(stages[1]);
+                } else {
+                    issueDTO.setLaneId(null);
+                }
                 if (!ObjectUtil.equals(oldTask.getLaneId(), issueDTO.getLaneId())) {
                     //创建任务状态变更历史记录
                     createIssueHistoryRecords(oldTask.getLaneId(), issueDTO.getLaneId(), oldTask);
@@ -214,35 +219,49 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    public Boolean checkAuth(IssueDTO issueDTO, Issue oldTask, SecurityDTO securityDTO) {
+    private void checkAuth(IssueDTO issueDTO, Issue oldTask, String checkType,String errorMsg) {
         //        校验权限 1.SM角色，可以更新卡片上的任意信息
         //                2.团队成员角色，只允许更新领取人为自己的卡片信息
         //根据task获得team，根据team及当前登录人员进行判断：
-        SprintDTO sprintDTO = sprintv3Service.viewEdit(oldTask.getSprintId());
-        if (null == sprintDTO.getSprintId()) {
-            throw new BusinessException("该任务下的迭代不存在" + oldTask.getSprintId());
-        }
-        QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO.getTeamId());
-        //该团队下的团队成员
-        List<TeamUserDTO> teamUsers = queryTeamResponse.getTeamUsers();
-        //该团队下的sm
-        List<TeamUserDTO> teamSmS = queryTeamResponse.getTeamSmS();
-        int sm = Optional.ofNullable(teamSmS).orElse(new ArrayList<>()).stream().filter(x -> x.getUserId().equals(securityDTO.getUserId())).collect(Collectors.toList()).size();
-        int teamMember = Optional.ofNullable(teamUsers).orElse(new ArrayList<>()).stream().filter(x -> x.getUserId().equals(securityDTO.getUserId())).collect(Collectors.toList()).size();
-        //1.SM角色，可以更新卡片上的任意信息
-        if (sm > 0) {
-            return Boolean.TRUE;
-            //2.团队成员角色，只允许更新领取人为自己的卡片信息
-        } else if (teamMember > 0
-                && !TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(oldTask.getLaneId())
-                && Optional.ofNullable(oldTask.getHandler()).isPresent()
-                && oldTask.getHandler().equals(issueDTO.getHandler())
-                && securityDTO.getUserId().equals(oldTask.getHandler())) {
-            return Boolean.TRUE;
-        } else if (sm == 0 && teamMember == 0) {
-            throw new BusinessException("您无权限进行该操作");
-        } else {
-            return Boolean.FALSE;
+        Long storyId = oldTask.getParentId();
+        if (Optional.ofNullable(storyId).isPresent()) {
+            Issue issue = issueMapper.selectByPrimaryKey(storyId);
+            if (!Optional.ofNullable(issue).isPresent()) {
+                return;
+            }
+            SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(issue.getSprintId());
+            if (!Optional.ofNullable(sSprintWithBLOBs).isPresent()) {
+                return;
+            }
+            //校验参数
+            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg,checkType);
+            Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+            boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, sSprintWithBLOBs.getTeamId());
+            //查询该迭代下的成员
+            List<SprintV3UserHourDTO> sprintUsers = sprintv3Service.getUsersBySprintId(sSprintWithBLOBs.getSprintId());
+            //1.SM角色，可以更新卡片上的任意信息
+            if (isSM) {
+                return;
+            } else if (CollectionUtils.isEmpty(sprintUsers)) {
+                throw new BusinessException("您无权限对此功能进行操作");
+                //2.当卡片没有领取时可以自己领取该卡片,且必须是是本人领取
+            }else if ("edit".equals(checkType)
+                    && Optional.ofNullable(oldTask.getHandler()).isPresent()
+                    && !userId.equals(oldTask.getHandler())){
+                throw new BusinessException("当前任务已被他人领取,不允许修改");
+            }else if (("edit".equals(checkType)
+                    && !Optional.ofNullable(oldTask.getHandler()).isPresent()
+                    && Optional.ofNullable(issueDTO.getHandler()).isPresent()
+                    && !userId.equals(issueDTO.getHandler()))
+                    || ("create".equals(checkType)
+                    && Optional.ofNullable(issueDTO.getHandler()).isPresent()
+                    && !userId.equals(issueDTO.getHandler()))){
+                throw new BusinessException("只有SM角色才允许分配任务");
+            }else if ("delete".equals(checkType)
+                    && Optional.ofNullable(oldTask.getHandler()).isPresent()
+                    && !userId.equals(oldTask.getHandler())){
+                throw new BusinessException("当前任务已被他人领取,不允许删除");
+            }
         }
     }
 
@@ -255,30 +274,29 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public IssueDTO queryTask(Long taskId) {
-        Long projectId = issueFactory.getProjectIdByIssueId(taskId);
-        return issueFactory.queryIssue(taskId, projectId);
+        return issueFactory.queryIssue(taskId, null);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
+        Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
+        this.checkAuth(issueDTO,issue,"create","无法新建任务");
         //设置默认创建
         Long[] stages = issueDTO.getStages();
-        if (Optional.ofNullable(issueDTO.getHandler()).isPresent()) {
-            //任务选择处理人就是已领取，否则就是未领取
-            stages = new Long[]{StageConstant.FirstStageEnum.READY_STAGE.getValue(), TaskStatusEnum.TYPE_RECEIVED_STATE.CODE};
-        } else if (!Optional.ofNullable(stages).isPresent()) {
+        if (!Optional.ofNullable(stages).isPresent()) {
             stages = new Long[2];
-            List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-            stages[0] = StageConstant.FirstStageEnum.READY_STAGE.getValue();
-            //创建用户故事下任务默认放在开发中的就绪阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
+            stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
+            stages[1] = TaskStatusEnum.TYPE_ADD_STATE.CODE;
+        }
+        //创建用户故事下任务默认放在开发中的就绪阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
+            /*List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
             if (CollectionUtils.isNotEmpty(stageInstances)) {
                 Long sprintId = issueDTO.getSprintId();
                 StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent() ? stageInstances.get(1) : stageInstances.get(0);
                 stages[1] = stageInstance.getStageId();
-            }
-            issueDTO.setStages(stages);
-        }
+            }*/
+        issueDTO.setStages(stages);
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
 
@@ -288,7 +306,23 @@ public class TaskServiceImpl implements TaskService {
         return taskId;
     }
 
-    private void ckeckTaksParams(Long sprintId, String errorMsg) {
+    private List<STeamMember> checkIsTeamMember(Long teamId, Long userId) {
+        STeamMemberExample sTeamMemberExample = new STeamMemberExample();
+        sTeamMemberExample.createCriteria().andTeamIdEqualTo(teamId).andRoleIdEqualTo(TeamRoleEnum.TEAM_MEMBER.getRoleId());
+        List<STeamMember> sTeamMembers = sTeamMemberMapper.selectByExample(sTeamMemberExample);
+        List<STeamMember> isTeamUsers = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(sTeamMembers)) {
+            isTeamUsers = sTeamMembers.stream().filter(x -> userId.equals(x.getUserId())).collect(Collectors.toList());
+        }
+        return isTeamUsers;
+    }
+
+    private void ckeckTaksParams(Long sprintId, String errorMsg,String checkType) {
+        //不允许新建删除  允许修改，
+        //需要将删除权限加上。已完成／迭代结束日期《当前时间的迭代，不允许删除任务
+        if (!Optional.ofNullable(sprintId).isPresent() || "edit".equals(checkType)) {
+            return;
+        }
         SSprintExample sSprintExample = new SSprintExample();
         sSprintExample.createCriteria().andSprintIdEqualTo(sprintId)
                 .andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
@@ -362,7 +396,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void dragTask(Long issueId, Long from, Long to, Long userId) {
+    public Issue dragTask(Long issueId, Long from, Long to, Long userId) {
         if (null == issueId || null == from || null == to) {
             throw new BusinessException("入参为空！");
         }
@@ -384,13 +418,19 @@ public class TaskServiceImpl implements TaskService {
         }
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
         //Long loginUserId=807906052370849792L;
-        if (null != loginUserId) {
+       /* if (null != loginUserId) {
             task.setHandler(loginUserId);
-        }
+        }*/
         //根据task获得team，根据team及当前登录人员进行判断：
-        SprintDTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
+        SprintV3DTO sprintDTO1 = sprintv3Service.viewEdit(task.getSprintId());
         if (sprintDTO1 == null) {
             throw new BusinessException("根据迭代标识获取迭代信息为空" + task.getSprintId());
+        }
+
+        List<SprintMembersWorkHours> sprintMembersWorkHours = sprintv3Service.sprintMembersWorkHours(task.getSprintId());
+
+        if (sprintMembersWorkHours == null||sprintMembersWorkHours.size()==0) {
+            throw new BusinessException("根据迭代标识获取迭代成员信息为空" + task.getSprintId());
         }
 
         QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO1.getTeamId());
@@ -398,9 +438,20 @@ public class TaskServiceImpl implements TaskService {
         long smCount = Optional.ofNullable(queryTeamResponse.getTeamSmS()).orElse(new ArrayList<>()).
                 stream().
                 filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
+
+        //团队成员，暂时注释掉
+        /*
         long memCount = Optional.ofNullable(queryTeamResponse.getTeamUsers()).orElse(new ArrayList<>())
                 .stream()
                 .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
+
+         */
+
+        long memCount = Optional.ofNullable(sprintMembersWorkHours).orElse(new ArrayList<>())
+                .stream()
+                .filter(sprintMen -> sprintMen.getUserId() == loginUserId.longValue()).count();
+
+
         long poCount = Optional.ofNullable(queryTeamResponse.getTeamPoS()).orElse(new ArrayList<>())
                 .stream()
                 .filter(teamUserDTO -> teamUserDTO.getUserId().equals(loginUserId)).count();
@@ -443,20 +494,22 @@ public class TaskServiceImpl implements TaskService {
             } else if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId()) && !loginUserId.equals(task.getHandler())) {
                 throw new BusinessException("当前任务已被他人领取，不允许拖动!");
             }
-            if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(task.getLaneId()) && TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(to)) {
-                task.setLaneId(to);
-                task.setHandler(null);
-                actionRemark += "领取人需要清除";
-            }
-
         } else {
             throw new BusinessException("不是团队成员不允许该操作!");
+        }
+
+        if (!TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(from) && TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(to)) {
+            task.setLaneId(to);
+            task.setHandler(null);
+            actionRemark += "领取人需要清除";
         }
 
         //上面是特殊情况，这里兜底
         if (!task.getLaneId().equals(to)) {
             task.setLaneId(to);
-            task.setHandler(loginUserId);
+            if (task.getHandler() == null) {
+                task.setHandler(loginUserId);
+            }
         }
 
 
@@ -503,14 +556,34 @@ public class TaskServiceImpl implements TaskService {
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(task, NumberConstant.THREE, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+
+        return task;
     }
 
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
     private int updateStoryLaneIdByTaskCount(Issue task) {
-        if (task == null) {
+        if (task == null || task.getParentId() == null) {
+            log.info("task或task.getParentId()为空" + JSONObject.toJSONString(task));
             return -1;
         }
         Long storyId = task.getParentId();
+
+        IssueExample example1 = new IssueExample();
+        example1.createCriteria()
+                .andIssueIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> story = Optional.ofNullable(issueMapper.selectByExample(example1)).orElse(new ArrayList<>());
+
+        //未开始的数量
+        long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
+        log.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
+        if(unStartCount>0){
+            return -2;
+        }
+
         IssueExample example = new IssueExample();
         example.createCriteria()
                 .andParentIdEqualTo(storyId)
@@ -520,7 +593,7 @@ public class TaskServiceImpl implements TaskService {
         //根据故事查询所有有效的任务
         List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
         //完成的数量
-        long finishCount = tasks.stream().filter(t -> t.getLaneId().equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)).count();
+        long finishCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(t.getLaneId())).count();
 
         Issue storyIssue = new Issue();
         storyIssue.setIssueId(storyId);
@@ -585,9 +658,9 @@ public class TaskServiceImpl implements TaskService {
         StoryCreatePrepInfoDTO storyCreatePrepInfoDTO = new StoryCreatePrepInfoDTO();
         Issue issue = issueMapper.selectByPrimaryKey(storyId);
         Long sysId = null;
-        Long sprintId = issue.getParentId();
+        Long sprintId = issue.getSprintId();
         if (CreateTypeEnum.LIST.CODE.equals(createType)) {
-            if (Optional.ofNullable(issue.getParentId()).isPresent()) {
+            if (Optional.ofNullable(issue.getSprintId()).isPresent()) {
                 //执行人：如果故事上有迭代，从迭代内选人，
                 try {
                     List<SsoUserDTO> ssoUserDTOList = this.querySpringtUsersBySprintId(sprintId, userName, page, pageSize);
@@ -610,8 +683,8 @@ public class TaskServiceImpl implements TaskService {
             sysId = Optional.ofNullable(issue.getSystemId()).orElse(systemId);
         }
         //迭代：前端不采集，后端以故事所属迭代为准,故事下可能没有迭代
-        SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(sprintId);
-        if (Optional.ofNullable(sSprintWithBLOBs).isPresent()) {
+        if (Optional.ofNullable(sprintId).isPresent()) {
+            SSprintWithBLOBs sSprintWithBLOBs = sSprintMapper.selectByPrimaryKey(sprintId);
             List<SprintListDTO> sprintListDTOs = Lists.newArrayList();
             SprintListDTO sprintListDTO = ReflectUtil.copyProperties(sSprintWithBLOBs, SprintListDTO.class);
             sprintListDTOs.add(sprintListDTO);
@@ -627,13 +700,15 @@ public class TaskServiceImpl implements TaskService {
 
     private List<SsoUserDTO> querySpringtUsersBySprintId(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
         List<SsoUserDTO> ssoUserDTOList = Lists.newArrayList();
-        List<UserSprintHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
         if (CollectionUtils.isEmpty(userSprintHours)) {
             return ssoUserDTOList;
         }
-        List<Long> userIds = userSprintHours.stream().map(UserSprintHour::getUserId).distinct().collect(Collectors.toList());
-        return iFacadeUserApi.queryUsersByUserIdsAndConditions(pageNum,pageSize,userName,userIds);
-    }    /**
+        List<Long> userIds = userSprintHours.stream().map(SSprintUserHour::getUserId).distinct().collect(Collectors.toList());
+        return iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, pageNum, pageSize, userName);
+    }
+
+    /**
      * @param from
      * @param to
      * @param task
@@ -647,7 +722,7 @@ public class TaskServiceImpl implements TaskService {
                 task.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.STAGEID.getDesc());
         if (null != task.getIssueId()) {
             nameHistory.setOldValue(TaskStatusEnum.getName(from));
-            if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {
+            if (TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(to)) {
                 if (null != task.getIssueId() && Optional.ofNullable(to).isPresent()) {
                     nameHistory.setOldValue(TaskStatusEnum.getName(from));
                     if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {

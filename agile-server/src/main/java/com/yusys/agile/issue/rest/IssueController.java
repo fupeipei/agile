@@ -26,7 +26,7 @@ import java.util.Map;
  * :
  *
  * @Date: 2020/4/16
- * @Description: TODO
+ * @Description:
  */
 @RestController
 public class IssueController {
@@ -46,10 +46,12 @@ public class IssueController {
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
-    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map) {
+    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map, @RequestHeader(name = "systemId") Long systemId) {
         PageInfo result;
         try {
-
+        if(systemId!=null){
+            map.put("systemId",systemId);
+        }
             result = issueService.getIssueList(map);
         } catch (Exception e) {
             LOGGER.error("查询Issue异常", e);
@@ -98,16 +100,15 @@ public class IssueController {
      * 功能描述  查询当前Issue
      *
      * @param issueId
-     * @param projectId
      * @param issueQuery 1:不查询子，2：查询子
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
     @GetMapping("/issue/{issueId}")
-    public ControllerResponse getIssue(@PathVariable(name = "issueId") Long issueId, @RequestHeader(name = "projectId") Long projectId, Byte issueQuery) {
+    public ControllerResponse getIssue(@PathVariable(name = "issueId") Long issueId, Byte issueQuery) {
         IssueListDTO issueListDTO;
         try {
-            issueListDTO = issueService.getIssue(issueId, projectId, issueQuery, null);
+            issueListDTO = issueService.getIssue(issueId, issueQuery, null);
         } catch (Exception e) {
             LOGGER.error("查询异常：{}", e);
             return ControllerResponse.fail("查询异常：" + e.getMessage());
@@ -115,21 +116,20 @@ public class IssueController {
         return ControllerResponse.success(issueListDTO);
     }
 
+
     /**
-     * 功能描述  根据issueId查询当前Issue
-     *
+     * 根据issueId查询当前Issue
      * @param issueId
-     * @param projectId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/10/15
+     * @param systemId
+     * @return
      */
     @GetMapping("/issue/getIssueByIssueId/{issueId}")
-    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "systemId") Long systemId) {
         Map map = new HashMap<>();
         boolean b = StringUtil.isNumeric(issueId);
         if (b) {
             try {
-                map = issueService.getIssueByIssueId(Long.parseLong(issueId), projectId);
+                map = issueService.getIssueByIssueId(Long.parseLong(issueId), systemId);
             } catch (Exception e) {
                 LOGGER.error("查询异常：{}", e);
                 return ControllerResponse.fail("查询异常：" + e.getMessage());
@@ -184,8 +184,8 @@ public class IssueController {
      * @date 2020/4/29
      */
     @PostMapping("/issueListByIds")
-    public ControllerResponse issueListByIds(@RequestBody JSONObject rootIds, @RequestHeader(name = "projectId") Long projectId) {
-        List<IssueListDTO> result = Lists.newArrayList();
+    public ControllerResponse issueListByIds(@RequestBody JSONObject rootIds, @RequestHeader(name = "projectId",required = false) Long projectId) {
+        List<IssueListDTO> result;
         try {
             result = issueService.issueListByIds(rootIds.getString("rootIds"), projectId);
         } catch (Exception e) {
@@ -265,8 +265,7 @@ public class IssueController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/issue/detail/listRelation/{issueId}/{issueType}")
-    public ControllerResponse listRelation(@PathVariable("issueId") Long issueId, @PathVariable("issueType") Byte issueType, @RequestHeader(name = "projectId") Long projectId) {
-        //return ControllerResponse.success(issueService.listRelation(issueId, issueType, projectId));
+    public ControllerResponse listRelation(@PathVariable("issueId") Long issueId, @PathVariable("issueType") Byte issueType) {
         return ControllerResponse.success(issueService.listRelation(issueId, issueType));
     }
 
@@ -279,7 +278,7 @@ public class IssueController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/stage/count")
-    public ControllerResponse countIssueByStageId(@RequestHeader(name = "projectId") Long projectId, Integer pageNum, Integer pageSize) {
+    public ControllerResponse countIssueByStageId(@RequestHeader(name = "projectId",required = false) Long projectId, Integer pageNum, Integer pageSize) {
         return ControllerResponse.success(issueService.countIssueByStageId(projectId, pageNum, pageSize));
     }
 
@@ -308,7 +307,7 @@ public class IssueController {
     public ControllerResponse dragDemand(@RequestParam("issueId") Long issueId,
                                          @RequestParam(value = "sprintId", required = false) Long sprintId,
                                          @RequestParam(value = "parentId") Long parentId,
-                                         @RequestHeader(name = "projectId") Long projectId) {
+                                         @RequestHeader(name = "projectId",required = false) Long projectId) {
         try {
             issueService.dragDemand(issueId, sprintId, parentId, projectId);
         } catch (Exception e) {
@@ -328,7 +327,7 @@ public class IssueController {
      * @date 2020/08/04
      */
     @RequestMapping("/issue/querySprintRelatedCommitTaskList")
-    public ControllerResponse querySprintRelatedCommitTaskList(@RequestHeader("projectId") Long projectId, @RequestParam("sprintId") Long sprintId, @RequestParam("queryStr") String queryStr, Integer pageNumber, Integer pageSize) {
+    public ControllerResponse querySprintRelatedCommitTaskList(@RequestHeader(value = "projectId",required = false) Long projectId, @RequestParam("sprintId") Long sprintId, @RequestParam("queryStr") String queryStr, Integer pageNumber, Integer pageSize) {
         try {
             return ControllerResponse.success(issueService.getSprintRelatedCommitTaskList(projectId, sprintId, queryStr, pageNumber, pageSize));
         } catch (Exception e) {
@@ -346,7 +345,7 @@ public class IssueController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/issue/stage/countForSso")
-    public List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam(name = "projectId") Long projectId) {
+    public List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam(name = "projectId",required = false) Long projectId) {
         return issueService.countIssueByStageId(projectId, 1, 1000).getList();
     }
 

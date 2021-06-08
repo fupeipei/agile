@@ -5,10 +5,10 @@ public enum IsAchiveEnum {
     ACHIVEA_FALSE("未归档", new Byte("0"));
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private IsAchiveEnum(String name, Byte code) {
+    IsAchiveEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }

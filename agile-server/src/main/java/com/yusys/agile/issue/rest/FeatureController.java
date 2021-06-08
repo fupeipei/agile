@@ -57,7 +57,7 @@ public class FeatureController {
     }
 
     @GetMapping("/issue/queryFeature/{featureId}")
-    public ControllerResponse queryFeature(@PathVariable("featureId") Long featureId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse queryFeature(@PathVariable("featureId") Long featureId) {
         IssueDTO issueDTO = featureService.queryFeature(featureId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
@@ -78,7 +78,7 @@ public class FeatureController {
     }
 
     @DeleteMapping("/issue/deleteFeature/{featureId}")
-    public ControllerResponse deleteFeature(@PathVariable("featureId") Long featureId, Boolean deleteChild, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse deleteFeature(@PathVariable("featureId") Long featureId, Boolean deleteChild) {
         try {
             //featureService.deleteFeature(featureId,deleteChild,projectId);
             featureService.deleteFeature(featureId, deleteChild);
@@ -90,7 +90,7 @@ public class FeatureController {
     }
 
     @PostMapping("/issue/editFeature")
-    public ControllerResponse editFeature(@RequestBody Map<String, Object> map, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse editFeature(@RequestBody Map<String, Object> map) {
         try {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
@@ -121,7 +121,7 @@ public class FeatureController {
     }
 
     @GetMapping("/issue/queryUnlinkedFeature")
-    public ControllerResponse queryUnlinkedFeature(@RequestHeader(name = "projectId") Long projectId, @RequestParam("pageNum") Integer pageNum,
+    public ControllerResponse queryUnlinkedFeature(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("pageNum") Integer pageNum,
                                                    @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
                                                    @RequestParam(name = "projectId", required = false) Long paramProjectId) {
         Long finalProjectId = null;
@@ -168,7 +168,7 @@ public class FeatureController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/issue/queryFeatureForEpic")
-    public ControllerResponse queryFeatureForEpic(@RequestHeader(name = "projectId") Long projectId, @RequestParam("epicId") Long epicId) {
+    public ControllerResponse queryFeatureForEpic(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("epicId") Long epicId) {
         List<IssueDTO> result;
         try {
             result = featureService.queryFeatureForEpic(projectId, epicId);

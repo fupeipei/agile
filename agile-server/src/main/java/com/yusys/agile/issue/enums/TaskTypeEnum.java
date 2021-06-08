@@ -15,7 +15,9 @@ public enum TaskTypeEnum {
     FRONT("前端", 1),
     DESIGN("设计", 2),
     REAR("后端", 3),
-    TEST("测试", 4);
+    TEST("测试", 4),
+    JOINT_DEBUG("联调", 5),
+    FAULT("缺陷", 6);
     /*TYPE_ANALYSE("分析", 1),
     TYPE_DESIGN("设计", 2),
     TYPE_DEVELOP("开发", 3),
@@ -29,10 +31,10 @@ public enum TaskTypeEnum {
     TYPE_CHECK("验证", 11);*/
 
     public Integer CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private TaskTypeEnum(String name, Integer code) {
+    TaskTypeEnum(String name, Integer code) {
         this.CODE = code;
         this.NAME = name;
     }

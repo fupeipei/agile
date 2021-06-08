@@ -7,9 +7,12 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.yusys.cicd.feign.api.cms.ICmsChangeApi;
+import com.yusys.cicd.model.tools.dto.TaskIdsDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -17,6 +20,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
+ * @author hanke
  * @description 流水线构建部署业务实现类
  * @date 2021/2/1
  */
@@ -25,8 +29,8 @@ public class BuildDeployServiceImpl implements BuildDeployService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BuildDeployServiceImpl.class);
 
-   /* @Autowired
-    private ICmsChangeApi iCmsChangeApi;*/
+    @Autowired
+    private ICmsChangeApi iCmsChangeApi;
 
     @Resource
     private IssueMapper issueMapper;
@@ -47,7 +51,7 @@ public class BuildDeployServiceImpl implements BuildDeployService {
         pageSize = null == pageSize ? 20 : pageSize;
         Issue issue = getIssueByPrimaryKey(issueId);
         Byte issueType = issue.getIssueType();
-        /*if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
+        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
             List<String> taskIds = getTaskIds(issueId);
             if (CollectionUtils.isNotEmpty(taskIds)) {
                 TaskIdsDTO taskIdsDTO = assembleTaskIdsDTO(pageNum, pageSize, taskIds);
@@ -59,7 +63,7 @@ public class BuildDeployServiceImpl implements BuildDeployService {
             }
         } else {
             pageInfo = iCmsChangeApi.queryBuildInstanceByTaskId(issueId.toString(), pageNum, pageSize);
-        }*/
+        }
         return pageInfo;
     }
 
@@ -79,7 +83,7 @@ public class BuildDeployServiceImpl implements BuildDeployService {
         pageSize = null == pageSize ? 20 : pageSize;
         Issue issue = getIssueByPrimaryKey(issueId);
         Byte issueType = issue.getIssueType();
-        /*if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
+        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
             List<String> taskIds = getTaskIds(issueId);
             if (CollectionUtils.isNotEmpty(taskIds)) {
                 TaskIdsDTO taskIdsDTO = assembleTaskIdsDTO(pageNum, pageSize, taskIds);
@@ -91,7 +95,7 @@ public class BuildDeployServiceImpl implements BuildDeployService {
             }
         } else {
             pageInfo = iCmsChangeApi.queryDeployInstanceByTaskId(issueId.toString(), pageNum, pageSize);
-        }*/
+        }
         return pageInfo;
     }
 
@@ -138,11 +142,11 @@ public class BuildDeployServiceImpl implements BuildDeployService {
      * @param taskIds
      * @return
      */
-   /* private TaskIdsDTO assembleTaskIdsDTO(Integer pageNum, Integer pageSize, List<String> taskIds) {
+    private TaskIdsDTO assembleTaskIdsDTO(Integer pageNum, Integer pageSize, List<String> taskIds) {
         TaskIdsDTO taskIdsDTO = new TaskIdsDTO();
         taskIdsDTO.setPageNum(pageNum);
         taskIdsDTO.setPageSize(pageSize);
         taskIdsDTO.setTaskIds(taskIds);
         return taskIdsDTO;
-    }*/
+    }
 }

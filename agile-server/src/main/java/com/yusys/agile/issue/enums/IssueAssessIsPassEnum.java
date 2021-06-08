@@ -5,10 +5,10 @@ public enum IssueAssessIsPassEnum {
     PASS("通过", new Byte("1"));
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private IssueAssessIsPassEnum(String name, Byte code) {
+    IssueAssessIsPassEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }

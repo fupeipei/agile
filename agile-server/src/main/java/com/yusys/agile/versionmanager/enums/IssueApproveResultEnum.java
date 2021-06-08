@@ -12,9 +12,9 @@ public enum IssueApproveResultEnum {
     NOT_APPROVE("0", "不通过"),
     APPROVING("1", "通过");
     public String CODE;
-    public String NAME;
+    private String NAME;
 
-    private IssueApproveResultEnum(String code, String name) {
+    IssueApproveResultEnum(String code, String name) {
         this.CODE = code;
         this.NAME = name;
     }

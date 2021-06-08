@@ -1,12 +1,18 @@
 package com.yusys.agile.commit.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.commit.dto.CommitDTO;
 import com.yusys.agile.commit.service.CommitService;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.domain.IssueExample;
+import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.yusys.cicd.feign.api.cms.ICmsChangeApi;
+import com.yusys.cicd.model.tools.dto.TaskCommitQueryDTO;
+import com.yusys.portal.model.common.enums.StateEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
@@ -44,8 +50,8 @@ public class CommitServiceImpl implements CommitService {
     @Resource
     private IssueService issueService;
 
-    /*@Resource
-    private ICmsChangeApi cmsChangeApi;*/
+    @Resource
+    private ICmsChangeApi cmsChangeApi;
 
     @Resource
     private IssueMapper issueMapper;
@@ -211,9 +217,9 @@ public class CommitServiceImpl implements CommitService {
      * @param pageSize
      * @return
      */
-   /* @Override
-    public PageInfo<List<com.ai.cicd.model.cms.dto.CommitDTO>> getIssueCommitRecord(Long issueId, Byte issueType, Integer pageNumber, Integer pageSize) {
-        List<com.ai.cicd.model.cms.dto.CommitDTO> commitList = Lists.newArrayList();
+    @Override
+    public PageInfo<List<CommitDTO>> getIssueCommitRecord(Long issueId, Byte issueType, Integer pageNumber, Integer pageSize) {
+        List<CommitDTO> commitList = Lists.newArrayList();
         pageNumber = null == pageNumber ? 1 : pageNumber;
         pageSize = null == pageSize ? 20 : pageSize;
         if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
@@ -228,7 +234,7 @@ public class CommitServiceImpl implements CommitService {
         } else {
             return cmsChangeApi.queryCommitInfoByTaskId(String.valueOf(issueId), pageNumber, pageSize);
         }
-    }*/
+    }
 
     /**
      * @description 组装故事下多任务提交查询对象
@@ -236,7 +242,7 @@ public class CommitServiceImpl implements CommitService {
      * @param storyId
      * @return
      */
-    /*private TaskCommitQueryDTO assembleTaskIdsByStoryId(Long storyId) {
+    private TaskCommitQueryDTO assembleTaskIdsByStoryId(Long storyId) {
         TaskCommitQueryDTO commitQueryDTO = null;
         IssueExample issueExample = new IssueExample();
         issueExample.setOrderByClause("issue_id asc");
@@ -254,5 +260,5 @@ public class CommitServiceImpl implements CommitService {
             commitQueryDTO.setTaskIds(taskIds);
         }
         return commitQueryDTO;
-    }*/
+    }
 }

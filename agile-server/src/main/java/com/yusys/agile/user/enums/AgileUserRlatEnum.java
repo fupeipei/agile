@@ -13,10 +13,10 @@ public enum AgileUserRlatEnum {
 
 
     public Integer CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private AgileUserRlatEnum(String name, Integer code) {
+    AgileUserRlatEnum(String name, Integer code) {
         this.CODE = code;
         this.NAME = name;
     }

@@ -2,6 +2,7 @@ package com.yusys.agile.teamv3.dao;
 
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamListDTO;
+import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
 import com.yusys.agile.teamv3.domain.STeamMember;
@@ -98,7 +99,7 @@ public interface STeamMapper {
      */
     void updateStateById(@Param("teamId") long teamId, @Param("state") String state);
 
-    List<Team> getTeamsByTeamId(Long teamId);
+    List<STeam> getTeamsByTeamId(Long teamId);
 
 
     List<STeam> getTeamLikeNameOrCode(@Param("team") String team);
@@ -108,6 +109,7 @@ public interface STeamMapper {
      *
      * @param teamId 团队id
      * @return {@link List<SsoSystem>}
+     * @author 张宇
      */
     List<Long> queryTeamSystem(Long teamId);
 
@@ -117,6 +119,7 @@ public interface STeamMapper {
      * @param sprintId 迭代id
      * @param teamId   团队id
      * @return {@link List<STeamMember>}
+     * @author 张宇
      */
     List<STeamMember> querySprintUser(@Param("sprintId") Long sprintId);
 //    List<STeamMember> queryUserInfoByUserId(@Param("sprintId") Long sprintId, @Param("teamId") Long teamId);
@@ -126,6 +129,7 @@ public interface STeamMapper {
      *
      * @param teamId 团队id
      * @return {@link String}
+     * @author 张宇
      */
     String queryTeamNameByTeamId(Long teamId);
 

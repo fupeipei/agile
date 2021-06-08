@@ -4,15 +4,16 @@ import com.github.pagehelper.PageInfo;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
+import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class Sprintv3Controller {
      * @Date 2021/5/10
      * @Description查看迭代编辑页面
      */
+    @ApiOperation(value = "查看迭代详情")
     @GetMapping("/getSprint")
     public ControllerResponse viewEdit(Long sprintId) {
         return ControllerResponse.success(sprintv3Service.viewEdit(sprintId));
@@ -78,6 +80,7 @@ public class Sprintv3Controller {
      *
      * @param sprintV3DTO 迭代v3dto
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "新建迭代")
     @PostMapping("/createSprint")
@@ -86,8 +89,9 @@ public class Sprintv3Controller {
         return ControllerResponse.success(sprintv3Service.createSprint(sprintV3DTO));
     }
 
+    @ApiOperation(value = "编辑迭代")
     @PostMapping("/updateSprint")
-    public ControllerResponse updateSprint(@RequestBody SprintDTO sprintDTO, SecurityDTO securityDTO) {
+    public ControllerResponse updateSprint(@RequestBody SprintV3DTO sprintDTO, SecurityDTO securityDTO) {
         try {
             sprintv3Service.updateSprint(sprintDTO, securityDTO);
         } catch (Exception e) {
@@ -101,6 +105,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation("取消迭代")
     @GetMapping("/cancelSprint")
@@ -113,6 +118,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代完成")
     @GetMapping("/sprintFinish")
@@ -125,6 +131,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代视图 - 迭代详情")
     @GetMapping("/sprintOverView")
@@ -137,6 +144,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代视图 - 迭代统计详情")
     @GetMapping("/SprintStatisticalInformation")
@@ -149,6 +157,7 @@ public class Sprintv3Controller {
      *
      * @param sprintId 迭代id
      * @return {@link ControllerResponse}
+     * @author 张宇
      */
     @ApiOperation(value = "迭代视图 - 成员工时")
     @GetMapping("/sprintMembersWorkHours")
@@ -162,6 +171,7 @@ public class Sprintv3Controller {
      * @param sprintDTO 迭代dto
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
+    @ApiOperation(value = "关联迭代")
     @PostMapping("/relation/issue")
     public ControllerResponse arrangeIssue(@RequestBody SprintDTO sprintDTO) {
         if (sprintv3Service.arrangeIssue(sprintDTO)) {
@@ -177,6 +187,7 @@ public class Sprintv3Controller {
      * @param issueId  工作项id
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
+    @ApiOperation(value = "迭代移除用户故事")
     @PutMapping("/issues/{sprintId}/{issueId}")
     public ControllerResponse removeIssue4Sprint(@PathVariable Long sprintId, @PathVariable Long issueId) {
         if (storyService.removeStory4Sprint(sprintId, issueId) != 1) {
@@ -193,7 +204,7 @@ public class Sprintv3Controller {
      */
     @GetMapping("/getUsersBySprintId/{sprintId}")
     public ControllerResponse getUsersBySprintId(@PathVariable Long sprintId) {
-        List<UserSprintHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(sprintId);
+        List<SprintV3UserHourDTO> userSprintHourDTOList = sprintv3Service.getUsersBySprintId(sprintId);
         return ControllerResponse.success(userSprintHourDTOList);
     }
 
@@ -206,14 +217,15 @@ public class Sprintv3Controller {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "查询系统下未迭代的故事")
     @GetMapping("/queryNotRelationStorys")
     public ControllerResponse queryNotRelationStorys(@RequestParam(name = "title", required = false) String title,
                                                      @RequestParam(name = "teamId") Long teamId,
-                                                     @RequestParam(name = "systemId",required = false) List<Long> systemId,
+                                                     @RequestParam(name = "systemId", required = false) List<Long> systemId,
                                                      @RequestParam(name = "pageNum") Integer pageNum,
                                                      @RequestParam(name = "pageSize") Integer pageSize) {
 
-        List<IssueDTO> result = sprintv3Service.queryNotRelationStorys(title, teamId,systemId,pageNum, pageSize);
+        List<IssueDTO> result = sprintv3Service.queryNotRelationStorys(title, teamId, systemId, pageNum, pageSize);
         return ControllerResponse.success(new PageInfo(result));
 
     }
@@ -221,6 +233,7 @@ public class Sprintv3Controller {
 
     /**
      * 模糊分页查询迭代下人员
+     *
      * @param userName
      * @param sprintId
      * @param pageNum
@@ -229,18 +242,19 @@ public class Sprintv3Controller {
      */
     @GetMapping("/querySprintVagueUser")
     public ControllerResponse querySprintVagueUser(@RequestParam(name = "userName", required = false) String userName,
-                                                     @RequestParam(name = "sprintId") Long sprintId,
-                                                     @RequestParam(name = "pageNum") Integer pageNum,
-                                                     @RequestParam(name = "pageSize") Integer pageSize) {
+                                                   @RequestParam(name = "sprintId") Long sprintId,
+                                                   @RequestParam(name = "pageNum") Integer pageNum,
+                                                   @RequestParam(name = "pageSize") Integer pageSize) {
 
-        List<STeamMember> result = sprintv3Service.querySprintVagueUser(sprintId, userName, pageNum, pageSize);
-        return ControllerResponse.success(new PageInfo<>(result));
+        List<SsoUserDTO>  result = sprintv3Service.querySprintVagueUser(sprintId, userName, pageNum, pageSize);
+        return ControllerResponse.success(new PageInfo(result));
 
     }
 
 
     /**
      * 查询系统下所有未开始进行中的迭代信息
+     *
      * @param systemId
      * @return
      */
@@ -255,6 +269,7 @@ public class Sprintv3Controller {
 
     /**
      * 查询迭代关联的系统
+     *
      * @param sprintId
      * @return
      */
@@ -264,6 +279,22 @@ public class Sprintv3Controller {
         return ControllerResponse.success(new PageInfo<>(result));
 
     }
+
+    /**
+     * 功能描述
+     *
+     * @param systemId
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @author shenfeng
+     * @date 2021/6/1
+     */
+    @GetMapping("/querySprintBySystemId")
+    public ControllerResponse querySprintBySystemId(@RequestParam(name = "systemId") Long systemId) {
+        List<SprintListDTO> result = sprintv3Service.querySprintBySystemId(systemId);
+        return ControllerResponse.success(result);
+
+    }
+
 
 }
 

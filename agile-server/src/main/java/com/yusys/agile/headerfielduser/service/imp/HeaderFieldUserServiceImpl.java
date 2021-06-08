@@ -7,6 +7,7 @@ import com.yusys.agile.headerfielduser.domain.HeaderFieldUser;
 import com.yusys.agile.headerfielduser.domain.HeaderFieldUserExample;
 import com.yusys.agile.headerfielduser.dto.HeaderFieldListDTO;
 import com.yusys.agile.headerfielduser.service.HeaderFieldUserService;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.slf4j.Logger;
@@ -60,13 +61,12 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
      * 功能描述  更新排序应用的列头,或者查询条件
      *
      * @param headerFieldListDTO
-     * @param projectId
      * @return java.lang.Integer
      * @date 2020/4/15
      */
     @Override
     @Transactional
-    public Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO, Long projectId) {
+    public Map updateHeaderFieldUserList(HeaderFieldListDTO headerFieldListDTO) {
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
         try {
             List<HeaderField> headerFields = headerFieldService.getAllHeaderField(headerFieldListDTO.getUpdateList());
@@ -75,7 +75,6 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
 
             HeaderFieldUserExample.Criteria criteriaDelete = headerFieldUserExample.createCriteria();
             criteriaDelete
-                    .andProjectIdEqualTo(projectId)
                     .andUserIdEqualTo(userId);
             if (headerFieldListDTO.getCategory() != null) {
                 criteriaDelete.andCategoryEqualTo(headerFieldListDTO.getCategory());
@@ -90,7 +89,6 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
                 headerFieldUser.setFieldId(headerFieldListDTO.getUpdateList().get(i));
                 headerFieldUser.setFieldType(headerFieldsMap.get(headerFieldListDTO.getUpdateList().get(i)).get(0).getFieldType());
                 headerFieldUser.setOrderNo(i);
-                headerFieldUser.setProjectId(projectId);
                 headerFieldUser.setUserId(userId);
                 headerFieldUser.setCategory(headerFieldListDTO.getCategory());
                 if (headerFieldListDTO.getIsFilter() != null && Byte.parseByte("1") == headerFieldListDTO.getIsFilter()) {
@@ -99,7 +97,6 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
                 headerFieldUserMapper.insertSelective(headerFieldUser);
             }
             SecurityDTO securityDTO = new SecurityDTO();
-            securityDTO.setProjectId(projectId);
             securityDTO.setUserId(userId);
             return headerFieldService.queryHeaderFields(securityDTO, headerFieldListDTO.getCategory(), headerFieldListDTO.getIsFilter());
         } catch (Exception e) {
@@ -110,9 +107,7 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
 
     @Override
     public Integer deleteCustomField(Long fieldId) {
-        HeaderFieldUserExample headerFieldUserExample = new HeaderFieldUserExample();
-        headerFieldUserExample.createCriteria()
-                .andFieldIdEqualTo(fieldId);
-        return headerFieldUserMapper.deleteByExample(headerFieldUserExample);
+        //逻辑删除
+        return headerFieldUserMapper.updateStateByFieldId(fieldId, StateEnum.E.getValue());
     }
 }

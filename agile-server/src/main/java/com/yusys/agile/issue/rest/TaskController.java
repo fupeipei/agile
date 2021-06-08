@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +26,7 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/v3/issue")
+@RequestMapping("/issue/task")
 public class TaskController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
 
@@ -38,7 +39,7 @@ public class TaskController {
      * @return
      */
     @PostMapping("/createTask")
-    public ControllerResponse createTask(@RequestBody IssueDTO issueDTO) {
+    public ControllerResponse createTask(@RequestBody IssueDTO issueDTO,SecurityDTO securityDTO) {
         try {
             if (StringUtils.isEmpty(issueDTO.getTitle())) {
                 return ControllerResponse.fail("新选择任务标题");
@@ -47,6 +48,8 @@ public class TaskController {
                 return ControllerResponse.fail("请选择任务类型");
             }
             return ControllerResponse.success(taskService.createTask(issueDTO));
+        }catch (BusinessException b){
+            return ControllerResponse.fail(b.getMessage());
         } catch (Exception e) {
             LOGGER.error("新增任务失败：{}", e);
             return ControllerResponse.fail("新增任务失败：" + e.getMessage());
@@ -69,6 +72,8 @@ public class TaskController {
     public ControllerResponse deleteTask(@PathVariable("taskId") Long taskId, @RequestParam(name = "deleteChild") Boolean deleteChild) {
         try {
             taskService.deleteTask(taskId, deleteChild);
+        } catch (BusinessException b){
+            return ControllerResponse.fail(b.getMessage());
         } catch (Exception e) {
             LOGGER.error("删除任务失败：{}", e);
             return ControllerResponse.fail("删除任务失败：" + e.getMessage());
@@ -86,14 +91,20 @@ public class TaskController {
 //        //暂时先将扩展字段扔掉
 //        JSONObject jsonObject = new JSONObject(map);
 //        IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-        taskService.editTask(issueDTO,securityDTO);
-        return ControllerResponse.success("编辑任务成功！");
+        try {
+            taskService.editTask(issueDTO,securityDTO);
+            return ControllerResponse.success("编辑任务成功！");
+        } catch (BusinessException b){
+            return ControllerResponse.fail(b.getMessage());
+        } catch (Exception e) {
+            return ControllerResponse.fail("修改任务失败"+e.getMessage());
+        }
     }
 
     @PutMapping("/copyTask/{taskId}")
-    public ControllerResponse copyTask(@PathVariable(name = "taskId") Long taskId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse copyTask(@PathVariable(name = "taskId") Long taskId) {
         try {
-            Long newTaskId = taskService.copyTask(taskId, projectId);
+            Long newTaskId = taskService.copyTask(taskId, null);
             return ControllerResponse.success(newTaskId);
         } catch (Exception e) {
             LOGGER.error("复制任务失败：{}", e);
@@ -102,7 +113,7 @@ public class TaskController {
     }
 
     @GetMapping("/queryUnlinkedTask")
-    public ControllerResponse queryUnlinkedTask(@RequestHeader(name = "projectId") Long projectId, @RequestParam("pageNum") Integer pageNum,
+    public ControllerResponse queryUnlinkedTask(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("pageNum") Integer pageNum,
                                                 @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
                                                 @RequestParam(name = "projectId", required = false) Long paramProjectId) {
         Long finalProjectId = null;
@@ -127,9 +138,9 @@ public class TaskController {
      * @param to
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @Date 2021/2/8
-     * @Description 任务卡片拖拽
+     * @Description 任务卡片拖拽LaneId
      */
-    @GetMapping("/task/stageId/{issueId}/{from}/{to}")
+    @GetMapping("/laneId/{issueId}/{from}/{to}")
     public ControllerResponse dragTask(@PathVariable Long issueId, @PathVariable Long from, @PathVariable Long to, @RequestParam(value = "assignUserId",required = false) Long userId) {
         try {
             taskService.dragTask(issueId, from, to, userId);
@@ -147,7 +158,7 @@ public class TaskController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/queryTaskForStory")
-    public ControllerResponse queryTaskForStory(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "storyId") Long storyId) {
+    public ControllerResponse queryTaskForStory(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam(value = "storyId") Long storyId) {
         List<IssueDTO> result;
         try {
             result = taskService.queryTaskForStory(projectId, IssueTypeEnum.TYPE_TASK.CODE, storyId);
@@ -166,7 +177,7 @@ public class TaskController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/queryFaultForStory")
-    public ControllerResponse queryFaultForStory(@RequestHeader(name = "projectId") Long projectId, @RequestParam(value = "storyId") Long storyId) {
+    public ControllerResponse queryFaultForStory(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam(value = "storyId") Long storyId) {
         List<IssueDTO> result;
         try {
             result = taskService.queryFaultForStory(projectId, IssueTypeEnum.TYPE_FAULT.CODE, storyId);
@@ -204,7 +215,7 @@ public class TaskController {
      *
      * @return
      */
-    @GetMapping("/task/stages")
+    @GetMapping("/stages")
     public ControllerResponse getIssueTaskStages() {
         Map<Long, String> taskAllStageId = TaskStatusEnum.getTaskAllStageId();
         return ControllerResponse.success(taskAllStageId);
@@ -215,7 +226,7 @@ public class TaskController {
      *
      * @return
      */
-    @GetMapping("/task/types")
+    @GetMapping("/types")
     public ControllerResponse getIssueTaskTypes() {
         Map<Integer, String> taskAllStageId = TaskTypeEnum.getTaskAllTypes();
         return ControllerResponse.success(taskAllStageId);
@@ -228,13 +239,13 @@ public class TaskController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/8
      */
-    @PostMapping("/task/listStoryIdsByTaskIds")
+    @PostMapping("/listStoryIdsByTaskIds")
     public ControllerResponse listStoryIdsByTaskIds(@RequestBody List<Long> taskIds) {
 
         return ControllerResponse.success(taskService.listStoryIdsByTaskIds(taskIds));
     }
 
-    @GetMapping("/task/getTaskPreInfo")
+    @GetMapping("/getTaskPreInfo")
     public ControllerResponse getTaskPreInfo(@RequestParam(value = "systemId") Long systemId
             ,@RequestParam(value = "createType") Integer createType
             ,@RequestParam(value = "storyId") Long storyId

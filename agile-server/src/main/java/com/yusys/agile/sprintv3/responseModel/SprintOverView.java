@@ -2,6 +2,7 @@ package com.yusys.agile.sprintv3.responseModel;
 
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -46,5 +47,5 @@ public class SprintOverView {
     /**
      * 迭代用户
      */
-    List<STeamMember> sprintUSer;
+    List<SsoUser> sprintUSer;
 }

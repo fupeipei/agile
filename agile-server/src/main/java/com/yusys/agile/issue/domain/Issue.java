@@ -100,17 +100,17 @@ public class Issue implements Serializable {
 
     private String assessRemarks;
 
-    public String getTenantCode() {
-        return tenantCode;
-    }
-
-    public void setTenantCode(String tenantCode) {
-        this.tenantCode = tenantCode;
-    }
 
     private String tenantCode;
 
     private Byte cmpSyncResult;
+
+
+    private Byte isArchive;
+
+    private Byte isCancel;
+
+    private static final long serialVersionUID = 1L;
 
     public Byte getIsArchive() {
         return isArchive;
@@ -120,7 +120,6 @@ public class Issue implements Serializable {
         this.isArchive = isArchive;
     }
 
-    private Byte isArchive;
 
     public Byte getIsCancel() {
         return isCancel;
@@ -130,9 +129,14 @@ public class Issue implements Serializable {
         this.isCancel = isCancel;
     }
 
-    private Byte isCancel;
+    public String getTenantCode() {
+        return tenantCode;
+    }
 
-    private static final long serialVersionUID = 1L;
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
+    }
+
 
     public Long getIssueId() {
         return issueId;

@@ -5,10 +5,10 @@ public enum IssueStatusEnum {
     TYPE_INVALID("Feature", new Byte("1"));
 
     public Byte CODE;
-    public String NAME;
+    private String NAME;
 
 
-    private IssueStatusEnum(String name, Byte code) {
+    IssueStatusEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
     }

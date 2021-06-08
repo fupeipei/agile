@@ -6,6 +6,7 @@ import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
@@ -36,11 +37,10 @@ public interface Sprintv3Service {
      * @Description 查看迭代编辑页面
      * @Return com.yusys.agile.sprint.dto.SprintDTO
      */
-    SprintDTO viewEdit(Long sprintId);
+    SprintV3DTO viewEdit(Long sprintId);
 
     /**
      * 条件分页-查询列表
-     *
      * @param dto
      * @param security
      * @author zhaofeng
@@ -51,9 +51,9 @@ public interface Sprintv3Service {
     /**
      * 新建迭代
      *
-     * @author 张宇
      * @param sprintV3DTO 迭代v3dto
      * @return {@link Long}
+     * @author 张宇
      */
     Long createSprint(SprintV3DTO sprintV3DTO);
 
@@ -65,7 +65,7 @@ public interface Sprintv3Service {
      */
     boolean canEdit(Long sprintId);
 
-    void updateSprint(SprintDTO sprintDTO, SecurityDTO securityDTO);
+    void updateSprint(SprintV3DTO sprintDTO, SecurityDTO securityDTO);
 
     /**
      * 每天改变迭代状态
@@ -77,36 +77,36 @@ public interface Sprintv3Service {
     /**
      * 取消迭代
      *
-     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link Object}
+     * @author 张宇
      */
     String cancelSprint(long sprintId, long userId);
 
     /**
      * 迭代完成
      *
-     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link String}
+     * @author 张宇
      */
     String sprintFinish(long sprintId);
 
     /**
      * 迭代视图 - 迭代详情
      *
-     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link SprintOverView}
+     * @author 张宇
      */
     SprintOverView sprintOverView(long sprintId);
 
     /**
      * 查询迭代用户
      *
-     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link List<STeamMember>}
+     * @author 张宇
      */
     List<STeamMember> querySprintUser(long sprintId);
 
@@ -133,23 +133,25 @@ public interface Sprintv3Service {
     /**
      * 迭代视图 - 迭代统计详情
      *
-     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link SprintStatisticalInformation}
+     * @author 张宇
      */
     SprintStatisticalInformation sprintStatisticalInformation(long sprintId);
 
     /**
      * 查询所有的有效的迭代信息
+     *
      * @author wangsh
      * @date 2021/5/24 13:28
      */
     List<SSprint> queryAllSprint();
 
-    List<UserSprintHourDTO> getUsersBySprintId(Long sprintId);
+    List<SprintV3UserHourDTO> getUsersBySprintId(Long sprintId);
 
     /**
      * 根据系统id获取未开始和执行中的迭代信息
+     *
      * @param systemId
      * @return
      */
@@ -158,28 +160,30 @@ public interface Sprintv3Service {
     /**
      * 迭代成员工作小时
      *
-     * @author 张宇
      * @param sprintId 迭代id
      * @return {@link List<SprintMembersWorkHours>}
+     * @author 张宇
      */
     List<SprintMembersWorkHours> sprintMembersWorkHours(long sprintId);
 
-    List<IssueDTO>  queryNotRelationStorys(String title, Long teamId,List<Long> systemIds, Integer pageNum, Integer pageSize);
+    List<IssueDTO> queryNotRelationStorys(String title, Long teamId, List<Long> systemIds, Integer pageNum, Integer pageSize);
 
 
     /**
      * 分页模糊查询迭代下人员
+     *
      * @param sprintId
      * @param userName
      * @param pageNum
      * @param pageSize
      * @return
      */
-    List<STeamMember> querySprintVagueUser(Long sprintId,String userName,Integer pageNum,Integer pageSize);
+    List<SsoUserDTO>  querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize);
 
 
     /**
      * 查询迭代下关联的系统
+     *
      * @param sprintId
      * @return
      */
@@ -187,21 +191,39 @@ public interface Sprintv3Service {
 
 
     /**
+     * @param sprintDays
+     * @param sprintTime
      * @Author maxp2
      * @Date 2021/5/27
      * @Description 是否在迭代周期内
-     * @param sprintDays
-     * @param sprintTime
      * @Return boolean
      */
     boolean legalDate(String sprintDays, Date sprintTime);
 
     /**
+     * @param
      * @Author maxp2
      * @Date 2021/5/27
      * @Description 查询所有的迭代信息
-     * @param
      * @Return java.util.List<com.yusys.agile.sprintv3.domain.SSprintWithBLOBs>
      */
     List<SSprintWithBLOBs> querySprintList();
+
+    /**
+     * @Author maxp2
+     * @Date 2021/5/30
+     * @Description 获取迭代中人员预估工作量
+     * @param sprintId
+     * @Return java.lang.Integer
+     */
+    Integer getWorkload(Long sprintId);
+
+    /**
+     *功能描述 根据系统查询迭代
+     * @author shenfeng
+     * @date 2021/6/1
+      * @param systemID
+     * @return java.util.List<com.yusys.agile.sprintV3.dto.SprintListDTO>
+     */
+    List<SprintListDTO> querySprintBySystemId(Long systemID);
 }

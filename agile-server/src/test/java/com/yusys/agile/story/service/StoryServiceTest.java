@@ -1,25 +1,26 @@
 package com.yusys.agile.story.service;
 
-import cn.hutool.core.lang.Assert;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
-import com.yusys.agile.sprint.domain.Sprint;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @Description: 用户故事单元测试
@@ -81,14 +82,15 @@ public class StoryServiceTest {
         jsonObject.put("storyPoint","11");
         log.info("转换为 object值为:{}",JSONObject.toJSONString(jsonObject));
         issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
-        Assert.isFalse(story == null);
+        org.junit.Assert.assertTrue(story == null);
     }
 
     @Test
     public void deleteStroyTest() {
         Long storyId = 1L;
         boolean deleteChild = false;
-        storyService.deleteStory(storyId, deleteChild);
+        Long userId=1000L;
+        storyService.deleteStory(storyId, deleteChild,userId);
         org.junit.Assert.assertTrue("deleteStroyTest通过", true);
     }
 
@@ -96,18 +98,20 @@ public class StoryServiceTest {
     public void deleteStroyWithChildTest() {
         Long storyId = 1L;
         boolean deleteChild = true;
-        storyService.deleteStory(storyId, deleteChild);
+        Long userId=1000L;
+        storyService.deleteStory(storyId, deleteChild,userId);
         org.junit.Assert.assertTrue("deleteStroyWithChildTest通过", true);
     }
 
     @Test
     public void editStroyTest() {
+        Long userId=1000L;
         IssueDTO issueDTO = new IssueDTO();
         issueDTO.setIssueId(507077L);
         issueDTO.setTitle("测试");
         Long[] stages = {4L,105L};
         issueDTO.setStages(stages);
-        storyService.editStory(issueDTO);
+        storyService.editStory(issueDTO,userId);
         org.junit.Assert.assertTrue("editStroyTest通过", true);
     }
 
@@ -118,7 +122,7 @@ public class StoryServiceTest {
         Long sprintId= 130190l;
         Long storyId=507077l;
         int i = storyService.removeStory4Sprint(sprintId, storyId);
-        Assert.isTrue(i==1);
+        org.junit.Assert.assertTrue(i==1);
     }
 
 
@@ -133,7 +137,7 @@ public class StoryServiceTest {
        sprintDTO.setSprintId(10000L);
        System.out.println(sprintDTO);
        boolean b = sprintv3Service.arrangeIssue(sprintDTO);
-       Assert.isTrue(b==true);
+       org.junit.Assert.assertTrue(b==true);
 
    }
 
@@ -146,9 +150,32 @@ public class StoryServiceTest {
         }
         Long userId=10000l;
         issueService.createBatchRelation(parentId,issueIds,userId);
+        org.junit.Assert.assertTrue("createBatchRelation成功", true);
     }
 
+    @Test
+    public void testListStorysAndTasks() {
+        IssueDTO issueDTO = new IssueDTO();
+        List<IssueDTO>  list = storyService.listStorysAndTasks(issueDTO);
+        Assert.assertTrue("查询迭代下的用户故事和任务list", true);
+    }
 
+    @Test
+    public void testListStoryBySystemId() {
+        storyService.queryStoryBySystemId(1L,"",1,100);
+        Assert.assertTrue("查询当前系统下故事成功", true);
+    }
 
+    @Test
+    public void testListStoryBySystemIdWithName() {
+        storyService.queryStoryBySystemId(1L,"test",1,100);
+        Assert.assertTrue("查询当前系统下故事成功", true);
+    }
+
+    @Test
+    public void testListStoryBySystemIdWithoutPage() {
+        storyService.queryStoryBySystemId(1L,"test",null,null);
+        Assert.assertTrue("查询当前系统下故事成功", true);
+    }
 }
 

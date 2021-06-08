@@ -280,8 +280,11 @@ public class IssueRuleFactory {
         Boolean checkFlag = true;
         IssueRuleExample ruleExample = new IssueRuleExample();
         IssueRuleExample.Criteria criteria = ruleExample.createCriteria();
-        criteria.andProjectIdEqualTo(projectId).andCategoryEqualTo(category)
-                .andFromStageIdEqualTo(fromStageId).andToStageIdEqualTo(toStageId);
+        criteria
+                //.andProjectIdEqualTo(projectId)   不需要projectId了
+                .andCategoryEqualTo(category)
+                .andFromStageIdEqualTo(fromStageId)
+                .andToStageIdEqualTo(toStageId);
         /** 判断二级阶段ID的流转规则
          if(Optional.ofNullable(fromLaneId).isPresent()){
          criteria.andFromLaneIdEqualTo(fromLaneId);

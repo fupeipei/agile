@@ -22,11 +22,6 @@ public class IssueStringDTO implements Serializable {
 
     private String systemId;
 
-    /**
-     * @Date: 11:14
-     * @Description: 需求满意度
-     * @Return:
-     */
     private String satisfaction;
 
     private String systemName;
@@ -94,7 +89,7 @@ public class IssueStringDTO implements Serializable {
     private String detectedPhase;
 
     private String manualCaseId;
-    // 缺陷来源 0YuDO 1itc 2itsm
+    // 缺陷来源 0YuDO
     private String source;
 
     // 缺陷级别名
