@@ -577,12 +577,12 @@ public class TaskServiceImpl implements TaskService {
         //根据故事查询所有有效的任务
         List<Issue> story = Optional.ofNullable(issueMapper.selectByExample(example1)).orElse(new ArrayList<>());
 
-        //未开始的数量
+        //故事的状态未开始的数量
         long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
         log.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
-        if(unStartCount>0){
-            return -2;
-        }
+//        if(unStartCount>0){
+//            return -2;
+//        }
 
         IssueExample example = new IssueExample();
         example.createCriteria()
@@ -595,12 +595,15 @@ public class TaskServiceImpl implements TaskService {
         //完成的数量
         long finishCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(t.getLaneId())).count();
 
+        long doingCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(t.getLaneId())).count();
         Issue storyIssue = new Issue();
         storyIssue.setIssueId(storyId);
-        if (finishCount == tasks.size()) {
+        if (finishCount == tasks.size()) {//任务全部完成，则已完成
             storyIssue.setLaneId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
-        } else {
+        } else if(finishCount>0||doingCount>0){//有已完成的，则更新为进行中
             storyIssue.setLaneId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
+        }else{
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_ADD_STATE.CODE);
         }
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
         log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
