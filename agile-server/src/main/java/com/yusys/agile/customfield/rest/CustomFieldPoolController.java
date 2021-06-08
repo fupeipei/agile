@@ -5,6 +5,7 @@ import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.facade.dto.SecurityDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -52,25 +53,6 @@ public class CustomFieldPoolController {
         customFieldPoolService.addCustomField(customFieldDTO);
         return ControllerResponse.success();
     }
-//    /**
-//     * 功能描述: 新增自定义字段
-//     *
-//     * @param customFieldDTO
-//     * @return
-//     * @date 2021/2/1
-//     */
-//    public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "projectId") Long projectId) {
-//        try {
-//            customFieldDTO.setProjectId(projectId);
-//            customFieldPoolService.addCustomField(customFieldDTO);
-//        } catch (Exception e) {
-//            LOGGER.error("新增自定义字段失败！e:{}" + e);
-//            return ControllerResponse.fail("新增自定义字段失败！" + e.getMessage());
-//        }
-//
-//        return ControllerResponse.success();
-//
-//    }
 
     /**
      * 编辑自定义字段
@@ -84,25 +66,6 @@ public class CustomFieldPoolController {
         customFieldPoolService.editCustomField(customFieldDTO);
         return ControllerResponse.success();
     }
-//    /**
-//     * 功能描述: 修改自定义字段
-//     *
-//     * @param customFieldDTO
-//     * @return
-//     * @date 2021/2/1
-//     */
-//    public ControllerResponse editCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "projectId") Long projectId) {
-//        try {
-//            customFieldDTO.setProjectId(projectId);
-//            customFieldPoolService.editCustomField(customFieldDTO);
-//        } catch (Exception e) {
-//            LOGGER.error("修改自定义字段失败！e:{}" + e);
-//            return ControllerResponse.fail("修改自定义字段失败！" + e.getMessage());
-//        }
-//
-//        return ControllerResponse.success();
-//
-//    }
 
     /**
      * 删除自定义字段
@@ -132,17 +95,17 @@ public class CustomFieldPoolController {
      * 分页查询自定义字段
      * @author zhaofeng
      * @date 2021/6/3 16:10
-     * @param systemId  系统id，可不传
      * @param fieldName 字段名称，可不传
      * @param pageNum
      * @param pageSize
      */
     @GetMapping("/listAllCustomFields")
     public ControllerResponse listAllCustomFields(
-            @RequestParam(name = "systemId", required = false) Long systemId,
+            SecurityDTO security,
             @RequestParam(name = "fieldName", required = false) String fieldName,
             @RequestParam(name = "pageNum") Integer pageNum,
             @RequestParam(name = "pageSize") Integer pageSize) {
+        Long systemId = security.getSystemId();
         List<CustomFieldDTO> list = customFieldPoolService.listAllCustomFields(systemId, fieldName, pageNum, pageSize);
         return ControllerResponse.success(new PageInfo<>(list));
     }

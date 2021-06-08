@@ -6,11 +6,28 @@ package com.yusys.agile.customfield.enums;
  * @create 2021/2/1
  */
 public enum CustomFieldTypeEnum {
-    NUMBER(0, "数字"),
-    Single_line_text(1, "单行文本"),
-    EPIC(6, "多行文本"),
-    FEATURE(5, "日期"),
-    STORY(3, "下拉框"),
+    /**
+     * 数字
+     */
+    number(0, "数字"),
+    /**
+     * 单行文本
+     */
+    single_line_text(1, "单行文本"),
+    /**
+     * 多行文本
+     */
+    multi_line_text(6, "多行文本"),
+    /**
+     * 日期
+     */
+    date_input(5, "日期"),
+    /**
+     * 下拉框
+     */
+    select_input(3, "下拉框"),
+
+//    2021-6-8 这两个没用
     TASK(7, "平台成员"),
     FAULT(8, "项目成员");
 
