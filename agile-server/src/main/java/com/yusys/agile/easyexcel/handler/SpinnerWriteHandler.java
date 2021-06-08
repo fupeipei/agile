@@ -92,7 +92,7 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
                 // 4 $A$1:$A$N代表 以A列1行开始获取N行下拉数据
                 category1Name.setRefersToFormula(sheetName + "!$A$1:$A$" + (v.length));
                 // 5 将刚才设置的sheet引用到你的下拉列表中,1表示从行的序号1开始（开始行，通常行的序号为0的行是表头），50表示行的序号50（结束行），表示从行的序号1到50，k表示开始列序号和结束列序号
-                CellRangeAddressList addressList = new CellRangeAddressList(1, 50, k, k);
+                CellRangeAddressList addressList = new CellRangeAddressList(1, 5000, k, k);
                 DataValidationConstraint constraint8 = helper.createFormulaListConstraint(sheetName);
                 DataValidation dataValidation3 = helper.createValidation(constraint8, addressList);
                 // 阻止输入非下拉选项的值
