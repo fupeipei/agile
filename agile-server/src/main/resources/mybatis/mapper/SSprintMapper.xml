@@ -910,4 +910,12 @@
         where sprint_id = #{sprintId}
           and state = 'U'
     </select>
+
+    <select id="querySprintByTeamId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from s_sprint
+        where team_id = #{teamId}
+        and state = 'U'
+    </select>
 </mapper>
