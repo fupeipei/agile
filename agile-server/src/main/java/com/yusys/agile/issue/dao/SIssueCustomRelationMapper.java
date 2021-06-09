@@ -45,4 +45,12 @@ public interface SIssueCustomRelationMapper {
      * @param state    数据有效状态值
      */
     void updateStateByFieldId(@Param("fieldId") Long fieldId, @Param("state") String state);
+    /**
+     * 按主键id修改数据有效状态
+     * @author zhaofeng
+     * @date 2021/6/9 15:17
+     * @param id    主键
+     * @param state 数据有效状态值
+     */
+    void updateStateById(@Param("id") Long id, @Param("state") String state);
 }

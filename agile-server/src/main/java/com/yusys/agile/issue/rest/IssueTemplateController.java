@@ -43,20 +43,15 @@ public class IssueTemplateController {
     }
 
     /**
-     * 功能描述  移除应用的自定义字段
-     *
+     * 移除自定义字段
+     * @author zhaofeng
+     * @date 2021/6/9 15:12
      * @param id
-     * @return
-     * @date 2021/2/31
+     * @param securityDTO
      */
     @DeleteMapping("/issueCustomRelation/delete/{id}")
     public ControllerResponse deleteIssueCustomRelation(@PathVariable("id") long id, SecurityDTO securityDTO) {
-        try {
-            issueCustomRelationService.deleteIssueCustomRelation(id);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ControllerResponse.fail(e.getMessage());
-        }
+        issueCustomRelationService.deleteIssueCustomRelation(id);
         return ControllerResponse.success();
     }
 

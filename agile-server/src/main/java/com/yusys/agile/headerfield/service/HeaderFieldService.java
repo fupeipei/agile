@@ -50,8 +50,13 @@ public interface HeaderFieldService {
      * @date 2020/4/16
      */
     Map queryHeaderFields(SecurityDTO securityDTO, Byte category, Byte isFilter);
-
-    Integer deleteCustomFieldByFieldId(Long fieldId);
+    /**
+     * 按fieldCode(也就是 issueCustomRelationId )逻辑删除
+     * @author zhaofeng
+     * @date 2021/6/9 15:29
+     * @param issueCustomRelationId
+     */
+    Integer deleteCustomFieldByFieldId(Long issueCustomRelationId);
 
     Integer saveCustomFieldByFieldId(Long projectId, Long fieldId, Byte issueType);
 

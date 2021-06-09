@@ -83,18 +83,10 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         return list;
     }
 
-    /**
-     * 功能描述  移除应用的自定义字段
-     *
-     * @param id
-     * @return
-     * @date 2021/2/31
-     */
     @Override
     public void deleteIssueCustomRelation(Long id) {
-        SIssueCustomRelation issueCustomRelation = issueCustomRelationMapper.selectByPrimaryKey(id);
         //工作项自定义字段表
-        issueCustomRelationMapper.deleteByPrimaryKey(id);
+        issueCustomRelationMapper.updateStateById(id, StateEnum.E.getValue());
         //列头
         headerFieldService.deleteCustomFieldByFieldId(id);
         //数据表
