@@ -787,6 +787,11 @@ public class StoryServiceImpl implements StoryService {
                     if (null != ssoUser) {
                         dto.setCreateName(ssoUser.getUserName());
                     }
+                    if(null != dto.getSystemId()){
+                        SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(dto.getSystemId());
+                        String systemCode = ssoSystem.getSystemCode();
+                        dto.setSystemCode(systemCode);
+                    }
                 }
                 issueFactory.getAcceptanceList(dto.getIssueId(), dto);
             }
