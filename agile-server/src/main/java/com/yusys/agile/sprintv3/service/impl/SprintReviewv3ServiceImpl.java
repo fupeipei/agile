@@ -4,7 +4,6 @@ import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.agile.file.service.FileService;
 import com.yusys.agile.sprint.dto.SprintAttachmentDTO;
 import com.yusys.agile.sprint.dto.SprintReviewDTO;
-import com.yusys.agile.sprint.service.impl.SprintReviewServiceImpl;
 import com.yusys.agile.sprintv3.dao.SSprintAttachmentMapper;
 import com.yusys.agile.sprintv3.dao.SSprintReviewMapper;
 import com.yusys.agile.sprintv3.domain.SSprintAttachment;
@@ -35,7 +34,7 @@ import java.util.List;
 @Service
 public class SprintReviewv3ServiceImpl implements SprintReviewv3Service {
 
-    private static final Logger log = LoggerFactory.getLogger(SprintReviewServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SprintReviewv3ServiceImpl.class);
 
     @Resource
     private SSprintReviewMapper sSprintReviewMapper;

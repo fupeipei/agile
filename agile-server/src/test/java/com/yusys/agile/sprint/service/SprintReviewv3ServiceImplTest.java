@@ -5,6 +5,7 @@ import com.yusys.agile.sprint.dto.SprintReviewDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.service.SprintReviewv3Service;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,11 +40,10 @@ public class SprintReviewv3ServiceImplTest {
         sprintReviewDTO.setSprintId(1234L);
         sprintReviewDTO.setTenantCode("1");
         sprintReviewDTO.setProposeUid(812352455803777024L);
-        try {
-            int result = sprintReviewv3Service.createSprintReview(sprintReviewDTO);
-            Assert.assertNotNull(result);
-        } catch (BusinessException e) {
-            Assert.fail();
+        int result = sprintReviewv3Service.createSprintReview(sprintReviewDTO);
+        if (result == 0) {
+            Assert.fail("新增迭代回顾信息失败!");
         }
+        Assert.assertTrue("新增迭代回顾信成功", true);
     }
 }
