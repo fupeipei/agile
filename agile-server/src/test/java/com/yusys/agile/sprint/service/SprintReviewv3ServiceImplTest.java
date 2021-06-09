@@ -1,17 +1,23 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.sprint.dto.SprintAttachmentDTO;
 import com.yusys.agile.sprint.dto.SprintReviewDTO;
 import com.yusys.agile.sprintv3.service.SprintReviewv3Service;
-import com.yusys.portal.model.common.dto.ControllerResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -81,7 +87,43 @@ public class SprintReviewv3ServiceImplTest {
     @Test
     public void deleteSprintReview() {
         Long reviewId = 852134285109297152L;
-        int i = sprintReviewv3Service.deleteSprintReview(reviewId);
+        sprintReviewv3Service.deleteSprintReview(reviewId);
         Assert.assertTrue("删除迭代回顾信息成功", true);
+    }
+
+
+    /**
+     * 迭代回顾附件信息上传及保存
+     */
+    @Test
+    public void uploadAttachment() throws IOException {
+        Long sprintId = 1234L;
+        // File转MultipartFile
+        File file = new File("E:\\test.txt");
+        FileInputStream input = new FileInputStream(file);
+        MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "text/plain", IOUtils.toByteArray(input));
+        sprintReviewv3Service.uploadAttachment(multipartFile, sprintId);
+        Assert.assertTrue("上传附近成功", true);
+    }
+
+
+    /**
+     * 获取迭代回顾附件信息
+     */
+    @Test
+    public void getAttachmentList() {
+        Long sprintId = 1234L;
+        List<SprintAttachmentDTO> sprintAttachmentList = sprintReviewv3Service.getSprintAttachmentList(sprintId);
+        Assert.assertNotNull(sprintAttachmentList);
+    }
+
+    /**
+     * 通过附件id删除附件
+     */
+    @Test
+    public void deleteAttachment() {
+        Long attachmentId = 3L;
+        sprintReviewv3Service.deleteAttachment(attachmentId);
+        Assert.assertTrue("删除附件成功", true);
     }
 }
