@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.sprint.dao.SprintAttachmentMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.sprint.domain.SprintAttachment">
+<mapper namespace="com.yusys.agile.sprintv3.dao.SSprintAttachmentMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.sprintv3.domain.SSprintAttachment">
     <id column="attachment_id" jdbcType="BIGINT" property="attachmentId" />
     <result column="sprint_id" jdbcType="BIGINT" property="sprintId" />
     <result column="file_uri" jdbcType="VARCHAR" property="fileUri" />
@@ -70,15 +70,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    attachment_id, sprint_id, file_uri, file_name, file_size, upload_time, upload_uid,tenant_code
+    attachment_id, sprint_id, file_uri, file_name, file_size, upload_time, upload_uid, 
+    tenant_code
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.sprint.domain.SprintAttachmentExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachmentExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sprint_attachment
+    from s_sprint_attachment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -89,29 +90,29 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sprint_attachment
+    from s_sprint_attachment
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sprint_attachment
+    delete from s_sprint_attachment
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.sprint.domain.SprintAttachmentExample">
-    delete from sprint_attachment
+  <delete id="deleteByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachmentExample">
+    delete from s_sprint_attachment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.sprint.domain.SprintAttachment" useGeneratedKeys="true" keyProperty="attachmentId">
-    insert into sprint_attachment (attachment_id, sprint_id, file_uri, 
+  <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment">
+    insert into s_sprint_attachment (attachment_id, sprint_id, file_uri, 
       file_name, file_size, upload_time, 
-      upload_uid,tenant_code)
+      upload_uid, tenant_code)
     values (#{attachmentId,jdbcType=BIGINT}, #{sprintId,jdbcType=BIGINT}, #{fileUri,jdbcType=VARCHAR}, 
       #{fileName,jdbcType=VARCHAR}, #{fileSize,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
-      #{uploadUid,jdbcType=BIGINT},#{tenantCode,jdbcType=VARCHAR})
+      #{uploadUid,jdbcType=BIGINT}, #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.sprint.domain.SprintAttachment" useGeneratedKeys="true" keyProperty="attachmentId">
-    insert into sprint_attachment
+  <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment">
+    insert into s_sprint_attachment
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="attachmentId != null">
         attachment_id,
@@ -165,14 +166,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.sprint.domain.SprintAttachmentExample" resultType="java.lang.Long">
-    select count(*) from sprint_attachment
+  <select id="countByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachmentExample" resultType="java.lang.Long">
+    select count(*) from s_sprint_attachment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sprint_attachment
+    update s_sprint_attachment
     <set>
       <if test="record.attachmentId != null">
         attachment_id = #{record.attachmentId,jdbcType=BIGINT},
@@ -204,7 +205,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sprint_attachment
+    update s_sprint_attachment
     set attachment_id = #{record.attachmentId,jdbcType=BIGINT},
       sprint_id = #{record.sprintId,jdbcType=BIGINT},
       file_uri = #{record.fileUri,jdbcType=VARCHAR},
@@ -217,8 +218,8 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sprint.domain.SprintAttachment">
-    update sprint_attachment
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment">
+    update s_sprint_attachment
     <set>
       <if test="sprintId != null">
         sprint_id = #{sprintId,jdbcType=BIGINT},
@@ -244,8 +245,8 @@
     </set>
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sprint.domain.SprintAttachment">
-    update sprint_attachment
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment">
+    update s_sprint_attachment
     set sprint_id = #{sprintId,jdbcType=BIGINT},
       file_uri = #{fileUri,jdbcType=VARCHAR},
       file_name = #{fileName,jdbcType=VARCHAR},
@@ -255,24 +256,4 @@
       tenant_code = #{tenantCode,jdbcType=VARCHAR}
     where attachment_id = #{attachmentId,jdbcType=BIGINT}
   </update>
-  <!-- 自写sql-->
-  <insert id="createBatch"  parameterType="List">
-    insert into sprint_attachment(sprint_id,file_uri,file_name,size,upload_time,upload_uid,tenant_code)
-    values
-    <foreach collection="attachments" item="item" index="index" separator=",">
-      (#{item.sprintId},#{item.fileUri},#{item.fileName},#{item.size},now(),#{item.uploadUid},#{item.tenantCode})
-    </foreach>
-  </insert>
-
-  <delete id="deleteInIds" parameterType="List">
-    delete from sprint_attachment where attachment_id IN(
-    <foreach collection="ids" separator="," item="id">
-      #{id}
-    </foreach>
-    )
-  </delete>
-
-  <delete id="deleteBySprintId">
-        DELETE FROM sprint_attachment where sprint_id = #{sprintId}
-    </delete>
 </mapper>

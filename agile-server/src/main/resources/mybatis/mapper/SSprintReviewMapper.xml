@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.sprint.dao.SprintReviewMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.sprint.domain.SprintReview">
+<mapper namespace="com.yusys.agile.sprintv3.dao.SSprintReviewMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.sprintv3.domain.SSprintReview">
     <id column="review_id" jdbcType="BIGINT" property="reviewId" />
     <result column="review_desc" jdbcType="VARCHAR" property="reviewDesc" />
     <result column="review_type" jdbcType="BIGINT" property="reviewType" />
@@ -73,15 +73,15 @@
   </sql>
   <sql id="Base_Column_List">
     review_id, review_desc, review_type, sprint_id, propose_uid, create_uid, create_time, 
-    update_uid, update_time,tenant_code
+    update_uid, update_time, tenant_code
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.sprint.domain.SprintReviewExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintReviewExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sprint_review
+    from s_sprint_review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -92,32 +92,31 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sprint_review
+    from s_sprint_review
     where review_id = #{reviewId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sprint_review
+    delete from s_sprint_review
     where review_id = #{reviewId,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.sprint.domain.SprintReviewExample">
-    delete from sprint_review
+  <delete id="deleteByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintReviewExample">
+    delete from s_sprint_review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.sprint.domain.SprintReview" useGeneratedKeys="true" keyProperty="reviewId">
-    insert into sprint_review (review_id, review_desc, review_type, 
+  <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintReview" useGeneratedKeys="true" keyProperty="reviewId">
+    insert into s_sprint_review (review_id, review_desc, review_type, 
       sprint_id, propose_uid, create_uid, 
-      create_time, update_uid, update_time,tenant_code
-      )
+      create_time, update_uid, update_time, 
+      tenant_code)
     values (#{reviewId,jdbcType=BIGINT}, #{reviewDesc,jdbcType=VARCHAR}, #{reviewType,jdbcType=BIGINT}, 
       #{sprintId,jdbcType=BIGINT}, #{proposeUid,jdbcType=BIGINT}, #{createUid,jdbcType=BIGINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP},
-      #{tenantCode,jdbcType=VARCHAR}
-      )
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.sprint.domain.SprintReview" useGeneratedKeys="true" keyProperty="reviewId">
-    insert into sprint_review
+  <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintReview" useGeneratedKeys="true" keyProperty="reviewId">
+    insert into s_sprint_review
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="reviewId != null">
         review_id,
@@ -183,14 +182,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.sprint.domain.SprintReviewExample" resultType="java.lang.Long">
-    select count(*) from sprint_review
+  <select id="countByExample" parameterType="com.yusys.agile.sprintv3.domain.SSprintReviewExample" resultType="java.lang.Long">
+    select count(*) from s_sprint_review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sprint_review
+    update s_sprint_review
     <set>
       <if test="record.reviewId != null">
         review_id = #{record.reviewId,jdbcType=BIGINT},
@@ -228,7 +227,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sprint_review
+    update s_sprint_review
     set review_id = #{record.reviewId,jdbcType=BIGINT},
       review_desc = #{record.reviewDesc,jdbcType=VARCHAR},
       review_type = #{record.reviewType,jdbcType=BIGINT},
@@ -243,8 +242,8 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sprint.domain.SprintReview">
-    update sprint_review
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintReview">
+    update s_sprint_review
     <set>
       <if test="reviewDesc != null">
         review_desc = #{reviewDesc,jdbcType=VARCHAR},
@@ -276,8 +275,8 @@
     </set>
     where review_id = #{reviewId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sprint.domain.SprintReview">
-    update sprint_review
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.sprintv3.domain.SSprintReview">
+    update s_sprint_review
     set review_desc = #{reviewDesc,jdbcType=VARCHAR},
       review_type = #{reviewType,jdbcType=BIGINT},
       sprint_id = #{sprintId,jdbcType=BIGINT},

@@ -82,7 +82,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from review_set
+    from s_review_set
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -93,21 +93,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from review_set
+    from s_review_set
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from review_set
+    delete from s_review_set
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.review.domain.ReviewSetExample">
-    delete from review_set
+    delete from s_review_set
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.review.domain.ReviewSet" useGeneratedKeys="true" keyProperty="id">
-    insert into review_set (id, project_id, issue_type, 
+    insert into s_review_set (id, project_id, issue_type,
       review_switch, review_pass_rate, state, 
       create_uid, create_time, update_uid, 
       update_time, tenant_code)
@@ -117,7 +117,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.review.domain.ReviewSet" useGeneratedKeys="true" keyProperty="id">
-    insert into review_set
+    insert into s_review_set
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -190,13 +190,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.review.domain.ReviewSetExample" resultType="java.lang.Long">
-    select count(*) from review_set
+    select count(*) from s_review_set
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update review_set
+    update s_review_set
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -237,7 +237,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update review_set
+    update s_review_set
     set id = #{record.id,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
       issue_type = #{record.issueType,jdbcType=TINYINT},
@@ -254,7 +254,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.review.domain.ReviewSet">
-    update review_set
+    update s_review_set
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
@@ -290,7 +290,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.review.domain.ReviewSet">
-    update review_set
+    update s_review_set
     set project_id = #{projectId,jdbcType=BIGINT},
       issue_type = #{issueType,jdbcType=TINYINT},
       review_switch = #{reviewSwitch,jdbcType=TINYINT},

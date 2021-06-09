@@ -514,8 +514,10 @@
     <select id="CheckSprintNameExistInTeam" resultType="int">
         select if(count(sprint_id > 0), true, false)
         from s_sprint
-        where sprint_name = #{sprintName}
+        where binary sprint_name = #{sprintName}
           and team_id = #{teamId}
+          and state = 'U'
+          and status <![CDATA[<>]]> 0
     </select>
 
     <update id="arrangeTeam">
@@ -644,8 +646,8 @@
         select if(count(issue_id) > 0, true, false)
         from s_issue
         where sprint_id = #{sprintId}
-          and issue_type = #{issueType}
-          and lane_id = #{status}
+          and issue_type = 3
+          and (stage_id <![CDATA[<>]]> 4 or lane_id <![CDATA[<>]]> 106)
           and state = 'U'
     </select>
 
@@ -900,5 +902,20 @@
         select user_id
         from s_sprint_user_hour
         where sprint_id = #{sprintId}
+    </select>
+
+    <select id="querySprintHasRelevanceStory" resultType="boolean">
+        select if(count(sprint_id) > 0, true, false)
+        from s_issue
+        where sprint_id = #{sprintId}
+          and state = 'U'
+    </select>
+
+    <select id="querySprintByTeamId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from s_sprint
+        where team_id = #{teamId}
+        and state = 'U'
     </select>
 </mapper>

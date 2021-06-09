@@ -5,13 +5,12 @@ import com.yusys.agile.review.dto.ReviewSetDTO;
 public interface ReviewSetService {
 
     /**
-     * @param projectId
      * @param issueType
      * @return
      * @descripiton 查询评审设置信息
      * @date 2020/09/09
      */
-    ReviewSetDTO getReviewSetInfo(Long projectId, Byte issueType);
+    ReviewSetDTO getReviewSetInfo( Byte issueType);
 
     /**
      * @param reviewSetDTO

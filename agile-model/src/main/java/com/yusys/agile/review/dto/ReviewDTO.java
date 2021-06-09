@@ -17,9 +17,14 @@ public class ReviewDTO {
     private Long issueId;
 
     private Byte issueType;
-
+    /**
+     * 评审主题
+     */
     private String reviewTheme;
 
+    /**
+     * 期望完成时间
+     */
     private Date expectTime;
     /**
      * 当前状态：需要每次计算
@@ -42,6 +47,9 @@ public class ReviewDTO {
 
     private String tenantCode;
 
+    /**
+     * 评审内容
+     */
     private String reviewDesc;
 
     /**

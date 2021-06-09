@@ -19,16 +19,15 @@ public class ReviewSetController {
     private ReviewSetService reviewSetService;
 
     /**
-     * @param projectId
      * @param issueType
      * @return
      * @description 查询评审设置信息
      * @date 2020/09/09
      */
     @GetMapping("/getReviewSetInfo/{issueType}")
-    public ControllerResponse getReviewSetInfo(@RequestHeader Long projectId, @PathVariable Byte issueType) {
+    public ControllerResponse getReviewSetInfo(@PathVariable Byte issueType) {
         try {
-            return ControllerResponse.success(reviewSetService.getReviewSetInfo(projectId, issueType));
+            return ControllerResponse.success(reviewSetService.getReviewSetInfo(issueType));
         } catch (Exception e) {
             LOGGER.error("查询评论设置信息异常,异常信息:{}", e.getMessage());
             return ControllerResponse.fail("查询评论设置信息异常");

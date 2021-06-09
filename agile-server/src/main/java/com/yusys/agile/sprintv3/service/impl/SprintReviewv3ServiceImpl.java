@@ -1,16 +1,16 @@
-package com.yusys.agile.sprint.service.impl;
+package com.yusys.agile.sprintv3.service.impl;
 
 import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.agile.file.service.FileService;
-import com.yusys.agile.sprint.dao.SprintAttachmentMapper;
-import com.yusys.agile.sprint.dao.SprintReviewMapper;
-import com.yusys.agile.sprint.domain.SprintAttachment;
-import com.yusys.agile.sprint.domain.SprintAttachmentExample;
-import com.yusys.agile.sprint.domain.SprintReview;
-import com.yusys.agile.sprint.domain.SprintReviewExample;
 import com.yusys.agile.sprint.dto.SprintAttachmentDTO;
 import com.yusys.agile.sprint.dto.SprintReviewDTO;
-import com.yusys.agile.sprint.service.SprintReviewService;
+import com.yusys.agile.sprintv3.dao.SSprintAttachmentMapper;
+import com.yusys.agile.sprintv3.dao.SSprintReviewMapper;
+import com.yusys.agile.sprintv3.domain.SSprintAttachment;
+import com.yusys.agile.sprintv3.domain.SSprintAttachmentExample;
+import com.yusys.agile.sprintv3.domain.SSprintReview;
+import com.yusys.agile.sprintv3.domain.SSprintReviewExample;
+import com.yusys.agile.sprintv3.service.SprintReviewv3Service;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.entity.SsoUser;
@@ -27,15 +27,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @Author maxp2
+ * @Date: 2021/6/8
+ */
 @Service
-public class SprintReviewServiceImpl implements SprintReviewService {
+public class SprintReviewv3ServiceImpl implements SprintReviewv3Service {
 
-    private static final Logger log = LoggerFactory.getLogger(SprintReviewServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SprintReviewv3ServiceImpl.class);
 
     @Resource
-    private SprintReviewMapper sprintReviewMapper;
+    private SSprintReviewMapper sSprintReviewMapper;
     @Resource
-    private SprintAttachmentMapper sprintAttachmentMapper;
+    private SSprintAttachmentMapper sSprintAttachmentMapper;
     @Resource
     private IFacadeUserApi iFacadeUserApi;
     @Resource
@@ -43,7 +47,7 @@ public class SprintReviewServiceImpl implements SprintReviewService {
 
     @Override
     public int createSprintReview(SprintReviewDTO sprintReviewDTO) {
-        SprintReview sprintReview = ReflectUtil.copyProperties(sprintReviewDTO, SprintReview.class);
+        SSprintReview sprintReview = ReflectUtil.copyProperties(sprintReviewDTO, SSprintReview.class);
         Long sprintId = sprintReviewDTO.getSprintId();
         if (null == sprintId) {
             throw new BusinessException("新建迭代回顾的迭代id为空！");
@@ -52,18 +56,18 @@ public class SprintReviewServiceImpl implements SprintReviewService {
             Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
             sprintReview.setProposeUid(loginUserId);
         }
-        return sprintReviewMapper.insertSelective(sprintReview);
+        return sSprintReviewMapper.insertSelective(sprintReview);
     }
 
     @Override
     public List<SprintReviewDTO> getSprintReviewList(Long sprintId) {
-        SprintReviewExample sprintReviewExample = new SprintReviewExample();
-        SprintReviewExample.Criteria criteria = sprintReviewExample.createCriteria();
+        SSprintReviewExample sprintReviewExample = new SSprintReviewExample();
+        SSprintReviewExample.Criteria criteria = sprintReviewExample.createCriteria();
         criteria.andSprintIdEqualTo(sprintId);
-        List<SprintReview> sprintReviewList = sprintReviewMapper.selectByExample(sprintReviewExample);
+        List<SSprintReview> sprintReviewList = sSprintReviewMapper.selectByExample(sprintReviewExample);
         List<SprintReviewDTO> reviewDTOS = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(sprintReviewList)) {
-            for (SprintReview sprintReview : sprintReviewList) {
+            for (SSprintReview sprintReview : sprintReviewList) {
                 SprintReviewDTO reviewDTO = ReflectUtil.copyProperties(sprintReview, SprintReviewDTO.class);
                 reviewDTO.setProposeName(getUserName(reviewDTO.getProposeUid()));
                 reviewDTOS.add(reviewDTO);
@@ -74,22 +78,22 @@ public class SprintReviewServiceImpl implements SprintReviewService {
 
     @Override
     public int editSprintReview(SprintReviewDTO sprintReviewDTO) {
-        SprintReview sprintReview = ReflectUtil.copyProperties(sprintReviewDTO, SprintReview.class);
+        SSprintReview sprintReview = ReflectUtil.copyProperties(sprintReviewDTO, SSprintReview.class);
         Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
         sprintReview.setReviewId(sprintReviewDTO.getReviewId());
         sprintReview.setUpdateUid(loginUserId);
         sprintReview.setUpdateTime(new Date());
-        return sprintReviewMapper.updateByPrimaryKeySelective(sprintReview);
+        return sSprintReviewMapper.updateByPrimaryKeySelective(sprintReview);
     }
 
     @Override
     public int deleteSprintReview(Long reviewId) {
-        return sprintReviewMapper.deleteByPrimaryKey(reviewId);
+        return sSprintReviewMapper.deleteByPrimaryKey(reviewId);
     }
 
     @Override
-    public SprintAttachment uploadAttachment(MultipartFile file, Long sprintId) {
-        SprintAttachment sprintAttachment = new SprintAttachment();
+    public SSprintAttachment uploadAttachment(MultipartFile file, Long sprintId) {
+        SSprintAttachment sprintAttachment = new SSprintAttachment();
         try {
             FileInfo fileInfo = fileService.upload(file);
 
@@ -100,7 +104,7 @@ public class SprintReviewServiceImpl implements SprintReviewService {
             sprintAttachment.setUploadTime(new Date());
             Long loginUserId = UserThreadLocalUtil.getUserInfo().getUserId();
             sprintAttachment.setUploadUid(loginUserId);
-            sprintAttachmentMapper.insert(sprintAttachment);
+            sSprintAttachmentMapper.insert(sprintAttachment);
         } catch (Exception e) {
             log.error("文件上传失败：{}", e);
             throw new BusinessException("文件上传失败：{}", e.getMessage());
@@ -110,40 +114,40 @@ public class SprintReviewServiceImpl implements SprintReviewService {
 
     @Override
     public void deleteAttachmentBySprintId(Long sprintId) {
-        SprintAttachmentExample sprintAttachmentExample = new SprintAttachmentExample();
-        SprintAttachmentExample.Criteria criteria = sprintAttachmentExample.createCriteria();
+        SSprintAttachmentExample sprintAttachmentExample = new SSprintAttachmentExample();
+        SSprintAttachmentExample.Criteria criteria = sprintAttachmentExample.createCriteria();
         criteria.andSprintIdEqualTo(sprintId);
-        sprintAttachmentMapper.deleteByExample(sprintAttachmentExample);
+        sSprintAttachmentMapper.deleteByExample(sprintAttachmentExample);
     }
 
     @Override
     public List<SprintAttachmentDTO> getSprintAttachmentList(Long sprintId) {
-        SprintAttachmentExample sprintAttachmentExample = new SprintAttachmentExample();
-        SprintAttachmentExample.Criteria criteria1 = sprintAttachmentExample.createCriteria();
+        SSprintAttachmentExample sprintAttachmentExample = new SSprintAttachmentExample();
+        SSprintAttachmentExample.Criteria criteria1 = sprintAttachmentExample.createCriteria();
         criteria1.andSprintIdEqualTo(sprintId);
-        List<SprintAttachment> attachments = sprintAttachmentMapper.selectByExample(sprintAttachmentExample);
-        List<SprintAttachmentDTO> attachmentDTOS = new ArrayList<>();
+        List<SSprintAttachment> attachments = sSprintAttachmentMapper.selectByExample(sprintAttachmentExample);
+        List<SprintAttachmentDTO> dtos = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(attachments)) {
             try {
-                attachmentDTOS = ReflectUtil.copyProperties4List(attachments, SprintAttachmentDTO.class);
+                dtos = ReflectUtil.copyProperties4List(attachments, SprintAttachmentDTO.class);
             } catch (Exception e) {
                 log.error("列表转换出错{}", e.getMessage());
             }
         }
-        return attachmentDTOS;
+        return dtos;
     }
 
     @Override
     public void deleteSprintReviewBySprintId(Long sprintId) {
-        SprintReviewExample sprintReviewExample = new SprintReviewExample();
-        SprintReviewExample.Criteria criteria = sprintReviewExample.createCriteria();
+        SSprintReviewExample sprintReviewExample = new SSprintReviewExample();
+        SSprintReviewExample.Criteria criteria = sprintReviewExample.createCriteria();
         criteria.andSprintIdEqualTo(sprintId);
-        sprintReviewMapper.deleteByExample(sprintReviewExample);
+        sSprintReviewMapper.deleteByExample(sprintReviewExample);
     }
 
     @Override
     public int deleteAttachment(Long attachmentId) {
-        return sprintAttachmentMapper.deleteByPrimaryKey(attachmentId);
+        return sSprintAttachmentMapper.deleteByPrimaryKey(attachmentId);
     }
 
     /**

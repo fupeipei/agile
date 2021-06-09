@@ -83,7 +83,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from req_user_rlat
+    from s_req_user_rlat
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,21 +94,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from req_user_rlat
+    from s_req_user_rlat
     where relate_id = #{relateId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from req_user_rlat
+    delete from s_req_user_rlat
     where relate_id = #{relateId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.user.domain.ReqUserRlatExample">
-    delete from req_user_rlat
+    delete from s_req_user_rlat
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.user.domain.ReqUserRlat" useGeneratedKeys="true" keyProperty="relateId">
-    insert into req_user_rlat (relate_id, user_relate_type, subject_id,
+    insert into s_req_user_rlat (relate_id, user_relate_type, subject_id,
       user_id, is_concurrent, project_id,
       state, create_time, create_uid,
       update_time, update_uid, tenant_code
@@ -120,7 +120,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.user.domain.ReqUserRlat" useGeneratedKeys="true" keyProperty="relateId">
-    insert into req_user_rlat
+    insert into s_req_user_rlat
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="relateId != null">
         relate_id,
@@ -199,13 +199,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.user.domain.ReqUserRlatExample" resultType="java.lang.Long">
-    select count(*) from req_user_rlat
+    select count(*) from s_req_user_rlat
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update req_user_rlat
+    update s_req_user_rlat
     <set>
       <if test="record.relateId != null">
         relate_id = #{record.relateId,jdbcType=BIGINT},
@@ -249,7 +249,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update req_user_rlat
+    update s_req_user_rlat
     set relate_id = #{record.relateId,jdbcType=BIGINT},
       user_relate_type = #{record.userRelateType,jdbcType=INTEGER},
       subject_id = #{record.subjectId,jdbcType=BIGINT},
@@ -267,7 +267,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.user.domain.ReqUserRlat">
-    update req_user_rlat
+    update s_req_user_rlat
     <set>
       <if test="userRelateType != null">
         user_relate_type = #{userRelateType,jdbcType=INTEGER},
@@ -306,7 +306,7 @@
     where relate_id = #{relateId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.user.domain.ReqUserRlat">
-    update req_user_rlat
+    update s_req_user_rlat
     set user_relate_type = #{userRelateType,jdbcType=INTEGER},
       subject_id = #{subjectId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
@@ -323,7 +323,7 @@
 
   <!-- 批量插入用户关联信息-->
   <insert id="insertBatch">
-    insert into req_user_rlat (relate_id, user_relate_type, subject_id,
+    insert into s_req_user_rlat (relate_id, user_relate_type, subject_id,
     user_id, is_concurrent, project_id,
     state, create_time, create_uid,
     update_time, update_uid, tenant_code
