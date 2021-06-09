@@ -448,7 +448,7 @@
         select count(team_name)
         from s_team
                 where
-                team_name = #{teamName}
+                 binary team_name = #{teamName}
                   and tenant_code = #{tenantCode}
                   and state = 'U'
         <if test="teamId != null">
