@@ -93,7 +93,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from review
+    from s_review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -107,7 +107,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from review
+    from s_review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -120,21 +120,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from review
+    from s_review
     where review_id = #{reviewId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from review
+    delete from s_review
     where review_id = #{reviewId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.review.domain.ReviewExample">
-    delete from review
+    delete from s_review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.review.domain.Review" useGeneratedKeys="true" keyProperty="reviewId">
-    insert into review (review_id, issue_id, issue_type, 
+    insert into s_review (review_id, issue_id, issue_type,
       review_theme, expect_time, review_status, 
       version, state, project_id, 
       create_time, create_uid, update_time, 
@@ -148,7 +148,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.review.domain.Review" useGeneratedKeys="true" keyProperty="reviewId">
-    insert into review
+    insert into s_review
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="reviewId != null">
         review_id,
@@ -245,13 +245,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.review.domain.ReviewExample" resultType="java.lang.Long">
-    select count(*) from review
+    select count(*) from s_review
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update review
+    update s_review
     <set>
       <if test="record.reviewId != null">
         review_id = #{record.reviewId,jdbcType=BIGINT},
@@ -304,7 +304,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update review
+    update s_review
     set review_id = #{record.reviewId,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       issue_type = #{record.issueType,jdbcType=TINYINT},
@@ -325,7 +325,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update review
+    update s_review
     set review_id = #{record.reviewId,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
       issue_type = #{record.issueType,jdbcType=TINYINT},
@@ -345,7 +345,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.review.domain.Review">
-    update review
+    update s_review
     <set>
       <if test="issueId != null">
         issue_id = #{issueId,jdbcType=BIGINT},
@@ -393,7 +393,7 @@
     where review_id = #{reviewId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.review.domain.Review">
-    update review
+    update s_review
     set issue_id = #{issueId,jdbcType=BIGINT},
       issue_type = #{issueType,jdbcType=TINYINT},
       review_theme = #{reviewTheme,jdbcType=VARCHAR},
@@ -411,7 +411,7 @@
     where review_id = #{reviewId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.review.domain.Review">
-    update review
+    update s_review
     set issue_id = #{issueId,jdbcType=BIGINT},
       issue_type = #{issueType,jdbcType=TINYINT},
       review_theme = #{reviewTheme,jdbcType=VARCHAR},

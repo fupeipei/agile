@@ -42,21 +42,20 @@ public class ReviewSetServiceImpl implements ReviewSetService {
     private ReviewSetMapper reviewSetMapper;
 
     /**
-     * @param projectId
      * @param issueType
      * @return
      * @description 查询评审设置信息
      * @date 2020/09/09
      */
     @Override
-    public ReviewSetDTO getReviewSetInfo(Long projectId, Byte issueType) {
+    public ReviewSetDTO getReviewSetInfo( Byte issueType) {
         ReviewSetDTO reviewSetDTO = new ReviewSetDTO();
-        String key = splitReviewRedisKey(projectId, issueType);
+        String key = splitReviewRedisKey(issueType);
         JSONObject jsonObject = (JSONObject) redisCacheComponent.get(key);
         if (null != jsonObject) {
             reviewSetDTO = jsonObject.toJavaObject(ReviewSetDTO.class);
         } else {
-            ReviewSetExample reviewSetExample = splitReviewSetExample(projectId, issueType);
+            ReviewSetExample reviewSetExample = splitReviewSetExample(issueType);
             List<ReviewSet> reviewSets = reviewSetMapper.selectByExample(reviewSetExample);
             if (CollectionUtils.isNotEmpty(reviewSets)) {
                 ReviewSet reviewSet = reviewSets.get(0);
@@ -68,30 +67,28 @@ public class ReviewSetServiceImpl implements ReviewSetService {
     }
 
     /**
-     * @param projectId
      * @param issueType
      * @return
      * @description 拼接评审设置信息Key
      * @date 2020/09/09
      */
-    private String splitReviewRedisKey(Long projectId, Byte issueType) {
+    private String splitReviewRedisKey(Byte issueType) {
         StringBuilder key = new StringBuilder();
-        key.append(REVIEW_SET_KEY_PREFIX).append(projectId).append(SEPARATOR_UNDERLINE).append(issueType);
+        //key.append(REVIEW_SET_KEY_PREFIX).append(projectId).append(SEPARATOR_UNDERLINE).append(issueType);
+        key.append(REVIEW_SET_KEY_PREFIX).append(SEPARATOR_UNDERLINE).append(issueType);
         return key.toString();
     }
 
     /**
-     * @param projectId
      * @param issueType
      * @return
      * @description 拼接评审设置信息Example
      * @date 2020/09/09
      */
-    private ReviewSetExample splitReviewSetExample(Long projectId, Byte issueType) {
+    private ReviewSetExample splitReviewSetExample( Byte issueType) {
         ReviewSetExample reviewSetExample = new ReviewSetExample();
         reviewSetExample.setOrderByClause("id asc");
         reviewSetExample.createCriteria()
-                .andProjectIdEqualTo(projectId)
                 .andIssueTypeEqualTo(issueType)
                 .andStateEqualTo(StateEnum.U.getValue());
         return reviewSetExample;
@@ -128,7 +125,7 @@ public class ReviewSetServiceImpl implements ReviewSetService {
                 throw new RuntimeException("新增评审设置信息失败");
             }
         }
-        String key = splitReviewRedisKey(reviewSetDTO.getProjectId(), reviewSetDTO.getIssueType());
+        String key = splitReviewRedisKey( reviewSetDTO.getIssueType());
         redisCacheComponent.set(key, reviewSet, TTL);
         return count;
     }

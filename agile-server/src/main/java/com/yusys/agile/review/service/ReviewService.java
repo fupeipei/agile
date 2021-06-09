@@ -65,17 +65,16 @@ public interface ReviewService {
      * @return java.lang.Boolean
      * @date 2021/3/9
      */
-    StoryCheckResultDTO allowStoryInSprint(Long storyId, Long projectId);
+    StoryCheckResultDTO allowStoryInSprint(Long storyId);
 
     /**
      * 功能描述: 获取项目下某类型工作项的评审设置
      *
-     * @param projectId
      * @param issueType
      * @return com.yusys.agile.review.dto.ReviewSetDTO
      * @date 2021/3/11
      */
-    ReviewSetDTO getReviewSetDTO(Long projectId, Byte issueType);
+    ReviewSetDTO getReviewSetDTO( Byte issueType);
 
     /**
      * 功能描述: 根据评审id获取工作项集合

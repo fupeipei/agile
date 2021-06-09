@@ -1681,7 +1681,7 @@ public class IssueServiceImpl implements IssueService {
 
         // 评审拦截
         if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType) && null != issue.getSprintId()) {
-            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issue.getIssueId(), projectId);
+            StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issue.getIssueId());
             if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
                 loggr.info("由于未通过评审，拖拽故事关联迭代失败！storyId = {}", issue.getIssueId());
                 throw new BusinessException(storyCheckResultDTO.getMsg());
