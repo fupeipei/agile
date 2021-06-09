@@ -288,8 +288,8 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
     }
 
     @Override
-    public Integer deleteCustomFieldByFieldId(Long fieldId) {
-        String fieldCode = fieldId.toString();
+    public Integer deleteCustomFieldByFieldId(Long issueCustomRelationId) {
+        String fieldCode = issueCustomRelationId.toString();
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();
         headerFieldExample.createCriteria()
                 .andFieldCodeEqualTo(fieldCode)

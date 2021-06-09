@@ -461,6 +461,11 @@
     set state = #{state}
     where field_id = #{fieldId}
 </update>
+<update id="updateStateById">
+    update s_issue_custom_relation
+    set state = #{state}
+    where id = #{id}
+</update>
 
 
 </mapper>
