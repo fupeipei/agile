@@ -114,7 +114,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 判断是否有未完成的评审，如果有未完成的评审，不能新增
         List<Review> reviewList = getReviewList(reviewDTO.getIssueId());
-        Boolean hasNotFinishedReview = hasNotFinishedReview(reviewDTO.getProjectId(), reviewDTO.getIssueId(), reviewDTO.getIssueType(), reviewList);
+        Boolean hasNotFinishedReview = hasNotFinishedReview( reviewDTO.getIssueId(), reviewDTO.getIssueType(), reviewList);
         if (hasNotFinishedReview) {
             LOGGER.info("工作项{}有未完成的评审，不能创建评审！", reviewDTO.getIssueId());
             throw new BusinessException("有未完成的评审，不能创建评审！");
@@ -131,7 +131,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewMapper.insert(review);
         // 关联相关人员 先不算发起人，除非发起人自己加进去
         List<Long> userIds = reviewDTO.getUserIds();
-        List<ReqUserRlat> reqUserRlats = assembleReqUserRlats(userIds, reviewDTO.getProjectId(), review.getReviewId(), AgileUserRlatEnum.REVIEW.CODE, 2);
+        List<ReqUserRlat> reqUserRlats = assembleReqUserRlats(userIds, review.getReviewId(), AgileUserRlatEnum.REVIEW.CODE, 2);
         reqUserRlatService.insertBatch(reqUserRlats);
 
     }
@@ -191,15 +191,12 @@ public class ReviewServiceImpl implements ReviewService {
                 throw new BusinessException("不能重复评审！");
             }
         }
-
         // 已经有结果的就不用评审
         ReviewDTO reviewDTO = getReview(reviewId);
         if (null != reviewDTO && !StringUtils.equals(reviewDTO.getReviewStatus(), ReviewStatusEnum.REVIEWING.CODE)) {
             LOGGER.info("评审结果已出，不需要评审！");
             throw new BusinessException("评审结果已出，不需要评审！");
         }
-
-
         ReviewRecord reviewRecord = ReflectUtil.copyProperties(reviewRecordDTO, ReviewRecord.class);
         reviewRecord.setState(StateEnum.U.getValue());
         reviewRecordMapper.insert(reviewRecord);
@@ -214,11 +211,9 @@ public class ReviewServiceImpl implements ReviewService {
      * @date 2021/3/9
      */
     private boolean hasReviewed(Long reviewId, Long operatorId) {
-
         ReviewRecordExample example = new ReviewRecordExample();
         ReviewRecordExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.getValue()).andReviewIdEqualTo(reviewId).andCreateUidEqualTo(operatorId);
-
         List<ReviewRecord> reviewedRecords = reviewRecordMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(reviewedRecords)) {
             return true;
@@ -267,13 +262,12 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public List<ReviewDTO> listReview(Long issueId) {
-        Issue issue = issueMapper.selectByPrimaryKey(issueId);
-        Long projectId = issue.getProjectId();
+        //Issue issue = issueMapper.selectByPrimaryKey(issueId);
         List<Review> reviews = getReviewList(issueId);
         List<ReviewDTO> reviewDTOList = Lists.newArrayList();
         for (int i = 0; i < reviews.size(); i++) {
             // 组装评审记录，只有最近的一个评审需要计算评审的状态，其他的评审直接取数据
-            ReviewDTO reviewDTO = assembleReviewDTO(projectId, issueId, reviews.get(i), i);
+            ReviewDTO reviewDTO = assembleReviewDTO( issueId, reviews.get(i), i);
             reviewDTOList.add(reviewDTO);
         }
 
@@ -299,7 +293,6 @@ public class ReviewServiceImpl implements ReviewService {
         if (null != ssoUserDTO) {
             reviewDTO.setCreateUserName(ssoUserDTO.getUserName());
         }
-
         // 邀请人员信息
         List<UserDTO> userDTOList = listUserDtosByReviewId(reviewId);
         reviewDTO.setUsers(userDTOList);
@@ -315,7 +308,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @return com.yusys.agile.review.dto.ReviewDTO
      * @date 2021/3/9
      */
-    private ReviewDTO assembleReviewDTO(Long projectId, Long issueId, Review tempReview, Integer i) {
+    private ReviewDTO assembleReviewDTO( Long issueId, Review tempReview, Integer i) {
         ReviewDTO reviewDTO = ReflectUtil.copyProperties(tempReview, ReviewDTO.class);
         // 创建人
         Long createUid = tempReview.getCreateUid();
@@ -327,7 +320,7 @@ public class ReviewServiceImpl implements ReviewService {
         // 注意，理论上只有最近的一条才需要计算评审状态
         if (StringUtils.equals(reviewDTO.getReviewStatus(), ReviewStatusEnum.REVIEWING.CODE)) {
             LOGGER.info("需要计算评审状态的i={}", i);
-            String reviewStatus = calculateReviewStatus(projectId, issueId, tempReview.getIssueType(), tempReview.getReviewId());
+            String reviewStatus = calculateReviewStatus(issueId, tempReview.getIssueType(), tempReview.getReviewId());
             reviewDTO.setReviewStatus(reviewStatus);
         }
 
@@ -368,14 +361,13 @@ public class ReviewServiceImpl implements ReviewService {
      * 功能描述: 组装关系
      *
      * @param userIds        用户集合
-     * @param projectId
      * @param subjectId
      * @param userRelateType 关系类型
      * @param isConcurrent   是否负责人1是 2成员
      * @return java.util.List<com.yusys.agile.user.domain.ReqUserRlat>
      * @date 2021/3/8
      */
-    private List<ReqUserRlat> assembleReqUserRlats(List<Long> userIds, Long projectId, Long subjectId, Integer userRelateType, Integer isConcurrent) {
+    private List<ReqUserRlat> assembleReqUserRlats(List<Long> userIds, Long subjectId, Integer userRelateType, Integer isConcurrent) {
         List<ReqUserRlat> reqUserRlats = Lists.newArrayList();
         for (Long userId : userIds) {
             ReqUserRlat reqUserRlat = new ReqUserRlat();
@@ -383,7 +375,6 @@ public class ReviewServiceImpl implements ReviewService {
             reqUserRlat.setSubjectId(subjectId);
             reqUserRlat.setIsConcurrent(isConcurrent);
             reqUserRlat.setUserId(userId);
-            reqUserRlat.setProjectId(projectId);
             reqUserRlat.setState(StateEnum.U.getValue());
             reqUserRlats.add(reqUserRlat);
         }
@@ -432,7 +423,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @return java.lang.Boolean
      * @date 2021/3/8
      */
-    private Boolean hasNotFinishedReview(Long projectId, Long issueId, Byte issueType, List<Review> reviewList) {
+    private Boolean hasNotFinishedReview( Long issueId, Byte issueType, List<Review> reviewList) {
         // 没有评审信息
         if (CollectionUtils.isEmpty(reviewList)) {
             return false;
@@ -446,7 +437,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         // 调用接口计算当前投票属于什么状态
-        String reviewPassCode = calculateReviewStatus(projectId, issueId, issueType, latestReview.getReviewId());
+        String reviewPassCode = calculateReviewStatus(issueId, issueType, latestReview.getReviewId());
         if (StringUtils.equals(reviewPassCode, ReviewStatusEnum.PASS.CODE) || StringUtils.equals(reviewPassCode, ReviewStatusEnum.FAIL.CODE)) {
             return false;
         }
@@ -472,15 +463,14 @@ public class ReviewServiceImpl implements ReviewService {
      * @return java.lang.String
      * @date 2021/3/8
      */
-    public String calculateReviewStatus(Long projectId, Long issueId, Byte issueType, Long latestReviewId) {
-
+    public String calculateReviewStatus( Long issueId, Byte issueType, Long latestReviewId) {
 
         // 总人数
         List<ReqUserRlat> ReqUserRlatList = reqUserRlatService.listRlatsBySubjectId(latestReviewId, AgileUserRlatEnum.REVIEW.CODE, null);
         Integer allNum = ReqUserRlatList.size();
 
         // 通过率
-        ReviewSetDTO storyReviewSetDTO = getReviewSetDTO(projectId, issueType);
+        ReviewSetDTO storyReviewSetDTO = getReviewSetDTO(issueType);
         Integer pass = storyReviewSetDTO.getReviewPassRate().intValue();
         double setUpPassRate = BigDecimal.valueOf((float) pass / 100).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
@@ -552,7 +542,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @date 2021/3/9
      */
     @Override
-    public StoryCheckResultDTO allowStoryInSprint(Long storyId, Long projectId) {
+    public StoryCheckResultDTO allowStoryInSprint(Long storyId) {
 
         StoryCheckResultDTO storyCheckResultDTO = new StoryCheckResultDTO();
         storyCheckResultDTO.setHasPassed(true);
@@ -560,10 +550,10 @@ public class ReviewServiceImpl implements ReviewService {
         Byte switchOpen = new Byte("1");
 
         // story本身
-        ReviewSetDTO storyReviewSetDTO = getReviewSetDTO(projectId, IssueTypeEnum.TYPE_STORY.CODE);
+        ReviewSetDTO storyReviewSetDTO = getReviewSetDTO(IssueTypeEnum.TYPE_STORY.CODE);
         // 开关打开,进行校验
         if (storyReviewSetDTO.getReviewSwitch().equals(switchOpen)) {
-            Boolean storyHasPass = hasPassReview(projectId, storyId, IssueTypeEnum.TYPE_STORY.CODE);
+            Boolean storyHasPass = hasPassReview(storyId, IssueTypeEnum.TYPE_STORY.CODE);
             if (!storyHasPass) {
                 LOGGER.info("故事id={},故事本身评审未通过！", storyId);
                 storyCheckResultDTO.setHasPassed(false);
@@ -574,7 +564,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         // feature层
-        ReviewSetDTO featureReviewSetDTO = getReviewSetDTO(projectId, IssueTypeEnum.TYPE_FEATURE.CODE);
+        ReviewSetDTO featureReviewSetDTO = getReviewSetDTO(IssueTypeEnum.TYPE_FEATURE.CODE);
         //IssueDTO storyDTO = storyService.queryStory(storyId, projectId);
         IssueDTO storyDTO = storyService.queryStory(storyId);
         if (null == storyDTO) {
@@ -585,7 +575,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (featureReviewSetDTO.getReviewSwitch().equals(switchOpen)) {
             // 上层feature必须存在才进行校验
             if (null != featureId) {
-                Boolean featureHasPass = hasPassReview(projectId, featureId, IssueTypeEnum.TYPE_FEATURE.CODE);
+                Boolean featureHasPass = hasPassReview( featureId, IssueTypeEnum.TYPE_FEATURE.CODE);
                 if (!featureHasPass) {
                     LOGGER.info("featureId={}评审未通过！", featureId);
                     storyCheckResultDTO.setHasPassed(false);
@@ -596,7 +586,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         // epic层
-        ReviewSetDTO epicReviewSetDTO = getReviewSetDTO(projectId, IssueTypeEnum.TYPE_EPIC.CODE);
+        ReviewSetDTO epicReviewSetDTO = getReviewSetDTO( IssueTypeEnum.TYPE_EPIC.CODE);
         // epic开关打开时才校验
         if (epicReviewSetDTO.getReviewSwitch().equals(switchOpen)) {
             // 故事的上层存在feature才会再往上找epic
@@ -605,7 +595,7 @@ public class ReviewServiceImpl implements ReviewService {
                 IssueDTO featureDTO = featureService.queryFeature(featureId);
                 Long epicId = featureDTO.getParentId();
                 if (null != epicId) {
-                    Boolean epicHasPass = hasPassReview(projectId, epicId, IssueTypeEnum.TYPE_FEATURE.CODE);
+                    Boolean epicHasPass = hasPassReview(epicId, IssueTypeEnum.TYPE_FEATURE.CODE);
                     if (!epicHasPass) {
                         LOGGER.info("epicId={}评审未通过！", epicId);
                         storyCheckResultDTO.setHasPassed(false);
@@ -625,15 +615,14 @@ public class ReviewServiceImpl implements ReviewService {
     /**
      * 功能描述: 查询评审设置结果
      *
-     * @param projectId
      * @param issueType
      * @return com.yusys.agile.review.dto.ReviewSetDTO
      * @date 2021/3/10
      */
     @Override
-    public ReviewSetDTO getReviewSetDTO(Long projectId, Byte issueType) {
+    public ReviewSetDTO getReviewSetDTO( Byte issueType) {
         // 查询设置数据
-        ReviewSetDTO reviewSetDTO = reviewSetService.getReviewSetInfo(projectId, issueType);
+        ReviewSetDTO reviewSetDTO = reviewSetService.getReviewSetInfo(issueType);
         ReviewSetDTO returnReviewSetDTO = new ReviewSetDTO();
 
         // 默认开关关闭
@@ -680,7 +669,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @return java.lang.Boolean
      * @date 2021/3/9
      */
-    private Boolean hasPassReview(Long projectId, Long issueId, Byte issueType) {
+    private Boolean hasPassReview( Long issueId, Byte issueType) {
         // 查询评审记录
         List<Review> reviews = getReviewList(issueId);
         if (CollectionUtils.isEmpty(reviews)) {
@@ -697,7 +686,7 @@ public class ReviewServiceImpl implements ReviewService {
             return false;
         } else {
             // 计算是否通过评审
-            String calculateReviewStatus = calculateReviewStatus(projectId, issueId, issueType, latestReview.getReviewId());
+            String calculateReviewStatus = calculateReviewStatus( issueId, issueType, latestReview.getReviewId());
             if (StringUtils.equals(calculateReviewStatus, ReviewStatusEnum.PASS.CODE)) {
                 return true;
             } else {

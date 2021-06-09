@@ -59,7 +59,7 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
     }
 
     /**
-     * 功能描述:
+     * 功能描述:查询关联人
      *
      * @param subjectId
      * @return java.util.List<com.yusys.agile.user.domain.ReqUserRlat>
@@ -77,7 +77,7 @@ public class ReqUserRlatServiceImpl implements ReqUserRlatService {
     }
 
     /**
-     * 功能描述: 组装返回对象
+     * 功能描述: 通过userId 组装返回对象
      *
      * @param rlats
      * @return java.util.List<com.yusys.agile.fault.dto.UserDTO>

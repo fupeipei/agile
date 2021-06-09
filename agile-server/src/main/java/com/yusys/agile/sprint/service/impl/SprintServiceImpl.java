@@ -549,7 +549,7 @@ public class SprintServiceImpl implements SprintService {
 
                 // 评审拦截
                 if (IssueTypeEnum.TYPE_STORY.CODE.equals(sprintDTO.getIssueType())) {
-                    StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issueId, sprintDTO.getProjectId());
+                    StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issueId);
                     if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
                         LOGGER.info("由于未通过评审，迭代关联故事失败！storyId = {}", issueId);
                         throw new BusinessException(storyCheckResultDTO.getMsg());
