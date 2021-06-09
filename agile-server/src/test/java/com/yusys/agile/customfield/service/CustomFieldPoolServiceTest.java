@@ -60,6 +60,16 @@ public class CustomFieldPoolServiceTest {
         Assert.assertTrue("testListAllCustomFields1成功", true);
     }
 
+    @Test
+    public void testDeleteCustomField(){
+        try {
+            customFieldPoolService.deleteCustomField(1L);
+            Assert.assertTrue("删除自定义字段成功", true);
+        }catch (Exception e){
+            Assert.assertFalse(e.getMessage() != null);
+        }
+    }
+
 
     /**
      * 初始化数据
