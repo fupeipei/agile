@@ -9,7 +9,7 @@
     </insert>
 
     <update id="update">
-        update s_issue_status set in_sprint = #{inSprint},finished = #{finished},not_started=#{notStarted}
+        update s_issue_project_status set in_sprint = #{inSprint},finished = #{finished},not_started=#{notStarted}
         where project_id = #{projectId} and calculate_date = #{calculateDate} and issue_type = #{issueType}
     </update>
 
