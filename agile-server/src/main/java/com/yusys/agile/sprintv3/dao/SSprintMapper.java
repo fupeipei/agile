@@ -328,4 +328,14 @@ public interface SSprintMapper {
      * @author 张宇
      */
     List<Long> querySprintMembersId(long sprintId);
+
+
+    /**
+     * 查询迭代有相关性故事
+     *
+     * @param sprintId 迭代id
+     * @return boolean
+     * @author 张宇
+     */
+    boolean querySprintHasRelevanceStory(long sprintId);
 }
