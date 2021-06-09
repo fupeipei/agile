@@ -70,6 +70,7 @@ public interface IssueCustomRelationV3Mapper {
      * @param systemId  系统标识
      * @param issueType 需求类型
      * @return {@link List< IssueCustomRelationV3 >}
+     * @author 张宇
      */
     List<IssueCustomRelationV3> queryTemplateCustomField(@Param("systemId") Long systemId, @Param("issueType") int issueType);
 
@@ -79,6 +80,16 @@ public interface IssueCustomRelationV3Mapper {
      * @param systemId  系统标识
      * @param issueType 需求类型
      * @return {@link Integer}
+     * @author 张宇
      */
     Integer removeBinding(@Param("systemId") Long systemId, @Param("issueType") int issueType);
+
+    /**
+     * 更新需求自定义关系通过场id
+     *
+     * @param fieldId   字段id
+     * @param fieldName 字段名
+     * @author 张宇
+     */
+    void updateIssueCustomRelationV3ByFieldId(@Param("fieldId") Long fieldId, @Param("fieldName") String fieldName);
 }
