@@ -296,6 +296,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             sTeamMapper.updateStateById(teamId, StateEnum.E.getValue());
             //删除PO、SM的角色，直接按平台级删除
             iFacadeUserApi.deleteUserAndRole(teamId, RoleTypeEnum.PLATFORM.getValue());
+        }else{
+            throw new BusinessException("该团队已经关联迭代，不允许删除");
         }
     }
 
