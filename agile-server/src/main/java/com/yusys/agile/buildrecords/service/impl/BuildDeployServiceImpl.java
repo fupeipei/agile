@@ -7,7 +7,7 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.yusys.cicd.feign.api.cms.ICmsChangeApi;
+import com.yusys.cicd.feign.api.tools.IToolsChangeApi;
 import com.yusys.cicd.model.tools.dto.TaskIdsDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class BuildDeployServiceImpl implements BuildDeployService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BuildDeployServiceImpl.class);
 
     @Autowired
-    private ICmsChangeApi iCmsChangeApi;
+    private IToolsChangeApi toolsChangeApi;
 
     @Resource
     private IssueMapper issueMapper;
@@ -55,14 +54,14 @@ public class BuildDeployServiceImpl implements BuildDeployService {
             List<String> taskIds = getTaskIds(issueId);
             if (CollectionUtils.isNotEmpty(taskIds)) {
                 TaskIdsDTO taskIdsDTO = assembleTaskIdsDTO(pageNum, pageSize, taskIds);
-                pageInfo = iCmsChangeApi.queryBuildInstanceByTaskIds(taskIdsDTO);
+                pageInfo = toolsChangeApi.queryBuildInstanceByTaskIds(taskIdsDTO);
             } else {
                 pageInfo = new PageInfo();
                 pageInfo.setPageNum(pageNum);
                 pageInfo.setPageSize(pageSize);
             }
         } else {
-            pageInfo = iCmsChangeApi.queryBuildInstanceByTaskId(issueId.toString(), pageNum, pageSize);
+            pageInfo = toolsChangeApi.queryBuildInstanceByTaskId(issueId.toString(), pageNum, pageSize);
         }
         return pageInfo;
     }
@@ -87,14 +86,14 @@ public class BuildDeployServiceImpl implements BuildDeployService {
             List<String> taskIds = getTaskIds(issueId);
             if (CollectionUtils.isNotEmpty(taskIds)) {
                 TaskIdsDTO taskIdsDTO = assembleTaskIdsDTO(pageNum, pageSize, taskIds);
-                pageInfo = iCmsChangeApi.queryDeployInstanceByTaskIds(taskIdsDTO);
+                pageInfo = toolsChangeApi.queryDeployInstanceByTaskIds(taskIdsDTO);
             } else {
                 pageInfo = new PageInfo();
                 pageInfo.setPageNum(pageNum);
                 pageInfo.setPageSize(pageSize);
             }
         } else {
-            pageInfo = iCmsChangeApi.queryDeployInstanceByTaskId(issueId.toString(), pageNum, pageSize);
+            pageInfo = toolsChangeApi.queryDeployInstanceByTaskId(issueId.toString(), pageNum, pageSize);
         }
         return pageInfo;
     }

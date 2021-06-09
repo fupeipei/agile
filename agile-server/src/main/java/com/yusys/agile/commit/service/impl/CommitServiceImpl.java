@@ -10,7 +10,7 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.yusys.cicd.feign.api.cms.ICmsChangeApi;
+import com.yusys.cicd.feign.api.tools.IToolsChangeApi;
 import com.yusys.cicd.model.tools.dto.TaskCommitQueryDTO;
 import com.yusys.portal.model.common.enums.StateEnum;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,7 +51,7 @@ public class CommitServiceImpl implements CommitService {
     private IssueService issueService;
 
     @Resource
-    private ICmsChangeApi cmsChangeApi;
+    private IToolsChangeApi toolsChangeApi;
 
     @Resource
     private IssueMapper issueMapper;
@@ -227,12 +227,12 @@ public class CommitServiceImpl implements CommitService {
             if (null != queryDTO) {
                 queryDTO.setPageNum(pageNumber);
                 queryDTO.setPageSize(pageSize);
-                return cmsChangeApi.queryCommitInfoByTaskIds(queryDTO);
+                return toolsChangeApi.queryCommitInfoByTaskIds(queryDTO);
             } else {
                 return new PageInfo(commitList);
             }
         } else {
-            return cmsChangeApi.queryCommitInfoByTaskId(String.valueOf(issueId), pageNumber, pageSize);
+            return toolsChangeApi.queryCommitInfoByTaskId(String.valueOf(issueId), pageNumber, pageSize);
         }
     }
 
