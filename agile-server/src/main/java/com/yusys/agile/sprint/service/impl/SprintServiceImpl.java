@@ -20,7 +20,6 @@ import com.yusys.agile.sprint.domain.*;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
-import com.yusys.agile.sprint.service.SprintReviewService;
 import com.yusys.agile.sprint.service.SprintService;
 import com.yusys.agile.team.dao.TeamMapper;
 import com.yusys.agile.team.domain.Team;
@@ -74,8 +73,6 @@ public class SprintServiceImpl implements SprintService {
     private StoryService storyService;
     @Resource
     private IFacadeProjectApi iFacadeProjectApi;
-    @Resource
-    private SprintReviewService sprintReviewService;
     @Resource
     private ProjectUserService projectUserService;
     @Resource
@@ -538,10 +535,6 @@ public class SprintServiceImpl implements SprintService {
             deleteUselessTeam(teamId);
             // 移除sprintUser
             userSprintHourMapper.deleteBySprintId(sprintId);
-            //删除迭代回顾信息
-            sprintReviewService.deleteSprintReviewBySprintId(sprintId);
-            //删除迭代回顾附件信息
-            sprintReviewService.deleteAttachmentBySprintId(sprintId);
             return true;
         } else {
             return false;
@@ -556,7 +549,7 @@ public class SprintServiceImpl implements SprintService {
 
                 // 评审拦截
                 if (IssueTypeEnum.TYPE_STORY.CODE.equals(sprintDTO.getIssueType())) {
-                    StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issueId, sprintDTO.getProjectId());
+                    StoryCheckResultDTO storyCheckResultDTO = reviewService.allowStoryInSprint(issueId);
                     if (null != storyCheckResultDTO && !storyCheckResultDTO.getHasPassed()) {
                         LOGGER.info("由于未通过评审，迭代关联故事失败！storyId = {}", issueId);
                         throw new BusinessException(storyCheckResultDTO.getMsg());

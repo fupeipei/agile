@@ -184,13 +184,13 @@ public class StoryServiceImpl implements StoryService {
             return;
         }
 
-        Long teamId = getTeamIdBySprintId(oldStory.getSprintId());
-        if(!iFacadeUserApi.checkIsTeamPo(userId, teamId)){
-            throw  new BusinessException("非迭代PO不允许编辑故事！");
-        }
-
         //校验故事在迭代内不允许更改阶段和状态
         if(Optional.ofNullable(oldStory.getSprintId()).isPresent()){
+            Long teamId = getTeamIdBySprintId(oldStory.getSprintId());
+            if(!iFacadeUserApi.checkIsTeamPo(userId, teamId)){
+                throw  new BusinessException("非迭代PO不允许编辑故事！");
+            }
+
            Long[] stages = issueDTO.getStages();
            if(!oldStory.getStageId().equals(stages[0])){
                throw  new BusinessException("故事在迭代内不允许变更阶段！");

@@ -11,7 +11,12 @@ public interface IssueCustomRelationService {
 
 
     List<SIssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType);
-
+    /**
+     * 删除关联关系
+     * @author zhaofeng
+     * @date 2021/6/9 15:19
+     * @param id
+     */
     void deleteIssueCustomRelation(Long id);
 
     void saveIssueCustomRelation(SecurityDTO securityDTO, IssueCustomRelationList idList);

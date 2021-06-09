@@ -52,11 +52,10 @@ public interface CustomFieldPoolService {
 
 
     /**
-     * 功能描述: 查询自定义字段
-     *
+     * 按id查询自定义字段
+     * @author zhaofeng
+     * @date 2021/6/9 13:52
      * @param fieldId
-     * @return com.yusys.agile.customfield.dto.CustomFieldDTO
-     * @date 2021/2/1
      */
     CustomFieldDTO getCustomField(Long fieldId);
 

@@ -10,6 +10,7 @@ import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
+import com.yusys.agile.issueTemplate.dao.IssueCustomRelationV3Mapper;
 import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -38,6 +40,9 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
 
     @Autowired
     private IssueCustomRelationService issueCustomRelationService;
+
+    @Resource
+    private IssueCustomRelationV3Mapper customRelationMapper;
 
 
     /**
@@ -114,6 +119,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         }
         //只允许修改名字和备注
         customFieldPoolMapper.editCustomField(customFieldPool.getFieldId(),customFieldPool.getFieldName(), customFieldPool.getComment());
+        customRelationMapper.updateIssueCustomRelationV3ByFieldId(customFieldPool.getFieldId(),customFieldPool.getFieldName());
         return "修改成功";
     }
 
@@ -205,14 +211,6 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         return customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
     }
 
-
-    /**
-     * 功能描述: 查询自定义字段
-     *
-     * @param fieldId
-     * @return com.yusys.agile.customfield.dto.CustomFieldDTO
-     * @date 2021/2/31
-     */
     @Override
     public CustomFieldDTO getCustomField(Long fieldId) {
         SCustomFieldPool customFieldPool = customFieldPoolMapper.selectByPrimaryKey(fieldId);

@@ -432,7 +432,7 @@
     <select id="checkCustomFieldRepeatability" resultType="boolean">
         select if(count(field_name) > 0, false, true)
         from s_custom_field_pool
-                where field_name = #{fieldName}
+                where binary field_name = #{fieldName}
         <if test="fieldId != null">
             and field_id != #{fieldId}
         </if>

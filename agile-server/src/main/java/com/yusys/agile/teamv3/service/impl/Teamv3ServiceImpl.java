@@ -3,6 +3,9 @@ package com.yusys.agile.teamv3.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.team.dto.TeamSystemDTO;
@@ -33,6 +36,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -52,6 +56,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     private STeamSystemMapper teamSystemMapper;
     @Resource
     private STeamMemberMapper sTeamMemberMapper;
+    @Resource
+    private SSprintMapper sSprintMapper;
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
@@ -161,7 +167,6 @@ public class Teamv3ServiceImpl implements Teamv3Service {
      * 创建列表查询条件
      *
      * @param dto
-     * @param userId
      * @author zhaofeng
      * @date 2021/5/8 14:11
      */
@@ -269,10 +274,31 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteTeam(long teamId) {
-        //逻辑删除团队
-        sTeamMapper.updateStateById(teamId, StateEnum.E.getValue());
-        //删除PO、SM的角色，直接按平台级删除
-        iFacadeUserApi.deleteUserAndRole(teamId, RoleTypeEnum.PLATFORM.getValue());
+        boolean deleteFlag = true;
+        //删除前校验
+        List<SSprint> sprints = sSprintMapper.querySprintByTeamId(teamId);
+        if(CollectionUtils.isEmpty(sprints)){
+            deleteFlag = true;
+        }else {
+            for (SSprint item : sprints) {
+                //如果包括进行中、已完成、未开始的有效迭代，就不能删除
+                if(item.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) ||
+                        item.getStatus().equals(SprintStatusEnum.TYPE_ONGOING_STATE.CODE) ||
+                        item.getStatus().equals(SprintStatusEnum.TYPE_NO_START_STATE.CODE)){
+                    deleteFlag = false;
+                    break;
+                }
+                deleteFlag = true;
+            }
+        }
+        if(deleteFlag){
+            //逻辑删除团队
+            sTeamMapper.updateStateById(teamId, StateEnum.E.getValue());
+            //删除PO、SM的角色，直接按平台级删除
+            iFacadeUserApi.deleteUserAndRole(teamId, RoleTypeEnum.PLATFORM.getValue());
+        }else{
+            throw new BusinessException("该团队已经关联迭代，不允许删除");
+        }
     }
 
     /**

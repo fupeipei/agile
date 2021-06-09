@@ -21,7 +21,6 @@ public class DashBoardTask extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) {
         dashBoardService.calculateIssueStatus();
-        dashBoardService.calculateProjectStatus();
         return ReturnT.SUCCESS;
     }
 }

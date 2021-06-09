@@ -12,6 +12,7 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.sprintV3.dto.*;
@@ -609,14 +610,22 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
      */
     @Override
     public String sprintFinish(long sprintId) {
-        //迭代下未完成的故事数
-        if (ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_MODIFYING_STATE.CODE)) {
-            throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
-        }
+
         //只有进行中的迭代允许完成
         if (!TYPE_ONGOING_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
             throw new BusinessException("只有进行中的迭代允许完成");
         }
+
+        //没有故事不允许完成迭代
+        if (!ssprintMapper.querySprintHasRelevanceStory(sprintId)) {
+            throw new BusinessException("该迭代下未关联用户故事,不允许迭代完成");
+        }
+
+        //迭代有用户故事,切故事状态必须为开发阶段-已完成状态才允许完成
+        if (ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_CLOSED_STATE.CODE)) {
+            throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
+        }
+
         ssprintMapper.sprintFinish(sprintId);
         return "迭代完成成功";
     }
