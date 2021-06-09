@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.issueTemplate.dao.IssueCustomFieldV3Mapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.issueTemplate.domain.IssueCustomFieldV3">
+    <!--@mbg.generated-->
+    <!--@Table s_issue_custom_field-->
+    <id column="extend_id" jdbcType="BIGINT" property="extendId" />
+    <result column="field_id" jdbcType="BIGINT" property="fieldId" />
+    <result column="field_value" jdbcType="VARCHAR" property="fieldValue" />
+    <result column="issue_id" jdbcType="BIGINT" property="issueId" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    extend_id, field_id, field_value, issue_id, `state`, create_time, create_uid, update_time, 
+    update_uid, tenant_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from s_issue_custom_field
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from s_issue_custom_field
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="extend_id" keyProperty="extendId" parameterType="com.yusys.agile.issueTemplate.domain.IssueCustomFieldV3" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into s_issue_custom_field (field_id, field_value, issue_id, 
+      `state`, create_time, create_uid, 
+      update_time, update_uid, tenant_code
+      )
+    values (#{fieldId,jdbcType=BIGINT}, #{fieldValue,jdbcType=VARCHAR}, #{issueId,jdbcType=BIGINT}, 
+      #{state,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{tenantCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="extend_id" keyProperty="extendId" parameterType="com.yusys.agile.issueTemplate.domain.IssueCustomFieldV3" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into s_issue_custom_field
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fieldId != null">
+        field_id,
+      </if>
+      <if test="fieldValue != null">
+        field_value,
+      </if>
+      <if test="issueId != null">
+        issue_id,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fieldId != null">
+        #{fieldId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldValue != null">
+        #{fieldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="issueId != null">
+        #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issueTemplate.domain.IssueCustomFieldV3">
+    <!--@mbg.generated-->
+    update s_issue_custom_field
+    <set>
+      <if test="fieldId != null">
+        field_id = #{fieldId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldValue != null">
+        field_value = #{fieldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="issueId != null">
+        issue_id = #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issueTemplate.domain.IssueCustomFieldV3">
+    <!--@mbg.generated-->
+    update s_issue_custom_field
+    set field_id = #{fieldId,jdbcType=BIGINT},
+      field_value = #{fieldValue,jdbcType=VARCHAR},
+      issue_id = #{issueId,jdbcType=BIGINT},
+      `state` = #{state,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where extend_id = #{extendId,jdbcType=BIGINT}
+  </update>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update s_issue_custom_field
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="field_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.fieldId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="field_value = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.fieldValue,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="issue_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.issueId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="`state` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.state,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.createTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="create_uid = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.createUid,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.updateTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="update_uid = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.updateUid,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="tenant_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.tenantCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where extend_id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.extendId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update s_issue_custom_field
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="field_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.fieldId != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.fieldId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="field_value = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.fieldValue != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.fieldValue,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="issue_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.issueId != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.issueId,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`state` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.state != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.state,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createTime != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.createTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_uid = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createUid != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.createUid,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateTime != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.updateTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_uid = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateUid != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.updateUid,jdbcType=BIGINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="tenant_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.tenantCode != null">
+            when extend_id = #{item.extendId,jdbcType=BIGINT} then #{item.tenantCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where extend_id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.extendId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="extend_id" keyProperty="extendId" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into s_issue_custom_field
+    (field_id, field_value, issue_id, `state`, create_time, create_uid, update_time, 
+      update_uid, tenant_code)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.fieldId,jdbcType=BIGINT}, #{item.fieldValue,jdbcType=VARCHAR}, #{item.issueId,jdbcType=BIGINT}, 
+        #{item.state,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createUid,jdbcType=BIGINT}, 
+        #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateUid,jdbcType=BIGINT}, #{item.tenantCode,jdbcType=VARCHAR}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" keyColumn="extend_id" keyProperty="extendId" parameterType="com.yusys.agile.issueTemplate.domain.IssueCustomFieldV3" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into s_issue_custom_field
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="extendId != null">
+        extend_id,
+      </if>
+      field_id,
+      field_value,
+      issue_id,
+      `state`,
+      create_time,
+      create_uid,
+      update_time,
+      update_uid,
+      tenant_code,
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="extendId != null">
+        #{extendId,jdbcType=BIGINT},
+      </if>
+      #{fieldId,jdbcType=BIGINT},
+      #{fieldValue,jdbcType=VARCHAR},
+      #{issueId,jdbcType=BIGINT},
+      #{state,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP},
+      #{createUid,jdbcType=BIGINT},
+      #{updateTime,jdbcType=TIMESTAMP},
+      #{updateUid,jdbcType=BIGINT},
+      #{tenantCode,jdbcType=VARCHAR},
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="extendId != null">
+        extend_id = #{extendId,jdbcType=BIGINT},
+      </if>
+      field_id = #{fieldId,jdbcType=BIGINT},
+      field_value = #{fieldValue,jdbcType=VARCHAR},
+      issue_id = #{issueId,jdbcType=BIGINT},
+      `state` = #{state,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_uid = #{updateUid,jdbcType=BIGINT},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR},
+    </trim>
+  </insert>
+  <insert id="insertOrUpdateSelective" keyColumn="extend_id" keyProperty="extendId" parameterType="com.yusys.agile.issueTemplate.domain.IssueCustomFieldV3" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into s_issue_custom_field
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="extendId != null">
+        extend_id,
+      </if>
+      <if test="fieldId != null">
+        field_id,
+      </if>
+      <if test="fieldValue != null">
+        field_value,
+      </if>
+      <if test="issueId != null">
+        issue_id,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUid != null">
+        update_uid,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="extendId != null">
+        #{extendId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldId != null">
+        #{fieldId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldValue != null">
+        #{fieldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="issueId != null">
+        #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="extendId != null">
+        extend_id = #{extendId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldId != null">
+        field_id = #{fieldId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldValue != null">
+        field_value = #{fieldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="issueId != null">
+        issue_id = #{issueId,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUid != null">
+        update_uid = #{updateUid,jdbcType=BIGINT},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>
