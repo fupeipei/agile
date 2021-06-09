@@ -205,14 +205,6 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         return customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
     }
 
-
-    /**
-     * 功能描述: 查询自定义字段
-     *
-     * @param fieldId
-     * @return com.yusys.agile.customfield.dto.CustomFieldDTO
-     * @date 2021/2/31
-     */
     @Override
     public CustomFieldDTO getCustomField(Long fieldId) {
         SCustomFieldPool customFieldPool = customFieldPoolMapper.selectByPrimaryKey(fieldId);
