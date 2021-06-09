@@ -762,11 +762,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO, Long projectId, Integer pageNum, Integer pageSize) {
-        if (null == projectId) {
-            throw new BusinessException("查询故事项目id为空！");
-        }
-
+    public List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO, Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
