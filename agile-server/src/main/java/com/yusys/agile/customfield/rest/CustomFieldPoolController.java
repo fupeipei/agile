@@ -1,9 +1,9 @@
 package com.yusys.agile.customfield.rest;
 
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
-import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import io.swagger.annotations.Api;
@@ -13,9 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 项目内自定义字段
@@ -116,12 +114,12 @@ public class CustomFieldPoolController {
      * @author zhaofeng
      * @date 2021/6/3 15:09
      * @param issueType 工作项类型
-     * @param systemId  系统id
      */
     @GetMapping("/listCustomFieldsByIssueType")
     public ControllerResponse listCustomFieldsByIssueType(
             @RequestParam(name = "issueType") Byte issueType,
-            @RequestParam(name = "systemId", required = false) Long systemId) {
+            SecurityDTO security) {
+        Long systemId = security.getSystemId();
         List<CustomFieldDTO> list = customRelationService.getCustomFieldList(systemId, issueType);
         return ControllerResponse.success(list);
     }
