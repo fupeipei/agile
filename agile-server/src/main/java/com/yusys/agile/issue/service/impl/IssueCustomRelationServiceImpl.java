@@ -147,9 +147,12 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
             if (!idList.contains(field.getFieldId())) {
                 CustomFieldDTO customFieldDTO = listMap.get(field.getFieldId()).get(0);
                 SIssueCustomRelation relation = new SIssueCustomRelation();
+                relation.setFieldId(customFieldDTO.getFieldId());
+                relation.setFieldName(customFieldDTO.getFieldName());
                 relation.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
                 relation.setFieldContent(customFieldDTO.getFieldContent());
-                relation.setFieldName(customFieldDTO.getFieldName());
+                relation.setSystemId(customFieldDTO.getSystemId());
+                relation.setRequired(customFieldDTO.getRequired());
                 result.add(relation);
             }
         }
