@@ -1491,7 +1491,7 @@ public class ExcelServiceImpl implements ExcelService {
             List<Long> allIssueId = issueMapper.listAllIssueId(Lists.newArrayList(issueRestltMap.keySet()));
             if (CollectionUtils.isNotEmpty(allIssueId)) {
                 //项目下的当前页
-                Map<String, Map> map = issueService.IssueMap( null);
+                Map<String, Map> map = issueService.issueMap( null);
                 if (MapUtils.isNotEmpty(map)) {
                     IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(mapStr), IssueStringDTO.class);
                     for (Issue issue : issues) {

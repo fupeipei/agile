@@ -218,7 +218,7 @@ public class IssueServiceImpl implements IssueService {
             return pageInfo;
         }
         //项目下的当前页
-        Map<String, Map> mapMap = IssueMap( null);
+        Map<String, Map> mapMap = issueMap( null);
         if (issues != null && !issues.isEmpty()) {
             for (Issue issue : issues) {
                 IssueListDTO issueListDTOResult = ReflectObjectUtil.copyProperties(issue, IssueListDTO.class);
@@ -746,7 +746,7 @@ public class IssueServiceImpl implements IssueService {
         longList.add(issueId);
         List<Long> longList1 = issueMapper.listAllIssueId(longList);
         //租户下的IssueData
-        Map<String, Map> mapMap = IssueMap( noLogin);
+        Map<String, Map> mapMap = issueMap( noLogin);
         IssueListDTO issueListDTO = ReflectObjectUtil.copyProperties(issue, IssueListDTO.class);
         String rootIds = "";
         //将一些属性转成对象
@@ -861,7 +861,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public List<IssueListDTO> issueListByIds(String rootIds, Long projectId) throws Exception {
 
-        Map<String, Map> mapMap = IssueMap( null);
+        Map<String, Map> mapMap = issueMap( null);
         List listId = Lists.newArrayList(rootIds.split(","));
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
         IssueExample issueExample = new IssueExample();
@@ -1899,7 +1899,7 @@ public class IssueServiceImpl implements IssueService {
      * @date 2020/8/10
      */
     @Override
-    public Map IssueMap(String noLogin) {
+    public Map issueMap(String noLogin) {
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         Map<String, Map> mapResult = new HashMap<>();
         //Issue
@@ -3124,5 +3124,22 @@ public class IssueServiceImpl implements IssueService {
             issueHistoryRecord.setOperationField("阶段id");
             issueHistoryRecordMapper.insertSelective(issueHistoryRecord);
         }
+    }
+
+    @Override
+    public List<Long> getIssueIds(Long parentId) {
+        List<Long> longList= Lists.newArrayList();
+        IssueExample example = new IssueExample();
+        IssueExample.Criteria  criteria = example.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue());
+        if(parentId!=null){
+            criteria.andParentIdEqualTo(parentId);
+        }
+        List<Issue>  issues =  issueMapper.selectByExample(example);
+        if(CollectionUtils.isNotEmpty(issues)){
+           Map<Long,List<Issue> >  map =  issues.stream().collect(Collectors.groupingBy(Issue::getIssueId));
+            longList= Lists.newArrayList(map.keySet());
+        }
+        return longList;
     }
 }

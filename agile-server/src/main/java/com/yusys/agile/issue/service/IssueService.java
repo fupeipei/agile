@@ -233,7 +233,7 @@ public interface IssueService {
      * @param noLogin   免登录标识，"true"标识免登录调用，other非免登录调用
      * @return java.util.Map
      */
-    Map IssueMap( String noLogin);
+    Map issueMap( String noLogin);
 
     IssueListDTO arrangeIssueListDTO(Issue issue, IssueListDTO issueListDTO, Map<String, Map> mapMap);
 
@@ -422,4 +422,14 @@ public interface IssueService {
      * @date 2020/12/30
      */
     List<Issue> getValidIssue(List<Long> epicIdList);
+
+    /**
+     * 功能描述 根据工作项Id查询其有效的子工作项Id
+     *
+     * @param parentId
+     * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     * @date 2020/12/30
+     */
+    List<Long> getIssueIds(Long parentId);
+
 }

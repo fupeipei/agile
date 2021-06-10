@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service;
 
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +17,8 @@ import java.util.Map;
 public class IssueServiceTest {
     @Autowired
     IssueService issueService;
-
+    @Autowired
+    StoryService storyService;
     @Test
     public  void getIssueListTest(){
         Map<String, Object> map = new HashMap<>();
@@ -33,5 +35,15 @@ public class IssueServiceTest {
         Byte issueQuery = 2;
         IssueListDTO issueListDTO = issueService.getIssue(issueId,issueQuery,null);
         Assert.assertTrue("getIssueListTest成功", true);
+    }
+
+    @Test
+    public void testListStorysAndTasks() {
+
+        IssueDTO issueDTO = new IssueDTO();
+        issueDTO.setPageNum(1);
+        issueDTO.setPageSize(100000);
+        issueDTO.setSprintId(130213L);
+        storyService.listStorysAndTasks(issueDTO);
     }
 }
