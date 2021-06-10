@@ -5,10 +5,7 @@ import com.yusys.agile.issueTemplate.server.IssueTemplateV3Service;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -27,8 +24,8 @@ public class IssueTemplateV3Controller {
      * @author 张宇
      */
     @ApiOperation(value = "查询需求模板")
-    @GetMapping("/queryIssueTemplate")
-    public ControllerResponse queryIssueTemplate(Long systemId, int issueType) {
+//    @GetMapping("/issueTemplate/query")
+    public ControllerResponse queryIssueTemplate(@RequestHeader(name = "systemId") Long systemId, int issueType) {
         return ControllerResponse.success(issueTemplateV3Service.queryIssueTemplate(systemId, issueType));
     }
 
@@ -40,7 +37,7 @@ public class IssueTemplateV3Controller {
      * @author 张宇
      */
     @ApiOperation(value = "编辑需求模板")
-    @PostMapping("/editIssueTemplate")
+//    @PostMapping("/editIssueTemplate")
     public ControllerResponse editIssueTemplate(@RequestBody IssueTemplateV3 issueTemplateV3) {
         issueTemplateV3Service.editIssueTemplate(issueTemplateV3);
         return ControllerResponse.success();
