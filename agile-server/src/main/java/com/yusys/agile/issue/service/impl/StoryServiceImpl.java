@@ -8,6 +8,7 @@ import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.issue.dao.IssueAcceptanceMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.IssueSystemRelpMapper;
+import com.yusys.agile.issue.dao.SIssueRichtextMapper;
 import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.dto.IssueAcceptanceDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
@@ -113,6 +114,8 @@ public class StoryServiceImpl implements StoryService {
 
     @Resource
     private IssueSystemRelpService issueSystemRelpService;
+    @Resource
+    private SIssueRichtextMapper sIssueRichtextMapper;
 
 
 
@@ -793,7 +796,9 @@ public class StoryServiceImpl implements StoryService {
                         dto.setSystemCode(systemCode);
                     }
                 }
-                issueFactory.getAcceptanceList(dto.getIssueId(), dto);
+                SIssueRichtextWithBLOBs issueRichText = issueRichTextFactory.getIssueRichText(dto.getIssueId());
+                dto.setAcceptanceCriteria(issueRichText.getAcceptanceCriteria());
+                //issueFactory.getAcceptanceList(dto.getIssueId(), dto);
             }
         }
         return issueDTOList;
@@ -802,12 +807,21 @@ public class StoryServiceImpl implements StoryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int editStoryAssess(IssueDTO issueDTO) {
-        List<IssueAcceptanceDTO> issueAcceptanceDTOS = issueDTO.getIssueAcceptanceDTOS();
-        if (CollectionUtils.isNotEmpty(issueAcceptanceDTOS)) {
-            for (IssueAcceptanceDTO issueAcceptanceDTO : issueAcceptanceDTOS) {
-                IssueAcceptance issueAcceptance = ReflectUtil.copyProperties(issueAcceptanceDTO, IssueAcceptance.class);
-                issueAcceptanceMapper.updateByPrimaryKey(issueAcceptance);
-            }
+        String acceptanceCriteria = issueDTO.getAcceptanceCriteria();
+       // List<IssueAcceptanceDTO> issueAcceptanceDTOS = issueDTO.getIssueAcceptanceDTOS();
+        if (StringUtils.isNotEmpty(acceptanceCriteria)) {
+            SIssueRichtextWithBLOBs sIssueRichtextWithBLOB=new SIssueRichtextWithBLOBs();
+            SIssueRichtextExample sIssueRichtextExample=new SIssueRichtextExample();
+            SIssueRichtextExample.Criteria criteria = sIssueRichtextExample.createCriteria();
+            criteria.andIssueIdEqualTo(issueDTO.getIssueId()).andStateEqualTo(StateEnum.U.getValue());
+
+            sIssueRichtextWithBLOB.setAcceptanceCriteria(acceptanceCriteria);
+
+            sIssueRichtextMapper.updateByExampleSelective(sIssueRichtextWithBLOB,sIssueRichtextExample);
+//            for (IssueAcceptanceDTO issueAcceptanceDTO : issueAcceptanceDTOS) {
+//                IssueAcceptance issueAcceptance = ReflectUtil.copyProperties(issueAcceptanceDTO, IssueAcceptance.class);
+//                issueAcceptanceMapper.updateByPrimaryKey(issueAcceptance);
+//            }
         }
         //编辑故事评审状态及备注
         return editAssess(issueDTO);
