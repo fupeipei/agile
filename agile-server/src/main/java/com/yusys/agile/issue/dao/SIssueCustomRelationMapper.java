@@ -33,9 +33,12 @@ public interface SIssueCustomRelationMapper {
     int updateByPrimaryKeyWithBLOBs(SIssueCustomRelation record);
 
     int updateByPrimaryKey(SIssueCustomRelation record);
-
-    int deleteByProjectIdAndIssueType(@Param("projectId") Long projectId, @Param("issueType") Byte issueType);
-
+    /**
+     * 按工作项类型，查询出 issue_custom_relation 中的fieldId
+     * @author zhaofeng
+     * @date 2021/6/10 11:01
+     * @param issueType
+     */
     List<Long> getAppliedByissueType(@Param("issueType") Byte issueType);
     /**
      * 按自定义字段id修改数据有效状态

@@ -445,14 +445,8 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <delete id="deleteByProjectIdAndIssueType" >
-    delete from  s_issue_custom_field
-    where issue_type = #{issueType}
-    and   project_id = #{projectId}
-  </delete>
-
 <select id="getAppliedByissueType" resultType="Long">
-  select  field_id from  s_issue_custom_field
+  select  field_id from  s_issue_custom_relation
     where issue_type = #{issueType}
 </select>
 

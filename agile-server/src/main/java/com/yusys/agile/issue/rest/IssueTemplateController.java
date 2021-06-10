@@ -34,8 +34,6 @@ public class IssueTemplateController {
      *
      * @param issueType
      * @param securityDTO
-     * @return java.util.Map
-     * @date 2020/8/3
      */
     @GetMapping("/issueTemplate/query")
     public ControllerResponse query(Byte issueType, SecurityDTO securityDTO) {
@@ -80,13 +78,13 @@ public class IssueTemplateController {
      * @date 2021/6/3 16:19
      * @param issueType
      * @param fieldName
-     * @param systemId 系统id
      */
     @GetMapping("/issueCustomRelation/getUnApplied")
     public ControllerResponse getUnApplied(
+            SecurityDTO security,
             @RequestParam(name = "issueType") Byte issueType,
-            @RequestParam(name = "fieldName", required = false) String fieldName,
-            @RequestParam(name = "systemId", required = false) Long systemId) {
+            @RequestParam(name = "fieldName", required = false) String fieldName) {
+        Long systemId = security.getSystemId();
         return ControllerResponse.success(issueCustomRelationService.getUnApplied(systemId, issueType, fieldName));
     }
 

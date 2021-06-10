@@ -139,29 +139,21 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
     public List<SIssueCustomRelation> getUnApplied(Long systemId, Byte issueType, String fieldName) {
         List<SIssueCustomRelation> result = Lists.newArrayList();
         //查询自定义字段集合，并转换成map结构
-        List<CustomFieldDTO> customFieldList = customFieldPoolService.listAllCustomFields(systemId, fieldName, null, null);
-        Map<Long, List<CustomFieldDTO>> listMap = customFieldList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        //查询关联关系
-        SIssueCustomRelationExample example = new SIssueCustomRelationExample();
-        SIssueCustomRelationExample.Criteria criteria = example.createCriteria();
-        if(issueType != null){
-            criteria.andIssueTypeEqualTo(issueType);
-        }
-        if(systemId != null){
-            criteria.andSystemIdEqualTo(systemId);
-        }
-        example.setOrderByClause("sort asc");
+        List<CustomFieldDTO> customFields = customFieldPoolService.listAllCustomFields(systemId, fieldName, null, null);
+        Map<Long, List<CustomFieldDTO>> listMap = customFields.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
+        //查询出该类型已关联的fieldId
         List<Long> idList = issueCustomRelationMapper.getAppliedByissueType(issueType);
-        List<SIssueCustomRelation> list = issueCustomRelationMapper.selectByExampleWithBLOBs(example);
-        list.stream().forEach(item->{
-            if (listMap.containsKey(item.getFieldId()) && !idList.contains(item.getFieldId())) {
-                CustomFieldDTO customFieldDTO = listMap.get(item.getFieldId()).get(0);
-                item.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
-                item.setFieldContent(customFieldDTO.getFieldContent());
-                item.setFieldName(customFieldDTO.getFieldName());
+        for (CustomFieldDTO field : customFields) {
+            if (!idList.contains(field.getFieldId())) {
+                CustomFieldDTO customFieldDTO = listMap.get(field.getFieldId()).get(0);
+                SIssueCustomRelation relation = new SIssueCustomRelation();
+                relation.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
+                relation.setFieldContent(customFieldDTO.getFieldContent());
+                relation.setFieldName(customFieldDTO.getFieldName());
+                result.add(relation);
             }
-        });
-        return list;
+        }
+        return result;
     }
 
     @Override
