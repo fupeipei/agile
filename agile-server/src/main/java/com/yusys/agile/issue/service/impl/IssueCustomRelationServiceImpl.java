@@ -2,7 +2,10 @@ package com.yusys.agile.issue.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.yusys.agile.customfield.dao.SCustomFieldPoolMapper;
+import com.yusys.agile.customfield.domain.SCustomFieldPool;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.enums.FieldRequiredEnum;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
@@ -40,6 +43,8 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
 
     @Resource
     SIssueCustomRelationMapper issueCustomRelationMapper;
+    @Resource
+    SCustomFieldPoolMapper customFieldPoolMapper;
     @Resource
     IssueCustomFieldService issueCustomFieldService;
     @Resource
@@ -127,36 +132,18 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         }
     }
 
-    /**
-     * 查询未被应用的自定义字段，当系统id为空时，查询系统外的
-     * @author zhaofeng
-     * @date 2021/6/3 16:26
-     * @param systemId
-     * @param issueType
-     * @param fieldName
-     */
+
     @Override
-    public List<SIssueCustomRelation> getUnApplied(Long systemId, Byte issueType, String fieldName) {
-        List<SIssueCustomRelation> result = Lists.newArrayList();
+    public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName, Integer pageSize, Integer pageNum) {
         //查询自定义字段集合，并转换成map结构
         List<CustomFieldDTO> customFields = customFieldPoolService.listAllCustomFields(systemId, fieldName, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFields.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        //查询出该类型已关联的fieldId
-        List<Long> idList = issueCustomRelationMapper.getAppliedByissueType(issueType);
-        for (CustomFieldDTO field : customFields) {
-            if (!idList.contains(field.getFieldId())) {
-                CustomFieldDTO customFieldDTO = listMap.get(field.getFieldId()).get(0);
-                SIssueCustomRelation relation = new SIssueCustomRelation();
-                relation.setFieldId(customFieldDTO.getFieldId());
-                relation.setFieldName(customFieldDTO.getFieldName());
-                relation.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
-                relation.setFieldContent(customFieldDTO.getFieldContent());
-                relation.setSystemId(customFieldDTO.getSystemId());
-                relation.setRequired(FieldRequiredEnum.no_required.getCode());
-                result.add(relation);
-            }
+        //分页
+        if(pageNum != null && pageSize != null){
+            PageHelper.startPage(pageNum, pageSize);
         }
-        return result;
+        List<CustomFieldDTO> list = customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName);
+        return list;
     }
 
     @Override

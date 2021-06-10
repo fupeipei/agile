@@ -1,6 +1,9 @@
 package com.yusys.agile.issue.rest;
 
+import com.github.pagehelper.PageInfo;
+import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.issue.domain.IssueCustomRelationList;
+import com.yusys.agile.issue.domain.SIssueCustomRelation;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.service.IssueTemplateService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -10,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * :
@@ -73,7 +77,7 @@ public class IssueTemplateController {
     }
 
     /**
-     * 查询未应用的自定义字段
+     * 分页-查询未应用的自定义字段
      * @author zhaofeng
      * @date 2021/6/3 16:19
      * @param issueType
@@ -82,10 +86,13 @@ public class IssueTemplateController {
     @GetMapping("/issueCustomRelation/getUnApplied")
     public ControllerResponse getUnApplied(
             SecurityDTO security,
+            @RequestParam(name = "pageSize") Integer pageSize,
+            @RequestParam(name = "pageNum") Integer pageNum,
             @RequestParam(name = "issueType") Byte issueType,
             @RequestParam(name = "fieldName", required = false) String fieldName) {
         Long systemId = security.getSystemId();
-        return ControllerResponse.success(issueCustomRelationService.getUnApplied(systemId, issueType, fieldName));
+        List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(systemId, issueType, fieldName, pageSize, pageNum);
+        return ControllerResponse.success(new PageInfo<>(list));
     }
 
 

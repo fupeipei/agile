@@ -456,4 +456,16 @@
             update_uid  = update_uid
             where field_id = #{fieldId}
     </update>
+
+    <select id="getUnAppByIssueType" resultType="com.yusys.agile.customfield.dto.CustomFieldDTO">
+        select
+         <include refid="Base_Column_List" />
+         <include refid="Blob_Column_List" />
+         from s_custom_field_pool s where s.field_id not in
+        (select field_id from s_issue_custom_relation where
+            <if test="fieldName != null and fieldName != ''">
+                field_name like concat('%',#{fieldName},'%')
+            </if>
+        and issue_type = #{issueType})
+    </select>
 </mapper>
