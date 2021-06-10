@@ -152,7 +152,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
                 relation.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
                 relation.setFieldContent(customFieldDTO.getFieldContent());
                 relation.setSystemId(customFieldDTO.getSystemId());
-                relation.setRequired(customFieldDTO.getRequired());
+                relation.setRequired(FieldRequiredEnum.no_required.getCode());
                 result.add(relation);
             }
         }
