@@ -71,7 +71,7 @@ public class IssueTemplateServiceImpl implements IssueTemplateService {
         criteria.andApplyEqualTo(Byte.parseByte("1"))
                 .andIssueTypeEqualTo(issueType);
                 if(securityDTO.getProjectId()!=null){
-                    criteria .andProjectIdEqualTo(securityDTO.getProjectId());
+                    criteria.andSystemIdEqualTo(securityDTO.getProjectId());
                 }
         if (issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample).isEmpty()) {
            //暂时先注释掉
