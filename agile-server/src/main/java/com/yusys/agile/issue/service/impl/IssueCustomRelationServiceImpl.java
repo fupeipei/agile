@@ -142,7 +142,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         if(pageNum != null && pageSize != null){
             PageHelper.startPage(pageNum, pageSize);
         }
-        List<CustomFieldDTO> list = customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName);
+        List<CustomFieldDTO> list = customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName, systemId);
         return list;
     }
 

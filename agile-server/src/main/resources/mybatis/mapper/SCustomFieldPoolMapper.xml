@@ -461,11 +461,16 @@
         select
          <include refid="Base_Column_List" />
          <include refid="Blob_Column_List" />
-         from s_custom_field_pool s where s.field_id not in
+         from s_custom_field_pool s where
+         <if test="systemId != null">
+            s.system_id = #{systemId}
+        </if>
+         s.field_id not in
         (select field_id from s_issue_custom_relation where
             <if test="fieldName != null and fieldName != ''">
                 field_name like concat('%',#{fieldName},'%')
             </if>
         and issue_type = #{issueType})
+        order by s.create_time desc
     </select>
 </mapper>
