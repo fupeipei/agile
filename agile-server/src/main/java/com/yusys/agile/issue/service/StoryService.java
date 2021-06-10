@@ -106,7 +106,6 @@ public interface StoryService {
 
     /**
      * @param issueDTO
-     * @param projectId
      * @param pageNum
      * @param pageSize
      * @Date 2021/2/2

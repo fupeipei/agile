@@ -201,7 +201,7 @@ public class StoryController {
     /**
      * @param issueDTO
      * @Date 2021/2/1
-     * @Description 迭代评审获取故事及故事验收标准信息
+     * @Description 模糊分页查询迭代评审获取故事及故事验收标准信息
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/listStoryAcceptance")
