@@ -73,7 +73,7 @@ public class IssueTemplateController {
     }
 
     /**
-     * 分页查询未应用的自定义字段，不传系统id时，查询系统外的
+     * 查询未应用的自定义字段
      * @author zhaofeng
      * @date 2021/6/3 16:19
      * @param issueType
