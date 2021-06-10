@@ -355,63 +355,63 @@ public class IssueTemplateExample {
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdIsNull() {
-            addCriterion("project_id is null");
+        public Criteria andSystemIdIsNull() {
+            addCriterion("system_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdIsNotNull() {
-            addCriterion("project_id is not null");
+        public Criteria andSystemIdIsNotNull() {
+            addCriterion("system_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdEqualTo(Long value) {
-            addCriterion("project_id =", value, "projectId");
+        public Criteria andSystemIdEqualTo(Long value) {
+            addCriterion("system_id =", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdNotEqualTo(Long value) {
-            addCriterion("project_id <>", value, "projectId");
+        public Criteria andSystemIdNotEqualTo(Long value) {
+            addCriterion("system_id <>", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdGreaterThan(Long value) {
-            addCriterion("project_id >", value, "projectId");
+        public Criteria andSystemIdGreaterThan(Long value) {
+            addCriterion("system_id >", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("project_id >=", value, "projectId");
+        public Criteria andSystemIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("system_id >=", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdLessThan(Long value) {
-            addCriterion("project_id <", value, "projectId");
+        public Criteria andSystemIdLessThan(Long value) {
+            addCriterion("system_id <", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdLessThanOrEqualTo(Long value) {
-            addCriterion("project_id <=", value, "projectId");
+        public Criteria andSystemIdLessThanOrEqualTo(Long value) {
+            addCriterion("system_id <=", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdIn(List<Long> values) {
-            addCriterion("project_id in", values, "projectId");
+        public Criteria andSystemIdIn(List<Long> values) {
+            addCriterion("system_id in", values, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdNotIn(List<Long> values) {
-            addCriterion("project_id not in", values, "projectId");
+        public Criteria andSystemIdNotIn(List<Long> values) {
+            addCriterion("system_id not in", values, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdBetween(Long value1, Long value2) {
-            addCriterion("project_id between", value1, value2, "projectId");
+        public Criteria andSystemIdBetween(Long value1, Long value2) {
+            addCriterion("system_id between", value1, value2, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdNotBetween(Long value1, Long value2) {
-            addCriterion("project_id not between", value1, value2, "projectId");
+        public Criteria andSystemIdNotBetween(Long value1, Long value2) {
+            addCriterion("system_id not between", value1, value2, "systemId");
             return (Criteria) this;
         }
 
@@ -665,52 +665,52 @@ public class IssueTemplateExample {
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeEqualTo(String value) {
+        public Criteria andTenantCodeEqualTo(Integer value) {
             addCriterion("tenant_code =", value, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeNotEqualTo(String value) {
+        public Criteria andTenantCodeNotEqualTo(Integer value) {
             addCriterion("tenant_code <>", value, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeGreaterThan(String value) {
+        public Criteria andTenantCodeGreaterThan(Integer value) {
             addCriterion("tenant_code >", value, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeGreaterThanOrEqualTo(String value) {
+        public Criteria andTenantCodeGreaterThanOrEqualTo(Integer value) {
             addCriterion("tenant_code >=", value, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeLessThan(String value) {
+        public Criteria andTenantCodeLessThan(Integer value) {
             addCriterion("tenant_code <", value, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeLessThanOrEqualTo(String value) {
+        public Criteria andTenantCodeLessThanOrEqualTo(Integer value) {
             addCriterion("tenant_code <=", value, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeIn(List<String> values) {
+        public Criteria andTenantCodeIn(List<Integer> values) {
             addCriterion("tenant_code in", values, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeNotIn(List<String> values) {
+        public Criteria andTenantCodeNotIn(List<Integer> values) {
             addCriterion("tenant_code not in", values, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeBetween(String value1, String value2) {
+        public Criteria andTenantCodeBetween(Integer value1, Integer value2) {
             addCriterion("tenant_code between", value1, value2, "tenantCode");
             return (Criteria) this;
         }
 
-        public Criteria andTenantCodeNotBetween(String value1, String value2) {
+        public Criteria andTenantCodeNotBetween(Integer value1, Integer value2) {
             addCriterion("tenant_code not between", value1, value2, "tenantCode");
             return (Criteria) this;
         }

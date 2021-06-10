@@ -11,7 +11,7 @@
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <result column="tenant_code" jdbcType="INTEGER" property="tenantCode" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.issue.domain.IssueTemplate">
     <result column="description" jdbcType="LONGVARCHAR" property="description" />
@@ -75,7 +75,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-     issue_template_id  , template_name, issue_type, apply, system_id, create_time, create_uid, 
+    issue_template_id, template_name, issue_type, apply, system_id, create_time, create_uid, 
     update_uid, update_time, tenant_code
   </sql>
   <sql id="Blob_Column_List">
@@ -89,7 +89,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from  s_issue_template  
+    from s_issue_template
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -103,7 +103,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from  s_issue_template  
+    from s_issue_template
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -116,34 +116,34 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from  s_issue_template  
-    where  issue_template_id   = #{issueTemplateId,jdbcType=BIGINT}
+    from s_issue_template
+    where issue_template_id = #{issueTemplateId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from  s_issue_template  
-    where  issue_template_id   = #{issueTemplateId,jdbcType=BIGINT}
+    delete from s_issue_template
+    where issue_template_id = #{issueTemplateId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.issue.domain.IssueTemplateExample">
-    delete from  s_issue_template  
+    delete from s_issue_template
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueTemplate" useGeneratedKeys="true" keyProperty="issueTemplateId">
-    insert into  s_issue_template   (issue_template_id, template_name, issue_type, 
+  <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueTemplate">
+    insert into s_issue_template (issue_template_id, template_name, issue_type, 
       apply, system_id, create_time, 
       create_uid, update_uid, update_time, 
       tenant_code, description)
     values (#{issueTemplateId,jdbcType=BIGINT}, #{templateName,jdbcType=VARCHAR}, #{issueType,jdbcType=TINYINT}, 
       #{apply,jdbcType=TINYINT}, #{systemId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{createUid,jdbcType=BIGINT}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{tenantCode,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR})
+      #{tenantCode,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueTemplate" useGeneratedKeys="true" keyProperty="issueTemplateId">
-    insert into  s_issue_template  
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueTemplate">
+    insert into s_issue_template
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="issueTemplateId != null">
-         issue_template_id  ,
+        issue_template_id,
       </if>
       <if test="templateName != null">
         template_name,
@@ -205,7 +205,7 @@
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="tenantCode != null">
-        #{tenantCode,jdbcType=VARCHAR},
+        #{tenantCode,jdbcType=INTEGER},
       </if>
       <if test="description != null">
         #{description,jdbcType=LONGVARCHAR},
@@ -213,16 +213,16 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.issue.domain.IssueTemplateExample" resultType="java.lang.Long">
-    select count(*) from  s_issue_template  
+    select count(*) from s_issue_template
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update  s_issue_template  
+    update s_issue_template
     <set>
       <if test="record.issueTemplateId != null">
-         issue_template_id   = #{record.issueTemplateId,jdbcType=BIGINT},
+        issue_template_id = #{record.issueTemplateId,jdbcType=BIGINT},
       </if>
       <if test="record.templateName != null">
         template_name = #{record.templateName,jdbcType=VARCHAR},
@@ -249,7 +249,7 @@
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.tenantCode != null">
-        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+        tenant_code = #{record.tenantCode,jdbcType=INTEGER},
       </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=LONGVARCHAR},
@@ -260,8 +260,8 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update  s_issue_template  
-    set  issue_template_id   = #{record.issueTemplateId,jdbcType=BIGINT},
+    update s_issue_template
+    set issue_template_id = #{record.issueTemplateId,jdbcType=BIGINT},
       template_name = #{record.templateName,jdbcType=VARCHAR},
       issue_type = #{record.issueType,jdbcType=TINYINT},
       apply = #{record.apply,jdbcType=TINYINT},
@@ -270,15 +270,15 @@
       create_uid = #{record.createUid,jdbcType=BIGINT},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      tenant_code = #{record.tenantCode,jdbcType=INTEGER},
       description = #{record.description,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update  s_issue_template  
-    set  issue_template_id   = #{record.issueTemplateId,jdbcType=BIGINT},
+    update s_issue_template
+    set issue_template_id = #{record.issueTemplateId,jdbcType=BIGINT},
       template_name = #{record.templateName,jdbcType=VARCHAR},
       issue_type = #{record.issueType,jdbcType=TINYINT},
       apply = #{record.apply,jdbcType=TINYINT},
@@ -287,13 +287,13 @@
       create_uid = #{record.createUid,jdbcType=BIGINT},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+      tenant_code = #{record.tenantCode,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.issue.domain.IssueTemplate">
-    update  s_issue_template  
+    update s_issue_template
     <set>
       <if test="templateName != null">
         template_name = #{templateName,jdbcType=VARCHAR},
@@ -320,16 +320,16 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="tenantCode != null">
-        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+        tenant_code = #{tenantCode,jdbcType=INTEGER},
       </if>
       <if test="description != null">
         description = #{description,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where  issue_template_id   = #{issueTemplateId,jdbcType=BIGINT}
+    where issue_template_id = #{issueTemplateId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueTemplate">
-    update  s_issue_template  
+    update s_issue_template
     set template_name = #{templateName,jdbcType=VARCHAR},
       issue_type = #{issueType,jdbcType=TINYINT},
       apply = #{apply,jdbcType=TINYINT},
@@ -338,12 +338,12 @@
       create_uid = #{createUid,jdbcType=BIGINT},
       update_uid = #{updateUid,jdbcType=BIGINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      tenant_code = #{tenantCode,jdbcType=INTEGER},
       description = #{description,jdbcType=LONGVARCHAR}
-    where  issue_template_id   = #{issueTemplateId,jdbcType=BIGINT}
+    where issue_template_id = #{issueTemplateId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.issue.domain.IssueTemplate">
-    update  s_issue_template  
+    update s_issue_template
     set template_name = #{templateName,jdbcType=VARCHAR},
       issue_type = #{issueType,jdbcType=TINYINT},
       apply = #{apply,jdbcType=TINYINT},
@@ -352,8 +352,8 @@
       create_uid = #{createUid,jdbcType=BIGINT},
       update_uid = #{updateUid,jdbcType=BIGINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      tenant_code = #{tenantCode,jdbcType=VARCHAR}
-    where  issue_template_id   = #{issueTemplateId,jdbcType=BIGINT}
+      tenant_code = #{tenantCode,jdbcType=INTEGER}
+    where issue_template_id = #{issueTemplateId,jdbcType=BIGINT}
   </update>
     <select id="getTemplateByProjectAndType" resultMap="ResultMapWithBLOBs">
       select
