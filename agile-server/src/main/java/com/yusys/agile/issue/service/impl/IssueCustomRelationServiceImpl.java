@@ -113,6 +113,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
             issueTemplateService.editIssueCustomRelation(securityDTO, idList.getIssueTemplate());
         }
         //应用字段保存
+        //查询所有关联关系，不论 state=U还是state=E
         List<Long> longList = issueCustomRelationMapper.getAppliedByissueType(idList.getIssueType());
         if (!CollectionUtils.isEmpty(idList.getIssueCustomRelationList())) {
             List<SIssueCustomRelation> issueCustomRelationList = idList.getIssueCustomRelationList();
@@ -121,12 +122,16 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
                 issueCustomRelation.setIssueType(idList.getIssueType());
                 issueCustomRelation.setSystemId(securityDTO.getSystemId());
                 issueCustomRelation.setSort(i + longList.size() + 1);
+                //如果不存在则insert
                 if (!longList.contains(issueCustomRelation.getFieldId())) {
                     issueCustomRelationMapper.insertSelective(issueCustomRelation);
                     //保存到列头表中
                     headerFieldService.saveCustomFieldByFieldId(securityDTO.getSystemId(), issueCustomRelation.getId(), idList.getIssueType());
                 } else {
+                    //否则update，并将state=U，
+                    //如果之前保存过，但是被删除了，这样做可以恢复之前的关联关系
                     issueCustomRelation.setSort(i + 1);
+                    issueCustomRelation.setState(StateEnum.U.getValue());
                     issueCustomRelationMapper.updateByPrimaryKeySelective(issueCustomRelation);
                 }
             }
