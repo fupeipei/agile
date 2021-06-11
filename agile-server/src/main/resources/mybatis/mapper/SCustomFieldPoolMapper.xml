@@ -461,14 +461,14 @@
         select
          <include refid="Base_Column_List" />
          <include refid="Blob_Column_List" />
-         from s_custom_field_pool s where
+         from s_custom_field_pool s where 1=1
          <if test="systemId != null">
-            s.system_id = #{systemId}
+            and s.system_id = #{systemId}
         </if>
-         s.field_id not in
-        (select field_id from s_issue_custom_relation where
+         and s.field_id not in
+        (select field_id from s_issue_custom_relation where 1=1
             <if test="fieldName != null and fieldName != ''">
-                field_name like concat('%',#{fieldName},'%')
+                and field_name like concat('%',#{fieldName},'%')
             </if>
             and issue_type = #{issueType}
             and state = 'U'
