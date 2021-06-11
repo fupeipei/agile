@@ -25,7 +25,7 @@ public class IssueTemplate implements Serializable {
 
     private Date updateTime;
 
-    private Integer tenantCode;
+    private String tenantCode;
 
     private String description;
 

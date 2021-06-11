@@ -376,6 +376,22 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
         return  orderHeaderFieldDTO(customFieldPoolService.listAllCustomFieldsByTenantCode(tenantCode));
     }
 
+    @Override
+    public void recoveryCustomFieldByFieldId(Long issueCustomRelationId) {
+        String fieldCode = issueCustomRelationId.toString();
+        HeaderFieldExample headerFieldExample = new HeaderFieldExample();
+        headerFieldExample.createCriteria()
+                .andFieldCodeEqualTo(fieldCode)
+                .andIsCustomEqualTo(Byte.parseByte("1"));
+        List<HeaderField> headerFields = headerFieldMapper.selectByExample(headerFieldExample);
+        //逻辑删除 headerField By fieldCode
+        headerFieldMapper.updateStateByFieldCode(fieldCode, StateEnum.U.getValue());
+        for (HeaderField headerField : headerFields) {
+            Long headerFieldId = headerField.getFieldId();
+            headerFieldUserService.recoveryDeleteCustomField(headerFieldId);
+        }
+    }
+
     /**
      * 组织列表自定义字段数据
      * @param customFieldDTOList

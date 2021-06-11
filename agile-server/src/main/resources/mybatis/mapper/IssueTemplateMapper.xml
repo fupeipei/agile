@@ -11,7 +11,7 @@
         <result column="create_uid" jdbcType="BIGINT" property="createUid"/>
         <result column="update_uid" jdbcType="BIGINT" property="updateUid"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="tenant_code" jdbcType="INTEGER" property="tenantCode"/>
+        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.issue.domain.IssueTemplate">
         <result column="description" jdbcType="LONGVARCHAR" property="description"/>
@@ -151,7 +151,7 @@
         values (#{issueTemplateId,jdbcType=BIGINT}, #{templateName,jdbcType=VARCHAR}, #{issueType,jdbcType=TINYINT},
                 #{apply,jdbcType=TINYINT}, #{systemId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
                 #{createUid,jdbcType=BIGINT}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP},
-                #{tenantCode,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
+                #{tenantCode,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueTemplate">
         insert into s_issue_template
@@ -265,7 +265,7 @@
                 update_time = #{record.updateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="record.tenantCode != null">
-                tenant_code = #{record.tenantCode,jdbcType=INTEGER},
+                tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
             </if>
             <if test="record.description != null">
                 description = #{record.description,jdbcType=LONGVARCHAR},
@@ -286,7 +286,7 @@
             create_uid        = #{record.createUid,jdbcType=BIGINT},
             update_uid        = #{record.updateUid,jdbcType=BIGINT},
             update_time       = #{record.updateTime,jdbcType=TIMESTAMP},
-            tenant_code       = #{record.tenantCode,jdbcType=INTEGER},
+            tenant_code       = #{record.tenantCode,jdbcType=VARCHAR},
             description       = #{record.description,jdbcType=LONGVARCHAR}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
@@ -303,7 +303,7 @@
             create_uid        = #{record.createUid,jdbcType=BIGINT},
             update_uid        = #{record.updateUid,jdbcType=BIGINT},
             update_time       = #{record.updateTime,jdbcType=TIMESTAMP},
-            tenant_code       = #{record.tenantCode,jdbcType=INTEGER}
+            tenant_code       = #{record.tenantCode,jdbcType=VARCHAR}
         <if test="_parameter != null">
             <include refid="Update_By_Example_Where_Clause"/>
         </if>
@@ -336,7 +336,7 @@
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="tenantCode != null">
-                tenant_code = #{tenantCode,jdbcType=INTEGER},
+                tenant_code = #{tenantCode,jdbcType=VARCHAR},
             </if>
             <if test="description != null">
                 description = #{description,jdbcType=LONGVARCHAR},
@@ -354,7 +354,7 @@
             create_uid    = #{createUid,jdbcType=BIGINT},
             update_uid    = #{updateUid,jdbcType=BIGINT},
             update_time   = #{updateTime,jdbcType=TIMESTAMP},
-            tenant_code   = #{tenantCode,jdbcType=INTEGER},
+            tenant_code   = #{tenantCode,jdbcType=VARCHAR},
             description   = #{description,jdbcType=LONGVARCHAR}
         where issue_template_id = #{issueTemplateId,jdbcType=BIGINT}
     </update>
@@ -368,7 +368,7 @@
             create_uid    = #{createUid,jdbcType=BIGINT},
             update_uid    = #{updateUid,jdbcType=BIGINT},
             update_time   = #{updateTime,jdbcType=TIMESTAMP},
-            tenant_code   = #{tenantCode,jdbcType=INTEGER}
+            tenant_code   = #{tenantCode,jdbcType=VARCHAR}
         where issue_template_id = #{issueTemplateId,jdbcType=BIGINT}
     </update>
     <select id="getTemplateByProjectAndType" resultMap="ResultMapWithBLOBs">

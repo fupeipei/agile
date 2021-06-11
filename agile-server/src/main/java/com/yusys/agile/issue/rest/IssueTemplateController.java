@@ -65,8 +65,9 @@ public class IssueTemplateController {
      * @param idList
      */
     @PostMapping("/issueCustomRelation/save")
-    public ControllerResponse saveIssueCustomRelation(@RequestHeader(name = "systemId") Long systemId,SecurityDTO securityDTO, @RequestBody IssueCustomRelationList idList) {
-        securityDTO.setSystemId(systemId);
+    public ControllerResponse saveIssueCustomRelation(
+            SecurityDTO securityDTO,
+            @RequestBody IssueCustomRelationList idList) {
         issueCustomRelationService.saveIssueCustomRelation(securityDTO, idList);
         return ControllerResponse.success();
     }

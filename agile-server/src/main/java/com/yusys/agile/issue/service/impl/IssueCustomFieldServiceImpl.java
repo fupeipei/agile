@@ -153,6 +153,11 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         issueCustomFieldExample.createCriteria()
                 .andIssueIdIn(issueIds);
         return issueCustomFieldMapper.selectByExample(issueCustomFieldExample);
+    }
 
+    @Override
+    public void recoveryCustomFileByIssueCustomRelationId(Long issueCustomRelationId) {
+        //（修改数据有效状态）
+        issueCustomFieldMapper.updateStateByCustomRelationId(issueCustomRelationId, StateEnum.U.getValue());
     }
 }
