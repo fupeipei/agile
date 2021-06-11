@@ -8,17 +8,13 @@ import com.yusys.agile.customfield.domain.SCustomFieldPool;
 import com.yusys.agile.customfield.domain.SCustomFieldPoolExample;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
-import com.yusys.agile.issue.service.IssueCustomFieldService;
+import com.yusys.agile.issue.dao.IssueTemplateMapper;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
-import com.yusys.agile.issueTemplate.dao.IssueCustomRelationV3Mapper;
-import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.util.code.ReflectUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +38,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
     private IssueCustomRelationService issueCustomRelationService;
 
     @Resource
-    private IssueCustomRelationV3Mapper customRelationMapper;
+    private IssueTemplateMapper issueTemplateMapper;
 
 
     /**
@@ -119,7 +115,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         }
         //只允许修改名字和备注
         customFieldPoolMapper.editCustomField(customFieldPool.getFieldId(), customFieldPool.getFieldName(), customFieldPool.getComment());
-        customRelationMapper.updateIssueCustomRelationV3ByFieldId(customFieldPool.getFieldId(), customFieldPool.getFieldName());
+        issueTemplateMapper.updateIssueCustomRelationByFieldId(customFieldPool.getFieldId(), customFieldPool.getFieldName());
         return "修改成功";
     }
 

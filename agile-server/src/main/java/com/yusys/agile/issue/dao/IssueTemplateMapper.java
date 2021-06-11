@@ -36,4 +36,12 @@ public interface IssueTemplateMapper {
     int updateByPrimaryKey(IssueTemplate record);
 
     IssueTemplate getTemplateByProjectAndType(@Param("systemId") Long systemId, @Param("issueType") Byte issueType);
+
+    /**
+     * 更新需求自定义关系v3通过场id
+     *
+     * @param fieldId   字段id
+     * @param fieldName 字段名
+     */
+    void updateIssueCustomRelationByFieldId(@Param("fieldId") Long fieldId, @Param("fieldName") String fieldName);
 }

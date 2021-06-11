@@ -40,7 +40,8 @@ public class IssueTemplateController {
      * @param securityDTO
      */
     @GetMapping("/issueTemplate/query")
-    public ControllerResponse query(Byte issueType, SecurityDTO securityDTO) {
+    public ControllerResponse query(@RequestHeader(name = "systemId") Long systemId,Byte issueType, SecurityDTO securityDTO) {
+        securityDTO.setSystemId(systemId);
         return ControllerResponse.success(issueTemplateService.query(issueType, securityDTO));
     }
 
@@ -60,12 +61,12 @@ public class IssueTemplateController {
     /**
      * 应用的自定义字段保存接口
      * @author zhaofeng
-     * @date 2021/6/11 9:41
      * @param securityDTO
      * @param idList
      */
     @PostMapping("/issueCustomRelation/save")
-    public ControllerResponse saveIssueCustomRelation(SecurityDTO securityDTO, @RequestBody IssueCustomRelationList idList) {
+    public ControllerResponse saveIssueCustomRelation(@RequestHeader(name = "systemId") Long systemId,SecurityDTO securityDTO, @RequestBody IssueCustomRelationList idList) {
+        securityDTO.setSystemId(systemId);
         issueCustomRelationService.saveIssueCustomRelation(securityDTO, idList);
         return ControllerResponse.success();
     }

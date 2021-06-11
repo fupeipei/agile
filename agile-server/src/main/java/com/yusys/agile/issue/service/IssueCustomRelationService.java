@@ -10,7 +10,7 @@ import java.util.List;
 public interface IssueCustomRelationService {
 
 
-    List<SIssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType);
+    List<SIssueCustomRelation> getIssueCustomRelations(Long systemId, Byte issueType);
     /**
      * 删除关联关系
      * @author zhaofeng
