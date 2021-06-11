@@ -18,6 +18,8 @@ public class TeamListDTO {
     private Long teamId;
     @ApiModelProperty("团队名称")
     private String teamName;
+    @ApiModelProperty("团队类型")
+    private String teamType;
     @ApiModelProperty("创建时间")
     private Date createTime;
     @ApiModelProperty("创建人id")

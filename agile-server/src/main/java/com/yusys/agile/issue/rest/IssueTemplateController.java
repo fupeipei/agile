@@ -37,7 +37,6 @@ public class IssueTemplateController {
      * 工作项与模板初始化查询接口
      * @author zhaofeng
      * @date 2021/6/11 14:22
-     * @param systemId
      * @param issueType
      * @param securityDTO
      */
