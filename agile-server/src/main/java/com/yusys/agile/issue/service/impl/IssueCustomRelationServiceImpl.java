@@ -114,16 +114,17 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         }
         //应用字段保存
         List<Long> longList = issueCustomRelationMapper.getAppliedByissueType(idList.getIssueType());
-        if (idList.getIssueCustomRelationList() != null && idList.getIssueCustomRelationList().size() > 0) {
-            for (int i = 0; i < idList.getIssueCustomRelationList().size(); i++) {
-                SIssueCustomRelation issueCustomRelation = idList.getIssueCustomRelationList().get(i);
+        if (!CollectionUtils.isEmpty(idList.getIssueCustomRelationList())) {
+            List<SIssueCustomRelation> issueCustomRelationList = idList.getIssueCustomRelationList();
+            for (int i = 0; i < issueCustomRelationList.size(); i++) {
+                SIssueCustomRelation issueCustomRelation = issueCustomRelationList.get(i);
                 issueCustomRelation.setIssueType(idList.getIssueType());
-                issueCustomRelation.setProjectId(securityDTO.getProjectId());
+                issueCustomRelation.setSystemId(securityDTO.getSystemId());
                 issueCustomRelation.setSort(i + longList.size() + 1);
                 if (!longList.contains(issueCustomRelation.getFieldId())) {
                     issueCustomRelationMapper.insertSelective(issueCustomRelation);
                     //保存到列头表中
-                    headerFieldService.saveCustomFieldByFieldId(securityDTO.getProjectId(), issueCustomRelation.getId(), idList.getIssueType());
+                    headerFieldService.saveCustomFieldByFieldId(securityDTO.getSystemId(), issueCustomRelation.getId(), idList.getIssueType());
                 } else {
                     issueCustomRelation.setSort(i + 1);
                     issueCustomRelationMapper.updateByPrimaryKeySelective(issueCustomRelation);

@@ -58,21 +58,15 @@ public class IssueTemplateController {
     }
 
     /**
-     * 功能描述  应用的自定义字段保存接口
-     *
+     * 应用的自定义字段保存接口
+     * @author zhaofeng
+     * @date 2021/6/11 9:41
      * @param securityDTO
      * @param idList
-     * @return void
-     * @date 2020/8/3
      */
     @PostMapping("/issueCustomRelation/save")
     public ControllerResponse saveIssueCustomRelation(SecurityDTO securityDTO, @RequestBody IssueCustomRelationList idList) {
-        try {
-            issueCustomRelationService.saveIssueCustomRelation(securityDTO, idList);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ControllerResponse.fail(e.getMessage());
-        }
+        issueCustomRelationService.saveIssueCustomRelation(securityDTO, idList);
         return ControllerResponse.success();
     }
 
