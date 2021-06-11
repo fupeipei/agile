@@ -8,17 +8,13 @@ import com.yusys.agile.customfield.domain.SCustomFieldPool;
 import com.yusys.agile.customfield.domain.SCustomFieldPoolExample;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
-import com.yusys.agile.issue.service.IssueCustomFieldService;
+import com.yusys.agile.issue.dao.IssueTemplateMapper;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
-import com.yusys.agile.issueTemplate.dao.IssueCustomRelationV3Mapper;
-import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.util.code.ReflectUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +38,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
     private IssueCustomRelationService issueCustomRelationService;
 
     @Resource
-    private IssueCustomRelationV3Mapper customRelationMapper;
+    private IssueTemplateMapper issueTemplateMapper;
 
 
     /**
@@ -62,7 +58,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         //system为空则为系统外自定义字段,反之则为系统内自定义字段
         //>0 返回false
         if (!customFieldPoolMapper.checkCustomFieldRepeatability(customFieldPool.getFieldId(), customFieldPool.getFieldName(), customFieldPool.getSystemId())) {
-            throw new BusinessException("该字段名[" + customFieldPool.getFieldName() + "]在项目中已经存在！");
+            throw new BusinessException("该字段名[" + customFieldPool.getFieldName() + "]已经存在！");
         }
         customFieldPool.setState(StateEnum.U.getValue());
         customFieldPoolMapper.insert(customFieldPool);
@@ -118,8 +114,8 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
             throw new BusinessException("该字段名[" + customFieldPool.getFieldName() + "]在项目中已经存在！");
         }
         //只允许修改名字和备注
-        customFieldPoolMapper.editCustomField(customFieldPool.getFieldId(),customFieldPool.getFieldName(), customFieldPool.getComment());
-        customRelationMapper.updateIssueCustomRelationV3ByFieldId(customFieldPool.getFieldId(),customFieldPool.getFieldName());
+        customFieldPoolMapper.editCustomField(customFieldPool.getFieldId(), customFieldPool.getFieldName(), customFieldPool.getComment());
+        issueTemplateMapper.updateIssueCustomRelationByFieldId(customFieldPool.getFieldId(), customFieldPool.getFieldName());
         return "修改成功";
     }
 
@@ -178,13 +174,14 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
 
     /**
      * 删除自定义字段
+     *
+     * @param fieldId
      * @author zhaofeng
      * @date 2021/6/3 16:59
-     * @param fieldId
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteCustomField(Long fieldId){
+    public void deleteCustomField(Long fieldId) {
         //逻辑删除字段属性值，以便后续数据恢复
         issueCustomRelationService.deleteIssueCustomRelationByFieldId(fieldId);
         customFieldPoolMapper.updateStateById(fieldId, StateEnum.E.getValue());
@@ -203,7 +200,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         if (StringUtils.isNotBlank(fieldName)) {
             criteria.andFieldNameLike(StringConstant.PERCENT_SIGN + fieldName + StringConstant.PERCENT_SIGN);
         }
-        if(systemId != null){
+        if (systemId != null) {
             criteria.andSystemIdEqualTo(systemId);
         }
         // 排序

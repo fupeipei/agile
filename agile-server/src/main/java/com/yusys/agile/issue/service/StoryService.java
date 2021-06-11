@@ -106,14 +106,13 @@ public interface StoryService {
 
     /**
      * @param issueDTO
-     * @param projectId
      * @param pageNum
      * @param pageSize
      * @Date 2021/2/2
      * @Description 迭代评审获取故事及故事验收标准信息
      * @Return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO, Long projectId, Integer pageNum, Integer pageSize);
+    List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO,Integer pageNum, Integer pageSize);
 
     /**
      * @param issueDTO

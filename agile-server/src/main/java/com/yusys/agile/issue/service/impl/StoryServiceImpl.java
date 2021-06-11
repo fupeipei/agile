@@ -8,8 +8,8 @@ import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.issue.dao.IssueAcceptanceMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.IssueSystemRelpMapper;
+import com.yusys.agile.issue.dao.SIssueRichtextMapper;
 import com.yusys.agile.issue.domain.*;
-import com.yusys.agile.issue.dto.IssueAcceptanceDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.IssueSystemRelpService;
@@ -18,7 +18,6 @@ import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
-import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
@@ -27,13 +26,7 @@ import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
-import com.yusys.agile.review.dto.StoryCheckResultDTO;
-import com.yusys.agile.review.service.ReviewService;
 import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.service.StageService;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.Sprint;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.utils.ObjectUtil;
@@ -55,18 +48,12 @@ import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,8 +85,6 @@ public class StoryServiceImpl implements StoryService {
     @Resource
     private IssueRichTextFactory issueRichTextFactory;
     @Resource
-    private IStageService stageService;
-    @Resource
     private SSprintMapper sSprintMapper;
     @Resource
     private Sprintv3Service sprintv3Service;
@@ -113,6 +98,8 @@ public class StoryServiceImpl implements StoryService {
 
     @Resource
     private IssueSystemRelpService issueSystemRelpService;
+    @Resource
+    private SIssueRichtextMapper sIssueRichtextMapper;
 
 
 
@@ -762,11 +749,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO, Long projectId, Integer pageNum, Integer pageSize) {
-        if (null == projectId) {
-            throw new BusinessException("查询故事项目id为空！");
-        }
-
+    public List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO, Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
@@ -791,8 +774,15 @@ public class StoryServiceImpl implements StoryService {
                     if (null != ssoUser) {
                         dto.setCreateName(ssoUser.getUserName());
                     }
+                    if(null != dto.getSystemId()){
+                        SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(dto.getSystemId());
+                        String systemCode = ssoSystem.getSystemCode();
+                        dto.setSystemCode(systemCode);
+                    }
                 }
-                issueFactory.getAcceptanceList(dto.getIssueId(), dto);
+                SIssueRichtextWithBLOBs issueRichText = issueRichTextFactory.getIssueRichText(dto.getIssueId());
+                dto.setAcceptanceCriteria(issueRichText.getAcceptanceCriteria());
+                //issueFactory.getAcceptanceList(dto.getIssueId(), dto);
             }
         }
         return issueDTOList;
@@ -801,12 +791,21 @@ public class StoryServiceImpl implements StoryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int editStoryAssess(IssueDTO issueDTO) {
-        List<IssueAcceptanceDTO> issueAcceptanceDTOS = issueDTO.getIssueAcceptanceDTOS();
-        if (CollectionUtils.isNotEmpty(issueAcceptanceDTOS)) {
-            for (IssueAcceptanceDTO issueAcceptanceDTO : issueAcceptanceDTOS) {
-                IssueAcceptance issueAcceptance = ReflectUtil.copyProperties(issueAcceptanceDTO, IssueAcceptance.class);
-                issueAcceptanceMapper.updateByPrimaryKey(issueAcceptance);
-            }
+        String acceptanceCriteria = issueDTO.getAcceptanceCriteria();
+       // List<IssueAcceptanceDTO> issueAcceptanceDTOS = issueDTO.getIssueAcceptanceDTOS();
+        if (StringUtils.isNotEmpty(acceptanceCriteria)) {
+            SIssueRichtextWithBLOBs sIssueRichtextWithBLOB=new SIssueRichtextWithBLOBs();
+            SIssueRichtextExample sIssueRichtextExample=new SIssueRichtextExample();
+            SIssueRichtextExample.Criteria criteria = sIssueRichtextExample.createCriteria();
+            criteria.andIssueIdEqualTo(issueDTO.getIssueId()).andStateEqualTo(StateEnum.U.getValue());
+
+            sIssueRichtextWithBLOB.setAcceptanceCriteria(acceptanceCriteria);
+
+            sIssueRichtextMapper.updateByExampleSelective(sIssueRichtextWithBLOB,sIssueRichtextExample);
+//            for (IssueAcceptanceDTO issueAcceptanceDTO : issueAcceptanceDTOS) {
+//                IssueAcceptance issueAcceptance = ReflectUtil.copyProperties(issueAcceptanceDTO, IssueAcceptance.class);
+//                issueAcceptanceMapper.updateByPrimaryKey(issueAcceptance);
+//            }
         }
         //编辑故事评审状态及备注
         return editAssess(issueDTO);
@@ -983,6 +982,9 @@ public class StoryServiceImpl implements StoryService {
         Issue issue = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         List<IssueHistoryRecord> history = new ArrayList<>();
         IssueHistoryRecord nameHistory = null;
+        if(issueDTO.getAssessIsPass()!=1){
+            throw new BusinessException("评审未通过时，需填写评审备注");
+        }
         if (!ObjectUtil.equals(issueDTO.getAssessIsPass(), issue.getAssessIsPass())) {
             nameHistory = IssueHistoryRecordFactory.createHistoryRecord(
                     issue.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.ASSESSISPASS.getDesc());

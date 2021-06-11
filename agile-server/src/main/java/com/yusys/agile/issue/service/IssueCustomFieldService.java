@@ -55,4 +55,12 @@ public interface IssueCustomFieldService {
      */
 
     List<SIssueCustomField> selectIssueIdByProjectId(Long projectId);
+
+    /**
+     * 恢复逻辑删除后的数据
+     * @author zhaofeng
+     * @date 2021/6/11 13:07
+     * @param issueCustomRelationId
+     */
+    void recoveryCustomFileByIssueCustomRelationId(Long issueCustomRelationId);
 }

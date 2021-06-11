@@ -200,14 +200,13 @@ public class StoryController {
 
     /**
      * @param issueDTO
-     * @param projectId
      * @Date 2021/2/1
-     * @Description 迭代评审获取故事及故事验收标准信息
+     * @Description 模糊分页查询迭代评审获取故事及故事验收标准信息
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @PostMapping("/listStoryAcceptance")
-    public ControllerResponse listStoryAcceptance(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId",required = false) Long projectId) {
-        List<IssueDTO> result = storyService.listStoryAcceptance(issueDTO, projectId, issueDTO.getPageNum(), issueDTO.getPageSize());
+    public ControllerResponse listStoryAcceptance(@RequestBody IssueDTO issueDTO) {
+        List<IssueDTO> result = storyService.listStoryAcceptance(issueDTO, issueDTO.getPageNum(), issueDTO.getPageSize());
         return ControllerResponse.success(new PageInfo<>(result));
     }
 

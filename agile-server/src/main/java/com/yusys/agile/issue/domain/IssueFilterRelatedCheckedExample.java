@@ -345,63 +345,63 @@ public class IssueFilterRelatedCheckedExample {
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdIsNull() {
-            addCriterion("project_id is null");
+        public Criteria andSystemIdIsNull() {
+            addCriterion("system_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdIsNotNull() {
-            addCriterion("project_id is not null");
+        public Criteria andSystemIdIsNotNull() {
+            addCriterion("system_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdEqualTo(Long value) {
-            addCriterion("project_id =", value, "projectId");
+        public Criteria andSystemIdEqualTo(Long value) {
+            addCriterion("system_id =", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdNotEqualTo(Long value) {
-            addCriterion("project_id <>", value, "projectId");
+        public Criteria andSystemIdNotEqualTo(Long value) {
+            addCriterion("system_id <>", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdGreaterThan(Long value) {
-            addCriterion("project_id >", value, "projectId");
+        public Criteria andSystemIdGreaterThan(Long value) {
+            addCriterion("system_id >", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("project_id >=", value, "projectId");
+        public Criteria andSystemIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("system_id >=", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdLessThan(Long value) {
-            addCriterion("project_id <", value, "projectId");
+        public Criteria andSystemIdLessThan(Long value) {
+            addCriterion("system_id <", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdLessThanOrEqualTo(Long value) {
-            addCriterion("project_id <=", value, "projectId");
+        public Criteria andSystemIdLessThanOrEqualTo(Long value) {
+            addCriterion("system_id <=", value, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdIn(List<Long> values) {
-            addCriterion("project_id in", values, "projectId");
+        public Criteria andSystemIdIn(List<Long> values) {
+            addCriterion("system_id in", values, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdNotIn(List<Long> values) {
-            addCriterion("project_id not in", values, "projectId");
+        public Criteria andSystemIdNotIn(List<Long> values) {
+            addCriterion("system_id not in", values, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdBetween(Long value1, Long value2) {
-            addCriterion("project_id between", value1, value2, "projectId");
+        public Criteria andSystemIdBetween(Long value1, Long value2) {
+            addCriterion("system_id between", value1, value2, "systemId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectIdNotBetween(Long value1, Long value2) {
-            addCriterion("project_id not between", value1, value2, "projectId");
+        public Criteria andSystemIdNotBetween(Long value1, Long value2) {
+            addCriterion("system_id not between", value1, value2, "systemId");
             return (Criteria) this;
         }
 

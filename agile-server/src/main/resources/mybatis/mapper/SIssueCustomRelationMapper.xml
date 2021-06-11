@@ -148,7 +148,7 @@
       #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, 
       #{fieldContent,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation">
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation" keyProperty="id" keyColumn="id">
     insert into s_issue_custom_relation
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -445,14 +445,8 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <delete id="deleteByProjectIdAndIssueType" >
-    delete from  s_issue_custom_field
-    where issue_type = #{issueType}
-    and   project_id = #{projectId}
-  </delete>
-
 <select id="getAppliedByissueType" resultType="Long">
-  select  field_id from  s_issue_custom_field
+  select  field_id from  s_issue_custom_relation
     where issue_type = #{issueType}
 </select>
 
@@ -466,6 +460,18 @@
     set state = #{state}
     where id = #{id}
 </update>
+
+<select id="selectByIssueTypeAndFieldId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    <include refid="Blob_Column_List" />
+    from s_issue_custom_relation
+    where 1=1
+    and issue_type = #{issueType} and field_id = #{fieldId}
+    <if test="systemId != null">
+     and system_id = #{systemId}
+    </if>
+</select>
 
 
 </mapper>

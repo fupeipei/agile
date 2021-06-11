@@ -484,7 +484,7 @@
 
   <update id="updateStateByFieldCode">
     update s_header_field
-    sets tate = #{state}
+    set state = #{state}
     where field_code = #{fieldCode}
   </update>
 </mapper>

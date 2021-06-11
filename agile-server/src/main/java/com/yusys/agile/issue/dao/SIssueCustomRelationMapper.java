@@ -33,9 +33,12 @@ public interface SIssueCustomRelationMapper {
     int updateByPrimaryKeyWithBLOBs(SIssueCustomRelation record);
 
     int updateByPrimaryKey(SIssueCustomRelation record);
-
-    int deleteByProjectIdAndIssueType(@Param("projectId") Long projectId, @Param("issueType") Byte issueType);
-
+    /**
+     * 按工作项类型，查询出 issue_custom_relation 中的fieldId
+     * @author zhaofeng
+     * @date 2021/6/10 11:01
+     * @param issueType
+     */
     List<Long> getAppliedByissueType(@Param("issueType") Byte issueType);
     /**
      * 按自定义字段id修改数据有效状态
@@ -53,4 +56,13 @@ public interface SIssueCustomRelationMapper {
      * @param state 数据有效状态值
      */
     void updateStateById(@Param("id") Long id, @Param("state") String state);
+    /**
+     * 按 issue_type 和 field_id 查询当前系统的关系
+     * @author zhaofeng
+     * @date 2021/6/11 14:02
+     * @param issueType
+     * @param id
+     * @param fieldId
+     */
+    SIssueCustomRelation selectByIssueTypeAndFieldId(@Param("issueType") Byte issueType, @Param("fieldId") Long fieldId, @Param("systemId") Long systemId);
 }

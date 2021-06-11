@@ -108,6 +108,17 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
     @Override
     public Integer deleteCustomField(Long fieldId) {
         //逻辑删除
-        return headerFieldUserMapper.updateStateByFieldId(fieldId, StateEnum.E.getValue());
+        return updateStateByFieldId(fieldId, StateEnum.E);
     }
+
+    @Override
+    public void recoveryDeleteCustomField(Long headerFieldId) {
+        //数据恢复
+        updateStateByFieldId(headerFieldId, StateEnum.U);
+    }
+
+    private Integer updateStateByFieldId(Long fieldId, StateEnum stateEnum){
+        return headerFieldUserMapper.updateStateByFieldId(fieldId, stateEnum.getValue());
+    }
+
 }

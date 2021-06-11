@@ -1,6 +1,9 @@
 package com.yusys.agile.issue.rest;
 
+import com.github.pagehelper.PageInfo;
+import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.issue.domain.IssueCustomRelationList;
+import com.yusys.agile.issue.domain.SIssueCustomRelation;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.service.IssueTemplateService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -10,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * :
@@ -30,12 +34,11 @@ public class IssueTemplateController {
 
 
     /**
-     * 功能描述  工作项与模板初始化查询接口
-     *
+     * 工作项与模板初始化查询接口
+     * @author zhaofeng
+     * @date 2021/6/11 14:22
      * @param issueType
      * @param securityDTO
-     * @return java.util.Map
-     * @date 2020/8/3
      */
     @GetMapping("/issueTemplate/query")
     public ControllerResponse query(Byte issueType, SecurityDTO securityDTO) {
@@ -56,38 +59,34 @@ public class IssueTemplateController {
     }
 
     /**
-     * 功能描述  应用的自定义字段保存接口
-     *
+     * 应用的自定义字段保存接口
+     * @author zhaofeng
      * @param securityDTO
      * @param idList
-     * @return void
-     * @date 2020/8/3
      */
     @PostMapping("/issueCustomRelation/save")
-    public ControllerResponse saveIssueCustomRelation(SecurityDTO securityDTO, @RequestBody IssueCustomRelationList idList) {
-        try {
-            issueCustomRelationService.saveIssueCustomRelation(securityDTO, idList);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ControllerResponse.fail(e.getMessage());
-        }
+    public ControllerResponse saveIssueCustomRelation(
+            SecurityDTO securityDTO,
+            @RequestBody IssueCustomRelationList idList) {
+        issueCustomRelationService.saveIssueCustomRelation(securityDTO, idList);
         return ControllerResponse.success();
     }
 
     /**
-     * 分页查询未应用的自定义字段，不传系统id时，查询系统外的
+     * 分页-查询未应用的自定义字段
      * @author zhaofeng
      * @date 2021/6/3 16:19
      * @param issueType
      * @param fieldName
-     * @param systemId 系统id
      */
     @GetMapping("/issueCustomRelation/getUnApplied")
     public ControllerResponse getUnApplied(
+            SecurityDTO security,
             @RequestParam(name = "issueType") Byte issueType,
-            @RequestParam(name = "fieldName", required = false) String fieldName,
-            @RequestParam(name = "systemId", required = false) Long systemId) {
-        return ControllerResponse.success(issueCustomRelationService.getUnApplied(systemId, issueType, fieldName));
+            @RequestParam(name = "fieldName", required = false) String fieldName) {
+        Long systemId = security.getSystemId();
+        List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(systemId, issueType, fieldName);
+        return ControllerResponse.success(list);
     }
 
 

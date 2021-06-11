@@ -72,4 +72,12 @@ public interface SCustomFieldPoolMapper {
      * @param state   状态值
      */
     void updateStateById(@Param("fieldId") Long fieldId,@Param("state") String state);
+    /**
+     * 按工作项类型，查询未应用的自定义的字段
+     * @author zhaofeng
+     * @date 2021/6/10 15:32
+     * @param issueType
+     * @param fieldName
+     */
+    List<CustomFieldDTO> getUnAppByIssueType(@Param("issueType") Byte issueType, @Param("fieldName") String fieldName, @Param("systemId") Long systemId);
 }

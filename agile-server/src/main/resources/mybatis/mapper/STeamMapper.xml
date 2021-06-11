@@ -2,15 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.teamv3.dao.STeamMapper">
     <resultMap id="BaseResultMap" type="com.yusys.agile.teamv3.domain.STeam">
-        <id column="team_id" jdbcType="BIGINT" property="teamId"/>
-        <result column="team_name" jdbcType="VARCHAR" property="teamName"/>
-        <result column="state" jdbcType="VARCHAR" property="state"/>
-        <result column="create_uid" jdbcType="BIGINT" property="createUid"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="update_uid" jdbcType="BIGINT" property="updateUid"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
-    </resultMap>
+        <id column="team_id" jdbcType="BIGINT" property="teamId" />
+        <result column="team_name" jdbcType="VARCHAR" property="teamName" />
+        <result column="state" jdbcType="VARCHAR" property="state" />
+        <result column="team_type" jdbcType="VARCHAR" property="teamType" />
+        <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.teamv3.domain.STeam">
         <result column="team_desc" jdbcType="LONGVARCHAR" property="teamDesc"/>
     </resultMap>
@@ -78,6 +79,7 @@
         team_id,
         team_name,
         state,
+        team_type,
         create_uid,
         create_time,
         update_uid,
@@ -140,11 +142,13 @@
     </delete>
     <insert id="insert" parameterType="com.yusys.agile.teamv3.domain.STeam">
         insert into s_team (team_id, team_name, state,
-                            create_uid, create_time, update_uid,
-                            update_time, tenant_code, team_desc)
+          team_type, create_uid, create_time,
+          update_uid, update_time, tenant_code,
+          team_desc)
         values (#{teamId,jdbcType=BIGINT}, #{teamName,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},
-                #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT},
-                #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, #{teamDesc,jdbcType=LONGVARCHAR})
+          #{teamType,jdbcType=VARCHAR}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+          #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR},
+          #{teamDesc,jdbcType=LONGVARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeam" useGeneratedKeys="true"
             keyColumn="team_id" keyProperty="teamId">
@@ -155,6 +159,9 @@
             </if>
             <if test="state != null">
                 state,
+            </if>
+            <if test="teamType != null">
+                team_type,
             </if>
             <if test="createUid != null">
                 create_uid,
@@ -181,6 +188,9 @@
             </if>
             <if test="state != null">
                 #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="teamType != null">
+                #{teamType,jdbcType=VARCHAR},
             </if>
             <if test="createUid != null">
                 #{createUid,jdbcType=BIGINT},
@@ -221,6 +231,9 @@
             <if test="record.state != null">
                 state = #{record.state,jdbcType=VARCHAR},
             </if>
+            <if test="record.teamType != null">
+                state = #{record.teamType,jdbcType=VARCHAR},
+            </if>
             <if test="record.createUid != null">
                 create_uid = #{record.createUid,jdbcType=BIGINT},
             </if>
@@ -249,6 +262,7 @@
         set team_id     = #{record.teamId,jdbcType=BIGINT},
             team_name   = #{record.teamName,jdbcType=VARCHAR},
             state       = #{record.state,jdbcType=VARCHAR},
+            team_type   = #{record.teamType,jdbcType=VARCHAR},
             create_uid  = #{record.createUid,jdbcType=BIGINT},
             create_time = #{record.createTime,jdbcType=TIMESTAMP},
             update_uid  = #{record.updateUid,jdbcType=BIGINT},
@@ -264,6 +278,7 @@
         set team_id     = #{record.teamId,jdbcType=BIGINT},
             team_name   = #{record.teamName,jdbcType=VARCHAR},
             state       = #{record.state,jdbcType=VARCHAR},
+            team_type   = #{record.teamType,jdbcType=VARCHAR},
             create_uid  = #{record.createUid,jdbcType=BIGINT},
             create_time = #{record.createTime,jdbcType=TIMESTAMP},
             update_uid  = #{record.updateUid,jdbcType=BIGINT},
@@ -281,6 +296,9 @@
             </if>
             <if test="state != null">
                 state = #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="teamType != null">
+                state = #{teamType,jdbcType=VARCHAR},
             </if>
             <if test="createUid != null">
                 create_uid = #{createUid,jdbcType=BIGINT},
@@ -307,6 +325,7 @@
         update s_team
         set team_name   = #{teamName,jdbcType=VARCHAR},
             state       = #{state,jdbcType=VARCHAR},
+            team_type   = #{teamType,jdbcType=VARCHAR},
             create_uid  = #{createUid,jdbcType=BIGINT},
             create_time = #{createTime,jdbcType=TIMESTAMP},
             update_uid  = #{updateUid,jdbcType=BIGINT},
@@ -319,6 +338,7 @@
         update s_team
         set team_name   = #{teamName,jdbcType=VARCHAR},
             state       = #{state,jdbcType=VARCHAR},
+            team_type   = #{teamType,jdbcType=VARCHAR},
             create_uid  = #{createUid,jdbcType=BIGINT},
             create_time = #{createTime,jdbcType=TIMESTAMP},
             update_uid  = #{updateUid,jdbcType=BIGINT},

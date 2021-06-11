@@ -22,6 +22,8 @@ public class TeamV3DTO {
 
     private String teamDesc;
 
+    private String teamType;
+
     private String state;
 
     private Long projectId;

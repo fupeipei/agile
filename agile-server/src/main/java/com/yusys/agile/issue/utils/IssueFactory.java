@@ -12,6 +12,7 @@ import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.headerfield.service.HeaderFieldService;
 import com.yusys.agile.issue.dao.IssueAcceptanceMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.dao.SIssueRichtextMapper;
 import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.dto.IssueAcceptanceDTO;
 import com.yusys.agile.issue.dto.IssueAttachmentDTO;
@@ -47,8 +48,10 @@ import com.yusys.portal.model.facade.entity.SsoProject;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
+import lombok.experimental.PackagePrivate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -116,6 +119,8 @@ public class IssueFactory {
     private SysExtendFieldService sysExtendFieldService;
     @Resource
     private IssueTemplateService issueTemplateService;
+    @Resource
+    private SIssueRichtextMapper sIssueRichtextMapper;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -146,7 +151,7 @@ public class IssueFactory {
                 issue.setSystemId(story.getSystemId());
                 systemIds.add(story.getSystemId());
                 issueDTO.setSystemId(story.getSystemId());
-            }else {
+            } else {
                 Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
                 systemIds.add(systemId);
                 issueDTO.setSystemId(systemId);
@@ -177,7 +182,7 @@ public class IssueFactory {
         issue.setUpdateTime(new Date());
 
         //如果系统为空取当前系统
-        if(!Optional.ofNullable(issueDTO.getSystemId()).isPresent()){
+        if (!Optional.ofNullable(issueDTO.getSystemId()).isPresent()) {
             Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
             issue.setSystemId(systemId);
             List<Long> systemIds = Lists.newArrayList(systemId);
@@ -194,7 +199,7 @@ public class IssueFactory {
                 issueDTO.setDescription(issueTemplate.getDescription());
             }
         }
-        issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(),null);
+        issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(), null);
 
         final Long issueId = issue.getIssueId();
         issueDTO.setIssueId(issueId);
@@ -236,7 +241,7 @@ public class IssueFactory {
         dealModules(issueId, issueDTO.getModuleIds());
 
         //处理系统信息
-        dealSystems(issueId,issueDTO.getSystemIds());
+        dealSystems(issueId, issueDTO.getSystemIds());
 
         //发送邮件通知
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
@@ -326,7 +331,7 @@ public class IssueFactory {
 
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
-            if (Optional.ofNullable(projectId).isPresent()){
+            if (Optional.ofNullable(projectId).isPresent()) {
                 List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
                 // todo 自定义字段处理
                 List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
@@ -350,7 +355,7 @@ public class IssueFactory {
             dealHistory(history);
 
             //富文本单独保存
-            issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(),null);
+            issueRichTextFactory.dealIssueRichText(issue.getIssueId(), issueDTO.getDescription(), issueDTO.getAcceptanceCriteria(), null);
             issue.setProjectId(projectId);
 
             issue.setIssueType(issueType);
@@ -610,7 +615,7 @@ public class IssueFactory {
             }
             //dealEpicFeatureData(storyIssue);
             //如果不删除子任务  处理子任务
-            this.dealTaskData(issueId,deleteChild);
+            this.dealTaskData(issueId, deleteChild);
         }
         issueMapper.deleteAllChildRelation(issueId, sprintId);
         //更新工作项为失效
@@ -627,16 +632,17 @@ public class IssueFactory {
 
     /**
      * 任务状态未领取，人删除，系统保留，迭代清空如果有
+     *
      * @param issueId
      * @param deleteChild
      */
-    private void dealTaskData(Long issueId,Boolean deleteChild){
-        if (!deleteChild){
+    private void dealTaskData(Long issueId, Boolean deleteChild) {
+        if (!deleteChild) {
             IssueExample issueExample = new IssueExample();
             issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
                     .andParentIdEqualTo(issueId);
             List<Issue> taskIssueList = issueMapper.selectByExample(issueExample);
-            if (CollectionUtils.isNotEmpty(taskIssueList)){
+            if (CollectionUtils.isNotEmpty(taskIssueList)) {
                 for (Issue issue : taskIssueList) {
                     issue.setSprintId(null);
                     issue.setHandler(null);
@@ -728,18 +734,28 @@ public class IssueFactory {
      */
     public void getAcceptanceList(Long issueId, IssueDTO issueDTO) {
         if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueDTO.getIssueType())) {
-            IssueAcceptanceExample issueAcceptanceExample = new IssueAcceptanceExample();
-            IssueAcceptanceExample.Criteria criteria = issueAcceptanceExample.createCriteria();
+            SIssueRichtextExample issueRichtextExample = new SIssueRichtextExample();
+            SIssueRichtextExample.Criteria criteria = issueRichtextExample.createCriteria();
             criteria.andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.getValue());
-            List<IssueAcceptance> issueAcceptances = issueAcceptanceMapper.selectByExample(issueAcceptanceExample);
-            List<IssueAcceptanceDTO> issueAcceptanceDTOS = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(issueAcceptances)) {
-                for (IssueAcceptance issueAcceptance : issueAcceptances) {
-                    IssueAcceptanceDTO issueAcceptanceDTO = ReflectUtil.copyProperties(issueAcceptance, IssueAcceptanceDTO.class);
-                    issueAcceptanceDTOS.add(issueAcceptanceDTO);
-                    issueDTO.setIssueAcceptanceDTOS(issueAcceptanceDTOS);
-                }
+            List<SIssueRichtextWithBLOBs> sIssueRichtextWithBLOBs = sIssueRichtextMapper.selectByExampleWithBLOBs(issueRichtextExample);
+            if (CollectionUtils.isNotEmpty(sIssueRichtextWithBLOBs)) {
+                    SIssueRichtextWithBLOBs richText = sIssueRichtextWithBLOBs.get(0);
+                    String acceptanceCriteria = richText.getAcceptanceCriteria();
+                    issueDTO.setAcceptanceCriteria(acceptanceCriteria);
             }
+
+//            IssueAcceptanceExample issueAcceptanceExample = new IssueAcceptanceExample();
+//            IssueAcceptanceExample.Criteria criteria = issueAcceptanceExample.createCriteria();
+//            criteria.andIssueIdEqualTo(issueId).andStateEqualTo(StateEnum.U.getValue());
+//            List<IssueAcceptance> issueAcceptances = issueAcceptanceMapper.selectByExample(issueAcceptanceExample);
+//            List<IssueAcceptanceDTO> issueAcceptanceDTOS = new ArrayList<>();
+//            if (CollectionUtils.isNotEmpty(issueAcceptances)) {
+//                for (IssueAcceptance issueAcceptance : issueAcceptances) {
+//                    IssueAcceptanceDTO issueAcceptanceDTO = ReflectUtil.copyProperties(issueAcceptance, IssueAcceptanceDTO.class);
+//                    issueAcceptanceDTOS.add(issueAcceptanceDTO);
+//                    issueDTO.setIssueAcceptanceDTOS(issueAcceptanceDTOS);
+//                }
+//            }
         }
     }
 
@@ -1011,7 +1027,7 @@ public class IssueFactory {
         issueDTO.setIssueId(null);
 
         //查询自定义字段并塞入对象中
-        if (Optional.ofNullable(projectId).isPresent()){
+        if (Optional.ofNullable(projectId).isPresent()) {
             List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
             issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
         }

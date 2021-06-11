@@ -1,9 +1,9 @@
 package com.yusys.agile.customfield.rest;
 
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
-import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import io.swagger.annotations.Api;
@@ -49,7 +49,8 @@ public class CustomFieldPoolController {
      */
     @PostMapping("/addCustomField")
     @ApiOperation(value = "添加自定义字段")
-    public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO) {
+    public ControllerResponse addCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "systemId") Long systemId) {
+        customFieldDTO.setSystemId(systemId);
         customFieldPoolService.addCustomField(customFieldDTO);
         return ControllerResponse.success();
     }
@@ -62,7 +63,8 @@ public class CustomFieldPoolController {
      * @author 张宇
      */
     @PostMapping("/editCustomField")
-    public ControllerResponse editCustomField(@RequestBody CustomFieldDTO customFieldDTO) {
+    public ControllerResponse editCustomField(@RequestBody CustomFieldDTO customFieldDTO, @RequestHeader(name = "systemId") Long systemId) {
+        customFieldDTO.setSystemId(systemId);
         customFieldPoolService.editCustomField(customFieldDTO);
         return ControllerResponse.success();
     }

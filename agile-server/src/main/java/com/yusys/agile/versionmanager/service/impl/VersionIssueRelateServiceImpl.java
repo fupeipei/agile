@@ -139,7 +139,7 @@ public class VersionIssueRelateServiceImpl implements VersionIssueRelateService 
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             Map<Long, List<IssueDTO>> longListMap = issueDTOS.stream().collect(Collectors.groupingBy(IssueDTO::getIssueId));
             List<Long> longList1 = Lists.newArrayList(longListMap.keySet());
-            Map<String, Map> mapMap = issueService.IssueMap( null);
+            Map<String, Map> mapMap = issueService.issueMap( null);
             // 处理用户数据，
             Map<Long, String> userMap = mapMap.get("userMap");
             List<SysExtendFieldDetail> allSysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetails(Lists.newArrayList(longListMap.keySet()), null);
@@ -349,7 +349,7 @@ public class VersionIssueRelateServiceImpl implements VersionIssueRelateService 
         JSONObject jsonObject = new JSONObject(map);
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
         //项目下的IssueData
-        Map<String, Map> mapMap = issueService.IssueMap( null);
+        Map<String, Map> mapMap = issueService.issueMap( null);
         // 处理用户数据，
         Map<Long, List<SysExtendFieldDetail>> mapSysExtendFieldDetail = mapMap.get("mapSysExtendFieldDetail");
         List<Issue> issues = issueService.queryIssueList(map);

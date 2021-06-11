@@ -29,4 +29,11 @@ public interface HeaderFieldUserService {
 
 
     Integer deleteCustomField(Long fieldId);
+    /**
+     * 恢复逻辑删除的数据
+     * @author zhaofeng
+     * @date 2021/6/11 13:10
+     * @param headerFieldId
+     */
+    void recoveryDeleteCustomField(Long headerFieldId);
 }

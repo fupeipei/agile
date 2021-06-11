@@ -139,6 +139,8 @@ public class IssueDTO {
 
     private Byte isCancel;
 
+    private Long teamId;
+
     /**
      * 功能描述  在版本中的需求id
      *

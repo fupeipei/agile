@@ -10,7 +10,7 @@ import java.util.List;
 public interface IssueCustomRelationService {
 
 
-    List<SIssueCustomRelation> getIssueCustomRelations(Long projectId, Byte issueType);
+    List<SIssueCustomRelation> getIssueCustomRelations(Long systemId, Byte issueType);
     /**
      * 删除关联关系
      * @author zhaofeng
@@ -20,15 +20,7 @@ public interface IssueCustomRelationService {
     void deleteIssueCustomRelation(Long id);
 
     void saveIssueCustomRelation(SecurityDTO securityDTO, IssueCustomRelationList idList);
-    /**
-     * 查询未被应用的自定义字段，当系统id为空时，查询系统外的
-     * @author zhaofeng
-     * @date 2021/6/3 16:20
-     * @param systemId
-     * @param issueType
-     * @param fieldName
-     */
-    List<SIssueCustomRelation> getUnApplied(Long systemId, Byte issueType, String fieldName);
+
     /**
      * 查询系统和工作项类型查询，当系统id为空时，只按类型查询
      * @author zhaofeng
@@ -40,4 +32,5 @@ public interface IssueCustomRelationService {
 
     void deleteIssueCustomRelationByFieldId(Long fieldId);
 
+    List<CustomFieldDTO>  getUnApplied(Long systemId, Byte issueType, String fieldName);
 }

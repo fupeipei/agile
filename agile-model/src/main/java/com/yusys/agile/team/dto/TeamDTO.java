@@ -22,7 +22,7 @@ public class TeamDTO {
 
     private String state;
 
-    private Long projectId;
+    private String teamType;
 
     private Date createTime;
 
