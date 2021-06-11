@@ -34,14 +34,15 @@ public class IssueTemplateController {
 
 
     /**
-     * 功能描述  工作项与模板初始化查询接口
-     *
+     * 工作项与模板初始化查询接口
+     * @author zhaofeng
+     * @date 2021/6/11 14:22
+     * @param systemId
      * @param issueType
      * @param securityDTO
      */
     @GetMapping("/issueTemplate/query")
-    public ControllerResponse query(@RequestHeader(name = "systemId") Long systemId,Byte issueType, SecurityDTO securityDTO) {
-        securityDTO.setSystemId(systemId);
+    public ControllerResponse query(Byte issueType, SecurityDTO securityDTO) {
         return ControllerResponse.success(issueTemplateService.query(issueType, securityDTO));
     }
 
