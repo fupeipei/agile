@@ -140,14 +140,10 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
 
 
     @Override
-    public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName, Integer pageSize, Integer pageNum) {
+    public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName) {
         //查询自定义字段集合，并转换成map结构
         List<CustomFieldDTO> customFields = customFieldPoolService.listAllCustomFields(systemId, fieldName, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFields.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        //分页
-        if(pageNum != null && pageSize != null){
-            PageHelper.startPage(pageNum, pageSize);
-        }
         List<CustomFieldDTO> list = customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName, systemId);
         return list;
     }

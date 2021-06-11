@@ -80,13 +80,11 @@ public class IssueTemplateController {
     @GetMapping("/issueCustomRelation/getUnApplied")
     public ControllerResponse getUnApplied(
             SecurityDTO security,
-            @RequestParam(name = "pageSize", required = false) Integer pageSize,
-            @RequestParam(name = "pageNum", required = false) Integer pageNum,
             @RequestParam(name = "issueType") Byte issueType,
             @RequestParam(name = "fieldName", required = false) String fieldName) {
         Long systemId = security.getSystemId();
-        List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(systemId, issueType, fieldName, pageSize, pageNum);
-        return ControllerResponse.success(new PageInfo<>(list));
+        List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(systemId, issueType, fieldName);
+        return ControllerResponse.success(list);
     }
 
 
