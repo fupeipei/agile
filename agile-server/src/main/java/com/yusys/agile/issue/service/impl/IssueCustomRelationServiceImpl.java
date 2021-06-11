@@ -113,19 +113,25 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
             issueTemplateService.editIssueCustomRelation(securityDTO, idList.getIssueTemplate());
         }
         //应用字段保存
+        //查询所有关联关系，不论 state=U还是state=E
         List<Long> longList = issueCustomRelationMapper.getAppliedByissueType(idList.getIssueType());
-        if (idList.getIssueCustomRelationList() != null && idList.getIssueCustomRelationList().size() > 0) {
-            for (int i = 0; i < idList.getIssueCustomRelationList().size(); i++) {
-                SIssueCustomRelation issueCustomRelation = idList.getIssueCustomRelationList().get(i);
+        if (!CollectionUtils.isEmpty(idList.getIssueCustomRelationList())) {
+            List<SIssueCustomRelation> issueCustomRelationList = idList.getIssueCustomRelationList();
+            for (int i = 0; i < issueCustomRelationList.size(); i++) {
+                SIssueCustomRelation issueCustomRelation = issueCustomRelationList.get(i);
                 issueCustomRelation.setIssueType(idList.getIssueType());
-                issueCustomRelation.setProjectId(securityDTO.getProjectId());
+                issueCustomRelation.setSystemId(securityDTO.getSystemId());
                 issueCustomRelation.setSort(i + longList.size() + 1);
+                //如果不存在则insert
                 if (!longList.contains(issueCustomRelation.getFieldId())) {
                     issueCustomRelationMapper.insertSelective(issueCustomRelation);
                     //保存到列头表中
-                    headerFieldService.saveCustomFieldByFieldId(securityDTO.getProjectId(), issueCustomRelation.getId(), idList.getIssueType());
+                    headerFieldService.saveCustomFieldByFieldId(securityDTO.getSystemId(), issueCustomRelation.getId(), idList.getIssueType());
                 } else {
+                    //否则update，并将state=U，
+                    //如果之前保存过，但是被删除了，这样做可以恢复之前的关联关系
                     issueCustomRelation.setSort(i + 1);
+                    issueCustomRelation.setState(StateEnum.U.getValue());
                     issueCustomRelationMapper.updateByPrimaryKeySelective(issueCustomRelation);
                 }
             }
@@ -134,14 +140,10 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
 
 
     @Override
-    public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName, Integer pageSize, Integer pageNum) {
+    public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName) {
         //查询自定义字段集合，并转换成map结构
         List<CustomFieldDTO> customFields = customFieldPoolService.listAllCustomFields(systemId, fieldName, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFields.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        //分页
-        if(pageNum != null && pageSize != null){
-            PageHelper.startPage(pageNum, pageSize);
-        }
         List<CustomFieldDTO> list = customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName, systemId);
         return list;
     }

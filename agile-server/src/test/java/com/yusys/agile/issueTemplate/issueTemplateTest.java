@@ -1,9 +1,8 @@
 package com.yusys.agile.issueTemplate;
 
-import com.yusys.agile.issue.domain.SIssueCustomRelation;
+import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.service.IssueTemplateService;
-import com.yusys.agile.utils.exception.ExceptionCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,7 +50,7 @@ public class issueTemplateTest {
     @Transactional
     public void testGetUnApplied1(){
         try {
-            List<SIssueCustomRelation> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), null);
+            List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), null, 1, 10);
             Assert.assertTrue("查询成功", true);
         }catch (Exception e){
             Assert.assertFalse(e.getMessage() != null);
@@ -67,7 +66,7 @@ public class issueTemplateTest {
     @Transactional
     public void testGetUnApplied2(){
         try {
-            List<SIssueCustomRelation> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), "测试");
+            List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), "测试", 1, 10);
             Assert.assertTrue("查询成功", true);
         }catch (Exception e){
             Assert.assertFalse(e.getMessage() != null);

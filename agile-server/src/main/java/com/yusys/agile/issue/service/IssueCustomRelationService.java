@@ -32,5 +32,5 @@ public interface IssueCustomRelationService {
 
     void deleteIssueCustomRelationByFieldId(Long fieldId);
 
-    List<CustomFieldDTO>  getUnApplied(Long systemId, Byte issueType, String fieldName, Integer pageSize, Integer pageNum);
+    List<CustomFieldDTO>  getUnApplied(Long systemId, Byte issueType, String fieldName);
 }

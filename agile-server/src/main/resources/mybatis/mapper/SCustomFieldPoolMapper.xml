@@ -470,7 +470,9 @@
             <if test="fieldName != null and fieldName != ''">
                 field_name like concat('%',#{fieldName},'%')
             </if>
-        and issue_type = #{issueType})
+            and issue_type = #{issueType}
+            and state = 'U'
+        )
         order by s.create_time desc
     </select>
 </mapper>
