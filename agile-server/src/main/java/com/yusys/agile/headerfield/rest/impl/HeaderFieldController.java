@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * :
@@ -33,10 +34,11 @@ public class HeaderFieldController {
      * @date 2020/4/13
      */
     @GetMapping("/queryHeaderFields")
-    public ControllerResponse queryHeaderFields(SecurityDTO securityDTO, @RequestParam("category") Byte category,
-                                                @RequestParam(value = "isFilter", required = false) Byte isFilter) {
-
-        securityDTO.setUserId(UserThreadLocalUtil.getUserInfo().getUserId());
-        return ControllerResponse.success(headerFieldService.queryHeaderFields(securityDTO, category, isFilter));
+    public ControllerResponse queryHeaderFields(
+            SecurityDTO securityDTO,
+            @RequestParam("category") Byte category,
+            @RequestParam(value = "isFilter", required = false) Byte isFilter) {
+        Map map = headerFieldService.queryHeaderFields(securityDTO, category, isFilter);
+        return ControllerResponse.success(map);
     }
 }
