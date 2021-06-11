@@ -56,4 +56,13 @@ public interface SIssueCustomRelationMapper {
      * @param state 数据有效状态值
      */
     void updateStateById(@Param("id") Long id, @Param("state") String state);
+    /**
+     * 按 issue_type 和 field_id 查询当前系统的关系
+     * @author zhaofeng
+     * @date 2021/6/11 14:02
+     * @param issueType
+     * @param id
+     * @param fieldId
+     */
+    SIssueCustomRelation selectByIssueTypeAndFieldId(@Param("issueType") Byte issueType, @Param("fieldId") Long fieldId, @Param("systemId") Long systemId);
 }
