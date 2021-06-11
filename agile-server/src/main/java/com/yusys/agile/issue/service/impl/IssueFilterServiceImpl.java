@@ -79,7 +79,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             //1、新增过滤器
             issueFilter.setFilterType(NumberConstant.ONE.byteValue());
             issueFilter.setState(StateEnum.U.toString());
-            issueFilter.setProjectId(securityDTO.getProjectId());
+            issueFilter.setSystemId(securityDTO.getSystemId());
             issueFilter.setCreateTime(new Date());
             issueFilter.setCreateUid(securityDTO.getUserId());
             issueFilter.setCreateName(securityDTO.getUserName());
@@ -89,7 +89,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
             checkedExample.createCriteria()
                     .andCategoryEqualTo(issueFilter.getCategory())
-                    .andProjectIdEqualTo(securityDTO.getProjectId())
+                    .andSystemIdEqualTo(securityDTO.getSystemId())
                     .andCreateUidEqualTo(securityDTO.getUserId());
             List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
             if (CollectionUtils.isNotEmpty(issueFilterRelatedCheckeds)) {
@@ -101,7 +101,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                 relatedChecked.setFilterId(issueFilter.getFilterId());
                 relatedChecked.setIdCheck(NumberConstant.ONE.byteValue());
                 relatedChecked.setCategory(issueFilter.getCategory());
-                relatedChecked.setProjectId(securityDTO.getProjectId());
+                relatedChecked.setSystemId(securityDTO.getSystemId());
                 relatedChecked.setCreateUid(securityDTO.getUserId());
                 relatedChecked.setCreateTime(new Date());
                 relatedCheckedMapper.insert(relatedChecked);
@@ -131,7 +131,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         IssueFilter issueFilter = filterMapper.selectByPrimaryKey(filterId);
         Optional.ofNullable(issueFilter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
 
-        Long projectId = issueFilter.getProjectId();
+        Long systemId = issueFilter.getSystemId();
         Long createUid = issueFilter.getCreateUid();
         //1、删除过滤器主表内容
         filterMapper.deleteByPrimaryKey(filterId);
@@ -145,7 +145,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         IssueFilterRelatedCheckedExample relatedCheckedExample = new IssueFilterRelatedCheckedExample();
         relatedCheckedExample.createCriteria().andFilterIdEqualTo(filterId)
                 .andCategoryEqualTo(category)
-                .andProjectIdEqualTo(projectId)
+                .andSystemIdEqualTo(systemId)
                 .andCreateUidEqualTo(createUid);
         relatedCheckedMapper.deleteByExample(relatedCheckedExample);
         return ControllerResponse.success("过滤器删除成功!");
@@ -220,7 +220,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
         checkedExample.createCriteria()
                 .andCategoryEqualTo(category)
-                .andProjectIdEqualTo(securityDTO.getProjectId())
+                .andSystemIdEqualTo(securityDTO.getSystemId())
                 .andCreateUidEqualTo(securityDTO.getUserId());
 
         List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
@@ -234,7 +234,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             relatedChecked.setFilterId(filterId);
             relatedChecked.setIdCheck(NumberConstant.ONE.byteValue());
             relatedChecked.setCategory(category);
-            relatedChecked.setProjectId(securityDTO.getProjectId());
+            relatedChecked.setSystemId(securityDTO.getSystemId());
             relatedChecked.setCreateUid(securityDTO.getUserId());
             relatedChecked.setCreateTime(new Date());
             relatedCheckedMapper.insert(relatedChecked);

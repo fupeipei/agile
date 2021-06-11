@@ -12,7 +12,7 @@ public class IssueFilterRelatedChecked implements Serializable {
 
     private Long filterId;
 
-    private Long projectId;
+    private Long systemId;
 
     private Long createUid;
 
@@ -62,12 +62,12 @@ public class IssueFilterRelatedChecked implements Serializable {
         this.filterId = filterId;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Long getSystemId() {
+        return systemId;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
     }
 
     public Long getCreateUid() {

@@ -6,7 +6,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="category" jdbcType="TINYINT" property="category" />
     <result column="filter_type" jdbcType="TINYINT" property="filterType" />
-    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="system_id" jdbcType="BIGINT" property="systemId" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="create_name" jdbcType="VARCHAR" property="createName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    filter_id, name, category, filter_type, project_id, create_uid, create_name, create_time, 
+    filter_id, name, category, filter_type, system_id, create_uid, create_name, create_time, 
     state,tenant_code
   </sql>
   <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterExample" resultMap="BaseResultMap">
@@ -107,11 +107,11 @@
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueFilter" useGeneratedKeys="true" keyProperty="filterId">
     insert into  s_issue_filter  (filter_id, name, category, 
-      filter_type, project_id, create_uid, 
+      filter_type, system_id, create_uid, 
       create_name, create_time, state,tenant_code
       )
     values (#{filterId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{category,jdbcType=TINYINT}, 
-      #{filterType,jdbcType=TINYINT}, #{projectId,jdbcType=BIGINT}, #{createUid,jdbcType=BIGINT}, 
+      #{filterType,jdbcType=TINYINT}, #{systemId,jdbcType=BIGINT}, #{createUid,jdbcType=BIGINT}, 
       #{createName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=VARCHAR},#{tenantCode}
       )
   </insert>
@@ -130,8 +130,8 @@
       <if test="filterType != null">
         filter_type,
       </if>
-      <if test="projectId != null">
-        project_id,
+      <if test="systemId != null">
+        system_id,
       </if>
       <if test="createUid != null">
         create_uid,
@@ -162,8 +162,8 @@
       <if test="filterType != null">
         #{filterType,jdbcType=TINYINT},
       </if>
-      <if test="projectId != null">
-        #{projectId,jdbcType=BIGINT},
+      <if test="systemId != null">
+        #{systemId,jdbcType=BIGINT},
       </if>
       <if test="createUid != null">
         #{createUid,jdbcType=BIGINT},
@@ -203,8 +203,8 @@
       <if test="record.filterType != null">
         filter_type = #{record.filterType,jdbcType=TINYINT},
       </if>
-      <if test="record.projectId != null">
-        project_id = #{record.projectId,jdbcType=BIGINT},
+      <if test="record.systemId != null">
+        system_id = #{record.systemId,jdbcType=BIGINT},
       </if>
       <if test="record.createUid != null">
         create_uid = #{record.createUid,jdbcType=BIGINT},
@@ -232,7 +232,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       category = #{record.category,jdbcType=TINYINT},
       filter_type = #{record.filterType,jdbcType=TINYINT},
-      project_id = #{record.projectId,jdbcType=BIGINT},
+      system_id = #{record.systemId,jdbcType=BIGINT},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_name = #{record.createName,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -254,8 +254,8 @@
       <if test="filterType != null">
         filter_type = #{filterType,jdbcType=TINYINT},
       </if>
-      <if test="projectId != null">
-        project_id = #{projectId,jdbcType=BIGINT},
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=BIGINT},
       </if>
       <if test="createUid != null">
         create_uid = #{createUid,jdbcType=BIGINT},
@@ -280,7 +280,7 @@
     set name = #{name,jdbcType=VARCHAR},
       category = #{category,jdbcType=TINYINT},
       filter_type = #{filterType,jdbcType=TINYINT},
-      project_id = #{projectId,jdbcType=BIGINT},
+      system_id = #{systemId,jdbcType=BIGINT},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_name = #{createName,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
