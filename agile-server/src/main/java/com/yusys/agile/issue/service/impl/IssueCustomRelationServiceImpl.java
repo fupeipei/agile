@@ -129,16 +129,17 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
                     //保存到列头表中
                     headerFieldService.saveCustomFieldByFieldId(securityDTO.getSystemId(), issueCustomRelation.getId(), idList.getIssueType());
                 } else {
+                    SIssueCustomRelation newIssueCustomRelation = issueCustomRelationMapper.selectByIssueTypeAndFieldId(issueCustomRelation.getIssueType(), issueCustomRelation.getFieldId(), securityDTO.getSystemId());
                     //否则update，并将state=U，
                     //如果之前保存过，但是被删除了，这样做可以恢复之前的关联关系
                     //恢复 s_issue_custom_relation 的值
-                    issueCustomRelation.setSort(i + 1);
-                    issueCustomRelation.setState(StateEnum.U.getValue());
-                    issueCustomRelationMapper.updateByPrimaryKeySelective(issueCustomRelation);
+                    newIssueCustomRelation.setSort(i + 1);
+                    newIssueCustomRelation.setState(StateEnum.U.getValue());
+                    issueCustomRelationMapper.updateByPrimaryKeySelective(newIssueCustomRelation);
                     //恢复列头
-                    headerFieldService.recoveryCustomFieldByFieldId(issueCustomRelation.getId());
+                    headerFieldService.recoveryCustomFieldByFieldId(newIssueCustomRelation.getId());
                     //恢复数据表
-                    issueCustomFieldService.recoveryCustomFileByIssueCustomRelationId(issueCustomRelation.getId());
+                    issueCustomFieldService.recoveryCustomFileByIssueCustomRelationId(newIssueCustomRelation.getId());
                 }
             }
         }

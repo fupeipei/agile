@@ -461,5 +461,17 @@
     where id = #{id}
 </update>
 
+<select id="selectByIssueTypeAndFieldId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    <include refid="Blob_Column_List" />
+    from s_issue_custom_relation
+    where 1=1
+    and issue_type = #{issueType} and field_id = #{fieldId}
+    <if test="systemId != null">
+     and system_id = #{systemId}
+    </if>
+</select>
+
 
 </mapper>
