@@ -75,10 +75,10 @@ public class IssueTemplateServiceImpl implements IssueTemplateService {
                 }
         if (issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample).isEmpty()) {
            //暂时先注释掉
-            // initIssueTemplate(securityDTO.getProjectId());
+             initIssueTemplate(securityDTO.getSystemId());
         }
         map.put("issueTemplateData", issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample));
-       // map.put("issueCustomRelationData", issueCustomRelationService.getIssueCustomRelations(securityDTO.getProjectId(), issueType));
+        map.put("issueCustomRelationData", issueCustomRelationService.getIssueCustomRelations(securityDTO.getSystemId(), issueType));
         return map;
     }
 
