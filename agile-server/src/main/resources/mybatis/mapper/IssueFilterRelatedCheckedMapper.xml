@@ -6,7 +6,7 @@
     <result column="id_check" jdbcType="TINYINT" property="idCheck" />
     <result column="category" jdbcType="TINYINT" property="category" />
     <result column="filter_id" jdbcType="BIGINT" property="filterId" />
-    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="system_id" jdbcType="BIGINT" property="systemId" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, id_check, category, filter_id, project_id, create_uid, create_time,tenant_code
+    id, id_check, category, filter_id, system_id, create_uid, create_time,tenant_code
   </sql>
   <select id="selectByExample" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedCheckedExample" resultMap="BaseResultMap">
     select
@@ -104,10 +104,10 @@
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedChecked" useGeneratedKeys="true" keyProperty="id">
     insert into s_issue_filter_related_checked (id, id_check, category, 
-      filter_id, project_id, create_uid, 
+      filter_id, system_id, create_uid, 
       create_time,tenant_code)
     values (#{id,jdbcType=BIGINT}, #{idCheck,jdbcType=TINYINT}, #{category,jdbcType=TINYINT}, 
-      #{filterId,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{createUid,jdbcType=BIGINT}, 
+      #{filterId,jdbcType=BIGINT}, #{systemId,jdbcType=BIGINT}, #{createUid,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP},#{tenantCode})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.IssueFilterRelatedChecked">
@@ -125,8 +125,8 @@
       <if test="filterId != null">
         filter_id,
       </if>
-      <if test="projectId != null">
-        project_id,
+      <if test="systemId != null">
+        system_id,
       </if>
       <if test="createUid != null">
         create_uid,
@@ -151,8 +151,8 @@
       <if test="filterId != null">
         #{filterId,jdbcType=BIGINT},
       </if>
-      <if test="projectId != null">
-        #{projectId,jdbcType=BIGINT},
+      <if test="systemId != null">
+        #{systemId,jdbcType=BIGINT},
       </if>
       <if test="createUid != null">
         #{createUid,jdbcType=BIGINT},
@@ -186,8 +186,8 @@
       <if test="record.filterId != null">
         filter_id = #{record.filterId,jdbcType=BIGINT},
       </if>
-      <if test="record.projectId != null">
-        project_id = #{record.projectId,jdbcType=BIGINT},
+      <if test="record.systemId != null">
+        system_id = #{record.systemId,jdbcType=BIGINT},
       </if>
       <if test="record.createUid != null">
         create_uid = #{record.createUid,jdbcType=BIGINT},
@@ -209,7 +209,7 @@
       id_check = #{record.idCheck,jdbcType=TINYINT},
       category = #{record.category,jdbcType=TINYINT},
       filter_id = #{record.filterId,jdbcType=BIGINT},
-      project_id = #{record.projectId,jdbcType=BIGINT},
+      system_id = #{record.systemId,jdbcType=BIGINT},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
     tenant_code = #{record.tenantCode}
@@ -229,8 +229,8 @@
       <if test="filterId != null">
         filter_id = #{filterId,jdbcType=BIGINT},
       </if>
-      <if test="projectId != null">
-        project_id = #{projectId,jdbcType=BIGINT},
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=BIGINT},
       </if>
       <if test="createUid != null">
         create_uid = #{createUid,jdbcType=BIGINT},
@@ -249,7 +249,7 @@
     set id_check = #{idCheck,jdbcType=TINYINT},
       category = #{category,jdbcType=TINYINT},
       filter_id = #{filterId,jdbcType=BIGINT},
-      project_id = #{projectId,jdbcType=BIGINT},
+      system_id = #{systemId,jdbcType=BIGINT},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
        tenant_code = #{tenantCode}

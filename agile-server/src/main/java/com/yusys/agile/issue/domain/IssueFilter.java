@@ -12,7 +12,7 @@ public class IssueFilter implements Serializable {
 
     private Byte filterType;
 
-    private Long projectId;
+    private Long systemId;
 
     private Long createUid;
 
@@ -66,12 +66,12 @@ public class IssueFilter implements Serializable {
         this.filterType = filterType;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    public Long getSystemId() {
+        return systemId;
     }
 
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
     }
 
     public Long getCreateUid() {
