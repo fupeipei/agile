@@ -148,7 +148,7 @@
       #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, 
       #{fieldContent,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation">
+  <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.SIssueCustomRelation" keyProperty="id" keyColumn="id">
     insert into s_issue_custom_relation
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
