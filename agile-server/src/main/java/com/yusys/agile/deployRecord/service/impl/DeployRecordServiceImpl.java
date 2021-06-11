@@ -48,7 +48,7 @@ public class DeployRecordServiceImpl implements DeployRecordService {
             models.put("commitIdList",commitIdList);
             models.put("pageNum",pageNum);
             models.put("pageSize",pageSize);
-            pageInfo   =  iDeployCodeLogApi.queryByCommitId(String.valueOf(models));
+            pageInfo   =  iDeployCodeLogApi.queryByCommitId(models);
         }
         return pageInfo;
     }
