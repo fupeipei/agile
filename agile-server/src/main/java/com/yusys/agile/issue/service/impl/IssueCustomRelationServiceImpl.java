@@ -89,6 +89,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteIssueCustomRelation(Long id) {
         //工作项自定义字段表
         issueCustomRelationMapper.updateStateById(id, StateEnum.E.getValue());
@@ -130,9 +131,14 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
                 } else {
                     //否则update，并将state=U，
                     //如果之前保存过，但是被删除了，这样做可以恢复之前的关联关系
+                    //恢复 s_issue_custom_relation 的值
                     issueCustomRelation.setSort(i + 1);
                     issueCustomRelation.setState(StateEnum.U.getValue());
                     issueCustomRelationMapper.updateByPrimaryKeySelective(issueCustomRelation);
+                    //恢复列头
+                    headerFieldService.recoveryCustomFieldByFieldId(issueCustomRelation.getId());
+                    //恢复数据表
+                    issueCustomFieldService.recoveryCustomFileByIssueCustomRelationId(issueCustomRelation.getId());
                 }
             }
         }

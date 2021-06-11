@@ -89,6 +89,11 @@ public interface HeaderFieldService {
      */
     List<HeaderField> getAllHeaderFieldByTenantCode(String tenantCode);
 
-
-
+    /**
+     * 恢复逻辑删除后的数据
+     * @author zhaofeng
+     * @date 2021/6/11 13:06
+     * @param issueCustomRelationId
+     */
+    void recoveryCustomFieldByFieldId(Long issueCustomRelationId);
 }
