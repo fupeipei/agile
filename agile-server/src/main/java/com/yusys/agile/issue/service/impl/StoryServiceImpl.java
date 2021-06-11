@@ -10,7 +10,6 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.IssueSystemRelpMapper;
 import com.yusys.agile.issue.dao.SIssueRichtextMapper;
 import com.yusys.agile.issue.domain.*;
-import com.yusys.agile.issue.dto.IssueAcceptanceDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.IssueSystemRelpService;
@@ -19,7 +18,6 @@ import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
-import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
@@ -28,13 +26,7 @@ import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
-import com.yusys.agile.review.dto.StoryCheckResultDTO;
-import com.yusys.agile.review.service.ReviewService;
 import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.service.StageService;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.Sprint;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.utils.ObjectUtil;
@@ -56,18 +48,12 @@ import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -98,8 +84,6 @@ public class StoryServiceImpl implements StoryService {
     private SysExtendFieldDetailService sysExtendFieldDetailService;
     @Resource
     private IssueRichTextFactory issueRichTextFactory;
-    @Resource
-    private IStageService stageService;
     @Resource
     private SSprintMapper sSprintMapper;
     @Resource
