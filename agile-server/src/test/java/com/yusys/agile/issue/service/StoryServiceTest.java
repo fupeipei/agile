@@ -105,7 +105,7 @@ public class StoryServiceTest {
     @Test
     public void testCopyStory() {
         Long storyId = null;
-        Mockito.when(storyService.copyStory(Mockito.anyLong(), Mockito.anyLong())).thenReturn(storyId);
+        Mockito.when(storyService.copyStory( Mockito.anyLong())).thenReturn(storyId);
         Assert.assertTrue("用户故事复制成功", true);
     }
 

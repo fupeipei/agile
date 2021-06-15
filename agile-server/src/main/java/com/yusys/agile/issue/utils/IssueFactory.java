@@ -323,7 +323,7 @@ public class IssueFactory {
             if (Optional.ofNullable(projectId).isPresent()) {
 
             }
-            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType);
+            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueDTO.getSystemId(), issueId, issueType);
             List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
             if (CollectionUtils.isNotEmpty(list)) {
                     List<SIssueCustomField> fieldsAfterEdit = Lists.newArrayList();
@@ -686,7 +686,7 @@ public class IssueFactory {
             issueDTO.setAttachments(issueAttachmentDTOList);
 
             //查询自定义字段
-            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
+            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(systemId, issueId, issue.getIssueType());
             issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
             //查询故事验收标准信息
             getAcceptanceList(issueId, issueDTO);
@@ -997,8 +997,15 @@ public class IssueFactory {
         issueDTO.setIssueId(null);
 
         //查询自定义字段并塞入对象中
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
+
+        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueDTO.getSystemId(), issueId, issue.getIssueType());
         issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+
+        //查询工作项和产品关系表并保存
+        List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
+        if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
+            issueDTO.setSystemIds(issueSystemRelpList.stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList()));
+        }
 
         Long newIssueId = createIssue(issueDTO, checkErrMsg, newMsg, issueType);
 
@@ -1175,12 +1182,12 @@ public class IssueFactory {
     }
 
     /**
-     * 根据工作项id查询项目id
+     * 根据工作项id查询系统id
      *
      * @param issueId
      * @return
      */
-    public Long getProjectIdByIssueId(Long issueId) {
+    public Long getSystemIdByIssueId(Long issueId) {
         Long systemId = null;
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         if (null != issue) {

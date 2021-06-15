@@ -18,7 +18,6 @@ import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
-import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
@@ -132,7 +131,7 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public IssueDTO queryStory(Long storyId) {
-        Long systemId = issueFactory.getProjectIdByIssueId(storyId);
+        Long systemId = issueFactory.getSystemIdByIssueId(storyId);
         SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
         IssueDTO issueDTO = issueFactory.queryIssue(storyId, systemId);
         issueDTO.setSystemCode(ssoSystem.getSystemCode());

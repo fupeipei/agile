@@ -177,5 +177,10 @@ public class StoryServiceTest {
         storyService.queryStoryBySystemId(1L,"test",null,null);
         Assert.assertTrue("查询当前系统下故事成功", true);
     }
+    @Test
+    public void queryStoryTest() {
+        IssueDTO issueDTO =  storyService.queryStory(847878567016624704L);
+        Assert.assertTrue("查询成功", true);
+    }
 }
 
