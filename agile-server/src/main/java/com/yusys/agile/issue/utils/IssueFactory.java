@@ -980,7 +980,7 @@ public class IssueFactory {
      * @Return: void
      */
     @Transactional(rollbackFor = Exception.class)
-    public Long copyIssue(Long issueId, Long projectId, String errMsg, String checkErrMsg, String newMsg, Byte issueType) {
+    public Long copyIssue(Long issueId,String errMsg, String checkErrMsg, String newMsg, Byte issueType) {
         IssueExample example = new IssueExample();
         IssueExample.Criteria criteria = example.createCriteria();
         criteria.andIssueIdEqualTo(issueId);
@@ -997,17 +997,11 @@ public class IssueFactory {
         issueDTO.setIssueId(null);
 
         //查询自定义字段并塞入对象中
-        if (Optional.ofNullable(projectId).isPresent()) {
-            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
-            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
-        }
-        //查询工作项和产品关系表并保存
-        List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
-        if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
-            issueDTO.setSystemIds(issueSystemRelpList.stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList()));
-        }
+        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
+        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
 
         Long newIssueId = createIssue(issueDTO, checkErrMsg, newMsg, issueType);
+
         //处理扩展字段
         dealSysExtendFieldDetail(issueId, newIssueId, issueType);
         return newIssueId;

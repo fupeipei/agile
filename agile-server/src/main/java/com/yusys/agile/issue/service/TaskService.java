@@ -34,7 +34,6 @@ public interface TaskService {
      * @Param: * @param taskId
      * @Return: com.yusys.agile.issue.dto.IssueDTO
      */
-    //IssueDTO queryTask(Long taskId, Long projectId);
     IssueDTO queryTask(Long taskId);
 
     /**
@@ -46,13 +45,12 @@ public interface TaskService {
     Long createTask(IssueDTO issueDTO);
 
     /**
-     * @param projectId
      * @Date: 9:31
      * @Description: 复制任务
      * @Param: * @param taskId
      * @Return: Long
      */
-    Long copyTask(Long taskId, Long projectId);
+    Long copyTask(Long taskId);
 
     /**
      * @param storyId
