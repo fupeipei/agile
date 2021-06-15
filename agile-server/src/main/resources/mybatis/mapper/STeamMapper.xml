@@ -298,7 +298,7 @@
                 state = #{state,jdbcType=VARCHAR},
             </if>
             <if test="teamType != null">
-                state = #{teamType,jdbcType=VARCHAR},
+                team_type = #{teamType,jdbcType=VARCHAR},
             </if>
             <if test="createUid != null">
                 create_uid = #{createUid,jdbcType=BIGINT},

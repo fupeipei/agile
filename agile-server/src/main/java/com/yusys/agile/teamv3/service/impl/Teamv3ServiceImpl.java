@@ -467,6 +467,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
      * @param team
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertTeamForLean(STeam team) {
         String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
@@ -508,6 +509,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateTeamForLean(STeam team) {
         Long teamId = team.getTeamId();
         STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
@@ -564,6 +566,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteTeamForLean(Long teamId) {
         //精益团队暂不能删除
         throw new BusinessException("精益团队暂不支持删除");
