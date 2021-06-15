@@ -167,11 +167,6 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
             customFieldDTO.setFieldId(item.getId());
             //详情
             JSONObject jsonObject = JSON.parseObject(item.getFieldContent());
-            Boolean b = true;
-            if (Objects.equals(FieldRequiredEnum.no_required.getCode(), item.getRequired())) {
-                b = false;
-            }
-            jsonObject.put("required", b);
             customFieldDTO.setFieldContent(jsonObject.toString());
             //名称
             customFieldDTO.setFieldName(item.getFieldName());
