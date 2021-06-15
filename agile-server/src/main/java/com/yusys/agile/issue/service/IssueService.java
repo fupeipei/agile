@@ -451,4 +451,6 @@ public interface IssueService {
      * @return boolean
      */
     boolean checkHasChildren(Long issueId);
+
+    void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 }

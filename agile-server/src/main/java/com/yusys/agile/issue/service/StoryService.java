@@ -66,13 +66,12 @@ public interface StoryService {
     int removeStory4Sprint(Long sprintId, Long storyId);
 
     /**
-     * @param projectId
      * @Date: 9:31
      * @Description: 复制用户故事
      * @Param: * @param storyId
      * @Return: Long
      */
-    Long copyStory(Long storyId, Long projectId);
+    Long copyStory(Long storyId);
 
     int distributeSprint(Long storyId, Long sprintId);
 

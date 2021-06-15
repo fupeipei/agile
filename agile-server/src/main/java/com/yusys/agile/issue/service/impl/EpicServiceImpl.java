@@ -84,8 +84,8 @@ public class EpicServiceImpl implements EpicService {
     }
 
     @Override
-    public Long copyEpic(Long epicId, Long projectId) {
-        return issueFactory.copyIssue(epicId, projectId, "该复制的业务需求已失效！", "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
+    public Long copyEpic(Long epicId) {
+        return issueFactory.copyIssue(epicId,"该复制的业务需求已失效！", "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
     }
 
     @Override
