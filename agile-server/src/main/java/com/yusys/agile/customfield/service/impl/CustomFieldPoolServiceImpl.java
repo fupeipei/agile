@@ -202,6 +202,8 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         }
         if (systemId != null) {
             criteria.andSystemIdEqualTo(systemId);
+        }else{
+            criteria.andSystemIdIsNull();
         }
         // 排序
         example.setOrderByClause("create_time desc");

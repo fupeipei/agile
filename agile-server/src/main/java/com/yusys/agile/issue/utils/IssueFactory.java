@@ -3,7 +3,6 @@ package com.yusys.agile.issue.utils;
 import com.yusys.agile.commission.domain.SCommission;
 import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
-import com.yusys.agile.common.exception.BaseBusinessException;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.consumer.dto.IssueMailSendDto;
@@ -14,7 +13,6 @@ import com.yusys.agile.issue.dao.IssueAcceptanceMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.SIssueRichtextMapper;
 import com.yusys.agile.issue.domain.*;
-import com.yusys.agile.issue.dto.IssueAcceptanceDTO;
 import com.yusys.agile.issue.dto.IssueAttachmentDTO;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
@@ -27,14 +25,9 @@ import com.yusys.agile.sysextendfield.domain.SysExtendField;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
-import com.yusys.agile.review.service.ReviewService;
-import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
-import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
-import com.yusys.agile.versionmanager.service.VersionIssueRelateService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -44,14 +37,11 @@ import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-import com.yusys.portal.model.facade.entity.SsoProject;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
-import lombok.experimental.PackagePrivate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -332,11 +322,11 @@ public class IssueFactory {
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
             if (Optional.ofNullable(projectId).isPresent()) {
-                List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType, projectId);
-                // todo 自定义字段处理
-                List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
-                if (CollectionUtils.isNotEmpty(list)) {
 
+            }
+            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueId, issueType);
+            List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
+            if (CollectionUtils.isNotEmpty(list)) {
                     List<SIssueCustomField> fieldsAfterEdit = Lists.newArrayList();
                     // IssueCustomFieldDTO转换成IssueCustomField
                     for (IssueCustomFieldDTO temp : list) {
@@ -347,9 +337,9 @@ public class IssueFactory {
                         issueCustomField.setIssueId(issueId);
                         fieldsAfterEdit.add(issueCustomField);
                     }
-                    dealCustomFieldAndFieldHistory(projectId, issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
+                    dealCustomFieldAndFieldHistory(issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
                 }
-            }
+
 
             //历史记录处理
             dealHistory(history);
@@ -368,12 +358,12 @@ public class IssueFactory {
         return issue;
     }
 
-    public void dealCustomFieldAndFieldHistory(Long projectId, Long issueId, List<IssueHistoryRecord> history, List<IssueCustomFieldDTO> fieldsBeforeEdit, List<SIssueCustomField> fieldsAfterEdit, Byte issueType) {
+    public void dealCustomFieldAndFieldHistory( Long issueId, List<IssueHistoryRecord> history, List<IssueCustomFieldDTO> fieldsBeforeEdit, List<SIssueCustomField> fieldsAfterEdit, Byte issueType) {
 
         // 修改自定义字段明细数据
         issueCustomFieldService.editCustomFields(fieldsAfterEdit);
 
-        List<IssueHistoryRecord> fieldHistory = headerFieldService.generateHistory(fieldsAfterEdit, fieldsBeforeEdit, issueType, issueId, projectId);
+        List<IssueHistoryRecord> fieldHistory = headerFieldService.generateHistory(fieldsAfterEdit, fieldsBeforeEdit, issueType, issueId);
         if (CollectionUtils.isNotEmpty(fieldHistory)) {
             history.addAll(fieldHistory);
         }
@@ -1009,7 +999,7 @@ public class IssueFactory {
 
         //查询自定义字段并塞入对象中
         if (Optional.ofNullable(projectId).isPresent()) {
-            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
+            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
             issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
         }
         //查询工作项和产品关系表并保存

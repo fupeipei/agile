@@ -118,12 +118,12 @@ public class CustomFieldPoolController {
      * @author zhaofeng
      * @date 2021/6/3 15:09
      * @param issueType 工作项类型
-     * @param systemId  系统id
      */
     @GetMapping("/listCustomFieldsByIssueType")
     public ControllerResponse listCustomFieldsByIssueType(
             @RequestParam(name = "issueType") Byte issueType,
-            @RequestParam(name = "systemId", required = false) Long systemId) {
+            SecurityDTO security) {
+        Long systemId = security.getSystemId();
         List<CustomFieldDTO> list = customRelationService.getCustomFieldList(systemId, issueType);
         return ControllerResponse.success(list);
     }
