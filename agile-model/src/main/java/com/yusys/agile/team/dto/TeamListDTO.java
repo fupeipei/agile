@@ -30,6 +30,8 @@ public class TeamListDTO {
     private List<TeamUserDTO> teamPoNames;
     @ApiModelProperty("团队sm集合")
     private List<TeamUserDTO> teamSmNames;
+    @ApiModelProperty("团队lean集合")
+    private List<TeamUserDTO> teamLeanNames;
     @ApiModelProperty("系统集合")
     private List<TeamSystemDTO> systemNames;
     @ApiModelProperty("团队所有人员")

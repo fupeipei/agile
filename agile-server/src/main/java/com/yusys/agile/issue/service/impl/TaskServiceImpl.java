@@ -61,7 +61,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -137,7 +136,7 @@ public class TaskServiceImpl implements TaskService {
             //校验权限
             this.checkAuth(issueDTO, issue, "delete","无法删除任务");
         }
-        issueFactory.deleteIssue(taskId, deleteChild);
+        issueFactory.deleteIssue(taskId);
 
         int i = this.updateStoryLaneIdByTaskCount(issue);
         log.info("deleteTask_updateStoryStageIdByTaskCount=" + i);

@@ -50,7 +50,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1369,4 +1368,44 @@ public class IssueFactory {
         return null;
     }
 
+    public void deleteStory(Long storyId, Boolean deleteChild) {
+        if (null != deleteChild && deleteChild) {
+            //解除关联关系
+            disassociate(storyId);
+        }
+
+        //删除附件
+        issueAttachmentService.deleteAttachmentByIssueId(storyId);
+
+        //删除自定义字段
+        issueCustomFieldService.deleteCustomFileByIssueId(storyId);
+
+        //更新历史记录表，状态从有效变为无效
+        createHistory(storyId);
+
+        //解除子工作项的关联关系
+        Long sprintId = null;
+        Issue storyIssue = issueMapper.selectByPrimaryKey(storyId);
+        if (null != storyIssue) {
+            Byte issueType = storyIssue.getIssueType();
+            Assert.notNull(issueType, "issueId:[" + storyId + "]工作项类型不能为空");
+            if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
+                sprintId = storyIssue.getSprintId();
+            }
+            //dealEpicFeatureData(storyIssue);
+            //如果不删除子任务  处理子任务
+            this.dealTaskData(storyId, deleteChild);
+        }
+        issueMapper.deleteAllChildRelation(storyId, sprintId);
+        //更新工作项为失效
+        upateIssue(storyId);
+
+        commissionService.deleteCommission(storyId);
+
+        Issue issue = issueMapper.selectByPrimaryKey(storyId);
+
+        SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
+        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
+        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+    }
 }
