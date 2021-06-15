@@ -320,9 +320,6 @@ public class IssueFactory {
 
             //更新自定义字段并组织自定义字段历史记录
             //old custom field value
-            if (Optional.ofNullable(projectId).isPresent()) {
-
-            }
             List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueDTO.getSystemId(), issueId, issueType);
             List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
             if (CollectionUtils.isNotEmpty(list)) {
@@ -334,6 +331,7 @@ public class IssueFactory {
                         issueCustomField.setFieldId(temp.getFieldId());
                         issueCustomField.setFieldValue(temp.getFieldValue());
                         issueCustomField.setIssueId(issueId);
+                        issueCustomField.setState(StateEnum.U.getValue());
                         fieldsAfterEdit.add(issueCustomField);
                     }
                     dealCustomFieldAndFieldHistory(issueId, history, fieldsBeforeEdit, fieldsAfterEdit, issueType);
