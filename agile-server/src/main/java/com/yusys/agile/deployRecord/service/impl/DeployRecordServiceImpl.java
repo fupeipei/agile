@@ -31,7 +31,7 @@ public class DeployRecordServiceImpl implements DeployRecordService {
     @Override
     public PageInfo queryDeployRecord(long issueId, Byte issueType, Integer pageNum, Integer pageSize) {
 
-        PageInfo pageInfo = null;
+        PageInfo pageInfo = new PageInfo();
         pageNum = null == pageNum ? 1 : pageNum;
         pageSize = null == pageSize ? 20 : pageSize;
         List<TDeployCodeLogDTO > logDTOS =  Lists.newArrayList();
@@ -43,13 +43,13 @@ public class DeployRecordServiceImpl implements DeployRecordService {
         //issueType = 4 任务
         if(IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)){
             longList.add(issueId);
-            List<String> commitIdList = toolsChangeApi.getCommitChange(longList);
-            Map<String, Object> models = new HashMap<>();
-            models.put("commitIdList",commitIdList);
-            models.put("pageNum",pageNum);
-            models.put("pageSize",pageSize);
-            pageInfo   =  iDeployCodeLogApi.queryByCommitId(models);
         }
+        List<String> commitIdList = toolsChangeApi.getCommitChange(longList);
+        Map<String, Object> models = new HashMap<>();
+        models.put("commitIdList",commitIdList);
+        models.put("pageNum",pageNum);
+        models.put("pageSize",pageSize);
+        pageInfo   =  iDeployCodeLogApi.queryByCommitId(models);
         return pageInfo;
     }
 }
