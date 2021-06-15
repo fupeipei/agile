@@ -151,7 +151,7 @@ public class StoryServiceImpl implements StoryService {
             }
         }
 
-        issueFactory.deleteIssue(storyId, deleteChild);
+        issueFactory.deleteStory(storyId, deleteChild);
     }
 
     private Long getTeamIdBySprintId(Long sprintId) {
