@@ -73,4 +73,18 @@ public interface Teamv3Service {
      * @return
      */
     List<SsoSystemRestDTO> querySystemByTeamId(long teamId);
+    /**
+     * 新增精益类型团队
+     * @author zhaofeng
+     * @date 2021/6/11 16:07
+     * @param team
+     */
+    void insertTeamForLean(STeam team);
+    /**
+     * 更新精益类型团队
+     * @author zhaofeng
+     * @date 2021/6/11 16:07
+     * @param team
+     */
+    void updateTeamForLean(STeam team);
 }

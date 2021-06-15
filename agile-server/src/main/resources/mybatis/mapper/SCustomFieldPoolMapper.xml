@@ -473,6 +473,7 @@
             and issue_type = #{issueType}
             and state = 'U'
         )
+        and state ='U'
         order by s.create_time desc
     </select>
 </mapper>

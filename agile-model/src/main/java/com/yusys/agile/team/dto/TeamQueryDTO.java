@@ -17,6 +17,8 @@ public class TeamQueryDTO {
     private String po;
     @ApiModelProperty("sm姓名/账号")
     private String sm;
+    @ApiModelProperty("lean姓名/账号")
+    private String lean;
     @ApiModelProperty("系统名称/编号")
     private String system;
     @ApiModelProperty("团队类型， M:敏捷团队，N:精益团队")

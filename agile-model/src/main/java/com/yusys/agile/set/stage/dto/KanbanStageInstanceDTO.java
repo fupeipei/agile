@@ -62,6 +62,26 @@ public class KanbanStageInstanceDTO implements Serializable {
      */
     private Long templateId;
 
+    /**
+     * 团队id
+     */
+    private Long teamId;
+
+    /**
+     * 看板id
+     */
+    private Long  kanbanId;
+
+    /**
+     * 阶段类型
+     */
+    private Byte stageType;
+
+    /**
+     * 二级阶段信息
+     */
+    private List<KanbanStageInstanceDTO> secondStages;
+
     public Long getInstanceId() {
         return instanceId;
     }
@@ -246,6 +266,40 @@ public class KanbanStageInstanceDTO implements Serializable {
         this.templateId = templateId;
     }
 
+
+    public Long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
+    }
+
+    public Long getKanbanId() {
+        return kanbanId;
+    }
+
+    public void setKanbanId(Long kanbanId) {
+        this.kanbanId = kanbanId;
+    }
+
+    public Byte getStageType() {
+        return stageType;
+    }
+
+    public void setStageType(Byte stageType) {
+        this.stageType = stageType;
+    }
+
+    public List<KanbanStageInstanceDTO> getSecondStages() {
+        return secondStages;
+    }
+
+    public void setSecondStages(List<KanbanStageInstanceDTO> secondStages) {
+        this.secondStages = secondStages;
+    }
+
+
     @Override
     public String toString() {
         return "KanbanStageInstanceDTO{" +
@@ -274,4 +328,5 @@ public class KanbanStageInstanceDTO implements Serializable {
                 ", templateId=" + templateId +
                 '}';
     }
+
 }

@@ -470,6 +470,7 @@
                 where
                  binary team_name = #{teamName}
                   and tenant_code = #{tenantCode}
+                  and team_type = #{teamType}
                   and state = 'U'
         <if test="teamId != null">
             and team_id <![CDATA[<>]]> #{teamId}

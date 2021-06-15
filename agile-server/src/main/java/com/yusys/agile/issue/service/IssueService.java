@@ -432,4 +432,15 @@ public interface IssueService {
      */
     List<Long> getIssueIds(Long parentId);
 
+
+    /**
+     * 根据看板Id和issue类型获取节点下所有集合
+     *
+     * @param kanbanId
+     * @param issueType
+     * @return
+     * @throws Exception
+     */
+    List<IssueDTO> getIssueTrees(Long kanbanId,Byte issueType) throws Exception;
+
 }

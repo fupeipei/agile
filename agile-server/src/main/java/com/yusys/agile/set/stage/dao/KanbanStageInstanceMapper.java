@@ -63,4 +63,7 @@ public interface KanbanStageInstanceMapper {
     List<KanbanStageInstance> getSecondStagesByOrderId(@Param("oldStageId") Long oldStageId,
                                                        @Param("oldLaneId") Long oldLaneId,
                                                        @Param("projectId") Long projectId);
+
+
+    List<KanbanStageInstance> getStagesByKanbanId(@Param("kanbanId") Long kanbanId);
 }
