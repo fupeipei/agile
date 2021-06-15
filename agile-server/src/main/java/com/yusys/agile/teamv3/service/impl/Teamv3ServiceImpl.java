@@ -121,6 +121,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             //po、sm、tm以及tm数量赋值
             List<TeamUserDTO> poUsers = Lists.newArrayList();
             List<TeamUserDTO> smUsers = Lists.newArrayList();
+            List<TeamUserDTO> leanUsers = Lists.newArrayList();
             List<TeamUserDTO> tmUsers = Lists.newArrayList();
             teamMembers.forEach(member -> {
                 if (Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.PRODUCT_OWNER.roleId)) {
@@ -128,6 +129,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
                 }
                 if (Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.SCRUM_MASTER.roleId)) {
                     smUsers.add(member);
+                }
+                if (Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.LEAN_MASTER.roleId)) {
+                    leanUsers.add(member);
                 }
                 if (Objects.equals(item.getTeamId(), member.getTeamId()) && Objects.equals(member.getRoleId(), TeamRoleEnum.TEAM_MEMBER.roleId)) {
                     tmUsers.add(member);
@@ -137,6 +141,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             item.setTeamPoNames(poUsers);
             //sm
             item.setTeamSmNames(smUsers);
+            //精益教练
+            item.setTeamLeanNames(leanUsers);
             //团队成员
             item.setTeamUsers(tmUsers);
             //团队成员数量
