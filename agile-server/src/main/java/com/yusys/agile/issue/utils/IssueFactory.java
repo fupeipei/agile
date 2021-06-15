@@ -589,12 +589,7 @@ public class IssueFactory {
         }
     }
 
-    public void deleteIssue(Long issueId, Boolean deleteChild) {
-        if (null != deleteChild && deleteChild) {
-            //解除关联关系
-            disassociate(issueId);
-        }
-
+    public void deleteIssue(Long issueId) {
         //删除附件
         issueAttachmentService.deleteAttachmentByIssueId(issueId);
 
@@ -604,20 +599,6 @@ public class IssueFactory {
         //更新历史记录表，状态从有效变为无效
         createHistory(issueId);
 
-        //解除子工作项的关联关系
-        Long sprintId = null;
-        Issue storyIssue = issueMapper.selectByPrimaryKey(issueId);
-        if (null != storyIssue) {
-            Byte issueType = storyIssue.getIssueType();
-            Assert.notNull(issueType, "issueId:[" + issueId + "]工作项类型不能为空");
-            if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
-                sprintId = storyIssue.getSprintId();
-            }
-            //dealEpicFeatureData(storyIssue);
-            //如果不删除子任务  处理子任务
-            this.dealTaskData(issueId, deleteChild);
-        }
-        issueMapper.deleteAllChildRelation(issueId, sprintId);
         //更新工作项为失效
         upateIssue(issueId);
 
