@@ -122,7 +122,7 @@
     create_time, update_uid, update_time, fault_type, fault_level, fixed_time, close_time, 
     fixed_uid, test_uid, version_id, case_id, deadline, file, urgency, cause, detected_phase, 
     manual_case_id, source, remain_workload, bug_id, `order`, block_state, reopen_times,assess_is_pass,assess_remarks,tenant_code,
-    cmp_sync_result,is_archive,is_cancel
+    cmp_sync_result,is_archive,is_cancel,kanban_id
   </sql>
 
     <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueExample"

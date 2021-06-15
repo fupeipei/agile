@@ -116,7 +116,7 @@
       #{status,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
       #{state,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.leankanban.domain.SLeanKanban">
+  <insert id="insertSelective" parameterType="com.yusys.agile.leankanban.domain.SLeanKanban" keyProperty="kanbanId" useGeneratedKeys="true">
     insert into s_lean_kanban
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="kanbanId != null">

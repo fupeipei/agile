@@ -3,6 +3,7 @@ package com.yusys.agile.issue.rest;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
+import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
@@ -13,14 +14,13 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * :
@@ -468,5 +468,27 @@ public class IssueController {
             LOGGER.error("updateIssueLaunchStateWithDate occur exception, message:{}", e.getMessage());
             return ControllerResponse.fail("更新工作项" + issueId + "已上线状态异常");
         }
+    }
+
+
+    /**
+     * 根据看板ID获取issue工作项列表
+     *
+     * @param kanbanId
+     * @param issueType
+     * @return
+     */
+    @GetMapping("/issue/getIssueTrees")
+    public ControllerResponse getIssueTrees(@RequestParam("kanbanId") Long kanbanId,
+                                            @RequestParam(value = "issueType" ,required = false) Byte issueType) {
+        try {
+            if(Optional.ofNullable(issueType).isPresent()){
+                issueType = IssueTypeEnum.TYPE_FEATURE.CODE;
+            }
+            return ControllerResponse.success(issueService.getIssueTrees(kanbanId,issueType));
+        } catch (Exception e) {
+            LOGGER.info("获取工作项树信息异常:{}",e.getMessage());
+        }
+        return ControllerResponse.success(Lists.newArrayList());
     }
 }

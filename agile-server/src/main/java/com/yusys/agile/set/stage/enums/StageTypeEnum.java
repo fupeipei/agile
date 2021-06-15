@@ -8,12 +8,9 @@ package com.yusys.agile.set.stage.enums;
  */
 
 public enum StageTypeEnum {
-    TYPE_INVALID_STAE("无效", new Byte("-1")),
-    TYPE_CANCEL_STATE("已取消", new Byte("0")),
-    TYPE_VALID_STATE("有效", new Byte("1")),
-    TYPE_NO_START_STATE("未开始", new Byte("2")),
-    TYPE_ONGOING_STATE("进行中", new Byte("3")),
-    TYPE_FINISHED_STATE("已完成", new Byte("4"));
+
+    AGILE("敏捷", new Byte("1")),
+    LEAN("精益", new Byte("2"));
 
 
     public Byte CODE;
