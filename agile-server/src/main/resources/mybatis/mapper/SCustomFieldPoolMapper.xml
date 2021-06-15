@@ -465,6 +465,9 @@
          <if test="systemId != null">
             and s.system_id = #{systemId}
         </if>
+        <if test="systemId != null">
+           and s.system_id is null
+        </if>
          and s.field_id not in
         (select field_id from s_issue_custom_relation where 1=1
             <if test="fieldName != null and fieldName != ''">
