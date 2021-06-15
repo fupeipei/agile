@@ -15,6 +15,8 @@ public class STeam implements Serializable {
 
     private String state;
 
+    private String teamType;
+
     private Long createUid;
 
     private Date createTime;
@@ -50,6 +52,12 @@ public class STeam implements Serializable {
      */
     @ApiModelProperty(value = "团队sm")
     private List<STeamMember> teamSmS;
+
+    /**
+     * 团队精益教练
+     */
+    @ApiModelProperty(value = "团队精益教练")
+    private List<STeamMember> teamLean;
 
     private static final long serialVersionUID = 1L;
 }

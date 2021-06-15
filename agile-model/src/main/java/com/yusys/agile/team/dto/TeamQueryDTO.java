@@ -17,10 +17,12 @@ public class TeamQueryDTO {
     private String po;
     @ApiModelProperty("sm姓名/账号")
     private String sm;
+    @ApiModelProperty("lean姓名/账号")
+    private String lean;
     @ApiModelProperty("系统名称/编号")
     private String system;
-    @ApiModelProperty("类型，1:我参与的，2:我创建的，3:与我相关的")
-    private Integer type;
+    @ApiModelProperty("团队类型， M:敏捷团队，N:精益团队")
+    private String teamType;
     @ApiModelProperty("当前页")
     private Integer pageNum;
     @ApiModelProperty("每页显示数")

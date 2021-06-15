@@ -70,12 +70,12 @@ public class IssueTemplateServiceImpl implements IssueTemplateService {
         IssueTemplateExample.Criteria criteria = issueTemplateExample.createCriteria();
         criteria.andApplyEqualTo(Byte.parseByte("1"))
                 .andIssueTypeEqualTo(issueType);
-                if(securityDTO.getProjectId()!=null){
-                    criteria.andSystemIdEqualTo(securityDTO.getProjectId());
-                }
+        if(securityDTO.getSystemId() != null){
+            criteria.andSystemIdEqualTo(securityDTO.getSystemId());
+        }
         if (issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample).isEmpty()) {
-           //暂时先注释掉
-             initIssueTemplate(securityDTO.getSystemId());
+            //暂时先注释掉
+            initIssueTemplate(securityDTO.getSystemId());
         }
         map.put("issueTemplateData", issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample));
         map.put("issueCustomRelationData", issueCustomRelationService.getIssueCustomRelations(securityDTO.getSystemId(), issueType));

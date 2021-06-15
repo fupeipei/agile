@@ -75,6 +75,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         if(systemId != null){
             criteria.andSystemIdEqualTo(systemId);
         }
+        criteria.andStateEqualTo(StateEnum.U.getValue());
         example.setOrderByClause("sort asc");
         List<SIssueCustomRelation> list = issueCustomRelationMapper.selectByExampleWithBLOBs(example);
         list.stream().forEach(item->{
