@@ -318,8 +318,8 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public Long copyStory(Long storyId, Long projectId) {
-        return issueFactory.copyIssue(storyId, projectId, "该复制的用户故事已失效！", "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
+    public Long copyStory(Long storyId) {
+        return issueFactory.copyIssue(storyId,"该复制的用户故事已失效！", "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
     }
 
     @Override

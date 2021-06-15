@@ -80,8 +80,8 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public Long copyFeature(Long featureId, Long projectId) {
-        return issueFactory.copyIssue(featureId, projectId, "该复制的研发需求已失效！", "研发需求名称已存在！", "新增研发需求", IssueTypeEnum.TYPE_FEATURE.CODE);
+    public Long copyFeature(Long featureId) {
+        return issueFactory.copyIssue(featureId,"该复制的研发需求已失效！", "研发需求名称已存在！", "新增研发需求", IssueTypeEnum.TYPE_FEATURE.CODE);
     }
 
     @Override

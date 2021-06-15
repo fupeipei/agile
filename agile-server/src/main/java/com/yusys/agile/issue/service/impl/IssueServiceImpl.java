@@ -3209,4 +3209,16 @@ public class IssueServiceImpl implements IssueService {
         List<Issue> issueList = issueMapper.selectByExample(issueExample);
         return CollectionUtils.isNotEmpty(issueList) ? false : true;
     }
+
+    @Override
+    public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {
+        if (null != issueId) {
+            List<Long> issueIds = Lists.newArrayList();
+            issueIds.add(issueId);
+            List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getIssueExtendDetailList(issueIds);
+            for (int i = 0; i < sysExtendFieldDetailList.size(); i++) {
+                map.put(sysExtendFieldDetailList.get(i).getFieldId(), sysExtendFieldDetailList.get(i).getValue());
+            }
+        }
+    }
 }

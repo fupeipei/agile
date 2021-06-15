@@ -3,13 +3,11 @@ package com.yusys.agile.issue.rest;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.FeatureService;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
-import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
-import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.slf4j.Logger;
@@ -31,14 +29,12 @@ public class FeatureController {
 
     @Resource
     private FeatureService featureService;
-
     @Resource
     private RabbitTemplate rabbitTemplate;
-
-    @Resource
-    private SysExtendFieldDetailService sysExtendFieldDetailService;
     @Resource
     private IssueFactory issueFactory;
+    @Resource
+    private IssueService issueService;
 
     @PostMapping("/createFeature")
     public ControllerResponse createFeature(@RequestBody Map<String, Object> featureMap) {
@@ -70,14 +66,7 @@ public class FeatureController {
                 map.put(key.toString(), beanMap.get(key));
             }
         }
-        if (null != featureId) {
-            List<Long> issueIds = Lists.newArrayList();
-            issueIds.add(featureId);
-            List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getIssueExtendDetailList(issueIds);
-            for (int i = 0; i < sysExtendFieldDetailList.size(); i++) {
-                map.put(sysExtendFieldDetailList.get(i).getFieldId(), sysExtendFieldDetailList.get(i).getValue());
-            }
-        }
+        issueService.orgIssueExtendFields(featureId,map);
         return ControllerResponse.success(map);
     }
 
@@ -95,7 +84,7 @@ public class FeatureController {
     @PostMapping("/editFeature")
     public ControllerResponse editFeature(@RequestBody Map<String, Object> map) {
         try {
-            //暂时先将扩展字段扔掉
+            //组织基本字段信息
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
             featureService.editFeature(issueDTO);
@@ -110,9 +99,9 @@ public class FeatureController {
     }
 
     @PutMapping("/copyFeature/{featureId}")
-    public ControllerResponse copyFeature(@PathVariable(name = "featureId") Long featureId, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse copyFeature(@PathVariable(name = "featureId") Long featureId) {
         try {
-            Long newFeatureId = featureService.copyFeature(featureId, projectId);
+            Long newFeatureId = featureService.copyFeature(featureId);
             return ControllerResponse.success(newFeatureId);
         } catch (Exception e) {
             LOGGER.error("复制研发需求失败：{}", e);
@@ -121,18 +110,12 @@ public class FeatureController {
     }
 
     @GetMapping("/queryUnlinkedFeature")
-    public ControllerResponse queryUnlinkedFeature(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("pageNum") Integer pageNum,
-                                                   @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
-                                                   @RequestParam(name = "projectId", required = false) Long paramProjectId) {
-        Long finalProjectId = null;
-        if (null != paramProjectId) {
-            finalProjectId = paramProjectId;
-        } else {
-            finalProjectId = projectId;
-        }
+    public ControllerResponse queryUnlinkedFeature(@RequestParam("pageNum") Integer pageNum,
+                                                   @RequestParam("pageSize") Integer pageSize,
+                                                   @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
-            result = featureService.queryUnlinkedFeature(finalProjectId, pageNum, pageSize, title);
+            result = featureService.queryUnlinkedFeature(null, pageNum, pageSize, title);
         } catch (Exception e) {
             LOGGER.error("查询未关联的研发需求异常", e);
             return ControllerResponse.fail("查询未关联的研发需求异常：" + e.getMessage());
@@ -141,18 +124,12 @@ public class FeatureController {
     }
 
     @GetMapping("/queryAllFeature")
-    public ControllerResponse queryAllFeature(@RequestHeader(name = "projectId", required = false) Long projectId, @RequestParam(value = "pageNum", required = false) Integer pageNum,
-                                              @RequestParam(value = "pageSize", required = false) Integer pageSize, @RequestParam(value = "title", required = false) String title,
-                                              @RequestParam(name = "projectId", required = false) Long paramProjectId) {
-        Long finalProjectId = null;
-        if (null != paramProjectId) {
-            finalProjectId = paramProjectId;
-        } else {
-            finalProjectId = projectId;
-        }
+    public ControllerResponse queryAllFeature(@RequestParam(value = "pageNum", required = false) Integer pageNum,
+                                              @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                              @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
-            result = featureService.queryAllFeature(finalProjectId, pageNum, pageSize, title);
+            result = featureService.queryAllFeature(null, pageNum, pageSize, title);
         } catch (Exception e) {
             LOGGER.error("查询所有的研发需求异常", e);
             return ControllerResponse.fail("查询所有的研发需求异常：" + e.getMessage());
