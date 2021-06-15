@@ -465,7 +465,7 @@
          <if test="systemId != null">
             and s.system_id = #{systemId}
         </if>
-        <if test="systemId != null">
+        <if test="systemId == null">
            and s.system_id is null
         </if>
          and s.field_id not in
