@@ -64,9 +64,9 @@ public class EpicController {
     }
 
     @DeleteMapping("/deleteEpic/{epicId}")
-    public ControllerResponse deleteEpic(@PathVariable("epicId") Long epicId, Boolean deleteChild) {
+    public ControllerResponse deleteEpic(@PathVariable("epicId") Long epicId) {
         try {
-            epicService.deleteEpic(epicId, deleteChild);
+            epicService.deleteEpic(epicId);
         } catch (Exception e) {
             LOGGER.error("删除业务需求失败：{}", e);
             return ControllerResponse.fail("删除业务需求失败：" + e.getMessage());

@@ -16,13 +16,12 @@ public interface EpicService {
     Long createEpic(IssueDTO issueDTO);
 
     /**
-     * @param deleteChild
      * @Date: 18:03
      * @Description: 删除业务需求
      * @Param: * @param issueId
      * @Return: int
      */
-    void deleteEpic(Long issueId, Boolean deleteChild);
+    void deleteEpic(Long issueId);
 
     /**
      * @Date: 18:03
