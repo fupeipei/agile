@@ -87,4 +87,13 @@ public interface Teamv3Service {
      * @param team
      */
     void updateTeamForLean(STeam team);
+
+    STeam getTeamById(long teamId);
+    /**
+     * 删除精益类型团队
+     * @author zhaofeng
+     * @date 2021/6/15 13:43
+     * @param teamId
+     */
+    void deleteTeamForLean(Long teamId);
 }
