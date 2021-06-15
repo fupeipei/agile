@@ -54,6 +54,7 @@
         <result column="cmp_sync_result" jdbcType="TINYINT" property="cmpSyncResult"/>
         <result column="is_archive" jdbcType="TINYINT" property="isArchive"/>
         <result column="is_cancel" jdbcType="TINYINT" property="isCancel"/>
+        <result column="kanban_id" jdbcType="BIGINT" property="kanbanId"/>
         <result column="team_id" jdbcType="BIGINT" property="teamId"/>
     </resultMap>
     <sql id="Example_Where_Clause">
@@ -123,7 +124,7 @@
     create_time, update_uid, update_time, fault_type, fault_level, fixed_time, close_time, 
     fixed_uid, test_uid, version_id, case_id, deadline, file, urgency, cause, detected_phase, 
     manual_case_id, source, remain_workload, bug_id, `order`, block_state, reopen_times,assess_is_pass,assess_remarks,tenant_code,
-    cmp_sync_result,is_archive,is_cancel,team_id
+    cmp_sync_result,is_archive,is_cancel,kanban_id,team_id
   </sql>
 
     <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueExample"
@@ -188,7 +189,7 @@
       urgency, cause, detected_phase, 
       manual_case_id, source, remain_workload, 
       bug_id, `order`, block_state,
-      reopen_times,assess_is_pass,assess_remarks,tenant_code,team_id)
+      reopen_times,assess_is_pass,assess_remarks,tenant_code,team_id,kanban_id)
     values (#{issueId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
       #{issueType,jdbcType=TINYINT}, #{sprintId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, 
       #{systemId,jdbcType=BIGINT}, #{handler,jdbcType=BIGINT}, #{beginDate,jdbcType=TIMESTAMP}, 
@@ -205,7 +206,7 @@
       #{manualCaseId,jdbcType=BIGINT}, #{source,jdbcType=TINYINT}, #{remainWorkload,jdbcType=INTEGER}, 
       #{bugId,jdbcType=BIGINT}, #{order,jdbcType=INTEGER}, #{blockState,jdbcType=TINYINT}, 
       #{reopenTimes,jdbcType=INTEGER}, #{assessIsPass,jdbcType=TINYINT},#{assessRemarks,jdbcType=VARCHAR},
-      #{tenantCode},#{teamId,jdbcType=BIGINT})
+      #{tenantCode},#{teamId,jdbcType=BIGINT},#{kanbanId,jdbcType=BIGINT})
   </insert>
     <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.Issue" useGeneratedKeys="true"
             keyProperty="issueId">
@@ -367,6 +368,9 @@
             <if test="teamId != null">
                 team_id,
             </if>
+            <if test="kanbanId != null">
+                kanban_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <!--<if test="issueId != null">-->
@@ -524,6 +528,9 @@
             </if>
             <if test="teamId != null">
                 #{teamId,jdbcType=BIGINT},
+            </if>
+            <if test="kanbanId != null">
+                #{kanbanId,jdbcType=BIGINT},
             </if>
         </trim>
     </insert>

@@ -59,6 +59,22 @@ public class KanbanStageInstance implements Serializable {
      */
     private Long templateId;
 
+    /**
+     * 团队id
+     */
+    private Long teamId;
+
+    /**
+     * 看板id
+     */
+    private Long  kanbanId;
+
+    /**
+     * 阶段类型
+     */
+    private Byte stageType;
+
+
     public Long getInstanceId() {
         return instanceId;
     }
@@ -225,6 +241,31 @@ public class KanbanStageInstance implements Serializable {
 
     public void setTemplateId(Long templateId) {
         this.templateId = templateId;
+    }
+
+
+    public Long getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Long teamId) {
+        this.teamId = teamId;
+    }
+
+    public Long getKanbanId() {
+        return kanbanId;
+    }
+
+    public void setKanbanId(Long kanbanId) {
+        this.kanbanId = kanbanId;
+    }
+
+    public Byte getStageType() {
+        return stageType;
+    }
+
+    public void setStageType(Byte stageType) {
+        this.stageType = stageType;
     }
 
     @Override

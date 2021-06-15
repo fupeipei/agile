@@ -40,4 +40,12 @@ public interface StageTemplateConfigService {
      * @date 2021/2/6
      */
     StageTemplateConfigDTO getMaxSecondStageTemplateConfigData();
+
+    /**
+     * 获取所有的阶段信息用于创建看板
+     *
+     * @return
+     */
+    List<StageTemplateConfigDTO> getDefaultStages();
+
 }

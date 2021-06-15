@@ -78,7 +78,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from stage_template_config
+    from s_stage_template_config
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -89,21 +89,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from stage_template_config
+    from s_stage_template_config
     where conf_id = #{confId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from stage_template_config
+    delete from s_stage_template_config
     where conf_id = #{confId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.set.stage.domain.StageTemplateConfigExample">
-    delete from stage_template_config
+    delete from s_stage_template_config
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.set.stage.domain.StageTemplateConfig">
-    insert into stage_template_config (conf_id, stage_id, stage_name, 
+    insert into s_stage_template_config (conf_id, stage_id, stage_name,
       level, parent_id, order_id, 
       state, tenant_code)
     values (#{confId,jdbcType=BIGINT}, #{stageId,jdbcType=BIGINT}, #{stageName,jdbcType=VARCHAR}, 
@@ -111,7 +111,7 @@
       #{state,jdbcType=VARCHAR}, #{tenantCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.set.stage.domain.StageTemplateConfig">
-    insert into stage_template_config
+    insert into s_stage_template_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="confId != null">
         conf_id,
@@ -166,13 +166,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.set.stage.domain.StageTemplateConfigExample" resultType="java.lang.Long">
-    select count(*) from stage_template_config
+    select count(*) from s_stage_template_config
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update stage_template_config
+    update s_stage_template_config
     <set>
       <if test="record.confId != null">
         conf_id = #{record.confId,jdbcType=BIGINT},
@@ -204,7 +204,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update stage_template_config
+    update s_stage_template_config
     set conf_id = #{record.confId,jdbcType=BIGINT},
       stage_id = #{record.stageId,jdbcType=BIGINT},
       stage_name = #{record.stageName,jdbcType=VARCHAR},
@@ -218,7 +218,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.set.stage.domain.StageTemplateConfig">
-    update stage_template_config
+    update s_stage_template_config
     <set>
       <if test="stageId != null">
         stage_id = #{stageId,jdbcType=BIGINT},
@@ -245,7 +245,7 @@
     where conf_id = #{confId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.set.stage.domain.StageTemplateConfig">
-    update stage_template_config
+    update s_stage_template_config
     set stage_id = #{stageId,jdbcType=BIGINT},
       stage_name = #{stageName,jdbcType=VARCHAR},
       level = #{level,jdbcType=TINYINT},

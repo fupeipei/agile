@@ -1,45 +1,30 @@
 package com.yusys.agile.leankanban.service;
 
-import com.yusys.agile.leankanban.dto.IssueResultDTO;
-import com.yusys.agile.leankanban.dto.PageResultDTO;
-import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
-import com.yusys.agile.utils.page.PageQuery;
-
-import java.util.List;
-import java.util.Map;
+import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 
 /**
- * 赵英东
+ *  @Description: 敏捷看板服务
+ *  @author: zhao_yd
+ *  @Date: 2021/6/11 10:14 上午
+ *
  */
+
 public interface LeanKanbanService {
+
+    /**
+     * 创建精益看板
+     *
+     * @param leanKanbanDTO
+     */
+    void createLeanKanban(SLeanKanbanDTO leanKanbanDTO);
 
 
     /**
      * 查询看板信息
      *
-     * @param projectId
-     * @param queries
+     * @param teamId
      * @return
      */
-    List<KanbanStageInstanceDTO> selectKanbanStageInstanceDTOList(Long projectId, List<PageQuery<Long>> queries);
-
-    /**
-     * 移动看板卡片
-     *
-     * @param issueId
-     * @param toStageId
-     * @return
-     */
-    int moveIssue(Long issueId, Long toStageId, Long toLaneId);
-
-
-    /**
-     * @Date: 2021/2/19
-     * @Description: 获取精益看板视图
-     * @Param: [projectId, queries,selectType]
-     * @Return: com.yusys.agile.leankanban.dto.IssueResultDTO
-     */
-    List<IssueResultDTO> selectIssueViewInfo(Long projectId, List<PageResultDTO> pageResultDTOList, Map<String, Object> map) throws Exception;
-
+    SLeanKanbanDTO queryLeanKanbanInfo(Long teamId);
 
 }

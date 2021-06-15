@@ -1110,6 +1110,11 @@ public class IssueExample {
             return (Criteria) this;
         }
 
+        public Criteria andKanbanIdTo(Long value) {
+            addCriterion("kanban_id =", value, "kanbanId");
+            return (Criteria) this;
+        }
+
         public Criteria andStateEqualTo(String value) {
             addCriterion("state =", value, "state");
             return (Criteria) this;

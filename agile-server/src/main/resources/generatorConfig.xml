@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration>
 	<classPathEntry
-			location="D:\apache-maven-3.3.9-bin\maven-repository\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar" />
+			location="/Users/zhaoyingdong/Utils/mysql-connector-java-8.0.12.jar" />
 	<context id="context">
 		<!-- 生成的pojo，将implements Serializable-->
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
@@ -15,14 +15,14 @@
 						password="root+654321">
 			<property name="remarksReporting" value="true" />
 			<property name="useUnicode" value="true" />
-			<property name="characterEncoding" value="UTF-8" />
+			<property name=" " value="UTF-8" />
 		</jdbcConnection>
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
 		<!-- targetPackage:包名；targetProject：生成文件的位置（相对于generatorConfig.xml所在项目，这里指的是agile-server）-->
 		<javaModelGenerator
-				targetPackage="com.yusys.agile.sprintv3.domain"
+				targetPackage="com.yusys.agile.leankanban.domain"
 				targetProject="./src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
@@ -32,7 +32,7 @@
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<javaClientGenerator
-				targetPackage="com.yusys.agile.sprintv3.dao"
+				targetPackage="com.yusys.agile.leankanban.dao"
 				targetProject="./src/main/java" type="XMLMAPPER">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
@@ -44,8 +44,7 @@
 		<!--		<table tableName="s_team_sm"/>-->
 		<!--		<table tableName="s_team_user"/>-->
 		<!--		<table tableName="s_sprint"/>-->
-		<table tableName="s_sprint_attachment"/>
-		<table tableName="s_sprint_review"/>
+		<table tableName="s_lean_kanban"/>
 
 	</context>
 </generatorConfiguration>

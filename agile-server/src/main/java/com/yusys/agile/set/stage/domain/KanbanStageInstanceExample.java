@@ -309,6 +309,16 @@ public class KanbanStageInstanceExample {
             return (Criteria) this;
         }
 
+        public Criteria andStageTypeEqualTo(Byte value) {
+            addCriterion("stage_type =", value, "stageType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKanbanIdEqualTo(Long value) {
+            addCriterion("kanban_id =", value, "kanbanId");
+            return (Criteria) this;
+        }
+
         public Criteria andParentIdEqualTo(Long value) {
             addCriterion("parent_id =", value, "parentId");
             return (Criteria) this;
