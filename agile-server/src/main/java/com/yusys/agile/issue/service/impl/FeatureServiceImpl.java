@@ -7,18 +7,11 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.FeatureService;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
-import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.service.StageService;
-import com.yusys.agile.versionmanager.dao.VersionFeatureSyncDataMapper;
-import com.yusys.agile.versionmanager.domain.VersionFeatureSyncData;
-import com.yusys.agile.versionmanager.enums.OperateTypeEnum;
 import com.yusys.portal.common.exception.BusinessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -28,8 +21,6 @@ import java.util.List;
 @Service
 public class FeatureServiceImpl implements FeatureService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureServiceImpl.class);
-
     @Resource
     private IssueFactory issueFactory;
 
@@ -37,47 +28,19 @@ public class FeatureServiceImpl implements FeatureService {
     private IssueMapper issueMapper;
 
     @Resource
-    private VersionFeatureSyncDataMapper versionFeatureSyncDataMapper;
+    private IssueService issueService;
 
-    @Resource
-    private KanbanStageInstanceMapper kanbanStageInstanceMapper;
-
-    @Resource
-    private StageService stageService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void deleteFeature(Long featureId, Boolean deleteChild) {
-        Issue record = issueMapper.selectByPrimaryKey(featureId);
-        issueFactory.deleteIssue(featureId, deleteChild);
-        dealEpicFeatureSync(featureId);
+    public void deleteFeature(Long featureId) {
+        //判断featur下是否存在story，如果存在不允许删除
+        if(issueService.checkHasChildren(featureId)){
+            throw new BusinessException("该Feature【"+featureId+"】下关联了子工作项，请先解除关联关系，再删除!");
+        }
+        issueFactory.deleteIssue(featureId);
     }
 
-    /**
-     * @param featureId
-     * @description 处理需求下分支删除
-     * @date 2020/10/1
-     */
-    private void dealEpicFeatureSync(Long featureId) {
-        Issue feature = issueMapper.getIssue(featureId);
-        if (null != feature) {
-            Long epicId = feature.getParentId();
-            if (null != epicId) {
-                Issue epic = issueMapper.getIssue(epicId);
-                if (null != epic) {
-                    VersionFeatureSyncData versionFeatureSyncData = new VersionFeatureSyncData();
-                    versionFeatureSyncData.setRequireId(epicId);
-                    versionFeatureSyncData.setBranchId(featureId);
-                    versionFeatureSyncData.setProjectId(feature.getProjectId());
-                    versionFeatureSyncData.setOperateType(OperateTypeEnum.OPERATE_TYPE_DELETE.VALUE.byteValue());
-                    int count = versionFeatureSyncDataMapper.insertSelective(versionFeatureSyncData);
-                    if (count != 1) {
-                        throw new RuntimeException("保存需求分支解绑数据失败");
-                    }
-                }
-            }
-        }
-    }
 
     @Override
     public IssueDTO queryFeature(Long featureId) {

@@ -3201,4 +3201,12 @@ public class IssueServiceImpl implements IssueService {
             }
         }
     }
+
+    @Override
+    public boolean checkHasChildren(Long epicId) {
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andParentIdEqualTo(epicId).andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
+        List<Issue> issueList = issueMapper.selectByExample(issueExample);
+        return CollectionUtils.isNotEmpty(issueList) ? false : true;
+    }
 }
