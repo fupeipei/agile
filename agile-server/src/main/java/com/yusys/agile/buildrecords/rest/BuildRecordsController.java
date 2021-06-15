@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 
 /**
@@ -23,9 +22,6 @@ import javax.annotation.Resource;
 public class BuildRecordsController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BuildRecordsController.class);
-
-    /*@Resource
-    private ICmsChangeClient iCmsChangeClient;*/
 
     @Resource
     private BuildDeployService buildDeployService;
@@ -42,8 +38,6 @@ public class BuildRecordsController {
     public ControllerResponse getIssueBuildRecords(@RequestParam("issueId") Long issueId,
                                                    @RequestParam("pageNum") Integer pageNum,
                                                    @RequestParam("pageSize") Integer pageSize) {
-        //PageInfo pageInfo = iCmsChangeClient.queryBuildInstanceByTaskId(issueId.toString(), pageNum, pageSize);
-        //return ControllerResponse.success(pageInfo);
         try {
             PageInfo pageInfo = buildDeployService.queryBuildRecord(issueId, pageNum, pageSize);
             return ControllerResponse.success(pageInfo);
@@ -65,9 +59,6 @@ public class BuildRecordsController {
     public ControllerResponse getIssueDeployRecords(@RequestParam("issueId") Long issueId,
                                                     @RequestParam("pageNum") Integer pageNum,
                                                     @RequestParam("pageSize") Integer pageSize) {
-        //PageInfo pageInfo = iCmsChangeClient.queryDeployInstanceByTaskId(issueId.toString(), pageNum, pageSize);
-        //return ControllerResponse.success(pageInfo);
-
         try {
             PageInfo pageInfo = buildDeployService.queryDeployRecord(issueId, pageNum, pageSize);
             return ControllerResponse.success(pageInfo);

@@ -44,7 +44,7 @@ public class SysExtendFieldServiceImpl implements SysExtendFieldService {
     @Override
     public List<SysExtendField> getField(Byte issueType) {
         List<SysExtendField> sysExtendFieldList = Lists.newArrayList();
-
+        sysExtendFieldList = getAllSysExtendField(issueType);
         List<SysField> sysFields = sysFieldService.getAllSysField(issueType);
         if (sysFields.size() > 0) {
             List<SysExtendField> sysExtendFieldList1 = ReflectObjectUtil.copyProperties4List(sysFields, SysExtendField.class);
