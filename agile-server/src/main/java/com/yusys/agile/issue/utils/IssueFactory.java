@@ -687,8 +687,8 @@ public class IssueFactory {
             issueDTO.setAttachments(issueAttachmentDTOList);
 
             //查询自定义字段
-//            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
-//            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
+            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
             //查询故事验收标准信息
             getAcceptanceList(issueId, issueDTO);
 
