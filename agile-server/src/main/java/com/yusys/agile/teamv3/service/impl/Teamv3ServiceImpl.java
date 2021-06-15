@@ -195,20 +195,12 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         params.put("team", dto.getTeam());
         params.put("userId", security.getUserId());
         params.put("tenantCode", security.getTenantCode());
-        params.put("type", dto.getTeamType());
+        params.put("teamType", dto.getTeamType());
+        // 团队po、sm、lean
+        params.put("po", dto.getPo());
+        params.put("sm", dto.getSm());
+        params.put("lean",dto.getLean());
 
-        //设置类型参数
-        if(Objects.equals(dto.getTeamType(), TeamTypeEnum.agile_team.getCode())){
-            params.put("po", dto.getPo());
-            params.put("sm", dto.getSm());
-            params.put("lean", null);
-        }else if(Objects.equals(dto.getTeamType(), TeamTypeEnum.lean_team.getCode())){
-            params.put("po", null);
-            params.put("sm", null);
-            params.put("lean", dto.getLean());
-        }else{
-            throw new BusinessException("团队类型错误");
-        }
         return params;
     }
 
