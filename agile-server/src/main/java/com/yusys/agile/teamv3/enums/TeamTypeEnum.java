@@ -7,14 +7,40 @@ package com.yusys.agile.teamv3.enums;
  */
 public enum TeamTypeEnum {
 
-    agile_team("M","敏捷团队"),
-    lean_team("N","精益团队");
+    agile_team("M","敏捷"),
+    lean_team("N","精益");
 
     private String code;
     private String name;
 
     TeamTypeEnum(String code, String name){
         this.code = code;
+        this.name = name;
+    }
+
+    public static String getNameByCode(String code){
+        TeamTypeEnum[] values = TeamTypeEnum.values();
+        for (TeamTypeEnum value : values) {
+            if(value.code.equals(code)){
+                return value.name;
+            }
+        }
+        return null;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 }

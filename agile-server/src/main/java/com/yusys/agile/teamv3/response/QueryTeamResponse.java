@@ -19,4 +19,5 @@ public class QueryTeamResponse {
     private List<TeamUserDTO> teamUsers;
     private List<TeamUserDTO> teamPoS;
     private List<TeamUserDTO> teamSmS;
+    private List<TeamUserDTO> teamLean;
 }

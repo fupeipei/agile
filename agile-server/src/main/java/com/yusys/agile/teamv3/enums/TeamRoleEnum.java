@@ -10,6 +10,7 @@ public enum TeamRoleEnum {
     SCRUM_MASTER(103,"SM","Scrum Master"),
     PRODUCT_OWNER(104,"PO","Product Owner"),
     TEAM_MEMBER(105,"MEMBER","Team Member"),
+    LEAN_MASTER(106,"MEMBER","Lean Master"),
     ;
 
     public int roleId;

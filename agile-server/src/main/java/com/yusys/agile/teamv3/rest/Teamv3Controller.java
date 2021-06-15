@@ -4,13 +4,17 @@ import com.github.pagehelper.PageInfo;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
+import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author zhaofeng
@@ -45,7 +49,13 @@ public class Teamv3Controller {
      */
     @PostMapping("/insertTeam")
     public ControllerResponse insertTeam(@RequestBody STeam team) {
-        teamv3Service.insertTeam(team);
+        if(Objects.equals(team.getTeamType(), TeamTypeEnum.agile_team.getCode())){
+            teamv3Service.insertTeam(team);
+        }else if(Objects.equals(team.getTeamType(), TeamTypeEnum.lean_team.getCode())){
+            teamv3Service.insertTeamForLean(team);
+        }else{
+            throw new BusinessException("团队类型错误");
+        }
         return ControllerResponse.success();
     }
 
@@ -69,7 +79,13 @@ public class Teamv3Controller {
      */
     @PostMapping("/updateTeam")
     public ControllerResponse updateTeam(@RequestBody STeam team) {
-        teamv3Service.updateTeam(team);
+        if(Objects.equals(team.getTeamType(), TeamTypeEnum.agile_team.getCode())){
+            teamv3Service.updateTeam(team);
+        }else if(Objects.equals(team.getTeamType(), TeamTypeEnum.lean_team.getCode())){
+            teamv3Service.updateTeamForLean(team);
+        }else{
+            throw new BusinessException("团队类型错误");
+        }
         return ControllerResponse.success();
     }
 
@@ -81,7 +97,8 @@ public class Teamv3Controller {
      */
     @GetMapping("/queryTeam/{teamId}")
     public ControllerResponse queryTeam(@PathVariable("teamId") long teamId) {
-        return ControllerResponse.success(teamv3Service.queryTeam(teamId));
+        QueryTeamResponse team = teamv3Service.queryTeam(teamId);
+        return ControllerResponse.success(team);
     }
 
 
