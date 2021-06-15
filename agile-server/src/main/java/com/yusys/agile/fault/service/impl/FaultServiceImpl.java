@@ -250,7 +250,7 @@ public class FaultServiceImpl implements FaultService {
         //LOGGER.info("查询描述后的issueDTO={}", JSON.toJSONString(issueDTO));
 
         // 自定义字段
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType(), projectId);
+        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
         issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
         return issueDTO;
     }

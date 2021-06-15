@@ -13,7 +13,7 @@ public interface IssueCustomFieldService {
      * @Param: * @param issueId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>
      */
-    List<IssueCustomFieldDTO> listCustomField(Long issueId, Byte issueType, Long projectId);
+    List<IssueCustomFieldDTO> listCustomField(Long issueId, Byte issueType);
 
     /**
      * @Date: 18:06

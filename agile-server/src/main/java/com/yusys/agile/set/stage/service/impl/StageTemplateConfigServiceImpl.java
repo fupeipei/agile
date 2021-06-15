@@ -7,6 +7,7 @@ import com.yusys.agile.set.stage.dto.StageTemplateConfigDTO;
 import com.yusys.agile.set.stage.service.StageTemplateConfigService;
 import com.yusys.agile.utils.ReflectObjectUtil;
 import com.yusys.portal.model.common.enums.StateEnum;
+import com.yusys.portal.util.code.ReflectUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +17,12 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @description 阶段模板配置业务类
- * @date 2020/08/06
+ *  @Description: 阶段模板配置业务类
+ *  @author: zhao_yd
+ *  @Date: 2021/6/11 1:47 下午
+ *
  */
+
 @Service
 public class StageTemplateConfigServiceImpl implements StageTemplateConfigService {
 
@@ -28,28 +32,13 @@ public class StageTemplateConfigServiceImpl implements StageTemplateConfigServic
     private StageTemplateConfigMapper stageTemplateConfigMapper;
 
     /**
+     * 取阶段模板配置列表
+     *
      * @return
-     * @description 取阶段模板配置列表
-     * @date 2020/08/05
      */
     @Override
     public List<StageTemplateConfig> getStageTemplateConfigList() {
         List<StageTemplateConfig> firstStages = getStageConfigListByLevel((byte) 1);
-        /*if (CollectionUtils.isNotEmpty(firstStages)) {
-            for (StageTemplateConfig firstStage : firstStages) {
-                Long parentId = firstStage.getStageId();
-                if (parentId == StageConstant.FirstStageEnum.READY_STAGE.getValue() || parentId == StageConstant.FirstStageEnum.FINISH_STAGE.getValue()){
-                    continue;
-                }
-                List<StageTemplateConfig> secondStages = getStageConfigListByLevel((byte)2);
-                if (CollectionUtils.isNotEmpty(secondStages)) {
-                    secondStages.forEach(secondStage -> {
-                        secondStage.setParentId(parentId);
-                    });
-                }
-                firstStage.setSecondStages(secondStages);
-            }
-        }*/
         return firstStages;
     }
 
@@ -94,5 +83,21 @@ public class StageTemplateConfigServiceImpl implements StageTemplateConfigServic
             stageTemplateConfigDTO = ReflectObjectUtil.copyProperties(list.get(0), StageTemplateConfigDTO.class);
         }
         return stageTemplateConfigDTO;
+    }
+
+    @Override
+    public List<StageTemplateConfigDTO> getDefaultStages() {
+        StageTemplateConfigExample stageTemplateConfigExample = new StageTemplateConfigExample();
+        stageTemplateConfigExample.setOrderByClause("order_id");
+        stageTemplateConfigExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue());
+        List<StageTemplateConfig> stageTemplateConfigs = stageTemplateConfigMapper.selectByExample(stageTemplateConfigExample);
+        List<StageTemplateConfigDTO> result = null;
+        try {
+            result = ReflectUtil.copyProperties4List(stageTemplateConfigs, StageTemplateConfigDTO.class);
+        } catch (Exception e) {
+            LOGGER.info("获取精益看板模版异常：{}",e.getMessage());
+        }
+        return result;
     }
 }

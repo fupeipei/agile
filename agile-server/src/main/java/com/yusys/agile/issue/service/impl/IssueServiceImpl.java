@@ -3142,4 +3142,71 @@ public class IssueServiceImpl implements IssueService {
         }
         return longList;
     }
+
+
+    /**
+     * 获取树形工作项列表
+     *
+     * @param kanbanId
+     * @param issueType
+     * @return
+     */
+    @Override
+    public List<IssueDTO> getIssueTrees(Long kanbanId, Byte issueType){
+        IssueExample example = new IssueExample();
+        example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andIssueTypeEqualTo(issueType)
+                .andKanbanIdTo(kanbanId);
+
+        example.setOrderByClause("create_time desc");
+        List<Issue> issues = issueMapper.selectByExample(example);
+        List<IssueDTO> issueDTOS = Lists.newArrayList();
+        if(CollectionUtils.isNotEmpty(issues)){
+            try {
+                issueDTOS = ReflectUtil.copyProperties4List(issues, IssueDTO.class);
+                recursionGetIssues(issueDTOS,kanbanId);
+            } catch (Exception e) {
+                loggr.info("工作项数据转换异常:{}",e.getMessage());
+            }
+        }
+        return issueDTOS;
+    }
+
+    /**
+     * 递归获取自工作项
+     *
+     * @param issues
+     */
+    public void recursionGetIssues(List<IssueDTO> issues,Long kanbanId){
+        for(IssueDTO issueDTO :issues){
+            Long issueId = issueDTO.getIssueId();
+
+            IssueExample example = new IssueExample();
+            example.createCriteria()
+                    .andStateEqualTo(StateEnum.U.getValue())
+                    .andKanbanIdTo(kanbanId)
+                    .andParentIdEqualTo(issueId);
+            example.setOrderByClause("create_time desc");
+            List<Issue> issueList = issueMapper.selectByExample(example);
+            List<IssueDTO> childs = Lists.newArrayList();
+            if(CollectionUtils.isNotEmpty(childs)){
+                try {
+                    childs = ReflectUtil.copyProperties4List(issueList, IssueDTO.class);
+                    issueDTO.setChildren(childs);
+                    recursionGetIssues(childs,kanbanId);
+                } catch (Exception e) {
+                    loggr.info("工作项数据转换异常:{}",e.getMessage());
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean checkHasChildren(Long epicId) {
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andParentIdEqualTo(epicId).andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
+        List<Issue> issueList = issueMapper.selectByExample(issueExample);
+        return CollectionUtils.isNotEmpty(issueList) ? false : true;
+    }
 }

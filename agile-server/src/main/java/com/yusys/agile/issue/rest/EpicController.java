@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.rest;
 
+import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.service.EpicService;
@@ -14,9 +15,9 @@ import com.google.common.collect.Maps;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.Map;
  *
  */
 @RestController
+@RequestMapping("/issue/epic")
 public class EpicController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EpicController.class);
@@ -35,29 +37,36 @@ public class EpicController {
     @Resource
     private EpicService epicService;
 
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
     @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
 
-    @PostMapping("/issue/createEpic")
-    public ControllerResponse createEpic(@RequestBody IssueDTO issueDTO, @RequestHeader(name = "projectId",required = false) Long projectId) {
+    @PostMapping("/createEpic")
+    public ControllerResponse createEpic(@RequestBody Map<String, Object> epicMap){
         try {
-            //issueDTO.setProjectId(projectId);
-            Long paramProjectId = issueDTO.getProjectId();
-            if (null == paramProjectId) {
-                issueDTO.setProjectId(projectId);
-            }
-            return ControllerResponse.success(epicService.createEpic(issueDTO));
+            //保存基本字段
+            JSONObject jsonObject = new JSONObject(epicMap);
+            IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
+            Long issueId = epicService.createEpic(issueDTO);
+
+            //批量新增或者批量更新扩展字段值
+            issueDTO.setIssueType(new Byte("1"));
+            issueDTO.setIssueId(issueId);
+            issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
+            rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
+            return ControllerResponse.success(issueId);
         } catch (Exception e) {
             LOGGER.error("新增业务需求失败：{}", e);
             return ControllerResponse.fail("新增业务需求失败：" + e.getMessage());
         }
     }
 
-    @DeleteMapping("/issue/deleteEpic/{epicId}")
-    public ControllerResponse deleteEpic(@PathVariable("epicId") Long epicId, Boolean deleteChild) {
+    @DeleteMapping("/deleteEpic/{epicId}")
+    public ControllerResponse deleteEpic(@PathVariable("epicId") Long epicId) {
         try {
-            epicService.deleteEpic(epicId, deleteChild);
+            epicService.deleteEpic(epicId);
         } catch (Exception e) {
             LOGGER.error("删除业务需求失败：{}", e);
             return ControllerResponse.fail("删除业务需求失败：" + e.getMessage());
@@ -65,7 +74,7 @@ public class EpicController {
         return ControllerResponse.success("删除业务需求成功！");
     }
 
-    @GetMapping("/issue/queryEpic/{epicId}")
+    @GetMapping("/queryEpic/{epicId}")
     public ControllerResponse queryEpic(@PathVariable("epicId") Long epicId) {
         IssueDTO issueDTO = epicService.queryEpic(epicId);
         Map<String, Object> map = Maps.newHashMap();
@@ -86,7 +95,7 @@ public class EpicController {
         return ControllerResponse.success(map);
     }
 
-    @PostMapping("/issue/editEpic")
+    @PostMapping("/editEpic")
     public ControllerResponse editEpic(@RequestBody Map<String, Object> map) {
         try {
             //暂时先将扩展字段扔掉
@@ -106,7 +115,7 @@ public class EpicController {
         return ControllerResponse.success("编辑业务需求成功！");
     }
 
-    @PutMapping("/issue/copyEpic/{epicId}")
+    @PutMapping("/copyEpic/{epicId}")
     public ControllerResponse copyEpic(@PathVariable(name = "epicId") Long epicId, @RequestHeader(name = "projectId",required = false) Long projectId) {
         try {
             Long newEpicId = epicService.copyEpic(epicId, projectId);
@@ -117,7 +126,7 @@ public class EpicController {
         }
     }
 
-    @GetMapping("/issue/queryAllEpic")
+    @GetMapping("/queryAllEpic")
     public ControllerResponse queryAllEpic(@RequestHeader(name = "projectId", required = false) Long projectId, @RequestParam(value = "pageNum", required = false) Integer pageNum,
                                            @RequestParam(value = "pageSize", required = false) Integer pageSize, @RequestParam(value = "title", required = false) String title,
                                            @RequestParam(name = "projectId", required = false) Long paramProjectId) {
@@ -146,7 +155,7 @@ public class EpicController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/2/22
      */
-    @GetMapping("/issue/queryStroyIds")
+    @GetMapping("/queryStroyIds")
     public ControllerResponse queryStroyIds(@RequestParam(value = "id") Long id, @RequestParam(value = "type") Byte type) {
         return ControllerResponse.success(issueFactory.queryStroyIds(id, type));
     }
@@ -158,7 +167,7 @@ public class EpicController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2021/3/30
      */
-    @GetMapping("/issue/queryAllEpicCountByVersionId")
+    @GetMapping("/queryAllEpicCountByVersionId")
     public ControllerResponse queryAllEpicCountByVersionId(@RequestHeader(name = "projectId", required = false) Long projectId) {
         List<IssueStageIdCountDTO> result;
         try {
@@ -174,11 +183,10 @@ public class EpicController {
      * 功能描述: 根据epicId查询下面所有的featureId
      *
      * @param epicId
-     * @param projectId
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/10/13
      */
-    @GetMapping("/issue/queryFeatureIdsByEpicId/{epicId}")
+    @GetMapping("/queryFeatureIdsByEpicId/{epicId}")
     public ControllerResponse queryFeatureIdsByEpicId(@PathVariable(name = "epicId") Long epicId) {
         return ControllerResponse.success(epicService.queryFeatureIdsByEpicId(epicId));
     }

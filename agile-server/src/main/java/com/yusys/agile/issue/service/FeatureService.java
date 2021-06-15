@@ -8,14 +8,12 @@ import java.util.List;
 public interface FeatureService {
 
     /**
-     * @param deleteChild
      * @Date: 18:03
      * @Description: 删除研发需求
      * @Param: * @param featureId
      * @Return: int
      */
-    //void deleteFeature(Long featureId, Boolean deleteChild,Long projectId);
-    void deleteFeature(Long featureId, Boolean deleteChild);
+    void deleteFeature(Long featureId);
 
     /**
      * @Date: 18:04
@@ -23,7 +21,6 @@ public interface FeatureService {
      * @Param: * @param featureId
      * @Return: com.yusys.agile.issue.dto.IssueDTO
      */
-    //IssueDTO queryFeature(Long featureId, Long projectId);
     IssueDTO queryFeature(Long featureId);
 
     /**

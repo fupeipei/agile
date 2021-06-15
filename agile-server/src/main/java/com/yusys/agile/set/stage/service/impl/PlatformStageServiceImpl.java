@@ -14,6 +14,7 @@ import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
 import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.enums.StageTypeEnum;
 import com.yusys.agile.set.stage.exception.StageException;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.portal.util.code.ReflectUtil;
@@ -40,7 +41,8 @@ public class PlatformStageServiceImpl implements IStageService {
     private KanbanStageInstanceMapper kanbanStageInstanceMapper;
 
     /**
-     * 获取平台级别的阶段信息
+     * 敏捷看板获取平台级别的阶段信息
+     *
      * @param stageType 类型 1:epic 2:feature 3:story 4:task
      * @return
      */
@@ -66,7 +68,8 @@ public class PlatformStageServiceImpl implements IStageService {
         kanbanStageInstanceExample.createCriteria()
                 .andParentIdEqualTo(StageConstant.PARENT_STAGE_ID)
                 .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
-                .andStateEqualTo(StageConstant.STATE_VALIDATE).andStageIdIn(stageIds);
+                .andStateEqualTo(StageConstant.STATE_VALIDATE).andStageIdIn(stageIds)
+                .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE);
         kanbanStageInstanceExample.setOrderByClause("order_id asc");
         //一级阶段
         List<KanbanStageInstance> firstStageInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
@@ -85,6 +88,12 @@ public class PlatformStageServiceImpl implements IStageService {
         return tempStageInstanceList;
     }
 
+    /**
+     * 敏捷看板根据一级阶段获取二级阶段集合
+     *
+     * @param stageParentId
+     * @return
+     */
     @Override
     public List<StageInstance> getSecondStageListByParentId(Long stageParentId) {
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
@@ -92,7 +101,8 @@ public class PlatformStageServiceImpl implements IStageService {
                 .andParentIdNotEqualTo(StageConstant.PARENT_STAGE_ID)
                 .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
                 .andStateEqualTo(StageConstant.STATE_VALIDATE)
-                .andParentIdEqualTo(stageParentId);
+                .andParentIdEqualTo(stageParentId)
+                .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE);
         kanbanStageInstanceExample.setOrderByClause("order_id asc");
         List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
         List<StageInstance> stageInstances = Lists.newArrayList();
@@ -104,12 +114,19 @@ public class PlatformStageServiceImpl implements IStageService {
         return stageInstances;
     }
 
+    /**
+     * 敏捷看板根据阶段Id获取阶段实例信息
+     *
+     * @param stageId
+     * @return
+     */
     @Override
     public KanbanStageInstance getStageInfoByStageId(Long stageId) {
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
         kanbanStageInstanceExample.createCriteria()
                 .andStateEqualTo(StageConstant.STATE_VALIDATE)
-                .andStageIdEqualTo(stageId);
+                .andStageIdEqualTo(stageId)
+                .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE);
         kanbanStageInstanceExample.setOrderByClause("order_id asc");
         List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
         if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
@@ -120,7 +137,8 @@ public class PlatformStageServiceImpl implements IStageService {
 
 
     /**
-     * 批量处理二级状态数据
+     * 敏捷看板批量处理二级状态数据
+     *
      * @param stageInstanceList
      */
     private void dealSecondLevelStatusDatas(List<StageInstance> stageInstanceList,Integer stageType) {
@@ -131,6 +149,7 @@ public class PlatformStageServiceImpl implements IStageService {
                     .andParentIdNotEqualTo(StageConstant.PARENT_STAGE_ID)
                     .andLevelEqualTo(StageConstant.StageLevelEnum.SECOND_LEVEL_STAGE.getValue())
                     .andStateEqualTo(StageConstant.STATE_VALIDATE)
+                    .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE)
                     .andParentIdEqualTo(stageId);
             kanbanStageInstanceExample.setOrderByClause("order_id asc");
             List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
@@ -158,4 +177,26 @@ public class PlatformStageServiceImpl implements IStageService {
             stageInstance.setSecondStages(result);
         }
     }
+
+
+    /**
+     * 精益看板查询二级阶段信息
+     *
+     * @param stageParentId
+     * @param kanbanId
+     * @return
+     */
+    @Override
+    public List<KanbanStageInstance> getSecondStageList(Long stageParentId, Long kanbanId) {
+        KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
+        kanbanStageInstanceExample.createCriteria()
+                .andStateEqualTo(StageConstant.STATE_VALIDATE)
+                .andParentIdEqualTo(stageParentId)
+                .andKanbanIdEqualTo(kanbanId)
+                .andStageTypeEqualTo(StageTypeEnum.LEAN.CODE);
+        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
+        return kanbanStageInstances;
+    }
+
 }

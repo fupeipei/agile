@@ -416,6 +416,17 @@
                     )
                 )
             </if>
+            <if test="params.lean != null and params.lean != ''">
+                and exists (
+                    select * from s_team_member tm where t.team_id=tm.team_id
+                        and (
+                        (tm.user_name like concat('%',#{params.lean},'%')
+                         or tm.user_account like concat('%',#{params.lean},'%')
+                        )
+                        and tm.role_id=106
+                    )
+                )
+            </if>
             <if test="params.systemIds != null and params.systemIds.size != 0">
                 and ( tss.system_id in
                 <foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
@@ -470,6 +481,7 @@
                 where
                  binary team_name = #{teamName}
                   and tenant_code = #{tenantCode}
+                  and team_type = #{teamType}
                   and state = 'U'
         <if test="teamId != null">
             and team_id <![CDATA[<>]]> #{teamId}

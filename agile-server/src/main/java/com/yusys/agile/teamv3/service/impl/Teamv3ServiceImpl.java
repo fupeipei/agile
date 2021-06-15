@@ -15,8 +15,8 @@ import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
-import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.exception.BusinessException;
@@ -27,7 +27,6 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSubjectUserDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
-import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.model.facade.enums.RoleTypeEnum;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -172,6 +171,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
      */
     private HashMap<String, Object> buildQueryParams(TeamQueryDTO dto, SecurityDTO security) {
         HashMap<String, Object> params = new HashMap<>();
+        /*
+            公共参数：系统、团队、user、租户、团队类型
+            类型参数：po、sm、lean
+         */
         //按系统名称或code获取systemids
         String system = dto.getSystem();
         if (!StringUtils.isEmpty(system)) {
@@ -188,14 +191,16 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         } else {
             params.put("systemIds", null);
         }
-        //按po名称或账号
-        params.put("po", dto.getPo());
-        //按sm名称或账号
-        params.put("sm", dto.getSm());
         //团队名称或编号
         params.put("team", dto.getTeam());
         params.put("userId", security.getUserId());
         params.put("tenantCode", security.getTenantCode());
+        params.put("teamType", dto.getTeamType());
+        // 团队po、sm、lean
+        params.put("po", dto.getPo());
+        params.put("sm", dto.getSm());
+        params.put("lean",dto.getLean());
+
         return params;
     }
 
@@ -208,9 +213,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertTeam(STeam team) {
+        String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
-        if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode) > 0) {
-            throw new BusinessException("团队名称已存在");
+        if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode, teamType) > 0) {
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType)+"团队名称已存在");
         }
         //取出数据
         List<STeamMember> teamPoS = team.getTeamPoS();
@@ -313,7 +319,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         Long teamId = team.getTeamId();
         STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
         String tenantCode = UserThreadLocalUtil.getTenantCode();
-        if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode) > 0) {
+        if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), team.getTeamName(), tenantCode) > 0) {
             throw new BusinessException("团队名称已存在");
         }
 
@@ -392,19 +398,37 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (ObjectUtil.isEmpty(team)) {
             throw new BusinessException("暂无该团队信息");
         }
-        //构建返回值
+        String teamType = team.getTeamType();
         QueryTeamResponse queryTeamResponse = new QueryTeamResponse();
-        queryTeamResponse.setSTeam(team);
-        List<Long> list = teamSystemMapper.querySystemIdByTeamId(teamId);
-        if (list.size() > 0) {
-            queryTeamResponse.setSystems(iFacadeSystemApi.querySsoSystem(list));
+        //判断团队类型，如果是敏捷，查询团队po、sm、团队成员
+        if(Objects.equals(teamType, TeamTypeEnum.agile_team.getCode())){
+            //构建返回值
+            queryTeamResponse.setSTeam(team);
+            List<Long> list = teamSystemMapper.querySystemIdByTeamId(teamId);
+            if (list.size() > 0) {
+                queryTeamResponse.setSystems(iFacadeSystemApi.querySsoSystem(list));
+            }
+            //查询po
+            queryTeamResponse.setTeamPoS(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.PRODUCT_OWNER.roleId));
+            //查询sm
+            queryTeamResponse.setTeamSmS(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.SCRUM_MASTER.roleId));
+            //查询成员
+            queryTeamResponse.setTeamUsers(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.TEAM_MEMBER.roleId));
+        }else if(Objects.equals(teamType, TeamTypeEnum.lean_team.getCode())){
+            //如果是精益类型，则查精益教练
+            //构建返回值
+            queryTeamResponse.setSTeam(team);
+            List<Long> list = teamSystemMapper.querySystemIdByTeamId(teamId);
+            if (list.size() > 0) {
+                queryTeamResponse.setSystems(iFacadeSystemApi.querySsoSystem(list));
+            }
+            //查询po
+            queryTeamResponse.setTeamLean(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.LEAN_MASTER.roleId));
+            //查询成员
+            queryTeamResponse.setTeamUsers(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.TEAM_MEMBER.roleId));
+        }else{
+            throw new BusinessException("团队类型错误");
         }
-        //查询po
-        queryTeamResponse.setTeamPoS(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.PRODUCT_OWNER.roleId));
-        //查询sm
-        queryTeamResponse.setTeamSmS(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.SCRUM_MASTER.roleId));
-        //查询成员
-        queryTeamResponse.setTeamUsers(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.TEAM_MEMBER.roleId));
         return queryTeamResponse;
     }
 
@@ -421,4 +445,102 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<SsoSystemRestDTO> systemByIds = iFacadeSystemApi.getSystemByIds(systemIdByTeamIds);
         return systemByIds;
     }
+
+
+    //----------------------------------- 精益团队部分（开始）--------------------------------------
+
+    /**
+     * 新增精益团队
+     * @author zhaofeng
+     * @date 2021/6/11 15:50
+     * @param team
+     */
+    @Override
+    public void insertTeamForLean(STeam team) {
+        String teamType = team.getTeamType();
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode, teamType) > 0) {
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType)+"团队名称已存在");
+        }
+        //取出数据
+        List<STeamMember> teamLean = team.getTeamLean();
+        List<STeamMember> teamUsers = team.getTeamUsers();
+        //收集PO的id、收集SM的id
+        List<Long> leanIds = teamLean.stream().map(lean -> lean.getUserId()).collect(Collectors.toList());
+
+        //插入团队
+        sTeamMapper.insertSelective(team);
+        //团队绑定系统
+        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        //团队绑定 精益教练
+        sTeamMemberMapper.batchInsert(team, teamLean, TeamRoleEnum.LEAN_MASTER.roleId);
+        //团队绑定其他成员
+        sTeamMemberMapper.batchInsert(team, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
+        //调门户服务，新增精益教练角色
+        SsoSubjectUserDTO lean = new SsoSubjectUserDTO();
+        lean.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
+        lean.setRoleId((long) TeamRoleEnum.LEAN_MASTER.roleId);
+        lean.setSubjectId(team.getTeamId());
+        lean.setDataCreatorId(team.getCreateUid());
+        lean.setUserIds(leanIds);
+
+        try {
+            iFacadeUserApi.addUserRlats(lean);
+        } catch (Exception e) {
+            log.error("调用门户服务添加精益教练角色失败，失败原因:{}", e);
+            throw new BusinessException("调用门户服务添加精益教练角色失败");
+        }
+    }
+
+    @Override
+    public void updateTeamForLean(STeam team) {
+        Long teamId = team.getTeamId();
+        STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        String teamType = team.getTeamType();
+        if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode, teamType) > 0) {
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType)+"团队名称已存在");
+        }
+
+        //删除团队与系统的绑定关系
+        teamSystemMapper.deleteByTeamId(teamId);
+        //删除团队与PO、SM、TM的绑定关系
+        sTeamMemberMapper.deleteByTeamId(teamId);
+        //删除PO、SM的角色，直接按平台级删除
+        iFacadeUserApi.deleteUserAndRole(teamId, RoleTypeEnum.PLATFORM.getValue());
+
+
+        //取出数据
+        List<STeamMember> teamLean = team.getTeamLean();
+        List<STeamMember> teamUsers = team.getTeamUsers();
+        //收集PO的id、收集SM的id
+        List<Long> leanIds = teamLean.stream().map(lean -> lean.getUserId()).collect(Collectors.toList());
+
+        //插入团队
+        sTeamMapper.updateByPrimaryKeySelective(team);
+        //团队绑定系统
+        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        //团队绑定 精益教练
+        sTeamMemberMapper.batchInsert(team, teamLean, TeamRoleEnum.LEAN_MASTER.roleId);
+        //团队绑定其他成员
+        sTeamMemberMapper.batchInsert(team, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
+        //调门户服务，新增精益教练角色
+        SsoSubjectUserDTO lean = new SsoSubjectUserDTO();
+        lean.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
+        lean.setRoleId((long) TeamRoleEnum.LEAN_MASTER.roleId);
+        lean.setSubjectId(team.getTeamId());
+        lean.setDataCreatorId(team.getCreateUid());
+        lean.setUserIds(leanIds);
+
+        try {
+            iFacadeUserApi.addUserRlats(lean);
+        } catch (Exception e) {
+            log.error("调用门户服务添加精益教练角色失败，失败原因:{}", e);
+            throw new BusinessException("调用门户服务添加精益教练角色失败");
+        }
+    }
+
+
+    //----------------------------------- 精益团队部分（结束）--------------------------------------
+
 }

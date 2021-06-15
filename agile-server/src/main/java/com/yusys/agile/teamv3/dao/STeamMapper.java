@@ -1,12 +1,9 @@
 package com.yusys.agile.teamv3.dao;
 
-import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.dto.TeamListDTO;
-import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
 import com.yusys.agile.teamv3.domain.STeamMember;
-import com.yusys.portal.model.facade.entity.SsoSystem;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
@@ -86,9 +83,11 @@ public interface STeamMapper {
      *
      * @param teamId
      * @param teamName 团队的名字
-     * @return int
+     * @param tenantCode 租户code
+     * @param teamType 团队类型
+     * @return
      */
-    int teamNameNumber(@Param("teamId") Long teamId, @Param("teamName") String teamName, @Param("tenantCode") String tenantCode);
+    int teamNameNumber(@Param("teamId") Long teamId, @Param("teamName") String teamName, @Param("tenantCode") String tenantCode, @Param("teamType") String teamType);
 
     /**
      * 更新团队数据类型，U：有效数据，E:无效数据
@@ -108,7 +107,6 @@ public interface STeamMapper {
      * 查询系统团队
      *
      * @param teamId 团队id
-     * @return {@link List<SsoSystem>}
      * @author 张宇
      */
     List<Long> queryTeamSystem(Long teamId);
@@ -117,7 +115,6 @@ public interface STeamMapper {
      * 查询用户信息,用户id
      *
      * @param sprintId 迭代id
-     * @param teamId   团队id
      * @return {@link List<STeamMember>}
      * @author 张宇
      */

@@ -432,4 +432,23 @@ public interface IssueService {
      */
     List<Long> getIssueIds(Long parentId);
 
+
+    /**
+     * 根据看板Id和issue类型获取节点下所有集合
+     *
+     * @param kanbanId
+     * @param issueType
+     * @return
+     * @throws Exception
+     */
+    List<IssueDTO> getIssueTrees(Long kanbanId,Byte issueType) throws Exception;
+
+    /**
+     *功能描述 校验是否存在子工作项
+     * @author shenfeng
+     * @date 2021/6/15
+      * @param issueId
+     * @return boolean
+     */
+    boolean checkHasChildren(Long issueId);
 }

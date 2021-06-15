@@ -188,15 +188,16 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
      * @param oldFieldList
      * @param issueType
      * @param issueId
-     * @param projectId
      * @return java.util.List<com.yusys.agile.issue.domain.IssueHistoryRecord>
      * @date 2020/4/17
      */
     @Override
-    public List<IssueHistoryRecord> generateHistory(List<SIssueCustomField> newFieldList, List<IssueCustomFieldDTO> oldFieldList, Byte issueType, Long issueId, Long projectId) {
+    public List<IssueHistoryRecord> generateHistory(List<SIssueCustomField> newFieldList, List<IssueCustomFieldDTO> oldFieldList, Byte issueType, Long issueId) {
         HeaderFieldExample example = new HeaderFieldExample();
         HeaderFieldExample.Criteria criteria = example.createCriteria();
-        criteria.andProjectIdEqualTo(projectId).andCategoryEqualTo(issueType);
+        criteria.andStateEqualTo(StateEnum.U.getValue())
+                .andCategoryEqualTo(issueType)
+                .andIsCustomEqualTo(IsCustomEnum.TRUE.getValue());
         List<HeaderField> customFieldList = headerFieldMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(customFieldList)) {
             return new ArrayList<>();

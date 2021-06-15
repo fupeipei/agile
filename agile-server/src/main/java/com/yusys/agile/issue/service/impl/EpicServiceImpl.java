@@ -6,8 +6,10 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.enums.IsAchiveEnum;
+import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.EpicService;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
@@ -43,6 +45,9 @@ public class EpicServiceImpl implements EpicService {
     @Resource
     private VersionManagerService versionManagerService;
 
+    @Resource
+    private IssueService issueService;
+
     @Override
     public Long createEpic(IssueDTO issueDTO) {
         return issueFactory.createIssue(issueDTO, "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
@@ -50,14 +55,14 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteEpic(Long issueId, Boolean deleteChild) {
-        issueFactory.deleteIssue(issueId, deleteChild);
+    public void deleteEpic(Long epicId) {
+        //判断epic下是否有feature，如果存在不允许删除
+        if(issueService.checkHasChildren(epicId)){
+            throw new BusinessException("该Epic【"+epicId+"】下关联了子工作项，请先解除关联关系，再删除!");
+        }
+        issueFactory.deleteIssue(epicId);
     }
 
-    /*@Override
-    public IssueDTO queryEpic(Long issueId,Long projectId) {
-        return issueFactory.queryIssue(issueId,projectId);
-    }*/
 
     @Override
     public IssueDTO queryEpic(Long issueId) {

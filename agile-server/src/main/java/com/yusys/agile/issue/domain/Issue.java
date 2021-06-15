@@ -114,6 +114,9 @@ public class Issue implements Serializable {
     /**团队id*/
     private Long teamId;
 
+    /**看板id*/
+    private Long  kanbanId;
+
     private static final long serialVersionUID = 1L;
 
 }
