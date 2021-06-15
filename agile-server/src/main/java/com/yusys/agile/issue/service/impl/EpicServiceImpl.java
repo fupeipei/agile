@@ -9,6 +9,7 @@ import com.yusys.agile.issue.enums.IsAchiveEnum;
 import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.EpicService;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
@@ -44,6 +45,9 @@ public class EpicServiceImpl implements EpicService {
     @Resource
     private VersionManagerService versionManagerService;
 
+    @Resource
+    private IssueService issueService;
+
     @Override
     public Long createEpic(IssueDTO issueDTO) {
         return issueFactory.createIssue(issueDTO, "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
@@ -51,19 +55,12 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteEpic(Long issueId) {
+    public void deleteEpic(Long epicId) {
         //判断epic下是否有feature，如果存在不允许删除
-        if(checkHasChildren(issueId)){
-            throw new BusinessException("该Epic【"+issueId+"】下关联了子工作项，请先解除关联关系，再删除!");
+        if(issueService.checkHasChildren(epicId)){
+            throw new BusinessException("该Epic【"+epicId+"】下关联了子工作项，请先解除关联关系，再删除!");
         }
-        issueFactory.deleteIssue(issueId);
-    }
-
-    private boolean checkHasChildren(Long epicId) {
-        IssueExample issueExample = new IssueExample();
-        issueExample.createCriteria().andParentIdEqualTo(epicId).andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
-        List<Issue> issueList = issueMapper.selectByExample(issueExample);
-        return CollectionUtils.isNotEmpty(issueList) ? false : true;
+        issueFactory.deleteIssue(epicId);
     }
 
 
