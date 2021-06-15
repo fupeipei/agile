@@ -14,9 +14,9 @@ public interface LeanKanbanService {
     /**
      * 创建精益看板
      *
-     * @param leanKanbanDTO
+     * @param teamid
      */
-    void createLeanKanban(SLeanKanbanDTO leanKanbanDTO);
+    void createLeanKanban(Long teamid);
 
 
     /**

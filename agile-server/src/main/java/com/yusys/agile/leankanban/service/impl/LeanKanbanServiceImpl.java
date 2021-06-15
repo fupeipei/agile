@@ -55,10 +55,10 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
 
 
     @Override
-    public void createLeanKanban(SLeanKanbanDTO leanKanbanDTO) {
+    public void createLeanKanban(Long teamId) {
         //1、创建看板实例
-        Long teamId = leanKanbanDTO.getTeamId();
         Team team = teamMapper.selectByPrimaryKey(teamId);
+        SLeanKanbanDTO leanKanbanDTO = new SLeanKanbanDTO();
         leanKanbanDTO.setKanbanName(team.getTeamName());
         leanKanbanDTO.setKanbanDesc(team.getTeamName());
         leanKanbanDTO.setStatus(1L);
