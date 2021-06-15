@@ -44,7 +44,7 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public IssueDTO queryFeature(Long featureId) {
-        Long projectId = issueFactory.getProjectIdByIssueId(featureId);
+        Long projectId = issueFactory.getSystemIdByIssueId(featureId);
         return issueFactory.queryIssue(featureId, projectId);
     }
 

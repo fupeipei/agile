@@ -45,12 +45,12 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     private IssueService issueService;
 
     @Override
-    public List<IssueCustomFieldDTO> listCustomField(Long issueId, Byte issueType) {
+    public List<IssueCustomFieldDTO> listCustomField(Long systemId, Long issueId, Byte issueType) {
         // 只查询应用的自定义字段
         //List<IssueCustomFieldDTO> issueCustomFieldDTOList  = issueCustomFieldMapper.listCustomField(issueId);
         //List<HeaderFieldDTO> headerFieldDTOS = customFieldPoolService.listAllCustomFields(null, issueType.toString(), StateEnum.U.getValue(), null, null, projectId);
         // 某类型的工作项展示的的自定义字段
-        List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldList(null, issueType);
+        List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldList(systemId, issueType);
         List<IssueCustomFieldDTO> issueCustomFieldDTOList = Lists.newArrayList();
         for (CustomFieldDTO customFieldDTO : customFieldDTOList) {
             IssueCustomFieldDTO issueCustomFieldDTO = assembleIssueCustomFieldDTO(customFieldDTO, issueId);

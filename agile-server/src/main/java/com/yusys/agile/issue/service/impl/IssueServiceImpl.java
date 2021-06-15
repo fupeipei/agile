@@ -966,7 +966,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
         //Long projectId = securityDTO.getProjectId();
-        Long systemId = issueFactory.getProjectIdByIssueId(issueId);
+        Long systemId = issueFactory.getSystemIdByIssueId(issueId);
         try {
             PageHelper.startPage(pageNum, pageSize);
             //查询历史记录
@@ -1130,7 +1130,7 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public List<IssueDTO> listRelation(Long issueId, Byte issueType) {
-        Long projectId = issueFactory.getProjectIdByIssueId(issueId);
+        Long projectId = issueFactory.getSystemIdByIssueId(issueId);
         List<IssueDTO> issueDTOList = issueMapper.listRelation(issueId, projectId);
         List<Long> handlers = new ArrayList<>();
         for (IssueDTO issueDTO : issueDTOList) {
