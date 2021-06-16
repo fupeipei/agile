@@ -8,12 +8,16 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
+import com.yusys.agile.leankanban.domain.SLeanKanban;
+import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
+import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.redis.service.RedissonService;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
 import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.set.stage.enums.StageTypeEnum;
 import com.yusys.agile.set.stage.exception.StageException;
 import com.yusys.agile.set.stage.service.IStageService;
@@ -25,6 +29,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *  @Description: 平台级别阶段实现类
@@ -39,6 +45,58 @@ public class PlatformStageServiceImpl implements IStageService {
 
     @Resource
     private KanbanStageInstanceMapper kanbanStageInstanceMapper;
+    @Resource
+    private LeanKanbanService leanKanbanService;
+
+
+    /**
+     * 精益敏捷阶段查询
+     *
+     * @param stageType 类型 1:epic 2:feature 3:story 4:task
+     * @param teamId 非必填,查询精益阶段要传
+     * @return
+     */
+    @Override
+    public List<StageInstance> getStages(Integer stageType, Long teamId) throws Exception {
+        List<StageInstance> result = Lists.newArrayList();
+        switch (stageType){
+            case 1:
+                result = getStageList(stageType);
+                break;
+            case 2:
+            case 3:
+            case 4:
+                result = getStagesByTeamId(stageType,teamId);
+                break;
+        }
+        return result;
+    }
+
+
+
+   private List<StageInstance> getStagesByTeamId(Integer stageType,Long teamId) throws Exception {
+        SLeanKanbanDTO sLeanKanban = null;
+        if(Optional.ofNullable(teamId).isPresent()){
+            sLeanKanban = leanKanbanService.queryLeanKanbanInfo(teamId);
+        }
+
+        if(Optional.ofNullable(sLeanKanban).isPresent()){
+            List<KanbanStageInstanceDTO> kanbanStageInstances = sLeanKanban.getKanbanStageInstances();
+            //如果是任务或者故事取 开发阶段->测试阶段
+            if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType ||
+                    IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
+                List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
+                        StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(k.getStageId()) ||
+                        StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
+                return stageInstances;
+            }
+            List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(kanbanStageInstances, StageInstance.class);
+            return stageInstances;
+        }
+        List<StageInstance> stageList = getStageList(stageType);
+        return stageList;
+   }
 
     /**
      * 敏捷看板获取平台级别的阶段信息
@@ -50,13 +108,8 @@ public class PlatformStageServiceImpl implements IStageService {
     public List<StageInstance> getStageList(Integer stageType) {
         List<Long> stageIds = Lists.newArrayList();
         switch (stageType){
-            case  1:
-                stageIds.add(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-                break;
+            case 1:
             case 2:
-                stageIds.add(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-                stageIds.add(StageConstant.FirstStageEnum.ANALYSIS_STAGE.getValue());
-                stageIds.add(StageConstant.FirstStageEnum.DESIGN_STAGE.getValue());
                 break;
             case 3:
             case 4:
@@ -66,11 +119,14 @@ public class PlatformStageServiceImpl implements IStageService {
         //一级阶段集合
         List<StageInstance> tempStageInstanceList = Lists.newArrayList();
         KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
-        kanbanStageInstanceExample.createCriteria()
+        KanbanStageInstanceExample.Criteria criteria = kanbanStageInstanceExample.createCriteria()
                 .andParentIdEqualTo(StageConstant.PARENT_STAGE_ID)
                 .andLevelEqualTo(StageConstant.StageLevelEnum.FIRST_LEVEL_STAGE.getValue())
-                .andStateEqualTo(StageConstant.STATE_VALIDATE).andStageIdIn(stageIds)
+                .andStateEqualTo(StageConstant.STATE_VALIDATE)
                 .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE);
+        if(CollectionUtils.isNotEmpty(stageIds)){
+            criteria.andStageIdIn(stageIds);
+        }
         kanbanStageInstanceExample.setOrderByClause("order_id asc");
         //一级阶段
         List<KanbanStageInstance> firstStageInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
@@ -199,5 +255,8 @@ public class PlatformStageServiceImpl implements IStageService {
         List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
         return kanbanStageInstances;
     }
+
+
+
 
 }
