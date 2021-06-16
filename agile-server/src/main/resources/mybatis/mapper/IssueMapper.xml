@@ -2880,12 +2880,12 @@
                 #{item}
             </foreach>
         </if>
-        <if test="issueFeatureIds != null and issueFeatureIds.size() > 0">
-            AND parent_id IN
-            <foreach collection="issueFeatureIds" index="index" item="item" separator="," open="(" close=")">
-                #{item}
-            </foreach>
-        </if>
+<!--        <if test="issueFeatureIds != null and issueFeatureIds.size() > 0">-->
+<!--            AND parent_id IN-->
+<!--            <foreach collection="issueFeatureIds" index="index" item="item" separator="," open="(" close=")">-->
+<!--                #{item}-->
+<!--            </foreach>-->
+<!--        </if>-->
 
     </select>
     <select id="listLevelIssueIdforTask" resultType="java.lang.Long">

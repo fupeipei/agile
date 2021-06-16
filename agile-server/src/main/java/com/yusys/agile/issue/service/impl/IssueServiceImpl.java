@@ -1,6 +1,7 @@
 package com.yusys.agile.issue.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.yusys.agile.commit.dto.CommitDTO;
@@ -50,7 +51,6 @@ import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.service.SprintService;
-import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.teamv3.service.Teamv3Service;
@@ -101,7 +101,6 @@ import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -300,7 +299,6 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = new Issue();
         issue.setParentId(parentId);
         issueMapper.updateByExampleSelective(issue, issueExample);
-        //saveEpicFeatureData(parentId, Lists.newArrayList(issueId));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -313,7 +311,6 @@ public class IssueServiceImpl implements IssueService {
         //迭代信息校验
         storyService.checkSprintParam(sprintId);
         issueMapper.deleteRelation(parentId, sprintId, issueId);
-        //deleteEpicFeatureData(parentId, issueId);
     }
 
     /**
@@ -336,15 +333,6 @@ public class IssueServiceImpl implements IssueService {
         return sprintId;
     }
 
-    private void deleteEpicFeatureData(Long epicId, Long featureId) {
-        Issue epic = issueMapper.selectByPrimaryKey(epicId);
-        if (null != epic) {
-            Byte issueType = epic.getIssueType();
-            if (String.valueOf(IssueTypeEnum.TYPE_EPIC.CODE).equals(String.valueOf(issueType))) {
-                //versionRequireService.deleteEpicFeatureSyncData(epicId, featureId, epic.getProjectId());
-            }
-        }
-    }
 
     /**
      * 功能描述  递归查找Issue的children
@@ -358,7 +346,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public void sortIssueDTO(Byte queryType, String rootIds, com.yusys.agile.issue.dto.IssueListDTO issueListDTO, Map<String, Map> mapMap) {
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
-        Boolean flag = true;
+        Boolean flag;
         Map<Long, List<Issue>> issueParentMap = mapMap.get("issueParentMap");
         if (issueParentMap == null) {
             return;
@@ -372,9 +360,6 @@ public class IssueServiceImpl implements IssueService {
                 for (Issue issue : issuesChildren) {
                     IssueListDTO issueDTOChildren = ReflectObjectUtil.copyProperties(issue, IssueListDTO.class);
                     issueDTOChildren = arrangeIssueListDTO(issue, issueDTOChildren, mapMap);
-//                    if(VersionConstants.CommonContents.PROVINCE.equals(province)&&issue.getIssueType()<Byte.parseByte("3")){
-//                        queryType = QueryTypeEnum.TYPE_VALID.CODE;
-//                    }
                     sortIssueDTO(queryType, rootIds, issueDTOChildren, mapMap);
                     issueListDTOS.add(issueDTOChildren);
                 }
@@ -402,7 +387,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public void sortVersionIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap) {
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
-        Boolean flag = true;
+        Boolean flag;
         Map<Long, List<Issue>> issueParentMap = mapMap.get("issueParentMap");
         if (issueParentMap == null) {
             return;
@@ -418,7 +403,7 @@ public class IssueServiceImpl implements IssueService {
                     issueDTOChildren = arrangeIssueListDTO(issue, issueDTOChildren, mapMap);
                     //系统ID处理用户数据，
                     Map<Long, String> userMap = mapMap.get("userMap");
-                    Map map = null;
+                    Map map;
                     if (issue.getIssueId() != null) {
                         Map<Long, List<SsoSystem>> mapSsoSystem = mapMap.get("mapSsoSystem");
                         Map<Long, List<IssueSystemRelp>> mapIssueSystemRelp = mapMap.get("mapIssueSystemRelp");
@@ -561,7 +546,7 @@ public class IssueServiceImpl implements IssueService {
 
         // 处理用户数据，
         Map<Long, String> userMap = mapMap.get("userMap");
-        Map map = null;
+        Map map;
         //Issue类型
         if (issue.getIssueType() != null) {
             map = new HashMap<String, String>();
@@ -603,8 +588,8 @@ public class IssueServiceImpl implements IssueService {
         }
         //系统ID
         if (issue.getIssueId() != null) {
-            String systemName = "";
-            Long systemId = null;
+            String systemName;
+            Long systemId;
             Long parentIssueSystemId = null;
             Byte issueType = issue.getIssueType();
             if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
@@ -750,12 +735,11 @@ public class IssueServiceImpl implements IssueService {
      * @date 2020/4/21
      */
     @Override
-    public com.yusys.agile.issue.dto.IssueListDTO getIssue(Long issueId, Byte issueQuery, String noLogin) {
+    public IssueListDTO getIssue(Long issueId, Byte issueQuery, String noLogin) {
 
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         List<Long> longList = Lists.newArrayList();
         longList.add(issueId);
-        List<Long> longList1 = issueMapper.listAllIssueId(longList);
         //租户下的IssueData
         Map<String, Map> mapMap = issueMap( noLogin);
         IssueListDTO issueListDTO = ReflectObjectUtil.copyProperties(issue, IssueListDTO.class);
@@ -849,17 +833,6 @@ public class IssueServiceImpl implements IssueService {
         issueFactory.dealHistory(history);
         Long sprintId = getRelatedIssueSprintId(parentId, IssueTypeEnum.TYPE_STORY.CODE);
         issueMapper.createBatchRelation(listIssueId, sprintId, parentId, userId);
-        //saveEpicFeatureData(parentId, listIssueId);
-    }
-
-    private void saveEpicFeatureData(Long epicId, List<Long> featureIdList) {
-        Issue epic = issueMapper.selectByPrimaryKey(epicId);
-        if (null != epic) {
-            Byte issueType = epic.getIssueType();
-            if (String.valueOf(IssueTypeEnum.TYPE_EPIC.CODE).equals(String.valueOf(issueType))) {
-                //versionRequireService.saveEpicFeatureSyncData(epicId, featureIdList, epic.getProjectId());
-            }
-        }
     }
 
     public void setHistoryRecordList(List<IssueHistoryRecord> history, Long issueId, String oldValue, String newValue) {
@@ -871,7 +844,6 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public List<IssueListDTO> issueListByIds(String rootIds, Long projectId) throws Exception {
-
         Map<String, Map> mapMap = issueMap( null);
         List listId = Lists.newArrayList(rootIds.split(","));
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
@@ -976,8 +948,6 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
-        //Long projectId = securityDTO.getProjectId();
-        Long systemId = issueFactory.getSystemIdByIssueId(issueId);
         try {
             PageHelper.startPage(pageNum, pageSize);
             //查询历史记录
@@ -990,7 +960,7 @@ public class IssueServiceImpl implements IssueService {
             Byte issueType = issue.getIssueType();
             Map<String, String> sprintMap = new HashMap<>();
             if (CollectionUtils.isNotEmpty(issueHistoryRecords)) {
-                Map<String, String> stagesInstanceMapInfo = recordFactory.getStagesInstanceMapInfo(systemId);
+//                Map<String, String> stagesInstanceMapInfo = recordFactory.getStagesInstanceMapInfo(systemId);
                 issueHistoryRecords.forEach(issueHistoryRecordDTO -> {
                     //recordType 0 常规文本 1 富文本
                     if ("1".equals(issueHistoryRecordDTO.getRecordType())) {
@@ -1026,12 +996,12 @@ public class IssueServiceImpl implements IssueService {
                                     issueHistoryRecordDTO.setNewValue(FaultStatusEnum.getMsg(Long.valueOf(newValue)));
                                 }
                             } else {
-                                if (StringUtils.isNotEmpty(oldValue)) {
-                                    issueHistoryRecordDTO.setOldValue(stagesInstanceMapInfo.get(oldValue));
-                                }
-                                if (StringUtils.isNotEmpty(newValue)) {
-                                    issueHistoryRecordDTO.setNewValue(stagesInstanceMapInfo.get(newValue));
-                                }
+//                                if (StringUtils.isNotEmpty(oldValue)) {
+//                                    issueHistoryRecordDTO.setOldValue(stagesInstanceMapInfo.get(oldValue));
+//                                }
+//                                if (StringUtils.isNotEmpty(newValue)) {
+//                                    issueHistoryRecordDTO.setNewValue(stagesInstanceMapInfo.get(newValue));
+//                                }
                             }
                             break;
                         case "优先级":
@@ -1121,23 +1091,6 @@ public class IssueServiceImpl implements IssueService {
     public ControllerResponse getRecordRichText(Long recordId) {
         return ControllerResponse.success(issueHistoryRecordMapper.selectByPrimaryKey(recordId));
     }
-
-   /* @Override
-    public List<IssueDTO> listRelation(Long issueId, Byte issueType, Long projectId) {
-        List<IssueDTO> issueDTOList = issueMapper.listRelation(issueId, projectId);
-        List<Long> handlers = new ArrayList<>();
-        for (IssueDTO issueDTO : issueDTOList) {
-            if (null != issueDTO.getHandler()) {
-                handlers.add(issueDTO.getHandler());
-            }
-            setParentIssue(issueType, issueDTO);
-            if (StringUtils.isNotBlank(issueDTO.getLaneName()) && StringUtils.isNotBlank(issueDTO.getStageName())) {
-                issueDTO.setStageName(issueDTO.getStageName() + "/" + issueDTO.getLaneName());
-            }
-        }
-        issueFactory.setHandlerName(handlers, issueDTOList);
-        return issueDTOList;
-    }*/
 
     @Override
     public List<IssueDTO> listRelation(Long issueId, Byte issueType) {
@@ -1555,7 +1508,6 @@ public class IssueServiceImpl implements IssueService {
         Page page = new Page(pageNum, pageSize);
         List<com.yusys.agile.issue.dto.IssueStageIdCountDTO> issueStageIdCountDTOS = new ArrayList<>();
         List<SsoSystem> ssoSystems = iFacadeSystemApi.querySystemsByProjectId(projectId);
-        String province = externalApiConfigUtil.getPropValue("ATTRIBUTION");
         if (CollectionUtils.isNotEmpty(ssoSystems)) {
             for (SsoSystem ssoSystem : ssoSystems) {
                 //获取系统下的子工作项，最子到故事，没有子就统计父需求
@@ -1930,10 +1882,13 @@ public class IssueServiceImpl implements IssueService {
         mapResult.put("issueParentMap", issueParentMap);
         //租户下的人员
         List<SsoUserDTO> userDTOS  = iFacadeUserApi.queryUsersByTenantCodeNoPage(tenantCode);
+
         Map<Long, String> userMap = Maps.newHashMap();
         // 查询所有人员信息
         for (SsoUserDTO ssoUserDTO : userDTOS) {
-            userMap.put(ssoUserDTO.getUserId(), ssoUserDTO.getUserName());
+            String userName = StrUtil.builder().append(ssoUserDTO.getUserName())
+                    .append("(").append(ssoUserDTO.getUserAccount()).append(")").toString();
+            userMap.put(ssoUserDTO.getUserId(), userName);
         }
         mapResult.put("userMap", userMap);
         //查询所有迭代
@@ -1965,8 +1920,9 @@ public class IssueServiceImpl implements IssueService {
             UserAttentionExample userAttentionExample = new UserAttentionExample();
             userAttentionExample.createCriteria()
                     .andStateEqualTo("U")
-                    .andAttentionTypeEqualTo(ATTENIONTYPE_1)
-                    .andUserIdEqualTo(UserThreadLocalUtil.getUserInfo().getUserId());
+                    .andAttentionTypeEqualTo(ATTENIONTYPE_1);
+
+//                    .andUserIdEqualTo(UserThreadLocalUtil.getUserInfo().getUserId());
             userAttentions = userAttentionMapper.selectByExample(userAttentionExample);
         }
         Map<Long, List<UserAttention>> mapUserAttention = userAttentions.stream().collect(Collectors.groupingBy(UserAttention::getSubjectId));
@@ -2219,8 +2175,6 @@ public class IssueServiceImpl implements IssueService {
             issueIds = reviewService.listByListReviewId(subjectIds, tenantCode);
         }
 
-//        Long userId = 732623472621903872L;
-//        String tenantCode = "1";
         loggr.info("工作台待办当前登陆的租户tenantCode={},userId={}", tenantCode, userId);
         //拼接不属于代办的条件
         List<Long> stageIdList = Lists.newArrayList();
@@ -2271,27 +2225,6 @@ public class IssueServiceImpl implements IssueService {
         return null;
     }
 
-    /**
-     * 功能描述: 判断epic是否是需求取消、需求挂起、需求取消挂起的epic
-     *
-     * @param epicId
-     * @return boolean
-     * @date 2021/2/25
-     */
-    private boolean epicInDemandCancellation(Long epicId) {
-        // 查询epic的
-        SysExtendFieldDetail record = sysExtendFieldDetailService.getSysExtendFieldDetail(epicId, "planStates");
-        if (null == record) {
-            return false;
-        }
-        String value = record.getValue();
-        List<String> list = Lists.newArrayList(PlanStatesEnum.DEMAND_CANCEL.CODE, PlanStatesEnum.DEMAND_SUSPENSION.CODE,
-                PlanStatesEnum.DEMAND_CANCEL_SUSPENSION.CODE);
-        if (list.contains(value)) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      * 人工获取分页数据
@@ -2598,10 +2531,10 @@ public class IssueServiceImpl implements IssueService {
      * @Description 获取Issue枚举的名称
      * @Return IssueListDTO
      */
-    private com.yusys.agile.issue.dto.IssueListDTO getIssueTypeEnumName(Issue issue, com.yusys.agile.issue.dto.IssueListDTO issueListDTO, Map<String, Map> mapMap) {
+    private IssueListDTO getIssueTypeEnumName(Issue issue, com.yusys.agile.issue.dto.IssueListDTO issueListDTO, Map<String, Map> mapMap) {
         // 处理用户数据，
         Map<Long, String> userMap = mapMap.get("userMap");
-        Map map = null;
+        Map map;
         //Issue类型
         if (issue.getIssueType() != null) {
             map = new HashMap<String, String>();
@@ -2889,7 +2822,7 @@ public class IssueServiceImpl implements IssueService {
         if (CollectionUtils.isEmpty(headerFields)) {
             return value;
         }
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         if (fieldCode.equals("deployIllustration")) {
             JSONArray jsonArrayValue = JSONArray.parseArray(value);
             jsonObject = JSONObject.parseObject(headerFields.get(0).getFieldContent());
@@ -3050,8 +2983,8 @@ public class IssueServiceImpl implements IssueService {
     private void dealStateHistory(List<Issue> issueHistoryList) {
         if (CollectionUtils.isNotEmpty(issueHistoryList)) {
             Long[] stages = new Long[]{StageConstant.FirstStageEnum.FINISH_STAGE.getValue()};
-            Issue newIssue = null;
-            List<IssueHistoryRecord> historyRecords = null;
+            Issue newIssue;
+            List<IssueHistoryRecord> historyRecords;
             for (Issue oldIssue : issueHistoryList) {
                 //历史记录状态变化
                 historyRecords = Lists.newArrayList();
@@ -3101,7 +3034,6 @@ public class IssueServiceImpl implements IssueService {
                 }
             }
             insertHistoryRecord(epicIdList);
-            IssueHistoryRecord issueHistoryRecord;
             //更新feature完成
             List<Long> featureIdList = updateChildrenStage(epicIdList);
             //更新story完成
@@ -3257,14 +3189,12 @@ public class IssueServiceImpl implements IssueService {
 
         //feature 状态改变后,状态向下汇总，且改变epic状态
         if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
-
             Long parentId = issue.getParentId();
             if(Optional.ofNullable(parentId).isPresent()){
                 IssueExample issueExample = new IssueExample();
                 issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
                         .andIssueTypeEqualTo(IssueTypeEnum.TYPE_FEATURE.CODE)
                         .andParentIdEqualTo(parentId);
-
                 List<Issue> issueList = issueMapper.selectByExample(issueExample);
 
                 if(issueList.size() >1){
@@ -3375,7 +3305,7 @@ public class IssueServiceImpl implements IssueService {
         if(Optional.ofNullable(teamId).isPresent()){
             Map<Long, List<STeam>> mapSTeam = mapMap.get("mapSTeam");
             if(mapSTeam.containsKey(teamId)){
-                STeam sTeam = mapSTeam.get("teamId").get(0);
+                STeam sTeam = mapSTeam.get(teamId).get(0);
                 map.put("name",sTeam.getTeamName() );
                 map.put("id", sTeam.getTeamId());
                 map.put("TeamType", sTeam.getTeamType());
