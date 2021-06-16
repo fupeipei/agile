@@ -966,7 +966,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
         //Long projectId = securityDTO.getProjectId();
-        Long systemId = issueFactory.getProjectIdByIssueId(issueId);
+        Long systemId = issueFactory.getSystemIdByIssueId(issueId);
         try {
             PageHelper.startPage(pageNum, pageSize);
             //查询历史记录
@@ -1130,7 +1130,7 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public List<IssueDTO> listRelation(Long issueId, Byte issueType) {
-        Long projectId = issueFactory.getProjectIdByIssueId(issueId);
+        Long projectId = issueFactory.getSystemIdByIssueId(issueId);
         List<IssueDTO> issueDTOList = issueMapper.listRelation(issueId, projectId);
         List<Long> handlers = new ArrayList<>();
         for (IssueDTO issueDTO : issueDTOList) {
@@ -3210,6 +3210,7 @@ public class IssueServiceImpl implements IssueService {
         return CollectionUtils.isNotEmpty(issueList) ? false : true;
     }
 
+<<<<<<< HEAD
 
 
     /**
@@ -3285,4 +3286,17 @@ public class IssueServiceImpl implements IssueService {
 
     }
 
+=======
+    @Override
+    public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {
+        if (null != issueId) {
+            List<Long> issueIds = Lists.newArrayList();
+            issueIds.add(issueId);
+            List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getIssueExtendDetailList(issueIds);
+            for (int i = 0; i < sysExtendFieldDetailList.size(); i++) {
+                map.put(sysExtendFieldDetailList.get(i).getFieldId(), sysExtendFieldDetailList.get(i).getValue());
+            }
+        }
+    }
+>>>>>>> f821cc107a102eb2e7e740635edea6983b3aefe3
 }
