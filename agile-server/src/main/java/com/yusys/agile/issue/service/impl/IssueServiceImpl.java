@@ -1,6 +1,7 @@
 package com.yusys.agile.issue.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.yusys.agile.commit.dto.CommitDTO;
@@ -1885,7 +1886,9 @@ public class IssueServiceImpl implements IssueService {
         Map<Long, String> userMap = Maps.newHashMap();
         // 查询所有人员信息
         for (SsoUserDTO ssoUserDTO : userDTOS) {
-            userMap.put(ssoUserDTO.getUserId(), ssoUserDTO.getUserName());
+            String userName = StrUtil.builder().append(ssoUserDTO.getUserName())
+                    .append("(").append(ssoUserDTO.getUserAccount()).append(")").toString();
+            userMap.put(ssoUserDTO.getUserId(), userName);
         }
         mapResult.put("userMap", userMap);
         //查询所有迭代
