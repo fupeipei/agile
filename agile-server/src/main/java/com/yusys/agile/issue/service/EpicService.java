@@ -21,7 +21,7 @@ public interface EpicService {
      * @Param: * @param issueId
      * @Return: int
      */
-    void deleteEpic(Long issueId);
+    void deleteEpic(Long issueId,Boolean deleteChild);
 
     /**
      * @Date: 18:03

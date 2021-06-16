@@ -13,7 +13,7 @@ public interface FeatureService {
      * @Param: * @param featureId
      * @Return: int
      */
-    void deleteFeature(Long featureId);
+    void deleteFeature(Long featureId,Boolean deleteChild);
 
     /**
      * @Date: 18:04
