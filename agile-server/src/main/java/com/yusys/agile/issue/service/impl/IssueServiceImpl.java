@@ -24,6 +24,7 @@ import com.yusys.agile.issue.service.IssueSystemRelpService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
+import com.yusys.agile.leankanban.enums.LaneKanbanStageConstant;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.service.ModuleService;
 import com.yusys.agile.set.stage.domain.StageInstance;
@@ -3216,7 +3217,7 @@ public class IssueServiceImpl implements IssueService {
      *
      *  算法介绍：
      *  如果有进行中的，按乐观法计算，以最后一个阶段的进行中为准，
-     *  如果没有进行中，都是完成阶段，按悲观计算，找出在阶段最考前状态
+     *  如果没有进行中，都是完成阶段，按悲观计算，找出在阶段最靠前状态
      *
      * @param issueType
      * @param issueId
@@ -3228,6 +3229,7 @@ public class IssueServiceImpl implements IssueService {
     public IssueDTO dragIssueCard(Byte issueType, Long issueId, Long stageId, Long laneId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long kanbanId = issue.getKanbanId();
+
         if(!Optional.ofNullable(kanbanId).isPresent()){
             throw new BusinessException("该工作项不属于精益看板，不能拖拽!");
         }
@@ -3245,13 +3247,20 @@ public class IssueServiceImpl implements IssueService {
             Long parentId = issue.getParentId();
             if(Optional.ofNullable(parentId).isPresent()){
                 IssueExample issueExample = new IssueExample();
-                issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andIssueTypeEqualTo(IssueTypeEnum.TYPE_FEATURE.CODE)
+                issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                        .andIssueTypeEqualTo(IssueTypeEnum.TYPE_FEATURE.CODE)
                         .andParentIdEqualTo(parentId);
+
                 List<Issue> issueList = issueMapper.selectByExample(issueExample);
 
-
                 if(issueList.size() >1){
-                    List<Long> laneStates = issueList.stream().map(iss -> iss.getLaneId()).collect(Collectors.toList());
+                    List<Long> laneStates = issueList.stream().filter(iss-> Optional.ofNullable(iss.getLaneId()).isPresent())
+                            .map(iss -> iss.getLaneId()).collect(Collectors.toList());
+                    //如果为空说明feature 在 就绪阶段或者完成阶段，没有laneId
+                    if(CollectionUtils.isEmpty(laneStates)){
+
+                    }
+
 
                 }else {
                     //更新epic
@@ -3280,7 +3289,9 @@ public class IssueServiceImpl implements IssueService {
      *
      * @return
      */
-    private List<Long> getOnGoingState(){
+    private List<Long> getOnGoingState(List<Long> laneStates){
+        Long value = LaneKanbanStageConstant.AnalysisStageEnum.FINISH.getValue();
+
 
         return  null;
     }

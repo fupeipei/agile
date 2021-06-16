@@ -47,13 +47,14 @@ public class LeanKanbanController {
      * @return
      */
     @GetMapping("/issue/getIssueTrees")
-    public ControllerResponse getIssueTrees(@RequestParam("kanbanId") Long kanbanId,
+    public ControllerResponse getIssueTrees(@RequestParam("kanbanId") String kanbanId,
                                             @RequestParam(value = "issueType" ,required = false) Byte issueType) {
         try {
             if(Optional.ofNullable(issueType).isPresent()){
                 issueType = IssueTypeEnum.TYPE_FEATURE.CODE;
             }
-            return ControllerResponse.success(issueService.getIssueTrees(kanbanId,issueType));
+            Long id = Long.valueOf(kanbanId);
+            return ControllerResponse.success(issueService.getIssueTrees(id,issueType));
         } catch (Exception e) {
             log.info("获取工作项树信息异常:{}",e.getMessage());
         }
