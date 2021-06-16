@@ -23,7 +23,7 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/issue/story")
+@RequestMapping("/issue/feature")
 public class FeatureController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
 
