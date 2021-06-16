@@ -27,4 +27,6 @@ public class TeamQueryDTO {
     private Integer pageNum;
     @ApiModelProperty("每页显示数")
     private Integer pageSize;
+    @ApiModelProperty("系统ID")
+    private Long systemId;
 }

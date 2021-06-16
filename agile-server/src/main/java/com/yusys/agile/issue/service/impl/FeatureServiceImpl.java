@@ -33,12 +33,8 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void deleteFeature(Long featureId) {
-        //判断featur下是否存在story，如果存在不允许删除
-        if(issueService.checkHasChildren(featureId)){
-            throw new BusinessException("该Feature【"+featureId+"】下关联了子工作项，请先解除关联关系，再删除!");
-        }
-        issueFactory.deleteIssue(featureId);
+    public void deleteFeature(Long featureId,Boolean deleteChild) {
+        issueFactory.deleteIssue(featureId,deleteChild);
     }
 
 

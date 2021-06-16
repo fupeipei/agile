@@ -101,4 +101,14 @@ public interface Teamv3Service {
      * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
      */
     List<STeam> listTeamByTenantCode(String tenantCode);
+
+    /**
+     *功能描述 查询系统下所有团队
+     * @author shenfeng
+     * @date 2021/6/16
+      * @param dto
+     * @param security
+     * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
+     */
+    List<TeamListDTO> listAllTeam(TeamQueryDTO dto, SecurityDTO security);
 }
