@@ -119,9 +119,9 @@
   <insert id="insertSelective" parameterType="com.yusys.agile.leankanban.domain.SLeanKanban" keyProperty="kanbanId" useGeneratedKeys="true">
     insert into s_lean_kanban
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="kanbanId != null">
-        kanban_id,
-      </if>
+<!--      <if test="kanbanId != null">-->
+<!--        kanban_id,-->
+<!--      </if>-->
       <if test="kanbanName != null">
         kanban_name,
       </if>
@@ -154,9 +154,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="kanbanId != null">
-        #{kanbanId,jdbcType=BIGINT},
-      </if>
+<!--      <if test="kanbanId != null">-->
+<!--        #{kanbanId,jdbcType=BIGINT},-->
+<!--      </if>-->
       <if test="kanbanName != null">
         #{kanbanName,jdbcType=VARCHAR},
       </if>
