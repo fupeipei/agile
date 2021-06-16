@@ -24,6 +24,7 @@ import com.yusys.agile.issue.service.IssueSystemRelpService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
+import com.yusys.agile.leankanban.enums.LaneKanbanStageConstant;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.service.ModuleService;
 import com.yusys.agile.set.stage.domain.StageInstance;
@@ -3216,7 +3217,7 @@ public class IssueServiceImpl implements IssueService {
      *
      *  算法介绍：
      *  如果有进行中的，按乐观法计算，以最后一个阶段的进行中为准，
-     *  如果没有进行中，都是完成阶段，按悲观计算，找出在阶段最考前状态
+     *  如果没有进行中，都是完成阶段，按悲观计算，找出在阶段最靠前状态
      *
      * @param issueType
      * @param issueId
@@ -3228,6 +3229,7 @@ public class IssueServiceImpl implements IssueService {
     public IssueDTO dragIssueCard(Byte issueType, Long issueId, Long stageId, Long laneId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long kanbanId = issue.getKanbanId();
+
         if(!Optional.ofNullable(kanbanId).isPresent()){
             throw new BusinessException("该工作项不属于精益看板，不能拖拽!");
         }
@@ -3245,14 +3247,31 @@ public class IssueServiceImpl implements IssueService {
             Long parentId = issue.getParentId();
             if(Optional.ofNullable(parentId).isPresent()){
                 IssueExample issueExample = new IssueExample();
-                issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andIssueTypeEqualTo(IssueTypeEnum.TYPE_FEATURE.CODE)
+                issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                        .andIssueTypeEqualTo(IssueTypeEnum.TYPE_FEATURE.CODE)
                         .andParentIdEqualTo(parentId);
+
                 List<Issue> issueList = issueMapper.selectByExample(issueExample);
 
-
                 if(issueList.size() >1){
-                    List<Long> laneStates = issueList.stream().map(iss -> iss.getLaneId()).collect(Collectors.toList());
-
+                    List<Long> laneStates = issueList.stream().filter(iss-> Optional.ofNullable(iss.getLaneId()).isPresent())
+                            .map(iss -> iss.getLaneId()).collect(Collectors.toList());
+                    //如果为空说明feature 在 就绪阶段或者完成阶段，没有laneId
+                    if(CollectionUtils.isEmpty(laneStates)){
+                        List<Long> stageIds = issueList.stream().map(iss -> iss.getStageId()).collect(Collectors.toList());
+                        //如果都在已完成且刚拖拽的卡片也到已完成，则epic到已完成状态
+                        if(!stageIds.contains(StageConstant.FirstStageEnum.READY_STAGE.getValue()) &&
+                                stageId == StageConstant.FirstStageEnum.FINISH_STAGE.getValue()){
+                            Issue epic = issueMapper.selectByPrimaryKey(parentId);
+                            if(Optional.ofNullable(epic).isPresent()){
+                                epic.setStageId(stageId);
+                                issueMapper.updateByPrimaryKeySelective(epic);
+                            }
+                        }
+                    }else {
+                        //获取进行中的状态，如果不为空则取
+                        List<Long> goingState = getOnGoingState(laneStates);
+                    }
                 }else {
                     //更新epic
                     Issue epic = issueMapper.selectByPrimaryKey(parentId);
@@ -3280,11 +3299,35 @@ public class IssueServiceImpl implements IssueService {
      *
      * @return
      */
-    private List<Long> getOnGoingState(){
+    private List<Long> getOnGoingState(List<Long> laneStates){
+        //获取所有已完成的状态
+        List<Long> finishs = Lists.newArrayList();
+        Long anlysisFinish = LaneKanbanStageConstant.AnalysisStageEnum.FINISH.getValue();
+        Long desighFinish = LaneKanbanStageConstant.DesignStageEnum.FINISH.getValue();
+        Long devfinish = LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue();
+        Long storyFinish = LaneKanbanStageConstant.DevStageEnum.FINISH.getValue();
+        Long testFinish = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
+        Long systemTestFinish = LaneKanbanStageConstant.SystemTestStageEnum.FINISH.getValue();
+        Long releaseFinish = LaneKanbanStageConstant.ReleaseStageEnum.FINISH.getValue();
 
-        return  null;
+       this.add(finishs,anlysisFinish)
+               .add(finishs,desighFinish)
+               .add(finishs,desighFinish)
+               .add(finishs,storyFinish)
+               .add(finishs,devfinish)
+               .add(finishs,testFinish)
+               .add(finishs,systemTestFinish)
+               .add(finishs,releaseFinish);
+
+       laneStates.removeAll(finishs);
+        return  laneStates;
     }
 
+
+    private IssueServiceImpl add(List<Long> list, Long value){
+        list.add(value);
+        return this;
+    }
 
     @Override
     public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {
