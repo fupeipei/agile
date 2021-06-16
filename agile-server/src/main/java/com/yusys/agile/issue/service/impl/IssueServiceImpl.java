@@ -50,6 +50,10 @@ import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprint.service.SprintService;
+import com.yusys.agile.team.domain.Team;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
+import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.agile.user.service.ReqUserRlatService;
 import com.yusys.agile.utils.DateTools;
 import com.yusys.agile.utils.ObjectUtil;
@@ -183,6 +187,9 @@ public class IssueServiceImpl implements IssueService {
     private SSprintMapper ssprintMapper;
     @Autowired
     private IStageService  iStageService;
+    @Autowired
+    private Teamv3Service teamv3Service;
+
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
         @Override
@@ -621,7 +628,10 @@ public class IssueServiceImpl implements IssueService {
                 issueListDTO.setSystemId(map);
             }
         }
-
+        //对应的团队
+        if (issue.getIssueId() != null) {
+            issueListDTO.setTeamId(getIssueTeamMap(issue.getIssueId() ,issue.getIssueType(),mapMap));
+        }
         //priority优先级
         if (issue.getPriority() != null) {
             map = new HashMap<String, String>();
@@ -1945,6 +1955,10 @@ public class IssueServiceImpl implements IssueService {
         List<SsoSystemRestDTO> ssoSystemList = iFacadeSystemApi.querySystemsByTenantCode(tenantCode);
         Map<Long, List<SsoSystemRestDTO>> mapSsoSystem = ssoSystemList.stream().collect(Collectors.groupingBy(SsoSystemRestDTO::getSystemId));
         mapResult.put("mapSsoSystem", mapSsoSystem);
+        //租户下的所有的团队
+        List<STeam> sTeamList = teamv3Service.listTeamByTenantCode(tenantCode);
+        Map<Long, List<STeam>> mapSTeam = sTeamList.stream().collect(Collectors.groupingBy(STeam::getTeamId));
+        mapResult.put("mapSTeam", mapSTeam);
         // 当前用户收藏的工作项
         List<UserAttention> userAttentions = Lists.newArrayList();
         if (StringUtils.isBlank(noLogin)) {
@@ -3341,4 +3355,32 @@ public class IssueServiceImpl implements IssueService {
         }
     }
 
+    public Map getIssueTeamMap( Long issueId,Byte issueType,Map<String, Map> mapMap) {
+        Map map = new HashMap<String, String>();
+        Issue issue = selectIssueByIssueId(issueId);
+        Long parentId = issue.getParentId();
+        Long teamId = issue.getTeamId();
+        if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)&&Optional.ofNullable(parentId).isPresent()) {
+            parentId = selectIssueByIssueId(parentId).getParentId();
+            if(Optional.ofNullable(parentId).isPresent()){
+                teamId = selectIssueByIssueId(parentId).getTeamId();
+            }
+        }
+        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
+            if(Optional.ofNullable(parentId).isPresent()){
+                teamId = selectIssueByIssueId(parentId).getTeamId();
+            }
+        }
+        if(Optional.ofNullable(teamId).isPresent()){
+            Map<Long, List<STeam>> mapSTeam = mapMap.get("mapSTeam");
+            if(mapSTeam.containsKey(teamId)){
+                STeam sTeam = mapSTeam.get("teamId").get(0);
+                map.put("name",sTeam.getTeamName() );
+                map.put("id", sTeam.getTeamId());
+                map.put("TeamType", sTeam.getTeamType());
+                map.put("TeamTypeName", TeamTypeEnum.getNameByCode(sTeam.getTeamType()));
+            }
+        }
+        return map;
+    }
 }
