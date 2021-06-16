@@ -181,7 +181,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                 List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
                 //todo      阶段暂时设置为空数组
                 List<StageInstance> stageList = new ArrayList<>();
-
+                //stageService.getStageList(projectId);
                 if (CollectionUtils.isNotEmpty(issueFilterRelatedCheckeds)) {
                     relatedChecked = issueFilterRelatedCheckeds.get(0);
                 }

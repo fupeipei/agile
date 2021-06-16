@@ -23,6 +23,8 @@ public class IssueListDTO {
 
     private Map systemId;
 
+    private Map teamId;
+
     private Map handler;
 
     public String getHandlerName() {
@@ -722,5 +724,13 @@ public class IssueListDTO {
 
     public void setSysExtendFieldDetailList(List<SysExtendFieldDetailDTO> sysExtendFieldDetailList) {
         this.sysExtendFieldDetailList = sysExtendFieldDetailList;
+    }
+
+    public Map getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Map teamId) {
+        this.teamId = teamId;
     }
 }

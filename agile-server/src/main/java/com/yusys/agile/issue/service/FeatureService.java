@@ -41,13 +41,12 @@ public interface FeatureService {
     Long createFeature(IssueDTO issueDTO);
 
     /**
-     * @param projectId
      * @Date: 9:30
      * @Description: 复制研发需求
      * @Param: * @param featureId
      * @Return: Long
      */
-    Long copyFeature(Long featureId, Long projectId);
+    Long copyFeature(Long featureId);
 
     /**
      * @param pageNum

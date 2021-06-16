@@ -6,7 +6,6 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.enums.IsAchiveEnum;
-import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.EpicService;
 import com.yusys.agile.issue.service.IssueService;
@@ -66,7 +65,7 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     public IssueDTO queryEpic(Long issueId) {
-        Long projectId = issueFactory.getProjectIdByIssueId(issueId);
+        Long projectId = issueFactory.getSystemIdByIssueId(issueId);
         return issueFactory.queryIssue(issueId, projectId);
     }
 
@@ -84,8 +83,8 @@ public class EpicServiceImpl implements EpicService {
     }
 
     @Override
-    public Long copyEpic(Long epicId, Long projectId) {
-        return issueFactory.copyIssue(epicId, projectId, "该复制的业务需求已失效！", "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
+    public Long copyEpic(Long epicId) {
+        return issueFactory.copyIssue(epicId,"该复制的业务需求已失效！", "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
     }
 
     @Override

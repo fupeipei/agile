@@ -43,13 +43,12 @@ public interface EpicService {
     void editEpic(IssueDTO issueDTO);
 
     /**
-     * @param projectId
      * @Date: 9:30
      * @Description: 复制业务需求
      * @Param: * @param epicId
      * @Return: void
      */
-    Long copyEpic(Long epicId, Long projectId);
+    Long copyEpic(Long epicId);
 
     /**
      * @param pageNum
