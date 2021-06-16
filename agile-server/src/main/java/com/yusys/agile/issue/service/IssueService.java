@@ -452,7 +452,7 @@ public interface IssueService {
      */
     boolean checkHasChildren(Long issueId);
 
-<<<<<<< HEAD
+
 
     /**
      * 精益看板拖拽卡片
@@ -464,7 +464,7 @@ public interface IssueService {
      * @return
      */
     IssueDTO dragIssueCard(Byte issueType,Long issueId,Long stageId, Long laneId);
-=======
+
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
->>>>>>> f821cc107a102eb2e7e740635edea6983b3aefe3
+
 }
