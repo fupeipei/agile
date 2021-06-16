@@ -1153,6 +1153,65 @@ public class HeaderFieldExample {
             addCriterion("apply not between", value1, value2, "apply");
             return (Criteria) this;
         }
+        public Criteria andSystemIdIsNull() {
+            addCriterion("system_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdIsNotNull() {
+            addCriterion("system_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdEqualTo(Long value) {
+            addCriterion("system_id =", value, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdNotEqualTo(Long value) {
+            addCriterion("system_id <>", value, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdGreaterThan(Long value) {
+            addCriterion("system_id >", value, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("system_id >=", value, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdLessThan(Long value) {
+            addCriterion("system_id <", value, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdLessThanOrEqualTo(Long value) {
+            addCriterion("system_id <=", value, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdIn(List<Long> values) {
+            addCriterion("system_id in", values, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdNotIn(List<Long> values) {
+            addCriterion("system_id not in", values, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdBetween(Long value1, Long value2) {
+            addCriterion("system_id between", value1, value2, "systemId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSystemIdNotBetween(Long value1, Long value2) {
+            addCriterion("system_id not between", value1, value2, "systemId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

@@ -18,6 +18,7 @@
     <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="apply_type" jdbcType="VARCHAR" property="applyType" />
     <result column="apply" jdbcType="VARCHAR" property="apply" />
+    <result column="system_id" jdbcType="BIGINT" property="systemId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.headerfield.domain.HeaderField">
     <result column="field_content" jdbcType="LONGVARCHAR" property="fieldContent" />
@@ -82,7 +83,7 @@
   </sql>
   <sql id="Base_Column_List">
     field_id, project_id, field_code, field_name, is_select, is_custom, field_type, category, 
-    field_group, sortable, tenant_code, comment, required, state, apply_type, apply
+    field_group, sortable, tenant_code, comment, required, state, apply_type, apply,system_id
   </sql>
   <sql id="Blob_Column_List">
     field_content
@@ -141,13 +142,13 @@
       field_type, category, field_group, 
       sortable, tenant_code, comment, 
       required, state, apply_type, 
-      apply, field_content)
+      apply, field_content,system_id)
     values (#{fieldId,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{fieldCode,jdbcType=VARCHAR}, 
       #{fieldName,jdbcType=VARCHAR}, #{isSelect,jdbcType=TINYINT}, #{isCustom,jdbcType=TINYINT}, 
       #{fieldType,jdbcType=TINYINT}, #{category,jdbcType=TINYINT}, #{fieldGroup,jdbcType=VARCHAR}, 
       #{sortable,jdbcType=TINYINT}, #{tenantCode,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
       #{required,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, #{applyType,jdbcType=VARCHAR}, 
-      #{apply,jdbcType=VARCHAR}, #{fieldContent,jdbcType=LONGVARCHAR})
+      #{apply,jdbcType=VARCHAR}, #{fieldContent,jdbcType=LONGVARCHAR},#{systemId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.headerfield.domain.HeaderField" useGeneratedKeys="true" keyProperty="field_id">
     insert into s_header_field
@@ -203,6 +204,10 @@
       <if test="fieldContent != null">
         field_content,
       </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fieldId != null">
@@ -255,6 +260,9 @@
       </if>
       <if test="fieldContent != null">
         #{fieldContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -318,6 +326,10 @@
       <if test="record.fieldContent != null">
         field_content = #{record.fieldContent,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.systemId != null">
+        system_id = #{record.systemId,jdbcType=BIGINT},
+      </if>
+
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -341,7 +353,9 @@
       state = #{record.state,jdbcType=VARCHAR},
       apply_type = #{record.applyType,jdbcType=VARCHAR},
       apply = #{record.apply,jdbcType=VARCHAR},
-      field_content = #{record.fieldContent,jdbcType=LONGVARCHAR}
+      field_content = #{record.fieldContent,jdbcType=LONGVARCHAR},
+      system_id = #{record.systemId,jdbcType=BIGINT}
+
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -364,6 +378,7 @@
       state = #{record.state,jdbcType=VARCHAR},
       apply_type = #{record.applyType,jdbcType=VARCHAR},
       apply = #{record.apply,jdbcType=VARCHAR}
+      system_id = #{record.systemId,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -419,6 +434,10 @@
       <if test="fieldContent != null">
         field_content = #{fieldContent,jdbcType=LONGVARCHAR},
       </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=BIGINT},
+      </if>
+
     </set>
     where field_id = #{fieldId,jdbcType=BIGINT}
   </update>
@@ -439,7 +458,8 @@
       state = #{state,jdbcType=VARCHAR},
       apply_type = #{applyType,jdbcType=VARCHAR},
       apply = #{apply,jdbcType=VARCHAR},
-      field_content = #{fieldContent,jdbcType=LONGVARCHAR}
+      field_content = #{fieldContent,jdbcType=LONGVARCHAR},
+      system_id = #{systemId,jdbcType=BIGINT}
     where field_id = #{fieldId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.headerfield.domain.HeaderField">
@@ -458,7 +478,8 @@
       required = #{required,jdbcType=VARCHAR},
       state = #{state,jdbcType=VARCHAR},
       apply_type = #{applyType,jdbcType=VARCHAR},
-      apply = #{apply,jdbcType=VARCHAR}
+      apply = #{apply,jdbcType=VARCHAR},
+    system_id = #{systemId,jdbcType=BIGINT}
     where field_id = #{fieldId,jdbcType=BIGINT}
   </update>
 

@@ -1,4 +1,4 @@
-package com.yusys.agile.deployRecord.service;
+package com.yusys.agile.deployrecord.service;
 
 import com.github.pagehelper.PageInfo;
 

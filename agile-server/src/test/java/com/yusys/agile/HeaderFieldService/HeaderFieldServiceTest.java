@@ -33,6 +33,7 @@ public class HeaderFieldServiceTest {
         Byte category = new Byte("1");
         Byte isFilter = new Byte("1");
         securityDTO.setUserId(815897630505963520L);
+        securityDTO.setSystemId(849300453977526272L);
         headerFieldService.queryHeaderFields(securityDTO, category, isFilter);
         Assert.assertTrue("queryHeaderFieldsTest成功", true);
     }
