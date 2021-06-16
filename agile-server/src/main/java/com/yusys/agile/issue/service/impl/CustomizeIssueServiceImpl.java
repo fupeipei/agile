@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.google.common.collect.Lists;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
@@ -9,18 +10,17 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.CustomizeIssueService;
 import com.yusys.agile.issue.service.IssueService;
-import com.yusys.agile.sysextendfield.dao.SysExtendFieldDetailMapper;
-import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
-import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.Sprint;
-import com.yusys.agile.sprint.domain.SprintExample;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
-import com.google.common.collect.Lists;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintExample;
+import com.yusys.agile.sysextendfield.dao.SysExtendFieldDetailMapper;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.entity.SsoUser;
@@ -51,7 +51,7 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
     private IFacadeUserApi iSsoUserApi;
 
     @Resource
-    private SprintMapper sprintMapper;
+    private SSprintMapper ssprintMapper;
 
     @Resource
     private KanbanStageInstanceMapper kanbanStageInstanceMapper;
@@ -268,11 +268,11 @@ public class CustomizeIssueServiceImpl implements CustomizeIssueService {
         if (null == sprintId) {
             return;
         }
-        SprintExample sprintExample = new SprintExample();
+        SSprintExample sprintExample = new SSprintExample();
         sprintExample.createCriteria().andSprintIdEqualTo(sprintId);
-        List<Sprint> sprints = sprintMapper.selectByExample(sprintExample);
+        List<SSprint> sprints = ssprintMapper.selectByExample(sprintExample);
         if (CollectionUtils.isNotEmpty(sprints)) {
-            Sprint sprint = sprints.get(0);
+            SSprint sprint = sprints.get(0);
             customizeIssue.setSprintId(sprintId);
             customizeIssue.setSprintName(sprint.getSprintName());
             Byte status = sprint.getStatus();

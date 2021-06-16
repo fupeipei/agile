@@ -13,8 +13,14 @@ public class IssueFilterDTO {
 
     private Byte idCheck;
 
+    /**
+     * 1：epic 2：feature 3：story 4：task 5：fault
+     */
     private Byte category;
 
+    /**
+     * 过滤器类型,0:默认过滤器，1:自定义过滤器
+     */
     private Byte filterType;
 
     private Long projectId;
