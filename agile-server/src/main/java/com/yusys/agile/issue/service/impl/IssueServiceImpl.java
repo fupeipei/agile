@@ -3210,8 +3210,6 @@ public class IssueServiceImpl implements IssueService {
         return CollectionUtils.isNotEmpty(issueList) ? false : true;
     }
 
-<<<<<<< HEAD
-
 
     /**
      * 拖拽规则
