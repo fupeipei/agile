@@ -63,64 +63,7 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
      */
     @Override
     public List<HeaderField> queryAllHeaderFields(SecurityDTO securityDTO, Byte category, Byte isFilter) {
-        /** 查询自定义字段，先注释掉自定义字段
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields("", null, null, securityDTO.getSystemId());
-        Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        List<IssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(securityDTO.getProjectId(), category);
-        Map<Long, List<IssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(IssueCustomRelation::getId));
-        List<HeaderField> allHeaderField = Lists.newArrayList();
-        List<HeaderField> allHeaderFieldCategoryIsNull = Lists.newArrayList();
-        List<HeaderField> allHeaderFieldFault = Lists.newArrayList();
-        List<HeaderField> allHeaderFieldCustom = Lists.newArrayList();
-        HeaderFieldExample headerFieldExampleForCustom = new HeaderFieldExample();
-        HeaderFieldExample headerFieldExample = new HeaderFieldExample();
-        HeaderFieldExample.Criteria headerFieldExampleCriteria = headerFieldExample.createCriteria();
-        HeaderFieldExample headerFieldExampleTemp = new HeaderFieldExample();
-        HeaderFieldExample.Criteria headerFieldExampleTempCriteria = headerFieldExampleTemp.createCriteria();
 
-        //初始化基础数据
-        headerFieldExampleCriteria.andIsCustomEqualTo(IsCustomEnum.FALSE.getValue()).andCategoryIsNull();
-        //如果是fault，过滤null与5的
-        headerFieldExampleTempCriteria.andIsCustomEqualTo(IsCustomEnum.FALSE.getValue()).andCategoryEqualTo(category);
-        if (isFilter != null && Byte.parseByte("1") == isFilter) {
-            //只查询time、select、time_date
-            List<Byte> values = Lists.newArrayList();
-            values.add(Byte.parseByte("2"));
-            values.add(Byte.parseByte("3"));
-            values.add(Byte.parseByte("5"));
-            List<String> list = Lists.newArrayList();
-            list.add("taskType");
-            list.add("issueType");
-            headerFieldExampleCriteria.andFieldTypeIn(values).andFieldCodeNotIn(list);
-            headerFieldExampleTempCriteria.andFieldTypeIn(values).andFieldCodeNotIn(list);
-        }
-        allHeaderFieldCategoryIsNull = headerFieldMapper.selectByExampleWithBLOBs(headerFieldExample);
-        allHeaderFieldFault = headerFieldMapper.selectByExampleWithBLOBs(headerFieldExampleTemp);
-        headerFieldExampleForCustom.createCriteria()
-                .andCategoryEqualTo(category)
-                .andProjectIdEqualTo(securityDTO.getProjectId())
-                .andIsCustomEqualTo(IsCustomEnum.TRUE.getValue());
-        allHeaderFieldCustom = headerFieldMapper.selectByExampleWithBLOBs(headerFieldExampleForCustom);
-        allHeaderFieldCustom.forEach(HeaderField -> {
-            if (longListMap.containsKey(Long.parseLong(HeaderField.getFieldCode())) && listMap.containsKey(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId())) {
-                HeaderField.setFieldName(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldName());
-                HeaderField.setFieldType(Byte.parseByte(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldType().toString()));
-                HeaderField.setFieldContent(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldContent());
-                HeaderField.setRequired(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getRequired());
-                HeaderField.setFieldPoolCode("pool_code" + listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldId());
-                HeaderField.setFieldCode("pool_code" + listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldId());
-            }
-
-        });
-        allHeaderFieldCategoryIsNull.addAll(allHeaderFieldFault);
-        allHeaderField.addAll(allHeaderFieldCategoryIsNull);
-        allHeaderField.addAll(allHeaderFieldCustom);
-        //处理fieldType对应的name
-        for (int i = 0; i < allHeaderField.size(); i++) {
-            allHeaderField.get(i).setFieldTypeName(FieldTypeEnum.getName(allHeaderField.get(i).getFieldType()));
-        }
-        return allHeaderField;
-         **/
         List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(securityDTO.getSystemId(), null, null,null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(securityDTO.getSystemId(), category);
@@ -137,9 +80,15 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
         HeaderFieldExample.Criteria headerFieldExampleTempCriteria = headerFieldExampleTemp.createCriteria();
         HeaderFieldExample headerFieldExampleForCustom = new HeaderFieldExample();
 
-        headerFieldExampleForCustom.createCriteria()
-                .andCategoryEqualTo(category)
-                .andIsCustomEqualTo(IsCustomEnum.TRUE.getValue());
+        HeaderFieldExample.Criteria criteria = headerFieldExampleForCustom.createCriteria();
+        criteria.andCategoryEqualTo(category)
+                .andIsCustomEqualTo(IsCustomEnum.TRUE.getValue())
+                .andStateEqualTo(StateEnum.U.getValue());
+        if(Optional.ofNullable(securityDTO.getSystemId()).isPresent()){
+            criteria.andSystemIdEqualTo(securityDTO.getSystemId());
+        }else{
+            criteria.andSystemIdIsNull();
+        }
         allHeaderFieldCustom = headerFieldMapper.selectByExampleWithBLOBs(headerFieldExampleForCustom);
         allHeaderFieldCustom.forEach(HeaderField -> {
             if (longListMap.containsKey(Long.parseLong(HeaderField.getFieldCode())) && listMap.containsKey(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId())) {
@@ -342,7 +291,9 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
         }
         HeaderField headerField = new HeaderField();
         headerField.setFieldCode(fieldId.toString());
-        headerField.setProjectId(systemId);
+        if(Optional.ofNullable(systemId).isPresent()){
+            headerField.setSystemId(systemId);
+        }
         headerField.setCategory(issueType);
         headerField.setIsCustom(IsCustomEnum.TRUE.getValue());
         headerField.setFieldGroup("custom");
