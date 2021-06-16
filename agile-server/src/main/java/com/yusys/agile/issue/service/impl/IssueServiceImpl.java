@@ -3174,7 +3174,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     /**
-     * 递归获取自工作项
+     * 递归获取子工作项
      *
      * @param issues
      */
@@ -3210,6 +3210,83 @@ public class IssueServiceImpl implements IssueService {
         return CollectionUtils.isNotEmpty(issueList) ? false : true;
     }
 
+<<<<<<< HEAD
+
+
+    /**
+     * 拖拽规则
+     *
+     *  算法介绍：
+     *  如果有进行中的，按乐观法计算，以最后一个阶段的进行中为准，
+     *  如果没有进行中，都是完成阶段，按悲观计算，找出在阶段最考前状态
+     *
+     * @param issueType
+     * @param issueId
+     * @param stageId
+     * @param laneId
+     * @return
+     */
+    @Override
+    public IssueDTO dragIssueCard(Byte issueType, Long issueId, Long stageId, Long laneId) {
+        Issue issue = issueMapper.selectByPrimaryKey(issueId);
+        Long kanbanId = issue.getKanbanId();
+        if(!Optional.ofNullable(kanbanId).isPresent()){
+            throw new BusinessException("该工作项不属于精益看板，不能拖拽!");
+        }
+
+        issue.setStageId(stageId);
+        issue.setLaneId(laneId);
+        issueMapper.updateByPrimaryKeySelective(issue);
+
+        //更新该工作项对应的数据
+        Byte type = issue.getIssueType();
+
+        //feature 状态改变后,状态向下汇总，且改变epic状态
+        if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
+
+            Long parentId = issue.getParentId();
+            if(Optional.ofNullable(parentId).isPresent()){
+                IssueExample issueExample = new IssueExample();
+                issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andIssueTypeEqualTo(IssueTypeEnum.TYPE_FEATURE.CODE)
+                        .andParentIdEqualTo(parentId);
+                List<Issue> issueList = issueMapper.selectByExample(issueExample);
+
+
+                if(issueList.size() >1){
+                    List<Long> laneStates = issueList.stream().map(iss -> iss.getLaneId()).collect(Collectors.toList());
+
+                }else {
+                    //更新epic
+                    Issue epic = issueMapper.selectByPrimaryKey(parentId);
+                    if(Optional.ofNullable(epic).isPresent()){
+                        epic.setLaneId(laneId);
+                        epic.setStageId(stageId);
+                        issueMapper.updateByPrimaryKeySelective(epic);
+                    }
+                }
+            }
+
+
+
+
+        }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
+            // task改变后状态向 上汇总
+
+        }
+        return null;
+    }
+
+
+    /**
+     * 获取进行中的状态
+     *
+     * @return
+     */
+    private List<Long> getOnGoingState(){
+
+    }
+
+=======
     @Override
     public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {
         if (null != issueId) {
@@ -3221,4 +3298,5 @@ public class IssueServiceImpl implements IssueService {
             }
         }
     }
+>>>>>>> f821cc107a102eb2e7e740635edea6983b3aefe3
 }
