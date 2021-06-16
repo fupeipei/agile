@@ -218,11 +218,13 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         Optional.ofNullable(filter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
 
         IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
-        checkedExample.createCriteria()
+        IssueFilterRelatedCheckedExample.Criteria issueFilterRelatedCheckedCriteria = checkedExample.createCriteria();
+        issueFilterRelatedCheckedCriteria
                 .andCategoryEqualTo(category)
-                .andSystemIdEqualTo(securityDTO.getSystemId())
                 .andCreateUidEqualTo(securityDTO.getUserId());
-
+        if(Optional.ofNullable(securityDTO.getSystemId()).isPresent()){
+            issueFilterRelatedCheckedCriteria.andSystemIdEqualTo(securityDTO.getSystemId());
+        }
         List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
         //1、判断该category类别/项目ID/人员是否有默认的选中的过滤器。存在，则更新当前过滤器，反之，则新增一条默认选中过滤器
         if (CollectionUtils.isNotEmpty(issueFilterRelatedCheckeds)) {
