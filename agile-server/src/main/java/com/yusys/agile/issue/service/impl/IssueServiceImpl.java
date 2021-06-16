@@ -3215,6 +3215,7 @@ public class IssueServiceImpl implements IssueService {
                     }else {
                         //获取进行中的状态，如果不为空则取
                         List<Long> goingState = getOnGoingState(laneStates);
+
                     }
                 }else {
                     //更新epic

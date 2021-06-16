@@ -14,6 +14,16 @@ import java.util.List;
 
 public interface IStageService {
 
+
+    /**
+     * 根据查询类型和团队id查询阶段信息
+     *
+     * @param stageType
+     * @param teamId
+     * @return
+     */
+    List<StageInstance> getStages(Integer stageType,Long teamId) throws Exception;
+
     /**
      * 敏捷看板根据工作项类型获取阶段信息
      *
@@ -46,4 +56,7 @@ public interface IStageService {
      * @return
      */
     List<KanbanStageInstance> getSecondStageList(Long stageParentId,Long kanbanId);
+
+
+
 }
