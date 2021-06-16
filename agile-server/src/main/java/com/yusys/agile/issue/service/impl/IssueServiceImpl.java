@@ -3374,7 +3374,7 @@ public class IssueServiceImpl implements IssueService {
         if(Optional.ofNullable(teamId).isPresent()){
             Map<Long, List<STeam>> mapSTeam = mapMap.get("mapSTeam");
             if(mapSTeam.containsKey(teamId)){
-                STeam sTeam = mapSTeam.get("teamId").get(0);
+                STeam sTeam = mapSTeam.get(teamId).get(0);
                 map.put("name",sTeam.getTeamName() );
                 map.put("id", sTeam.getTeamId());
                 map.put("TeamType", sTeam.getTeamType());
