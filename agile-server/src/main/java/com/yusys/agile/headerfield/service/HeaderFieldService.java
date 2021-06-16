@@ -74,11 +74,11 @@ public interface HeaderFieldService {
     /**
      * 功能描述  当前项目的列头信息
      *
-     * @param projectId
+     * @param systemId
      * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
      * @date 2020/4/15
      */
-    List<HeaderField> getAllHeaderFieldByProjectId(Long projectId);
+    List<HeaderField> getAllHeaderFieldBySystemId(Long systemId);
 
     /**
      * 功能描述  当前项目的列头信息
