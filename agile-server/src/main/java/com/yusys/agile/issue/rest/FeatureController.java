@@ -71,9 +71,9 @@ public class FeatureController {
     }
 
     @DeleteMapping("/deleteFeature/{featureId}")
-    public ControllerResponse deleteFeature(@PathVariable("featureId") Long featureId) {
+    public ControllerResponse deleteFeature(@PathVariable("featureId") Long featureId,Boolean deleteChild) {
         try {
-            featureService.deleteFeature(featureId);
+            featureService.deleteFeature(featureId,deleteChild);
         } catch (Exception e) {
             LOGGER.error("删除研发需求失败：{}", e);
             return ControllerResponse.fail("删除研发需求失败：" + e.getMessage());
