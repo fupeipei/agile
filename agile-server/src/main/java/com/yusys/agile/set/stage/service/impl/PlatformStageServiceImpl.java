@@ -54,6 +54,7 @@ public class PlatformStageServiceImpl implements IStageService {
                 stageIds.add(StageConstant.FirstStageEnum.READY_STAGE.getValue());
                 break;
             case 2:
+                stageIds.add(StageConstant.FirstStageEnum.READY_STAGE.getValue());
                 stageIds.add(StageConstant.FirstStageEnum.ANALYSIS_STAGE.getValue());
                 stageIds.add(StageConstant.FirstStageEnum.DESIGN_STAGE.getValue());
                 break;

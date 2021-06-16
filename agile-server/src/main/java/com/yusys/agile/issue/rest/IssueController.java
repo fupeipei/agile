@@ -471,24 +471,4 @@ public class IssueController {
     }
 
 
-    /**
-     * 根据看板ID获取issue工作项列表
-     *
-     * @param kanbanId
-     * @param issueType
-     * @return
-     */
-    @GetMapping("/issue/getIssueTrees")
-    public ControllerResponse getIssueTrees(@RequestParam("kanbanId") Long kanbanId,
-                                            @RequestParam(value = "issueType" ,required = false) Byte issueType) {
-        try {
-            if(Optional.ofNullable(issueType).isPresent()){
-                issueType = IssueTypeEnum.TYPE_FEATURE.CODE;
-            }
-            return ControllerResponse.success(issueService.getIssueTrees(kanbanId,issueType));
-        } catch (Exception e) {
-            LOGGER.info("获取工作项树信息异常:{}",e.getMessage());
-        }
-        return ControllerResponse.success(Lists.newArrayList());
-    }
 }
