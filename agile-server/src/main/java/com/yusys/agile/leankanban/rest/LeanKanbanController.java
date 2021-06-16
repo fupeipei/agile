@@ -50,7 +50,7 @@ public class LeanKanbanController {
     public ControllerResponse getIssueTrees(@RequestParam("kanbanId") Long kanbanId,
                                             @RequestParam(value = "issueType" ,required = false) Byte issueType) {
         try {
-            if(Optional.ofNullable(issueType).isPresent()){
+            if(!Optional.ofNullable(issueType).isPresent()){
                 issueType = IssueTypeEnum.TYPE_FEATURE.CODE;
             }
             return ControllerResponse.success(issueService.getIssueTrees(kanbanId,issueType));
