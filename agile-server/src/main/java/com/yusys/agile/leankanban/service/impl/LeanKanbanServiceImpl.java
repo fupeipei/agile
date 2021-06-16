@@ -58,6 +58,7 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
 
     @Override
     public void createLeanKanban(Long teamId) {
+        log.info("创建看板入参 teamId{}",teamId);
         //1、创建看板实例
         STeam team = teamMapper.selectByPrimaryKey(teamId);
         SLeanKanbanDTO leanKanbanDTO = new SLeanKanbanDTO();
@@ -65,6 +66,7 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
         leanKanbanDTO.setKanbanDesc(team.getTeamName());
         leanKanbanDTO.setStatus(1L);
         leanKanbanDTO.setState(StateEnum.U.getValue());
+        leanKanbanDTO.setTeamId(teamId);
 
         SLeanKanban sLeanKanban = ReflectUtil.copyProperties(leanKanbanDTO, SLeanKanban.class);
         leanKanbanMapper.insertSelective(sLeanKanban);
