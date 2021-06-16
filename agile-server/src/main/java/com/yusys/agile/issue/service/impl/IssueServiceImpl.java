@@ -3284,9 +3284,10 @@ public class IssueServiceImpl implements IssueService {
      */
     private List<Long> getOnGoingState(){
 
+        return  null;
     }
 
-=======
+
     @Override
     public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {
         if (null != issueId) {
@@ -3298,5 +3299,5 @@ public class IssueServiceImpl implements IssueService {
             }
         }
     }
->>>>>>> f821cc107a102eb2e7e740635edea6983b3aefe3
+
 }
