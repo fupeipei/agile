@@ -237,7 +237,7 @@ public class DateTools {
         return simpleFormat.format(date);
     }
 
-    /**
+    /**DateUtil
      * 获取当前日期字符串
      *
      * @return
