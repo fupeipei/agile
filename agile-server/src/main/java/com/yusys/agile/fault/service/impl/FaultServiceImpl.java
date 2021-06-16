@@ -194,7 +194,7 @@ public class FaultServiceImpl implements FaultService {
     @Override
     public IssueDTO getFault(Long issueId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
-        Long projectId = issue.getProjectId();
+        Long systemId = issue.getSystemId();
         // 不存在或者是删除状态
         if (null == issue || !StringUtils.equals(issue.getState(), StateEnum.U.getValue())) {
             return null;
@@ -250,7 +250,7 @@ public class FaultServiceImpl implements FaultService {
         //LOGGER.info("查询描述后的issueDTO={}", JSON.toJSONString(issueDTO));
 
         // 自定义字段
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueId, issue.getIssueType());
+        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(systemId,issueId, issue.getIssueType());
         issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
         return issueDTO;
     }

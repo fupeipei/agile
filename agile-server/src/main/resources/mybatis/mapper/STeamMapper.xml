@@ -298,7 +298,7 @@
                 state = #{state,jdbcType=VARCHAR},
             </if>
             <if test="teamType != null">
-                state = #{teamType,jdbcType=VARCHAR},
+                team_type = #{teamType,jdbcType=VARCHAR},
             </if>
             <if test="createUid != null">
                 create_uid = #{createUid,jdbcType=BIGINT},
@@ -347,7 +347,7 @@
         where team_id = #{teamId,jdbcType=BIGINT}
     </update>
     <select id="queryTeam" resultMap="BaseResultMap">
-        select team_name, team_desc, create_uid
+        select <include refid="Base_Column_List" />
         from s_team
         where team_id = #{teamId}
           and state = 'U'

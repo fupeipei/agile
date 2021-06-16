@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
@@ -42,7 +43,7 @@ public class StoryController {
     @Resource
     private IssueFactory issueFactory;
     @Resource
-    private SysExtendFieldDetailService sysExtendFieldDetailService;
+    private IssueService issueService;
 
 
     @PostMapping("/create")
@@ -87,14 +88,7 @@ public class StoryController {
                 map.put(key.toString(), beanMap.get(key));
             }
         }
-        if (null != storyId) {
-            List<Long> issueIds = Lists.newArrayList();
-            issueIds.add(storyId);
-            List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getIssueExtendDetailList(issueIds);
-            for (int i = 0; i < sysExtendFieldDetailList.size(); i++) {
-                map.put(sysExtendFieldDetailList.get(i).getFieldId(), sysExtendFieldDetailList.get(i).getValue());
-            }
-        }
+        issueService.orgIssueExtendFields(storyId,map);
         return ControllerResponse.success(map);
     }
 
@@ -129,9 +123,9 @@ public class StoryController {
     }
 
     @PutMapping("/copy/{storyId}")
-    public ControllerResponse copyStory(@PathVariable(name = "storyId") Long storyId, @RequestHeader(name = "projectId",required = false) Long projectId) {
+    public ControllerResponse copyStory(@PathVariable(name = "storyId") Long storyId) {
         try {
-            Long newStoryId = storyService.copyStory(storyId, projectId);
+            Long newStoryId = storyService.copyStory(storyId);
             return ControllerResponse.success(newStoryId);
         } catch (Exception e) {
             LOGGER.error("复制故事失败：{}", e);

@@ -264,13 +264,6 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-
-
-    /*@Override
-    public IssueDTO queryTask(Long taskId, Long projectId) {
-        return issueFactory.queryIssue(taskId, projectId);
-    }*/
-
     @Override
     public IssueDTO queryTask(Long taskId) {
         return issueFactory.queryIssue(taskId, null);
@@ -340,8 +333,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long copyTask(Long taskId, Long projectId) {
-        Long issue = issueFactory.copyIssue(taskId, projectId, "该复制的任务已失效！", "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
+    public Long copyTask(Long taskId) {
+        Long issue = issueFactory.copyIssue(taskId,"该复制的任务已失效！", "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
 
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(issue)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + issue));
 

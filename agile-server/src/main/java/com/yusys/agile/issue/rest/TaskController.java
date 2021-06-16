@@ -1,10 +1,12 @@
 package com.yusys.agile.issue.rest;
 
+import com.google.common.collect.Maps;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.TaskService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +18,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +35,8 @@ public class TaskController {
 
     @Resource
     private TaskService taskService;
+    @Resource
+    private IssueService issueService;
 
     /**
      * 用户故事下新建任务
@@ -59,7 +64,16 @@ public class TaskController {
 
     @GetMapping("/queryTask/{taskId}")
     public ControllerResponse queryTask(@PathVariable("taskId") Long taskId) {
-        return ControllerResponse.success(taskService.queryTask(taskId));
+        IssueDTO issueDTO = taskService.queryTask(taskId);
+        Map<String, Object> map = Maps.newHashMap();
+        if (null != issueDTO) {
+            BeanMap beanMap = BeanMap.create(issueDTO);
+            for (Object key : beanMap.keySet()) {
+                map.put(key.toString(), beanMap.get(key));
+            }
+        }
+        issueService.orgIssueExtendFields(taskId,map);
+        return ControllerResponse.success(map);
     }
 
     /**
@@ -104,7 +118,7 @@ public class TaskController {
     @PutMapping("/copyTask/{taskId}")
     public ControllerResponse copyTask(@PathVariable(name = "taskId") Long taskId) {
         try {
-            Long newTaskId = taskService.copyTask(taskId, null);
+            Long newTaskId = taskService.copyTask(taskId);
             return ControllerResponse.success(newTaskId);
         } catch (Exception e) {
             LOGGER.error("复制任务失败：{}", e);

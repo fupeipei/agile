@@ -18,6 +18,8 @@ import com.yusys.agile.set.stage.service.StageTemplateConfigService;
 import com.yusys.agile.team.dao.TeamMapper;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.service.TeamService;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
@@ -43,7 +45,7 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
     @Autowired
     private StageTemplateConfigService stageTemplateConfigService;
     @Autowired
-    private TeamMapper teamMapper;
+    private STeamMapper teamMapper;
     @Autowired
     private SLeanKanbanMapper leanKanbanMapper;
     @Autowired
@@ -56,13 +58,15 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
 
     @Override
     public void createLeanKanban(Long teamId) {
+        log.info("创建看板入参 teamId{}",teamId);
         //1、创建看板实例
-        Team team = teamMapper.selectByPrimaryKey(teamId);
+        STeam team = teamMapper.selectByPrimaryKey(teamId);
         SLeanKanbanDTO leanKanbanDTO = new SLeanKanbanDTO();
         leanKanbanDTO.setKanbanName(team.getTeamName());
         leanKanbanDTO.setKanbanDesc(team.getTeamName());
         leanKanbanDTO.setStatus(1L);
         leanKanbanDTO.setState(StateEnum.U.getValue());
+        leanKanbanDTO.setTeamId(teamId);
 
         SLeanKanban sLeanKanban = ReflectUtil.copyProperties(leanKanbanDTO, SLeanKanban.class);
         leanKanbanMapper.insertSelective(sLeanKanban);

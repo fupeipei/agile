@@ -3,6 +3,7 @@ package com.yusys.agile.teamv3.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
@@ -57,6 +58,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     private STeamMemberMapper sTeamMemberMapper;
     @Resource
     private SSprintMapper sSprintMapper;
+
+    @Autowired
+    private LeanKanbanService leanKanbanService;
+
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
@@ -462,6 +467,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
      * @param team
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertTeamForLean(STeam team) {
         String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
@@ -496,9 +502,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             log.error("调用门户服务添加精益教练角色失败，失败原因:{}", e);
             throw new BusinessException("调用门户服务添加精益教练角色失败");
         }
+
+        //创建精益看板
+        leanKanbanService.createLeanKanban(team.getTeamId());
+
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateTeamForLean(STeam team) {
         Long teamId = team.getTeamId();
         STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
@@ -522,8 +533,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //收集PO的id、收集SM的id
         List<Long> leanIds = teamLean.stream().map(lean -> lean.getUserId()).collect(Collectors.toList());
 
+        sTeam.setTeamDesc(team.getTeamDesc());
+        sTeam.setTeamName(team.getTeamName());
         //插入团队
-        sTeamMapper.updateByPrimaryKeySelective(team);
+        sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
         teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
         //团队绑定 精益教练
@@ -544,6 +557,19 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             log.error("调用门户服务添加精益教练角色失败，失败原因:{}", e);
             throw new BusinessException("调用门户服务添加精益教练角色失败");
         }
+    }
+
+    @Override
+    public STeam getTeamById(long teamId) {
+        STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
+        return sTeam;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteTeamForLean(Long teamId) {
+        //精益团队暂不能删除
+        throw new BusinessException("精益团队暂不支持删除");
     }
 
 

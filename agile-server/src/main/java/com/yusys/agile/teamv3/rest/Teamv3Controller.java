@@ -67,7 +67,14 @@ public class Teamv3Controller {
      */
     @DeleteMapping("/deleteTeam/{teamId}")
     public ControllerResponse deleteTeam(@PathVariable("teamId") long teamId) {
-        teamv3Service.deleteTeam(teamId);
+        STeam team = teamv3Service.getTeamById(teamId);
+        if(Objects.equals(team.getTeamType(), TeamTypeEnum.agile_team.getCode())){
+            teamv3Service.deleteTeam(teamId);
+        }else if(Objects.equals(team.getTeamType(), TeamTypeEnum.lean_team.getCode())){
+            teamv3Service.deleteTeamForLean(teamId);
+        }else{
+            throw new BusinessException("团队类型错误");
+        }
         return ControllerResponse.success();
     }
 
