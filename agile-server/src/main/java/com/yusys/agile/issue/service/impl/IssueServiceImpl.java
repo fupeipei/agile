@@ -1930,6 +1930,7 @@ public class IssueServiceImpl implements IssueService {
         mapResult.put("issueParentMap", issueParentMap);
         //租户下的人员
         List<SsoUserDTO> userDTOS  = iFacadeUserApi.queryUsersByTenantCodeNoPage(tenantCode);
+
         Map<Long, String> userMap = Maps.newHashMap();
         // 查询所有人员信息
         for (SsoUserDTO ssoUserDTO : userDTOS) {
@@ -1965,8 +1966,9 @@ public class IssueServiceImpl implements IssueService {
             UserAttentionExample userAttentionExample = new UserAttentionExample();
             userAttentionExample.createCriteria()
                     .andStateEqualTo("U")
-                    .andAttentionTypeEqualTo(ATTENIONTYPE_1)
-                    .andUserIdEqualTo(UserThreadLocalUtil.getUserInfo().getUserId());
+                    .andAttentionTypeEqualTo(ATTENIONTYPE_1);
+
+//                    .andUserIdEqualTo(UserThreadLocalUtil.getUserInfo().getUserId());
             userAttentions = userAttentionMapper.selectByExample(userAttentionExample);
         }
         Map<Long, List<UserAttention>> mapUserAttention = userAttentions.stream().collect(Collectors.groupingBy(UserAttention::getSubjectId));
