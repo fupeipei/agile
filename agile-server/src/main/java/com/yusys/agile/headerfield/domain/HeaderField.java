@@ -41,6 +41,8 @@ public class HeaderField implements Serializable {
 
     private String fieldTypeName;
 
+    private Long systemId;
+
     private static final long serialVersionUID = 1L;
 
     public Long getFieldId() {
@@ -193,5 +195,13 @@ public class HeaderField implements Serializable {
 
     public void setFieldPoolCode(String fieldPoolCode) {
         this.fieldPoolCode = fieldPoolCode;
+    }
+
+    public Long getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
     }
 }

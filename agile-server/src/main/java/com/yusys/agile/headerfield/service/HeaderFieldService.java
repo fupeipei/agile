@@ -58,7 +58,7 @@ public interface HeaderFieldService {
      */
     Integer deleteCustomFieldByFieldId(Long issueCustomRelationId);
 
-    Integer saveCustomFieldByFieldId(Long projectId, Long fieldId, Byte issueType);
+    Integer saveCustomFieldByFieldId(Long systemId, Long fieldId, Byte issueType);
 
 
     /**

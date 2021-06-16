@@ -1,7 +1,8 @@
 package com.yusys.agile;
 
 import com.github.pagehelper.PageInfo;
-import com.yusys.agile.deployRecord.service.DeployRecordService;
+
+import com.yusys.agile.deployrecord.service.DeployRecordService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

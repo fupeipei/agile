@@ -7,14 +7,12 @@ import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
-import com.yusys.agile.team.dto.TeamListDTO;
-import com.yusys.agile.team.dto.TeamQueryDTO;
-import com.yusys.agile.team.dto.TeamSystemDTO;
-import com.yusys.agile.team.dto.TeamUserDTO;
+import com.yusys.agile.team.dto.*;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamExample;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
@@ -575,4 +573,15 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     //----------------------------------- 精益团队部分（结束）--------------------------------------
 
+
+    @Override
+    public List<STeam> listTeamByTenantCode(String tenantCode) {
+        STeamExample sTeamExample = new STeamExample();
+        STeamExample.Criteria criteria = sTeamExample.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue());
+        if(Optional.ofNullable(tenantCode).isPresent()){
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
+        return sTeamMapper.selectByExampleWithBLOBs(sTeamExample);
+    }
 }
