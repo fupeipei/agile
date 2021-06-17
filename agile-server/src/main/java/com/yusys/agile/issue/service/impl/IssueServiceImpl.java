@@ -1196,91 +1196,16 @@ public class IssueServiceImpl implements IssueService {
     public List<Issue> queryIssueList(Map<String, Object> map) {
         JSONObject jsonObject = new JSONObject(map);
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
-        List<Issue> issueList = Lists.newArrayList();
         IssueRecord issueRecord = new IssueRecord();
-        //查询自定义字段条件
-        //暂时先注释掉
-        // getCustomIssueIds(map, null);
-        List<CustomFieldJsonType> customFieldJsonTypeList =new ArrayList<>();
-
-
-        //增加扩展字段搜索能力
-        Boolean isQueryExtendField = true;
-        Map<String, Boolean> stringBooleanMap = new HashMap<>();
-        stringBooleanMap.put("stringBooleanMap", true);
-        Byte issueType = Byte.parseByte(map.get("issueType").toString());
-        Map<Byte, List<Long>> extendFieldIssueIds = getExtendFields(map, stringBooleanMap);
-        if (stringBooleanMap.get("stringBooleanMap")) {
-            if (MapUtils.isEmpty(extendFieldIssueIds)) {
-                return issueList;
-            } else {
-                //根据扩展字段查询满足条件的上级主键Id, >_< >_< >_<
-                List<Long> epicResultIds = Lists.newArrayList();
-                if (issueType.compareTo(IssueTypeEnum.TYPE_EPIC.CODE) >= 0) {
-                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_EPIC.CODE)) {
-                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_EPIC.CODE))) {
-                            return issueList;
-                        }
-                        epicResultIds = issueMapper.listLevelIssueIdforEpic(extendFieldIssueIds.get(IssueTypeEnum.TYPE_EPIC.CODE));
-                        if (CollectionUtils.isEmpty(epicResultIds)) {
-                            return issueList;
-                        }
-                    }
-                }
-                if (issueType.compareTo(IssueTypeEnum.TYPE_FEATURE.CODE) >= 0) {
-                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_FEATURE.CODE)) {
-                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_FEATURE.CODE))) {
-                            return issueList;
-                        }
-                        epicResultIds = issueMapper.listLevelIssueIdforFeature(extendFieldIssueIds.get(IssueTypeEnum.TYPE_FEATURE.CODE), epicResultIds);
-                        if (CollectionUtils.isEmpty(epicResultIds)) {
-                            return issueList;
-                        }
-                    } else {
-                        epicResultIds = issueMapper.listLevelIssueIdforFeature(Lists.newArrayList(), epicResultIds);
-                        if (CollectionUtils.isEmpty(epicResultIds)) {
-                            return issueList;
-                        }
-                    }
-                }
-                if (issueType.compareTo(IssueTypeEnum.TYPE_STORY.CODE) >= 0) {
-                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_STORY.CODE)) {
-                            if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_STORY.CODE))) {
-                            return issueList;
-                        }
-                        epicResultIds = issueMapper.listLevelIssueIdforStory(extendFieldIssueIds.get(IssueTypeEnum.TYPE_STORY.CODE), epicResultIds);
-                        if (CollectionUtils.isEmpty(epicResultIds)) {
-                            return issueList;
-                        }
-                    } else {
-                        epicResultIds = issueMapper.listLevelIssueIdforStory(Lists.newArrayList(), epicResultIds);
-                        if (CollectionUtils.isEmpty(epicResultIds)) {
-                            return issueList;
-                        }
-                    }
-                }
-                if (issueType.compareTo(IssueTypeEnum.TYPE_TASK.CODE) >= 0) {
-                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_TASK.CODE)) {
-                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_TASK.CODE))) {
-                            return issueList;
-                        }
-                        epicResultIds = issueMapper.listLevelIssueIdforTask(extendFieldIssueIds.get(IssueTypeEnum.TYPE_TASK.CODE), epicResultIds);
-                        if (CollectionUtils.isEmpty(epicResultIds)) {
-                            return issueList;
-                        }
-                    } else {
-                        epicResultIds = issueMapper.listLevelIssueIdforTask(Lists.newArrayList(), epicResultIds);
-                        if (CollectionUtils.isEmpty(epicResultIds)) {
-                            return issueList;
-                        }
-                    }
-                }
-                if (issueRecord.getIssueIds() != null && issueRecord.getIssueIds().size() > 0) {
-                    issueRecord.getIssueIds().retainAll(epicResultIds);
-                } else {
-                    issueRecord.setIssueIds(epicResultIds);
-                }
-            }
+        Long systemId = null;
+        if(map.containsKey("systemId")&&Optional.ofNullable(map.get("systemId")).isPresent()){
+            systemId = Long.parseLong(map.get("systemId").toString());
+        }
+        //组织查询自定义字段条件
+        List<CustomFieldJsonType> customFieldJsonTypeList = getCustomIssueIds(map, systemId);
+        //扩展字段，先确定是否有扩展字段，再过滤出满足条件的issueId
+        if(!checkAndGetIssueIdByExtendFieldParam(issueRecord,map)){
+            return Lists.newArrayList();
         }
         // 不传page信息时查全部数据
         if (issueStringDTO.getPageNum() != null && issueStringDTO.getPageSize() != null) {
@@ -1300,24 +1225,9 @@ public class IssueServiceImpl implements IssueService {
         if (StringUtils.isNotEmpty(issueStringDTO.getCompletion())) {
             issueRecord.setCompletions(dealData(issueStringDTO.getCompletion(), STRING));
         }
-        //任务查询加上“阻塞中”状态   start
         if (StringUtils.isNotEmpty(issueStringDTO.getStageId())) {
-            String stageIdStr = issueStringDTO.getStageId();
-            //只有任务的走这块
-            if (StringUtils.isNotEmpty(issueStringDTO.getIssueType()) && issueStringDTO.getIssueType().equals(Byte.toString(IssueTypeEnum.TYPE_TASK.CODE))) {
-                List<String> listStageId = Lists.newArrayList(issueStringDTO.getStageId().split(","));
-                boolean b = listStageId.contains("9999");
-                if (b) {
-                    listStageId = listStageId.stream().filter(id -> !"9999".equals(id)).collect(Collectors.toList());
-                    issueRecord.setBlockState((byte) 1L);
-                    stageIdStr = String.join(",", listStageId);
-                }
-            }
-            if (StringUtils.isNotEmpty(stageIdStr)) {
-                issueRecord.setStageIds(dealData(stageIdStr, LONG));
-            }
+            issueRecord.setStageIds(dealData(issueStringDTO.getStageId(), LONG));
         }
-        //任务查询加上“阻塞中”状态   end
         if (StringUtils.isNotEmpty(issueStringDTO.getFaultLevel())) {
             issueRecord.setFaultLevels(dealData(issueStringDTO.getFaultLevel(), LONG));
         }
@@ -1369,7 +1279,7 @@ public class IssueServiceImpl implements IssueService {
             if (issueIds != null && !issueIds.isEmpty()) {
                 issueRecord.setIssueIds(issueIds);
             } else {
-                return issueList;
+                return Lists.newArrayList();
             }
         }
         // 判断是根据id还是name
@@ -1400,51 +1310,11 @@ public class IssueServiceImpl implements IssueService {
                 issueRecord.setIssueIds(issueStringDTO.getIssueIds());
             }
         }
-        /*=========业务需求/研发需求列表展示版本计划名称及支持按版本名称高级搜索   start==========
-        if (StringUtils.isNotEmpty(issueStringDTO.getVersionName())) {
-            List<Long> listIssuesId;
-            listIssuesId = queryVersionIssueRelatList(issueStringDTO, projectId);
-            if (listIssuesId != null && listIssuesId.size() > 0) {
-                if (issueStringDTO.getIssueIds() != null && issueStringDTO.getIssueIds().size() > 0) {
-                    issueRecord.getIssueIds().retainAll(listIssuesId);
-                    if (map.containsKey("issueIds")) {
-                        issueRecord.getIssueIds().retainAll((List) map.get("issueIds"));
-                    }
-                } else {
-                    issueRecord.setIssueIds(listIssuesId);
-                }
-            } else {
-                return issueList;
-            }
-        }
-        /*=========业务需求/研发需求列表展示版本计划名称及支持按版本名称高级搜索   end==========*/
-
-        /*=========缺陷管理增加高级搜索能力  end==========
-        if (StringUtils.isNotEmpty(issueStringDTO.getFaultStatus())) {
-            List<Long> listIssuesId = queryIssueByFaultStatusList(issueStringDTO, projectId);
-            if (listIssuesId != null && listIssuesId.size() > 0) {
-                if (issueStringDTO.getIssueIds() != null && issueStringDTO.getIssueIds().size() > 0) {
-                    issueRecord.getIssueIds().retainAll(listIssuesId);
-                    if (map.containsKey("issueIds")) {
-                        issueRecord.getIssueIds().retainAll((List) map.get("issueIds"));
-                    }
-                } else {
-                    issueRecord.setIssueIds(listIssuesId);
-                }
-            } else {
-                return issueList;
-            }
-        }
-        /*=========缺陷管理增加高级搜索能力   start==========*/
-
-        issueList = issueMapper.queryIssueList(issueRecord, customFieldJsonTypeList);
-
-
-        return issueList;
+        return issueMapper.queryIssueList(issueRecord, customFieldJsonTypeList);
     }
 
     /**
-     * 功能描述  处理高级搜索条件
+     * 功能描述 封装基本字段的高级搜索条件
      *
      * @param string
      * @param type
@@ -1769,8 +1639,8 @@ public class IssueServiceImpl implements IssueService {
         return issueExample;
     }
 
-    public List<CustomFieldJsonType> getCustomIssueIds(Map<String, Object> map, Long projectId) {
-        List<HeaderField> headerFields = headerFieldService.getAllHeaderFieldByProjectId(projectId);
+    public List<CustomFieldJsonType> getCustomIssueIds(Map<String, Object> map, Long systemId) {
+        List<HeaderField> headerFields = headerFieldService.getAllHeaderFieldBySystemId(systemId);
         Map<String, List<HeaderField>> mapHeaderField = headerFields.stream().collect(Collectors.groupingBy(HeaderField -> {
             if (HeaderField.getFieldPoolCode() != null) {
                 return HeaderField.getFieldPoolCode();
@@ -1938,7 +1808,7 @@ public class IssueServiceImpl implements IssueService {
         }
 
         //租户下所有的自定义字段列头对象
-        List<HeaderField> headerFields = headerFieldService.getAllHeaderFieldByProjectId(projrctId);
+        List<HeaderField> headerFields = headerFieldService.getAllHeaderFieldBySystemId(projrctId);
         Map<String, List<HeaderField>> mapHeaderField = headerFields.stream().collect(Collectors.groupingBy(HeaderField::getFieldCode));
         mapResult.put("mapHeaderField", mapHeaderField);
         //自定义字段
@@ -3074,13 +2944,13 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<Long> getIssueIds(Long parentId) {
+    public List<Long> getIssueIds(List<Long> parentIds) {
         List<Long> longList= Lists.newArrayList();
         IssueExample example = new IssueExample();
         IssueExample.Criteria  criteria = example.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.getValue());
-        if(parentId!=null){
-            criteria.andParentIdEqualTo(parentId);
+        if(CollectionUtils.isNotEmpty(parentIds)){
+            criteria.andParentIdIn(parentIds);
         }
         List<Issue>  issues =  issueMapper.selectByExample(example);
         if(CollectionUtils.isNotEmpty(issues)){
@@ -3294,6 +3164,13 @@ public class IssueServiceImpl implements IssueService {
         }
     }
 
+    /**
+     * 组织，查询团队信息
+     * @param issueId
+     * @param issueType
+     * @param mapMap
+     * @return
+     */
     public Map getIssueTeamMap( Long issueId,Byte issueType,Map<String, Map> mapMap) {
         Map map = new HashMap<String, String>();
         Issue issue = selectIssueByIssueId(issueId);
@@ -3321,5 +3198,92 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         return map;
+    }
+
+    /**
+     * 校验扩展字段是否满足条件以及满足条件的过滤结果
+     * @param issueRecord
+     * @param map
+     * @return
+     */
+    public boolean checkAndGetIssueIdByExtendFieldParam(IssueRecord issueRecord,Map map){
+
+        Map<String, Boolean> stringBooleanMap = new HashMap<>();
+        stringBooleanMap.put("stringBooleanMap", true);
+        Byte issueType = Byte.parseByte(map.get("issueType").toString());
+        Map<Byte, List<Long>> extendFieldIssueIds = getExtendFields(map, stringBooleanMap);
+        if (stringBooleanMap.get("stringBooleanMap")) {
+            if (MapUtils.isEmpty(extendFieldIssueIds)) {
+                return false;
+            } else {
+                //根据扩展字段查询满足条件的上级主键Id, >_< >_< >_<
+                List<Long> epicResultIds = Lists.newArrayList();
+                if (issueType.compareTo(IssueTypeEnum.TYPE_EPIC.CODE) >= 0) {
+                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_EPIC.CODE)) {
+                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_EPIC.CODE))) {
+                            return false;
+                        }
+                        epicResultIds = issueMapper.listLevelIssueIdforEpic(extendFieldIssueIds.get(IssueTypeEnum.TYPE_EPIC.CODE));
+                        if (CollectionUtils.isEmpty(epicResultIds)) {
+                            return false;
+                        }
+                    }
+                }
+                if (issueType.compareTo(IssueTypeEnum.TYPE_FEATURE.CODE) >= 0) {
+                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_FEATURE.CODE)) {
+                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_FEATURE.CODE))) {
+                            return false;
+                        }
+                        epicResultIds = issueMapper.listLevelIssueIdforFeature(extendFieldIssueIds.get(IssueTypeEnum.TYPE_FEATURE.CODE), epicResultIds);
+                        if (CollectionUtils.isEmpty(epicResultIds)) {
+                            return false;
+                        }
+                    } else {
+                        epicResultIds = issueMapper.listLevelIssueIdforFeature(Lists.newArrayList(), epicResultIds);
+                        if (CollectionUtils.isEmpty(epicResultIds)) {
+                            return false;
+                        }
+                    }
+                }
+                if (issueType.compareTo(IssueTypeEnum.TYPE_STORY.CODE) >= 0) {
+                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_STORY.CODE)) {
+                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_STORY.CODE))) {
+                            return false;
+                        }
+                        epicResultIds = issueMapper.listLevelIssueIdforStory(extendFieldIssueIds.get(IssueTypeEnum.TYPE_STORY.CODE), epicResultIds);
+                        if (CollectionUtils.isEmpty(epicResultIds)) {
+                            return false;
+                        }
+                    } else {
+                        epicResultIds = issueMapper.listLevelIssueIdforStory(Lists.newArrayList(), epicResultIds);
+                        if (CollectionUtils.isEmpty(epicResultIds)) {
+                            return false;
+                        }
+                    }
+                }
+                if (issueType.compareTo(IssueTypeEnum.TYPE_TASK.CODE) >= 0) {
+                    if (extendFieldIssueIds.containsKey(IssueTypeEnum.TYPE_TASK.CODE)) {
+                        if (CollectionUtils.isEmpty(extendFieldIssueIds.get(IssueTypeEnum.TYPE_TASK.CODE))) {
+                            return false;
+                        }
+                        epicResultIds = issueMapper.listLevelIssueIdforTask(extendFieldIssueIds.get(IssueTypeEnum.TYPE_TASK.CODE), epicResultIds);
+                        if (CollectionUtils.isEmpty(epicResultIds)) {
+                            return false;
+                        }
+                    } else {
+                        epicResultIds = issueMapper.listLevelIssueIdforTask(Lists.newArrayList(), epicResultIds);
+                        if (CollectionUtils.isEmpty(epicResultIds)) {
+                            return false;
+                        }
+                    }
+                }
+                if (issueRecord.getIssueIds() != null && issueRecord.getIssueIds().size() > 0) {
+                    issueRecord.getIssueIds().retainAll(epicResultIds);
+                } else {
+                    issueRecord.setIssueIds(epicResultIds);
+                }
+            }
+        }
+        return true;
     }
 }

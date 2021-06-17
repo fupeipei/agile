@@ -37,12 +37,19 @@ public class DeployRecordServiceImpl implements DeployRecordService {
         pageSize = null == pageSize ? 20 : pageSize;
         List<TDeployCodeLogDTO > logDTOS =  Lists.newArrayList();
         List<Long> longList = Lists.newArrayList();
+        List<Long> longListParam = Lists.newArrayList();
+        longListParam.add(issueId);
+
+        //issueType = 2 feature
+        if(IssueTypeEnum.TYPE_FEATURE.CODE.compareTo(issueType)>=0){
+            longListParam.addAll(issueService.getIssueIds(longListParam));
+        }
         //issueType = 3 故事
-        if(IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)){
-            longList.addAll(issueService.getIssueIds(issueId));
+        if(IssueTypeEnum.TYPE_STORY.CODE.compareTo(issueType)>=0){
+            longList.addAll(issueService.getIssueIds(longListParam));
         }
         //issueType = 4 任务
-        if(IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)){
+        if(IssueTypeEnum.TYPE_TASK.CODE.compareTo(issueType)>=0){
             longList.add(issueId);
         }
         if(CollectionUtils.isEmpty(longList)){
