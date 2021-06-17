@@ -780,8 +780,8 @@ public class IssueServiceImpl implements IssueService {
             if(Optional.ofNullable(sprint).isPresent()){
                 map.put("sprintName",sprint.getSprintName());
             }
-            //feature设置团队信息
-            if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(issue.getIssueType()){
+            //epic、feature设置团队信息
+            if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(issue.getIssueType()) || IssueTypeEnum.TYPE_EPIC.CODE.equals(issue.getIssueType())){
                 setTeamInfo(map,issue.getTeamId());
             }
             if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) ||
@@ -803,10 +803,20 @@ public class IssueServiceImpl implements IssueService {
     }
 
     private void setTeamInfo(Map map,Long teamId){
-        map.put("teamId", teamId);
-        STeam sTeam = teamv3Service.getTeamById(teamId);
-        map.put("teamName", sTeam.getTeamName());
-        map.put("teamType", sTeam.getTeamType());
+        map.put("teamId", teamId == null ? "" : teamId);
+        if(null != teamId){
+            STeam sTeam = teamv3Service.getTeamById(teamId);
+            if(null != sTeam){
+                map.put("teamName", sTeam.getTeamName());
+                map.put("teamType", sTeam.getTeamType());
+            }else{
+                map.put("teamName", "");
+                map.put("teamType", "");
+            }
+        }else{
+            map.put("teamName", "");
+            map.put("teamType", "");
+        }
     }
 
     /**
