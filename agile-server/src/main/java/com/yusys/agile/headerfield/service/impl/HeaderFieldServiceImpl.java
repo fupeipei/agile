@@ -321,15 +321,21 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
     }
 
     @Override
-    public List<HeaderField> getAllHeaderFieldByProjectId(Long projectId) {
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(projectId, null, null, null);
+    public List<HeaderField> getAllHeaderFieldBySystemId(Long systemId) {
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(systemId, null, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
-        List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(projectId, null);
+        List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(systemId, null);
         Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
         List<HeaderField> headerFields = Lists.newArrayList();
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();
         HeaderFieldExample.Criteria criteria = headerFieldExample.createCriteria();
-        criteria.andIsCustomEqualTo(Byte.parseByte("1"));
+        criteria.andIsCustomEqualTo(IsCustomEnum.TRUE.getValue())
+                .andStateEqualTo(StateEnum.U.getValue());
+        if(Optional.ofNullable(systemId).isPresent()){
+            criteria.andSystemIdEqualTo(systemId);
+        }else{
+            criteria.andSystemIdIsNull();
+        }
         headerFields = headerFieldMapper.selectByExample(headerFieldExample);
         headerFields.forEach(HeaderField -> {
             if (longListMap.containsKey(Long.parseLong(HeaderField.getFieldCode())) && listMap.containsKey(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId())) {

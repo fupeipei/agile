@@ -7,7 +7,6 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.FeatureService;
-import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
@@ -50,13 +49,15 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void editFeature(IssueDTO issueDTO) {
-        if (issueFactory.checkFeatureInVersion(issueDTO.getStages(), issueDTO.getIssueId(), issueDTO.getParentId())) {
-            throw new BusinessException("当前feature未绑定任何版本，不允许变更为需求分析完成状态！");
-        }
         Issue oldFeature = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
-        Long projectId = oldFeature.getProjectId();
-
-        Issue feature = issueFactory.editIssue(issueDTO, oldFeature, projectId);
+        //判断如果feature上的团队发生了变更，那么需要同时更新看板ID
+        if(!issueDTO.getTeamId().equals(oldFeature.getTeamId())){
+            SLeanKanban sLeanKanban = leanKanbanService.querySimpleLeanKanbanInfo(issueDTO.getTeamId());
+            if(Optional.ofNullable(sLeanKanban).isPresent()){
+                issueDTO.setKanbanId(sLeanKanban.getKanbanId());
+            }
+        }
+        Issue feature = issueFactory.editIssue(issueDTO, oldFeature, null);
         int count;
         count = issueMapper.updateByPrimaryKeySelectiveWithNull(feature);
         if (count != 1) {
