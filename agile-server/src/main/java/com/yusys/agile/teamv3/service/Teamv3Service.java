@@ -111,4 +111,13 @@ public interface Teamv3Service {
      * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
      */
     List<TeamListDTO> listAllTeam(TeamQueryDTO dto, SecurityDTO security);
+
+    /**
+     *功能描述 根据teamId列表获取团队信息
+     * @author shenfeng
+     * @date 2021/6/17
+      * @param teamIdList
+     * @return java.util.List<com.yusys.agile.teamv3.domain.STeam>
+     */
+    List<STeam> listTeamByIds(List<Long> teamIdList);
 }
