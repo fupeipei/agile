@@ -1,6 +1,7 @@
 package com.yusys.agile.leankanban.rest;
 
 import com.google.common.collect.Lists;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
@@ -60,5 +61,18 @@ public class LeanKanbanController {
         return ControllerResponse.success(Lists.newArrayList());
     }
 
+
+
+    @GetMapping("/issue/dragIssueCard")
+    public ControllerResponse dragIssueCard(@RequestParam("issueId") Long issueId,
+                                            @RequestParam(value = "stageId") Long stageId,
+                                            @RequestParam(value = "laneId" ,required = false) Long laneId) {
+        try {
+            return ControllerResponse.success(issueService.dragIssueCard(issueId,stageId,laneId));
+        } catch (Exception e) {
+            log.info("获取工作项树信息异常:{}",e.getMessage());
+        }
+        return ControllerResponse.success(Lists.newArrayList());
+    }
 
 }
