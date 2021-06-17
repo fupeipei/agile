@@ -278,4 +278,7 @@ public class IssueDTO {
 
     private String StoryStatusName;
 
+    /**看板id*/
+    private Long  kanbanId;
+
 }
