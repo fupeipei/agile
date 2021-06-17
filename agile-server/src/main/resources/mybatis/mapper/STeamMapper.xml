@@ -542,4 +542,18 @@
         from s_sprint_user_hour
         where sprint_id = #{sprintId}
     </select>
+
+    <select id="queryTeams" resultType="com.yusys.agile.team.dto.TeamListDTO">
+        select a.* from s_team a
+        where  a.state='U'
+        <if test="teamIds != null and teamIds.size>0">
+         and a.team_id in
+          <foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
+          #{teamId}
+          </foreach>
+        </if>
+        <if test="teamName != null and teamName != ''">
+         AND (a.team_name LIKE CONCAT('%', #{teamName}, '%'))
+         </if>
+    </select>
 </mapper>

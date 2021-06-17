@@ -603,4 +603,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         return sTeamMapper.selectByExampleWithBLOBs(sTeamExample);
     }
+
+    @Override
+    public List<TeamListDTO> queryTeams(List<Long> teamIds, String teamName, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<TeamListDTO> sTeams = sTeamMapper.queryTeams(teamIds, teamName);
+        //按ids分别查询团队/系统
+
+
+        return  buildResultList(sTeams);
+    }
 }

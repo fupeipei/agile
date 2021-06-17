@@ -10,7 +10,9 @@ import com.yusys.agile.issue.service.FeatureService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
+import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -50,6 +52,11 @@ public class FeatureServiceImpl implements FeatureService {
     @Transactional(rollbackFor = Exception.class)
     public void editFeature(IssueDTO issueDTO) {
         Issue oldFeature = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
+        //先校验feature是否已经拆分了故事，如果已经拆分了故事则不允许变更团队
+        if(hasChildren(issueDTO.getIssueId())&& !issueDTO.getTeamId().equals(oldFeature.getTeamId())){
+            throw new BusinessException("Feature已拆分故事不允许变更团队！");
+        }
+
         //判断如果feature上的团队发生了变更，那么需要同时更新看板ID
         if(!issueDTO.getTeamId().equals(oldFeature.getTeamId())){
             SLeanKanban sLeanKanban = leanKanbanService.querySimpleLeanKanbanInfo(issueDTO.getTeamId());
@@ -57,6 +64,7 @@ public class FeatureServiceImpl implements FeatureService {
                 issueDTO.setKanbanId(sLeanKanban.getKanbanId());
             }
         }
+
         Issue feature = issueFactory.editIssue(issueDTO, oldFeature, null);
         int count;
         count = issueMapper.updateByPrimaryKeySelectiveWithNull(feature);
@@ -64,6 +72,12 @@ public class FeatureServiceImpl implements FeatureService {
             throw new BusinessException("更新研发需求失败！");
         }
 
+    }
+
+    private boolean hasChildren(Long issueId) {
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andParentIdEqualTo(issueId).andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
+        return CollectionUtils.isNotEmpty(issueMapper.selectByExample(issueExample)) ? true : false;
     }
 
     @Override
