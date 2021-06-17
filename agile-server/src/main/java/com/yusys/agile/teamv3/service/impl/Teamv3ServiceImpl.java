@@ -95,6 +95,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         return rest;
     }
 
+    @Override
+    public List<STeam> listTeamByIds(List<Long> teamIdList) {
+        STeamExample sTeamExample = new STeamExample();
+        STeamExample.Criteria criteria = sTeamExample.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue()).andTeamIdIn(teamIdList);
+        return sTeamMapper.selectByExample(sTeamExample);
+    }
+
 
     /**
      * 构建返回值

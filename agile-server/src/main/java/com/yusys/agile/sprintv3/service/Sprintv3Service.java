@@ -227,4 +227,13 @@ public interface Sprintv3Service {
      * @return java.util.List<com.yusys.agile.sprintV3.dto.SprintListDTO>
      */
     List<SprintListDTO> querySprintBySystemId(Long systemID);
+
+    /**
+     *功能描述 查询团队下所有未开始和进行中的迭代
+     * @author shenfeng
+     * @date 2021/6/17
+      * @param teamId
+     * @return java.util.List<com.yusys.agile.sprintV3.dto.SprintListDTO>
+     */
+    List<SprintListDTO> listEffectiveSprintByTeamId(Long teamId);
 }

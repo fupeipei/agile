@@ -295,6 +295,17 @@ public class Sprintv3Controller {
 
     }
 
+    /**
+     * 查询团队下所有未开始进行中的迭代信息
+     *
+     * @param teamId
+     * @return
+     */
+    @GetMapping("/listEffectiveSprintByTeamId")
+    public ControllerResponse listEffectiveSprintByTeamId(@RequestParam(name = "teamId") Long teamId) {
+        List<SprintListDTO> result = sprintv3Service.listEffectiveSprintByTeamId(teamId);
+        return ControllerResponse.success(result);
 
+    }
 }
 

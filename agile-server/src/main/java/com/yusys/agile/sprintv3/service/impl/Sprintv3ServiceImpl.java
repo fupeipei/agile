@@ -930,4 +930,33 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
         return sprintListDTOList;
     }
+
+    @Override
+    public List<SprintListDTO> listEffectiveSprintByTeamId(Long teamId) {
+        List<SprintListDTO> sprintListDTOList = Lists.newArrayList();
+        SSprintExample sSprintExample = new SSprintExample();
+        List<Byte> listStatus = Lists.newArrayList(new Byte("2"), new Byte("3"));
+        sSprintExample.createCriteria().andTeamIdEqualTo(teamId).andStateEqualTo(StateEnum.U.getValue())
+                .andStatusIn(listStatus);
+        List<SSprint> sSprintList = ssprintMapper.selectByExample(sSprintExample);
+        if(CollectionUtils.isNotEmpty(sSprintList)){
+            List<Long> teamIdList = sSprintList.stream().map(SSprint::getTeamId).collect(Collectors.toList());
+            List<STeam> sTeamList = teamv3Service.listTeamByIds(teamIdList);
+            try {
+                sprintListDTOList = ReflectUtil.copyProperties4List(sSprintList, SprintListDTO.class);
+                for(SprintListDTO sprintListDTO : sprintListDTOList){
+                    for(STeam sTeam : sTeamList){
+                        if(sprintListDTO.getTeamId().equals(sTeam.getTeamId())){
+                            sprintListDTO.setTeamName(sTeam.getTeamName());
+                            continue;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("listEffectiveSprintByTeamId数据转换失败：{}", e.getMessage());
+            }
+        }
+        return sprintListDTOList;
+    }
+
 }
