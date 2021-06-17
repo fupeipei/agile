@@ -132,4 +132,22 @@ public class Teamv3Controller {
         List<TeamListDTO> result = teamv3Service.listAllTeam(dto, security);
         return ControllerResponse.success(result);
     }
+
+    /**
+     * 模糊分页查询团队信息
+     * @param teamName 团队名称
+     * @param teamIds 团队id
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @PostMapping("/queryTeamList")
+    public ControllerResponse queryTeamList(@RequestParam(name = "teamName", required = false) String teamName,
+                                            @RequestParam(name = "teamIds") List<Long> teamIds,
+                                            @RequestParam(name = "pageNum") Integer pageNum,
+                                            @RequestParam(name = "pageSize") Integer pageSize){
+        List<TeamListDTO> result=teamv3Service.queryTeams(teamIds,teamName,pageNum,pageSize);
+
+        return ControllerResponse.success(new PageInfo<TeamListDTO>(result));
+    }
 }

@@ -138,4 +138,13 @@ public interface STeamMapper {
      * @return
      */
     List<STeamMember>  querySprintVagueUser(@Param("sprintId") Long sprintId,@Param("userName") String userName);
+
+
+    /**
+     * 按ids,teamName模糊分页查团队列表
+     * @author zhaofeng
+     * @param teamIds
+     * @return
+     */
+    List<TeamListDTO> queryTeams(@Param("teamIds") List<Long> teamIds,@Param("teamName") String teamName);
 }
