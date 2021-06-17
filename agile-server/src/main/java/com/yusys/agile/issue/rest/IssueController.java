@@ -124,7 +124,7 @@ public class IssueController {
      * @return
      */
     @GetMapping("/issue/getIssueByIssueId/{issueId}")
-    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "systemId") Long systemId) {
+    public ControllerResponse getIssueByIssueId(@PathVariable(name = "issueId") String issueId, @RequestHeader(name = "systemId",required = false) Long systemId) {
         Map map = new HashMap<>();
         boolean b = StringUtil.isNumeric(issueId);
         if (b) {
