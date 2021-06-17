@@ -3217,6 +3217,19 @@ public class IssueServiceImpl implements IssueService {
         }
     }
 
+    @Override
+    public boolean checkIssueState(Long issueId, Long fromStageId, Long fromLaneId) {
+
+        Issue issue = issueMapper.selectByPrimaryKey(issueId);
+        Long laneId = issue.getLaneId();
+        Long stageId = issue.getStageId();
+
+        if(fromStageId == stageId && laneId == fromLaneId){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * 组织，查询团队信息
      * @param issueId

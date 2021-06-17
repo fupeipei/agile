@@ -466,4 +466,5 @@ public interface IssueService {
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
+    boolean checkIssueState(Long issueId,Long fromStageId, Long fromLaneId);
 }
