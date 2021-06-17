@@ -3064,7 +3064,8 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
           r.parent_id,
           r.stage_id,
           r.lane_id,
-          r.state
+          r.state,
+          r.team_id
      FROM
        s_issue r
         left join
