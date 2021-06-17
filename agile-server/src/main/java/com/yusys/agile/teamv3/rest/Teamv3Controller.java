@@ -142,12 +142,12 @@ public class Teamv3Controller {
      * @return
      */
     @GetMapping("/queryTeamList")
-    public ControllerResponse queryTeamList(@RequestParam(name = "teamName", required = false) String teamName,
+    public List<TeamListDTO> queryTeamList(@RequestParam(name = "teamName", required = false) String teamName,
                                             @RequestParam(name = "teamIds") List<Long> teamIds,
                                             @RequestParam(name = "pageNum") Integer pageNum,
                                             @RequestParam(name = "pageSize") Integer pageSize){
         List<TeamListDTO> result=teamv3Service.queryTeams(teamIds,teamName,pageNum,pageSize);
 
-        return ControllerResponse.success(new PageInfo<TeamListDTO>(result));
+        return result;
     }
 }
