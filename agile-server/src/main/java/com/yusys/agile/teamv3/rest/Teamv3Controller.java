@@ -141,7 +141,7 @@ public class Teamv3Controller {
      * @param pageSize
      * @return
      */
-    @PostMapping("/queryTeamList")
+    @GetMapping("/queryTeamList")
     public ControllerResponse queryTeamList(@RequestParam(name = "teamName", required = false) String teamName,
                                             @RequestParam(name = "teamIds") List<Long> teamIds,
                                             @RequestParam(name = "pageNum") Integer pageNum,
