@@ -120,4 +120,9 @@ public interface Teamv3Service {
      * @return java.util.List<com.yusys.agile.teamv3.domain.STeam>
      */
     List<STeam> listTeamByIds(List<Long> teamIdList);
+
+
+    List<TeamListDTO> queryTeams(List<Long> teamIds,String teamName,Integer pageNum, Integer pageSize);
+
+
 }

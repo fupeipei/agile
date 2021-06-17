@@ -11,4 +11,6 @@ import java.util.List;
 public interface IAgileApi {
     @GetMapping("/agile/issue/stage/countForSso")
     List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam("projectId") Long projectId);
+
+
 }
