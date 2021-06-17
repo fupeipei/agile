@@ -41,16 +41,20 @@ public class DeployRecordServiceImpl implements DeployRecordService {
         longListParam.add(issueId);
 
         //issueType = 2 feature
-        if(IssueTypeEnum.TYPE_FEATURE.CODE.compareTo(issueType)>=0){
-            longListParam.addAll(issueService.getIssueIds(longListParam));
+        if(IssueTypeEnum.TYPE_FEATURE.CODE.compareTo(issueType)>0){
+            longList = issueService.getIssueIds(longListParam);
+            longListParam = Lists.newArrayList();
+            longListParam.addAll(longList);
         }
         //issueType = 3 故事
-        if(IssueTypeEnum.TYPE_STORY.CODE.compareTo(issueType)>=0){
-            longList.addAll(issueService.getIssueIds(longListParam));
+        if(IssueTypeEnum.TYPE_STORY.CODE.compareTo(issueType)>0){
+            longList = issueService.getIssueIds(longListParam);
+            longListParam = Lists.newArrayList();
+            longListParam.addAll(longList);
         }
         //issueType = 4 任务
-        if(IssueTypeEnum.TYPE_TASK.CODE.compareTo(issueType)>=0){
-            longList.add(issueId);
+        if(IssueTypeEnum.TYPE_TASK.CODE.compareTo(issueType)>0){
+            longList = issueService.getIssueIds(longListParam);
         }
         if(CollectionUtils.isEmpty(longList)){
             return pageInfo;
