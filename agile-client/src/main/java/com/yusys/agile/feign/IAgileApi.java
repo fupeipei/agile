@@ -14,7 +14,7 @@ public interface IAgileApi {
     @GetMapping("/agile/issue/stage/countForSso")
     List<IssueStageIdCountDTO> countIssueByStageId(@RequestParam("projectId") Long projectId);
 
-    @PostMapping("/agile/v3/team/queryTeamList")
+    @GetMapping("/agile/v3/team/queryTeamList")
     List<TeamListDTO>  queryTeamList(@RequestParam(name = "teamName", required = false) String teamName,
                                       @RequestParam(name = "teamIds") List<Long> teamIds,
                                       @RequestParam(name = "pageNum") Integer pageNum,
