@@ -70,7 +70,7 @@ public class LeanKanbanController {
         try {
             return ControllerResponse.success(issueService.dragIssueCard(issueId,stageId,laneId));
         } catch (Exception e) {
-            log.info("获取工作项树信息异常:{}",e.getMessage());
+            log.info("拖拽卡片异常:{}",e.getMessage());
         }
         return ControllerResponse.success(Lists.newArrayList());
     }
