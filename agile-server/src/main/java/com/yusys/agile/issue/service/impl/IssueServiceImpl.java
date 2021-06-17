@@ -2944,13 +2944,13 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<Long> getIssueIds(Long parentId) {
+    public List<Long> getIssueIds(List<Long> parentIds) {
         List<Long> longList= Lists.newArrayList();
         IssueExample example = new IssueExample();
         IssueExample.Criteria  criteria = example.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.getValue());
-        if(parentId!=null){
-            criteria.andParentIdEqualTo(parentId);
+        if(CollectionUtils.isNotEmpty(parentIds)){
+            criteria.andParentIdIn(parentIds);
         }
         List<Issue>  issues =  issueMapper.selectByExample(example);
         if(CollectionUtils.isNotEmpty(issues)){
