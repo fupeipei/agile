@@ -3036,14 +3036,13 @@ public class IssueServiceImpl implements IssueService {
      *  算法介绍：
      *  按照悲观法计算，以状态最小的去更新
      *
-     * @param issueType
      * @param issueId
      * @param stageId
      * @param laneId
      * @return
      */
     @Override
-    public IssueDTO dragIssueCard(Byte issueType, Long issueId, Long stageId, Long laneId) {
+    public IssueDTO dragIssueCard(Long issueId, Long stageId, Long laneId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long kanbanId = issue.getKanbanId();
 
@@ -3088,6 +3087,7 @@ public class IssueServiceImpl implements IssueService {
                     .andParentIdEqualTo(parentId);
             List<Issue> issueList = issueMapper.selectByExample(issueExample);
 
+
             //获取所有的laneId并且排序
             List<Long> laneIds = issueList.stream().map(iss -> iss.getLaneId()).sorted().collect(Collectors.toList());
             loggr.info("获取到所有状态数据为:{}",JSONObject.toJSONString(laneIds));
@@ -3099,19 +3099,72 @@ public class IssueServiceImpl implements IssueService {
                     story.setStageId(stageId);
                     issueMapper.updateByPrimaryKeySelective(story);
 
-                    Long featureId = story.getParentId();
-                    Issue feature = issueMapper.selectByPrimaryKey(parentId);
+                    Issue feature = null;
+
+                    //测试阶段已完成状态,判断是否所有的故事都为测试完成,需更新feature为系统测试中
+                    Long value = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
+                    if(value.equals(laneId)){
+                        Long featureId = story.getParentId();
+                        IssueExample example = new IssueExample();
+                        example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                                .andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                                .andParentIdEqualTo(featureId);
+                        List<Issue> storys = issueMapper.selectByExample(example);
+                        if(CollectionUtils.isNotEmpty(storys)){
+                            List<Long> stroyLaneIds = storys.stream().map(s -> s.getLaneId()).collect(Collectors.toList());
+                            stroyLaneIds.remove(value);
+                            //为空说明故事都移动到测试阶段已完成，需更新feature为系统测试中
+                            if(stroyLaneIds.isEmpty()){
+                                //更新feature
+                                feature = issueMapper.selectByPrimaryKey(featureId);
+                                if(Optional.ofNullable(feature).isPresent()){
+                                    feature.setLaneId(LaneKanbanStageConstant.SystemTestStageEnum.ONGOING.getValue());
+                                    feature.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
+                                    issueMapper.updateByPrimaryKeySelective(feature);
+
+                                    //更新epic
+                                    Long epicId = feature.getParentId();
+                                    Issue epic = issueMapper.selectByPrimaryKey(epicId);
+                                    if(Optional.ofNullable(epic).isPresent()){
+                                        epic.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
+                                        issueMapper.updateByPrimaryKeySelective(epic);
+                                    }
+                                }
+                            }
+                        }
+                    }else {
+                        //更新feature
+                        Long featureId = story.getParentId();
+                        feature = issueMapper.selectByPrimaryKey(featureId);
+                        if(Optional.ofNullable(feature).isPresent()){
+                            feature.setLaneId(laneId);
+                            feature.setStageId(stageId);
+                            issueMapper.updateByPrimaryKeySelective(feature);
+
+                            //更新epic
+                            Long epicId = feature.getParentId();
+                            Issue epic = issueMapper.selectByPrimaryKey(epicId);
+                            if(Optional.ofNullable(epic).isPresent()){
+                                epic.setStageId(stageId);
+                                issueMapper.updateByPrimaryKeySelective(epic);
+                            }
+                        }
+                    }
+                    //返回前端变更数据
+                    IssueDTO issueDTO = ReflectUtil.copyProperties(feature, IssueDTO.class);
+                    IssueDTO storyDTO = ReflectUtil.copyProperties(story, IssueDTO.class);
+                    IssueDTO taskDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
+
+                    List<IssueDTO> taskDTOS = Lists.newArrayList();
+                    taskDTOS.add(taskDTO);
+                    storyDTO.setChildren(taskDTOS);
+
+                    List<IssueDTO> storyDTOS = Lists.newArrayList();
+                    storyDTOS.add(storyDTO);
+                    issueDTO.setChildren(storyDTOS);
+                    return issueDTO;
                 }
             }
-
-            //测试阶段已完成状态,需要校验故事是否都已经拖动到完成阶段
-            Long value = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
-            if(value.equals(laneId)){
-
-            }else {
-
-            }
-
         }
         return null;
     }
