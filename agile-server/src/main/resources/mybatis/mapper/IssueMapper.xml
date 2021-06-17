@@ -977,7 +977,7 @@
                 is_archive = #{isArchive,jdbcType=TINYINT},
             </if>
             <if test="isCancel != null">
-                is_cancel = #{isCancel,jdbcType=TINYINT}
+                is_cancel = #{isCancel,jdbcType=TINYINT},
             </if>
             <if test="teamId != null">
                 team_id = #{teamId,jdbcType=BIGINT}
