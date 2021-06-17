@@ -576,27 +576,27 @@ public class IssueFactory {
         }
     }
 
-    public void deleteIssue(Long issueId) {
-        //删除附件
-        issueAttachmentService.deleteAttachmentByIssueId(issueId);
-
-        //删除自定义字段
-        issueCustomFieldService.deleteCustomFileByIssueId(issueId);
-
-        //更新历史记录表，状态从有效变为无效
-        createHistory(issueId);
-
-        //更新工作项为失效
-        upateIssue(issueId);
-
-        commissionService.deleteCommission(issueId);
-
-        Issue issue = issueMapper.selectByPrimaryKey(issueId);
-
-        SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
-        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
-        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
-    }
+//    public void deleteIssue(Long issueId) {
+//        //删除附件
+//        issueAttachmentService.deleteAttachmentByIssueId(issueId);
+//
+//        //删除自定义字段
+//        issueCustomFieldService.deleteCustomFileByIssueId(issueId);
+//
+//        //更新历史记录表，状态从有效变为无效
+//        createHistory(issueId);
+//
+//        //更新工作项为失效
+//        upateIssue(issueId);
+//
+//        commissionService.deleteCommission(issueId);
+//
+//        Issue issue = issueMapper.selectByPrimaryKey(issueId);
+//
+//        SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
+//        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
+//        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+//    }
 
     /**
      * 任务状态未领取，人删除，系统保留，迭代清空如果有
@@ -1367,41 +1367,40 @@ public class IssueFactory {
         return null;
     }
 
-    public void deleteStory(Long storyId, Boolean deleteChild) {
+    public void deleteIssue(Long issueId, Boolean deleteChild) {
         if (null != deleteChild && deleteChild) {
             //解除关联关系
-            disassociate(storyId);
+            disassociate(issueId);
         }
 
         //删除附件
-        issueAttachmentService.deleteAttachmentByIssueId(storyId);
+        issueAttachmentService.deleteAttachmentByIssueId(issueId);
 
         //删除自定义字段
-        issueCustomFieldService.deleteCustomFileByIssueId(storyId);
+        issueCustomFieldService.deleteCustomFileByIssueId(issueId);
 
         //更新历史记录表，状态从有效变为无效
-        createHistory(storyId);
+        createHistory(issueId);
 
         //解除子工作项的关联关系
         Long sprintId = null;
-        Issue storyIssue = issueMapper.selectByPrimaryKey(storyId);
+        Issue storyIssue = issueMapper.selectByPrimaryKey(issueId);
         if (null != storyIssue) {
             Byte issueType = storyIssue.getIssueType();
-            Assert.notNull(issueType, "issueId:[" + storyId + "]工作项类型不能为空");
+            Assert.notNull(issueType, "issueId:[" + issueId + "]工作项类型不能为空");
             if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
                 sprintId = storyIssue.getSprintId();
             }
-            //dealEpicFeatureData(storyIssue);
             //如果不删除子任务  处理子任务
-            this.dealTaskData(storyId, deleteChild);
+            this.dealTaskData(issueId, deleteChild);
         }
-        issueMapper.deleteAllChildRelation(storyId, sprintId);
+        issueMapper.deleteAllChildRelation(issueId, sprintId);
         //更新工作项为失效
-        upateIssue(storyId);
+        upateIssue(issueId);
 
-        commissionService.deleteCommission(storyId);
+        commissionService.deleteCommission(issueId);
 
-        Issue issue = issueMapper.selectByPrimaryKey(storyId);
+        Issue issue = issueMapper.selectByPrimaryKey(issueId);
 
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);

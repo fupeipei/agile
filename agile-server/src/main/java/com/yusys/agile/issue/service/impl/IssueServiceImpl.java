@@ -3137,7 +3137,7 @@ public class IssueServiceImpl implements IssueService {
             example.setOrderByClause("create_time desc");
             List<Issue> issueList = issueMapper.selectByExample(example);
             List<IssueDTO> childs = Lists.newArrayList();
-            if(CollectionUtils.isNotEmpty(childs)){
+            if(CollectionUtils.isNotEmpty(issueList)){
                 try {
                     childs = ReflectUtil.copyProperties4List(issueList, IssueDTO.class);
                     issueDTO.setChildren(childs);
@@ -3145,6 +3145,8 @@ public class IssueServiceImpl implements IssueService {
                 } catch (Exception e) {
                     loggr.info("工作项数据转换异常:{}",e.getMessage());
                 }
+            }else {
+                issueDTO.setChildren(childs);
             }
         }
     }

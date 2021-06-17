@@ -54,12 +54,8 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteEpic(Long epicId) {
-        //判断epic下是否有feature，如果存在不允许删除
-        if(issueService.checkHasChildren(epicId)){
-            throw new BusinessException("该Epic【"+epicId+"】下关联了子工作项，请先解除关联关系，再删除!");
-        }
-        issueFactory.deleteIssue(epicId);
+    public void deleteEpic(Long epicId,Boolean deleteChild) {
+        issueFactory.deleteIssue(epicId,deleteChild);
     }
 
 

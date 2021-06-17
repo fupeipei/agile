@@ -85,6 +85,17 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         return rest;
     }
 
+    @Override
+    public List<TeamListDTO> listAllTeam(TeamQueryDTO dto, SecurityDTO security) {
+        //构建查询参数
+        HashMap<String, Object> params = buildQueryParamsForAll(dto, security);
+        List<TeamListDTO> rest = sTeamMapper.queryAllTeam(params);
+        //构建返回结果
+        //rest = buildResultList(rest);
+        return rest;
+    }
+
+
     /**
      * 构建返回值
      *
@@ -202,14 +213,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         //团队名称或编号
         params.put("team", dto.getTeam());
-        params.put("userId", security.getUserId());
-        params.put("tenantCode", security.getTenantCode());
-        params.put("teamType", dto.getTeamType());
-        // 团队po、sm、lean
-        params.put("po", dto.getPo());
-        params.put("sm", dto.getSm());
-        params.put("lean",dto.getLean());
+        return params;
+    }
 
+    private HashMap<String, Object> buildQueryParamsForAll(TeamQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        List<Long> systemIds = Lists.newArrayList();
+        systemIds.add(dto.getSystemId());
+        params.put("systemIds", systemIds);
         return params;
     }
 
