@@ -457,14 +457,14 @@ public interface IssueService {
     /**
      * 精益看板拖拽卡片
      *
-     * @param issueType
      * @param issueId
      * @param stageId
      * @param laneId
      * @return
      */
-    IssueDTO dragIssueCard(Byte issueType,Long issueId,Long stageId, Long laneId);
+    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId);
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
+    boolean checkIssueState(Long issueId,Long fromStageId, Long fromLaneId);
 }
