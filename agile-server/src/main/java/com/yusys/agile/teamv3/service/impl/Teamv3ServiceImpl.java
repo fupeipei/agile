@@ -609,8 +609,6 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         PageHelper.startPage(pageNum, pageSize);
         List<TeamListDTO> sTeams = sTeamMapper.queryTeams(teamIds, teamName);
         //按ids分别查询团队/系统
-
-
         return  buildResultList(sTeams);
     }
 }

@@ -937,7 +937,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         SSprintExample sSprintExample = new SSprintExample();
         List<Byte> listStatus = Lists.newArrayList(new Byte("2"), new Byte("3"));
         sSprintExample.createCriteria().andTeamIdEqualTo(teamId).andStateEqualTo(StateEnum.U.getValue())
-                .andStatusIn(listStatus);
+                .andStatusIn(listStatus).andEndTimeGreaterThan(new Date());
         List<SSprint> sSprintList = ssprintMapper.selectByExample(sSprintExample);
         if(CollectionUtils.isNotEmpty(sSprintList)){
             List<Long> teamIdList = sSprintList.stream().map(SSprint::getTeamId).collect(Collectors.toList());
