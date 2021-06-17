@@ -430,7 +430,7 @@ public interface IssueService {
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      * @date 2020/12/30
      */
-    List<Long> getIssueIds(Long parentId);
+    List<Long> getIssueIds(List<Long> parentId);
 
 
     /**
