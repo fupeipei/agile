@@ -9,11 +9,14 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.FeatureService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.leankanban.domain.SLeanKanban;
+import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.portal.common.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Date: 13:33
@@ -28,7 +31,7 @@ public class FeatureServiceImpl implements FeatureService {
     private IssueMapper issueMapper;
 
     @Resource
-    private IssueService issueService;
+    private LeanKanbanService leanKanbanService;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -72,6 +75,14 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     public Long createFeature(IssueDTO issueDTO) {
         Long id = issueFactory.createIssue(issueDTO, "研发需求名称已存在！", "新增研发需求", IssueTypeEnum.TYPE_FEATURE.CODE);
+        //根据teamId获取看板id并更新
+        SLeanKanban sLeanKanban = leanKanbanService.querySimpleLeanKanbanInfo(issueDTO.getTeamId());
+        if(Optional.ofNullable(sLeanKanban).isPresent()){
+            Long kanbanId = sLeanKanban.getKanbanId();
+            Issue issue = issueMapper.getIssue(id);
+            issue.setKanbanId(kanbanId);
+            issueMapper.updateByPrimaryKeySelective(issue);
+        }
         return id;
     }
 

@@ -3034,8 +3034,7 @@ public class IssueServiceImpl implements IssueService {
      * 拖拽规则
      *
      *  算法介绍：
-     *  如果有进行中的，按乐观法计算，以最后一个阶段的进行中为准，
-     *  如果没有进行中，都是完成阶段，按悲观计算，找出在阶段最靠前状态
+     *  按照悲观法计算，以状态最小的去更新
      *
      * @param issueType
      * @param issueId
@@ -3058,10 +3057,10 @@ public class IssueServiceImpl implements IssueService {
 
         //更新该工作项对应的数据
         Byte type = issue.getIssueType();
+        Long parentId = issue.getParentId();
 
         //feature 状态改变后,状态向下汇总，且改变epic状态
         if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
-            Long parentId = issue.getParentId();
             if(Optional.ofNullable(parentId).isPresent()){
                 IssueExample issueExample = new IssueExample();
                 issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
@@ -3069,42 +3068,49 @@ public class IssueServiceImpl implements IssueService {
                         .andParentIdEqualTo(parentId);
                 List<Issue> issueList = issueMapper.selectByExample(issueExample);
 
-                if(issueList.size() >1){
-                    List<Long> laneStates = issueList.stream().filter(iss-> Optional.ofNullable(iss.getLaneId()).isPresent())
-                            .map(iss -> iss.getLaneId()).collect(Collectors.toList());
-                    //如果为空说明feature 在 就绪阶段或者完成阶段，没有laneId
-                    if(CollectionUtils.isEmpty(laneStates)){
-                        List<Long> stageIds = issueList.stream().map(iss -> iss.getStageId()).collect(Collectors.toList());
-                        //如果都在已完成且刚拖拽的卡片也到已完成，则epic到已完成状态
-                        if(!stageIds.contains(StageConstant.FirstStageEnum.READY_STAGE.getValue()) &&
-                                stageId == StageConstant.FirstStageEnum.FINISH_STAGE.getValue()){
-                            Issue epic = issueMapper.selectByPrimaryKey(parentId);
-                            if(Optional.ofNullable(epic).isPresent()){
-                                epic.setStageId(stageId);
-                                issueMapper.updateByPrimaryKeySelective(epic);
-                            }
-                        }
-                    }else {
-                        //获取进行中的状态，如果不为空则取
-                        List<Long> goingState = getOnGoingState(laneStates);
-
-                    }
-                }else {
-                    //更新epic
+                //获取所有的stageId并且排序
+                List<Long> stageIds = issueList.stream().map(iss -> iss.getStageId()).sorted().collect(Collectors.toList());
+                loggr.info("获取到所有阶段数据为:{}",JSONObject.toJSONString(stageIds));
+                //获取所有的eature
+                if(stageIds.get(0) == stageId){
                     Issue epic = issueMapper.selectByPrimaryKey(parentId);
                     if(Optional.ofNullable(epic).isPresent()){
-                        epic.setLaneId(laneId);
                         epic.setStageId(stageId);
                         issueMapper.updateByPrimaryKeySelective(epic);
                     }
                 }
             }
-
-
-
-
-        }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
             // task改变后状态向 上汇总
+        }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
+            IssueExample issueExample = new IssueExample();
+            issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                    .andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                    .andParentIdEqualTo(parentId);
+            List<Issue> issueList = issueMapper.selectByExample(issueExample);
+
+            //获取所有的laneId并且排序
+            List<Long> laneIds = issueList.stream().map(iss -> iss.getLaneId()).sorted().collect(Collectors.toList());
+            loggr.info("获取到所有状态数据为:{}",JSONObject.toJSONString(laneIds));
+            //获取所有的eature
+            if(laneIds.get(0) == laneId){
+                Issue story = issueMapper.selectByPrimaryKey(parentId);
+                if(Optional.ofNullable(story).isPresent()){
+                    story.setLaneId(laneId);
+                    story.setStageId(stageId);
+                    issueMapper.updateByPrimaryKeySelective(story);
+
+                    Long featureId = story.getParentId();
+                    Issue feature = issueMapper.selectByPrimaryKey(parentId);
+                }
+            }
+
+            //测试阶段已完成状态,需要校验故事是否都已经拖动到完成阶段
+            Long value = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
+            if(value.equals(laneId)){
+
+            }else {
+
+            }
 
         }
         return null;
