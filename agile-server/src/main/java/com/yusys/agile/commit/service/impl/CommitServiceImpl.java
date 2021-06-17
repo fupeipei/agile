@@ -20,8 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @description 成员提交代码业务类
@@ -222,7 +225,18 @@ public class CommitServiceImpl implements CommitService {
         List<CommitDTO> commitList = Lists.newArrayList();
         pageNumber = null == pageNumber ? 1 : pageNumber;
         pageSize = null == pageSize ? 20 : pageSize;
-        if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
+        if (IssueTypeEnum.TYPE_EPIC.CODE.equals(issueType)||IssueTypeEnum.TYPE_FEATURE.CODE.equals(issueType)) {
+            //根据epic获得storyIdList,再查询得到commit记录。
+            TaskCommitQueryDTO taskCommitQueryDTO = this.assembleTaskIdsByIssueIdForEpicOrFeaTure(issueId, issueType);
+            if (null != taskCommitQueryDTO) {
+                taskCommitQueryDTO.setPageNum(pageNumber);
+                taskCommitQueryDTO.setPageSize(pageSize);
+                return toolsChangeApi.queryCommitInfoByTaskIds(taskCommitQueryDTO);
+            } else {
+                return new PageInfo(commitList);
+            }
+        }
+        else if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
             TaskCommitQueryDTO queryDTO = assembleTaskIdsByStoryId(issueId);
             if (null != queryDTO) {
                 queryDTO.setPageNum(pageNumber);
@@ -258,6 +272,79 @@ public class CommitServiceImpl implements CommitService {
                 taskIds.add(String.valueOf(issue.getIssueId()));
             });
             commitQueryDTO.setTaskIds(taskIds);
+        }
+        return commitQueryDTO;
+    }
+
+    private List<Long> querySubIssueIdList(Long issueId,Byte subIssueType){
+        IssueExample issueExample = new IssueExample();
+        issueExample.setOrderByClause("issue_id asc");
+        issueExample.createCriteria()
+                .andParentIdEqualTo(issueId)
+                .andIssueTypeEqualTo(subIssueType)
+                .andStateEqualTo(StateEnum.U.getValue());
+
+        List<Long> feaTureIdList = Optional.ofNullable(issueMapper.selectByExample(issueExample)).orElse(new ArrayList<>()).stream()
+                .map(issue -> issue.getIssueId()).collect(Collectors.toList());
+        return feaTureIdList;
+    }
+
+
+    private List<Long> querySubIssueIdListByListId(List<Long> issueIds,Byte subIssueType){
+        IssueExample issueExample = new IssueExample();
+        issueExample.setOrderByClause("issue_id asc");
+        issueExample.createCriteria()
+                .andParentIdIn(issueIds)
+                .andIssueTypeEqualTo(subIssueType)
+                .andStateEqualTo(StateEnum.U.getValue());
+
+        List<Long> feaTureIdList = Optional.ofNullable(issueMapper.selectByExample(issueExample)).orElse(new ArrayList<>()).stream()
+                .map(issue -> issue.getIssueId()).collect(Collectors.toList());
+        return feaTureIdList;
+    }
+
+    /**
+     * 支持Epic  和feaTure两个级别的任务Id查询
+     * @param issueId
+     * @param issueType
+     * @return
+     */
+
+    private TaskCommitQueryDTO assembleTaskIdsByIssueIdForEpicOrFeaTure(Long issueId,Byte issueType) {
+        TaskCommitQueryDTO commitQueryDTO = null;
+
+        if (IssueTypeEnum.TYPE_EPIC.CODE.equals(issueType)) {
+            List<Long> listEpic=new ArrayList<>();
+            listEpic.add(issueId);
+
+            List<Long> feaTureIdList = this.querySubIssueIdListByListId(listEpic,IssueTypeEnum.TYPE_FEATURE.CODE);
+            commitQueryDTO = getTaskCommitQueryDTOByFeaTureId( feaTureIdList);
+
+        } else if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(issueType)) {
+            List<Long> listId=new ArrayList<>();
+            listId.add(issueId);
+            commitQueryDTO = this.getTaskCommitQueryDTOByFeaTureId(listId);
+
+        }
+        return commitQueryDTO;
+    }
+
+    private TaskCommitQueryDTO getTaskCommitQueryDTOByFeaTureId(List<Long> feaTureIdList) {
+        TaskCommitQueryDTO commitQueryDTO = null;
+        if(feaTureIdList!=null&&feaTureIdList.size()>0){
+            List<Long> listStory = this.querySubIssueIdListByListId(feaTureIdList, IssueTypeEnum.TYPE_STORY.CODE);
+
+            if(listStory!=null||listStory.size()>0){
+                List<Long> listTask = this.querySubIssueIdListByListId(listStory, IssueTypeEnum.TYPE_TASK.CODE);
+                if (CollectionUtils.isNotEmpty(listTask)) {
+                    List<String> taskIds = Lists.newArrayList();
+                    commitQueryDTO = new TaskCommitQueryDTO();
+                    listTask.forEach(id -> {
+                        taskIds.add(String.valueOf(id));
+                    });
+                    commitQueryDTO.setTaskIds(taskIds);
+                }
+            }
         }
         return commitQueryDTO;
     }
