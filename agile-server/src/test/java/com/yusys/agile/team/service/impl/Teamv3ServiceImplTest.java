@@ -1,6 +1,7 @@
 package com.yusys.agile.team.service.impl;
 
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
@@ -16,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -193,5 +196,25 @@ public class Teamv3ServiceImplTest {
         List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
         Assert.assertTrue(ssoSystemRestDTOS.size()==1);
     }
+
+
+    @Test
+    public void testqueryTeamList(){
+        List<Long> teamIds=new ArrayList<>();
+        teamIds.add(200029L);
+        teamIds.add(200032L);
+        teamIds.add(200053L);
+        Integer pageNum=1;
+        Integer pageSize=5;
+        String teamName=null;
+
+        List<TeamListDTO> teamListDTOS = teamv3Service.queryTeams(teamIds, teamName, pageNum, pageSize);
+
+        Assert.assertTrue("queryTeam成功", true);
+
+
+    }
+
+
 
 }
