@@ -797,6 +797,7 @@ public class IssueServiceImpl implements IssueService {
                 if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType())){
                     feature = issueMapper.getParentIssue(issueId);
                 }else{
+                    map.put("taskType", issue.getTaskType());
                     Issue story = issueMapper.getParentIssue(issueId);
                     feature = issueMapper.getParentIssue(story.getIssueId());
                 }
