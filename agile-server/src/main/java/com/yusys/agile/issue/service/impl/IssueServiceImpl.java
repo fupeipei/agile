@@ -793,7 +793,13 @@ public class IssueServiceImpl implements IssueService {
                 }catch (Exception e){
                     loggr.info("获取系统名称异常:{}",e.getMessage());
                 }
-                Issue feature = issueMapper.getParentIssue(issueId);
+                Issue feature = null;
+                if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType())){
+                    feature = issueMapper.getParentIssue(issueId);
+                }else{
+                    Issue story = issueMapper.getParentIssue(issueId);
+                    feature = issueMapper.getParentIssue(story.getIssueId());
+                }
                 if(null != feature){
                     setTeamInfo(map,feature.getTeamId());
                 }
