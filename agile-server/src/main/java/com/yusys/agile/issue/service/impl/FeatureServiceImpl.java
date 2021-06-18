@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
@@ -10,9 +11,13 @@ import com.yusys.agile.issue.service.FeatureService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
-import com.yusys.agile.utils.CollectionUtil;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.dao.STeamSystemMapper;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.portal.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -34,6 +39,8 @@ public class FeatureServiceImpl implements FeatureService {
     @Resource
     private LeanKanbanService leanKanbanService;
 
+    @Resource
+    private STeamMapper sTeamMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -51,6 +58,10 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void editFeature(IssueDTO issueDTO) {
+        //判断如果是精益团队则处理人必填
+        if(checkIsLeanTeanm(issueDTO.getTeamId()) && null == issueDTO.getHandler()){
+            throw new BusinessException("选择了精益团队请选择一个处理人！");
+        }
         Issue oldFeature = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         //先校验feature是否已经拆分了故事，如果已经拆分了故事则不允许变更团队
         if(hasChildren(issueDTO.getIssueId())&& !issueDTO.getTeamId().equals(oldFeature.getTeamId())){
@@ -89,6 +100,10 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public Long createFeature(IssueDTO issueDTO) {
+        //判断如果是精益团队则处理人必填
+        if(checkIsLeanTeanm(issueDTO.getTeamId()) && null == issueDTO.getHandler()){
+            throw new BusinessException("选择了精益团队请选择一个处理人！");
+        }
         Long id = issueFactory.createIssue(issueDTO, "研发需求名称已存在！", "新增研发需求", IssueTypeEnum.TYPE_FEATURE.CODE);
         //根据teamId获取看板id并更新
         SLeanKanban sLeanKanban = leanKanbanService.querySimpleLeanKanbanInfo(issueDTO.getTeamId());
@@ -99,6 +114,16 @@ public class FeatureServiceImpl implements FeatureService {
             issueMapper.updateByPrimaryKeySelective(issue);
         }
         return id;
+    }
+
+    private boolean checkIsLeanTeanm(Long teamId) {
+        STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
+        if(null != sTeam){
+            if(TeamTypeEnum.lean_team.getCode().equals(sTeam.getTeamType())){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
