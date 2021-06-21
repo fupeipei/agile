@@ -122,9 +122,15 @@ public class CustomFieldPoolController {
     @GetMapping("/listCustomFieldsByIssueType")
     public ControllerResponse listCustomFieldsByIssueType(
             @RequestParam(name = "issueType") Byte issueType,
-            SecurityDTO security) {
-        Long systemId = security.getSystemId();
-        List<CustomFieldDTO> list = customRelationService.getCustomFieldList(systemId, issueType);
+            @RequestParam(value = "systemId",required = false) Long systemId,
+            SecurityDTO securityDTO) {
+        Long finallySystemId;
+        if(null != systemId){
+            finallySystemId = systemId;
+        }else{
+            finallySystemId = securityDTO.getSystemId();
+        }
+        List<CustomFieldDTO> list = customRelationService.getCustomFieldList(finallySystemId, issueType);
         return ControllerResponse.success(list);
     }
 
