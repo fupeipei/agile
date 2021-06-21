@@ -124,7 +124,6 @@ public class PlatformStageServiceImpl implements IStageService {
                 List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
                 return stageInstances;
 
-
                 /**feature中状态展示一级阶段中除去开发阶段的 开发中、开发完成状态的所有阶段*/
             }else if(IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType){
 

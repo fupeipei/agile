@@ -91,8 +91,8 @@ public class LaneKanbanStageConstant {
         FINISH("已完成", 106L),
 
         /**任务状态**/
-        DEVELOPING("开发中",107L),
-        DEVFINISH("开发完成",108L);
+        DEVELOPING("开发中",109L),
+        DEVFINISH("开发完成",110L);
 
         private String name;
         private Long value;
@@ -126,8 +126,8 @@ public class LaneKanbanStageConstant {
      * @description 测试中阶段
      */
     public enum TestStageEnum {
-        TESTING("测试中", 109L),
-        TESTFINISH("测试完成", 110L);
+        TESTING("测试中", 111L),
+        TESTFINISH("测试完成", 112L);
 
         private String name;
         private Long value;
@@ -161,8 +161,8 @@ public class LaneKanbanStageConstant {
      * @description 系统测试中阶段
      */
     public enum SystemTestStageEnum {
-        ONGOING("进行中", 102L),
-        FINISH("已完成", 103L);
+        ONGOING("进行中", 113L),
+        FINISH("已完成", 114L);
 
         private String name;
         private Long value;
@@ -197,8 +197,8 @@ public class LaneKanbanStageConstant {
      * @description 发布阶段
      */
     public enum ReleaseStageEnum {
-        ONGOING("进行中", 102L),
-        FINISH("已完成", 103L);
+        ONGOING("进行中", 115L),
+        FINISH("已完成", 1116L);
 
         private String name;
         private Long value;
