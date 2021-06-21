@@ -12,12 +12,10 @@ import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.portal.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -68,11 +66,12 @@ public class FeatureServiceImpl implements FeatureService {
             throw new BusinessException("Feature已拆分故事不允许变更团队！");
         }
 
-        //判断如果feature上的团队发生了变更，那么需要同时更新看板ID
+        //判断如果feature上的团队发生了变更，那么需要同时更新看板ID，并且将feature的状态置为就绪
         if(!issueDTO.getTeamId().equals(oldFeature.getTeamId())){
             SLeanKanban sLeanKanban = leanKanbanService.querySimpleLeanKanbanInfo(issueDTO.getTeamId());
             if(Optional.ofNullable(sLeanKanban).isPresent()){
                 issueDTO.setKanbanId(sLeanKanban.getKanbanId());
+                issueDTO.setStages(new Long[1]);
             }
         }
 
