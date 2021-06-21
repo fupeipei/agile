@@ -58,29 +58,28 @@ public class IssueTemplateServiceImpl implements IssueTemplateService {
      * 功能描述  工作项与模板初始化查询接口
      *
      * @param issueType
-     * @param securityDTO
      * @return java.util.Map
      * @date 2020/8/3
      */
 
     @Override
-    public Map query(Byte issueType, SecurityDTO securityDTO) {
+    public Map query(Byte issueType, Long systemId) {
         Map map = new HashMap();
         IssueTemplateExample issueTemplateExample = new IssueTemplateExample();
         IssueTemplateExample.Criteria criteria = issueTemplateExample.createCriteria();
         criteria.andApplyEqualTo(Byte.parseByte("1"))
                 .andIssueTypeEqualTo(issueType);
-        if(securityDTO.getSystemId() != null){
-            criteria.andSystemIdEqualTo(securityDTO.getSystemId());
+        if(systemId != null){
+            criteria.andSystemIdEqualTo(systemId);
         }else{
             criteria.andSystemIdIsNull();
         }
         if (issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample).isEmpty()) {
             //暂时先注释掉
-            initIssueTemplate(securityDTO.getSystemId());
+            initIssueTemplate(systemId);
         }
         map.put("issueTemplateData", issueTemplateMapper.selectByExampleWithBLOBs(issueTemplateExample));
-        map.put("issueCustomRelationData", issueCustomRelationService.getIssueCustomRelations(securityDTO.getSystemId(), issueType));
+        map.put("issueCustomRelationData", issueCustomRelationService.getIssueCustomRelations(systemId, issueType));
         return map;
     }
 
