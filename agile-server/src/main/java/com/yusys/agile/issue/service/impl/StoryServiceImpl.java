@@ -372,8 +372,8 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> queryUnlinkedStory(Long projectId, Integer pageNum, Integer pageSize, String title) {
-        return issueFactory.queryUnlinkedIssue(projectId, IssueTypeEnum.TYPE_STORY.CODE, pageNum, pageSize, title, null);
+    public List<IssueDTO> queryUnlinkedStory(Long featureId, Integer pageNum, Integer pageSize, String title) {
+        return issueFactory.queryUnlinkedStory(featureId, pageNum, pageSize, title);
     }
 
     @Override

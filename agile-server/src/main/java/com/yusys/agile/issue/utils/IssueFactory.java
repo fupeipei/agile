@@ -22,12 +22,16 @@ import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.alibaba.fastjson.JSON;
@@ -35,7 +39,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.portal.common.exception.BusinessException;
-import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -77,8 +80,6 @@ public class IssueFactory {
     @Resource
     private IssueMapper issueMapper;
     @Resource
-    private IFacadeProjectApi iFacadeProjectApi;
-    @Resource
     private IssueAttachmentService issueAttachmentService;
     @Resource
     private IssueHistoryRecordService issueHistoryRecordService;
@@ -91,13 +92,9 @@ public class IssueFactory {
     @Resource
     private IFacadeUserApi iFacadeUserApi;
     @Resource
-    private IssueAcceptanceMapper issueAcceptanceMapper;
-    @Resource
     private IssueRichTextFactory issueRichTextFactory;
     @Resource
     private IssueModuleRelpService issueModuleRelpService;
-    @Resource
-    private IssueRuleFactory ruleFactory;
     @Resource
     private CommissionService commissionService;
     @Resource
@@ -114,7 +111,8 @@ public class IssueFactory {
     private SIssueRichtextMapper sIssueRichtextMapper;
     @Resource
     private LeanKanbanService leanKanbanService;
-
+    @Resource
+    private STeamMapper sTeamMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public Long createIssue(IssueDTO issueDTO, String checkErrMsg, String newMsg, Byte issueType) {
@@ -1310,18 +1308,6 @@ public class IssueFactory {
 
     }
 
-    /**
-     * 功能描述 feature变更为/拖到需求分析分析完成状态时，需校验feature是否在版本内
-     *
-     * @param stages
-     * @param featureId
-     * @param epicId
-     * @return boolean
-     * @date 2020/10/27
-     */
-    public boolean checkFeatureInVersion(Long[] stages, Long featureId, Long epicId) {
-        return false;
-    }
 
 
     public Long getEpicIdForPlanDeployDate(String issueId, String bizNum) {
@@ -1418,5 +1404,39 @@ public class IssueFactory {
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+    }
+
+    public List<IssueDTO> queryUnlinkedStory(Long featureId, Integer pageNum, Integer pageSize, String title) {
+        // 不传page信息时查全部数据
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        Issue feature = issueMapper.getIssue(featureId);
+        STeam sTeam = sTeamMapper.queryTeam(feature.getTeamId());
+
+        IssueExample example = new IssueExample();
+        IssueExample.Criteria criteria = example.createCriteria();
+        criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
+        criteria.andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
+        criteria.andSystemIdEqualTo(feature.getSystemId());
+
+        //精益选择没有迭代的故事
+        if(TeamTypeEnum.lean_team.getCode().equals(sTeam.getTeamType())){
+            criteria.andSprintIdIsNull();
+        }else{
+            //敏捷，找对应团队下的所有迭代
+            List<SSprint> sSprintList = sSprintMapper.querySprintByTeamId(sTeam.getTeamId());
+            List<Long> sprintIdList = sSprintList.stream().map(SSprint::getSprintId).collect(Collectors.toList());
+            criteria.andSprintIdIn(sprintIdList);
+        }
+
+        if (StringUtils.isNotBlank(title)) {
+            criteria.andTitleLike(PERCENT_SIGN + title + PERCENT_SIGN);
+        }
+
+        criteria.andParentIdIsNull();
+        example.setOrderByClause("`order` desc,create_time desc");
+        List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
+        return issueDTOList;
     }
 }

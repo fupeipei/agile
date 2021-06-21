@@ -144,12 +144,13 @@ public class StoryController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/query/unlinked/stories")
-    public ControllerResponse queryUnlinkedStory(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("pageNum") Integer pageNum,
-                                                 @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
-                                                 @RequestParam(name = "projectId", required = false) Long paramProjectId) {
+    public ControllerResponse queryUnlinkedStory(@RequestParam("pageNum") Integer pageNum,
+                                                 @RequestParam("pageSize") Integer pageSize,
+                                                 @RequestParam("issueId") Long issueId,
+                                                 @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
-            result = storyService.queryUnlinkedStory(null, pageNum, pageSize, title);
+            result = storyService.queryUnlinkedStory(issueId, pageNum, pageSize, title);
         } catch (Exception e) {
             LOGGER.error("查询未关联的用户故事异常", e);
             return ControllerResponse.fail("查询未关联的用户故事异常：" + e.getMessage());
