@@ -1048,9 +1048,9 @@ public class StoryServiceImpl implements StoryService {
      * @param sprintId 迭代id
      */
     @Override
-    public void checkSprintParam(Long featureId,Long sprintId) {
+    public void checkSprintParam(Long issueId,Long sprintId) {
         //只有敏捷团队才需要校验
-        Issue feature = issueMapper.getIssue(featureId);
+        Issue feature = getFeature(issueId);
         if(null != feature){
             STeam sTeam = sTeamMapper.queryTeam(feature.getTeamId());
             if(TeamTypeEnum.agile_team.getCode().equals(sTeam.getTeamType())){
@@ -1067,6 +1067,24 @@ public class StoryServiceImpl implements StoryService {
                 }
             }
         }
+    }
+
+    private Issue getFeature(Long issueId) {
+        Issue feature = null;
+        Issue issue = issueMapper.getIssue(issueId);
+        if(null != issue){
+            if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(issue.getIssueType())){
+                feature  = issue;
+            }else if(IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType())){
+                issue = issueMapper.getParentIssue(issueId);
+                feature = issue;
+            }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
+                issue = issueMapper.getParentIssue(issueId);
+                issue = issueMapper.getParentIssue(issue.getParentId());
+                feature = issue;
+            }
+        }
+        return feature;
     }
 
     @Override
