@@ -257,19 +257,20 @@ public class PlatformStageServiceImpl implements IStageService {
             List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
             List<KanbanStageInstance> result = Lists.newArrayList();
             for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
-                if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType
-                        || IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType){
-                    if(StoryStatusEnum.TYPE_ADD_STATE.CODE == kanbanStageInstance.getStageId() ||
-                            StoryStatusEnum.TYPE_MODIFYING_STATE.CODE == kanbanStageInstance.getStageId() ||
-                            StoryStatusEnum.TYPE_CLOSED_STATE.CODE == kanbanStageInstance.getStageId()){
+                if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType ||
+                        (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())
+                                && IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType) ){
+                    if(StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(kanbanStageInstance.getStageId() )||
+                            StoryStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
+                            StoryStatusEnum.TYPE_CLOSED_STATE.CODE.equals(kanbanStageInstance.getStageId()) ){
                         result.add(kanbanStageInstance);
                         continue;
                     }
                 }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
-                    if(TaskStatusEnum.TYPE_ADD_STATE.CODE == kanbanStageInstance.getStageId() ||
-                            TaskStatusEnum.TYPE_RECEIVED_STATE.CODE == kanbanStageInstance.getStageId() ||
-                            TaskStatusEnum.TYPE_MODIFYING_STATE.CODE == kanbanStageInstance.getStageId()||
-                            TaskStatusEnum.TYPE_CLOSED_STATE.CODE == kanbanStageInstance.getStageId()){
+                    if(TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
+                            TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
+                            TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
+                            TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(kanbanStageInstance.getStageId())){
                         result.add(kanbanStageInstance);
                         continue;
                     }
