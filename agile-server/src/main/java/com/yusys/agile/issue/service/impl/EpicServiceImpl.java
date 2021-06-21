@@ -11,6 +11,9 @@ import com.yusys.agile.issue.service.EpicService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.set.stage.constant.StageConstant;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
 import com.google.common.collect.Lists;
 import com.yusys.agile.versionmanager.service.VersionManagerService;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Date: 15:57
@@ -45,7 +49,7 @@ public class EpicServiceImpl implements EpicService {
     private VersionManagerService versionManagerService;
 
     @Resource
-    private IssueService issueService;
+    private STeamMapper sTeamMapper;
 
     @Override
     public Long createEpic(IssueDTO issueDTO) {
@@ -69,13 +73,38 @@ public class EpicServiceImpl implements EpicService {
     @Transactional(rollbackFor = Exception.class)
     public void editEpic(IssueDTO issueDTO) {
         Issue oldEpic = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
-        Long projectId = oldEpic.getProjectId();
-        Issue epic = issueFactory.editIssue(issueDTO, oldEpic, projectId);
+        //校验epic下面的feature是否存在精益模式，如果存在则不允许变更阶段和状态
+        Long[] stages = issueDTO.getStages();
+        //阶段发生变更
+        if(!oldEpic.getStageId().equals(stages[0]) && hasLeanFeature(issueDTO.getIssueId())){
+            throw new BusinessException("epic下面存在精益看板Feature不允许变更阶段！");
+        }
+        //状态发生变更
+        if(stages.length > 1){
+            if(!oldEpic.getLaneId().equals(stages[1]) && hasLeanFeature(issueDTO.getIssueId()) ){
+                throw new BusinessException("epic下面存在精益看板Feature不允许变更状态！");
+            }
+        }
+        Issue epic = issueFactory.editIssue(issueDTO, oldEpic, null);
         int count;
         count = issueMapper.updateByPrimaryKeySelectiveWithNull(epic);
         if (count != 1) {
             throw new BusinessException("更新业务需求失败！");
         }
+    }
+
+    private boolean hasLeanFeature(Long epicId) {
+       IssueExample issueExample = new IssueExample();
+       issueExample.createCriteria().andParentIdEqualTo(epicId).andStateEqualTo(StateEnum.U.getValue());
+       List<Issue> featureList = issueMapper.selectByExample(issueExample);
+       List<Long> teamIdList = featureList.stream().map(Issue::getTeamId).collect(Collectors.toList());
+       List<STeam> teamList = sTeamMapper.listTeamByIds(teamIdList);
+       for(STeam sTeam : teamList){
+           if(TeamTypeEnum.lean_team.getCode().equals(sTeam.getTeamType())){
+               return true;
+           }
+       }
+       return false;
     }
 
     @Override
