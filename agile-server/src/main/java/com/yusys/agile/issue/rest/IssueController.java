@@ -167,7 +167,7 @@ public class IssueController {
     @PostMapping("/issue/createBatchRelation")
     public ControllerResponse createBatchRelation(@RequestBody IssueDTO issueDTO, SecurityDTO securityDTO) {
         try {
-            storyService.checkSprintParam(issueDTO.getSprintId());
+            storyService.checkSprintParam(issueDTO.getParentId(),issueDTO.getSprintId());
             issueService.createBatchRelation(issueDTO.getParentId(), issueDTO.getListIssueIds(), securityDTO.getUserId());
         } catch (Exception e) {
             LOGGER.error("批量建立关联失败：{}", e);
