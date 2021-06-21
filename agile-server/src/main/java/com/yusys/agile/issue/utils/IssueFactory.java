@@ -18,6 +18,8 @@ import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.issue.service.*;
+import com.yusys.agile.leankanban.domain.SLeanKanban;
+import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
@@ -110,6 +112,8 @@ public class IssueFactory {
     private IssueTemplateService issueTemplateService;
     @Resource
     private SIssueRichtextMapper sIssueRichtextMapper;
+    @Resource
+    private LeanKanbanService leanKanbanService;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -176,6 +180,15 @@ public class IssueFactory {
             issue.setSystemId(systemId);
             List<Long> systemIds = Lists.newArrayList(systemId);
             issueDTO.setSystemIds(systemIds);
+        }
+
+        //处理看板信息
+        Long teamId = issueDTO.getTeamId();
+        if(Optional.ofNullable(teamId).isPresent()){
+            SLeanKanban leanKanban = leanKanbanService.querySimpleLeanKanbanInfo(teamId);
+            if(Optional.ofNullable(leanKanban).isPresent()){
+                issue.setKanbanId(leanKanban.getKanbanId());
+            }
         }
 
         issueMapper.insertSelective(issue);
