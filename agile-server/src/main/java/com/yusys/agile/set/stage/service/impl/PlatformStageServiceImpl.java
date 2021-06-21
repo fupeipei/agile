@@ -116,7 +116,7 @@ public class PlatformStageServiceImpl implements IStageService {
                     for(KanbanStageInstanceDTO instanceDTO : result){
                         List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
                         List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
-                                LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
+                                LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) ||
                                         LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
                         instanceDTO.setSecondStages(secondStageResults);
                     }
