@@ -309,7 +309,7 @@ public class IssueServiceImpl implements IssueService {
         issueFactory.dealHistory(history);
         Long sprintId = getRelatedIssueSprintId(issueId, IssueTypeEnum.TYPE_TASK.CODE);
         //迭代信息校验
-        storyService.checkSprintParam(parentId,sprintId);
+        storyService.checkSprintParam(issueId,sprintId);
         issueMapper.deleteRelation(parentId, sprintId, issueId);
     }
 

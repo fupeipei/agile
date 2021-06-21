@@ -239,9 +239,9 @@ public interface StoryService {
     /**
      * 判断迭代已完成，已取消，以及迭代结束日期小于当前时间的迭代
      * @param sprintId 迭代id
-     * @param featureId
+     * @param issueId
      */
-    void checkSprintParam(Long featureId,Long sprintId);
+    void checkSprintParam(Long issueId,Long sprintId);
 
     /**
      *功能描述 根据系统查询故事
