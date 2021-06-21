@@ -45,7 +45,7 @@ public class StageControllerImpl {
     @GetMapping("/getStageList")
     public ControllerResponse queryStageList(@RequestParam("stageType")Integer stageType,
                                              @RequestParam(value = "teamId",required = false) Long teamId,
-                                             @RequestParam(value = "taskType", required = false) Byte taskType) {
+                                             @RequestParam(value = "taskType", required = false) Integer taskType) {
         try {
             List<StageInstance> kanbanStageInstances = iStageService.getStages(stageType,teamId,taskType);
             return ControllerResponse.success(kanbanStageInstances);

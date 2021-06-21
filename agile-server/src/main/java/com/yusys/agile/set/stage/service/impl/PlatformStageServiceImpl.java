@@ -59,7 +59,7 @@ public class PlatformStageServiceImpl implements IStageService {
      * @return
      */
     @Override
-    public List<StageInstance> getStages(Integer stageType, Long teamId,Byte taskType) throws Exception {
+    public List<StageInstance> getStages(Integer stageType, Long teamId,Integer taskType) throws Exception {
         List<StageInstance> result = Lists.newArrayList();
         switch (stageType){
             case 1:
@@ -76,7 +76,7 @@ public class PlatformStageServiceImpl implements IStageService {
 
 
 
-   private List<StageInstance> getStagesByTeamId(Integer stageType,Long teamId,Byte taskType) throws Exception {
+   private List<StageInstance> getStagesByTeamId(Integer stageType,Long teamId,Integer taskType) throws Exception {
         SLeanKanbanDTO sLeanKanban = null;
         if(Optional.ofNullable(teamId).isPresent()){
             sLeanKanban = leanKanbanService.queryLeanKanbanInfo(teamId);
