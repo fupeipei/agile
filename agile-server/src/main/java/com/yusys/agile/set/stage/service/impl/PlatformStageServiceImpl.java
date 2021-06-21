@@ -127,19 +127,20 @@ public class PlatformStageServiceImpl implements IStageService {
 
                 /**feature中状态展示一级阶段中除去开发阶段的 开发中、开发完成状态的所有阶段*/
             }else if(IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType){
-                List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(kanbanStageInstances, StageInstance.class);
-                if(CollectionUtils.isNotEmpty(stageInstances)){
+
+                if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
                     //过滤二级状态信息
-                    for(StageInstance stageInstance:stageInstances){
-                        List<KanbanStageInstance> secondStages = stageInstance.getSecondStages();
+                    for(KanbanStageInstanceDTO kanbanStageInstanceDTO:kanbanStageInstances){
+                        List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
                         if(CollectionUtils.isNotEmpty(secondStages)){
-                            List<KanbanStageInstance> secondStageResults = secondStages.stream().filter(k ->
+                            List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
                                     !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
                                     !LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
-                            stageInstance.setSecondStages(secondStageResults);
+                            kanbanStageInstanceDTO.setSecondStages(secondStageResults);
                         }
                     }
                 }
+                List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(kanbanStageInstances, StageInstance.class);
                 return stageInstances;
             }
         }

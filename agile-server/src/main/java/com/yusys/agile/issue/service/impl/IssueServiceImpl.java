@@ -3158,6 +3158,7 @@ public class IssueServiceImpl implements IssueService {
                                     Long epicId = feature.getParentId();
                                     Issue epic = issueMapper.selectByPrimaryKey(epicId);
                                     if(Optional.ofNullable(epic).isPresent()){
+
                                         epic.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
                                         issueMapper.updateByPrimaryKeySelective(epic);
                                     }
