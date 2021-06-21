@@ -116,14 +116,13 @@ public class PlatformStageServiceImpl implements IStageService {
                     for(KanbanStageInstanceDTO instanceDTO : result){
                         List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
                         List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
-                                LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
+                                LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) ||
                                         LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
                         instanceDTO.setSecondStages(secondStageResults);
                     }
                 }
                 List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
                 return stageInstances;
-
 
                 /**feature中状态展示一级阶段中除去开发阶段的 开发中、开发完成状态的所有阶段*/
             }else if(IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType){
