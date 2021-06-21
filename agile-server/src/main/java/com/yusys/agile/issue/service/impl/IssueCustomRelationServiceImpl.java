@@ -126,6 +126,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
                 issueCustomRelation.setIssueType(idList.getIssueType());
                 issueCustomRelation.setSystemId(securityDTO.getSystemId());
                 issueCustomRelation.setSort(i + longList.size() + 1);
+                issueCustomRelation.setRequired(issueCustomRelationList.get(i).getRequired());
                 //如果不存在则insert
                 if (!longList.contains(issueCustomRelation.getFieldId())) {
                     issueCustomRelationMapper.insertSelective(issueCustomRelation);
