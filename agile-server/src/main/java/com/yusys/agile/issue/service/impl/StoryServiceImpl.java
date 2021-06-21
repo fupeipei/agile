@@ -27,7 +27,10 @@ import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
+import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.utils.exception.ExceptionCodeEnum;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
@@ -100,7 +103,8 @@ public class StoryServiceImpl implements StoryService {
     @Resource
     private SIssueRichtextMapper sIssueRichtextMapper;
 
-
+    @Resource
+    private STeamMapper sTeamMapper;
 
     /**
      * 功能描述 百分号
@@ -1044,17 +1048,24 @@ public class StoryServiceImpl implements StoryService {
      * @param sprintId 迭代id
      */
     @Override
-    public void checkSprintParam(Long sprintId) {
-        SSprint sprint = sSprintMapper.selectByPrimaryKeyNotText(sprintId);
-        if (null != sprint) {
-            if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
-                throw new BusinessException("只有未开始的任务可以关联工作项");
+    public void checkSprintParam(Long featureId,Long sprintId) {
+        //只有敏捷团队才需要校验
+        Issue feature = issueMapper.getIssue(featureId);
+        if(null != feature){
+            STeam sTeam = sTeamMapper.queryTeam(feature.getTeamId());
+            if(TeamTypeEnum.agile_team.getCode().equals(sTeam.getTeamType())){
+                SSprint sprint = sSprintMapper.selectByPrimaryKeyNotText(sprintId);
+                if (null != sprint) {
+                    if (sprint.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) || sprint.getStatus().equals(SprintStatusEnum.TYPE_CANCEL_STATE.CODE)) {
+                        throw new BusinessException("只有未开始的任务可以关联工作项");
+                    }
+                    if (sprint.getEndTime().before(new Date())) {
+                        throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
+                    }
+                }else{
+                    throw new BusinessException("迭代不存在");
+                }
             }
-            if (sprint.getEndTime().before(new Date())) {
-                throw new BusinessException("迭代结束日期小于当前时间的迭代，不允许关联/取消关联用户故事");
-            }
-        }else{
-            throw new BusinessException("迭代不存在");
         }
     }
 
