@@ -67,7 +67,7 @@ public class LeanKanbanController {
     @GetMapping("/issue/dragIssueCard")
     public ControllerResponse dragIssueCard(@RequestParam("issueId") Long issueId,
                                             @RequestParam("fromStageId") Long fromStageId,
-                                            @RequestParam("fromLaneId") Long fromLaneId,
+                                            @RequestParam(value = "fromLaneId",required =  false) Long fromLaneId,
                                             @RequestParam(value = "stageId") Long stageId,
                                             @RequestParam(value = "laneId" ,required = false) Long laneId) {
         try {

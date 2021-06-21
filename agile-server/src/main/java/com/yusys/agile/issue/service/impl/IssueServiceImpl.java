@@ -3120,6 +3120,7 @@ public class IssueServiceImpl implements IssueService {
             }
             // task改变后状态向 上汇总
         }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
+
             IssueExample issueExample = new IssueExample();
             issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
                     .andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
@@ -3211,39 +3212,36 @@ public class IssueServiceImpl implements IssueService {
 
 
     /**
-     * 获取进行中的状态
-     *
+     * 更新 issue状态，联动更新父级的工作项状态
+     * @param issueId
      * @return
      */
-    private List<Long> getOnGoingState(List<Long> laneStates){
-        //获取所有已完成的状态
-        List<Long> finishs = Lists.newArrayList();
-        Long anlysisFinish = LaneKanbanStageConstant.AnalysisStageEnum.FINISH.getValue();
-        Long desighFinish = LaneKanbanStageConstant.DesignStageEnum.FINISH.getValue();
-        Long devfinish = LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue();
-        Long storyFinish = LaneKanbanStageConstant.DevStageEnum.FINISH.getValue();
-        Long testFinish = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
-        Long systemTestFinish = LaneKanbanStageConstant.SystemTestStageEnum.FINISH.getValue();
-        Long releaseFinish = LaneKanbanStageConstant.ReleaseStageEnum.FINISH.getValue();
+    private IssueDTO updateParentStatus(Long issueId,Long kanbanId){
+        Issue issue = issueMapper.selectByPrimaryKey(issueId);
+        if(Optional.ofNullable(issue).isPresent()){
+            Long parentId = issue.getParentId();
+            Byte type = issue.getIssueType();
 
-       this.add(finishs,anlysisFinish)
-               .add(finishs,desighFinish)
-               .add(finishs,desighFinish)
-               .add(finishs,storyFinish)
-               .add(finishs,devfinish)
-               .add(finishs,testFinish)
-               .add(finishs,systemTestFinish)
-               .add(finishs,releaseFinish);
+            //如果工作项类型为任务,阶段分为 开发和测试阶段
+            if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
+                List<Issue> issueList = issueMapper.selectIssueListByParentId(parentId, kanbanId);
+                if(CollectionUtils.isNotEmpty(issueList)){
+                    //获取最左边的issue状态
+                    Issue parent = issueList.get(0);
 
-       laneStates.removeAll(finishs);
-        return  laneStates;
+
+
+                }
+
+            }
+
+
+
+        }
+        return null;
     }
 
 
-    private IssueServiceImpl add(List<Long> list, Long value){
-        list.add(value);
-        return this;
-    }
 
     @Override
     public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {

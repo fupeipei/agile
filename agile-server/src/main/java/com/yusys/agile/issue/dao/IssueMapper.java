@@ -556,7 +556,7 @@ public interface IssueMapper {
      * @param parentId
      * @return
      */
-    List<Issue> selectIssueListByParentId(@Param("parentId") Long parentId, @Param("projectId") Long projectId);
+    List<Issue> selectIssueListByParentId(@Param("parentId") Long parentId, @Param("kanbanId") Long kanbanId);
 
     List<Long> getNotCanceledAndOnlineIssueByIssueIdList(@Param("issueIdList") List<Long> issueIdList);
 
