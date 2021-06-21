@@ -2920,7 +2920,7 @@
                 where
                     ksi.stage_id = su.stage_id
                     and ksi.state ='U'
-                    and ksi.project_id=#{projectId}
+                    and ksi.kanban_id=#{kanbanId}
             ) as orderId
      FROM
        s_issue su

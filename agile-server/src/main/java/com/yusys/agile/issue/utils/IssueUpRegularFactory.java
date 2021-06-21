@@ -9,6 +9,8 @@ import com.yusys.agile.issue.domain.IssueHistoryRecordExample;
 import com.yusys.agile.issue.enums.IssueField;
 import com.yusys.agile.issue.enums.IssueHistoryRecordTypeEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
+import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
+import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
@@ -45,6 +47,8 @@ public class IssueUpRegularFactory {
     private KanbanStageInstanceMapper stageInstanceMapper;
     @Resource
     private IssueHistoryRecordMapper historyRecordMapper;
+    @Resource
+    private LeanKanbanService leanKanbanService;
 
     /**
      * 工作项向上规整的封装方法
@@ -61,7 +65,7 @@ public class IssueUpRegularFactory {
         Byte issueType = issue.getIssueType();
         Long parentId = issue.getParentId();
         Long handler = issue.getHandler();
-        Long projectId = issue.getProjectId();
+        Long teamId = issue.getTeamId();
         //1、判断当前工作项类型 parentId如果为null ，直接return。
         if (!Optional.ofNullable(parentId).isPresent()) {
             logger.error("调用工作项向上规整的封装方法commonIssueUpRegular，当前parentId为null，直接return");
@@ -75,12 +79,13 @@ public class IssueUpRegularFactory {
         //3、判断工作项类型是feature 研发需求的，需要更新业务需求Epic的阶段状态以及处理人。
         //4、判断工作项类型是story 用户故事的，需要更新研发需求feature的阶段状态以及处理人。
         // 在判断用户故事的父工作项ID是否为Null，不为NULL，则更新业务需求Epic的阶段状态以及处理人。
-        Map<String, Integer> kanbanInstanceMap = getKanbanInstance(projectId);
-        if (kanbanInstanceMap.isEmpty()) {
-            logger.error("调用工作项向上规整的封装方法commonIssueUpRegular，当前项目ID:{}为null，直接return", projectId);
+        SLeanKanbanDTO leanKanbanDTO = leanKanbanService.queryLeanKanbanInfo(teamId);
+        if (leanKanbanDTO.getKanbanStageInstances().isEmpty()) {
+            logger.error("调用工作项向上规整的封装方法commonIssueUpRegular，当前团队ID:{}为null，直接return", teamId);
             return;
         }
-        settings(handler, parentId, projectId, kanbanInstanceMap);
+        Long kanbanId = leanKanbanDTO.getKanbanId();
+        settings(handler, parentId, kanbanId);
 
     }
 
@@ -90,12 +95,12 @@ public class IssueUpRegularFactory {
      * @param handler
      * @param parentId
      */
-    private void settings(Long handler, Long parentId, Long projectId, Map<String, Integer> kanbanInstanceMap) {
+    private void settings(Long handler, Long parentId, Long kanbanId) {
         //1、查询父级工作项
         Issue pIssue = getParentIssue(parentId);
         logger.info("进入递归方法 settings,父工作项：{}, 一级阶段:{}, 二级阶段:{}", pIssue.getIssueId(), pIssue.getStageId(), pIssue.getLaneId());
         //2、查询父工作项下的最左边的子工作项
-        Issue subIssue = getSubIssue(parentId, projectId, kanbanInstanceMap);
+        Issue subIssue = getSubIssue(parentId, kanbanId);
         if (Optional.ofNullable(subIssue).isPresent()) {
             logger.info("进入递归方法 settings,子工作项：{}, 一级阶段:{}, 二级阶段:{}", subIssue.getIssueId(), subIssue.getStageId(), subIssue.getLaneId());
             //3、更新父工作项阶段历史记录和停留天数
@@ -107,7 +112,7 @@ public class IssueUpRegularFactory {
         parentId = pIssue.getParentId();
         //4、递归遍历
         if (Optional.ofNullable(parentId).isPresent()) {
-            settings(handler, parentId, projectId, kanbanInstanceMap);
+            settings(handler, parentId, kanbanId);
         }
     }
 
@@ -156,9 +161,9 @@ public class IssueUpRegularFactory {
      * @param parentId 父工作项ID
      * @return
      */
-    private Issue getSubIssue(Long parentId, Long projectId, Map<String, Integer> kanbanInstanceMap) {
+    private Issue getSubIssue(Long parentId, Long kanbanId) {
         Issue issue = null;
-        List<Issue> issueList = issueMapper.selectIssueListByParentId(parentId, projectId);
+        List<Issue> issueList = issueMapper.selectIssueListByParentId(parentId, kanbanId);
         if (CollectionUtils.isNotEmpty(issueList)) {
             issue = issueList.get(0);
         }
