@@ -41,8 +41,14 @@ public class IssueTemplateController {
      * @param securityDTO
      */
     @GetMapping("/issueTemplate/query")
-    public ControllerResponse query(Byte issueType, SecurityDTO securityDTO) {
-        return ControllerResponse.success(issueTemplateService.query(issueType, securityDTO));
+    public ControllerResponse query(Byte issueType, @RequestParam(value = "systemId",required = false) Long systemId,SecurityDTO securityDTO) {
+        Long finallySystemId;
+        if(null != systemId){
+            finallySystemId = systemId;
+        }else{
+            finallySystemId = securityDTO.getSystemId();
+        }
+        return ControllerResponse.success(issueTemplateService.query(issueType, finallySystemId));
     }
 
     /**
