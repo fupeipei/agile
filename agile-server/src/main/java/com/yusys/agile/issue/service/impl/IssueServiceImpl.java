@@ -3066,7 +3066,9 @@ public class IssueServiceImpl implements IssueService {
      * 拖拽规则
      *
      *  算法介绍：
-     *  按照悲观法计算，以状态最小的去更新
+     *  按照悲观法计算，以状态最小的去更新,
+     *  改变featuer状态触发epic状态改变，
+     *  改变task状态触发story状态改变，从而触发feature和epic状态改变
      *
      * @param issueId
      * @param stageId
