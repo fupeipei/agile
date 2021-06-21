@@ -8,8 +8,10 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
+import com.yusys.agile.issue.enums.TaskTypeEnum;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
+import com.yusys.agile.leankanban.enums.LaneKanbanStageConstant;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.redis.service.RedissonService;
 import com.yusys.agile.set.stage.constant.StageConstant;
@@ -57,7 +59,7 @@ public class PlatformStageServiceImpl implements IStageService {
      * @return
      */
     @Override
-    public List<StageInstance> getStages(Integer stageType, Long teamId) throws Exception {
+    public List<StageInstance> getStages(Integer stageType, Long teamId,Byte taskType) throws Exception {
         List<StageInstance> result = Lists.newArrayList();
         switch (stageType){
             case 1:
@@ -66,7 +68,7 @@ public class PlatformStageServiceImpl implements IStageService {
             case 2:
             case 3:
             case 4:
-                result = getStagesByTeamId(stageType,teamId);
+                result = getStagesByTeamId(stageType,teamId,taskType);
                 break;
         }
         return result;
@@ -74,7 +76,7 @@ public class PlatformStageServiceImpl implements IStageService {
 
 
 
-   private List<StageInstance> getStagesByTeamId(Integer stageType,Long teamId) throws Exception {
+   private List<StageInstance> getStagesByTeamId(Integer stageType,Long teamId,Byte taskType) throws Exception {
         SLeanKanbanDTO sLeanKanban = null;
         if(Optional.ofNullable(teamId).isPresent()){
             sLeanKanban = leanKanbanService.queryLeanKanbanInfo(teamId);
@@ -82,17 +84,64 @@ public class PlatformStageServiceImpl implements IStageService {
 
         if(Optional.ofNullable(sLeanKanban).isPresent()){
             List<KanbanStageInstanceDTO> kanbanStageInstances = sLeanKanban.getKanbanStageInstances();
-            //如果是任务或者故事取 开发阶段->测试阶段
-            if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType ||
-                    IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
+            /**如果是故事 阶段：开发阶段-未开始、开发阶段-进行中、开发阶段-已完成，测试阶段-测试中、测试阶段-测试完成*/
+            if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType){
                 List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
                         StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(k.getStageId()) ||
-                        StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                                StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                //过滤二级状态信息
+                if(CollectionUtils.isNotEmpty(result)){
+                    for(KanbanStageInstanceDTO instanceDTO : result){
+                        List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
+                        List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
+                                !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
+                                        !LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                        instanceDTO.setSecondStages(secondStageResults);
+                    }
+                }
+
+                /**测试类任务，展示测试阶段进行中、已完成。否则 开发阶段进行中已完成*/
+            }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
+
+                if(TaskTypeEnum.TEST.CODE.equals(taskType)){
+                    List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
+                            StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                    List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
+                    return stageInstances;
+                }
+
+                List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
+                        StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                if(CollectionUtils.isNotEmpty(result)){
+                    for(KanbanStageInstanceDTO instanceDTO : result){
+                        List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
+                        List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
+                                LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
+                                        LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                        instanceDTO.setSecondStages(secondStageResults);
+                    }
+                }
                 List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
                 return stageInstances;
+
+
+                /**feature中状态展示一级阶段中除去开发阶段的 开发中、开发完成状态的所有阶段*/
+            }else if(IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType){
+                List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(kanbanStageInstances, StageInstance.class);
+                if(CollectionUtils.isNotEmpty(stageInstances)){
+                    //过滤二级状态信息
+                    for(StageInstance stageInstance:stageInstances){
+                        List<KanbanStageInstance> secondStages = stageInstance.getSecondStages();
+                        if(CollectionUtils.isNotEmpty(secondStages)){
+                            List<KanbanStageInstance> secondStageResults = secondStages.stream().filter(k ->
+                                    !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
+                                    !LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                            stageInstance.setSecondStages(secondStageResults);
+                        }
+                    }
+                }
+                return stageInstances;
             }
-            List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(kanbanStageInstances, StageInstance.class);
-            return stageInstances;
         }
         List<StageInstance> stageList = getStageList(stageType);
         return stageList;
@@ -108,13 +157,9 @@ public class PlatformStageServiceImpl implements IStageService {
     public List<StageInstance> getStageList(Integer stageType) {
         List<Long> stageIds = Lists.newArrayList();
         switch (stageType){
-            case 1:
-            case 2:
-                break;
             case 3:
             case 4:
                 stageIds.add(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
-                break;
         }
         //一级阶段集合
         List<StageInstance> tempStageInstanceList = Lists.newArrayList();
@@ -212,7 +257,8 @@ public class PlatformStageServiceImpl implements IStageService {
             List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
             List<KanbanStageInstance> result = Lists.newArrayList();
             for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
-                if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType){
+                if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType
+                        || IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType){
                     if(StoryStatusEnum.TYPE_ADD_STATE.CODE == kanbanStageInstance.getStageId() ||
                             StoryStatusEnum.TYPE_MODIFYING_STATE.CODE == kanbanStageInstance.getStageId() ||
                             StoryStatusEnum.TYPE_CLOSED_STATE.CODE == kanbanStageInstance.getStageId()){

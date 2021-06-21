@@ -22,7 +22,7 @@ public interface IStageService {
      * @param teamId
      * @return
      */
-    List<StageInstance> getStages(Integer stageType,Long teamId) throws Exception;
+    List<StageInstance> getStages(Integer stageType,Long teamId,Byte taskType) throws Exception;
 
     /**
      * 敏捷看板根据工作项类型获取阶段信息

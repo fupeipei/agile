@@ -44,9 +44,10 @@ public class StageControllerImpl {
      */
     @GetMapping("/getStageList")
     public ControllerResponse queryStageList(@RequestParam("stageType")Integer stageType,
-                                             @RequestParam(value = "teamId",required = false) Long teamId) {
+                                             @RequestParam(value = "teamId",required = false) Long teamId,
+                                             @RequestParam(value = "taskType", required = false) Byte taskType) {
         try {
-            List<StageInstance> kanbanStageInstances = iStageService.getStages(stageType,teamId);
+            List<StageInstance> kanbanStageInstances = iStageService.getStages(stageType,teamId,taskType);
             return ControllerResponse.success(kanbanStageInstances);
         } catch (Exception e) {
             return ControllerResponse.fail("阶段列表获取异常");
