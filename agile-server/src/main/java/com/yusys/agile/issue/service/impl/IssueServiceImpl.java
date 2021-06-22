@@ -3274,13 +3274,21 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public boolean checkIssueState(Long issueId, Long fromStageId, Long fromLaneId) {
-
+        loggr.info("校验卡片状态入参: issueId{},fromStageId:{},fromLaneId:{}",issueId,fromStageId,fromLaneId);
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
+
         Long laneId = issue.getLaneId();
         Long stageId = issue.getStageId();
+        loggr.info("数据库issue状态: laneId{},stageId{}",laneId,stageId);
+        if (fromStageId == stageId ) {
+            if(laneId != null && laneId == fromLaneId){
+                return true;
+            }
 
-        if (fromStageId == stageId && laneId == fromLaneId) {
-            return true;
+            if(fromLaneId == null){
+                return true;
+            }
+
         }
         return false;
     }
