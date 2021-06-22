@@ -256,6 +256,7 @@ public class PlatformStageServiceImpl implements IStageService {
             kanbanStageInstanceExample.setOrderByClause("order_id asc");
             List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
             List<KanbanStageInstance> result = Lists.newArrayList();
+
             for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
                 if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType ||
                         (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())
@@ -266,6 +267,7 @@ public class PlatformStageServiceImpl implements IStageService {
                         result.add(kanbanStageInstance);
                         continue;
                     }
+
                 }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
                     if(TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
                             TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||

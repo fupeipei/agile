@@ -467,4 +467,13 @@ public interface IssueService {
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
     boolean checkIssueState(Long issueId,Long fromStageId, Long fromLaneId);
+
+
+    /**
+     * 汇总任务状态
+     *
+     * @param issueId   任务Id
+     * @param kanbanId   看板Id(可以通过teamId去获取)
+     */
+    void updateTaskParentStatus(Long issueId,Long kanbanId);
 }
