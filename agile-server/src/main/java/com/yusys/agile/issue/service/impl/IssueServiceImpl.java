@@ -3051,7 +3051,6 @@ public class IssueServiceImpl implements IssueService {
     public void recursionGetIssues(List<IssueDTO> issues, Long kanbanId) throws ExecutionException {
         for (IssueDTO issueDTO : issues) {
 
-
             Long issueId = issueDTO.getIssueId();
 
             //处理系统信息
@@ -3070,7 +3069,6 @@ public class IssueServiceImpl implements IssueService {
                 issueDTO.setHandlerName(user.getUserName());
             }
 
-
             IssueExample example = new IssueExample();
             IssueExample.Criteria criteria = example.createCriteria()
                     .andStateEqualTo(StateEnum.U.getValue())
@@ -3086,7 +3084,7 @@ public class IssueServiceImpl implements IssueService {
                 //处理卡片上显示数据
                 Byte type = issueDTO.getIssueType();
                 if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
-                    issueDTO.setStoryTotalNum(childs.size());
+                    issueDTO.setStoryTotalNum(issueList.size());
 
                     criteria.andLaneIdEqualTo(LaneKanbanStageConstant.DevStageEnum.FINISH.getValue());
                     long count = issueMapper.countByExample(example);
