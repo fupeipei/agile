@@ -3089,6 +3089,15 @@ public class IssueServiceImpl implements IssueService {
                     criteria.andLaneIdEqualTo(LaneKanbanStageConstant.DevStageEnum.FINISH.getValue());
                     long count = issueMapper.countByExample(example);
                     issueDTO.setStroyFinishNum((int) count);
+                }else if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
+
+                    issueDTO.setTaskNum(issueList.size());
+                    List<Long> laneIds = Lists.newArrayList();
+                    laneIds.add(LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue());
+                    laneIds.add(LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue());
+                    criteria.andLaneIdIn(laneIds);
+                    long count = issueMapper.countByExample(example);
+                    issueDTO.setTaskFinishNum((int) count);
                 }
 
                 try {
