@@ -266,7 +266,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public IssueDTO queryTask(Long taskId) {
-        return issueFactory.queryIssue(taskId, null);
+        Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+        return issueFactory.queryIssue(taskId, systemId);
     }
 
     @Override
