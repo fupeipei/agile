@@ -4,6 +4,7 @@ import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.StageInstance;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *  @Description: 阶段service
@@ -58,5 +59,12 @@ public interface IStageService {
     List<KanbanStageInstance> getSecondStageList(Long stageParentId,Long kanbanId);
 
 
+    /**
+     * 根据团队Id 获取阶段信息
+     *
+     * @param teamId
+     * @return
+     */
+    Map<Long,String> getStageMapByTeamId(Long teamId);
 
 }

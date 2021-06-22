@@ -1,5 +1,6 @@
 package com.yusys.agile.set.stage.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.yusys.agile.issue.dao.IssueMapper;
@@ -30,7 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -305,7 +308,41 @@ public class PlatformStageServiceImpl implements IStageService {
         return kanbanStageInstances;
     }
 
+    @Override
+    public Map<Long, String> getStageMapByTeamId(Long teamId) {
+        Map<Long,String> map = new HashMap<>();
+        log.info("查询阶段信息入参数 teamId ：{}",teamId);
+        SLeanKanbanDTO sLeanKanban = leanKanbanService.queryLeanKanbanInfo(teamId);
+        if(Optional.ofNullable(sLeanKanban).isPresent()){
+            List<KanbanStageInstanceDTO> kanbanStageInstances = sLeanKanban.getKanbanStageInstances();
+            if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
+                for(KanbanStageInstanceDTO kanbanStageInstanceDTO:kanbanStageInstances){
+                    map.put(kanbanStageInstanceDTO.getStageId(),kanbanStageInstanceDTO.getStageName());
+                    List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
+                    if(CollectionUtils.isNotEmpty(secondStages)){
+                        for(KanbanStageInstanceDTO secondStage:secondStages){
+                            map.put(secondStage.getStageId(),secondStage.getStageName());
+                        }
+                    }
+                }
+            }
+        }else {
+            KanbanStageInstanceExample kanbanStageInstanceExample = new KanbanStageInstanceExample();
+            kanbanStageInstanceExample.createCriteria()
+                    .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE)
+                    .andStateEqualTo(StageConstant.STATE_VALIDATE);
 
+            List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExample(kanbanStageInstanceExample);
+            if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
+                for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
+                    map.put(kanbanStageInstance.getStageId(),kanbanStageInstance.getStageName());
+                }
+
+            }
+        }
+        log.info("查询阶段信息返回数据 map:{}", JSONObject.toJSONString(map));
+        return map;
+    }
 
 
 }
