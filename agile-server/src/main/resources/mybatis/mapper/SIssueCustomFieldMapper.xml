@@ -298,7 +298,7 @@
     INSERT INTO s_issue_custom_field (issue_id,field_id, field_value, create_time, create_uid,state,tenant_code)
     VALUES
     <foreach collection="fields" item="field" separator=",">
-      (#{field.issueId},#{field.fieldId},#{field.fieldValue},now(),#{field.createUid},#{state,jdbcType=VARCHAR},#{field.tenantCode})
+      (#{field.issueId},#{field.fieldId},#{field.fieldValue},now(),#{field.createUid},#{field.state},#{field.tenantCode})
     </foreach>
   </insert>
     <delete id="deleteInFieldIdList4Issus">
