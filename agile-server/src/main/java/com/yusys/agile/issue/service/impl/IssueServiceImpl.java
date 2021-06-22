@@ -3050,6 +3050,9 @@ public class IssueServiceImpl implements IssueService {
     public void recursionGetIssues(List<IssueDTO> issues, Long kanbanId) throws ExecutionException {
         for (IssueDTO issueDTO : issues) {
 
+
+            Long issueId = issueDTO.getIssueId();
+
             //处理系统信息
             Long systemId = issueDTO.getSystemId();
             SsoSystem ssoSystem = systemCache.get(systemId);
@@ -3066,17 +3069,29 @@ public class IssueServiceImpl implements IssueService {
                 issueDTO.setHandlerName(user.getUserName());
             }
 
-            Long issueId = issueDTO.getIssueId();
 
             IssueExample example = new IssueExample();
-            example.createCriteria()
+            IssueExample.Criteria criteria = example.createCriteria()
                     .andStateEqualTo(StateEnum.U.getValue())
                     .andKanbanIdTo(kanbanId)
                     .andParentIdEqualTo(issueId);
             example.setOrderByClause("create_time desc");
+
             List<Issue> issueList = issueMapper.selectByExample(example);
+
             List<IssueDTO> childs = Lists.newArrayList();
             if (CollectionUtils.isNotEmpty(issueList)) {
+
+                //处理卡片上显示数据
+                Byte type = issueDTO.getIssueType();
+                if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
+                    issueDTO.setStoryTotalNum(childs.size());
+
+                    criteria.andLaneIdEqualTo(LaneKanbanStageConstant.DevStageEnum.FINISH.getValue());
+                    long count = issueMapper.countByExample(example);
+                    issueDTO.setStroyFinishNum((int) count);
+                }
+
                 try {
                     childs = ReflectUtil.copyProperties4List(issueList, IssueDTO.class);
                     issueDTO.setChildren(childs);
