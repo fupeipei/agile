@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * :
@@ -37,7 +38,11 @@ public class HeaderFieldController {
     public ControllerResponse queryHeaderFields(
             SecurityDTO securityDTO,
             @RequestParam("category") Byte category,
-            @RequestParam(value = "isFilter", required = false) Byte isFilter) {
+            @RequestParam(value = "isFilter", required = false) Byte isFilter,
+            @RequestHeader(value = "systemId", required = false) Long systemId) {
+            if(Optional.ofNullable(systemId).isPresent()){
+                securityDTO.setSystemId(systemId);
+            }
         Map map = headerFieldService.queryHeaderFields(securityDTO, category, isFilter);
         return ControllerResponse.success(map);
     }
