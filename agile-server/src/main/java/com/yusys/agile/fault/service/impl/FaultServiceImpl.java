@@ -249,9 +249,16 @@ public class FaultServiceImpl implements FaultService {
         issueRichTextFactory.queryIssueRichText(issueDTO);
         //LOGGER.info("查询描述后的issueDTO={}", JSON.toJSONString(issueDTO));
 
-        // 自定义字段
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(systemId,issueId, issue.getIssueType());
-        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+        //查询自定义字段
+        List<SIssueCustomField>  list   = issueCustomFieldService.listCustomFieldByIssueId(issueId);
+        if(CollectionUtils.isNotEmpty(list)){
+            try{
+                List<IssueCustomFieldDTO> issueCustomFieldDTOList = ReflectUtil.copyProperties4List(list,IssueCustomFieldDTO.class);
+                issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+            }catch (Exception e){
+
+            }
+        }
         return issueDTO;
     }
 
