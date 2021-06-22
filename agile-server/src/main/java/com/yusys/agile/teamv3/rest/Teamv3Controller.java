@@ -119,5 +119,35 @@ public class Teamv3Controller {
         return ControllerResponse.success(teamv3Service.querySystemByTeamId(teamId));
     }
 
+    /**
+     *功能描述 查询所有系统下团队
+     * @author shenfeng
+     * @date 2021/6/16
+      * @param dto
+     * @param security
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     */
+    @PostMapping("/listAllTeamBySystemId")
+    public ControllerResponse listAllTeam(@RequestBody TeamQueryDTO dto, SecurityDTO security) {
+        List<TeamListDTO> result = teamv3Service.listAllTeam(dto, security);
+        return ControllerResponse.success(result);
+    }
 
+    /**
+     * 模糊分页查询团队信息
+     * @param teamName 团队名称
+     * @param teamIds 团队id
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/queryTeamList")
+    public List<TeamListDTO> queryTeamList(@RequestParam(name = "teamName", required = false) String teamName,
+                                            @RequestParam(name = "teamIds") List<Long> teamIds,
+                                            @RequestParam(name = "pageNum") Integer pageNum,
+                                            @RequestParam(name = "pageSize") Integer pageSize){
+        List<TeamListDTO> result=teamv3Service.queryTeams(teamIds,teamName,pageNum,pageSize);
+
+        return result;
+    }
 }

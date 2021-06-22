@@ -18,14 +18,20 @@ import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.issue.service.*;
+import com.yusys.agile.leankanban.domain.SLeanKanban;
+import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sysextendfield.domain.SysExtendField;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
 import com.yusys.agile.sprint.enums.SprintStatusEnum;
+import com.yusys.agile.teamv3.dao.STeamMapper;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.alibaba.fastjson.JSON;
@@ -33,7 +39,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.portal.common.exception.BusinessException;
-import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -75,8 +80,6 @@ public class IssueFactory {
     @Resource
     private IssueMapper issueMapper;
     @Resource
-    private IFacadeProjectApi iFacadeProjectApi;
-    @Resource
     private IssueAttachmentService issueAttachmentService;
     @Resource
     private IssueHistoryRecordService issueHistoryRecordService;
@@ -89,13 +92,9 @@ public class IssueFactory {
     @Resource
     private IFacadeUserApi iFacadeUserApi;
     @Resource
-    private IssueAcceptanceMapper issueAcceptanceMapper;
-    @Resource
     private IssueRichTextFactory issueRichTextFactory;
     @Resource
     private IssueModuleRelpService issueModuleRelpService;
-    @Resource
-    private IssueRuleFactory ruleFactory;
     @Resource
     private CommissionService commissionService;
     @Resource
@@ -110,7 +109,10 @@ public class IssueFactory {
     private IssueTemplateService issueTemplateService;
     @Resource
     private SIssueRichtextMapper sIssueRichtextMapper;
-
+    @Resource
+    private LeanKanbanService leanKanbanService;
+    @Resource
+    private STeamMapper sTeamMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public Long createIssue(IssueDTO issueDTO, String checkErrMsg, String newMsg, Byte issueType) {
@@ -176,6 +178,25 @@ public class IssueFactory {
             issue.setSystemId(systemId);
             List<Long> systemIds = Lists.newArrayList(systemId);
             issueDTO.setSystemIds(systemIds);
+        }
+
+        //处理看板信息
+        Long teamId = issueDTO.getTeamId();
+        if(Optional.ofNullable(teamId).isPresent()){
+            SLeanKanban leanKanban = leanKanbanService.querySimpleLeanKanbanInfo(teamId);
+            if(Optional.ofNullable(leanKanban).isPresent()){
+                issue.setKanbanId(leanKanban.getKanbanId());
+            }
+        }else {
+            //从父级取
+            Long parentId = issue.getParentId();
+            if(Optional.ofNullable(parentId).isPresent()){
+                Issue parent = issueMapper.selectByPrimaryKey(parentId);
+                if(Optional.ofNullable(parent).isPresent()){
+                    issue.setKanbanId(parent.getKanbanId());
+                    issue.setTeamId(parent.getTeamId());
+                }
+            }
         }
 
         issueMapper.insertSelective(issue);
@@ -319,8 +340,16 @@ public class IssueFactory {
             dealAttachments(issueDTO, issueId, history);
 
             //更新自定义字段并组织自定义字段历史记录
-            //old custom field value
-            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomField(issueDTO.getSystemId(), issueId, issueType);
+            //查询自定义字段
+            List<IssueCustomFieldDTO> fieldsBeforeEdit = Lists.newArrayList();
+            List<SIssueCustomField>  listCustomFieldByIssueId   = issueCustomFieldService.listCustomFieldByIssueId(issueId);
+            if(CollectionUtils.isNotEmpty(listCustomFieldByIssueId)){
+                try{
+                    fieldsBeforeEdit = ReflectUtil.copyProperties4List(listCustomFieldByIssueId,IssueCustomFieldDTO.class);
+                }catch (Exception e){
+
+                }
+            }
             List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
             if (CollectionUtils.isNotEmpty(list)) {
                     List<SIssueCustomField> fieldsAfterEdit = Lists.newArrayList();
@@ -576,27 +605,27 @@ public class IssueFactory {
         }
     }
 
-    public void deleteIssue(Long issueId) {
-        //删除附件
-        issueAttachmentService.deleteAttachmentByIssueId(issueId);
-
-        //删除自定义字段
-        issueCustomFieldService.deleteCustomFileByIssueId(issueId);
-
-        //更新历史记录表，状态从有效变为无效
-        createHistory(issueId);
-
-        //更新工作项为失效
-        upateIssue(issueId);
-
-        commissionService.deleteCommission(issueId);
-
-        Issue issue = issueMapper.selectByPrimaryKey(issueId);
-
-        SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
-        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
-        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
-    }
+//    public void deleteIssue(Long issueId) {
+//        //删除附件
+//        issueAttachmentService.deleteAttachmentByIssueId(issueId);
+//
+//        //删除自定义字段
+//        issueCustomFieldService.deleteCustomFileByIssueId(issueId);
+//
+//        //更新历史记录表，状态从有效变为无效
+//        createHistory(issueId);
+//
+//        //更新工作项为失效
+//        upateIssue(issueId);
+//
+//        commissionService.deleteCommission(issueId);
+//
+//        Issue issue = issueMapper.selectByPrimaryKey(issueId);
+//
+//        SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
+//        IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
+//        rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+//    }
 
     /**
      * 任务状态未领取，人删除，系统保留，迭代清空如果有
@@ -638,7 +667,7 @@ public class IssueFactory {
         issueHistoryRecordService.createHistory(nameHistory);
     }
 
-    public IssueDTO queryIssue(Long issueId, Long systemId) {
+    public IssueDTO queryIssue(Long issueId, Long systemId)  {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         IssueDTO issueDTO = null;
         if (null != issue) {
@@ -684,8 +713,15 @@ public class IssueFactory {
             issueDTO.setAttachments(issueAttachmentDTOList);
 
             //查询自定义字段
-            List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(systemId, issueId, issue.getIssueType());
-            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+            List<SIssueCustomField>  list   = issueCustomFieldService.listCustomFieldByIssueId(issueId);
+            if(CollectionUtils.isNotEmpty(list)){
+                try{
+                    List<IssueCustomFieldDTO> issueCustomFieldDTOList = ReflectUtil.copyProperties4List(list,IssueCustomFieldDTO.class);
+                    issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+                }catch (Exception e){
+
+                }
+            }
             //查询故事验收标准信息
             getAcceptanceList(issueId, issueDTO);
 
@@ -951,6 +987,7 @@ public class IssueFactory {
         issueCustomField.setIssueId(issueId);
         issueCustomField.setFieldId(fieldId);
         issueCustomField.setFieldValue(fieldValue);
+        issueCustomField.setState(StateEnum.U.getValue());
         fields.add(issueCustomField);
     }
 
@@ -994,10 +1031,17 @@ public class IssueFactory {
         issueRichTextFactory.queryIssueRichText(issueDTO);
         issueDTO.setIssueId(null);
 
-        //查询自定义字段并塞入对象中
 
-        List<IssueCustomFieldDTO> issueCustomFieldDTOList = issueCustomFieldService.listCustomField(issueDTO.getSystemId(), issueId, issue.getIssueType());
-        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+        //查询自定义字段
+        List<SIssueCustomField>  list   = issueCustomFieldService.listCustomFieldByIssueId(issueId);
+        if(CollectionUtils.isNotEmpty(list)){
+            try{
+                List<IssueCustomFieldDTO> issueCustomFieldDTOList = ReflectUtil.copyProperties4List(list,IssueCustomFieldDTO.class);
+                issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
+            }catch (Exception e){
+
+            }
+        }
 
         //查询工作项和产品关系表并保存
         List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
@@ -1062,8 +1106,8 @@ public class IssueFactory {
      * @Param: * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    public List<IssueDTO> queryUnlinkedIssue(Long projectId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
-        return getIssueDTOS(projectId, issueType, pageNum, pageSize, false, title, parentId);
+    public List<IssueDTO> queryUnlinkedIssue(Long systemId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
+        return getIssueDTOS(systemId, issueType, pageNum, pageSize, false, title, parentId);
     }
 
     /**
@@ -1076,11 +1120,11 @@ public class IssueFactory {
      * @Param: * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    public List<IssueDTO> queryAllIssue(Long projectId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
-        return getIssueDTOS(projectId, issueType, pageNum, pageSize, true, title, parentId);
+    public List<IssueDTO> queryAllIssue(Long systemId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
+        return getIssueDTOS(systemId, issueType, pageNum, pageSize, true, title, parentId);
     }
 
-    public List<IssueDTO> getIssueDTOS(Long projectId, Byte issueType, Integer pageNum, Integer pageSize, boolean isAll, String title, Long parentId) {
+    public List<IssueDTO> getIssueDTOS(Long systemId, Byte issueType, Integer pageNum, Integer pageSize, boolean isAll, String title, Long parentId) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
@@ -1091,12 +1135,12 @@ public class IssueFactory {
         criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
         criteria.andIssueTypeEqualTo(issueType);
 
-        if (null != projectId) {
-            criteria.andProjectIdEqualTo(projectId);
-        }
-
         if (null != parentId) {
             criteria.andParentIdEqualTo(parentId);
+        }
+
+        if(null != systemId){
+            criteria.andSystemIdEqualTo(systemId);
         }
 
         if (StringUtils.isNotBlank(title)) {
@@ -1297,18 +1341,6 @@ public class IssueFactory {
 
     }
 
-    /**
-     * 功能描述 feature变更为/拖到需求分析分析完成状态时，需校验feature是否在版本内
-     *
-     * @param stages
-     * @param featureId
-     * @param epicId
-     * @return boolean
-     * @date 2020/10/27
-     */
-    public boolean checkFeatureInVersion(Long[] stages, Long featureId, Long epicId) {
-        return false;
-    }
 
 
     public Long getEpicIdForPlanDeployDate(String issueId, String bizNum) {
@@ -1367,44 +1399,80 @@ public class IssueFactory {
         return null;
     }
 
-    public void deleteStory(Long storyId, Boolean deleteChild) {
+    public void deleteIssue(Long issueId, Boolean deleteChild) {
         if (null != deleteChild && deleteChild) {
             //解除关联关系
-            disassociate(storyId);
+            disassociate(issueId);
         }
 
         //删除附件
-        issueAttachmentService.deleteAttachmentByIssueId(storyId);
+        issueAttachmentService.deleteAttachmentByIssueId(issueId);
 
         //删除自定义字段
-        issueCustomFieldService.deleteCustomFileByIssueId(storyId);
+        issueCustomFieldService.deleteCustomFileByIssueId(issueId);
 
         //更新历史记录表，状态从有效变为无效
-        createHistory(storyId);
+        createHistory(issueId);
 
         //解除子工作项的关联关系
         Long sprintId = null;
-        Issue storyIssue = issueMapper.selectByPrimaryKey(storyId);
+        Issue storyIssue = issueMapper.selectByPrimaryKey(issueId);
         if (null != storyIssue) {
             Byte issueType = storyIssue.getIssueType();
-            Assert.notNull(issueType, "issueId:[" + storyId + "]工作项类型不能为空");
+            Assert.notNull(issueType, "issueId:[" + issueId + "]工作项类型不能为空");
             if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
                 sprintId = storyIssue.getSprintId();
             }
-            //dealEpicFeatureData(storyIssue);
             //如果不删除子任务  处理子任务
-            this.dealTaskData(storyId, deleteChild);
+            this.dealTaskData(issueId, deleteChild);
         }
-        issueMapper.deleteAllChildRelation(storyId, sprintId);
+        issueMapper.deleteAllChildRelation(issueId, sprintId);
         //更新工作项为失效
-        upateIssue(storyId);
+        upateIssue(issueId);
 
-        commissionService.deleteCommission(storyId);
+        commissionService.deleteCommission(issueId);
 
-        Issue issue = issueMapper.selectByPrimaryKey(storyId);
+        Issue issue = issueMapper.selectByPrimaryKey(issueId);
 
         SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
         IssueMailSendDto issueMailSendDto = new IssueMailSendDto(issue, NumberConstant.TWO, userInfo);
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
+    }
+
+    public List<IssueDTO> queryUnlinkedStory(Long featureId, Integer pageNum, Integer pageSize, String title) {
+        // 不传page信息时查全部数据
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        Issue feature = issueMapper.getIssue(featureId);
+        STeam sTeam = sTeamMapper.queryTeam(feature.getTeamId());
+
+        IssueExample example = new IssueExample();
+        IssueExample.Criteria criteria = example.createCriteria();
+        criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
+        criteria.andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
+        criteria.andSystemIdEqualTo(feature.getSystemId());
+
+        //精益选择没有迭代的故事
+        if(TeamTypeEnum.lean_team.getCode().equals(sTeam.getTeamType())){
+            criteria.andSprintIdIsNull();
+        }else{
+            //敏捷，找对应团队下的所有迭代
+            List<SSprint> sSprintList = sSprintMapper.querySprintByTeamId(sTeam.getTeamId());
+            List<Long> sprintIdList = sSprintList.stream().map(SSprint::getSprintId).collect(Collectors.toList());
+            criteria.andSprintIdIn(sprintIdList);
+        }
+
+        if (StringUtils.isNotBlank(title)) {
+            criteria.andTitleLike(PERCENT_SIGN + title + PERCENT_SIGN);
+        }
+
+        criteria.andParentIdIsNull();
+        example.setOrderByClause("`order` desc,create_time desc");
+        List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
+        List<Long> handlers = new ArrayList<>();
+        setHandlersAndStageName(issueDTOList, handlers, IssueTypeEnum.TYPE_STORY.CODE);
+        setHandlerName(handlers, issueDTOList);
+        return issueDTOList;
     }
 }

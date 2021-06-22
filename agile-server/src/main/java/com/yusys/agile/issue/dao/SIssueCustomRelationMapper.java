@@ -42,27 +42,42 @@ public interface SIssueCustomRelationMapper {
     List<Long> getAppliedByissueType(@Param("issueType") Byte issueType);
     /**
      * 按自定义字段id修改数据有效状态
+     *
+     * @param fieldId 自定义字段id
+     * @param state   数据有效状态值
      * @author zhaofeng
      * @date 2021/6/3 17:23
-     * @param fieldId  自定义字段id
-     * @param state    数据有效状态值
      */
     void updateStateByFieldId(@Param("fieldId") Long fieldId, @Param("state") String state);
+
     /**
      * 按主键id修改数据有效状态
-     * @author zhaofeng
-     * @date 2021/6/9 15:17
+     *
      * @param id    主键
      * @param state 数据有效状态值
+     * @author zhaofeng
+     * @date 2021/6/9 15:17
      */
     void updateStateById(@Param("id") Long id, @Param("state") String state);
+
     /**
      * 按 issue_type 和 field_id 查询当前系统的关系
-     * @author zhaofeng
-     * @date 2021/6/11 14:02
+     *
      * @param issueType
      * @param id
      * @param fieldId
+     * @author zhaofeng
+     * @date 2021/6/11 14:02
      */
     SIssueCustomRelation selectByIssueTypeAndFieldId(@Param("issueType") Byte issueType, @Param("fieldId") Long fieldId, @Param("systemId") Long systemId);
+
+    /**
+     * 查询是否必填
+     *
+     * @param issueType 需求类型
+     * @param fieldId   字段id
+     * @param systemId  系统标识
+     * @return {@link String}
+     */
+    String queryRequired(@Param("issueType") Byte issueType, @Param("fieldId") Long fieldId, @Param("systemId") Long systemId);
 }

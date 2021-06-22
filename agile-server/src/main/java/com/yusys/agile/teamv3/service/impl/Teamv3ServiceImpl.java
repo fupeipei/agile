@@ -7,14 +7,12 @@ import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
-import com.yusys.agile.team.dto.TeamListDTO;
-import com.yusys.agile.team.dto.TeamQueryDTO;
-import com.yusys.agile.team.dto.TeamSystemDTO;
-import com.yusys.agile.team.dto.TeamUserDTO;
+import com.yusys.agile.team.dto.*;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamExample;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
@@ -86,6 +84,25 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         rest = buildResultList(rest);
         return rest;
     }
+
+    @Override
+    public List<TeamListDTO> listAllTeam(TeamQueryDTO dto, SecurityDTO security) {
+        //构建查询参数
+        HashMap<String, Object> params = buildQueryParamsForAll(dto, security);
+        List<TeamListDTO> rest = sTeamMapper.queryAllTeam(params);
+        //构建返回结果
+        //rest = buildResultList(rest);
+        return rest;
+    }
+
+    @Override
+    public List<STeam> listTeamByIds(List<Long> teamIdList) {
+        STeamExample sTeamExample = new STeamExample();
+        STeamExample.Criteria criteria = sTeamExample.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue()).andTeamIdIn(teamIdList);
+        return sTeamMapper.selectByExample(sTeamExample);
+    }
+
 
     /**
      * 构建返回值
@@ -204,14 +221,14 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         //团队名称或编号
         params.put("team", dto.getTeam());
-        params.put("userId", security.getUserId());
-        params.put("tenantCode", security.getTenantCode());
-        params.put("teamType", dto.getTeamType());
-        // 团队po、sm、lean
-        params.put("po", dto.getPo());
-        params.put("sm", dto.getSm());
-        params.put("lean",dto.getLean());
+        return params;
+    }
 
+    private HashMap<String, Object> buildQueryParamsForAll(TeamQueryDTO dto, SecurityDTO security) {
+        HashMap<String, Object> params = new HashMap<>();
+        List<Long> systemIds = Lists.newArrayList();
+        systemIds.add(dto.getSystemId());
+        params.put("systemIds", systemIds);
         return params;
     }
 
@@ -575,4 +592,23 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     //----------------------------------- 精益团队部分（结束）--------------------------------------
 
+
+    @Override
+    public List<STeam> listTeamByTenantCode(String tenantCode) {
+        STeamExample sTeamExample = new STeamExample();
+        STeamExample.Criteria criteria = sTeamExample.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue());
+        if(Optional.ofNullable(tenantCode).isPresent()){
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
+        return sTeamMapper.selectByExampleWithBLOBs(sTeamExample);
+    }
+
+    @Override
+    public List<TeamListDTO> queryTeams(List<Long> teamIds, String teamName, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<TeamListDTO> sTeams = sTeamMapper.queryTeams(teamIds, teamName);
+        //按ids分别查询团队/系统
+        return  buildResultList(sTeams);
+    }
 }

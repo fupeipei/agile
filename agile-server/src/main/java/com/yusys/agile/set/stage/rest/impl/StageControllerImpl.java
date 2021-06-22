@@ -16,10 +16,13 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 阶段controller实现类
+ *  @Description: 阶段controller实现类
+ *  @author: zhao_yd
+ *  @Date: 2021/6/16 3:04 下午
  *
- * @create 2020-04-10 16:28
  */
+
+
 @RestController
 @RequestMapping("/stage")
 public class StageControllerImpl {
@@ -32,14 +35,19 @@ public class StageControllerImpl {
     @Resource
     private IStageService iStageService;
 
+
     /**
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @description 根据项目id查询阶段列表
+     * 查询阶段信息
+     *
+     * @param stageType
+     * @return
      */
     @GetMapping("/getStageList")
-    public ControllerResponse queryStageList(@RequestParam("stageType")Integer stageType) {
+    public ControllerResponse queryStageList(@RequestParam("stageType")Integer stageType,
+                                             @RequestParam(value = "teamId",required = false) Long teamId,
+                                             @RequestParam(value = "taskType", required = false) Integer taskType) {
         try {
-            List<StageInstance> kanbanStageInstances = iStageService.getStageList(stageType);
+            List<StageInstance> kanbanStageInstances = iStageService.getStages(stageType,teamId,taskType);
             return ControllerResponse.success(kanbanStageInstances);
         } catch (Exception e) {
             return ControllerResponse.fail("阶段列表获取异常");

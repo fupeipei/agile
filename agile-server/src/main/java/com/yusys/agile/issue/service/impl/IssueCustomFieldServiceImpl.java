@@ -77,7 +77,10 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
 
         // 查询实际数据，可能没有
         SIssueCustomFieldExample example = new SIssueCustomFieldExample();
-        example.createCriteria().andFieldIdEqualTo(customFieldDTO.getFieldId()).andIssueIdEqualTo(issueId);
+        example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andFieldIdEqualTo(customFieldDTO.getFieldId())
+                .andIssueIdEqualTo(issueId);
         List<SIssueCustomField> issueCustomFields = issueCustomFieldMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(issueCustomFields)) {
             issueCustomFieldDTO.setDetailId(issueCustomFields.get(0).getExtendId());
@@ -115,21 +118,20 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     public void editCustomFields(List<SIssueCustomField> fieldsAfterEdit) {
         List<SIssueCustomField> addCustomFieldList = Lists.newArrayList();
         for (SIssueCustomField tempIssueCustomField : fieldsAfterEdit) {
-            // 修改
-            if (null != tempIssueCustomField.getExtendId()) {
-                SIssueCustomFieldExample example = new SIssueCustomFieldExample();
-                example.createCriteria().andExtendIdEqualTo(tempIssueCustomField.getExtendId());
-                issueCustomFieldMapper.updateByExampleSelective(tempIssueCustomField, example);
-            } else {
                 // 新增时必须要填写实际值，修改时可以允许把值去掉
-                if (StringUtils.isBlank(tempIssueCustomField.getFieldValue())) {
+            if (StringUtils.isBlank(tempIssueCustomField.getFieldValue())) {
                     continue;
-                }
-                addCustomFieldList.add(tempIssueCustomField);
             }
+            //先删除
+            SIssueCustomFieldExample sIssueCustomFieldExample = new SIssueCustomFieldExample();
+            sIssueCustomFieldExample.createCriteria()
+                    .andStateEqualTo(StateEnum.U.getValue())
+                    .andIssueIdEqualTo(tempIssueCustomField.getIssueId())
+                    .andFieldIdEqualTo(tempIssueCustomField.getFieldId());
+            issueCustomFieldMapper.deleteByExample(sIssueCustomFieldExample);
+            //再新增
+            addCustomFieldList.add(tempIssueCustomField);
         }
-
-        // 新增
         if (CollectionUtils.isNotEmpty(addCustomFieldList)) {
             createBatch(addCustomFieldList);
         }
@@ -159,5 +161,14 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     public void recoveryCustomFileByIssueCustomRelationId(Long issueCustomRelationId) {
         //（修改数据有效状态）
         issueCustomFieldMapper.updateStateByCustomRelationId(issueCustomRelationId, StateEnum.U.getValue());
+    }
+
+    @Override
+    public List<SIssueCustomField> listCustomFieldByIssueId(Long issueId) {
+        SIssueCustomFieldExample sIssueCustomFieldExample = new SIssueCustomFieldExample();
+        sIssueCustomFieldExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andIssueIdEqualTo(issueId);
+        return issueCustomFieldMapper.selectByExample(sIssueCustomFieldExample);
     }
 }

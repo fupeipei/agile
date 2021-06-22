@@ -1,12 +1,11 @@
-package com.yusys.agile.deployRecord.service.impl;
+package com.yusys.agile.deployrecord.service.impl;
 
 import com.alibaba.excel.util.CollectionUtils;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.yusys.agile.deployRecord.service.DeployRecordService;
+import com.yusys.agile.deployrecord.service.DeployRecordService;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
-import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.cicd.feign.api.tools.IDeployCodeLogApi;
 import com.yusys.cicd.feign.api.tools.IToolsChangeApi;
 import com.yusys.cicd.model.tools.dto.TDeployCodeLogDTO;
@@ -38,13 +37,24 @@ public class DeployRecordServiceImpl implements DeployRecordService {
         pageSize = null == pageSize ? 20 : pageSize;
         List<TDeployCodeLogDTO > logDTOS =  Lists.newArrayList();
         List<Long> longList = Lists.newArrayList();
+        List<Long> longListParam = Lists.newArrayList();
+        longListParam.add(issueId);
+
+        //issueType = 2 feature
+        if(IssueTypeEnum.TYPE_FEATURE.CODE.compareTo(issueType)>0){
+            longList = issueService.getIssueIds(longListParam);
+            longListParam = Lists.newArrayList();
+            longListParam.addAll(longList);
+        }
         //issueType = 3 故事
-        if(IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)){
-            longList.addAll(issueService.getIssueIds(issueId));
+        if(IssueTypeEnum.TYPE_STORY.CODE.compareTo(issueType)>0){
+            longList = issueService.getIssueIds(longListParam);
+            longListParam = Lists.newArrayList();
+            longListParam.addAll(longList);
         }
         //issueType = 4 任务
-        if(IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)){
-            longList.add(issueId);
+        if(IssueTypeEnum.TYPE_TASK.CODE.compareTo(issueType)>0){
+            longList = issueService.getIssueIds(longListParam);
         }
         if(CollectionUtils.isEmpty(longList)){
             return pageInfo;

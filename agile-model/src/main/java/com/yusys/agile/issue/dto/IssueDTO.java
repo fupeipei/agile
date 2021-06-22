@@ -3,6 +3,7 @@ package com.yusys.agile.issue.dto;
 import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
 import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -277,5 +278,26 @@ public class IssueDTO {
     private Boolean parent;
 
     private String StoryStatusName;
+
+    /**看板id*/
+    private Long  kanbanId;
+
+    @ApiModelProperty("feature下故事总数")
+    private Integer storyTotalNum;
+
+    @ApiModelProperty("feature下完成故事数")
+    private Integer stroyFinishNum;
+
+    @ApiModelProperty("故事下任务数量(除去缺陷类任务)")
+    private Integer taskNum;
+
+    @ApiModelProperty("故事下任务完成数量(除去缺陷类任务)")
+    private Integer taskFinishNum;
+
+    @ApiModelProperty("故事下缺陷类任务数量")
+    private Integer bugTaskNum;
+
+    @ApiModelProperty("故事下缺陷类任务完成数量")
+    private Integer bugTaskFinishNum;
 
 }

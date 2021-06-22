@@ -104,7 +104,6 @@ public interface IssueService {
      */
     List<IssueListDTO> issueListByIds(String rootIds, Long projectId) throws Exception;
 
-
     Map getOptionList(String filedCodeValue, String filedCode, Map<String, HashMap<String, String>> hashMapMap);
 
     /**
@@ -430,7 +429,7 @@ public interface IssueService {
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      * @date 2020/12/30
      */
-    List<Long> getIssueIds(Long parentId);
+    List<Long> getIssueIds(List<Long> parentId);
 
 
     /**
@@ -457,14 +456,23 @@ public interface IssueService {
     /**
      * 精益看板拖拽卡片
      *
-     * @param issueType
      * @param issueId
      * @param stageId
      * @param laneId
      * @return
      */
-    IssueDTO dragIssueCard(Byte issueType,Long issueId,Long stageId, Long laneId);
+    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId);
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
+    boolean checkIssueState(Long issueId,Long fromStageId, Long fromLaneId);
+
+
+    /**
+     * 汇总任务状态
+     *
+     * @param issueId   任务Id
+     * @param kanbanId   看板Id(可以通过teamId去获取)
+     */
+    void updateTaskParentStatus(Long issueId,Long kanbanId);
 }

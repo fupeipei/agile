@@ -1,5 +1,6 @@
 package com.yusys.agile.leankanban.service;
 
+import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 
 /**
@@ -26,5 +27,14 @@ public interface LeanKanbanService {
      * @return
      */
     SLeanKanbanDTO queryLeanKanbanInfo(Long teamId);
+
+
+    /**
+     * 根据teamId 查询看板简单信息
+     *
+     * @param teamId
+     * @return
+     */
+    SLeanKanban querySimpleLeanKanbanInfo(Long teamId);
 
 }

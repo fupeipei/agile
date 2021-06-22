@@ -30,8 +30,9 @@ public class HeaderFieldServiceTest {
     @Test
     public  void queryHeaderFieldsTest(){
         SecurityDTO securityDTO = new SecurityDTO();
-        Byte category = new Byte("1");
+        Byte category = new Byte("3");
         Byte isFilter = new Byte("1");
+        securityDTO.setSystemId(849300453977526272L);
         securityDTO.setUserId(815897630505963520L);
         headerFieldService.queryHeaderFields(securityDTO, category, isFilter);
         Assert.assertTrue("queryHeaderFieldsTest成功", true);

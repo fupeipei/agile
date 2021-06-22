@@ -1,9 +1,9 @@
-package com.yusys.agile.deployRecord.rest;
+package com.yusys.agile.deployrecord.rest;
 
 
 
 import com.yusys.agile.commit.rest.CommitRecordController;
-import com.yusys.agile.deployRecord.service.DeployRecordService;
+import com.yusys.agile.deployrecord.service.DeployRecordService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

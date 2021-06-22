@@ -139,4 +139,15 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
         return null;
     }
 
+    @Override
+    public SLeanKanban querySimpleLeanKanbanInfo(Long teamId) {
+        SLeanKanbanExample sLeanKanbanExample = new SLeanKanbanExample();
+        sLeanKanbanExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andTeamIdEqualTo(teamId);
+        List<SLeanKanban> sLeanKanbans = leanKanbanMapper.selectByExample(sLeanKanbanExample);
+        if(CollectionUtils.isNotEmpty(sLeanKanbans)){
+            return sLeanKanbans.get(0);
+        }
+        return null;
+    }
+
 }

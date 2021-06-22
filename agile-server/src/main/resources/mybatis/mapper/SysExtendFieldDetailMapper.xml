@@ -445,10 +445,10 @@
         <foreach collection="sysExtendFieldDetails" index="index" item="item" separator="  and exists  " >
           <choose>
             <when test="item.fieldId =='relatedSystem'">
-              (select 1 from req.issue_system_relp isr  where a.issue_id =isr.issue_id and isr.system_id =#{item.value})
+              (select 1 from s_issue_system_relp isr  where a.issue_id =isr.issue_id and isr.system_id =#{item.value})
             </when>
             <otherwise>
-              ( select 1 from req.sys_extend_field_detail  b where a.issue_id  =b.issue_id
+              ( select 1 from s_sys_extend_field_detail  b where a.issue_id  =b.issue_id
               and (b.field_id = #{item.fieldId} and b.`value` like CONCAT('%',#{item.value},'%') ))
             </otherwise>
           </choose>
@@ -494,7 +494,7 @@
     SELECT
     DISTINCT issue_id
     FROM
-    `sys_extend_field_detail` a
+    `s_sys_extend_field_detail` a
     WHERE
     <foreach collection="map" index="key"  item="value" separator="and">
      EXISTS (
@@ -502,7 +502,7 @@
     SELECT
      1
      FROM
-        `sys_extend_field_detail` a1
+        `s_sys_extend_field_detail` a1
     WHERE
         a1.field_id = #{key}
       <if test="key =='responsiblePerson'">

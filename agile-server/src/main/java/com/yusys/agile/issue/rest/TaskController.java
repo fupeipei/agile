@@ -127,18 +127,14 @@ public class TaskController {
     }
 
     @GetMapping("/queryUnlinkedTask")
-    public ControllerResponse queryUnlinkedTask(@RequestHeader(name = "projectId",required = false) Long projectId, @RequestParam("pageNum") Integer pageNum,
-                                                @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "title", required = false) String title,
-                                                @RequestParam(name = "projectId", required = false) Long paramProjectId) {
-        Long finalProjectId = null;
-        if (null != paramProjectId) {
-            finalProjectId = paramProjectId;
-        } else {
-            finalProjectId = projectId;
-        }
+    public ControllerResponse queryUnlinkedTask(@RequestParam("pageNum") Integer pageNum,
+                                                @RequestParam("pageSize") Integer pageSize,
+                                                @RequestParam(value = "issueId",required = false) Long issueId,
+                                                @RequestParam(value = "systemId",required = false) Long systemId,
+                                                @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
-            result = taskService.queryUnlinkedTask(finalProjectId, pageNum, pageSize, title);
+            result = taskService.queryUnlinkedTask(systemId, pageNum, pageSize, title);
         } catch (Exception e) {
             LOGGER.error("查询未关联的任务异常", e);
             return ControllerResponse.fail("查询未关联的任务异常：" + e.getMessage());

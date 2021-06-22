@@ -4,6 +4,7 @@ import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.StageInstance;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *  @Description: 阶段service
@@ -13,6 +14,16 @@ import java.util.List;
  */
 
 public interface IStageService {
+
+
+    /**
+     * 根据查询类型和团队id查询阶段信息
+     *
+     * @param stageType
+     * @param teamId
+     * @return
+     */
+    List<StageInstance> getStages(Integer stageType,Long teamId,Integer taskType) throws Exception;
 
     /**
      * 敏捷看板根据工作项类型获取阶段信息
@@ -46,4 +57,14 @@ public interface IStageService {
      * @return
      */
     List<KanbanStageInstance> getSecondStageList(Long stageParentId,Long kanbanId);
+
+
+    /**
+     * 根据团队Id 获取阶段信息
+     *
+     * @param teamId
+     * @return
+     */
+    Map<Long,String> getStageMapByTeamId(Long teamId);
+
 }

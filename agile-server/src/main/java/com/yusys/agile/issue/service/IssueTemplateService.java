@@ -18,7 +18,7 @@ public interface IssueTemplateService {
      */
     void initIssueTemplate(Long systemId);
 
-    Map query(Byte issueType, SecurityDTO securityDTO);
+    Map query(Byte issueType, Long  finallySystemId);
 
     Integer editIssueCustomRelation(SecurityDTO securityDTO, IssueTemplate issueTemplate);
 

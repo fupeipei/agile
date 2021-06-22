@@ -136,7 +136,7 @@ public class TaskServiceImpl implements TaskService {
             //校验权限
             this.checkAuth(issueDTO, issue, "delete","无法删除任务");
         }
-        issueFactory.deleteIssue(taskId);
+        issueFactory.deleteIssue(taskId,deleteChild);
 
         int i = this.updateStoryLaneIdByTaskCount(issue);
         log.info("deleteTask_updateStoryStageIdByTaskCount=" + i);
@@ -266,7 +266,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public IssueDTO queryTask(Long taskId) {
-        return issueFactory.queryIssue(taskId, null);
+        Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+        return issueFactory.queryIssue(taskId, systemId);
     }
 
     @Override
@@ -281,13 +282,6 @@ public class TaskServiceImpl implements TaskService {
             stages[0] = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
             stages[1] = TaskStatusEnum.TYPE_ADD_STATE.CODE;
         }
-        //创建用户故事下任务默认放在开发中的就绪阶段、如果关联迭代信息则放在进行中阶段（todo 阶段优化）
-            /*List<StageInstance> stageInstances = stageService.getSecondStageListByParentId(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-            if (CollectionUtils.isNotEmpty(stageInstances)) {
-                Long sprintId = issueDTO.getSprintId();
-                StageInstance stageInstance = Optional.ofNullable(sprintId).isPresent() ? stageInstances.get(1) : stageInstances.get(0);
-                stages[1] = stageInstance.getStageId();
-            }*/
         issueDTO.setStages(stages);
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
@@ -382,8 +376,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<IssueDTO> queryUnlinkedTask(Long projectId, Integer pageNum, Integer pageSize, String title) {
-        return issueFactory.queryUnlinkedIssue(projectId, IssueTypeEnum.TYPE_TASK.CODE, pageNum, pageSize, title, null);
+    public List<IssueDTO> queryUnlinkedTask(Long systemId, Integer pageNum, Integer pageSize, String title) {
+        return issueFactory.queryUnlinkedIssue(systemId, IssueTypeEnum.TYPE_TASK.CODE, pageNum, pageSize, title, null);
     }
 
     @Override
@@ -599,6 +593,12 @@ public class TaskServiceImpl implements TaskService {
         }
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
         log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
+
+        //如果故事更新，则调用向上更新方法。
+        if(i>0){
+            issueUpRegularFactory.commonIssueUpRegular(storyId);
+        }
+
         return i;
     }
 

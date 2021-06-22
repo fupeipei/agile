@@ -2,13 +2,10 @@ package com.yusys.agile.teamv3.service;
 
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
-import com.yusys.agile.team.dto.TeamSystemDTO;
 import com.yusys.agile.teamv3.domain.STeam;
-import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
-import com.yusys.portal.model.facade.entity.SsoSystem;
 
 import java.util.List;
 
@@ -96,4 +93,36 @@ public interface Teamv3Service {
      * @param teamId
      */
     void deleteTeamForLean(Long teamId);
+    /**
+     * 租户下的团队列表
+     * @author wangsh17
+     * @date 2021/6/17 11:02
+     * @param tenantCode
+     * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
+     */
+    List<STeam> listTeamByTenantCode(String tenantCode);
+
+    /**
+     *功能描述 查询系统下所有团队
+     * @author shenfeng
+     * @date 2021/6/16
+      * @param dto
+     * @param security
+     * @return java.util.List<com.yusys.agile.team.dto.TeamListDTO>
+     */
+    List<TeamListDTO> listAllTeam(TeamQueryDTO dto, SecurityDTO security);
+
+    /**
+     *功能描述 根据teamId列表获取团队信息
+     * @author shenfeng
+     * @date 2021/6/17
+      * @param teamIdList
+     * @return java.util.List<com.yusys.agile.teamv3.domain.STeam>
+     */
+    List<STeam> listTeamByIds(List<Long> teamIdList);
+
+
+    List<TeamListDTO> queryTeams(List<Long> teamIds,String teamName,Integer pageNum, Integer pageSize);
+
+
 }

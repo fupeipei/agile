@@ -14,6 +14,7 @@ import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.util.date.TimeUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -116,9 +117,10 @@ public class TaskServiceTest {
 
     @Test
     public void editTask() {
-        issueDTO.setIssueId(847116505917378560L);
-        Long[] stages = {1L,101L};
+        issueDTO.setIssueId(847878567016625032L);
+        Long[] stages = {4L,107L};
         issueDTO.setStages(stages);
+        issueDTO.setSystemId(856603574286798848L);
         taskService.editTask(issueDTO,securityDTO);
         Assert.assertTrue("editTask成功",true);
     }
@@ -323,6 +325,43 @@ public class TaskServiceTest {
         StoryCreatePrepInfoDTO taskPreInfo = taskService.getTaskPreInfo(userName, page, pageSize, systemId, storyId, createType);
         Assert.assertNotNull("查询成功",taskPreInfo);
     }
+
+    @Test
+    public void getCurrentTime(){
+        Date date = TimeUtil.parseDate("2021-06-15 13:40:50");
+        log.info(date+"");
+    }
+
+   /* @Test
+    public void getgetSystemDateTime(){
+        Date date = TimeUtil.getDbDateTime();
+        log.info(date+"");
+        log.info((new Date())+"");
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        date = TimeUtil.getDbDateTime();
+        log.info(date+"");
+        log.info((new Date())+"");
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        date = TimeUtil.getDbDateTime();
+        log.info(date+"");
+        log.info((new Date())+"");
+    }*/
+
+
+
+
 
 
 }
