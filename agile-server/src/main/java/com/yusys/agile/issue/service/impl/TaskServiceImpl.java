@@ -17,6 +17,7 @@ import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.PageInfoDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -125,6 +126,8 @@ public class TaskServiceImpl implements TaskService {
     private SSprintUserHourMapper sSprintUserHourMapper;
     @Autowired
     private STeamMemberMapper sTeamMemberMapper;
+    @Autowired
+    private IssueService issueService;
 
 
     @Override
@@ -138,8 +141,13 @@ public class TaskServiceImpl implements TaskService {
         }
         issueFactory.deleteIssue(taskId,deleteChild);
 
-        int i = this.updateStoryLaneIdByTaskCount(issue);
-        log.info("deleteTask_updateStoryStageIdByTaskCount=" + i);
+        Long kanbanId = issue.getKanbanId();
+        if(Optional.ofNullable(kanbanId).isPresent()){
+            issueService.updateTaskParentStatus(issue.getIssueId(),kanbanId);
+        }else {
+            int i = this.updateStoryLaneIdByTaskCount(issue);
+            log.info("deleteTask_updateStoryStageIdByTaskCount=" + i);
+        }
     }
 
     @Override
@@ -209,8 +217,15 @@ public class TaskServiceImpl implements TaskService {
             throw new BusinessException("更新任务失败！");
         }
 
-        int i = this.updateStoryLaneIdByTaskCount(task);
-        log.info("editTask_updateStoryStageIdByTaskCound=" + i);
+        Long kanbanId = issueDTO.getKanbanId();
+        if(Optional.ofNullable(kanbanId).isPresent()){
+            issueService.updateTaskParentStatus(issueDTO.getIssueId(),kanbanId);
+        }else {
+            int i = this.updateStoryLaneIdByTaskCount(task);
+            log.info("editTask_updateStoryStageIdByTaskCound=" + i);
+        }
+
+
 
         // 拖到完成
         /*if (null != task && TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(issueDTO.getStageId()) && !TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(oldTask.getStageId())) {
@@ -286,8 +301,13 @@ public class TaskServiceImpl implements TaskService {
         Long taskId = issueFactory.createIssue(issueDTO, "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
 
-        int i = this.updateStoryLaneIdByTaskCount(task);
-        log.info("createTask_updateStoryStageIdByTaskCount=" + i);
+        Long kanbanId = task.getKanbanId();
+        if(Optional.ofNullable(kanbanId).isPresent()){
+            issueService.updateTaskParentStatus(taskId,kanbanId);
+        }else {
+            int i = this.updateStoryLaneIdByTaskCount(task);
+            log.info("createTask_updateStoryStageIdByTaskCount=" + i);
+        }
 
         return taskId;
     }
