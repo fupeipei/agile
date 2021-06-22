@@ -43,9 +43,6 @@ import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
 import com.yusys.agile.sysextendfield.util.SytExtendFieldDetailFactory;
 import com.yusys.agile.review.dto.StoryCheckResultDTO;
 import com.yusys.agile.review.service.ReviewService;
-import com.yusys.agile.servicemanager.domain.ServiceManageIssue;
-import com.yusys.agile.servicemanager.dto.CustomizePageInfoDTO;
-import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
@@ -102,7 +99,6 @@ import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -464,12 +460,7 @@ public class IssueServiceImpl implements IssueService {
 
 
     @Override
-    public List<Issue> getIssueByBizNums(List<String> bizNums, Byte issueType) {
-        return issueMapper.getIssueByBizNums(bizNums, issueType);
-    }
-
-    @Override
-    public com.yusys.agile.issue.dto.IssueDTO selectIssueAndExtends(Long bizBacklogId) {
+    public IssueDTO selectIssueAndExtends(Long bizBacklogId) {
         Issue issue = issueMapper.selectByPrimaryKey(bizBacklogId);
         IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
         List<Long> issueIdList = Lists.newArrayList();
@@ -670,10 +661,6 @@ public class IssueServiceImpl implements IssueService {
             map.put("id", issue.getUpdateUid());
             issueListDTO.setUpdateUid(map);
         }
-        // fixedName
-        // testName
-        //Map<Long, List<KanbanStageInstance>> kanbanStageInstanceMap = mapMap.get("kanbanStageInstanceMap");
-
         // stageId
         //当阶段id不在 FirstStageEnum (1-8) 之间时会导致 "查询Issue异常：null"
         if (issue.getStageId() != null) {
@@ -1785,7 +1772,7 @@ public class IssueServiceImpl implements IssueService {
      */
     @Override
     public Map issueMap(String noLogin) {
-        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        String tenantCode;
         tenantCode = "1";
         Map<String, Map> mapResult = new HashMap<>();
         //Issue
@@ -2349,49 +2336,6 @@ public class IssueServiceImpl implements IssueService {
         return name;
     }
 
-    private com.yusys.agile.issue.dto.PanoramasEpicDTO generatePanoramasEpic(com.yusys.agile.issue.dto.PanoramasEpicDTO panoramasEpicDTO, com.yusys.agile.issue.dto.IssueListDTO issueListDTO) {
-        List<String> extendFieldIdList = Lists.newArrayList("bizNum", "formalReqCode", "responsiblePerson", "approvalResult", "approvalStatus");
-        List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetailList(issueListDTO.getIssueId(), extendFieldIdList);
-        if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
-            for (SysExtendFieldDetail sysExtendFieldDetail : sysExtendFieldDetailList) {
-                if (VersionConstants.SysExtendFiledConstant.BIZNUM.equals(sysExtendFieldDetail.getFieldId())) {
-                    panoramasEpicDTO.setBizNum(sysExtendFieldDetail.getValue());
-                } else if (VersionConstants.SysExtendFiledConstant.FORMALREQCODE.equals(sysExtendFieldDetail.getFieldId())) {
-                    panoramasEpicDTO.setFormalReqCode(sysExtendFieldDetail.getValue());
-                } else if (VersionConstants.SysExtendFiledConstant.RESPONSIBLEPERSON.equals(sysExtendFieldDetail.getFieldId())) {
-                    panoramasEpicDTO.setResponsiblePerson(sysExtendFieldDetail.getValue());
-                } else if (VersionConstants.SysExtendFiledConstant.APPROVAL_RESULT.equals(sysExtendFieldDetail.getFieldId())) {
-                    panoramasEpicDTO.setApprovalResult(sysExtendFieldDetail.getValue());
-                } else if (VersionConstants.SysExtendFiledConstant.APPROVAL_STATUS.equals(sysExtendFieldDetail.getFieldId())) {
-                    panoramasEpicDTO.setApprovalStatusDesc(IssueApproveStatusEnum.getDesc(sysExtendFieldDetail.getValue()));
-                }
-            }
-        }
-        panoramasEpicDTO.setEpicSatus(getStageName(issueListDTO.getStageId()));
-        String handlerName = getHandlerName(issueListDTO.getHandler());
-        panoramasEpicDTO.setHandler(handlerName);
-        panoramasEpicDTO.setTitle(issueListDTO.getTitle());
-        panoramasEpicDTO.setIssueId(issueListDTO.getIssueId());
-        //组织版本名称
-        setVersionName(panoramasEpicDTO, issueListDTO.getVersionId());
-        Map stageMap = issueListDTO.getStageId();
-        Long stageId = (Long) stageMap.get("id");
-        if (StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(stageId)) {
-            panoramasEpicDTO.setFinish("已完成");
-        } else {
-            panoramasEpicDTO.setFinish("未完成");
-        }
-
-        if (StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(stageId)) {
-            panoramasEpicDTO.setRelease("已发布");
-        } else if (StageConstant.FirstStageEnum.ONLINE_STAGE.getValue().equals(stageId)) {
-            panoramasEpicDTO.setRelease("待发布");
-        } else {
-            panoramasEpicDTO.setRelease("未发布");
-        }
-
-        return panoramasEpicDTO;
-    }
 
     private void setVersionName(com.yusys.agile.issue.dto.PanoramasEpicDTO panoramasEpicDTO, Long versionId) {
         VersionManagerDTO versionManagerDTO = versionManagerService.getVersionInfo(versionId);
@@ -2529,120 +2473,6 @@ public class IssueServiceImpl implements IssueService {
             issueIdList.addAll(issueIds);
         }
         return issueIdList;
-    }
-
-    /**
-     * @param serviceManageIssueDTO
-     * @return
-     * @description 查询服务治理工作项数据
-     * @date 2020/10/27
-     */
-    @Override
-    public CustomizePageInfoDTO queryIssueList(ServiceManageIssueDTO serviceManageIssueDTO) {
-        int page = serviceManageIssueDTO.getPage();
-        int pageSize = serviceManageIssueDTO.getPageSize();
-        if (pageSize > 1000) {
-            throw new ServiceManageExceptionDTO("每页展示的记录数上限为1000");
-        }
-        CustomizePageInfoDTO pageInfo = new CustomizePageInfoDTO(page, pageSize);
-        long total = selectServiceManageIssueTotal(serviceManageIssueDTO);
-        pageInfo.setTotal(total);
-        int startIndex = (page - 1) * pageSize;
-        List<Issue> issues = issueMapper.selectServiceManageIssueList(startIndex, serviceManageIssueDTO);
-        List<ServiceManageIssue> serviceManageIssueList = dealServiceManageIssueList(issues);
-        pageInfo.setPageNum(page);
-        pageInfo.setPageSize(pageSize);
-        if (CollectionUtils.isNotEmpty(serviceManageIssueList)) {
-            pageInfo.setSize(serviceManageIssueList.size());
-            pageInfo.setList(serviceManageIssueList);
-        }
-        return pageInfo;
-    }
-
-    /**
-     * @param serviceManageIssueDTO
-     * @return
-     * @description 查询服务治理工作项记录总数
-     * @date 2020/10/28
-     */
-    private long selectServiceManageIssueTotal(ServiceManageIssueDTO serviceManageIssueDTO) {
-        IssueExample example = new IssueExample();
-        IssueExample.Criteria criteria = example.createCriteria();
-        //criteria.andStateEqualTo(StateEnum.U.getValue()).andIssueTypeEqualTo(IssueTypeEnum.TYPE_EPIC.CODE).andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_FALSE.CODE);
-        criteria.andStateEqualTo(StateEnum.U.getValue()).andIssueTypeEqualTo(IssueTypeEnum.TYPE_EPIC.CODE);
-        Date createTimeBegin = serviceManageIssueDTO.getCreateTimeBegin();
-        if (null != createTimeBegin) {
-            criteria.andCreateTimeGreaterThanOrEqualTo(createTimeBegin);
-        }
-        Date createTimeEnd = serviceManageIssueDTO.getCreateTimeEnd();
-        if (null != createTimeEnd) {
-            criteria.andCreateTimeLessThanOrEqualTo(createTimeEnd);
-        }
-        Date updateTimeBegin = serviceManageIssueDTO.getUpdateTimeBegin();
-        if (null != updateTimeBegin) {
-            criteria.andUpdateTimeGreaterThanOrEqualTo(updateTimeBegin);
-        }
-        Date updateTimeEnd = serviceManageIssueDTO.getUpdateTimeEnd();
-        if (null != updateTimeEnd) {
-            criteria.andUpdateTimeLessThanOrEqualTo(updateTimeEnd);
-        }
-        long total = issueMapper.countByExample(example);
-        return total;
-    }
-
-    /**
-     * @param issues
-     * @return
-     * @description 处理服务治理工作项数据
-     * @date 2020/10/27
-     */
-    private List<ServiceManageIssue> dealServiceManageIssueList(List<Issue> issues) {
-        List<ServiceManageIssue> serviceManageIssueList = Lists.newArrayList();
-        if (CollectionUtils.isNotEmpty(issues)) {
-            List<Long> issueIdList = Lists.newArrayList();
-            for (Issue issue : issues) {
-                Long issueId = issue.getIssueId();
-                issueIdList.add(issueId);
-                ServiceManageIssue serviceManageIssue = new ServiceManageIssue();
-                serviceManageIssue.setIssueId(issueId);
-                serviceManageIssue.setBizName(issue.getTitle());
-                serviceManageIssue.setBizStatus(issue.getStageId());
-                Date createTime = issue.getCreateTime();
-                if (null != createTime) {
-                    serviceManageIssue.setCreateTime(DateTools.parseToString(createTime, DateTools.YYYY_MM_DD));
-                }
-                serviceManageIssueList.add(serviceManageIssue);
-            }
-            List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getIssueExtendDetailList(issueIdList);
-            if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
-                Map<Long, List<SysExtendFieldDetail>> sysExtendFieldDetailMap = sysExtendFieldDetailList.stream().collect(Collectors.groupingBy(SysExtendFieldDetail::getIssueId));
-                for (ServiceManageIssue serviceManageIssue : serviceManageIssueList) {
-                    List<SysExtendFieldDetail> sysExtendFieldDetails = sysExtendFieldDetailMap.get(serviceManageIssue.getIssueId());
-                    if (CollectionUtils.isNotEmpty(sysExtendFieldDetails)) {
-                        for (SysExtendFieldDetail detail : sysExtendFieldDetails) {
-                            String fieldId = detail.getFieldId();
-                            if ("bizNum".equals(fieldId)) {
-                                serviceManageIssue.setBizNum(detail.getValue());
-                            } else if ("formalReqCode".equals(fieldId)) {
-                                serviceManageIssue.setPartaReqnum(detail.getValue());
-                            } else if ("responsiblePerson".equals(fieldId)) {
-                                serviceManageIssue.setBizRes(detail.getValue());
-                            } else if ("reqScheduling".equals(fieldId)) {
-                                serviceManageIssue.setBizScheduling(detail.getValue());
-                            } else if ("askLineTime".equals(fieldId)) {
-                                String askLineTime = detail.getValue();
-                                if (StringUtils.isNotBlank(askLineTime)) {
-                                    serviceManageIssue.setAskLineTime(askLineTime);
-                                }
-                            } else if ("responsiblePersonEmail".equals(fieldId)) {
-                                serviceManageIssue.setBizResEmail(detail.getValue());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return serviceManageIssueList;
     }
 
     /**
@@ -2796,107 +2626,12 @@ public class IssueServiceImpl implements IssueService {
         return mapT;
     }
 
-    @Override
-    public List<String> queryPlanDeployDate(String issueId) {
-        List<String> planDeployDateList = Lists.newArrayList();
-        if (issueId.indexOf("BOSS") != -1) {
-            planDeployDateList = sysExtendFieldDetailService.getPlanDeployDateListByFormalReqCode(issueId);
-            if (CollectionUtils.isEmpty(planDeployDateList)) {
-                throw new BusinessException("异常数据，没有部署批次[planDeployDate]字段！");
-            }
-        } else {
-            Long epicId = issueFactory.getEpicIdForPlanDeployDate(issueId, null);
-            SysExtendFieldDetail sysExtendFieldDetail = sysExtendFieldDetailService.getSysExtendFieldDetail(epicId, "planDeployDate");
-            if (!Optional.ofNullable(sysExtendFieldDetail).isPresent()) {
-                throw new BusinessException("异常数据，没有部署批次[planDeployDate]字段！");
-            }
-            planDeployDateList.add(sysExtendFieldDetail.getValue());
-        }
-        return planDeployDateList;
-    }
-
-    @Override
-    public List<String> queryBizNumList(String issueId) {
-        List<String> bizNumList = Lists.newArrayList();
-        if (issueId.indexOf("BOSS") != -1) {
-            bizNumList = sysExtendFieldDetailService.getBizNumListByFormalReqCode(issueId);
-        } else {
-            Long epicId = issueFactory.getEpicIdForPlanDeployDate(issueId, null);
-            SysExtendFieldDetail sysExtendFieldDetail = sysExtendFieldDetailService.getSysExtendFieldDetail(epicId, "bizNum");
-            bizNumList.add(sysExtendFieldDetail.getValue());
-        }
-        return bizNumList;
-    }
 
     @Override
     public List<Long> getNotCanceledAndOnlineIssueByIssueIdList(List<Long> issueIdList) {
         return issueMapper.getNotCanceledAndOnlineIssueByIssueIdList(issueIdList);
     }
 
-    /**
-     * @param issueId
-     * @param issueType
-     * @param actualOnlineTime
-     * @description 临时过渡接口后期删除
-     * @date 2021/2/20
-     */
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void updateIssueLaunchStateWithDate(Long issueId, Byte issueType, String actualOnlineTime) {
-        Issue issue = issueMapper.selectByPrimaryKey(issueId);
-        if (null == issue) {
-            throw new RuntimeException("工作项:[" + issueId + "]不存在");
-        }
-        List<Issue> issueHistoryList = Lists.newArrayList();
-        issueHistoryList.add(issue);
-        if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(issueType)) {
-            List<Long> featureIds = Lists.newArrayList(issueId);
-            loggr.info("update feature online state param featureId:{}", issueId);
-            //更新分支和分支下的故事状态
-            List<Issue> storyList = getChildIssueList(issueId);
-            issueHistoryList.addAll(storyList);
-            List<Long> storyIds = assembleIssueIdList(storyList);
-            loggr.info("update feature online state param storyIds:{}", storyIds);
-            if (CollectionUtils.isNotEmpty(storyIds)) {
-                featureIds.addAll(storyIds);
-            }
-            int row = issueMapper.batchUpdateIssueStageStatus(featureIds, StageConstant.FirstStageEnum.FINISH_STAGE.getValue(), null);
-            loggr.info("update feature online state param featureId:{},return affect row:{}", issueId, row);
-            featureIds.clear();
-        } else if (IssueTypeEnum.TYPE_EPIC.CODE.equals(issueType)) {
-            //需求
-            List<Long> epicIds = Lists.newArrayList(issueId);
-            loggr.info("update epic online state param epicId:{}", issueId);
-            //更新需求实际上线日期
-            sysExtendFieldDetailService.batchUpdateEpicActualOnlineTime(epicIds, actualOnlineTime);
-            List<Issue> featureList = getChildIssueList(issueId);
-            if (CollectionUtils.isNotEmpty(featureList)) {
-                issueHistoryList.addAll(featureList);
-                List<Long> featureIds = Lists.newArrayList();
-                for (Issue feature : featureList) {
-                    Long featureIssueId = feature.getIssueId();
-                    featureIds.add(featureIssueId);
-                }
-                loggr.info("update epic online state param featureIds:{}", featureIds);
-                IssueExample example = new IssueExample();
-                example.createCriteria().andParentIdIn(featureIds).andStateEqualTo(StateEnum.U.getValue());
-                List<Issue> storyList = issueMapper.selectByExample(example);
-                List<Long> storyIds = assembleIssueIdList(storyList);
-                if (CollectionUtils.isNotEmpty(storyIds)) {
-                    issueHistoryList.addAll(storyList);
-                    epicIds.addAll(storyIds);
-                    loggr.info("update epic online state param storyIds:{}", storyIds);
-                }
-                epicIds.addAll(featureIds);
-                loggr.info("update epic online state param featureIds:{}", featureIds);
-                featureIds.clear();
-            }
-            int row = issueMapper.batchUpdateIssueStageStatus(epicIds, StageConstant.FirstStageEnum.FINISH_STAGE.getValue(), null);
-            loggr.info("update epic online state param epicId:{},return affect row:{}", issueId, row);
-            epicIds.clear();
-        }
-        dealStateHistory(issueHistoryList);
-    }
 
     /**
      * @param issueHistoryList
@@ -2922,46 +2657,6 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public List<Long> getNotOnlineEpic() {
         return issueMapper.getNotOnlineEpic();
-    }
-
-    @Override
-    public List<Long> noReqSchedulingEpicIdList() {
-        return issueMapper.noReqSchedulingEpicIdList();
-    }
-
-    @Override
-    public List<String> getAllTaskFunTester(Long epicId) {
-        return issueMapper.getAllTaskFunTester(epicId);
-    }
-
-    @Override
-    public void noDeployChangeStage() {
-        List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getNoDeployAndToBePublish(VersionConstants.SysExtendFiledConstant.PLANSTATES
-                , PlanStatesEnum.NO_NEED_DEPLOY.CODE);
-        if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
-            List<Long> epicIdList = sysExtendFieldDetailList.stream().map(SysExtendFieldDetail::getIssueId).collect(Collectors.toList());
-            //更新epic完成
-            issueMapper.batchUpdateIssueStageStatus(epicIdList, StageConstant.FirstStageEnum.FINISH_STAGE.getValue(), null);
-            //将需求实际上线时间改为进入待发布的时间
-            IssueHistoryRecordExample example;
-            for (Long epicId : epicIdList) {
-                example = new IssueHistoryRecordExample();
-                example.createCriteria().andIssueIdEqualTo(epicId).andOperationFieldEqualTo("阶段id").andNewValueEqualTo("6-9");
-                example.setOrderByClause("create_time desc");
-                List<IssueHistoryRecord> issueHistoryRecordList = issueHistoryRecordMapper.selectByExample(example);
-                if (CollectionUtils.isNotEmpty(issueHistoryRecordList)) {
-                    IssueHistoryRecord issueHistoryRecord = issueHistoryRecordList.get(0);
-                    sytExtendFieldDetailFactory.insertOrUpdateIssueExtendFieldDetail(epicId,
-                            VersionConstants.SysExtendFiledConstant.ACTUAL_ONLINE_TIME, VersionConstants.SysExtendFiledConstant.ACTUAL_ONLINE_TIME_NAME
-                            , DateUtil.getCurrentTime());
-                }
-            }
-            insertHistoryRecord(epicIdList);
-            //更新feature完成
-            List<Long> featureIdList = updateChildrenStage(epicIdList);
-            //更新story完成
-            updateChildrenStage(featureIdList);
-        }
     }
 
     @Override
