@@ -3242,14 +3242,14 @@ public class IssueServiceImpl implements IssueService {
                     Long stageId = first.getStageId();
                     Long laneId = first.getLaneId();
                     if (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(stageId) &&
-                            !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.equals(laneId)) {
+                            !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(laneId)) {
                         storyLaneId = LaneKanbanStageConstant.DevStageEnum.ONGOING.getValue();
                         storyStageId = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
                     }
 
                     //如果所有故事都到已完成，根据测试任务去计算故事状态
                     if (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(stageId) &&
-                            LaneKanbanStageConstant.DevStageEnum.DEVFINISH.equals(laneId)) {
+                            LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(laneId)) {
 
                         //获取第二个状态的工作项
                         Issue second = null;
@@ -3268,7 +3268,7 @@ public class IssueServiceImpl implements IssueService {
                         } else {
                             Long secondLaneId = second.getLaneId();
                             //如果第二个状态为测试完成，故事为测试完成
-                            if (LaneKanbanStageConstant.TestStageEnum.TESTFINISH.equals(secondLaneId)) {
+                            if (LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue().equals(secondLaneId)) {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
                             } else {
