@@ -2932,7 +2932,14 @@
                 where
                     ksi.stage_id = su.stage_id
                     and ksi.state ='U'
-                    and ksi.kanban_id=#{kanbanId}
+                <choose>
+                    <when test="kanbanId != null and kanbanId != ''">
+                        and ksi.kanban_id=#{kanbanId}
+                    </when>
+                    <otherwise>
+                        AND ksi.kanban_id is null
+                    </otherwise>
+                </choose>
             ) as orderId
      FROM
        s_issue su
