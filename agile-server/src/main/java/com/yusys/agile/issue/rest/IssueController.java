@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.rest;
 
+import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
@@ -17,6 +18,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -37,6 +39,8 @@ public class IssueController {
 
     @Resource
     private StoryService storyService;
+    @Resource
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 功能描述  初始化Issue列表
@@ -70,6 +74,7 @@ public class IssueController {
     public ControllerResponse createRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
             issueService.createRelation(parentId, issueId);
+            rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
         } catch (Exception e) {
             LOGGER.error("建立关联失败：{}", e);
             return ControllerResponse.fail("建立关联失败：" + e.getMessage());
@@ -88,6 +93,7 @@ public class IssueController {
     public ControllerResponse deleteRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
             issueService.deleteRelation(parentId, issueId);
+            rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
         } catch (Exception e) {
             LOGGER.error("删除关联失败：{}", e);
             return ControllerResponse.fail("删除关联失败：" + e.getMessage());
@@ -169,6 +175,7 @@ public class IssueController {
         try {
             storyService.checkSprintParam(issueDTO.getIssueId(),issueDTO.getSprintId());
             issueService.createBatchRelation(issueDTO.getParentId(), issueDTO.getListIssueIds(), securityDTO.getUserId());
+            rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueDTO.getListIssueIds().get(0));
         } catch (Exception e) {
             LOGGER.error("批量建立关联失败：{}", e);
             return ControllerResponse.fail("批量建立关联失败：" + e.getMessage());
