@@ -2938,6 +2938,7 @@
                     </when>
                     <otherwise>
                         AND ksi.kanban_id is null
+                        and ksi.stage_type = 1
                     </otherwise>
                 </choose>
             ) as orderId

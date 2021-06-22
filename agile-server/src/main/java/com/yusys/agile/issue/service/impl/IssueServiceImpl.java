@@ -3139,7 +3139,10 @@ public class IssueServiceImpl implements IssueService {
 
         issue.setStageId(stageId);
         issue.setLaneId(laneId);
-        issueMapper.updateByPrimaryKeySelective(issue);
+        if(StageConstant.FirstStageEnum.READY_STAGE.equals(stageId)){
+            throw new BusinessException("工作项不能拖拽到就绪阶段!");
+        }
+        issueMapper.updateByPrimaryKey(issue);
 
         //更新该工作项对应的数据
         Byte type = issue.getIssueType();
@@ -3274,13 +3277,21 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public boolean checkIssueState(Long issueId, Long fromStageId, Long fromLaneId) {
-
+        loggr.info("校验卡片状态入参: issueId{},fromStageId:{},fromLaneId:{}",issueId,fromStageId,fromLaneId);
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
+
         Long laneId = issue.getLaneId();
         Long stageId = issue.getStageId();
+        loggr.info("数据库issue状态: laneId{},stageId{}",laneId,stageId);
+        if (fromStageId == stageId ) {
+            if(laneId != null && laneId == fromLaneId){
+                return true;
+            }
 
-        if (fromStageId == stageId && laneId == fromLaneId) {
-            return true;
+            if(fromLaneId == null){
+                return true;
+            }
+
         }
         return false;
     }
