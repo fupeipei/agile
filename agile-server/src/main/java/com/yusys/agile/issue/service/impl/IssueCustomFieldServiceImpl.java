@@ -3,7 +3,6 @@ package com.yusys.agile.issue.service.impl;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.dao.SIssueCustomFieldMapper;
-import com.yusys.agile.issue.domain.IssueTemplateExample;
 import com.yusys.agile.issue.domain.SIssueCustomField;
 import com.yusys.agile.issue.domain.SIssueCustomFieldExample;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
@@ -162,5 +161,14 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     public void recoveryCustomFileByIssueCustomRelationId(Long issueCustomRelationId) {
         //（修改数据有效状态）
         issueCustomFieldMapper.updateStateByCustomRelationId(issueCustomRelationId, StateEnum.U.getValue());
+    }
+
+    @Override
+    public List<SIssueCustomField> listCustomFieldByIssueId(Long issueId) {
+        SIssueCustomFieldExample sIssueCustomFieldExample = new SIssueCustomFieldExample();
+        sIssueCustomFieldExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andIssueIdEqualTo(issueId);
+        return issueCustomFieldMapper.selectByExample(sIssueCustomFieldExample);
     }
 }

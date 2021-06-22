@@ -63,4 +63,13 @@ public interface IssueCustomFieldService {
      * @param issueCustomRelationId
      */
     void recoveryCustomFileByIssueCustomRelationId(Long issueCustomRelationId);
+
+    /**
+     * @Date: 18:06
+     * @Description: 根据工作项Id获取工作项相关的自定义字段列表
+     * @Param: * @param issueId
+     * @Return: java.util.List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>
+     * @return
+     */
+    List<SIssueCustomField> listCustomFieldByIssueId(Long issueId);
 }
