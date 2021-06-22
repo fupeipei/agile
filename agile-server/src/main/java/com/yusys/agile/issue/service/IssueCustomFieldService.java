@@ -71,5 +71,5 @@ public interface IssueCustomFieldService {
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>
      * @return
      */
-    List<SIssueCustomField> listCustomFieldByIssueId(Long issueId);
+    List<IssueCustomFieldDTO> listCustomFieldByIssueId(Long issueId);
 }

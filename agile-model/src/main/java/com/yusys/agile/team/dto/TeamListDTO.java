@@ -38,4 +38,9 @@ public class TeamListDTO {
     private List<TeamUserDTO> teamUsers;
     @ApiModelProperty("团队所有人员")
     private Integer teamUserCount;
+    /**
+     * 当前访问人是否关注此项目，不为空时 1:关注，0：未关注
+     */
+    @ApiModelProperty("是否关注")
+    private Integer attentionFlag;
 }

@@ -9,7 +9,6 @@ import com.yusys.agile.consumer.dto.IssueMailSendDto;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.headerfield.service.HeaderFieldService;
-import com.yusys.agile.issue.dao.IssueAcceptanceMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.SIssueRichtextMapper;
 import com.yusys.agile.issue.domain.*;
@@ -113,6 +112,8 @@ public class IssueFactory {
     private LeanKanbanService leanKanbanService;
     @Resource
     private STeamMapper sTeamMapper;
+    @Resource
+    private IssueUpRegularFactory issueUpRegularFactory;
 
     @Transactional(rollbackFor = Exception.class)
     public Long createIssue(IssueDTO issueDTO, String checkErrMsg, String newMsg, Byte issueType) {
@@ -341,15 +342,7 @@ public class IssueFactory {
 
             //更新自定义字段并组织自定义字段历史记录
             //查询自定义字段
-            List<IssueCustomFieldDTO> fieldsBeforeEdit = Lists.newArrayList();
-            List<SIssueCustomField>  listCustomFieldByIssueId   = issueCustomFieldService.listCustomFieldByIssueId(issueId);
-            if(CollectionUtils.isNotEmpty(listCustomFieldByIssueId)){
-                try{
-                    fieldsBeforeEdit = ReflectUtil.copyProperties4List(listCustomFieldByIssueId,IssueCustomFieldDTO.class);
-                }catch (Exception e){
-
-                }
-            }
+            List<IssueCustomFieldDTO> fieldsBeforeEdit = issueCustomFieldService.listCustomFieldByIssueId(issueId);
             List<IssueCustomFieldDTO> list = issueDTO.getCustomFieldDetailDTOList();
             if (CollectionUtils.isNotEmpty(list)) {
                     List<SIssueCustomField> fieldsAfterEdit = Lists.newArrayList();
@@ -713,15 +706,7 @@ public class IssueFactory {
             issueDTO.setAttachments(issueAttachmentDTOList);
 
             //查询自定义字段
-            List<SIssueCustomField>  list   = issueCustomFieldService.listCustomFieldByIssueId(issueId);
-            if(CollectionUtils.isNotEmpty(list)){
-                try{
-                    List<IssueCustomFieldDTO> issueCustomFieldDTOList = ReflectUtil.copyProperties4List(list,IssueCustomFieldDTO.class);
-                    issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
-                }catch (Exception e){
-
-                }
-            }
+            issueDTO.setCustomFieldDetailDTOList(issueCustomFieldService.listCustomFieldByIssueId(issueId));
             //查询故事验收标准信息
             getAcceptanceList(issueId, issueDTO);
 
@@ -1030,19 +1015,8 @@ public class IssueFactory {
         /** 查询当前Issue的富文本内容,并赋值 */
         issueRichTextFactory.queryIssueRichText(issueDTO);
         issueDTO.setIssueId(null);
-
-
         //查询自定义字段
-        List<SIssueCustomField>  list   = issueCustomFieldService.listCustomFieldByIssueId(issueId);
-        if(CollectionUtils.isNotEmpty(list)){
-            try{
-                List<IssueCustomFieldDTO> issueCustomFieldDTOList = ReflectUtil.copyProperties4List(list,IssueCustomFieldDTO.class);
-                issueDTO.setCustomFieldDetailDTOList(issueCustomFieldDTOList);
-            }catch (Exception e){
-
-            }
-        }
-
+        issueDTO.setCustomFieldDetailDTOList(issueCustomFieldService.listCustomFieldByIssueId(issueId));
         //查询工作项和产品关系表并保存
         List<IssueSystemRelp> issueSystemRelpList = issueSystemRelpService.listIssueSystemRelp(issueId);
         if (CollectionUtils.isNotEmpty(issueSystemRelpList)) {
@@ -1474,5 +1448,61 @@ public class IssueFactory {
         setHandlersAndStageName(issueDTOList, handlers, IssueTypeEnum.TYPE_STORY.CODE);
         setHandlerName(handlers, issueDTOList);
         return issueDTOList;
+    }
+
+    //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
+    public int updateStoryLaneIdByTaskCount(Issue task) {
+        if (task == null || task.getParentId() == null) {
+            LOGGER.info("task或task.getParentId()为空" + JSONObject.toJSONString(task));
+            return -1;
+        }
+        Long storyId = task.getParentId();
+
+        IssueExample example1 = new IssueExample();
+        example1.createCriteria()
+                .andIssueIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> story = Optional.ofNullable(issueMapper.selectByExample(example1)).orElse(new ArrayList<>());
+
+        //故事的状态未开始的数量
+        long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
+        LOGGER.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
+//        if(unStartCount>0){
+//            return -2;
+//        }
+
+        IssueExample example = new IssueExample();
+        example.createCriteria()
+                .andParentIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
+        //完成的数量
+        long finishCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(t.getLaneId())).count();
+
+        long doingCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(t.getLaneId())).count();
+        Issue storyIssue = new Issue();
+        storyIssue.setIssueId(storyId);
+        if (finishCount == tasks.size()) {//任务全部完成，则已完成
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
+        } else if(finishCount>0||doingCount>0){//有已完成的，则更新为进行中
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
+        }else{
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_ADD_STATE.CODE);
+        }
+        int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
+        LOGGER.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
+
+        //如果故事更新，则调用向上更新方法。
+        if(i>0){
+            issueUpRegularFactory.commonIssueUpRegular(storyId);
+        }
+
+        return i;
     }
 }

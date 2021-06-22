@@ -1,26 +1,26 @@
 package com.yusys.agile.issue.rest;
 
 import com.yusys.agile.consumer.constant.AgileConstant;
+import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.service.TaskService;
+import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.utils.StringUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import java.util.*;
 
@@ -41,6 +41,8 @@ public class IssueController {
     private StoryService storyService;
     @Resource
     private RabbitTemplate rabbitTemplate;
+    @Resource
+    private IssueFactory issueFactory;
 
     /**
      * 功能描述  初始化Issue列表
@@ -74,7 +76,24 @@ public class IssueController {
     public ControllerResponse createRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
             issueService.createRelation(parentId, issueId);
-            rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
+            Issue parentIssue = issueService.getIssueByIssueId(parentId);
+            if(IssueTypeEnum.TYPE_STORY.CODE.equals(parentIssue.getIssueType())){
+                //故事关联任务
+                if(null != parentIssue.getLaneId()){
+                    //精益故事向上汇总状态
+                    issueService.updateTaskParentStatus(issueId,parentIssue.getKanbanId());
+                }else{
+                    //敏捷故事，先任务汇总故事状态，然后再故事汇总feature、epic状态
+                    //任务汇总故事状态
+                    Issue issue = issueService.getIssueByIssueId(issueId);
+                    issueFactory.updateStoryLaneIdByTaskCount(issue);
+                    //故事汇总feature、epic状态
+                    rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
+                }
+            }else{
+                //epic或feature关联
+                rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
+            }
         } catch (Exception e) {
             LOGGER.error("建立关联失败：{}", e);
             return ControllerResponse.fail("建立关联失败：" + e.getMessage());
@@ -277,19 +296,6 @@ public class IssueController {
     }
 
     /**
-     * @param projectId
-     * @Date 2021/2/22
-     * @Description 项目概览页面统计各个阶段的需求个数
-     * 看这个产品是否关联了故事，关联了故事就统计故事数，没有故事就统计关联的研发需求数，
-     * 没有研发需求就统计关联的业务需求数，都没有关联该产品就为0了，最子到故事
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     */
-    @GetMapping("/issue/stage/count")
-    public ControllerResponse countIssueByStageId(@RequestHeader(name = "projectId",required = false) Long projectId, Integer pageNum, Integer pageSize) {
-        return ControllerResponse.success(issueService.countIssueByStageId(projectId, pageNum, pageSize));
-    }
-
-    /**
      * 需求规划获取列表数据
      *
      * @param title  标题
@@ -385,38 +391,6 @@ public class IssueController {
     }
 
     /**
-     * 功能描述 全景图
-     *
-     * @param issueId
-     * @param noLogin 免登录标识，"true"标识免登录调用，other非免登录调用
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/10/22
-     */
-    @GetMapping("/issue/getIssuePanoramas")
-    public ControllerResponse getIssuePanoramas(String issueId, @RequestParam(name = "bizNum", required = false) String bizNum, @RequestHeader(name = "noLogin", required = false) String noLogin) throws Exception {
-        return ControllerResponse.success(issueService.getIssuePanoramas(issueId, bizNum, noLogin));
-    }
-
-    /**
-     * @param serviceManageIssueDTO
-     * @return
-     * @description 服务治理平台查询接口
-     * @date 2020/10/26
-     */
-    @PostMapping("/issue/queryIssueList")
-    public ControllerResponse queryIssueList(@RequestBody ServiceManageIssueDTO serviceManageIssueDTO) {
-        try {
-            return ControllerResponse.success(issueService.queryIssueList(serviceManageIssueDTO));
-        } catch (Exception e) {
-            LOGGER.info("服务治理平台查询需求接口异常信息:{}", e.getMessage());
-            if (e instanceof ServiceManageExceptionDTO) {
-                return ControllerResponse.fail(e.getMessage());
-            }
-            return ControllerResponse.fail("服务治理平台查询需求接口失败");
-        }
-    }
-
-    /**
      * 功能描述  根据当前issueId 和 issueType查询Epic
      *
      * @param issueId
@@ -437,45 +411,5 @@ public class IssueController {
             return ControllerResponse.fail("根据当前issueId 和 issueType查询Epic");
         }
     }
-
-    /**
-     * 功能描述  根据当前issueId查询客户需求编号
-     *
-     * @param issueId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2021/2/18
-     */
-
-    @GetMapping("/issue/queryPlanDeployDate")
-    public ControllerResponse queryBizNumList(String issueId) {
-        try {
-            return ControllerResponse.success(issueService.queryBizNumList(issueId));
-        } catch (Exception e) {
-            LOGGER.info("根据" + issueId + "查询客户需求编号列表失败:{}", e.getMessage());
-            if (e instanceof ServiceManageExceptionDTO) {
-                return ControllerResponse.fail(e.getMessage());
-            }
-            return ControllerResponse.fail("根据\"+issueId+\"查询客户需求编号列表失败！");
-        }
-    }
-
-    /**
-     * @param issueId
-     * @return
-     * @description 更新工作项上线状态
-     * @date 2021/2/7
-     */
-    @PutMapping("/issue/updateIssueLaunchStateWithDate/{issueId}/{issueType}/{actualOnlineTime}")
-    public ControllerResponse updateIssueLaunchStateWithDate(@PathVariable Long issueId, @PathVariable Byte issueType, @PathVariable String actualOnlineTime) {
-        try {
-            issueService.updateIssueLaunchStateWithDate(issueId, issueType, actualOnlineTime);
-            LOGGER.info("更新工作项" + issueId + "已上线状态成功");
-            return ControllerResponse.success("更新工作项" + issueId + "已上线状态成功");
-        } catch (Exception e) {
-            LOGGER.error("updateIssueLaunchStateWithDate occur exception, message:{}", e.getMessage());
-            return ControllerResponse.fail("更新工作项" + issueId + "已上线状态异常");
-        }
-    }
-
 
 }
