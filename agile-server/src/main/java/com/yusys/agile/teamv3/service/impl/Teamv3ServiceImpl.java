@@ -251,13 +251,13 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<STeamMember> teamSmS = team.getTeamSmS();
         List<STeamMember> teamUsers = team.getTeamUsers();
         //PO、SM不能重复
-        teamPoS.forEach(po -> {
-            teamSmS.forEach(sm -> {
-                if (Objects.equals(po.getUserId(), sm.getUserId())) {
-                    throw new BusinessException("团队PO、SM重复");
-                }
-            });
-        });
+//        teamPoS.forEach(po -> {
+//            teamSmS.forEach(sm -> {
+//                if (Objects.equals(po.getUserId(), sm.getUserId())) {
+//                    throw new BusinessException("团队PO、SM重复");
+//                }
+//            });
+//        });
         //收集PO的id、收集SM的id
         List<Long> poIds = teamPoS.stream().map(po -> {
             return po.getUserId();
@@ -364,13 +364,13 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<STeamMember> teamSmS = team.getTeamSmS();
         List<STeamMember> teamUsers = team.getTeamUsers();
         //PO、SM不能重复
-        teamPoS.forEach(po -> {
-            teamSmS.forEach(sm -> {
-                if (Objects.equals(po.getUserId(), sm.getUserId())) {
-                    throw new BusinessException("团队PO、SM重复");
-                }
-            });
-        });
+//        teamPoS.forEach(po -> {
+//            teamSmS.forEach(sm -> {
+//                if (Objects.equals(po.getUserId(), sm.getUserId())) {
+//                    throw new BusinessException("团队PO、SM重复");
+//                }
+//            });
+//        });
         //收集PO的id、收集SM的id
         List<Long> poIds = teamPoS.stream().map(po -> {
             return po.getUserId();
