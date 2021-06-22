@@ -80,7 +80,8 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         SIssueCustomFieldExample example = new SIssueCustomFieldExample();
         example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
-                .andFieldIdEqualTo(customFieldDTO.getFieldId()).andIssueIdEqualTo(issueId);
+                .andFieldIdEqualTo(customFieldDTO.getFieldId())
+                .andIssueIdEqualTo(issueId);
         List<SIssueCustomField> issueCustomFields = issueCustomFieldMapper.selectByExample(example);
         if (CollectionUtils.isNotEmpty(issueCustomFields)) {
             issueCustomFieldDTO.setDetailId(issueCustomFields.get(0).getExtendId());
