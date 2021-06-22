@@ -65,10 +65,10 @@ public interface FeatureService {
      * @param title
      * @Date: 2021/2/3 14:57
      * @Description: 分页查询所有研发需求
-     * @Param: * @param projectId
+     * @Param: * @param systemId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> queryAllFeature(Long projectId, Integer pageNum, Integer pageSize, String title);
+    List<IssueDTO> queryAllFeature(Long systemId, Integer pageNum, Integer pageSize, String title);
 
     /**
      * @param epicId

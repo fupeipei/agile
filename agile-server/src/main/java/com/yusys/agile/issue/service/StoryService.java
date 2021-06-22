@@ -81,10 +81,10 @@ public interface StoryService {
      * @param title
      * @Date: 13:31
      * @Description: 查询未关联的用户故事列表
-     * @Param: * @param projectId
+     * @Param: * @param featureId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> queryUnlinkedStory(Long projectId, Integer pageNum, Integer pageSize, String title);
+    List<IssueDTO> queryUnlinkedStory(Long featureId, Integer pageNum, Integer pageSize, String title);
 
     /**
      * @param issueDTO
@@ -127,10 +127,10 @@ public interface StoryService {
      * @param title
      * @Date: 2021/2/3 14:57
      * @Description: 分页查询所有用户故事
-     * @Param: * @param projectId
+     * @Param: * @param systemId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> queryAllStory(Long projectId, Integer pageNum, Integer pageSize, String title);
+    List<IssueDTO> queryAllStory(Long systemId, Integer pageNum, Integer pageSize, String title);
 
     /**
      * @param epicId

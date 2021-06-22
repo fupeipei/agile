@@ -104,7 +104,6 @@ public interface IssueService {
      */
     List<IssueListDTO> issueListByIds(String rootIds, Long projectId) throws Exception;
 
-
     Map getOptionList(String filedCodeValue, String filedCode, Map<String, HashMap<String, String>> hashMapMap);
 
     /**

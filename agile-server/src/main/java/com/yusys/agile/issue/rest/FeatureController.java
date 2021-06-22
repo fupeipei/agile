@@ -112,6 +112,8 @@ public class FeatureController {
     @GetMapping("/queryUnlinkedFeature")
     public ControllerResponse queryUnlinkedFeature(@RequestParam("pageNum") Integer pageNum,
                                                    @RequestParam("pageSize") Integer pageSize,
+                                                   @RequestParam(value = "issueId",required = false) Long issueId,
+                                                   @RequestParam(value = "systemId",required = false) Long systemId,
                                                    @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
@@ -126,10 +128,12 @@ public class FeatureController {
     @GetMapping("/queryAllFeature")
     public ControllerResponse queryAllFeature(@RequestParam(value = "pageNum", required = false) Integer pageNum,
                                               @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                              @RequestParam(value = "issueId",required = false) Long issueId,
+                                              @RequestParam(value = "systemId",required = false) Long systemId,
                                               @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
-            result = featureService.queryAllFeature(null, pageNum, pageSize, title);
+            result = featureService.queryAllFeature(systemId, pageNum, pageSize, title);
         } catch (Exception e) {
             LOGGER.error("查询所有的研发需求异常", e);
             return ControllerResponse.fail("查询所有的研发需求异常：" + e.getMessage());

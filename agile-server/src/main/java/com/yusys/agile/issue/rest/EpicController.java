@@ -114,10 +114,12 @@ public class EpicController {
     @GetMapping("/queryAllEpic")
     public ControllerResponse queryAllEpic(@RequestParam(value = "pageNum", required = false) Integer pageNum,
                                            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                           @RequestParam(value = "issueId",required = false) Long issueId,
+                                           @RequestParam(value = "systemId",required = false) Long systemId,
                                            @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
-            result = epicService.queryAllEpic(null, pageNum, pageSize, title);
+            result = epicService.queryAllEpic(systemId, pageNum, pageSize, title);
         } catch (Exception e) {
             LOGGER.error("查询所有的业务需求异常", e);
             return ControllerResponse.fail("查询所有的业务需求异常：" + e.getMessage());
