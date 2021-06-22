@@ -3142,7 +3142,7 @@ public class IssueServiceImpl implements IssueService {
         if(StageConstant.FirstStageEnum.READY_STAGE.equals(stageId)){
             throw new BusinessException("工作项不能拖拽到就绪阶段!");
         }
-        issueMapper.updateByPrimaryKeySelective(issue);
+        issueMapper.updateByPrimaryKey(issue);
 
         //更新该工作项对应的数据
         Byte type = issue.getIssueType();
