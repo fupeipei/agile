@@ -407,6 +407,7 @@ public class FaultServiceImpl implements FaultService {
                 issueCustomField.setFieldId(temp.getFieldId());
                 issueCustomField.setFieldValue(temp.getFieldValue());
                 issueCustomField.setIssueId(faultDTO.getIssueId());
+                issueCustomField.setState(StateEnum.U.getValue());
                 customFields.add(issueCustomField);
             }
             // 修改自定义字段明细数据
