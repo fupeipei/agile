@@ -476,4 +476,6 @@ public interface IssueService {
      * @param kanbanId   看板Id(可以通过teamId去获取)
      */
     void updateTaskParentStatus(Long issueId,Long kanbanId);
+
+    Issue getIssueByIssueId(Long issueId) throws Exception;
 }

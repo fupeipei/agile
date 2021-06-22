@@ -1,6 +1,5 @@
 package com.yusys.agile.issue.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -15,7 +14,6 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueHistoryRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.PageInfoDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
@@ -89,17 +87,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Resource
     private IssueRuleFactory ruleFactory;
-    @Resource
-    private StoryService storyService;
 
     @Resource
     private RabbitTemplate rabbitTemplate;
-
-    @Resource
-    private IssueUpRegularFactory issueUpRegularFactory;
-
-    @Resource
-    private ExternalApiConfigUtil externalApiConfigUtil;
 
     @Resource
     private SSprintMapper sSprintMapper;
@@ -109,9 +99,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Resource
     private Sprintv3Service sprintv3Service;
-
-    @Autowired
-    private IStageService stageService;
 
     @Autowired
     private SActionLogService logService;
@@ -145,7 +132,7 @@ public class TaskServiceImpl implements TaskService {
         if(Optional.ofNullable(kanbanId).isPresent()){
             issueService.updateTaskParentStatus(issue.getIssueId(),kanbanId);
         }else {
-            int i = this.updateStoryLaneIdByTaskCount(issue);
+            int i = issueFactory.updateStoryLaneIdByTaskCount(issue);
             log.info("deleteTask_updateStoryStageIdByTaskCount=" + i);
         }
     }
@@ -221,7 +208,7 @@ public class TaskServiceImpl implements TaskService {
         if(Optional.ofNullable(kanbanId).isPresent()){
             issueService.updateTaskParentStatus(issueDTO.getIssueId(),kanbanId);
         }else {
-            int i = this.updateStoryLaneIdByTaskCount(task);
+            int i = issueFactory.updateStoryLaneIdByTaskCount(task);
             log.info("editTask_updateStoryStageIdByTaskCound=" + i);
         }
 
@@ -305,7 +292,7 @@ public class TaskServiceImpl implements TaskService {
         if(Optional.ofNullable(kanbanId).isPresent()){
             issueService.updateTaskParentStatus(taskId,kanbanId);
         }else {
-            int i = this.updateStoryLaneIdByTaskCount(task);
+            int i = issueFactory.updateStoryLaneIdByTaskCount(task);
             log.info("createTask_updateStoryStageIdByTaskCount=" + i);
         }
 
@@ -352,7 +339,7 @@ public class TaskServiceImpl implements TaskService {
 
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(issue)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + issue));
 
-        int i = this.updateStoryLaneIdByTaskCount(task);
+        int i = issueFactory.updateStoryLaneIdByTaskCount(task);
         log.info("copyTask_updateStoryStageIdByTaskCount=" + i);
         return issue;
     }
@@ -553,7 +540,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         //  根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-        int storyCount = this.updateStoryLaneIdByTaskCount(task);
+        int storyCount = issueFactory.updateStoryLaneIdByTaskCount(task);
 
         logService.insertLog("dragTask", issueId, IssueTypeEnum.TYPE_TASK.CODE.longValue(), actionRemark + "from=" + TaskStatusEnum.getName(from) + from
                 + " to=" + TaskStatusEnum.getName(to) + to + " storyCount=" + storyCount + " taskCount=" + taskCount, "1");
@@ -564,62 +551,6 @@ public class TaskServiceImpl implements TaskService {
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
 
         return task;
-    }
-
-    //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
-    private int updateStoryLaneIdByTaskCount(Issue task) {
-        if (task == null || task.getParentId() == null) {
-            log.info("task或task.getParentId()为空" + JSONObject.toJSONString(task));
-            return -1;
-        }
-        Long storyId = task.getParentId();
-
-        IssueExample example1 = new IssueExample();
-        example1.createCriteria()
-                .andIssueIdEqualTo(storyId)
-                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
-                .andStateEqualTo("U");
-
-        //根据故事查询所有有效的任务
-        List<Issue> story = Optional.ofNullable(issueMapper.selectByExample(example1)).orElse(new ArrayList<>());
-
-        //故事的状态未开始的数量
-        long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
-        log.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
-//        if(unStartCount>0){
-//            return -2;
-//        }
-
-        IssueExample example = new IssueExample();
-        example.createCriteria()
-                .andParentIdEqualTo(storyId)
-                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
-                .andStateEqualTo("U");
-
-        //根据故事查询所有有效的任务
-        List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
-        //完成的数量
-        long finishCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(t.getLaneId())).count();
-
-        long doingCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(t.getLaneId())).count();
-        Issue storyIssue = new Issue();
-        storyIssue.setIssueId(storyId);
-        if (finishCount == tasks.size()) {//任务全部完成，则已完成
-            storyIssue.setLaneId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
-        } else if(finishCount>0||doingCount>0){//有已完成的，则更新为进行中
-            storyIssue.setLaneId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
-        }else{
-            storyIssue.setLaneId(StoryStatusEnum.TYPE_ADD_STATE.CODE);
-        }
-        int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
-        log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
-
-        //如果故事更新，则调用向上更新方法。
-        if(i>0){
-            issueUpRegularFactory.commonIssueUpRegular(storyId);
-        }
-
-        return i;
     }
 
     @Override

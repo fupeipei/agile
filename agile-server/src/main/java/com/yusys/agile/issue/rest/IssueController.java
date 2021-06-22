@@ -1,26 +1,26 @@
 package com.yusys.agile.issue.rest;
 
 import com.yusys.agile.consumer.constant.AgileConstant;
+import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.service.TaskService;
+import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.utils.StringUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import java.util.*;
 
@@ -41,6 +41,8 @@ public class IssueController {
     private StoryService storyService;
     @Resource
     private RabbitTemplate rabbitTemplate;
+    @Resource
+    private IssueFactory issueFactory;
 
     /**
      * 功能描述  初始化Issue列表
@@ -74,7 +76,24 @@ public class IssueController {
     public ControllerResponse createRelation(@PathVariable("parentId") Long parentId, @PathVariable("issueId") Long issueId) {
         try {
             issueService.createRelation(parentId, issueId);
-            rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
+            Issue parentIssue = issueService.getIssueByIssueId(parentId);
+            if(IssueTypeEnum.TYPE_STORY.CODE.equals(parentIssue.getIssueType())){
+                //故事关联任务
+                if(null != parentIssue.getLaneId()){
+                    //精益故事向上汇总状态
+                    issueService.updateTaskParentStatus(issueId,parentIssue.getKanbanId());
+                }else{
+                    //敏捷故事，先任务汇总故事状态，然后再故事汇总feature、epic状态
+                    //任务汇总故事状态
+                    Issue issue = issueService.getIssueByIssueId(issueId);
+                    issueFactory.updateStoryLaneIdByTaskCount(issue);
+                    //故事汇总feature、epic状态
+                    rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
+                }
+            }else{
+                //epic或feature关联
+                rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
+            }
         } catch (Exception e) {
             LOGGER.error("建立关联失败：{}", e);
             return ControllerResponse.fail("建立关联失败：" + e.getMessage());

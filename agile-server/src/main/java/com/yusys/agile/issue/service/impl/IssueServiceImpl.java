@@ -3292,6 +3292,11 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    public Issue getIssueByIssueId(Long issueId) throws Exception {
+        return issueMapper.selectByPrimaryKey(issueId);
+    }
+
+    @Override
     public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {
         if (null != issueId) {
             List<Long> issueIds = Lists.newArrayList();
