@@ -22,11 +22,13 @@ import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
+import com.yusys.portal.model.common.enums.YesOrNoEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSubjectUserDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
+import com.yusys.portal.model.facade.enums.AttentionTypeEnum;
 import com.yusys.portal.model.facade.enums.RoleTypeEnum;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +82,11 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         } else { //不是租户管理员
             rest = sTeamMapper.queryMyHiveTeam(params);
         }
+        rest.forEach(team -> {
+                    //设置关注标识
+                    team.setAttentionFlag(iFacadeUserApi.checkObjIsAttention(team.getTeamId(), AttentionTypeEnum.TEAM.getValue(), userId) ?
+                            YesOrNoEnum.YES.getValue() : YesOrNoEnum.NO.getValue());
+                });
         //构建返回结果
         rest = buildResultList(rest);
         return rest;
@@ -187,6 +194,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             });
             item.setSystemNames(systems);
         });
+
         return rest;
     }
 
