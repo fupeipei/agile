@@ -191,14 +191,6 @@ public class StoryServiceImpl implements StoryService {
 
         Long projectId = oldStory.getProjectId();
 
-        //校验故事下有未完成任务或未修复缺陷不允许改为完成阶段
-        Long[] stages = issueDTO.getStages();
-        if (StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(stages[0])) {
-            if (checkHasUnfinishOrNotRepairIssue(issueDTO.getIssueId())) {
-                throw new BusinessException("故事下有未完成任务或未修复缺陷不允许改为完成阶段！");
-            }
-        }
-
         Issue story = issueFactory.editIssue(issueDTO, oldStory, projectId);
         int count;
         count = issueMapper.updateByPrimaryKeySelectiveWithNull(story);
@@ -213,31 +205,18 @@ public class StoryServiceImpl implements StoryService {
             issueMapper.updatePrint(oldStory);
         }
         //如果故事上的系统修改了，那么需要修改任务上的系统信息
-        this.updateStoryOfTasks(issueDTO);
+        if(!issueDTO.getSystemId().equals(oldStory.getSystemId())){
+            updateTaskSystem(issueDTO);
+        }
     }
 
 
-    private void updateStoryOfTasks(IssueDTO issueDTO){
+    private void updateTaskSystem(IssueDTO issueDTO){
+        Long systemId = issueDTO.getSystemId();
         IssueExample issueExample = new IssueExample();
-        issueExample.createCriteria().andParentIdEqualTo(issueDTO.getIssueId())
-                .andStateEqualTo(StateEnum.U.getValue());
-        List<Issue> issues = issueMapper.selectByExample(issueExample);
-        if (CollectionUtils.isNotEmpty(issues)){
-            List<Long> newSystemIds = issueDTO.getSystemIds();
-            IssueSystemRelpExample issueSystemRelpExample = new IssueSystemRelpExample();
-            issueSystemRelpExample.createCriteria()
-                    .andIssueIdEqualTo(issueDTO.getIssueId());
-            List<IssueSystemRelp> issueSystemRelps = issueSystemRelpMapper.selectByExample(issueSystemRelpExample);
-            List<Long> oldTaskSystemIds = Optional.ofNullable(issueSystemRelps).orElse(new ArrayList<IssueSystemRelp>())
-                    .stream().map(IssueSystemRelp::getSystemId).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(newSystemIds) && CollectionUtils.isEqualCollection(oldTaskSystemIds,newSystemIds)){
-                issueSystemRelpService.deleteByIssueId(issueDTO.getIssueId());
-                issueSystemRelpService.batchInsert(issueDTO.getIssueId(), newSystemIds);
-            }
-        }
-
-
-
+        issueExample.createCriteria().andParentIdEqualTo(issueDTO.getIssueId()).andStateEqualTo(StateEnum.U.getValue());
+        List<Issue> taskList = issueMapper.selectByExample(issueExample);
+        issueMapper.batchUpdateIssueSystemId(taskList,systemId);
     }
     /**
      * 1、从列表新建故事

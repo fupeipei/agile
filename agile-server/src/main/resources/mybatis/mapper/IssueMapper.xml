@@ -1241,6 +1241,18 @@
         stage_id = #{stageId}
     </update>
 
+    <update id="batchUpdateIssueSystemId">
+        update
+        s_issue
+        set
+        system_id = #{systemId}
+        where
+        issue_id in
+        <foreach collection="issueIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
     <update id="updateIssueLaneStateNull" parameterType="com.yusys.agile.issue.domain.Issue">
     update
     s_issue
