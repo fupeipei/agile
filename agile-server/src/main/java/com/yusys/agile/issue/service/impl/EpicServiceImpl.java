@@ -113,8 +113,8 @@ public class EpicServiceImpl implements EpicService {
     }
 
     @Override
-    public List<IssueDTO> queryAllEpic(Long projectId, Integer pageNum, Integer pageSize, String title) {
-        return issueFactory.queryAllIssue(projectId, IssueTypeEnum.TYPE_EPIC.CODE, pageNum, pageSize, title, null);
+    public List<IssueDTO> queryAllEpic(Long systemId, Integer pageNum, Integer pageSize, String title) {
+        return issueFactory.queryAllIssue(null, IssueTypeEnum.TYPE_EPIC.CODE, pageNum, pageSize, title, null);
     }
 
     /**

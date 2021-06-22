@@ -56,10 +56,10 @@ public interface EpicService {
      * @param title
      * @Date: 2021/2/3 14:56
      * @Description: 分页查询所有业务需求
-     * @Param: * @param projectId
+     * @Param: * @param systemId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> queryAllEpic(Long projectId, Integer pageNum, Integer pageSize, String title);
+    List<IssueDTO> queryAllEpic(Long systemId, Integer pageNum, Integer pageSize, String title);
 
     /**
      * @param projectId :

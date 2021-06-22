@@ -146,7 +146,8 @@ public class StoryController {
     @GetMapping("/query/unlinked/stories")
     public ControllerResponse queryUnlinkedStory(@RequestParam("pageNum") Integer pageNum,
                                                  @RequestParam("pageSize") Integer pageSize,
-                                                 @RequestParam("issueId") Long issueId,
+                                                 @RequestParam(value = "issueId",required = false) Long issueId,
+                                                 @RequestParam(value = "systemId",required = false) Long systemId,
                                                  @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
@@ -225,18 +226,14 @@ public class StoryController {
      * @Return: import com.yusys.portal.model.common.dto.ControllerResponse;
      */
     @GetMapping("/query/all")
-    public ControllerResponse queryAllStory(@RequestHeader(name = "projectId", required = false) Long projectId, @RequestParam(value = "pageNum", required = false) Integer pageNum,
-                                            @RequestParam(value = "pageSize", required = false) Integer pageSize, @RequestParam(value = "title", required = false) String title,
-                                            @RequestParam(name = "projectId", required = false) Long paramProjectId) {
-        Long finalProjectId = null;
-        if (null != paramProjectId) {
-            finalProjectId = paramProjectId;
-        } else {
-            finalProjectId = projectId;
-        }
+    public ControllerResponse queryAllStory( @RequestParam(value = "pageNum", required = false) Integer pageNum,
+                                             @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                             @RequestParam(value = "issueId",required = false) Long issueId,
+                                             @RequestParam(value = "systemId",required = false) Long systemId,
+                                             @RequestParam(value = "title", required = false) String title) {
         List<IssueDTO> result;
         try {
-            result = storyService.queryAllStory(finalProjectId, pageNum, pageSize, title);
+            result = storyService.queryAllStory(systemId, pageNum, pageSize, title);
         } catch (Exception e) {
             LOGGER.error("查询所有的用户故事异常", e);
             return ControllerResponse.fail("查询所有的用户故事异常：" + e.getMessage());

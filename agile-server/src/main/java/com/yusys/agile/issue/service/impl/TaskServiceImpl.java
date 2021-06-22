@@ -375,8 +375,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<IssueDTO> queryUnlinkedTask(Long projectId, Integer pageNum, Integer pageSize, String title) {
-        return issueFactory.queryUnlinkedIssue(projectId, IssueTypeEnum.TYPE_TASK.CODE, pageNum, pageSize, title, null);
+    public List<IssueDTO> queryUnlinkedTask(Long systemId, Integer pageNum, Integer pageSize, String title) {
+        return issueFactory.queryUnlinkedIssue(systemId, IssueTypeEnum.TYPE_TASK.CODE, pageNum, pageSize, title, null);
     }
 
     @Override
