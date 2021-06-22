@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.issue.dao.IssueHistoryRecordMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
@@ -66,6 +67,11 @@ public class IssueUpRegularFactory {
         Long parentId = issue.getParentId();
         Long handler = issue.getHandler();
         Long teamId = issue.getTeamId();
+        if(teamId==null){
+            logger.info("团队id为空，直接return+"+ JSONObject.toJSONString(issue));
+            return;
+        }
+
         //1、判断当前工作项类型 parentId如果为null ，直接return。
         if (!Optional.ofNullable(parentId).isPresent()) {
             logger.error("调用工作项向上规整的封装方法commonIssueUpRegular，当前parentId为null，直接return");
