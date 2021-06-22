@@ -25,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -56,10 +53,11 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
 
     /**
      * 按系统id和工作项类型查询
-     * @author zhaofeng
-     * @date 2021/6/3 15:47
+     *
      * @param systemId
      * @param issueType
+     * @author zhaofeng
+     * @date 2021/6/3 15:47
      */
     @Override
     public List<SIssueCustomRelation> getIssueCustomRelations(Long systemId, Byte issueType) {
@@ -69,18 +67,19 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
         //查询关联关系
         SIssueCustomRelationExample example = new SIssueCustomRelationExample();
         SIssueCustomRelationExample.Criteria criteria = example.createCriteria();
-        if(issueType != null){
+        if (issueType != null) {
             criteria.andIssueTypeEqualTo(issueType);
         }
-        if(systemId != null){
+        if (systemId != null) {
             criteria.andSystemIdEqualTo(systemId);
-        }else{
+        } else {
             criteria.andSystemIdIsNull();
         }
         criteria.andStateEqualTo(StateEnum.U.getValue());
         example.setOrderByClause("sort asc");
         List<SIssueCustomRelation> list = issueCustomRelationMapper.selectByExampleWithBLOBs(example);
-        list.stream().forEach(item->{
+        list.stream().forEach(item -> {
+            item.setRequired(issueCustomRelationMapper.queryRequired(item.getIssueType(), item.getFieldId(), item.getSystemId()));
             if (listMap.containsKey(item.getFieldId())) {
                 CustomFieldDTO customFieldDTO = listMap.get(item.getFieldId()).get(0);
                 item.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
@@ -126,7 +125,12 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
                 issueCustomRelation.setIssueType(idList.getIssueType());
                 issueCustomRelation.setSystemId(securityDTO.getSystemId());
                 issueCustomRelation.setSort(i + longList.size() + 1);
-                issueCustomRelation.setRequired(issueCustomRelationList.get(i).getRequired());
+                if (null == issueCustomRelationList.get(i).getRequired()) {
+                    issueCustomRelation.setRequired("E");
+                } else {
+                    issueCustomRelation.setRequired(issueCustomRelationList.get(i).getRequired());
+                }
+                issueCustomRelation.setUpdateTime(new Date());
                 //如果不存在则insert
                 if (!longList.contains(issueCustomRelation.getFieldId())) {
                     issueCustomRelationMapper.insertSelective(issueCustomRelation);
@@ -134,6 +138,13 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
                     headerFieldService.saveCustomFieldByFieldId(securityDTO.getSystemId(), issueCustomRelation.getId(), idList.getIssueType());
                 } else {
                     SIssueCustomRelation newIssueCustomRelation = issueCustomRelationMapper.selectByIssueTypeAndFieldId(issueCustomRelation.getIssueType(), issueCustomRelation.getFieldId(), securityDTO.getSystemId());
+
+                    if (null == issueCustomRelationList.get(i).getRequired()) {
+                        newIssueCustomRelation.setRequired("E");
+                    } else {
+                        newIssueCustomRelation.setRequired(issueCustomRelationList.get(i).getRequired());
+                    }
+
                     //否则update，并将state=U，
                     //如果之前保存过，但是被删除了，这样做可以恢复之前的关联关系
                     //恢复 s_issue_custom_relation 的值
