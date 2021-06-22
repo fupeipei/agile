@@ -613,6 +613,12 @@ public class TaskServiceImpl implements TaskService {
         }
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
         log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
+
+        //如果故事更新，则调用向上更新方法。
+        if(i>0){
+            issueUpRegularFactory.commonIssueUpRegular(storyId);
+        }
+
         return i;
     }
 
