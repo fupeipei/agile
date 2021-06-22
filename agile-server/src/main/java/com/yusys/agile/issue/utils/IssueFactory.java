@@ -962,6 +962,7 @@ public class IssueFactory {
         issueCustomField.setIssueId(issueId);
         issueCustomField.setFieldId(fieldId);
         issueCustomField.setFieldValue(fieldValue);
+        issueCustomField.setState(StateEnum.U.getValue());
         fields.add(issueCustomField);
     }
 
