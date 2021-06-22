@@ -220,7 +220,9 @@ public class IssueUpRegularFactory {
     private void updateIssue(Issue pIssue, Long handler, Issue subIssue) {
         if (Optional.ofNullable(pIssue).isPresent() && Optional.ofNullable(subIssue).isPresent()) {
             pIssue.setStageId(subIssue.getStageId());
-            pIssue.setLaneId(subIssue.getLaneId());
+            if(!IssueTypeEnum.TYPE_EPIC.CODE.equals(pIssue.getIssueType())){
+                pIssue.setLaneId(subIssue.getLaneId());
+            }
 //            if(Optional.ofNullable(handler).isPresent()){
 //                pIssue.setHandler(handler);
 //            }
