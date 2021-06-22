@@ -187,6 +187,16 @@ public class IssueFactory {
             if(Optional.ofNullable(leanKanban).isPresent()){
                 issue.setKanbanId(leanKanban.getKanbanId());
             }
+        }else {
+            //从父级取
+            Long parentId = issue.getParentId();
+            if(Optional.ofNullable(parentId).isPresent()){
+                Issue parent = issueMapper.selectByPrimaryKey(parentId);
+                if(Optional.ofNullable(parent).isPresent()){
+                    issue.setKanbanId(parent.getKanbanId());
+                    issue.setTeamId(parent.getTeamId());
+                }
+            }
         }
 
         issueMapper.insertSelective(issue);
