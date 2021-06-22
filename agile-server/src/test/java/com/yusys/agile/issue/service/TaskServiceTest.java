@@ -117,9 +117,10 @@ public class TaskServiceTest {
 
     @Test
     public void editTask() {
-        issueDTO.setIssueId(847116505917378560L);
-        Long[] stages = {1L,101L};
+        issueDTO.setIssueId(847878567016625032L);
+        Long[] stages = {4L,107L};
         issueDTO.setStages(stages);
+        issueDTO.setSystemId(856603574286798848L);
         taskService.editTask(issueDTO,securityDTO);
         Assert.assertTrue("editTask成功",true);
     }
