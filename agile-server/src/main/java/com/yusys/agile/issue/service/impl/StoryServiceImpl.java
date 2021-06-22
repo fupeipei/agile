@@ -793,8 +793,8 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public List<IssueDTO> queryAllStory(Long projectId, Integer pageNum, Integer pageSize, String title) {
-        return issueFactory.queryAllIssue(projectId, IssueTypeEnum.TYPE_STORY.CODE, pageNum, pageSize, title, null);
+    public List<IssueDTO> queryAllStory(Long systemId, Integer pageNum, Integer pageSize, String title) {
+        return issueFactory.queryAllIssue(systemId, IssueTypeEnum.TYPE_STORY.CODE, pageNum, pageSize, title, null);
     }
 
     @Override

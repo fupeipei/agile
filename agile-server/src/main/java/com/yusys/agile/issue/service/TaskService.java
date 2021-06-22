@@ -74,10 +74,10 @@ public interface TaskService {
      * @param title
      * @Date: 13:32
      * @Description: 查询未关联的任务列表
-     * @Param: * @param projectId
+     * @Param: * @param systemId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> queryUnlinkedTask(Long projectId, Integer pageNum, Integer pageSize, String title);
+    List<IssueDTO> queryUnlinkedTask(Long systemId, Integer pageNum, Integer pageSize, String title);
 
     /**
      * @param issueId

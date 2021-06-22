@@ -1073,8 +1073,8 @@ public class IssueFactory {
      * @Param: * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    public List<IssueDTO> queryUnlinkedIssue(Long projectId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
-        return getIssueDTOS(projectId, issueType, pageNum, pageSize, false, title, parentId);
+    public List<IssueDTO> queryUnlinkedIssue(Long systemId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
+        return getIssueDTOS(systemId, issueType, pageNum, pageSize, false, title, parentId);
     }
 
     /**
@@ -1087,11 +1087,11 @@ public class IssueFactory {
      * @Param: * @param projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    public List<IssueDTO> queryAllIssue(Long projectId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
-        return getIssueDTOS(projectId, issueType, pageNum, pageSize, true, title, parentId);
+    public List<IssueDTO> queryAllIssue(Long systemId, Byte issueType, Integer pageNum, Integer pageSize, String title, Long parentId) {
+        return getIssueDTOS(systemId, issueType, pageNum, pageSize, true, title, parentId);
     }
 
-    public List<IssueDTO> getIssueDTOS(Long projectId, Byte issueType, Integer pageNum, Integer pageSize, boolean isAll, String title, Long parentId) {
+    public List<IssueDTO> getIssueDTOS(Long systemId, Byte issueType, Integer pageNum, Integer pageSize, boolean isAll, String title, Long parentId) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
@@ -1102,12 +1102,12 @@ public class IssueFactory {
         criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
         criteria.andIssueTypeEqualTo(issueType);
 
-        if (null != projectId) {
-            criteria.andProjectIdEqualTo(projectId);
-        }
-
         if (null != parentId) {
             criteria.andParentIdEqualTo(parentId);
+        }
+
+        if(null != systemId){
+            criteria.andSystemIdEqualTo(systemId);
         }
 
         if (StringUtils.isNotBlank(title)) {
@@ -1437,6 +1437,9 @@ public class IssueFactory {
         criteria.andParentIdIsNull();
         example.setOrderByClause("`order` desc,create_time desc");
         List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
+        List<Long> handlers = new ArrayList<>();
+        setHandlersAndStageName(issueDTOList, handlers, IssueTypeEnum.TYPE_STORY.CODE);
+        setHandlerName(handlers, issueDTOList);
         return issueDTOList;
     }
 }

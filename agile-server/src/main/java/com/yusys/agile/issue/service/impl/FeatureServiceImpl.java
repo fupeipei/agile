@@ -136,8 +136,8 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public List<IssueDTO> queryAllFeature(Long projectId, Integer pageNum, Integer pageSize, String title) {
-        return issueFactory.queryAllIssue(projectId, IssueTypeEnum.TYPE_FEATURE.CODE, pageNum, pageSize, title, null);
+    public List<IssueDTO> queryAllFeature(Long systemId, Integer pageNum, Integer pageSize, String title) {
+        return issueFactory.queryAllIssue(systemId, IssueTypeEnum.TYPE_FEATURE.CODE, pageNum, pageSize, title, null);
     }
 
     @Override

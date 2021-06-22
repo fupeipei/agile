@@ -127,10 +127,10 @@ public interface StoryService {
      * @param title
      * @Date: 2021/2/3 14:57
      * @Description: 分页查询所有用户故事
-     * @Param: * @param projectId
+     * @Param: * @param systemId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    List<IssueDTO> queryAllStory(Long projectId, Integer pageNum, Integer pageSize, String title);
+    List<IssueDTO> queryAllStory(Long systemId, Integer pageNum, Integer pageSize, String title);
 
     /**
      * @param epicId
