@@ -15,6 +15,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public interface IssueService {
 
@@ -461,7 +462,7 @@ public interface IssueService {
      * @param laneId
      * @return
      */
-    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId);
+    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId) throws ExecutionException;
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 

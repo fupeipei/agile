@@ -3136,7 +3136,7 @@ public class IssueServiceImpl implements IssueService {
      * @return
      */
     @Override
-    public IssueDTO dragIssueCard(Long issueId, Long stageId, Long laneId) {
+    public IssueDTO dragIssueCard(Long issueId, Long stageId, Long laneId) throws ExecutionException {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long kanbanId = issue.getKanbanId();
 
@@ -3170,12 +3170,14 @@ public class IssueServiceImpl implements IssueService {
 
                 Long featureId = story.getParentId();
                 Issue feature = issueMapper.selectByPrimaryKey(featureId);
-
                 if (Optional.ofNullable(feature).isPresent()) {
                     //返回前端变更数据
                     IssueDTO storyDTO = ReflectUtil.copyProperties(story, IssueDTO.class);
                     IssueDTO taskDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
                     IssueDTO issueDTO = ReflectUtil.copyProperties(feature, IssueDTO.class);
+                    setOtherInfo(storyDTO);
+                    setOtherInfo(taskDTO);
+                    setOtherInfo(issueDTO);
 
                     List<IssueDTO> taskDTOS = Lists.newArrayList();
                     taskDTOS.add(taskDTO);
@@ -3189,6 +3191,25 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         return null;
+    }
+
+    private void setOtherInfo(IssueDTO issueDTO) throws ExecutionException {
+        //处理系统信息
+        Long systemId = issueDTO.getSystemId();
+        SsoSystem ssoSystem = systemCache.get(systemId);
+        if (Optional.ofNullable(ssoSystem).isPresent()) {
+
+            issueDTO.setSystemCode(ssoSystem.getSystemCode());
+            issueDTO.setSystemName(ssoSystem.getSystemName());
+        }
+
+        //处理人信息
+        Long handler = issueDTO.getHandler();
+        SsoUser ssoUser = userCache.get(handler);
+        if (Optional.ofNullable(ssoUser).isPresent()) {
+            issueDTO.setHandlerAccount(ssoUser.getUserAccount());
+            issueDTO.setHandlerName(ssoUser.getUserName());
+        }
     }
 
 
