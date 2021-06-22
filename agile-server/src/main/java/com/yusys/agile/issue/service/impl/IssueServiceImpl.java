@@ -102,6 +102,7 @@ import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -683,9 +684,9 @@ public class IssueServiceImpl implements IssueService {
             issueListDTO.setLaneId(getSecondStageMapByTypeAndId(issue.getLaneId(), issue.getIssueType(), issue.getStageId()));
         }
         //  将阶段与状态拼成   ""/"" 形式
-        if (issue.getStageId() != null) {
+        if (issue.getStageId() != null && issueListDTO.getStageId().containsKey("name")) {
             String name = issueListDTO.getStageId().get("name").toString();
-            if (issue.getLaneId() != null) {
+            if (issue.getLaneId() != null && issueListDTO.getLaneId().containsKey("name")) {
                 name = name.trim() + "/" + issueListDTO.getLaneId().get("name").toString().trim();
             }
             issueListDTO.getStageId().put("name", name);
@@ -3053,7 +3054,7 @@ public class IssueServiceImpl implements IssueService {
             //处理系统信息
             Long systemId = issueDTO.getSystemId();
             SsoSystem ssoSystem = systemCache.get(systemId);
-            if(Optional.ofNullable(ssoSystem).isPresent()){
+            if (Optional.ofNullable(ssoSystem).isPresent()) {
                 issueDTO.setSystemCode(ssoSystem.getSystemCode());
                 issueDTO.setSystemName(ssoSystem.getSystemName());
             }
@@ -3061,7 +3062,7 @@ public class IssueServiceImpl implements IssueService {
             //处理人信息
             Long handler = issueDTO.getHandler();
             SsoUser user = userCache.get(handler);
-            if(Optional.ofNullable(user).isPresent()){
+            if (Optional.ofNullable(user).isPresent()) {
                 issueDTO.setHandlerAccount(user.getUserAccount());
                 issueDTO.setHandlerName(user.getUserName());
             }
@@ -3133,19 +3134,19 @@ public class IssueServiceImpl implements IssueService {
 
             issueUpRegularFactory.commonIssueUpRegular(issueId);
 
-        }else if(IssueTypeEnum.TYPE_TASK.CODE.equals(type)){
+        } else if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
             //task改变后状态向 上汇总
-            updateTaskParentStatus(issueId,kanbanId);
+            updateTaskParentStatus(issueId, kanbanId);
 
             Long storyId = issue.getParentId();
             Issue story = issueMapper.selectByPrimaryKey(storyId);
 
-            if(Optional.ofNullable(story).isPresent()){
+            if (Optional.ofNullable(story).isPresent()) {
 
                 Long featureId = story.getParentId();
                 Issue feature = issueMapper.selectByPrimaryKey(featureId);
 
-                if(Optional.ofNullable(feature).isPresent()){
+                if (Optional.ofNullable(feature).isPresent()) {
                     //返回前端变更数据
                     IssueDTO storyDTO = ReflectUtil.copyProperties(story, IssueDTO.class);
                     IssueDTO taskDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
@@ -3168,11 +3169,12 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * 更新 issue状态，联动更新父级的工作项状态
+     *
      * @param issueId
      * @return
      */
     @Override
-    public void updateTaskParentStatus(Long issueId,Long kanbanId) {
+    public void updateTaskParentStatus(Long issueId, Long kanbanId) {
 
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         if (Optional.ofNullable(issue).isPresent()) {
@@ -3193,37 +3195,37 @@ public class IssueServiceImpl implements IssueService {
                     //如果有开发任务在进行中，则故事在开发中状态
                     Long stageId = first.getStageId();
                     Long laneId = first.getLaneId();
-                    if(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(stageId) &&
-                            !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.equals(laneId)){
+                    if (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(stageId) &&
+                            !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.equals(laneId)) {
                         storyLaneId = LaneKanbanStageConstant.DevStageEnum.ONGOING.getValue();
                         storyStageId = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
                     }
 
                     //如果所有故事都到已完成，根据测试任务去计算故事状态
-                    if(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(stageId) &&
-                            LaneKanbanStageConstant.DevStageEnum.DEVFINISH.equals(laneId) ){
+                    if (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(stageId) &&
+                            LaneKanbanStageConstant.DevStageEnum.DEVFINISH.equals(laneId)) {
 
                         //获取第二个状态的工作项
                         Issue second = null;
-                        for(Issue iss : issueList){
-                            if(!laneId.equals(iss.getLaneId())){
+                        for (Issue iss : issueList) {
+                            if (!laneId.equals(iss.getLaneId())) {
                                 second = iss;
                                 break;
                             }
                         }
 
                         //如果从左边数第二个状态和第一个状态一致，说明没有测试任务,故事状态为开发完成
-                        if(!Optional.ofNullable(second).isPresent()){
+                        if (!Optional.ofNullable(second).isPresent()) {
                             storyLaneId = LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue();
                             storyStageId = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
 
-                        }else {
+                        } else {
                             Long secondLaneId = second.getLaneId();
                             //如果第二个状态为测试完成，故事为测试完成
-                            if(LaneKanbanStageConstant.TestStageEnum.TESTFINISH.equals(secondLaneId)){
+                            if (LaneKanbanStageConstant.TestStageEnum.TESTFINISH.equals(secondLaneId)) {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
-                            }else {
+                            } else {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTING.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
                             }
@@ -3231,7 +3233,7 @@ public class IssueServiceImpl implements IssueService {
                     }
 
                     Issue story = issueMapper.selectByPrimaryKey(parentId);
-                    if(Optional.ofNullable(story).isPresent()){
+                    if (Optional.ofNullable(story).isPresent()) {
                         story.setStageId(storyStageId);
                         story.setLaneId(storyLaneId);
                         issueMapper.updateByPrimaryKeySelective(story);
