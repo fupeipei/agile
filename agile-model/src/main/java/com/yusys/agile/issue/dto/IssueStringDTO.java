@@ -139,6 +139,8 @@ public class IssueStringDTO implements Serializable {
 
     private String completion;
 
+    private String teamId;
+
     public String getQueryFlag() {
         return queryFlag;
     }
@@ -691,5 +693,13 @@ public class IssueStringDTO implements Serializable {
 
     public void setIssueIds(List<Long> issueIds) {
         this.issueIds = issueIds;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
     }
 }

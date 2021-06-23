@@ -2158,7 +2158,24 @@
                 <if test="issueRecord.systemIds.queryType ==3 ">
                     and iu.system_id is null
                 </if>
+            </if><if test="issueRecord.teamIds!= null ">
+            <if test="issueRecord.teamIds.queryType ==1 and issueRecord.teamIds.dataLong.size()>0">
+                and ( iu.team_id in
+                <foreach collection="issueRecord.teamIds.dataLong" open="(" close=")" separator="," item="iterm">
+                    #{iterm}
+                </foreach>
+                or iu.team_id is null )
             </if>
+            <if test="issueRecord.teamIds.queryType ==2 and issueRecord.teamIds.dataLong.size()>0">
+                and iu.team_id in
+                <foreach collection="issueRecord.teamIds.dataLong" open="(" close=")" separator="," item="iterm">
+                    #{iterm}
+                </foreach>
+            </if>
+            <if test="issueRecord.teamIds.queryType ==3 ">
+                and iu.team_id is null
+            </if>
+        </if>
 
             <if test="issueRecord.moduleIds!= null ">
                 <if test="issueRecord.moduleIds.queryType ==1 and issueRecord.moduleIds.dataLong.size()>0">
