@@ -83,10 +83,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             rest = sTeamMapper.queryMyHiveTeam(params);
         }
         rest.forEach(team -> {
-                    //设置关注标识
-                    team.setAttentionFlag(iFacadeUserApi.checkObjIsAttention(team.getTeamId(), AttentionTypeEnum.TEAM.getValue(), userId) ?
-                            YesOrNoEnum.YES.getValue() : YesOrNoEnum.NO.getValue());
-                });
+            //设置关注标识
+            team.setAttentionFlag(iFacadeUserApi.checkObjIsAttention(team.getTeamId(), AttentionTypeEnum.TEAM.getValue(), userId) ?
+                    YesOrNoEnum.YES.getValue() : YesOrNoEnum.NO.getValue());
+        });
         //构建返回结果
         rest = buildResultList(rest);
         return rest;
@@ -229,6 +229,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         //团队名称或编号
         params.put("team", dto.getTeam());
+        //团队类型
+        params.put("teamType", dto.getTeamType());
         return params;
     }
 
@@ -252,7 +254,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode, teamType) > 0) {
-            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType)+"团队名称已存在");
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + "团队名称已存在");
         }
         //取出数据
         List<STeamMember> teamPoS = team.getTeamPoS();
@@ -319,26 +321,26 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         boolean deleteFlag = true;
         //删除前校验
         List<SSprint> sprints = sSprintMapper.querySprintByTeamId(teamId);
-        if(CollectionUtils.isEmpty(sprints)){
+        if (CollectionUtils.isEmpty(sprints)) {
             deleteFlag = true;
-        }else {
+        } else {
             for (SSprint item : sprints) {
                 //如果包括进行中、已完成、未开始的有效迭代，就不能删除
-                if(item.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) ||
+                if (item.getStatus().equals(SprintStatusEnum.TYPE_FINISHED_STATE.CODE) ||
                         item.getStatus().equals(SprintStatusEnum.TYPE_ONGOING_STATE.CODE) ||
-                        item.getStatus().equals(SprintStatusEnum.TYPE_NO_START_STATE.CODE)){
+                        item.getStatus().equals(SprintStatusEnum.TYPE_NO_START_STATE.CODE)) {
                     deleteFlag = false;
                     break;
                 }
                 deleteFlag = true;
             }
         }
-        if(deleteFlag){
+        if (deleteFlag) {
             //逻辑删除团队
             sTeamMapper.updateStateById(teamId, StateEnum.E.getValue());
             //删除PO、SM的角色，直接按平台级删除
             iFacadeUserApi.deleteUserAndRole(teamId, RoleTypeEnum.PLATFORM.getValue());
-        }else{
+        } else {
             throw new BusinessException("该团队已经关联迭代，不允许删除");
         }
     }
@@ -437,7 +439,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         String teamType = team.getTeamType();
         QueryTeamResponse queryTeamResponse = new QueryTeamResponse();
         //判断团队类型，如果是敏捷，查询团队po、sm、团队成员
-        if(Objects.equals(teamType, TeamTypeEnum.agile_team.getCode())){
+        if (Objects.equals(teamType, TeamTypeEnum.agile_team.getCode())) {
             //构建返回值
             queryTeamResponse.setSTeam(team);
             List<Long> list = teamSystemMapper.querySystemIdByTeamId(teamId);
@@ -450,7 +452,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             queryTeamResponse.setTeamSmS(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.SCRUM_MASTER.roleId));
             //查询成员
             queryTeamResponse.setTeamUsers(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.TEAM_MEMBER.roleId));
-        }else if(Objects.equals(teamType, TeamTypeEnum.lean_team.getCode())){
+        } else if (Objects.equals(teamType, TeamTypeEnum.lean_team.getCode())) {
             //如果是精益类型，则查精益教练
             //构建返回值
             queryTeamResponse.setSTeam(team);
@@ -462,7 +464,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             queryTeamResponse.setTeamLean(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.LEAN_MASTER.roleId));
             //查询成员
             queryTeamResponse.setTeamUsers(sTeamMemberMapper.selectByTeamIdAndRoleId(teamId, TeamRoleEnum.TEAM_MEMBER.roleId));
-        }else{
+        } else {
             throw new BusinessException("团队类型错误");
         }
         return queryTeamResponse;
@@ -487,9 +489,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     /**
      * 新增精益团队
+     *
+     * @param team
      * @author zhaofeng
      * @date 2021/6/11 15:50
-     * @param team
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -497,7 +500,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode, teamType) > 0) {
-            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType)+"团队名称已存在");
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + "团队名称已存在");
         }
         //取出数据
         List<STeamMember> teamLean = team.getTeamLean();
@@ -541,7 +544,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         String teamType = team.getTeamType();
         if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode, teamType) > 0) {
-            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType)+"团队名称已存在");
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + "团队名称已存在");
         }
 
         //删除团队与系统的绑定关系
@@ -606,7 +609,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         STeamExample sTeamExample = new STeamExample();
         STeamExample.Criteria criteria = sTeamExample.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.getValue());
-        if(Optional.ofNullable(tenantCode).isPresent()){
+        if (Optional.ofNullable(tenantCode).isPresent()) {
             criteria.andTenantCodeEqualTo(tenantCode);
         }
         return sTeamMapper.selectByExampleWithBLOBs(sTeamExample);
@@ -617,6 +620,6 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         PageHelper.startPage(pageNum, pageSize);
         List<TeamListDTO> sTeams = sTeamMapper.queryTeams(teamIds, teamName);
         //按ids分别查询团队/系统
-        return  buildResultList(sTeams);
+        return buildResultList(sTeams);
     }
 }

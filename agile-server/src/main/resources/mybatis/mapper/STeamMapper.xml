@@ -1,559 +1,570 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.teamv3.dao.STeamMapper">
-    <resultMap id="BaseResultMap" type="com.yusys.agile.teamv3.domain.STeam">
-        <id column="team_id" jdbcType="BIGINT" property="teamId" />
-        <result column="team_name" jdbcType="VARCHAR" property="teamName" />
-        <result column="state" jdbcType="VARCHAR" property="state" />
-        <result column="team_type" jdbcType="VARCHAR" property="teamType" />
-        <result column="create_uid" jdbcType="BIGINT" property="createUid" />
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-        <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-        <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
-  </resultMap>
-    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.teamv3.domain.STeam">
-        <result column="team_desc" jdbcType="LONGVARCHAR" property="teamDesc"/>
-    </resultMap>
-    <sql id="Example_Where_Clause">
-        <where>
-            <foreach collection="oredCriteria" item="criteria" separator="or">
-                <if test="criteria.valid">
-                    <trim prefix="(" prefixOverrides="and" suffix=")">
-                        <foreach collection="criteria.criteria" item="criterion">
-                            <choose>
-                                <when test="criterion.noValue">
-                                    and ${criterion.condition}
-                                </when>
-                                <when test="criterion.singleValue">
-                                    and ${criterion.condition} #{criterion.value}
-                                </when>
-                                <when test="criterion.betweenValue">
-                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                                </when>
-                                <when test="criterion.listValue">
-                                    and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
-                                             separator=",">
-                                        #{listItem}
-                                    </foreach>
-                                </when>
-                            </choose>
-                        </foreach>
-                    </trim>
-                </if>
-            </foreach>
-        </where>
-    </sql>
-    <sql id="Update_By_Example_Where_Clause">
-        <where>
-            <foreach collection="example.oredCriteria" item="criteria" separator="or">
-                <if test="criteria.valid">
-                    <trim prefix="(" prefixOverrides="and" suffix=")">
-                        <foreach collection="criteria.criteria" item="criterion">
-                            <choose>
-                                <when test="criterion.noValue">
-                                    and ${criterion.condition}
-                                </when>
-                                <when test="criterion.singleValue">
-                                    and ${criterion.condition} #{criterion.value}
-                                </when>
-                                <when test="criterion.betweenValue">
-                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                                </when>
-                                <when test="criterion.listValue">
-                                    and ${criterion.condition}
-                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
-                                             separator=",">
-                                        #{listItem}
-                                    </foreach>
-                                </when>
-                            </choose>
-                        </foreach>
-                    </trim>
-                </if>
-            </foreach>
-        </where>
-    </sql>
-    <sql id="Base_Column_List">
-        team_id,
-        team_name,
-        state,
-        team_type,
-        create_uid,
-        create_time,
-        update_uid,
-        update_time,
-        tenant_code
-    </sql>
-    <sql id="Blob_Column_List">
-        team_desc
-    </sql>
-    <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.teamv3.domain.STeamExample"
-            resultMap="ResultMapWithBLOBs">
-        select
-        <if test="distinct">
-            distinct
-        </if>
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from s_team
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-        <if test="orderByClause != null">
-            order by ${orderByClause}
-        </if>
-    </select>
-    <select id="selectByExample" parameterType="com.yusys.agile.teamv3.domain.STeamExample" resultMap="BaseResultMap">
-        select
-        <if test="distinct">
-            distinct
-        </if>
-        <include refid="Base_Column_List"/>
-        from s_team
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-        <if test="orderByClause != null">
-            order by ${orderByClause}
-        </if>
-    </select>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
-        select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from s_team
-        where team_id = #{teamId,jdbcType=BIGINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from s_team
-        where team_id = #{teamId,jdbcType=BIGINT}
-    </delete>
-    <delete id="deleteByExample" parameterType="com.yusys.agile.teamv3.domain.STeamExample">
-        delete
-        from s_team
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-    </delete>
-    <insert id="insert" parameterType="com.yusys.agile.teamv3.domain.STeam">
-        insert into s_team (team_id, team_name, state,
-          team_type, create_uid, create_time,
-          update_uid, update_time, tenant_code,
-          team_desc)
-        values (#{teamId,jdbcType=BIGINT}, #{teamName,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},
-          #{teamType,jdbcType=VARCHAR}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
-          #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR},
-          #{teamDesc,jdbcType=LONGVARCHAR})
-    </insert>
-    <insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeam" useGeneratedKeys="true"
-            keyColumn="team_id" keyProperty="teamId">
-        insert into s_team
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="teamName != null">
-                team_name,
-            </if>
-            <if test="state != null">
-                state,
-            </if>
-            <if test="teamType != null">
-                team_type,
-            </if>
-            <if test="createUid != null">
-                create_uid,
-            </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="updateUid != null">
-                update_uid,
-            </if>
-            <if test="updateTime != null">
-                update_time,
-            </if>
-            <if test="tenantCode != null">
-                tenant_code,
-            </if>
-            <if test="teamDesc != null">
-                team_desc,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="teamName != null">
-                #{teamName,jdbcType=VARCHAR},
-            </if>
-            <if test="state != null">
-                #{state,jdbcType=VARCHAR},
-            </if>
-            <if test="teamType != null">
-                #{teamType,jdbcType=VARCHAR},
-            </if>
-            <if test="createUid != null">
-                #{createUid,jdbcType=BIGINT},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateUid != null">
-                #{updateUid,jdbcType=BIGINT},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="tenantCode != null">
-                #{tenantCode,jdbcType=VARCHAR},
-            </if>
-            <if test="teamDesc != null">
-                #{teamDesc,jdbcType=LONGVARCHAR},
-            </if>
-        </trim>
-    </insert>
-    <select id="countByExample" parameterType="com.yusys.agile.teamv3.domain.STeamExample" resultType="java.lang.Long">
-        select count(*)
-        from s_team
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-    </select>
-    <update id="updateByExampleSelective" parameterType="map">
-        update s_team
-        <set>
-            <if test="record.teamId != null">
-                team_id = #{record.teamId,jdbcType=BIGINT},
-            </if>
-            <if test="record.teamName != null">
-                team_name = #{record.teamName,jdbcType=VARCHAR},
-            </if>
-            <if test="record.state != null">
-                state = #{record.state,jdbcType=VARCHAR},
-            </if>
-            <if test="record.teamType != null">
-                state = #{record.teamType,jdbcType=VARCHAR},
-            </if>
-            <if test="record.createUid != null">
-                create_uid = #{record.createUid,jdbcType=BIGINT},
-            </if>
-            <if test="record.createTime != null">
-                create_time = #{record.createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="record.updateUid != null">
-                update_uid = #{record.updateUid,jdbcType=BIGINT},
-            </if>
-            <if test="record.updateTime != null">
-                update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="record.tenantCode != null">
-                tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
-            </if>
-            <if test="record.teamDesc != null">
-                team_desc = #{record.teamDesc,jdbcType=LONGVARCHAR},
-            </if>
-        </set>
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByExampleWithBLOBs" parameterType="map">
-        update s_team
-        set team_id     = #{record.teamId,jdbcType=BIGINT},
-            team_name   = #{record.teamName,jdbcType=VARCHAR},
-            state       = #{record.state,jdbcType=VARCHAR},
-            team_type   = #{record.teamType,jdbcType=VARCHAR},
-            create_uid  = #{record.createUid,jdbcType=BIGINT},
-            create_time = #{record.createTime,jdbcType=TIMESTAMP},
-            update_uid  = #{record.updateUid,jdbcType=BIGINT},
-            update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-            tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
-            team_desc   = #{record.teamDesc,jdbcType=LONGVARCHAR}
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByExample" parameterType="map">
-        update s_team
-        set team_id     = #{record.teamId,jdbcType=BIGINT},
-            team_name   = #{record.teamName,jdbcType=VARCHAR},
-            state       = #{record.state,jdbcType=VARCHAR},
-            team_type   = #{record.teamType,jdbcType=VARCHAR},
-            create_uid  = #{record.createUid,jdbcType=BIGINT},
-            create_time = #{record.createTime,jdbcType=TIMESTAMP},
-            update_uid  = #{record.updateUid,jdbcType=BIGINT},
-            update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-            tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
-        <if test="_parameter != null">
-            <include refid="Update_By_Example_Where_Clause"/>
-        </if>
-    </update>
-    <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.teamv3.domain.STeam">
-        update s_team
-        <set>
-            <if test="teamName != null">
-                team_name = #{teamName,jdbcType=VARCHAR},
-            </if>
-            <if test="state != null">
-                state = #{state,jdbcType=VARCHAR},
-            </if>
-            <if test="teamType != null">
-                team_type = #{teamType,jdbcType=VARCHAR},
-            </if>
-            <if test="createUid != null">
-                create_uid = #{createUid,jdbcType=BIGINT},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateUid != null">
-                update_uid = #{updateUid,jdbcType=BIGINT},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="tenantCode != null">
-                tenant_code = #{tenantCode,jdbcType=VARCHAR},
-            </if>
-            <if test="teamDesc != null">
-                team_desc = #{teamDesc,jdbcType=LONGVARCHAR},
-            </if>
-        </set>
-        where team_id = #{teamId,jdbcType=BIGINT}
-    </update>
-    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.teamv3.domain.STeam">
-        update s_team
-        set team_name   = #{teamName,jdbcType=VARCHAR},
-            state       = #{state,jdbcType=VARCHAR},
-            team_type   = #{teamType,jdbcType=VARCHAR},
-            create_uid  = #{createUid,jdbcType=BIGINT},
-            create_time = #{createTime,jdbcType=TIMESTAMP},
-            update_uid  = #{updateUid,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=TIMESTAMP},
-            tenant_code = #{tenantCode,jdbcType=VARCHAR},
-            team_desc   = #{teamDesc,jdbcType=LONGVARCHAR}
-        where team_id = #{teamId,jdbcType=BIGINT}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.yusys.agile.teamv3.domain.STeam">
-        update s_team
-        set team_name   = #{teamName,jdbcType=VARCHAR},
-            state       = #{state,jdbcType=VARCHAR},
-            team_type   = #{teamType,jdbcType=VARCHAR},
-            create_uid  = #{createUid,jdbcType=BIGINT},
-            create_time = #{createTime,jdbcType=TIMESTAMP},
-            update_uid  = #{updateUid,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=TIMESTAMP},
-            tenant_code = #{tenantCode,jdbcType=VARCHAR}
-        where team_id = #{teamId,jdbcType=BIGINT}
-    </update>
-    <select id="queryTeam" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" />
-        from s_team
-        where team_id = #{teamId}
-          and state = 'U'
-    </select>
+	<resultMap id="BaseResultMap" type="com.yusys.agile.teamv3.domain.STeam">
+		<id column="team_id" jdbcType="BIGINT" property="teamId"/>
+		<result column="team_name" jdbcType="VARCHAR" property="teamName"/>
+		<result column="state" jdbcType="VARCHAR" property="state"/>
+		<result column="team_type" jdbcType="VARCHAR" property="teamType"/>
+		<result column="create_uid" jdbcType="BIGINT" property="createUid"/>
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+		<result column="update_uid" jdbcType="BIGINT" property="updateUid"/>
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+		<result column="tenant_code" jdbcType="VARCHAR" property="tenantCode"/>
+	</resultMap>
+	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.teamv3.domain.STeam">
+		<result column="team_desc" jdbcType="LONGVARCHAR" property="teamDesc"/>
+	</resultMap>
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem" open="("
+									         separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" prefixOverrides="and" suffix=")">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach close=")" collection="criterion.value" item="listItem" open="("
+									         separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		team_id,
+		team_name,
+		state,
+		team_type,
+		create_uid,
+		create_time,
+		update_uid,
+		update_time,
+		tenant_code
+	</sql>
+	<sql id="Blob_Column_List">
+		team_desc
+	</sql>
+	<select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.teamv3.domain.STeamExample"
+	        resultMap="ResultMapWithBLOBs">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List"/>
+		,
+		<include refid="Blob_Column_List"/>
+		from s_team
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause"/>
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByExample" parameterType="com.yusys.agile.teamv3.domain.STeamExample" resultMap="BaseResultMap">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List"/>
+		from s_team
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause"/>
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List"/>
+		,
+		<include refid="Blob_Column_List"/>
+		from s_team
+		where team_id = #{teamId,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete
+		from s_team
+		where team_id = #{teamId,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.yusys.agile.teamv3.domain.STeamExample">
+		delete
+		from s_team
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause"/>
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.yusys.agile.teamv3.domain.STeam">
+		insert into s_team (team_id, team_name, state,
+		                    team_type, create_uid, create_time,
+		                    update_uid, update_time, tenant_code,
+		                    team_desc)
+		values (#{teamId,jdbcType=BIGINT}, #{teamName,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},
+		        #{teamType,jdbcType=VARCHAR}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+		        #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR},
+		        #{teamDesc,jdbcType=LONGVARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.yusys.agile.teamv3.domain.STeam" useGeneratedKeys="true"
+	        keyColumn="team_id" keyProperty="teamId">
+		insert into s_team
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="teamName != null">
+				team_name,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="teamType != null">
+				team_type,
+			</if>
+			<if test="createUid != null">
+				create_uid,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="updateUid != null">
+				update_uid,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="tenantCode != null">
+				tenant_code,
+			</if>
+			<if test="teamDesc != null">
+				team_desc,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="teamName != null">
+				#{teamName,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=VARCHAR},
+			</if>
+			<if test="teamType != null">
+				#{teamType,jdbcType=VARCHAR},
+			</if>
+			<if test="createUid != null">
+				#{createUid,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUid != null">
+				#{updateUid,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tenantCode != null">
+				#{tenantCode,jdbcType=VARCHAR},
+			</if>
+			<if test="teamDesc != null">
+				#{teamDesc,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.yusys.agile.teamv3.domain.STeamExample" resultType="java.lang.Long">
+		select count(*)
+		from s_team
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause"/>
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="map">
+		update s_team
+		<set>
+			<if test="record.teamId != null">
+				team_id = #{record.teamId,jdbcType=BIGINT},
+			</if>
+			<if test="record.teamName != null">
+				team_name = #{record.teamName,jdbcType=VARCHAR},
+			</if>
+			<if test="record.state != null">
+				state = #{record.state,jdbcType=VARCHAR},
+			</if>
+			<if test="record.teamType != null">
+				state = #{record.teamType,jdbcType=VARCHAR},
+			</if>
+			<if test="record.createUid != null">
+				create_uid = #{record.createUid,jdbcType=BIGINT},
+			</if>
+			<if test="record.createTime != null">
+				create_time = #{record.createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.updateUid != null">
+				update_uid = #{record.updateUid,jdbcType=BIGINT},
+			</if>
+			<if test="record.updateTime != null">
+				update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="record.tenantCode != null">
+				tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+			</if>
+			<if test="record.teamDesc != null">
+				team_desc = #{record.teamDesc,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause"/>
+		</if>
+	</update>
+	<update id="updateByExampleWithBLOBs" parameterType="map">
+		update s_team
+		set team_id     = #{record.teamId,jdbcType=BIGINT},
+		    team_name   = #{record.teamName,jdbcType=VARCHAR},
+		    state       = #{record.state,jdbcType=VARCHAR},
+		    team_type   = #{record.teamType,jdbcType=VARCHAR},
+		    create_uid  = #{record.createUid,jdbcType=BIGINT},
+		    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+		    update_uid  = #{record.updateUid,jdbcType=BIGINT},
+		    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+		    tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+		    team_desc   = #{record.teamDesc,jdbcType=LONGVARCHAR}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause"/>
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update s_team
+		set team_id     = #{record.teamId,jdbcType=BIGINT},
+		    team_name   = #{record.teamName,jdbcType=VARCHAR},
+		    state       = #{record.state,jdbcType=VARCHAR},
+		    team_type   = #{record.teamType,jdbcType=VARCHAR},
+		    create_uid  = #{record.createUid,jdbcType=BIGINT},
+		    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+		    update_uid  = #{record.updateUid,jdbcType=BIGINT},
+		    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+		    tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause"/>
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.teamv3.domain.STeam">
+		update s_team
+		<set>
+			<if test="teamName != null">
+				team_name = #{teamName,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=VARCHAR},
+			</if>
+			<if test="teamType != null">
+				team_type = #{teamType,jdbcType=VARCHAR},
+			</if>
+			<if test="createUid != null">
+				create_uid = #{createUid,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUid != null">
+				update_uid = #{updateUid,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="tenantCode != null">
+				tenant_code = #{tenantCode,jdbcType=VARCHAR},
+			</if>
+			<if test="teamDesc != null">
+				team_desc = #{teamDesc,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where team_id = #{teamId,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.teamv3.domain.STeam">
+		update s_team
+		set team_name   = #{teamName,jdbcType=VARCHAR},
+		    state       = #{state,jdbcType=VARCHAR},
+		    team_type   = #{teamType,jdbcType=VARCHAR},
+		    create_uid  = #{createUid,jdbcType=BIGINT},
+		    create_time = #{createTime,jdbcType=TIMESTAMP},
+		    update_uid  = #{updateUid,jdbcType=BIGINT},
+		    update_time = #{updateTime,jdbcType=TIMESTAMP},
+		    tenant_code = #{tenantCode,jdbcType=VARCHAR},
+		    team_desc   = #{teamDesc,jdbcType=LONGVARCHAR}
+		where team_id = #{teamId,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.yusys.agile.teamv3.domain.STeam">
+		update s_team
+		set team_name   = #{teamName,jdbcType=VARCHAR},
+		    state       = #{state,jdbcType=VARCHAR},
+		    team_type   = #{teamType,jdbcType=VARCHAR},
+		    create_uid  = #{createUid,jdbcType=BIGINT},
+		    create_time = #{createTime,jdbcType=TIMESTAMP},
+		    update_uid  = #{updateUid,jdbcType=BIGINT},
+		    update_time = #{updateTime,jdbcType=TIMESTAMP},
+		    tenant_code = #{tenantCode,jdbcType=VARCHAR}
+		where team_id = #{teamId,jdbcType=BIGINT}
+	</update>
+	<select id="queryTeam" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from s_team
+		where team_id = #{teamId}
+		  and state = 'U'
+	</select>
 
-    <select id="listTeamByIds" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from s_team
-        <where>
-            <choose>
-                <when test="teamIds != null and teamIds.size > 0">
-                    and team_id in
-                    <foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
-                        #{teamId}
-                    </foreach>
-                </when>
-                <otherwise>
-                    and 1 = 0
-                </otherwise>
-            </choose>
-        </where>
-    </select>
+	<select id="listTeamByIds" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from s_team
+		<where>
+			<choose>
+				<when test="teamIds != null and teamIds.size > 0">
+					and team_id in
+					<foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
+						#{teamId}
+					</foreach>
+				</when>
+				<otherwise>
+					and 1 = 0
+				</otherwise>
+			</choose>
+		</where>
+	</select>
 
-    <resultMap id="query_list_map" type="com.yusys.agile.team.dto.TeamListDTO">
-        <id column="teamId" property="teamId"/>
-        <result column="teamName" property="teamName"/>
-        <result column="teamType" property="teamType"/>
-        <result column="createTime" property="createTime"/>
-        <result column="createUid" property="createUid"/>
-    </resultMap>
-    <sql id="query_list_column">
-        t.team_id     as teamId,
-        t.team_name   as teamName,
-        t.team_type   as teamType,
-        t.create_time as createTime,
-        t.create_uid  as createUid,
-        t.tenant_code as tenant_code
-    </sql>
-    <sql id="query_list_param">
-        and t.team_id = tss.team_id
-        and t.state = 'U'
-        <if test="params != null">
-            <if test="params.team != null and params.team != ''">
-                and (t.team_name like concat('%',#{params.team},'%')
-                  or t.team_id like concat('%',#{params.team},'%')
-                )
-            </if>
-            <if test="params.po != null and params.po != ''">
-                and exists (
-                    select * from s_team_member tm where t.team_id=tm.team_id
-                    and (
-                        (tm.user_name like concat('%',#{params.po},'%')
-                         or tm.user_account like concat('%',#{params.po},'%')
-                        )
-                        and tm.role_id=104
-                    )
-                )
-            </if>
-            <if test="params.sm != null and params.sm != ''">
-                and exists (
-                    select * from s_team_member tm where t.team_id=tm.team_id
-                        and (
-                        (tm.user_name like concat('%',#{params.sm},'%')
-                         or tm.user_account like concat('%',#{params.sm},'%')
-                        )
-                        and tm.role_id=103
-                    )
-                )
-            </if>
-            <if test="params.lean != null and params.lean != ''">
-                and exists (
-                    select * from s_team_member tm where t.team_id=tm.team_id
-                        and (
-                        (tm.user_name like concat('%',#{params.lean},'%')
-                         or tm.user_account like concat('%',#{params.lean},'%')
-                        )
-                        and tm.role_id=106
-                    )
-                )
-            </if>
-            <if test="params.systemIds != null and params.systemIds.size != 0">
-                and ( tss.system_id in
-                <foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
-                    #{systemId}
-                </foreach>
-                )
-            </if>
-            <if test="params.tenantCode != null and params.tenantCode != ''">
-                and t.tenant_code = #{params.tenantCode}
-            </if>
-            <if test="params.teamType != null and params.teamType != ''">
-                and t.team_type = #{params.teamType}
-            </if>
-        </if>
-    </sql>
-    <select id="queryAllTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
-        select distinct
-        <include refid="query_list_column"/>
-        from s_team t,
-             s_team_system tss
-        <where>
-            <include refid="query_list_param"/>
-        </where>
-        order by t.create_time desc
-    </select>
-    <select id="queryMyHiveTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
-        select distinct
-        <include refid="query_list_column"/>
-        from s_team t,
-             s_team_system tss
-        <where>
-            <include refid="query_list_param"/>
-            <if test="params.userId != null and params.userId != ''">
-                and (t.create_uid = #{params.userId} or exists(
-                        select *
-                        from s_team_member tm
-                        where t.team_id = tm.team_id
-                          and tm.user_id = #{params.userId}
-                        )
-                        )
-            </if>
-        </where>
-        order by t.create_time desc
-    </select>
-
-    <select id="selectAll" resultType="com.yusys.agile.team.dto.TeamListDTO">
-        select team_id, team_name, create_time, create_uid
-        from s_team
-        where state = 'U'
-    </select>
-
-    <select id="teamNameNumber" resultType="int">
-        select count(team_name)
-        from s_team
-                where
-                 binary team_name = #{teamName}
-                  and tenant_code = #{tenantCode}
-                  and team_type = #{teamType}
-                  and state = 'U'
-        <if test="teamId != null">
-            and team_id <![CDATA[<>]]> #{teamId}
-        </if>
-    </select>
-
-    <update id="updateStateById">
-        update s_team
-        set state = #{state}
-        where team_id = #{teamId}
-    </update>
-
-    <select id="getTeamsByTeamId" resultType="com.yusys.agile.teamv3.domain.STeam">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM s_team
-        WHERE team_id = #{teamId}
-    </select>
-
-    <select id="getTeamLikeNameOrCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from s_team
-        where team_name like concat('%', #{team}, '%')
-           or team_id like concat('%', #{team}, '%')
-    </select>
-
-    <select id="querySprintUser" resultType="com.yusys.agile.teamv3.domain.STeamMember">
-        select distinct a.user_id, a.user_account, a.user_name
-        from s_team_member a
-                     left join s_sprint_user_hour b on b.user_id = a.user_id
-                     left join s_sprint c on b.sprint_id = c.sprint_id
-        where b.sprint_id = #{sprintId}
-          and a.team_id = (select team_id from s_sprint where sprint_id = #{sprintId})
-          and c.state = 'U'
-    </select>
-
-    <select id="queryTeamSystem" resultType="java.lang.Long">
-        select system_id
-        from s_team_system
-        where team_id = #{teamId}
-    </select>
-
-    <select id="queryTeamNameByTeamId" resultType="java.lang.String">
-        select team_name
-        from s_team
-        where team_id = #{teamId}
-    </select>
+	<resultMap id="query_list_map" type="com.yusys.agile.team.dto.TeamListDTO">
+		<id column="teamId" property="teamId"/>
+		<result column="teamName" property="teamName"/>
+		<result column="teamType" property="teamType"/>
+		<result column="createTime" property="createTime"/>
+		<result column="createUid" property="createUid"/>
+	</resultMap>
+	<sql id="query_list_column">
+		t.team_id     as teamId,
+		t.team_name   as teamName,
+		t.team_type   as teamType,
+		t.create_time as createTime,
+		t.create_uid  as createUid,
+		t.tenant_code as tenant_code
+	</sql>
+	<sql id="query_list_param">
+		and t.team_id = tss.team_id
+		and t.state = 'U'
+		<if test="params != null">
+			<if test="params.team != null and params.team != ''">
+				and (t.team_name like concat('%',#{params.team},'%')
+				or t.team_id like concat('%',#{params.team},'%')
+				)
+			</if>
+			<if test="params.po != null and params.po != ''">
+				and exists (
+				select * from s_team_member tm where t.team_id=tm.team_id
+				and (
+				(tm.user_name like concat('%',#{params.po},'%')
+				or tm.user_account like concat('%',#{params.po},'%')
+				)
+				and tm.role_id=104
+				)
+				)
+			</if>
+			<if test="params.sm != null and params.sm != ''">
+				and exists (
+				select * from s_team_member tm where t.team_id=tm.team_id
+				and (
+				(tm.user_name like concat('%',#{params.sm},'%')
+				or tm.user_account like concat('%',#{params.sm},'%')
+				)
+				and tm.role_id=103
+				)
+				)
+			</if>
+			<if test="params.lean != null and params.lean != ''">
+				and exists (
+				select * from s_team_member tm where t.team_id=tm.team_id
+				and (
+				(tm.user_name like concat('%',#{params.lean},'%')
+				or tm.user_account like concat('%',#{params.lean},'%')
+				)
+				and tm.role_id=106
+				)
+				)
+			</if>
+			<if test="params.systemIds != null and params.systemIds.size != 0">
+				and ( tss.system_id in
+				<foreach collection="params.systemIds" item="systemId" open="(" separator="," close=")">
+					#{systemId}
+				</foreach>
+				)
+			</if>
+			<if test="params.tenantCode != null and params.tenantCode != ''">
+				and t.tenant_code = #{params.tenantCode}
+			</if>
+			<if test="params.teamType != null and params.teamType != ''">
+				and t.team_type = #{params.teamType}
+			</if>
+		</if>
+	</sql>
+	<select id="queryAllTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
+		select distinct
+		<include refid="query_list_column"/>
+		from s_team t,
+		     s_team_system tss
+		<where>
+			<include refid="query_list_param"/>
+			<if test="params.teamType != null">
+				and team_type = #{params.teamType}
+			</if>
+		</where>
 
 
-    <select id="querySprintVagueUser" resultType="com.yusys.agile.teamv3.domain.STeamMember">
-        select user_id
-        from s_sprint_user_hour
-        where sprint_id = #{sprintId}
-    </select>
+		order by t.create_time desc
+	</select>
+	<select id="queryMyHiveTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
+		select distinct
+		<include refid="query_list_column"/>
+		from s_team t,
+		     s_team_system tss
+		<where>
+			<include refid="query_list_param"/>
+			<if test="params.userId != null and params.userId != ''">
+				and (t.create_uid = #{params.userId} or exists(
+						select *
+						from s_team_member tm
+						where t.team_id = tm.team_id
+						  and tm.user_id = #{params.userId}
+						)
+						)
+			</if>
 
-    <select id="queryTeams" resultType="com.yusys.agile.team.dto.TeamListDTO">
-        select a.* from s_team a
-        where  a.state='U'
-        <if test="teamIds != null and teamIds.size>0">
-         and a.team_id in
-          <foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
-          #{teamId}
-          </foreach>
-        </if>
-        <if test="teamName != null and teamName != ''">
-         AND (a.team_name LIKE CONCAT('%', #{teamName}, '%'))
-         </if>
-    </select>
+			<if test="params.teamType != null">
+				and team_type = #{params.teamType}
+			</if>
+		</where>
+		order by t.create_time desc
+	</select>
+
+	<select id="selectAll" resultType="com.yusys.agile.team.dto.TeamListDTO">
+		select team_id, team_name, create_time, create_uid
+		from s_team
+		where state = 'U'
+	</select>
+
+	<select id="teamNameNumber" resultType="int">
+		select count(team_name)
+		from s_team
+				where
+				binary team_name = #{teamName}
+				  and tenant_code = #{tenantCode}
+				  and team_type = #{teamType}
+				  and state = 'U'
+		<if test="teamId != null">
+			and team_id <![CDATA[<>]]> #{teamId}
+		</if>
+	</select>
+
+	<update id="updateStateById">
+		update s_team
+		set state = #{state}
+		where team_id = #{teamId}
+	</update>
+
+	<select id="getTeamsByTeamId" resultType="com.yusys.agile.teamv3.domain.STeam">
+		SELECT
+		<include refid="Base_Column_List"/>
+		FROM s_team
+		WHERE team_id = #{teamId}
+	</select>
+
+	<select id="getTeamLikeNameOrCode" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from s_team
+		where team_name like concat('%', #{team}, '%')
+		   or team_id like concat('%', #{team}, '%')
+	</select>
+
+	<select id="querySprintUser" resultType="com.yusys.agile.teamv3.domain.STeamMember">
+		select distinct a.user_id, a.user_account, a.user_name
+		from s_team_member a
+				     left join s_sprint_user_hour b on b.user_id = a.user_id
+				     left join s_sprint c on b.sprint_id = c.sprint_id
+		where b.sprint_id = #{sprintId}
+		  and a.team_id = (select team_id from s_sprint where sprint_id = #{sprintId})
+		  and c.state = 'U'
+	</select>
+
+	<select id="queryTeamSystem" resultType="java.lang.Long">
+		select system_id
+		from s_team_system
+		where team_id = #{teamId}
+	</select>
+
+	<select id="queryTeamNameByTeamId" resultType="java.lang.String">
+		select team_name
+		from s_team
+		where team_id = #{teamId}
+	</select>
+
+
+	<select id="querySprintVagueUser" resultType="com.yusys.agile.teamv3.domain.STeamMember">
+		select user_id
+		from s_sprint_user_hour
+		where sprint_id = #{sprintId}
+	</select>
+
+	<select id="queryTeams" resultType="com.yusys.agile.team.dto.TeamListDTO">
+		select a.*
+		from s_team a
+				where  a.state = 'U'
+		<if test="teamIds != null and teamIds.size > 0">
+			and a.team_id in
+			<foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
+				#{teamId}
+			</foreach>
+		</if>
+		<if test="teamName != null and teamName != ''">
+			AND (a.team_name LIKE CONCAT('%', #{teamName}, '%'))
+		</if>
+	</select>
 </mapper>
