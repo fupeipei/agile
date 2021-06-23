@@ -2992,9 +2992,7 @@ public class IssueServiceImpl implements IssueService {
                                             return;
                                         }
                                     }
-
                                 }
-
                             } else {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTING.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
