@@ -52,6 +52,18 @@ public class StageTemplateConfig implements Serializable {
     private String tenantCode;
 
     /**
+     * 应用类型  （epic只应用第一阶段） 2 、feature 3、story 4 task
+     */
+    private Byte appType;
+
+
+    /**
+     * 是否终态 表示该阶段为完成类型，
+     * 如果是终态在同一阶段内不允许有状态在该阶段后
+     */
+    private Byte isFinal;
+
+    /**
      * 二阶段
      */
     List<StageTemplateConfig> secondStages;
@@ -128,6 +140,22 @@ public class StageTemplateConfig implements Serializable {
         this.secondStages = secondStages;
     }
 
+
+    public Byte getAppType() {
+        return appType;
+    }
+
+    public void setAppType(Byte appType) {
+        this.appType = appType;
+    }
+
+    public Byte getIsFinal() {
+        return isFinal;
+    }
+
+    public void setIsFinal(Byte isFinal) {
+        this.isFinal = isFinal;
+    }
     @Override
     public String toString() {
         return "StageTemplateConfig{" +
