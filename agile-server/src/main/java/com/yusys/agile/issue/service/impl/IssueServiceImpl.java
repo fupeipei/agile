@@ -1282,6 +1282,9 @@ public class IssueServiceImpl implements IssueService {
         if (StringUtils.isNotEmpty(issueStringDTO.getSystemId())) {
             issueRecord.setSystemIds(dealData(issueStringDTO.getSystemId(), LONG));
         }
+        if (StringUtils.isNotEmpty(issueStringDTO.getTeamId())) {
+            issueRecord.setTeamIds(dealData(issueStringDTO.getTeamId(), LONG));
+        }
         if (StringUtils.isNotEmpty(issueStringDTO.getModuleId())) {
             issueRecord.setModuleIds(dealData(issueStringDTO.getModuleId(), LONG));
         }
