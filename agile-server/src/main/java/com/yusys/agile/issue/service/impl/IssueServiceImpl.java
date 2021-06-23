@@ -309,7 +309,8 @@ public class IssueServiceImpl implements IssueService {
         List<IssueHistoryRecord> history = new ArrayList<>();
         setHistoryRecordList(history, issueId, parentId.toString(), null);
         issueFactory.dealHistory(history);
-        Long sprintId = getRelatedIssueSprintId(issueId, IssueTypeEnum.TYPE_TASK.CODE);
+        Issue issue = issueMapper.selectByPrimaryKey(issueId);
+        Long sprintId = getRelatedIssueSprintId(issue, IssueTypeEnum.TYPE_TASK.CODE);
         //迭代信息校验
         storyService.checkSprintParam(issueId, sprintId);
         issueMapper.deleteRelation(parentId, sprintId, issueId);
@@ -2992,9 +2993,7 @@ public class IssueServiceImpl implements IssueService {
                                             return;
                                         }
                                     }
-
                                 }
-
                             } else {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTING.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
