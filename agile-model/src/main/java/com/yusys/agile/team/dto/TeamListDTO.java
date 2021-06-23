@@ -4,6 +4,7 @@ import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,8 @@ import java.util.List;
  * @Date 2021/4/22 10:45
  */
 @Data
-public class TeamListDTO {
+public class TeamListDTO implements Serializable {
+    private static final long serialVersionUID = -2654457780624482505L;
     @ApiModelProperty("团队id")
     private Long teamId;
     @ApiModelProperty("团队名称")
