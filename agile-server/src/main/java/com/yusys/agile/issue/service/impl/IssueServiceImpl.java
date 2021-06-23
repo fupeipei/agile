@@ -2957,7 +2957,7 @@ public class IssueServiceImpl implements IssueService {
 
                         //如果从左边数第二个状态和第一个状态一致，说明没有测试任务,故事状态为开发完成
                         if (!Optional.ofNullable(second).isPresent()) {
-                            storyLaneId = LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue();
+                            storyLaneId = LaneKanbanStageConstant.DevStageEnum.FINISH.getValue();
                             storyStageId = StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue();
 
                         } else {
