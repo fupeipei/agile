@@ -6,8 +6,6 @@ import com.yusys.agile.issue.dto.DemandPlanDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.PanoramasEpicDTO;
-import com.yusys.agile.servicemanager.dto.CustomizePageInfoDTO;
-import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -320,12 +318,14 @@ public interface IssueService {
      *
      * @param fieldId
      * @param value
+     * @param issueType
+     * @param mapMap
      * @return java.lang.String
      * @date 2021/2/16
      */
 
 
-    String translateExtendFieldMap(String fieldId, String value);
+    String translateExtendFieldMap(String fieldId, String value,Byte issueType,Map<String, Map> mapMap);
 
 
     Map queryIssueEpic(Long issueId, Byte issueType);

@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.yusys.agile.commit.dto.CommitDTO;
-import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.fault.enums.FaultTypeEnum;
 import com.yusys.agile.fault.service.FaultService;
@@ -222,7 +221,7 @@ public class IssueServiceImpl implements IssueService {
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
         JSONObject jsonObject = new JSONObject(map);
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
-
+        Byte issueType = Byte.parseByte(map.get("issueType").toString());
         List<Issue> issues = queryIssueList(map);
         if (CollectionUtils.isEmpty(issues)) {
             pageInfo.setList(new ArrayList());
@@ -262,11 +261,10 @@ public class IssueServiceImpl implements IssueService {
                 if (longListMap.containsKey(issueListDTO.getIssueId())) {
                     List<SysExtendFieldDetail> sysExtendFieldDetailList1 = longListMap.get(issueListDTO.getIssueId());
                     for (SysExtendFieldDetail s : sysExtendFieldDetailList1) {
-                        mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue()));
+                        mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue().trim(),issueType,mapMap ));
                     }
                 }
                 //查询非Epic的客户需求编号、局方需求编号、要求上线时间
-                Byte issueType = Byte.parseByte(map.get("issueType").toString());
                 if (issueType.compareTo(IssueTypeEnum.TYPE_EPIC.CODE) > 0) {
                     Map map1 = queryIssueEpic(issueListDTO.getIssueId(), issueType);
                     if (MapUtils.isNotEmpty(map1)) {
@@ -2577,18 +2575,22 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public String translateExtendFieldMap(String fieldCode, String value) {
+    public String translateExtendFieldMap(String fieldCode, String value, Byte issueType, Map<String, Map> mapMap) {
         String result = "";
         HeaderFieldExample headerFieldExample = new HeaderFieldExample();
         HeaderFieldExample.Criteria criteria = headerFieldExample.createCriteria();
         criteria.andFieldCodeEqualTo(fieldCode)
-                .andIsCustomEqualTo(Byte.parseByte("0"));
+                .andIsCustomEqualTo(Byte.parseByte("0"))
+                .andCategoryEqualTo(issueType);
         List<HeaderField> headerFields = headerFieldMapper.selectByExampleWithBLOBs(headerFieldExample);
         if (CollectionUtils.isEmpty(headerFields)) {
             return value;
+        }else if(headerFields.get(0).getFieldGroup().equals("user")){
+            Map<Long,String> mapUser = mapMap.get("userMap");
+            return mapUser.containsKey(Long.parseLong(value))?mapUser.get(Long.parseLong(value)):value;
         }
-        JSONObject jsonObject;
         if (fieldCode.equals("deployIllustration")) {
+            JSONObject jsonObject;
             JSONArray jsonArrayValue = JSONArray.parseArray(value);
             jsonObject = JSONObject.parseObject(headerFields.get(0).getFieldContent());
             if (jsonObject != null) {
@@ -2615,6 +2617,9 @@ public class IssueServiceImpl implements IssueService {
                 return value;
             }
         }
+        else{
+            result = value;
+        }
         return result;
     }
 
@@ -2630,8 +2635,9 @@ public class IssueServiceImpl implements IssueService {
                 mapT.put(key.toString(), beanMap.get(key));
             }
             if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
+                Map<String, Map> mapMap = issueMap(null);
                 for (SysExtendFieldDetail s : sysExtendFieldDetailList) {
-                    mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue()));
+                    mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue().trim(),issueType,mapMap ));
                 }
             }
         }
