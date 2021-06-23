@@ -71,11 +71,9 @@ public class LeanKanbanController {
                                             @RequestParam(value = "stageId") Long stageId,
                                             @RequestParam(value = "laneId" ,required = false) Long laneId) {
         try {
+            //校验卡片位置
+            issueService.checkIssueState(issueId, fromStageId, fromLaneId,stageId,laneId);
 
-            boolean b = issueService.checkIssueState(issueId, fromStageId, fromLaneId);
-            if(!b){
-                throw new BusinessException("卡片拖动失败,卡片位置不在当前位置,请刷新");
-            }
             return ControllerResponse.success(issueService.dragIssueCard(issueId,stageId,laneId));
         } catch (Exception e) {
             log.info("拖拽卡片异常:{}",e.getMessage());

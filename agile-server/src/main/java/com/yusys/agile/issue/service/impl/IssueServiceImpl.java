@@ -26,10 +26,15 @@ import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
+import com.yusys.agile.leankanban.dao.SLeanKanbanMapper;
+import com.yusys.agile.leankanban.domain.SLeanKanban;
+import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 import com.yusys.agile.leankanban.enums.LaneKanbanStageConstant;
+import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.service.ModuleService;
 import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
@@ -183,6 +188,10 @@ public class IssueServiceImpl implements IssueService {
     private Teamv3Service teamv3Service;
     @Autowired
     private IssueUpRegularFactory issueUpRegularFactory;
+    @Autowired
+    private LeanKanbanService leanKanbanService;
+    @Autowired
+    private SLeanKanbanMapper leanKanbanMapper;
 
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
@@ -2992,6 +3001,10 @@ public class IssueServiceImpl implements IssueService {
                                             issueUpRegularFactory.commonIssueUpRegular(feature.getIssueId());
                                             return;
                                         }
+                                    }else {
+                                        //向上汇总状态
+                                        issueUpRegularFactory.commonIssueUpRegular(story.getIssueId());
+                                        return;
                                     }
                                 }
                             } else {
@@ -3032,24 +3045,87 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public boolean checkIssueState(Long issueId, Long fromStageId, Long fromLaneId) {
-        loggr.info("校验卡片状态入参: issueId{},fromStageId:{},fromLaneId:{}",issueId,fromStageId,fromLaneId);
+    public void checkIssueState(Long issueId, Long fromStageId,Long fromLaneId, Long toStageId,Long toLaneId) {
+
+        loggr.info("校验卡片状态入参: issueId{},fromStageId:{},fromLaneId:{},toStageId:{},toLaneId:{}",issueId,fromStageId,fromLaneId,toStageId,toLaneId);
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
 
+        boolean isOrigPosition = true;
         Long laneId = issue.getLaneId();
         Long stageId = issue.getStageId();
         loggr.info("数据库issue状态: laneId{},stageId{}",laneId,stageId);
-        if (fromStageId == stageId ) {
-            if(laneId != null && laneId == fromLaneId){
-                return true;
+        if (fromStageId.equals(stageId)) {
+            if(laneId != null && !laneId.equals(fromLaneId)){
+                isOrigPosition =  false;
+            }else {
+                // laneId 为null的情况，如果fromLaneId也为null说明位置一致，否则位置不一致
+                if(fromLaneId != null){
+                    isOrigPosition =  false;
+                }
             }
+        }else {
+            isOrigPosition = false;
+        }
 
-            if(fromLaneId == null){
-                return true;
+        if(!isOrigPosition){
+            throw new BusinessException("卡片拖动失败,卡片位置不在当前位置,请刷新");
+        }
+
+        Long teamId = issue.getTeamId();
+        if(Optional.ofNullable(teamId).isPresent()){
+            Long kanbanId = issue.getKanbanId();
+            SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
+            if(!Optional.ofNullable(sLeanKanban).isPresent()){
+                throw new BusinessException("当前看板不存在");
+            }
+            teamId = sLeanKanban.getTeamId();
+        }
+
+        List<Long> stageIds = Lists.newArrayList();
+        StageConstant.FirstStageEnum[] values = StageConstant.FirstStageEnum.values();
+        for (int i = 0; i < values.length; i++) {
+            stageIds.add(values[i].getValue());
+        }
+        stageIds = stageIds.stream().sorted().collect(Collectors.toList());
+        if(stageIds.indexOf(toStageId) < stageIds.indexOf(fromStageId)){
+
+            throw new BusinessException("您可不能往回拖啊.");
+        }
+
+        if(fromLaneId != null  && toLaneId != null){
+            SLeanKanbanDTO leanKanbanDTO = leanKanbanService.queryLeanKanbanInfo(teamId);
+            List<KanbanStageInstanceDTO> kanbanStageInstances = leanKanbanDTO.getKanbanStageInstances();
+            List<Long> laneIds = Lists.newArrayList();
+            kanbanStageInstances.forEach(
+                    kanbanStageInstanceDTO -> {
+                        List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
+                        if(CollectionUtils.isNotEmpty(secondStages)){
+                            secondStages.forEach(
+                                    secondStage->{
+                                        laneIds.add(secondStage.getStageId());
+                                    }
+                            );
+                        }
+                    }
+            );
+
+            loggr.info("获取看板:{},所有laneId集合 :{}",leanKanbanDTO.getKanbanName(),JSONObject.toJSONString(laneIds));
+            if(laneIds.indexOf(toLaneId) < laneIds.indexOf(fromLaneId)){
+
+                throw new BusinessException("您可不能往回拖啊.");
+            }
+        }
+
+        if(IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
+            //开发类任务不能拖入测试中
+            if(!TaskTypeEnum.TEST.CODE.equals(issue.getTaskType())){
+
+                if(StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(toStageId)){
+                    throw new BusinessException("开发任务不能拖入测试阶段.");
+                }
             }
 
         }
-        return false;
     }
 
     /**
