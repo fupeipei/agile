@@ -141,9 +141,9 @@ public class Teamv3Controller {
      * @param pageSize
      * @return
      */
-    @GetMapping("/queryTeamList")
-    public List<TeamListDTO> queryTeamList(@RequestParam(name = "teamName", required = false) String teamName,
-                                            @RequestParam(name = "teamIds") List<Long> teamIds,
+    @PostMapping("/queryTeamList")
+    public List<TeamListDTO> queryTeamList(@RequestBody List<Long> teamIds,
+                                           @RequestParam(name = "teamName", required = false) String teamName,
                                             @RequestParam(name = "pageNum") Integer pageNum,
                                             @RequestParam(name = "pageSize") Integer pageSize){
         List<TeamListDTO> result=teamv3Service.queryTeams(teamIds,teamName,pageNum,pageSize);

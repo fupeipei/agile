@@ -25,6 +25,8 @@
     <result  column="kanban_id" jdbcType="BIGINT" property="kanbanId"/>
     <result  column="team_id" jdbcType="BIGINT" property="teamId"/>
     <result  column="stage_type" jdbcType="TINYINT" property="stageType"/>
+    <result column="app_type" jdbcType="TINYINT" property="appType"/>
+    <result column="is_final" jdbcType="TINYINT" property="isFinal"/>
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.set.stage.domain.KanbanStageInstance">
     <result column="admittance_rule" jdbcType="LONGVARCHAR" property="admittanceRule" />
@@ -90,7 +92,7 @@
   <sql id="Base_Column_List">
     instance_id, stage_id, stage_name, parent_id, type_id, project_id, order_id, max_numbers, 
     stay_days, is_show, level, state, enable_cancel, create_uid, create_time, update_uid, 
-    update_time,tenant_code,principal,template_id,kanban_id,team_id,stage_type
+    update_time,tenant_code,principal,template_id,kanban_id,team_id,stage_type,is_final,app_type
   </sql>
   <sql id="Blob_Column_List">
     admittance_rule
@@ -153,7 +155,7 @@
       is_show, level, state, 
       enable_cancel, create_uid, create_time, 
       update_uid, update_time, admittance_rule,
-      tenant_code, principal, template_id
+      tenant_code, principal, template_id,app_type,is_final
       )
     values (#{instanceId,jdbcType=BIGINT}, #{stageId,jdbcType=BIGINT}, #{stageName,jdbcType=VARCHAR}, 
       #{parentId,jdbcType=BIGINT}, #{typeId,jdbcType=TINYINT}, #{projectId,jdbcType=BIGINT}, 
@@ -161,7 +163,8 @@
       #{isShow,jdbcType=TINYINT}, #{level,jdbcType=TINYINT}, #{state,jdbcType=VARCHAR}, 
       #{enableCancel,jdbcType=TINYINT}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{admittanceRule,jdbcType=LONGVARCHAR},
-      #{tenantCode}, #{principal,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}
+      #{tenantCode}, #{principal,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT},#{appType,jdbcType=TINYINT},
+      #{isFinal,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.set.stage.domain.KanbanStageInstance" useGeneratedKeys="true" keyProperty="instanceId">
@@ -237,7 +240,13 @@
         kanban_id,
       </if>
       <if test="stageType != null">
-        stage_type
+        stage_type,
+      </if>
+      <if test="appType != null">
+        app_type,
+      </if>
+      <if test="isFinal != null">
+        is_final
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -311,7 +320,13 @@
         #{kanbanId,jdbcType=BIGINT},
       </if>
       <if test="stageType != null">
-        #{stageType,jdbcType=TINYINT}
+        #{stageType,jdbcType=TINYINT},
+      </if>
+      <if test="appType != null">
+        #{appType,jdbcType=TINYINT},
+      </if>
+      <if test="isFinal != null">
+        #{isFinal,jdbcType=TINYINT}
       </if>
     </trim>
   </insert>

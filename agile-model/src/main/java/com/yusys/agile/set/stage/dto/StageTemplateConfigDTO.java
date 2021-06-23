@@ -24,6 +24,10 @@ public class StageTemplateConfigDTO implements Serializable {
 
     private String state;
 
+    private Byte appType;
+
+    private Byte isFinal;
+
     private String tenantCode;
 
     public Long getConfId() {
@@ -84,6 +88,22 @@ public class StageTemplateConfigDTO implements Serializable {
 
     public String getTenantCode() {
         return tenantCode;
+    }
+
+    public Byte getAppType() {
+        return appType;
+    }
+
+    public void setAppType(Byte appType) {
+        this.appType = appType;
+    }
+
+    public Byte getIsFinal() {
+        return isFinal;
+    }
+
+    public void setIsFinal(Byte isFinal) {
+        this.isFinal = isFinal;
     }
 
     public void setTenantCode(String tenantCode) {

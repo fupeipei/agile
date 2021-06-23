@@ -1611,8 +1611,7 @@
     <select id="listRelation" resultType="com.yusys.agile.issue.dto.IssueDTO">
     select
     a.issue_id,a.title,a.parent_id,a.issue_type,a.`handler`,
-    (select c.stage_name from s_kanban_stage_instance c where c.stage_id = a.stage_id and c.kanban_id = a.kanban_id) as stageName,
-    (select d.stage_name from s_kanban_stage_instance d where d.stage_id = a.lane_id and d.parent_id = a.stage_id and d.kanban_id = a.kanban_id) as laneName
+    a.stage_id,a.lane_id,a.team_id
     from s_issue a where a.state='U' and ((a.issue_id = (select parent_id from s_issue c where c.issue_id=#{issueId} and c.state='U')) or a.parent_id = #{issueId})
   </select>
     <select id="getTaskMemberAnalysis" resultType="com.yusys.agile.burndown.dto.HistogramTaskDTO">

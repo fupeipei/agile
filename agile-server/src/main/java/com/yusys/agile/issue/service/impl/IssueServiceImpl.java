@@ -43,7 +43,6 @@ import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
 import com.yusys.agile.sysextendfield.util.SytExtendFieldDetailFactory;
 import com.yusys.agile.review.dto.StoryCheckResultDTO;
 import com.yusys.agile.review.service.ReviewService;
-import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.service.StageService;
@@ -57,10 +56,8 @@ import com.yusys.agile.utils.DateTools;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.utils.ReflectObjectUtil;
 import com.yusys.agile.utils.StringUtil;
-import com.yusys.agile.versionmanager.constants.VersionConstants;
 import com.yusys.agile.versionmanager.domain.VersionIssueRelate;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
-import com.yusys.agile.versionmanager.enums.IssueApproveStatusEnum;
 import com.yusys.agile.versionmanager.service.VersionIssueRelateService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -87,7 +84,6 @@ import com.yusys.portal.model.facade.entity.SsoProject;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
-import com.yusys.portal.util.date.DateUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -167,8 +163,6 @@ public class IssueServiceImpl implements IssueService {
     private VersionIssueRelateService versionIssueRelateService;
     @Resource
     private VersionManagerService versionManagerService;
-    @Resource
-    private ExternalApiConfigUtil externalApiConfigUtil;
     @Resource
     private IFacadeProjectApi iFacadeProjectApi;
     @Resource
@@ -1139,8 +1133,19 @@ public class IssueServiceImpl implements IssueService {
                 handlers.add(issueDTO.getHandler());
             }
             setParentIssue(issueType, issueDTO);
-            if (StringUtils.isNotBlank(issueDTO.getLaneName()) && StringUtils.isNotBlank(issueDTO.getStageName())) {
-                issueDTO.setStageName(issueDTO.getStageName() + "/" + issueDTO.getLaneName());
+            Long teamId = issueDTO.getTeamId();
+            if (null != teamId) {
+                Map<Long,String> mapStage = iStageService.getStageMapByTeamId(teamId);
+                Long stageId = issueDTO.getStageId();
+                Long laneId = issueDTO.getLaneId();
+                if(null != stageId){
+                    String stageName = mapStage.get(stageId);
+                    if(null != laneId){
+                        issueDTO.setStageName(stageName + "/" + mapStage.get(laneId));
+                    }else{
+                        issueDTO.setStageName(stageName);
+                    }
+                }
             }
         }
         issueFactory.setHandlerName(handlers, issueDTOList);
@@ -2963,6 +2968,33 @@ public class IssueServiceImpl implements IssueService {
                             if (LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue().equals(secondLaneId)) {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
+
+                                Issue story = issueMapper.selectByPrimaryKey(parentId);
+                                if (Optional.ofNullable(story).isPresent()) {
+                                    Long featureId = story.getParentId();
+                                    story.setStageId(storyStageId);
+                                    story.setLaneId(storyLaneId);
+                                    issueMapper.updateByPrimaryKeySelective(story);
+
+                                    IssueExample example = new IssueExample();
+                                    example.createCriteria().andParentIdEqualTo(featureId).andStateEqualTo(StateEnum.U.getValue());
+                                    List<Issue> issues = issueMapper.selectByExample(example);
+                                    Set<Long> result = issues.stream().map(issu -> issu.getLaneId()).collect(Collectors.toSet());
+                                    //如果feature 下故事都已经完成，则更新feature状态为 系统测试阶段，进行中
+                                    if(result.size() == 1 && result.contains(storyLaneId)){
+                                        Issue feature = issueMapper.selectByPrimaryKey(featureId);
+                                        if(Optional.ofNullable(feature).isPresent()){
+                                            feature.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
+                                            feature.setLaneId(LaneKanbanStageConstant.SystemTestStageEnum.ONGOING.getValue());
+                                            issueMapper.updateByPrimaryKeySelective(feature);
+                                            //向上汇总状态
+                                            issueUpRegularFactory.commonIssueUpRegular(feature.getIssueId());
+                                            return;
+                                        }
+                                    }
+
+                                }
+
                             } else {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTING.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
