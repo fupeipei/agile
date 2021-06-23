@@ -1334,12 +1334,6 @@ public class IssueServiceImpl implements IssueService {
             String idOrTitle = issueStringDTO.getIdOrTitle();
             try {
                 Long id = Long.valueOf(idOrTitle);
-                // 能转成long，说明可能是id，也可能是name
-                if (issueRecord.getIssueIds() != null && issueRecord.getIssueIds().size() > 0) {
-                    issueRecord.getIssueIds().retainAll(Lists.newArrayList(id));
-                } else {
-                    issueRecord.setIssueIds(Lists.newArrayList(id));
-                }
                 issueRecord.setIssueId(id);
             } catch (Exception e) {
                 loggr.info("idOrTitle转换异常e:{}", e);
