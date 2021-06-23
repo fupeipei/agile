@@ -252,7 +252,7 @@ public class IssueServiceImpl implements IssueService {
                 if (longListMap.containsKey(issueListDTO.getIssueId())) {
                     List<SysExtendFieldDetail> sysExtendFieldDetailList1 = longListMap.get(issueListDTO.getIssueId());
                     for (SysExtendFieldDetail s : sysExtendFieldDetailList1) {
-                        mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue(),issueType,mapMap ));
+                        mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue().trim(),issueType,mapMap ));
                     }
                 }
                 //查询非Epic的客户需求编号、局方需求编号、要求上线时间
@@ -2578,7 +2578,7 @@ public class IssueServiceImpl implements IssueService {
             return value;
         }else if(headerFields.get(0).getFieldGroup().equals("user")){
             Map mapUser = mapMap.get("userMap");
-            return mapUser.containsKey(fieldCode)?mapUser.get(fieldCode).toString():"";
+            return mapUser.containsKey(value)?mapUser.get(value).toString():"";
         }
         if (fieldCode.equals("deployIllustration")) {
             JSONObject jsonObject;
@@ -2628,7 +2628,7 @@ public class IssueServiceImpl implements IssueService {
             if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
                 Map<String, Map> mapMap = issueMap(null);
                 for (SysExtendFieldDetail s : sysExtendFieldDetailList) {
-                    mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue(),issueType,mapMap ));
+                    mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue().trim(),issueType,mapMap ));
                 }
             }
         }
