@@ -316,18 +316,17 @@ public class IssueServiceImpl implements IssueService {
     }
 
     /**
-     * @param itemId
+     * @param issue
      * @param type
      * @return
      * @description 根据工作项编号和类型查询迭代编号
      * @date 2020/08/19
      */
-    private Long getRelatedIssueSprintId(Long itemId, Byte type) {
+    private Long getRelatedIssueSprintId(Issue issue, Byte type) {
         Long sprintId = null;
-        Issue issue = issueMapper.selectByPrimaryKey(itemId);
         if (null != issue) {
             Byte issueType = issue.getIssueType();
-            Assert.notNull(issueType, "issueId:[" + itemId + "]工作项类型不能为空");
+            Assert.notNull(issueType, "issueId:[" + issue.getIssueId() + "]工作项类型不能为空");
             if (ObjectUtil.equals(issueType, type)) {
                 sprintId = issue.getSprintId();
             }
@@ -862,8 +861,9 @@ public class IssueServiceImpl implements IssueService {
             setHistoryRecordList(history, issueId, null, parentId.toString());
         }
         issueFactory.dealHistory(history);
-        Long sprintId = getRelatedIssueSprintId(parentId, IssueTypeEnum.TYPE_STORY.CODE);
-        issueMapper.createBatchRelation(listIssueId, sprintId, parentId, userId);
+        Issue issueParent = issueMapper.selectByPrimaryKey(parentId);
+        Long sprintId = getRelatedIssueSprintId(issueParent, IssueTypeEnum.TYPE_STORY.CODE);
+        issueMapper.createBatchRelation(listIssueId, sprintId, parentId, userId,issueParent.getKanbanId());
     }
 
     public void setHistoryRecordList(List<IssueHistoryRecord> history, Long issueId, String oldValue, String newValue) {

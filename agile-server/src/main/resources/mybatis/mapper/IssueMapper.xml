@@ -1168,6 +1168,9 @@
             <if test="sprintId != null">
                 sprint_id = #{sprintId},
             </if>
+            <if test="kanbanId != null">
+                kanban_id = #{kanbanId},
+            </if>
             parent_id = #{parentId},
             update_time = now(),
             update_uid=#{updateUid}
