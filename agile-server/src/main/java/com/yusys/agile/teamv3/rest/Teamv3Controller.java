@@ -37,7 +37,6 @@ public class Teamv3Controller {
      */
     @PostMapping("/listTeam")
     public ControllerResponse listTeam(@RequestBody TeamQueryDTO dto, SecurityDTO security) {
-        security.setUserId(843890522653999104l);
         List<TeamListDTO> result = teamv3Service.listTeam(dto, security);
         return ControllerResponse.success(new PageInfo<TeamListDTO>(result));
     }
