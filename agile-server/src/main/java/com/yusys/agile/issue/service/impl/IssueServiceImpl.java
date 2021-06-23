@@ -1334,12 +1334,6 @@ public class IssueServiceImpl implements IssueService {
             String idOrTitle = issueStringDTO.getIdOrTitle();
             try {
                 Long id = Long.valueOf(idOrTitle);
-                // 能转成long，说明可能是id，也可能是name
-                if (issueRecord.getIssueIds() != null && issueRecord.getIssueIds().size() > 0) {
-                    issueRecord.getIssueIds().retainAll(Lists.newArrayList(id));
-                } else {
-                    issueRecord.setIssueIds(Lists.newArrayList(id));
-                }
                 issueRecord.setIssueId(id);
             } catch (Exception e) {
                 loggr.info("idOrTitle转换异常e:{}", e);
@@ -2974,6 +2968,33 @@ public class IssueServiceImpl implements IssueService {
                             if (LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue().equals(secondLaneId)) {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
+
+                                Issue story = issueMapper.selectByPrimaryKey(parentId);
+                                if (Optional.ofNullable(story).isPresent()) {
+                                    Long featureId = story.getParentId();
+                                    story.setStageId(storyStageId);
+                                    story.setLaneId(storyLaneId);
+                                    issueMapper.updateByPrimaryKeySelective(story);
+
+                                    IssueExample example = new IssueExample();
+                                    example.createCriteria().andParentIdEqualTo(featureId).andStateEqualTo(StateEnum.U.getValue());
+                                    List<Issue> issues = issueMapper.selectByExample(example);
+                                    Set<Long> result = issues.stream().map(issu -> issu.getLaneId()).collect(Collectors.toSet());
+                                    //如果feature 下故事都已经完成，则更新feature状态为 系统测试阶段，进行中
+                                    if(result.size() == 1 && result.contains(storyLaneId)){
+                                        Issue feature = issueMapper.selectByPrimaryKey(featureId);
+                                        if(Optional.ofNullable(feature).isPresent()){
+                                            feature.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
+                                            feature.setLaneId(LaneKanbanStageConstant.SystemTestStageEnum.ONGOING.getValue());
+                                            issueMapper.updateByPrimaryKeySelective(feature);
+                                            //向上汇总状态
+                                            issueUpRegularFactory.commonIssueUpRegular(feature.getIssueId());
+                                            return;
+                                        }
+                                    }
+
+                                }
+
                             } else {
                                 storyLaneId = LaneKanbanStageConstant.TestStageEnum.TESTING.getValue();
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
