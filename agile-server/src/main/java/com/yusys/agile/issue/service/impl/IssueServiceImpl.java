@@ -2577,8 +2577,8 @@ public class IssueServiceImpl implements IssueService {
         if (CollectionUtils.isEmpty(headerFields)) {
             return value;
         }else if(headerFields.get(0).getFieldGroup().equals("user")){
-            Map mapUser = mapMap.get("userMap");
-            return mapUser.containsKey(value)?mapUser.get(value).toString():"";
+            Map<Long,String> mapUser = mapMap.get("userMap");
+            return mapUser.containsKey(Long.parseLong(value))?mapUser.get(Long.parseLong(value)):value;
         }
         if (fieldCode.equals("deployIllustration")) {
             JSONObject jsonObject;
