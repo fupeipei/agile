@@ -1163,16 +1163,22 @@
         WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U' and is_archive != 1
     </select>
     <update id="createBatchRelation">
-        update s_issue SET parent_id = #{parentId}
-        <if test="sprintId != null">
-            sprint_id = #{sprintId},
-        </if>
-        update_time = now(),update_uid=#{updateUid} WHERE issue_id in (
+        update s_issue
+        <set>
+            <if test="sprintId != null">
+                sprint_id = #{sprintId},
+            </if>
+            parent_id = #{parentId},
+            update_time = now(),
+            update_uid=#{updateUid}
+        </set>
+        WHERE issue_id in (
         <foreach collection="listIssueId" item="issueId" separator=",">
             #{issueId}
         </foreach>
         )
     </update>
+
     <select id="selectByExampleDTO" resultType="com.yusys.agile.issue.dto.IssueDTO">
         select
         <if test="distinct">
