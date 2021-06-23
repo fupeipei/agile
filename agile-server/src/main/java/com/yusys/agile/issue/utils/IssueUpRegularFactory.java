@@ -85,12 +85,11 @@ public class IssueUpRegularFactory {
         //3、判断工作项类型是feature 研发需求的，需要更新业务需求Epic的阶段状态以及处理人。
         //4、判断工作项类型是story 用户故事的，需要更新研发需求feature的阶段状态以及处理人。
         // 在判断用户故事的父工作项ID是否为Null，不为NULL，则更新业务需求Epic的阶段状态以及处理人。
+        Long kanbanId = null;
         SLeanKanbanDTO leanKanbanDTO = leanKanbanService.queryLeanKanbanInfo(teamId);
-        if (leanKanbanDTO.getKanbanStageInstances().isEmpty()) {
-            logger.error("调用工作项向上规整的封装方法commonIssueUpRegular，当前团队ID:{}为null，直接return", teamId);
-            return;
+        if (Optional.ofNullable(leanKanbanDTO).isPresent()) {
+            kanbanId = leanKanbanDTO.getKanbanId();
         }
-        Long kanbanId = leanKanbanDTO.getKanbanId();
         settings(handler, parentId, kanbanId);
 
     }
