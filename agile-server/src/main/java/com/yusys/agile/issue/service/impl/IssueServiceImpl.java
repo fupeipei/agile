@@ -3061,11 +3061,10 @@ public class IssueServiceImpl implements IssueService {
         Long stageId = issue.getStageId();
         loggr.info("数据库issue状态: laneId{},stageId{}",laneId,stageId);
         if (fromStageId.equals(stageId)) {
-            if(laneId != null && !laneId.equals(fromLaneId)){
+            if(laneId != null && fromLaneId != null && !laneId.equals(fromLaneId)){
                 isOrigPosition =  false;
             }else {
-                // laneId 为null的情况，如果fromLaneId也为null说明位置一致，否则位置不一致
-                if(fromLaneId != null){
+                if((fromLaneId == null && laneId != null) || (laneId == null && fromLaneId != null) ){
                     isOrigPosition =  false;
                 }
             }
