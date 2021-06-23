@@ -212,7 +212,7 @@ public class IssueServiceImpl implements IssueService {
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
         JSONObject jsonObject = new JSONObject(map);
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
-
+        Byte issueType = Byte.parseByte(map.get("issueType").toString());
         List<Issue> issues = queryIssueList(map);
         if (CollectionUtils.isEmpty(issues)) {
             pageInfo.setList(new ArrayList());
@@ -249,7 +249,6 @@ public class IssueServiceImpl implements IssueService {
                 for (Object key : beanMap.keySet()) {
                     mapT.put(key.toString(), beanMap.get(key));
                 }
-                Byte issueType = JSONObject.parseObject(mapT.get("issueType").toString()).getByte("id");
                 if (longListMap.containsKey(issueListDTO.getIssueId())) {
                     List<SysExtendFieldDetail> sysExtendFieldDetailList1 = longListMap.get(issueListDTO.getIssueId());
                     for (SysExtendFieldDetail s : sysExtendFieldDetailList1) {
