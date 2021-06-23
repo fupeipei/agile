@@ -229,8 +229,13 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         }
         //团队名称或编号
         params.put("team", dto.getTeam());
+
         //团队类型
-        params.put("teamType", dto.getTeamType());
+        if ("".equals(dto.getTeamType())) {
+            params.put("teamType", null);
+        } else {
+            params.put("teamType", dto.getTeamType());
+        }
         return params;
     }
 
