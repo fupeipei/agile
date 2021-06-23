@@ -2783,12 +2783,9 @@ public class IssueServiceImpl implements IssueService {
             }
 
             IssueExample example = new IssueExample();
-            IssueExample.Criteria criteria = example.createCriteria()
-                    .andStateEqualTo(StateEnum.U.getValue())
-                    .andKanbanIdTo(kanbanId)
-                    .andParentIdEqualTo(issueId);
+            IssueExample.Criteria criteria = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                    .andKanbanIdTo(kanbanId).andParentIdEqualTo(issueId);
             example.setOrderByClause("create_time desc");
-
             List<Issue> issueList = issueMapper.selectByExample(example);
 
             List<IssueDTO> childs = Lists.newArrayList();
@@ -2799,16 +2796,25 @@ public class IssueServiceImpl implements IssueService {
                 if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
                     issueDTO.setStoryTotalNum(issueList.size());
 
-                    criteria.andLaneIdEqualTo(LaneKanbanStageConstant.DevStageEnum.FINISH.getValue());
+                    IssueExample issueExample = new IssueExample();
+                    issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                            .andKanbanIdTo(kanbanId).andParentIdEqualTo(issueId)
+                            .andLaneIdEqualTo(LaneKanbanStageConstant.DevStageEnum.FINISH.getValue());
                     long count = issueMapper.countByExample(example);
                     issueDTO.setStroyFinishNum((int) count);
+
                 }else if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
 
                     issueDTO.setTaskNum(issueList.size());
                     List<Long> laneIds = Lists.newArrayList();
                     laneIds.add(LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue());
                     laneIds.add(LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue());
-                    criteria.andLaneIdIn(laneIds);
+
+                    IssueExample issueExample = new IssueExample();
+                    issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                            .andKanbanIdTo(kanbanId)
+                            .andParentIdEqualTo(issueId)
+                            .andLaneIdIn(laneIds);
                     long count = issueMapper.countByExample(example);
                     issueDTO.setTaskFinishNum((int) count);
                 }
