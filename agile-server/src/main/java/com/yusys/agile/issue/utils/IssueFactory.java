@@ -902,6 +902,32 @@ public class IssueFactory {
             }
             records.add(nameHistory);
         }
+        /**
+         * 团队id
+         */
+        if (!ObjectUtil.equals(issueDTO.getTeamId(), oldIssue.getTeamId())) {
+            IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.TEAMID.getDesc());
+            if (null != oldIssue.getTeamId()) {
+                nameHistory.setOldValue(String.valueOf(oldIssue.getTeamId()));
+            }
+            if (null != issueDTO.getTeamId()) {
+                nameHistory.setNewValue(String.valueOf(issueDTO.getTeamId()));
+            }
+            records.add(nameHistory);
+        }
+        /**
+         * 看板id
+         */
+        if (!ObjectUtil.equals(issueDTO.getKanbanId(), oldIssue.getKanbanId())) {
+            IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(issueId, IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.KANBANID.getDesc());
+            if (null != oldIssue.getKanbanId()) {
+                nameHistory.setOldValue(String.valueOf(oldIssue.getKanbanId()));
+            }
+            if (null != issueDTO.getKanbanId()) {
+                nameHistory.setNewValue(String.valueOf(issueDTO.getKanbanId()));
+            }
+            records.add(nameHistory);
+        }
         return records;
     }
 
