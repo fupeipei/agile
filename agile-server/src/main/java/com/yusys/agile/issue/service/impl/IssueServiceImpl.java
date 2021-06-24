@@ -2765,7 +2765,6 @@ public class IssueServiceImpl implements IssueService {
         for (IssueDTO issueDTO : issues) {
 
             Long issueId = issueDTO.getIssueId();
-
             //处理系统信息
             Long systemId = issueDTO.getSystemId();
             SsoSystem ssoSystem = systemCache.get(systemId);
@@ -2773,7 +2772,6 @@ public class IssueServiceImpl implements IssueService {
                 issueDTO.setSystemCode(ssoSystem.getSystemCode());
                 issueDTO.setSystemName(ssoSystem.getSystemName());
             }
-
             //处理人信息
             Long handler = issueDTO.getHandler();
             SsoUser user = userCache.get(handler);
@@ -2783,40 +2781,23 @@ public class IssueServiceImpl implements IssueService {
             }
 
             IssueExample example = new IssueExample();
-            IssueExample.Criteria criteria = example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+            example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
                     .andKanbanIdTo(kanbanId).andParentIdEqualTo(issueId);
             example.setOrderByClause("create_time desc");
             List<Issue> issueList = issueMapper.selectByExample(example);
 
             List<IssueDTO> childs = Lists.newArrayList();
             if (CollectionUtils.isNotEmpty(issueList)) {
-
                 //处理卡片上显示数据
                 Byte type = issueDTO.getIssueType();
                 if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
+
                     issueDTO.setStoryTotalNum(issueList.size());
-
-                    IssueExample issueExample = new IssueExample();
-                    issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
-                            .andKanbanIdTo(kanbanId).andParentIdEqualTo(issueId)
-                            .andLaneIdEqualTo(LaneKanbanStageConstant.DevStageEnum.FINISH.getValue());
-                    long count = issueMapper.countByExample(example);
-                    issueDTO.setStroyFinishNum((int) count);
-
+                    issueDTO.setStroyFinishNum(getIssueFinishNum(issueId,kanbanId));
                 }else if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
 
                     issueDTO.setTaskNum(issueList.size());
-                    List<Long> laneIds = Lists.newArrayList();
-                    laneIds.add(LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue());
-                    laneIds.add(LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue());
-
-                    IssueExample issueExample = new IssueExample();
-                    issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
-                            .andKanbanIdTo(kanbanId)
-                            .andParentIdEqualTo(issueId)
-                            .andLaneIdIn(laneIds);
-                    long count = issueMapper.countByExample(example);
-                    issueDTO.setTaskFinishNum((int) count);
+                    issueDTO.setTaskFinishNum(getIssueFinishNum(issueId,kanbanId));
                 }
 
                 try {
@@ -2830,6 +2811,20 @@ public class IssueServiceImpl implements IssueService {
                 issueDTO.setChildren(childs);
             }
         }
+    }
+
+    private int getIssueFinishNum(Long issueId,Long kanbanId){
+        List<Long> laneIds = Lists.newArrayList();
+        laneIds.add(LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue());
+        laneIds.add(LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue());
+
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                .andKanbanIdTo(kanbanId)
+                .andParentIdEqualTo(issueId)
+                .andLaneIdIn(laneIds);
+        long count = issueMapper.countByExample(issueExample);
+        return (int)count;
     }
 
     @Override
