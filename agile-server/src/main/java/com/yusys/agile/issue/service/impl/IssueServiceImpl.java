@@ -3097,7 +3097,7 @@ public class IssueServiceImpl implements IssueService {
         }
 
         Long teamId = issue.getTeamId();
-        if(Optional.ofNullable(teamId).isPresent()){
+        if(!Optional.ofNullable(teamId).isPresent()){
             Long kanbanId = issue.getKanbanId();
             SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
             if(!Optional.ofNullable(sLeanKanban).isPresent()){
