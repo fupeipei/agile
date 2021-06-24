@@ -399,7 +399,15 @@ public interface IssueService {
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
-    boolean checkIssueState(Long issueId,Long fromStageId, Long fromLaneId);
+    /**
+     * 校验卡片拖拽
+     *
+     * @param issueId
+     * @param fromStageId
+     * @param fromLaneId
+     * @return
+     */
+    void checkIssueState(Long issueId,Long fromStageId, Long fromLaneId,Long stageId,Long laneId);
 
 
     /**

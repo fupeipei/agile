@@ -37,4 +37,5 @@ public interface LeanKanbanService {
      */
     SLeanKanban querySimpleLeanKanbanInfo(Long teamId);
 
+
 }

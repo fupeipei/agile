@@ -1171,6 +1171,9 @@
             <if test="kanbanId != null">
                 kanban_id = #{kanbanId},
             </if>
+            <if test="teamId != null">
+                team_id = #{teamId},
+            </if>
             parent_id = #{parentId},
             update_time = now(),
             update_uid=#{updateUid}
@@ -1445,6 +1448,9 @@
             </if>
             <if test="teamId != null">
                 team_id = #{teamId,jdbcType=BIGINT},
+            </if>
+            <if test="kanbanId != null">
+                kanban_id = #{kanbanId,jdbcType=BIGINT},
             </if>
         </set>
         where issue_id = #{issueId,jdbcType=BIGINT}
