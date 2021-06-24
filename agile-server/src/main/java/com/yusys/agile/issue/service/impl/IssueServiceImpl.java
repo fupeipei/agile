@@ -1154,6 +1154,13 @@ public class IssueServiceImpl implements IssueService {
                         issueDTO.setStageName(stageName);
                     }
                 }
+            }else {
+                if(IssueTypeEnum.TYPE_EPIC.CODE.equals(issueDTO.getIssueType())){
+                    //通过枚举获取
+                    Long stageId = issueDTO.getStageId();
+                    String firstStageName = StageConstant.FirstStageEnum.getFirstStageName(stageId);
+                    issueDTO.setStageName(firstStageName);
+                }
             }
         }
         issueFactory.setHandlerName(handlers, issueDTOList);

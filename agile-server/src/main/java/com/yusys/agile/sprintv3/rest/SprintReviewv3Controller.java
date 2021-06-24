@@ -3,6 +3,7 @@ package com.yusys.agile.sprintv3.rest;
 import com.google.common.base.Preconditions;
 import com.yusys.agile.sprint.dto.SprintReviewDTO;
 import com.yusys.agile.sprintv3.service.SprintReviewv3Service;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,7 +61,7 @@ public class SprintReviewv3Controller {
         Preconditions.checkArgument(sprintReviewDTO.getReviewDesc().length() <= 200, "迭代回顾描述过长，不能大于200");
         int i = sprintReviewv3Service.editSprintReview(sprintReviewDTO);
         if (i == 0) {
-            ControllerResponse.fail("编辑迭代回顾信息失败！");
+            return ControllerResponse.fail("编辑迭代回顾信息失败！");
         }
         return ControllerResponse.success("编辑迭代回顾信息成功！");
     }
@@ -76,7 +77,7 @@ public class SprintReviewv3Controller {
     public ControllerResponse deleteSprintReview(@PathVariable Long reviewId) {
         int i = sprintReviewv3Service.deleteSprintReview(reviewId);
         if (i == 0) {
-            ControllerResponse.fail("删除迭代回顾信息失败！");
+            return ControllerResponse.fail("删除迭代回顾信息失败！");
         }
         return ControllerResponse.success("删除迭代回顾信息成功！");
     }
@@ -91,6 +92,9 @@ public class SprintReviewv3Controller {
      */
     @PostMapping("/uploadAttachment/{sprintId}")
     public ControllerResponse uploadAttachment(@RequestParam("file") MultipartFile file, @PathVariable Long sprintId) {
+        if(file.isEmpty()){
+            return ControllerResponse.fail("上传文件为空，请检查");
+        }
         return ControllerResponse.success(sprintReviewv3Service.uploadAttachment(file, sprintId));
     }
 
@@ -117,7 +121,7 @@ public class SprintReviewv3Controller {
     public ControllerResponse deleteAttachment(@PathVariable Long attachmentId) {
         int i = sprintReviewv3Service.deleteAttachment(attachmentId);
         if (i == 0) {
-            ControllerResponse.fail("附件删除失败！");
+            return ControllerResponse.fail("附件删除失败！");
         }
         return ControllerResponse.success("附件删除成功！");
     }
