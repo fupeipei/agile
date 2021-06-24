@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.issue.dao.IssueHistoryRecordMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
@@ -66,6 +67,11 @@ public class IssueUpRegularFactory {
         Long parentId = issue.getParentId();
         Long handler = issue.getHandler();
         Long teamId = issue.getTeamId();
+        if(teamId==null){
+            logger.info("团队id为空，直接return+"+ JSONObject.toJSONString(issue));
+            return;
+        }
+
         //1、判断当前工作项类型 parentId如果为null ，直接return。
         if (!Optional.ofNullable(parentId).isPresent()) {
             logger.error("调用工作项向上规整的封装方法commonIssueUpRegular，当前parentId为null，直接return");
@@ -79,12 +85,11 @@ public class IssueUpRegularFactory {
         //3、判断工作项类型是feature 研发需求的，需要更新业务需求Epic的阶段状态以及处理人。
         //4、判断工作项类型是story 用户故事的，需要更新研发需求feature的阶段状态以及处理人。
         // 在判断用户故事的父工作项ID是否为Null，不为NULL，则更新业务需求Epic的阶段状态以及处理人。
+        Long kanbanId = null;
         SLeanKanbanDTO leanKanbanDTO = leanKanbanService.queryLeanKanbanInfo(teamId);
-        if (leanKanbanDTO.getKanbanStageInstances().isEmpty()) {
-            logger.error("调用工作项向上规整的封装方法commonIssueUpRegular，当前团队ID:{}为null，直接return", teamId);
-            return;
+        if (Optional.ofNullable(leanKanbanDTO).isPresent()) {
+            kanbanId = leanKanbanDTO.getKanbanId();
         }
-        Long kanbanId = leanKanbanDTO.getKanbanId();
         settings(handler, parentId, kanbanId);
 
     }
@@ -220,7 +225,9 @@ public class IssueUpRegularFactory {
     private void updateIssue(Issue pIssue, Long handler, Issue subIssue) {
         if (Optional.ofNullable(pIssue).isPresent() && Optional.ofNullable(subIssue).isPresent()) {
             pIssue.setStageId(subIssue.getStageId());
-            pIssue.setLaneId(subIssue.getLaneId());
+            if(!IssueTypeEnum.TYPE_EPIC.CODE.equals(pIssue.getIssueType())){
+                pIssue.setLaneId(subIssue.getLaneId());
+            }
 //            if(Optional.ofNullable(handler).isPresent()){
 //                pIssue.setHandler(handler);
 //            }

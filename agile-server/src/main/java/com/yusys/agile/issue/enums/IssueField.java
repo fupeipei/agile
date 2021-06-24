@@ -34,7 +34,9 @@ public enum IssueField {
     PARENTID("parentId", "父工作项ID"),
     ORDER("order", "业务价值"),
     EXTERNALHANDLERID("externalHandlerId", "测试负责人"),
-    DEVLOPMANAGER("devlopManager", "开发负责人");
+    DEVLOPMANAGER("devlopManager", "开发负责人"),
+    TEAMID("teamId", "团队ID"),
+    KANBANID("kanbanId", "看板ID");
 
     private String key;
     private String desc;

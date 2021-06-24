@@ -22,6 +22,7 @@ public class IssueRecord {
     private FieldJsonType orders;
     private FieldJsonType sprintIds;
     private FieldJsonType systemIds;
+    private FieldJsonType teamIds;
     private FieldJsonType moduleIds;
     private FieldJsonType fixedUids;
     private FieldJsonType testUids;
@@ -288,5 +289,13 @@ public class IssueRecord {
 
     public void setUpdateTime(FieldJsonType updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public FieldJsonType getTeamIds() {
+        return teamIds;
+    }
+
+    public void setTeamIds(FieldJsonType teamIds) {
+        this.teamIds = teamIds;
     }
 }

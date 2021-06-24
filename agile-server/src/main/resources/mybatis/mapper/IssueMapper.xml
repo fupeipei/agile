@@ -1163,16 +1163,28 @@
         WHERE sprint_id = #{sprintId} AND issue_type IN(4,5) AND state = 'U' and is_archive != 1
     </select>
     <update id="createBatchRelation">
-        update s_issue SET parent_id = #{parentId}
-        <if test="sprintId != null">
-            sprint_id = #{sprintId},
-        </if>
-        update_time = now(),update_uid=#{updateUid} WHERE issue_id in (
+        update s_issue
+        <set>
+            <if test="sprintId != null">
+                sprint_id = #{sprintId},
+            </if>
+            <if test="kanbanId != null">
+                kanban_id = #{kanbanId},
+            </if>
+            <if test="teamId != null">
+                team_id = #{teamId},
+            </if>
+            parent_id = #{parentId},
+            update_time = now(),
+            update_uid=#{updateUid}
+        </set>
+        WHERE issue_id in (
         <foreach collection="listIssueId" item="issueId" separator=",">
             #{issueId}
         </foreach>
         )
     </update>
+
     <select id="selectByExampleDTO" resultType="com.yusys.agile.issue.dto.IssueDTO">
         select
         <if test="distinct">
@@ -1437,6 +1449,9 @@
             <if test="teamId != null">
                 team_id = #{teamId,jdbcType=BIGINT},
             </if>
+            <if test="kanbanId != null">
+                kanban_id = #{kanbanId,jdbcType=BIGINT},
+            </if>
         </set>
         where issue_id = #{issueId,jdbcType=BIGINT}
     </update>
@@ -1605,8 +1620,7 @@
     <select id="listRelation" resultType="com.yusys.agile.issue.dto.IssueDTO">
     select
     a.issue_id,a.title,a.parent_id,a.issue_type,a.`handler`,
-    (select c.stage_name from s_kanban_stage_instance c where c.stage_id = a.stage_id and c.kanban_id = a.kanban_id) as stageName,
-    (select d.stage_name from s_kanban_stage_instance d where d.stage_id = a.lane_id and d.parent_id = a.stage_id and d.kanban_id = a.kanban_id) as laneName
+    a.stage_id,a.lane_id,a.team_id
     from s_issue a where a.state='U' and ((a.issue_id = (select parent_id from s_issue c where c.issue_id=#{issueId} and c.state='U')) or a.parent_id = #{issueId})
   </select>
     <select id="getTaskMemberAnalysis" resultType="com.yusys.agile.burndown.dto.HistogramTaskDTO">
@@ -2152,7 +2166,24 @@
                 <if test="issueRecord.systemIds.queryType ==3 ">
                     and iu.system_id is null
                 </if>
+            </if><if test="issueRecord.teamIds!= null ">
+            <if test="issueRecord.teamIds.queryType ==1 and issueRecord.teamIds.dataLong.size()>0">
+                and ( iu.team_id in
+                <foreach collection="issueRecord.teamIds.dataLong" open="(" close=")" separator="," item="iterm">
+                    #{iterm}
+                </foreach>
+                or iu.team_id is null )
             </if>
+            <if test="issueRecord.teamIds.queryType ==2 and issueRecord.teamIds.dataLong.size()>0">
+                and iu.team_id in
+                <foreach collection="issueRecord.teamIds.dataLong" open="(" close=")" separator="," item="iterm">
+                    #{iterm}
+                </foreach>
+            </if>
+            <if test="issueRecord.teamIds.queryType ==3 ">
+                and iu.team_id is null
+            </if>
+        </if>
 
             <if test="issueRecord.moduleIds!= null ">
                 <if test="issueRecord.moduleIds.queryType ==1 and issueRecord.moduleIds.dataLong.size()>0">
@@ -3104,6 +3135,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         and a.issue_type=3
         and a.state='U'
         and a.is_archive != 1
+        and a.kanban_id is null
         <if test="systemIds != null and systemIds.size>0">
             and a.system_id in
             <foreach collection="systemIds" item="systemId" open="(" separator="," close=")">

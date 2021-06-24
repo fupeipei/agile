@@ -6,8 +6,6 @@ import com.yusys.agile.issue.dto.DemandPlanDTO;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.PanoramasEpicDTO;
-import com.yusys.agile.servicemanager.dto.CustomizePageInfoDTO;
-import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -15,6 +13,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public interface IssueService {
 
@@ -251,15 +250,6 @@ public interface IssueService {
     void sortVersionIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
 
     /**
-     * 功能描述 根据bizNum获取需求信息
-     *
-     * @param bizNums
-     * @return java.util.List<com.yusys.agile.issue.domain.Issue>
-     * @date 2021/3/18
-     */
-    List<Issue> getIssueByBizNums(List<String> bizNums, Byte issueType);
-
-    /**
      * 功能描述 获取基础和扩展信息
      *
      * @param bizBacklogId
@@ -324,46 +314,21 @@ public interface IssueService {
     PanoramasEpicDTO getIssuePanoramas(String issueId, String planDeployDate, String noLogin) throws Exception;
 
     /**
-     * @param serviceManageIssueDTO
-     * @return
-     * @description 服务治理平台查询接口
-     * @date 2020/10/26
-     */
-    CustomizePageInfoDTO queryIssueList(ServiceManageIssueDTO serviceManageIssueDTO);
-
-
-    /**
      * 功能描述   翻译扩展字段对应的名称
      *
      * @param fieldId
      * @param value
+     * @param issueType
+     * @param mapMap
      * @return java.lang.String
      * @date 2021/2/16
      */
 
 
-    String translateExtendFieldMap(String fieldId, String value);
+    String translateExtendFieldMap(String fieldId, String value,Byte issueType,Map<String, Map> mapMap);
 
 
     Map queryIssueEpic(Long issueId, Byte issueType);
-
-    /**
-     * 功能描述  根据局方需求编号获取分期【planDeployDate】
-     *
-     * @param formalReqCode
-     * @return java.util.List<java.lang.String>
-     * @date 2021/2/18
-     */
-    List<String> queryPlanDeployDate(String formalReqCode);
-
-    /**
-     * 功能描述 根据局方需求编号获取客户需求编号
-     *
-     * @param formalReqCode
-     * @return java.util.List<java.lang.String>
-     * @date 2021/2/7
-     */
-    List<String> queryBizNumList(String formalReqCode);
 
     /**
      * 功能描述 根据IssueIdList查询出未取消的需求
@@ -375,15 +340,6 @@ public interface IssueService {
     List<Long> getNotCanceledAndOnlineIssueByIssueIdList(List<Long> issueIdList);
 
     /**
-     * @param issueId
-     * @param issueType
-     * @param actualOnlineTime
-     * @description 更新工作项已上线状态带时间(临时方法)
-     * @date 2021/2/20
-     */
-    void updateIssueLaunchStateWithDate(Long issueId, Byte issueType, String actualOnlineTime);
-
-    /**
      * 功能描述 查询未上线的Epic
      *
      * @param
@@ -392,26 +348,6 @@ public interface IssueService {
      */
 
     List<Long> getNotOnlineEpic();
-
-    /**
-     * 功能描述 获取没有需求排期或需求排期为空或需求排期为null的Epic信息
-     *
-     * @param
-     * @return java.util.List<java.lang.Long>
-     * @date 2020/12/8
-     */
-    List<Long> noReqSchedulingEpicIdList();
-
-    /**
-     * 功能描述  根据epicId查询所有故事上的功能测试负责人
-     *
-     * @param epicId
-     * @return void
-     * @date 2020/12/11
-     */
-    List<String> getAllTaskFunTester(Long epicId);
-
-    void noDeployChangeStage();
 
     /**
      * 功能描述 根据工作项ID列表获取有效状态的工作项列表
@@ -451,8 +387,6 @@ public interface IssueService {
      */
     boolean checkHasChildren(Long issueId);
 
-
-
     /**
      * 精益看板拖拽卡片
      *
@@ -461,11 +395,19 @@ public interface IssueService {
      * @param laneId
      * @return
      */
-    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId);
+    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId) throws ExecutionException;
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
-    boolean checkIssueState(Long issueId,Long fromStageId, Long fromLaneId);
+    /**
+     * 校验卡片拖拽
+     *
+     * @param issueId
+     * @param fromStageId
+     * @param fromLaneId
+     * @return
+     */
+    void checkIssueState(Long issueId,Long fromStageId, Long fromLaneId,Long stageId,Long laneId);
 
 
     /**
@@ -475,4 +417,6 @@ public interface IssueService {
      * @param kanbanId   看板Id(可以通过teamId去获取)
      */
     void updateTaskParentStatus(Long issueId,Long kanbanId);
+
+    Issue getIssueByIssueId(Long issueId) throws Exception;
 }

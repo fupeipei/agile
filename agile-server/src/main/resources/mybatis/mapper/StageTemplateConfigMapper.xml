@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    conf_id, stage_id, stage_name, level, parent_id, order_id, state, tenant_code
+    conf_id, stage_id, stage_name, level, parent_id, order_id, state, tenant_code,app_type,is_final
   </sql>
   <select id="selectByExample" parameterType="com.yusys.agile.set.stage.domain.StageTemplateConfigExample" resultMap="BaseResultMap">
     select

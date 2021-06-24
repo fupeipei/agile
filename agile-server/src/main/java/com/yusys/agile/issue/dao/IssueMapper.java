@@ -147,7 +147,9 @@ public interface IssueMapper {
      * @Param: * @param parentId
      * @Return: void
      */
-    void createBatchRelation(@Param("listIssueId") List<Long> listIssueId, @Param("sprintId") Long sprintId, @Param("parentId") Long parentId, @Param("updateUid") Long updateUid);
+    void createBatchRelation(@Param("listIssueId") List<Long> listIssueId, @Param("sprintId") Long sprintId,
+                             @Param("parentId") Long parentId, @Param("updateUid") Long updateUid,
+                             @Param("kanbanId") Long kanbanId,@Param("teamId") Long teamId);
 
     /**
      * @Date: 13:30

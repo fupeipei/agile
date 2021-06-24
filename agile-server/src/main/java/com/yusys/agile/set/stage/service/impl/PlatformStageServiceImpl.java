@@ -96,12 +96,18 @@ public class PlatformStageServiceImpl implements IStageService {
                 if(CollectionUtils.isNotEmpty(result)){
                     for(KanbanStageInstanceDTO instanceDTO : result){
                         List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
-                        List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
-                                !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
-                                        !LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
-                        instanceDTO.setSecondStages(secondStageResults);
+                        if(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(instanceDTO.getStageId())){
+                            List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
+                                    IssueTypeEnum.TYPE_STORY.CODE.equals(k.getAppType())).collect(Collectors.toList());
+
+                            log.info("故事阶段过滤后数据为:{}",JSONObject.toJSONString(secondStageResults));
+
+                            instanceDTO.setSecondStages(secondStageResults);
+                        }
                     }
                 }
+                List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
+                return stageInstances;
 
                 /**测试类任务，展示测试阶段进行中、已完成。否则 开发阶段进行中已完成*/
             }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
@@ -119,9 +125,11 @@ public class PlatformStageServiceImpl implements IStageService {
                     for(KanbanStageInstanceDTO instanceDTO : result){
                         List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
                         List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
-                                LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) ||
-                                        LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
+                                IssueTypeEnum.TYPE_TASK.CODE.equals(k.getAppType())).collect(Collectors.toList());
+
+                        log.info("任务阶段过滤后的数据为：{}",JSONObject.toJSONString(secondStageResults));
                         instanceDTO.setSecondStages(secondStageResults);
+
                     }
                 }
                 List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
@@ -133,12 +141,14 @@ public class PlatformStageServiceImpl implements IStageService {
                 if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
                     //过滤二级状态信息
                     for(KanbanStageInstanceDTO kanbanStageInstanceDTO:kanbanStageInstances){
-                        List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
-                        if(CollectionUtils.isNotEmpty(secondStages)){
-                            List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
-                                    !LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(k.getStageId()) &&
-                                    !LaneKanbanStageConstant.DevStageEnum.DEVELOPING.getValue().equals(k.getStageId())).collect(Collectors.toList());
-                            kanbanStageInstanceDTO.setSecondStages(secondStageResults);
+
+                        if(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstanceDTO.getStageId())){
+                            List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
+                            if(CollectionUtils.isNotEmpty(secondStages)){
+                                List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
+                                        IssueTypeEnum.TYPE_STORY.CODE.equals(k.getAppType()) ).collect(Collectors.toList());
+                                kanbanStageInstanceDTO.setSecondStages(secondStageResults);
+                            }
                         }
                     }
                 }

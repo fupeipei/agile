@@ -3,13 +3,17 @@ package com.yusys.agile.issue.service.impl;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
 import com.yusys.agile.issue.dao.SIssueCustomFieldMapper;
+import com.yusys.agile.issue.dao.SIssueCustomRelationMapper;
 import com.yusys.agile.issue.domain.SIssueCustomField;
 import com.yusys.agile.issue.domain.SIssueCustomFieldExample;
+import com.yusys.agile.issue.domain.SIssueCustomRelation;
+import com.yusys.agile.issue.domain.SIssueCustomRelationExample;
 import com.yusys.agile.issue.dto.IssueCustomFieldDTO;
 import com.yusys.agile.issue.service.IssueCustomFieldService;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.service.IssueService;
 import com.google.common.collect.Lists;
+import com.yusys.agile.utils.ReflectObjectUtil;
 import com.yusys.portal.model.common.enums.StateEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Date: 9:22
@@ -34,6 +39,8 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     @Resource
     private SIssueCustomFieldMapper issueCustomFieldMapper;
 
+    @Resource
+    SIssueCustomRelationMapper issueCustomRelationMapper;
 
     @Autowired
     private CustomFieldPoolService customFieldPoolService;
@@ -164,11 +171,38 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     }
 
     @Override
-    public List<SIssueCustomField> listCustomFieldByIssueId(Long issueId) {
+    public List<IssueCustomFieldDTO> listCustomFieldByIssueId(Long issueId) {
+        List<IssueCustomFieldDTO> issueCustomFieldDTOS = Lists.newArrayList();
         SIssueCustomFieldExample sIssueCustomFieldExample = new SIssueCustomFieldExample();
         sIssueCustomFieldExample.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
                 .andIssueIdEqualTo(issueId);
-        return issueCustomFieldMapper.selectByExample(sIssueCustomFieldExample);
+        List<SIssueCustomField> issueCustomFields =  issueCustomFieldMapper.selectByExample(sIssueCustomFieldExample);
+        if(CollectionUtils.isNotEmpty(issueCustomFields)){
+            for (SIssueCustomField sIssueCustomField:issueCustomFields) {
+                CustomFieldDTO customFieldDTO = listCustomPoolFieldByssueCustomFieldId(sIssueCustomField.getFieldId());
+                if(Optional.ofNullable(customFieldDTO).isPresent()){
+                    IssueCustomFieldDTO issueCustomFieldDTO = ReflectObjectUtil.copyProperties(sIssueCustomField,IssueCustomFieldDTO.class);
+                    issueCustomFieldDTO.setFieldContent(customFieldDTO.getFieldContent());
+                    issueCustomFieldDTO.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
+                    issueCustomFieldDTOS.add(issueCustomFieldDTO);
+                }
+            }
+        }
+        return issueCustomFieldDTOS;
     }
+    public CustomFieldDTO listCustomPoolFieldByssueCustomFieldId(Long fieldId){
+        CustomFieldDTO customFieldDTO = null;
+        SIssueCustomRelationExample sIssueCustomRelationExample = new SIssueCustomRelationExample();
+        sIssueCustomRelationExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andIdEqualTo(fieldId);
+        List<SIssueCustomRelation> sIssueCustomRelations = issueCustomRelationMapper.selectByExample(sIssueCustomRelationExample);
+        if(CollectionUtils.isNotEmpty(sIssueCustomRelations)){
+            customFieldDTO =   customFieldPoolService.getCustomField(sIssueCustomRelations.get(0).getFieldId());
+        }
+       return customFieldDTO;
+    }
+
+
 }

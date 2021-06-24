@@ -4,6 +4,7 @@ import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,8 @@ import java.util.List;
  * @Date 2021/4/22 10:45
  */
 @Data
-public class TeamListDTO {
+public class TeamListDTO implements Serializable {
+    private static final long serialVersionUID = -2654457780624482505L;
     @ApiModelProperty("团队id")
     private Long teamId;
     @ApiModelProperty("团队名称")
@@ -38,4 +40,9 @@ public class TeamListDTO {
     private List<TeamUserDTO> teamUsers;
     @ApiModelProperty("团队所有人员")
     private Integer teamUserCount;
+    /**
+     * 当前访问人是否关注此项目，不为空时 1:关注，0：未关注
+     */
+    @ApiModelProperty("是否关注")
+    private Integer attentionFlag;
 }

@@ -58,6 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -788,13 +789,25 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
-
+    public List<SprintV3UserHourDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
         //通过迭代id查询迭代时长表的userid，然后再查人员
-        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()){
+            PageHelper.startPage(pageNum,pageSize);
+        }
+        List<Long> spintIdList = Lists.newArrayList(sprintId);
+        List<SprintV3UserHourDTO> userSprintHours = sSprintUserHourMapper.listUserHourBySprintId(spintIdList);
         List<Long> userIds = userSprintHours.stream().map(item -> item.getUserId()).collect(Collectors.toList());
         List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, pageNum, pageSize, userName);
-        return ssoUserDTOS;
+        for(SprintV3UserHourDTO sprintV3UserHourDTO : userSprintHours){
+            for(SsoUserDTO ssoUserDTO : ssoUserDTOS){
+                if(ssoUserDTO.getUserId().equals(sprintV3UserHourDTO.getUserId())){
+                    sprintV3UserHourDTO.setUserAccount(ssoUserDTO.getUserAccount());
+                    sprintV3UserHourDTO.setUserName(ssoUserDTO.getUserName());
+                    continue;
+                }
+            }
+        }
+        return userSprintHours;
     }
 
     @Override
@@ -855,9 +868,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         if (0 == b || 0 == a) {
             return 0.00;
         } else {
-            double div;
-            div = NumberUtil.div(a, b, 2);
-            return div;
+            BigDecimal first = new BigDecimal(a);
+            BigDecimal second = new BigDecimal(b);
+            return first.divide(second, 2, BigDecimal.ROUND_DOWN).doubleValue();
         }
     }
 
@@ -939,14 +952,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         sSprintExample.createCriteria().andTeamIdEqualTo(teamId).andStateEqualTo(StateEnum.U.getValue())
                 .andStatusIn(listStatus).andEndTimeGreaterThan(new Date());
         List<SSprint> sSprintList = ssprintMapper.selectByExample(sSprintExample);
-        if(CollectionUtils.isNotEmpty(sSprintList)){
+        if (CollectionUtils.isNotEmpty(sSprintList)) {
             List<Long> teamIdList = sSprintList.stream().map(SSprint::getTeamId).collect(Collectors.toList());
             List<STeam> sTeamList = teamv3Service.listTeamByIds(teamIdList);
             try {
                 sprintListDTOList = ReflectUtil.copyProperties4List(sSprintList, SprintListDTO.class);
-                for(SprintListDTO sprintListDTO : sprintListDTOList){
-                    for(STeam sTeam : sTeamList){
-                        if(sprintListDTO.getTeamId().equals(sTeam.getTeamId())){
+                for (SprintListDTO sprintListDTO : sprintListDTOList) {
+                    for (STeam sTeam : sTeamList) {
+                        if (sprintListDTO.getTeamId().equals(sTeam.getTeamId())) {
                             sprintListDTO.setTeamName(sTeam.getTeamName());
                             continue;
                         }

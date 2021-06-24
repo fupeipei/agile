@@ -32,8 +32,9 @@ public class HeaderFieldServiceTest {
         SecurityDTO securityDTO = new SecurityDTO();
         Byte category = new Byte("3");
         Byte isFilter = new Byte("1");
-        securityDTO.setSystemId(849300453977526272L);
+        securityDTO.setSystemId(856603574286798848L);
         securityDTO.setUserId(815897630505963520L);
+        securityDTO.setTenantCode("1");
         headerFieldService.queryHeaderFields(securityDTO, category, isFilter);
         Assert.assertTrue("queryHeaderFieldsTest成功", true);
     }
