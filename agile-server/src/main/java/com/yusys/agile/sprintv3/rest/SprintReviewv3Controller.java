@@ -3,6 +3,7 @@ package com.yusys.agile.sprintv3.rest;
 import com.google.common.base.Preconditions;
 import com.yusys.agile.sprint.dto.SprintReviewDTO;
 import com.yusys.agile.sprintv3.service.SprintReviewv3Service;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -91,6 +92,9 @@ public class SprintReviewv3Controller {
      */
     @PostMapping("/uploadAttachment/{sprintId}")
     public ControllerResponse uploadAttachment(@RequestParam("file") MultipartFile file, @PathVariable Long sprintId) {
+        if(file.isEmpty()){
+            ControllerResponse.fail("上传文件为空，请检查");
+        }
         return ControllerResponse.success(sprintReviewv3Service.uploadAttachment(file, sprintId));
     }
 
