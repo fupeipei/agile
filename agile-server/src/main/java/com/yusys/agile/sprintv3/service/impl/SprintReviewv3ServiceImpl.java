@@ -94,6 +94,9 @@ public class SprintReviewv3ServiceImpl implements SprintReviewv3Service {
     @Override
     public SSprintAttachment uploadAttachment(MultipartFile file, Long sprintId) {
         SSprintAttachment sprintAttachment = new SSprintAttachment();
+        if(file.isEmpty()){
+            throw new BusinessException("导入文件为空，请检查");
+        }
         try {
             FileInfo fileInfo = fileService.upload(file);
 
