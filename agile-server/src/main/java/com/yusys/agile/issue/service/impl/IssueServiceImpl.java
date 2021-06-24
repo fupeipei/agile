@@ -2868,7 +2868,7 @@ public class IssueServiceImpl implements IssueService {
         //更新该工作项对应的数据
         Byte type = issue.getIssueType();
 
-        //feature 状态改变后,状态向下汇总，且改变epic状态
+        //feature向上汇总改变epic状态
         if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)) {
 
             issueUpRegularFactory.commonIssueUpRegular(issueId);
@@ -2896,7 +2896,6 @@ public class IssueServiceImpl implements IssueService {
                     List<IssueDTO> taskDTOS = Lists.newArrayList();
                     taskDTOS.add(taskDTO);
                     storyDTO.setChildren(taskDTOS);
-
                     List<IssueDTO> storyDTOS = Lists.newArrayList();
                     storyDTOS.add(storyDTO);
                     issueDTO.setChildren(storyDTOS);
@@ -2916,11 +2915,11 @@ public class IssueServiceImpl implements IssueService {
             issueDTO.setSystemCode(ssoSystem.getSystemCode());
             issueDTO.setSystemName(ssoSystem.getSystemName());
         }
-
         //处理人信息
         Long handler = issueDTO.getHandler();
         SsoUser ssoUser = userCache.get(handler);
         if (Optional.ofNullable(ssoUser).isPresent()) {
+
             issueDTO.setHandlerAccount(ssoUser.getUserAccount());
             issueDTO.setHandlerName(ssoUser.getUserName());
         }
