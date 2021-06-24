@@ -871,7 +871,7 @@ public class IssueServiceImpl implements IssueService {
         issueFactory.dealHistory(history);
         Issue issueParent = issueMapper.selectByPrimaryKey(parentId);
         Long sprintId = getRelatedIssueSprintId(issueParent, IssueTypeEnum.TYPE_STORY.CODE);
-        issueMapper.createBatchRelation(listIssueId, sprintId, parentId, userId,issueParent.getKanbanId());
+        issueMapper.createBatchRelation(listIssueId, sprintId, parentId, userId,issueParent.getKanbanId(),issueParent.getTeamId());
     }
 
     public void setHistoryRecordList(List<IssueHistoryRecord> history, Long issueId, String oldValue, String newValue) {
