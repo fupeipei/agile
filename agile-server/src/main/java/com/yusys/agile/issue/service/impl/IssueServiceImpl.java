@@ -2857,7 +2857,6 @@ public class IssueServiceImpl implements IssueService {
         if (!Optional.ofNullable(kanbanId).isPresent()) {
             throw new BusinessException("该工作项不属于精益看板，不能拖拽!");
         }
-
         issue.setStageId(stageId);
         issue.setLaneId(laneId);
         if(StageConstant.FirstStageEnum.READY_STAGE.equals(stageId)){
@@ -2879,7 +2878,6 @@ public class IssueServiceImpl implements IssueService {
 
             Long storyId = issue.getParentId();
             Issue story = issueMapper.selectByPrimaryKey(storyId);
-
             if (Optional.ofNullable(story).isPresent()) {
 
                 Long featureId = story.getParentId();
@@ -2894,10 +2892,10 @@ public class IssueServiceImpl implements IssueService {
                     setOtherInfo(issueDTO);
 
                     List<IssueDTO> taskDTOS = Lists.newArrayList();
-                    taskDTOS.add(taskDTO);
-                    storyDTO.setChildren(taskDTOS);
                     List<IssueDTO> storyDTOS = Lists.newArrayList();
+                    taskDTOS.add(taskDTO);
                     storyDTOS.add(storyDTO);
+                    storyDTO.setChildren(taskDTOS);
                     issueDTO.setChildren(storyDTOS);
                     return issueDTO;
                 }
@@ -2923,6 +2921,28 @@ public class IssueServiceImpl implements IssueService {
             issueDTO.setHandlerAccount(ssoUser.getUserAccount());
             issueDTO.setHandlerName(ssoUser.getUserName());
         }
+
+        //处理卡片上显示数据
+        Long issueId = issueDTO.getIssueId();
+        Long kanbanId = issueDTO.getKanbanId();
+        Byte type = issueDTO.getIssueType();
+
+        if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
+            issueDTO.setStoryTotalNum(getIssueChildNum(issueId,kanbanId));
+            issueDTO.setStroyFinishNum(getIssueFinishNum(issueId,kanbanId));
+
+        }else if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
+            issueDTO.setTaskNum(getIssueChildNum(issueId,kanbanId));
+            issueDTO.setTaskFinishNum(getIssueFinishNum(issueId,kanbanId));
+        }
+    }
+
+    private int getIssueChildNum(Long issueId ,Long kanbanId){
+        IssueExample example = new IssueExample();
+        example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
+                .andKanbanIdTo(kanbanId).andParentIdEqualTo(issueId);
+        long count = issueMapper.countByExample(example);
+        return (int) count;
     }
 
 
