@@ -963,7 +963,7 @@ public class StoryServiceImpl implements StoryService {
         Issue issue = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
         List<IssueHistoryRecord> history = new ArrayList<>();
         IssueHistoryRecord nameHistory = null;
-        if(issueDTO.getAssessIsPass()!=1){
+        if(issueDTO.getAssessIsPass()!=1&&StringUtils.isBlank(issueDTO.getAssessRemarks())){
             throw new BusinessException("评审未通过时，需填写评审备注");
         }
         if (!ObjectUtil.equals(issueDTO.getAssessIsPass(), issue.getAssessIsPass())) {
