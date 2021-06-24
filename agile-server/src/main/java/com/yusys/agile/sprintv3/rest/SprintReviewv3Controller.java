@@ -61,7 +61,7 @@ public class SprintReviewv3Controller {
         Preconditions.checkArgument(sprintReviewDTO.getReviewDesc().length() <= 200, "迭代回顾描述过长，不能大于200");
         int i = sprintReviewv3Service.editSprintReview(sprintReviewDTO);
         if (i == 0) {
-            ControllerResponse.fail("编辑迭代回顾信息失败！");
+            return ControllerResponse.fail("编辑迭代回顾信息失败！");
         }
         return ControllerResponse.success("编辑迭代回顾信息成功！");
     }
@@ -77,7 +77,7 @@ public class SprintReviewv3Controller {
     public ControllerResponse deleteSprintReview(@PathVariable Long reviewId) {
         int i = sprintReviewv3Service.deleteSprintReview(reviewId);
         if (i == 0) {
-            ControllerResponse.fail("删除迭代回顾信息失败！");
+            return ControllerResponse.fail("删除迭代回顾信息失败！");
         }
         return ControllerResponse.success("删除迭代回顾信息成功！");
     }
@@ -93,7 +93,7 @@ public class SprintReviewv3Controller {
     @PostMapping("/uploadAttachment/{sprintId}")
     public ControllerResponse uploadAttachment(@RequestParam("file") MultipartFile file, @PathVariable Long sprintId) {
         if(file.isEmpty()){
-            ControllerResponse.fail("上传文件为空，请检查");
+            return ControllerResponse.fail("上传文件为空，请检查");
         }
         return ControllerResponse.success(sprintReviewv3Service.uploadAttachment(file, sprintId));
     }
@@ -121,7 +121,7 @@ public class SprintReviewv3Controller {
     public ControllerResponse deleteAttachment(@PathVariable Long attachmentId) {
         int i = sprintReviewv3Service.deleteAttachment(attachmentId);
         if (i == 0) {
-            ControllerResponse.fail("附件删除失败！");
+            return ControllerResponse.fail("附件删除失败！");
         }
         return ControllerResponse.success("附件删除成功！");
     }
