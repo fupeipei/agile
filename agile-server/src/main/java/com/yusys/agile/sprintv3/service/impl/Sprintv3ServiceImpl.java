@@ -789,13 +789,25 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public List<SsoUserDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
-
+    public List<SprintV3UserHourDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
         //通过迭代id查询迭代时长表的userid，然后再查人员
-        List<SSprintUserHour> userSprintHours = sSprintUserHourMapper.getUserIds4Sprint(sprintId);
+        if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()){
+            PageHelper.startPage(pageNum,pageSize);
+        }
+        List<Long> spintIdList = Lists.newArrayList(sprintId);
+        List<SprintV3UserHourDTO> userSprintHours = sSprintUserHourMapper.listUserHourBySprintId(spintIdList);
         List<Long> userIds = userSprintHours.stream().map(item -> item.getUserId()).collect(Collectors.toList());
         List<SsoUserDTO> ssoUserDTOS = iFacadeUserApi.queryUsersByUserIdsAndConditions(userIds, pageNum, pageSize, userName);
-        return ssoUserDTOS;
+        for(SprintV3UserHourDTO sprintV3UserHourDTO : userSprintHours){
+            for(SsoUserDTO ssoUserDTO : ssoUserDTOS){
+                if(ssoUserDTO.getUserId().equals(sprintV3UserHourDTO.getUserId())){
+                    sprintV3UserHourDTO.setUserAccount(ssoUserDTO.getUserAccount());
+                    sprintV3UserHourDTO.setUserName(ssoUserDTO.getUserName());
+                    continue;
+                }
+            }
+        }
+        return userSprintHours;
     }
 
     @Override
