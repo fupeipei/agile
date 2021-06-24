@@ -3114,7 +3114,7 @@ public class IssueServiceImpl implements IssueService {
         stageIds = stageIds.stream().sorted().collect(Collectors.toList());
         if(stageIds.indexOf(toStageId) < stageIds.indexOf(fromStageId)){
 
-            throw new BusinessException("您可不能往回拖啊.");
+            throw new BusinessException("任务卡片不能往回拖动");
         }
 
         if(fromLaneId != null  && toLaneId != null){
@@ -3137,7 +3137,7 @@ public class IssueServiceImpl implements IssueService {
             loggr.info("获取看板:{},所有laneId集合 :{}",leanKanbanDTO.getKanbanName(),JSONObject.toJSONString(laneIds));
             if(laneIds.indexOf(toLaneId) < laneIds.indexOf(fromLaneId)){
 
-                throw new BusinessException("您可不能往回拖啊.");
+                throw new BusinessException("任务卡片不能往回拖动");
             }
         }
 
