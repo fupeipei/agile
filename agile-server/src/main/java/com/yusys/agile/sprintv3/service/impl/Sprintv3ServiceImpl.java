@@ -58,6 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -855,9 +856,9 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         if (0 == b || 0 == a) {
             return 0.00;
         } else {
-            double div;
-            div = NumberUtil.div(a, b, 2);
-            return div;
+            BigDecimal first = new BigDecimal(a);
+            BigDecimal second = new BigDecimal(b);
+            return first.divide(second, 2, BigDecimal.ROUND_DOWN).doubleValue();
         }
     }
 
@@ -939,14 +940,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         sSprintExample.createCriteria().andTeamIdEqualTo(teamId).andStateEqualTo(StateEnum.U.getValue())
                 .andStatusIn(listStatus).andEndTimeGreaterThan(new Date());
         List<SSprint> sSprintList = ssprintMapper.selectByExample(sSprintExample);
-        if(CollectionUtils.isNotEmpty(sSprintList)){
+        if (CollectionUtils.isNotEmpty(sSprintList)) {
             List<Long> teamIdList = sSprintList.stream().map(SSprint::getTeamId).collect(Collectors.toList());
             List<STeam> sTeamList = teamv3Service.listTeamByIds(teamIdList);
             try {
                 sprintListDTOList = ReflectUtil.copyProperties4List(sSprintList, SprintListDTO.class);
-                for(SprintListDTO sprintListDTO : sprintListDTOList){
-                    for(STeam sTeam : sTeamList){
-                        if(sprintListDTO.getTeamId().equals(sTeam.getTeamId())){
+                for (SprintListDTO sprintListDTO : sprintListDTOList) {
+                    for (STeam sTeam : sTeamList) {
+                        if (sprintListDTO.getTeamId().equals(sTeam.getTeamId())) {
                             sprintListDTO.setTeamName(sTeam.getTeamName());
                             continue;
                         }
