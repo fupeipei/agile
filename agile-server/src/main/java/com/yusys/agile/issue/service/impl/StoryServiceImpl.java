@@ -737,7 +737,7 @@ public class StoryServiceImpl implements StoryService {
         }
 
         IssueExample example = new IssueExample();
-        example.setOrderByClause("`order` desc,create_time desc");
+        example.setOrderByClause("`priority` desc,create_time desc");
 
         IssueExample.Criteria criteria = example.createCriteria().andSprintIdEqualTo(issueDTO.getSprintId()).andStateEqualTo(StateEnum.U.getValue()).
                 andIssueTypeEqualTo(IssueTypeEnum.TYPE_STORY.CODE);
