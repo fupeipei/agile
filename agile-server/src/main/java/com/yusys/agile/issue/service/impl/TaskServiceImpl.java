@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -115,7 +116,8 @@ public class TaskServiceImpl implements TaskService {
     private STeamMemberMapper sTeamMemberMapper;
     @Autowired
     private IssueService issueService;
-
+    @Autowired
+    private IssueUpRegularFactory issueUpRegularFactory;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
