@@ -199,7 +199,7 @@ public class IssueController {
             if(IssueTypeEnum.TYPE_STORY.CODE.equals(parentIssue.getIssueType())){
                 Long taskId = issueDTO.getListIssueIds().get(0);
                 //故事关联任务
-                if(null != parentIssue.getLaneId()){
+                if(null != parentIssue.getKanbanId()){
                     //精益故事向上汇总状态
                     issueService.updateTaskParentStatus(taskId,parentIssue.getKanbanId());
                 }else{
