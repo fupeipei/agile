@@ -66,6 +66,11 @@ public class FeatureServiceImpl implements FeatureService {
             throw new BusinessException("Feature已拆分故事不允许变更团队！");
         }
 
+        //先校验feature是否已经拆分了故事，如果已经拆分了故事则不允许变更系统
+        if(hasChildren(issueDTO.getIssueId())&& !issueDTO.getSystemId().equals(oldFeature.getSystemId())){
+            throw new BusinessException("Feature已拆分故事不允许变更系统！");
+        }
+
         //判断如果feature上的团队发生了变更，那么需要同时更新看板ID，并且将feature的状态置为就绪
         if(!issueDTO.getTeamId().equals(oldFeature.getTeamId())){
             SLeanKanban sLeanKanban = leanKanbanService.querySimpleLeanKanbanInfo(issueDTO.getTeamId());
