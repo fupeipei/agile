@@ -72,13 +72,13 @@ public interface HeaderFieldService {
 
 
     /**
-     * 功能描述  当前项目的列头信息
+     * 功能描述  当前系统下的自定义字段的列头信息
      *
      * @param systemId
      * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
      * @date 2020/4/15
      */
-    List<HeaderField> getAllHeaderFieldBySystemId(Long systemId);
+    List<HeaderField> getAllCustomHeaderFieldBySystemId(Long systemId);
 
     /**
      * 功能描述  当前项目的列头信息
@@ -96,4 +96,14 @@ public interface HeaderFieldService {
      * @param issueCustomRelationId
      */
     void recoveryCustomFieldByFieldId(Long issueCustomRelationId);
+
+
+    /**
+     * 功能描述  自定义字段的列头信息
+     *
+     * @return java.util.List<com.yusys.agile.headerfield.domain.HeaderField>
+     * @date 2020/4/15
+     * @param tenantCode
+     */
+    List<HeaderField> getAllCustomHeaderField(String tenantCode);
 }

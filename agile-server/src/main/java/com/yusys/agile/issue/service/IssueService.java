@@ -419,4 +419,6 @@ public interface IssueService {
     void updateTaskParentStatus(Long issueId,Long kanbanId);
 
     Issue getIssueByIssueId(Long issueId) throws Exception;
+
+    List<Long> selectIssueIdByTenantCode(String tenantCode);
 }

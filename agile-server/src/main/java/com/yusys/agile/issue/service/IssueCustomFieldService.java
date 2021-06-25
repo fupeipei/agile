@@ -47,14 +47,14 @@ public interface IssueCustomFieldService {
 
 
     /**
-     * 功能描述 查询当前项目的所有自定义字段数据值
+     * 功能描述 查询当前租户的所有自定义字段数据值
      *
-     * @param projectId
+     * @param tenantCode
      * @return java.util.List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>
      * @date 2020/8/10
      */
 
-    List<SIssueCustomField> selectIssueIdByProjectId(Long projectId);
+    List<SIssueCustomField> selectIssueIdByTenantCode(String tenantCode);
 
     /**
      * 恢复逻辑删除后的数据

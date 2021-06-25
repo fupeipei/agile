@@ -625,4 +625,6 @@ public interface IssueMapper {
     Integer countFinishedStoryPoint(@Param("sprintId") Long sprintId);
 
     void batchUpdateIssueSystemId(@Param("issueIdList") List<Issue> issueIdList, @Param("systemId")Long systemId);
+
+    List<Long> selectIssueIdByTenantCode(@Param("tenantCode") String  tenantCode);
 }

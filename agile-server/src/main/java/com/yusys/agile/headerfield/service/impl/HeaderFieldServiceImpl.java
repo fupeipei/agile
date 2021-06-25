@@ -64,7 +64,7 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
     @Override
     public List<HeaderField> queryAllHeaderFields(SecurityDTO securityDTO, Byte category, Byte isFilter) {
 
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(securityDTO.getSystemId(), null, null,null);
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(securityDTO.getSystemId(), null, null,null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(securityDTO.getSystemId(), category);
         Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
@@ -321,8 +321,8 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
     }
 
     @Override
-    public List<HeaderField> getAllHeaderFieldBySystemId(Long systemId) {
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(systemId, null, null, null);
+    public List<HeaderField> getAllCustomHeaderFieldBySystemId(Long systemId) {
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(systemId, null, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(systemId, null);
         Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
@@ -401,4 +401,27 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
         return headerFields;
     }
 
+    @Override
+    public List<HeaderField> getAllCustomHeaderField(String tenantCode) {
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFieldsByTenantCode(tenantCode);
+        Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
+        List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelationsByTenantCode(tenantCode);
+        Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
+        List<HeaderField> headerFields = Lists.newArrayList();
+        HeaderFieldExample headerFieldExample = new HeaderFieldExample();
+        HeaderFieldExample.Criteria criteria = headerFieldExample.createCriteria();
+        criteria.andIsCustomEqualTo(IsCustomEnum.TRUE.getValue())
+                .andStateEqualTo(StateEnum.U.getValue());
+        headerFields = headerFieldMapper.selectByExample(headerFieldExample);
+        headerFields.forEach(HeaderField -> {
+            if (longListMap.containsKey(Long.parseLong(HeaderField.getFieldCode())) && listMap.containsKey(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId())) {
+                HeaderField.setFieldName(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldName());
+                HeaderField.setFieldType(Byte.parseByte(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldType().toString()));
+                HeaderField.setFieldContent(listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldContent());
+                HeaderField.setRequired(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getRequired());
+                HeaderField.setFieldPoolCode("pool_code" + listMap.get(longListMap.get(Long.parseLong(HeaderField.getFieldCode())).get(0).getFieldId()).get(0).getFieldId());
+            }
+        });
+        return headerFields;
+    }
 }
