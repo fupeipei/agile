@@ -364,7 +364,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         if (CollectionUtils.isNotEmpty(stageList)) {
             stageList.forEach(stageInstance -> {
                 //排除stageId不等于已完成阶段7
-                if (!NumberConstant.SEVEN.equals(stageInstance.getStageId())) {
+                if (!NumberConstant.EIGHT.equals(stageInstance.getStageId())) {
                     List<JSONObject> oneStages = new ArrayList<>();
                     JSONObject oneJson = new JSONObject();
                     oneJson.put("key", stageInstance.getStageId());

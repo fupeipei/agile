@@ -59,7 +59,7 @@ public class IssueController {
         if(systemId!=null){
             map.put("systemId",systemId);
         }
-            result = issueService.getIssueList(map);
+        result = issueService.getIssueList(map);
         } catch (Exception e) {
             LOGGER.error("查询Issue异常", e);
             return ControllerResponse.fail("查询Issue异常：" + e.getMessage());
