@@ -22,8 +22,7 @@ public class IssueServiceTest {
     @Test
     public  void getIssueListTest(){
         Map<String, Object> map = new HashMap<>();
-        map.put("idOrTitle",1);
-        map.put("issueType",2);
+        map.put("issueType",1);
         map.put("pageNum",1);
         map.put("pageSize",10);
         issueService.getIssueList(map);
