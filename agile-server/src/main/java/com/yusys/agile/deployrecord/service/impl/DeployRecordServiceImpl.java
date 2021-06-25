@@ -55,8 +55,10 @@ public class DeployRecordServiceImpl implements DeployRecordService {
         //issueType = 4 任务
         if(IssueTypeEnum.TYPE_TASK.CODE.compareTo(issueType)>0){
             longList = issueService.getIssueIds(longListParam);
+            longListParam = Lists.newArrayList();
+            longListParam.addAll(longList);
         }
-        if(CollectionUtils.isEmpty(longList)){
+        if(CollectionUtils.isEmpty(longListParam)){
             return pageInfo;
         }
         List<String> commitIdList = toolsChangeApi.getCommitChange(longList);
