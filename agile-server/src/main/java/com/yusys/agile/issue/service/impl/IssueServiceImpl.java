@@ -264,24 +264,6 @@ public class IssueServiceImpl implements IssueService {
                         mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue().trim(),issueType,mapMap ));
                     }
                 }
-                //查询非Epic的客户需求编号、局方需求编号、要求上线时间
-                if (issueType.compareTo(IssueTypeEnum.TYPE_EPIC.CODE) > 0) {
-                    Map map1 = queryIssueEpic(issueListDTO.getIssueId(), issueType);
-                    if (MapUtils.isNotEmpty(map1)) {
-                        if (map1.containsKey("bizNum")) {
-                            mapT.put("bizNum", map1.get("bizNum"));
-                        }
-                        if (map1.containsKey("formalReqCode")) {
-                            mapT.put("formalReqCode", map1.get("formalReqCode"));
-                        }
-                        if (map1.containsKey("askLineTime")) {
-                            mapT.put("askLineTime", map1.get("askLineTime"));
-                        }
-                        if (map1.containsKey("reqScheduling")) {
-                            mapT.put("reqScheduling", map1.get("reqScheduling"));
-                        }
-                    }
-                }
                 maps.add(mapT);
             }
 
@@ -1241,6 +1223,10 @@ public class IssueServiceImpl implements IssueService {
         Long systemId = null;
         if (map.containsKey("systemId") && Optional.ofNullable(map.get("systemId")).isPresent()) {
             systemId = Long.parseLong(map.get("systemId").toString());
+        }
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        if(StringUtils.isNotEmpty(tenantCode)){
+            issueRecord.setTenantCode(tenantCode);
         }
         //组织查询自定义字段条件
         List<CustomFieldJsonType> customFieldJsonTypeList = getCustomIssueIds(map, systemId);

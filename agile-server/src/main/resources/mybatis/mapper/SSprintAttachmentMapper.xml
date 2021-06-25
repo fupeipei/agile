@@ -103,7 +103,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment">
+  <insert id="insert" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment" useGeneratedKeys="true" keyProperty="attachmentId">
     insert into s_sprint_attachment (attachment_id, sprint_id, file_uri, 
       file_name, file_size, upload_time, 
       upload_uid, tenant_code)
@@ -111,7 +111,7 @@
       #{fileName,jdbcType=VARCHAR}, #{fileSize,jdbcType=INTEGER}, #{uploadTime,jdbcType=TIMESTAMP}, 
       #{uploadUid,jdbcType=BIGINT}, #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment">
+  <insert id="insertSelective" parameterType="com.yusys.agile.sprintv3.domain.SSprintAttachment" useGeneratedKeys="true" keyProperty="attachmentId">
     insert into s_sprint_attachment
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="attachmentId != null">
