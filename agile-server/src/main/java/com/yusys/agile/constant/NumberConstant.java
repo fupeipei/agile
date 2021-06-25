@@ -21,6 +21,7 @@ public class NumberConstant {
      * 邮件发送
      */
     public static final Long SEVEN = 7L;
+    public static final Long EIGHT = 8L;
 
     public static final Integer NUMBER_SIZE = 200;
 }
