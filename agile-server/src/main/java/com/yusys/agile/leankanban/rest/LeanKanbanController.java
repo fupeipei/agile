@@ -69,10 +69,11 @@ public class LeanKanbanController {
                                             @RequestParam("fromStageId") Long fromStageId,
                                             @RequestParam(value = "fromLaneId",required =  false) Long fromLaneId,
                                             @RequestParam(value = "stageId") Long stageId,
-                                            @RequestParam(value = "laneId" ,required = false) Long laneId) {
+                                            @RequestParam(value = "laneId" ,required = false) Long laneId,
+                                            @RequestParam(value = "kanbanId")Long kanbanId) {
         try {
             //校验卡片位置
-            issueService.checkIssueState(issueId, fromStageId, fromLaneId,stageId,laneId);
+            issueService.checkIssueState(issueId, fromStageId, fromLaneId,stageId,laneId,kanbanId);
 
             return ControllerResponse.success(issueService.dragIssueCard(issueId,stageId,laneId));
         } catch (Exception e) {

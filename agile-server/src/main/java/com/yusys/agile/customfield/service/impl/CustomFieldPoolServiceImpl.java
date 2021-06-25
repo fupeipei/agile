@@ -189,7 +189,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
 
 
     @Override
-    public List<CustomFieldDTO> listAllCustomFields(Long systemId, String fieldName, Integer pageNum, Integer pageSize) {
+    public List<CustomFieldDTO> listCustomFieldsBySystemId(Long systemId, String fieldName, Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageHelper.startPage(pageNum, pageSize);
@@ -228,9 +228,6 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         if (StringUtils.isNotBlank(tenantCode)) {
             criteria.andTenantCodeEqualTo(tenantCode);
         }
-        // 排序
-        example.setOrderByClause("create_time desc");
-
         return customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
     }
 }

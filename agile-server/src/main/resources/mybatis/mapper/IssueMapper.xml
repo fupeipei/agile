@@ -3194,4 +3194,8 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
                  and lane_id = 106
                  and state = 'U')
   </select>
+
+    <select id="selectIssueIdByTenantCode" resultType="Long">
+    select DISTINCT issue_id from s_issue where state = 'U' and  tenant_code = #{tenantCode};
+  </select>
 </mapper>

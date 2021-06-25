@@ -55,7 +55,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     public List<IssueCustomFieldDTO> listCustomField(Long systemId, Long issueId, Byte issueType) {
         // 只查询应用的自定义字段
         //List<IssueCustomFieldDTO> issueCustomFieldDTOList  = issueCustomFieldMapper.listCustomField(issueId);
-        //List<HeaderFieldDTO> headerFieldDTOS = customFieldPoolService.listAllCustomFields(null, issueType.toString(), StateEnum.U.getValue(), null, null, projectId);
+        //List<HeaderFieldDTO> headerFieldDTOS = customFieldPoolService.listAllCustomFieldsBySystemId(null, issueType.toString(), StateEnum.U.getValue(), null, null, projectId);
         // 某类型的工作项展示的的自定义字段
         List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldList(systemId, issueType);
         List<IssueCustomFieldDTO> issueCustomFieldDTOList = Lists.newArrayList();
@@ -153,8 +153,8 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     }
 
     @Override
-    public List<SIssueCustomField> selectIssueIdByProjectId(Long projectId) {
-        List<Long> issueIds = issueService.selectIssueIdByProjectId(projectId, null);
+    public List<SIssueCustomField> selectIssueIdByTenantCode(String  tenantCode) {
+        List<Long> issueIds = issueService.selectIssueIdByTenantCode(tenantCode);
         if (issueIds.isEmpty()) {
             return Lists.newArrayList();
         }
