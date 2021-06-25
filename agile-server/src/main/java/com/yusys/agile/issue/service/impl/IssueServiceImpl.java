@@ -1235,105 +1235,21 @@ public class IssueServiceImpl implements IssueService {
             return Lists.newArrayList();
         }
         // 不传page信息时查全部数据
-        if (issueStringDTO.getPageNum() != null && issueStringDTO.getPageSize() != null) {
-            issueRecord.setPageNum(StringUtil.StringtoInteger(issueStringDTO.getPageNum()));
-            issueRecord.setPageSize(StringUtil.StringtoInteger(issueStringDTO.getPageSize()));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getIssueType())) {
-            issueRecord.setIssueTypes(dealData(issueStringDTO.getIssueType(), BYTE));
-        }
-
-        if (StringUtils.isNotEmpty(issueStringDTO.getPriority())) {
-            issueRecord.setPrioritys(dealData(issueStringDTO.getPriority(), BYTE));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getImportance())) {
-            issueRecord.setImportances(dealData(issueStringDTO.getImportance(), BYTE));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getCompletion())) {
-            issueRecord.setCompletions(dealData(issueStringDTO.getCompletion(), STRING));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getStageId())) {
-            issueRecord.setStageIds(dealData(issueStringDTO.getStageId(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getFaultLevel())) {
-            issueRecord.setFaultLevels(dealData(issueStringDTO.getFaultLevel(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getFaultType())) {
-            issueRecord.setFaultTypes(dealData(issueStringDTO.getFaultType(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getOrder())) {
-            issueRecord.setOrders(dealData(issueStringDTO.getOrder(), INTEGER));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getSprintId())) {
-            issueRecord.setSprintIds(dealData(issueStringDTO.getSprintId(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getSystemId())) {
-            issueRecord.setSystemIds(dealData(issueStringDTO.getSystemId(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getTeamId())) {
-            issueRecord.setTeamIds(dealData(issueStringDTO.getTeamId(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getModuleId())) {
-            issueRecord.setModuleIds(dealData(issueStringDTO.getModuleId(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getFixedUid())) {
-            issueRecord.setFixedUids(dealData(issueStringDTO.getFixedUid(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getTestUid())) {
-            issueRecord.setTestUids(dealData(issueStringDTO.getTestUid(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getCreateUid())) {
-            issueRecord.setCreateUids(dealData(issueStringDTO.getCreateUid(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getUpdateUid())) {
-            issueRecord.setUpdateUids(dealData(issueStringDTO.getUpdateUid(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getHandler())) {
-            issueRecord.setHandlers(dealData(issueStringDTO.getHandler(), LONG));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getCreateTime())) {
-            issueRecord.setCreateTime(dealData(issueStringDTO.getCreateTime(), DATE));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getBeginDate())) {
-            issueRecord.setBeginDate(dealData(issueStringDTO.getBeginDate(), DATE));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getEndDate())) {
-            issueRecord.setEndDate(dealData(issueStringDTO.getEndDate(), DATE));
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getUpdateTime())) {
-            issueRecord.setUpdateTime(dealData(issueStringDTO.getUpdateTime(), DATE));
-        }
         if (StringUtils.isNotEmpty(issueStringDTO.getIsCollect())) {
             Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
             List<Long> issueIds = getIsCollectByUserId(userId);
-            if (issueIds != null && !issueIds.isEmpty()) {
-                issueRecord.setIssueIds(issueIds);
+            if (CollectionUtils.isNotEmpty(issueIds)) {
+                if(CollectionUtils.isNotEmpty(issueRecord.getIssueIds())){
+                    issueRecord.getIssueIds().retainAll(issueIds);
+                }else {
+                    issueRecord.setIssueIds(issueIds);
+                }
             } else {
                 return Lists.newArrayList();
             }
         }
-        // 判断是根据id还是name
-        if (StringUtils.isNotEmpty(issueStringDTO.getIdOrTitle())) {
-            String idOrTitle = issueStringDTO.getIdOrTitle();
-            try {
-                Long id = Long.valueOf(idOrTitle);
-                issueRecord.setIssueId(id);
-            } catch (Exception e) {
-                loggr.info("idOrTitle转换异常e:{}", e);
-                // 存在异常说明只能查name
-                issueRecord.setTitle(idOrTitle);
-            }
-        }
-        if (StringUtils.isNotEmpty(issueStringDTO.getQueryFlag())) {
-            issueRecord.setQueryFlag(issueStringDTO.getQueryFlag());
-        }
-        if (issueStringDTO.getIssueIds() != null && issueStringDTO.getIssueIds().size() > 0) {
-            if (CollectionUtils.isNotEmpty(issueRecord.getIssueIds())) {
-                issueRecord.getIssueIds().retainAll(issueStringDTO.getIssueIds());
-            } else {
-                issueRecord.setIssueIds(issueStringDTO.getIssueIds());
-            }
-        }
+        //组织基本查询条件
+        orgIssueBasicParams(issueRecord,issueStringDTO);
         return issueMapper.queryIssueList(issueRecord, customFieldJsonTypeList);
     }
 
@@ -3261,4 +3177,102 @@ public class IssueServiceImpl implements IssueService {
         return issueMapper.selectIssueIdByTenantCode(tenantCode);
     }
 
+    /**
+     * 组织基本字段查询条件
+     * @param issueRecord
+     * @param issueStringDTO
+     */
+    public void orgIssueBasicParams(IssueRecord issueRecord,IssueStringDTO issueStringDTO){
+
+        if (issueStringDTO.getPageNum() != null && issueStringDTO.getPageSize() != null) {
+            issueRecord.setPageNum(StringUtil.StringtoInteger(issueStringDTO.getPageNum()));
+            issueRecord.setPageSize(StringUtil.StringtoInteger(issueStringDTO.getPageSize()));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getIssueType())) {
+            issueRecord.setIssueTypes(dealData(issueStringDTO.getIssueType(), BYTE));
+        }
+
+        if (StringUtils.isNotEmpty(issueStringDTO.getPriority())) {
+            issueRecord.setPrioritys(dealData(issueStringDTO.getPriority(), BYTE));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getImportance())) {
+            issueRecord.setImportances(dealData(issueStringDTO.getImportance(), BYTE));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getCompletion())) {
+            issueRecord.setCompletions(dealData(issueStringDTO.getCompletion(), STRING));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getStageId())) {
+            issueRecord.setStageIds(dealData(issueStringDTO.getStageId(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getFaultLevel())) {
+            issueRecord.setFaultLevels(dealData(issueStringDTO.getFaultLevel(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getFaultType())) {
+            issueRecord.setFaultTypes(dealData(issueStringDTO.getFaultType(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getOrder())) {
+            issueRecord.setOrders(dealData(issueStringDTO.getOrder(), INTEGER));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getSprintId())) {
+            issueRecord.setSprintIds(dealData(issueStringDTO.getSprintId(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getSystemId())) {
+            issueRecord.setSystemIds(dealData(issueStringDTO.getSystemId(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getTeamId())) {
+            issueRecord.setTeamIds(dealData(issueStringDTO.getTeamId(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getModuleId())) {
+            issueRecord.setModuleIds(dealData(issueStringDTO.getModuleId(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getFixedUid())) {
+            issueRecord.setFixedUids(dealData(issueStringDTO.getFixedUid(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getTestUid())) {
+            issueRecord.setTestUids(dealData(issueStringDTO.getTestUid(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getCreateUid())) {
+            issueRecord.setCreateUids(dealData(issueStringDTO.getCreateUid(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getUpdateUid())) {
+            issueRecord.setUpdateUids(dealData(issueStringDTO.getUpdateUid(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getHandler())) {
+            issueRecord.setHandlers(dealData(issueStringDTO.getHandler(), LONG));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getCreateTime())) {
+            issueRecord.setCreateTime(dealData(issueStringDTO.getCreateTime(), DATE));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getBeginDate())) {
+            issueRecord.setBeginDate(dealData(issueStringDTO.getBeginDate(), DATE));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getEndDate())) {
+            issueRecord.setEndDate(dealData(issueStringDTO.getEndDate(), DATE));
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getUpdateTime())) {
+            issueRecord.setUpdateTime(dealData(issueStringDTO.getUpdateTime(), DATE));
+        }
+        // 判断是根据id还是name
+        if (StringUtils.isNotEmpty(issueStringDTO.getIdOrTitle())) {
+            String idOrTitle = issueStringDTO.getIdOrTitle();
+            try {
+                Long id = Long.valueOf(idOrTitle);
+                issueRecord.setIssueId(id);
+            } catch (Exception e) {
+                loggr.info("idOrTitle转换异常e:{}", e);
+                // 存在异常说明只能查name
+                issueRecord.setTitle(idOrTitle);
+            }
+        }
+        if (StringUtils.isNotEmpty(issueStringDTO.getQueryFlag())) {
+            issueRecord.setQueryFlag(issueStringDTO.getQueryFlag());
+        }
+        if (CollectionUtils.isNotEmpty(issueStringDTO.getIssueIds())) {
+            if (CollectionUtils.isNotEmpty(issueRecord.getIssueIds())) {
+                issueRecord.getIssueIds().retainAll(issueStringDTO.getIssueIds());
+            } else {
+                issueRecord.setIssueIds(issueStringDTO.getIssueIds());
+            }
+        }
+    }
 }
