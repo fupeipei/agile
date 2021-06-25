@@ -143,10 +143,13 @@ public class IssueFilterServiceImpl implements IssueFilterService {
 
         //3、判断是否删除的当前过滤起是否为默认过滤器，是则进行删除。
         IssueFilterRelatedCheckedExample relatedCheckedExample = new IssueFilterRelatedCheckedExample();
-        relatedCheckedExample.createCriteria().andFilterIdEqualTo(filterId)
+        IssueFilterRelatedCheckedExample.Criteria relatedCheckedExampleCriteria = relatedCheckedExample.createCriteria();
+        relatedCheckedExampleCriteria.andFilterIdEqualTo(filterId)
                 .andCategoryEqualTo(category)
-                .andSystemIdEqualTo(systemId)
                 .andCreateUidEqualTo(createUid);
+        if(null != systemId){
+            relatedCheckedExampleCriteria.andSystemIdEqualTo(systemId);
+        }
         relatedCheckedMapper.deleteByExample(relatedCheckedExample);
         return ControllerResponse.success("过滤器删除成功!");
     }
