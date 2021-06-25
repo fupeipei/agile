@@ -11,5 +11,5 @@ import java.util.List;
 public interface IStageTemplateConfigApi {
 
     @GetMapping("/agile/stageTemplateConfig/getStageTemplateConfigListByLevel")
-    public List<StageTemplateConfigDTO> getDefaultStageTemplateConfigListByLevel(@RequestParam Byte level);
+    public List<StageTemplateConfigDTO> getDefaultStageTemplateConfigListByLevel(@RequestParam("level") Byte level);
 }
