@@ -1950,7 +1950,7 @@
                                      item="iterm">
                                 #{iterm}
                             </foreach>
-                            or ( iu.stage_id not in (1,7) and iu.lane_id IS NULL )
+                            or ( iu.stage_id not in (1,8) and iu.lane_id IS NULL )
                             )
                             <if test="issueRecord.blockState != null ">
                                 or iu.block_state = #{issueRecord.blockState}
@@ -1974,7 +1974,7 @@
                             )
                         </if>
                         <if test="issueRecord.stageIds.queryType ==3 ">
-                            and ( iu.stage_id not in (1,7) and iu.lane_id IS NULL
+                            and ( iu.stage_id not in (1,8) and iu.lane_id IS NULL
                             <if test="issueRecord.blockState != null ">
                                 or iu.block_state = #{issueRecord.blockState}
                             </if>
