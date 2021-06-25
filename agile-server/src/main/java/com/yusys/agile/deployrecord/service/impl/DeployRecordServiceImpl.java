@@ -61,7 +61,7 @@ public class DeployRecordServiceImpl implements DeployRecordService {
         if(CollectionUtils.isEmpty(longListParam)){
             return pageInfo;
         }
-        List<String> commitIdList = toolsChangeApi.getCommitChange(longList);
+        List<String> commitIdList = toolsChangeApi.getCommitChange(longListParam);
         if(CollectionUtils.isEmpty(commitIdList)){
             return pageInfo;
         }
