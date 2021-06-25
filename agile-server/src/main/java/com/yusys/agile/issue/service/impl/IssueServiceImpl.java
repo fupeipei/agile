@@ -1307,7 +1307,11 @@ public class IssueServiceImpl implements IssueService {
             Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
             List<Long> issueIds = getIsCollectByUserId(userId);
             if (issueIds != null && !issueIds.isEmpty()) {
-                issueRecord.setIssueIds(issueIds);
+                if(CollectionUtils.isNotEmpty(issueRecord.getIssueIds())){
+                    issueRecord.getIssueIds().retainAll(issueIds);
+                }else {
+                    issueRecord.setIssueIds(issueIds);
+                }
             } else {
                 return Lists.newArrayList();
             }
