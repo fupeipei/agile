@@ -1836,6 +1836,9 @@
             <if test="issueRecord.projectId != null ">
                 and iu.project_id = #{issueRecord.projectId}
             </if>
+            <if test="issueRecord.tenantCode != null ">
+                and iu.tenant_code = #{issueRecord.tenantCode}
+            </if>
             <if test="issueRecord.issueIds != null and issueRecord.issueIds.size()>0 ">
                 and iu.issue_id in
                 <foreach collection="issueRecord.issueIds" open="(" close=")" separator="," item="iterm">

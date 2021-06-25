@@ -7,9 +7,11 @@ import com.yusys.agile.issue.dao.IssueFilterRelatedCheckedMapper;
 import com.yusys.agile.issue.dto.IssueFilterContentDTO;
 import com.yusys.agile.issue.dto.IssueFilterDTO;
 import com.yusys.agile.issue.enums.IssueFilterCodeEnum;
+import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueFilterService;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.set.stage.service.StageService;
 import com.alibaba.fastjson.JSON;
 import com.yusys.agile.issue.domain.*;
@@ -30,10 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 自定义过滤器controller实现类
@@ -50,8 +49,9 @@ public class IssueFilterServiceImpl implements IssueFilterService {
 
     @Autowired
     private IssueFilterRelatedCheckedMapper relatedCheckedMapper;
+
     @Autowired
-    private StageService stageService;
+    private IStageService iStageService;
 
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
     private static final Logger log = LoggerFactory.getLogger(IssueFilterServiceImpl.class);
@@ -182,9 +182,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                         .andCategoryEqualTo(category)
                         .andCreateUidEqualTo(securityDTO.getUserId());
                 List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
-                //todo      阶段暂时设置为空数组
-                List<StageInstance> stageList = new ArrayList<>();
-                //stageService.getStageList(projectId);
+                List<StageInstance> stageList = iStageService.getStages(new Integer(category.toString()), null, null);
                 if (CollectionUtils.isNotEmpty(issueFilterRelatedCheckeds)) {
                     relatedChecked = issueFilterRelatedCheckeds.get(0);
                 }
@@ -366,7 +364,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         if (CollectionUtils.isNotEmpty(stageList)) {
             stageList.forEach(stageInstance -> {
                 //排除stageId不等于已完成阶段7
-                if (!NumberConstant.SEVEN.equals(stageInstance.getStageId())) {
+                if (!NumberConstant.EIGHT.equals(stageInstance.getStageId())) {
                     List<JSONObject> oneStages = new ArrayList<>();
                     JSONObject oneJson = new JSONObject();
                     oneJson.put("key", stageInstance.getStageId());

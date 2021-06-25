@@ -112,6 +112,25 @@ public class PlatformStageServiceImpl implements IStageService {
                 /**测试类任务，展示测试阶段进行中、已完成。否则 开发阶段进行中已完成*/
             }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
 
+                //如果任务类型为null返回所有的任务状态
+                if(!Optional.ofNullable(taskType).isPresent()){
+
+                    List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
+                            StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(k.getStageId())||
+                                    StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId()) ).collect(Collectors.toList());
+                    if(CollectionUtils.isNotEmpty(result)){
+                        for(KanbanStageInstanceDTO instanceDTO : result){
+                            List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
+                            List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
+                                    IssueTypeEnum.TYPE_TASK.CODE.equals(k.getAppType())).collect(Collectors.toList());
+                            instanceDTO.setSecondStages(secondStageResults);
+
+                        }
+                    }
+                    List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
+                    return stageInstances;
+                }
+
                 if(TaskTypeEnum.TEST.CODE.equals(taskType)){
                     List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
                             StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId())).collect(Collectors.toList());
@@ -172,6 +191,7 @@ public class PlatformStageServiceImpl implements IStageService {
         switch (stageType){
             case 3:
             case 4:
+                stageIds.add(StageConstant.FirstStageEnum.TEST_STAGE.getValue());
                 stageIds.add(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
         }
         //一级阶段集合
@@ -271,21 +291,20 @@ public class PlatformStageServiceImpl implements IStageService {
             List<KanbanStageInstance> result = Lists.newArrayList();
 
             for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
-                if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType ||
+                //如果查询类型为story的并且阶段为 开发中 或者查询类型为feature 并且 阶段为开发中
+                if((IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType
+                        && StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())) ||
                         (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())
-                                && IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType) ){
-                    if(StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(kanbanStageInstance.getStageId() )||
-                            StoryStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
-                            StoryStatusEnum.TYPE_CLOSED_STATE.CODE.equals(kanbanStageInstance.getStageId()) ){
+                                && IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType)){
+                    if(IssueTypeEnum.TYPE_STORY.CODE.equals(kanbanStageInstance.getAppType())){
                         result.add(kanbanStageInstance);
                         continue;
                     }
 
-                }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
-                    if(TaskStatusEnum.TYPE_ADD_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
-                            TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
-                            TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(kanbanStageInstance.getStageId()) ||
-                            TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(kanbanStageInstance.getStageId())){
+                    //如果查询类型为 task 并且 为开发阶段
+                }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType &&
+                        StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())){
+                    if(IssueTypeEnum.TYPE_TASK.CODE.equals(kanbanStageInstance.getAppType())){
                         result.add(kanbanStageInstance);
                         continue;
                     }
