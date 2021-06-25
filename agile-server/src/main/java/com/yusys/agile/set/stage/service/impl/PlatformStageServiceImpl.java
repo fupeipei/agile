@@ -112,6 +112,25 @@ public class PlatformStageServiceImpl implements IStageService {
                 /**测试类任务，展示测试阶段进行中、已完成。否则 开发阶段进行中已完成*/
             }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType){
 
+                //如果任务类型为null返回所有的任务状态
+                if(!Optional.ofNullable(taskType).isPresent()){
+
+                    List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
+                            StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(k.getStageId())||
+                                    StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId()) ).collect(Collectors.toList());
+                    if(CollectionUtils.isNotEmpty(result)){
+                        for(KanbanStageInstanceDTO instanceDTO : result){
+                            List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
+                            List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
+                                    IssueTypeEnum.TYPE_TASK.CODE.equals(k.getAppType())).collect(Collectors.toList());
+                            instanceDTO.setSecondStages(secondStageResults);
+
+                        }
+                    }
+                    List<StageInstance> stageInstances = ReflectUtil.copyProperties4List(result, StageInstance.class);
+                    return stageInstances;
+                }
+
                 if(TaskTypeEnum.TEST.CODE.equals(taskType)){
                     List<KanbanStageInstanceDTO> result = kanbanStageInstances.stream().filter(k ->
                             StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(k.getStageId())).collect(Collectors.toList());
@@ -172,6 +191,7 @@ public class PlatformStageServiceImpl implements IStageService {
         switch (stageType){
             case 3:
             case 4:
+                stageIds.add(StageConstant.FirstStageEnum.TEST_STAGE.getValue());
                 stageIds.add(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
         }
         //一级阶段集合
