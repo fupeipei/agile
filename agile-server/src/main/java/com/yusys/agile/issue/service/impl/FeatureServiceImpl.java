@@ -71,7 +71,7 @@ public class FeatureServiceImpl implements FeatureService {
             SLeanKanban sLeanKanban = leanKanbanService.querySimpleLeanKanbanInfo(issueDTO.getTeamId());
             if(Optional.ofNullable(sLeanKanban).isPresent()){
                 issueDTO.setKanbanId(sLeanKanban.getKanbanId());
-                issueDTO.setStages(new Long[1]);
+                issueDTO.setStages(new Long[]{1L});
             }
         }
 

@@ -3058,10 +3058,15 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void checkIssueState(Long issueId, Long fromStageId,Long fromLaneId, Long toStageId,Long toLaneId) {
+    public void checkIssueState(Long issueId, Long fromStageId,Long fromLaneId, Long toStageId,Long toLaneId,Long fromKanbanId) {
 
         loggr.info("校验卡片状态入参: issueId{},fromStageId:{},fromLaneId:{},toStageId:{},toLaneId:{}",issueId,fromStageId,fromLaneId,toStageId,toLaneId);
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
+
+
+        if(!fromKanbanId.equals(issue.getKanbanId())){
+            throw new BusinessException("卡片拖动失败,,当前卡片不在此看板,请刷新");
+        }
 
         boolean isOrigPosition = true;
         Long laneId = issue.getLaneId();

@@ -407,7 +407,7 @@ public interface IssueService {
      * @param fromLaneId
      * @return
      */
-    void checkIssueState(Long issueId,Long fromStageId, Long fromLaneId,Long stageId,Long laneId);
+    void checkIssueState(Long issueId,Long fromStageId, Long fromLaneId,Long stageId,Long laneId,Long kanbanId);
 
 
     /**
