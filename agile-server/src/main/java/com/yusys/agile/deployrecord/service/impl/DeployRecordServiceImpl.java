@@ -60,6 +60,9 @@ public class DeployRecordServiceImpl implements DeployRecordService {
             return pageInfo;
         }
         List<String> commitIdList = toolsChangeApi.getCommitChange(longList);
+        if(CollectionUtils.isEmpty(commitIdList)){
+            return pageInfo;
+        }
         Map<String, Object> models = new HashMap<>();
         models.put("commitIdList",commitIdList);
         models.put("pageNum",pageNum);
