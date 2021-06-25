@@ -375,13 +375,12 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         issueListDTO.setChildren(issueListDTOS);
-        /** 暂时先注释掉
          //自定义字段
          Map<Long, List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>> mapListIssueCustomField = mapMap.get("mapListIssueCustomField");
          if (mapListIssueCustomField.containsKey(issueListDTO.getIssueId())) {
          issueListDTO.setCustomFieldList(mapListIssueCustomField.get(issueListDTO.getIssueId()));
          }
-         */
+
     }
 
     /**
@@ -706,23 +705,6 @@ public class IssueServiceImpl implements IssueService {
         if (mapUserAttention.keySet().contains(issue.getIssueId())) {
             issueListDTO.setIsCollect(Byte.parseByte("1"));
         }
-        /** 版本相关注释掉
-         //版本计划名称
-         Long versionId = null;
-         VersionIssueRelate versionIssueRelate = versionIssueRelateService.queryVersionIssueRelate(issue.getIssueId());
-         if (versionIssueRelate != null) {
-         versionId = versionIssueRelate.getVersionId();
-         }
-         if (versionId != null) {
-         if (mapMap.get("mapVersionManagerDTO").containsKey(versionId)) {
-         Map<Long, List<VersionManagerDTO>> mapVersionManagerDTO = mapMap.get("mapVersionManagerDTO");
-         map = new HashMap<String, String>();
-         map.put("name", mapVersionManagerDTO.get(versionId).get(0).getVersionName());
-         map.put("id", versionId);
-         issueListDTO.setVersionName(map);
-         }
-         }
-         **/
         return issueListDTO;
     }
 
@@ -1696,7 +1678,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     public List<CustomFieldJsonType> getCustomIssueIds(Map<String, Object> map, Long systemId) {
-        List<HeaderField> headerFields = headerFieldService.getAllHeaderFieldBySystemId(systemId);
+        List<HeaderField> headerFields = headerFieldService.getAllCustomHeaderFieldBySystemId(systemId);
         Map<String, List<HeaderField>> mapHeaderField = headerFields.stream().collect(Collectors.groupingBy(HeaderField -> {
             if (HeaderField.getFieldPoolCode() != null) {
                 return HeaderField.getFieldPoolCode();
@@ -1854,8 +1836,8 @@ public class IssueServiceImpl implements IssueService {
         }
         Map<Long, List<UserAttention>> mapUserAttention = userAttentions.stream().collect(Collectors.groupingBy(UserAttention::getSubjectId));
         mapResult.put("mapUserAttention", mapUserAttention);
-        /** 查询当前项目的所有自定义字段数据对象
-         List<IssueCustomField> issueCustomFields = issueCustomFieldService.selectIssueIdByProjectId(projrctId);
+         //查询当前租户下的所有自定义字段数据对象
+         List<SIssueCustomField> issueCustomFields = issueCustomFieldService.selectIssueIdByTenantCode(tenantCode);
          Map<Long, List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>> mapListIssueCustomField = new HashMap<>();
          List<com.yusys.agile.issue.dto.IssueCustomFieldDTO> issueCustomFieldDTOS = Lists.newArrayList();
          try {
@@ -1863,9 +1845,8 @@ public class IssueServiceImpl implements IssueService {
          } catch (Exception e) {
          loggr.error(e.getMessage());
          }
-
          //租户下所有的自定义字段列头对象
-         List<HeaderField> headerFields = headerFieldService.getAllHeaderFieldBySystemId(projrctId);
+         List<HeaderField> headerFields = headerFieldService.getAllCustomHeaderField(tenantCode);
          Map<String, List<HeaderField>> mapHeaderField = headerFields.stream().collect(Collectors.groupingBy(HeaderField::getFieldCode));
          mapResult.put("mapHeaderField", mapHeaderField);
          //自定义字段
@@ -1881,7 +1862,6 @@ public class IssueServiceImpl implements IssueService {
          });
          mapListIssueCustomField = issueCustomFieldDTOS.stream().collect(Collectors.groupingBy(com.yusys.agile.issue.dto.IssueCustomFieldDTO::getIssueId));
          mapResult.put("mapListIssueCustomField", mapListIssueCustomField);
-         **/
         //列头数据的Content
         Map<String, HashMap<String, String>> mapHeaderFieldContent = headerFieldService.getAllHeaderFieldContNotNull();
         mapResult.put("mapHeaderFieldContent", mapHeaderFieldContent);
@@ -3289,4 +3269,10 @@ public class IssueServiceImpl implements IssueService {
         }
         return true;
     }
+
+    @Override
+    public List<Long> selectIssueIdByTenantCode(String tenantCode) {
+        return issueMapper.selectIssueIdByTenantCode(tenantCode);
+    }
+
 }

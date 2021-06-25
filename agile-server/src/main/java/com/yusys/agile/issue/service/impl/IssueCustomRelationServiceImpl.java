@@ -62,7 +62,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
     @Override
     public List<SIssueCustomRelation> getIssueCustomRelations(Long systemId, Byte issueType) {
         //查询自定义字段集合，并转换成map结构
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFields(systemId, "", null, null);
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(systemId, "", null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         //查询关联关系
         SIssueCustomRelationExample example = new SIssueCustomRelationExample();
@@ -164,7 +164,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
     @Override
     public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName) {
         //查询自定义字段集合，并转换成map结构
-        List<CustomFieldDTO> customFields = customFieldPoolService.listAllCustomFields(systemId, fieldName, null, null);
+        List<CustomFieldDTO> customFields = customFieldPoolService.listCustomFieldsBySystemId(systemId, fieldName, null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFields.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<CustomFieldDTO> list = customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName, systemId);
         return list;
@@ -206,5 +206,27 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
             //逻辑删除自定义字段表单值
             issueCustomFieldService.deleteCustomFileByIssueCustomRelationId(relationId);
         }
+    }
+
+    @Override
+    public List<SIssueCustomRelation> getIssueCustomRelationsByTenantCode(String tenantCode) {
+        //查询自定义字段集合，并转换成map结构
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listAllCustomFieldsByTenantCode(tenantCode);
+        Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
+        //查询关联关系
+        SIssueCustomRelationExample example = new SIssueCustomRelationExample();
+        SIssueCustomRelationExample.Criteria criteria = example.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue());
+        List<SIssueCustomRelation> list = issueCustomRelationMapper.selectByExampleWithBLOBs(example);
+        list.stream().forEach(item -> {
+            item.setRequired(issueCustomRelationMapper.queryRequired(item.getIssueType(), item.getFieldId(), item.getSystemId()));
+            if (listMap.containsKey(item.getFieldId())) {
+                CustomFieldDTO customFieldDTO = listMap.get(item.getFieldId()).get(0);
+                item.setFieldType(Byte.parseByte(customFieldDTO.getFieldType().toString()));
+                item.setFieldContent(customFieldDTO.getFieldContent());
+                item.setFieldName(customFieldDTO.getFieldName());
+            }
+        });
+        return list;
     }
 }

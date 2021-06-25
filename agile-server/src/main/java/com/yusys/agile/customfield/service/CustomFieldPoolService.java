@@ -48,7 +48,7 @@ public interface CustomFieldPoolService {
      * @param pageNum
      * @param pageSize
      */
-    List<CustomFieldDTO> listAllCustomFields(Long systemId, String fieldName, Integer pageNum, Integer pageSize);
+    List<CustomFieldDTO> listCustomFieldsBySystemId(Long systemId, String fieldName, Integer pageNum, Integer pageSize);
 
 
     /**
