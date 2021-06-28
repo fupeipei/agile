@@ -1,6 +1,5 @@
 package com.yusys.agile.issue.service.impl;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
