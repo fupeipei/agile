@@ -1,10 +1,10 @@
 package com.yusys.agile.team.service.impl;
 
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.dao.UserSprintHourMapper;
-import com.yusys.agile.sprint.domain.Sprint;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.team.dao.TeamMapper;
 import com.yusys.agile.team.domain.Team;
 import com.yusys.agile.team.domain.TeamExample;
@@ -12,7 +12,6 @@ import com.yusys.agile.team.dto.TeamDTO;
 import com.yusys.agile.team.service.TeamService;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
-import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -28,11 +27,11 @@ import java.util.List;
 @Service
 public class TeamServiceImpl implements TeamService {
     @Autowired
-    private SprintMapper sprintMapper;
+    private SSprintMapper sprintMapper;
     @Autowired
     private TeamMapper teamMapper;
     @Autowired
-    private UserSprintHourMapper userSprintHourMapper;
+    private SSprintUserHourMapper userSprintHourMapper;
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
 
@@ -53,10 +52,10 @@ public class TeamServiceImpl implements TeamService {
         for (Team team : teams) {
             TeamDTO teamDTO = ReflectUtil.copyProperties(team, TeamDTO.class);
             // 取上一个迭代人员放入Team
-            Sprint sprint = sprintMapper.getOneSprintByTeamId(teamDTO.getTeamId());
+            SSprint sprint = sprintMapper.getOneSprintByTeamId(teamDTO.getTeamId());
             if (null != sprint) {
-                List<UserSprintHourDTO> userSprintHourDTOS = new ArrayList<>();
-                List<UserSprintHour> userSprintHours = userSprintHourMapper.getUserIds4Sprint(sprint.getSprintId());
+                List<SprintV3UserHourDTO> userSprintHourDTOS = new ArrayList<>();
+                List<SSprintUserHour> userSprintHours = userSprintHourMapper.getUserIds4Sprint(sprint.getSprintId());
                 if (CollectionUtils.isNotEmpty(userSprintHours)) {
                     getUserSprintHour(userSprintHourDTOS, userSprintHours, iFacadeUserApi);
                 }
@@ -68,10 +67,10 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void getUserSprintHour(List<UserSprintHourDTO> userSprintHourDTOS, List<UserSprintHour> userSprintHours, IFacadeUserApi iFacadeUserApi) {
-        for (UserSprintHour userSprintHour : userSprintHours) {
+    public void getUserSprintHour(List<SprintV3UserHourDTO> userSprintHourDTOS, List<SSprintUserHour> userSprintHours, IFacadeUserApi iFacadeUserApi) {
+        for (SSprintUserHour userSprintHour : userSprintHours) {
             SsoUser user = iFacadeUserApi.queryUserById(userSprintHour.getUserId());
-            UserSprintHourDTO userSprintHourDTO = ReflectUtil.copyProperties(userSprintHour, UserSprintHourDTO.class);
+            SprintV3UserHourDTO userSprintHourDTO = ReflectUtil.copyProperties(userSprintHour, SprintV3UserHourDTO.class);
             if (null != user) {
                 userSprintHourDTO.setUserId(user.getUserId());
                 userSprintHourDTO.setUserName(user.getUserName());

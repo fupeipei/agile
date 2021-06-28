@@ -9,9 +9,6 @@ import com.yusys.agile.burndown.dto.*;
 import com.yusys.agile.burndown.service.BurnDownChartService;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.SprintWithBLOBs;
-import com.yusys.agile.sprint.service.SprintService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
@@ -25,7 +22,6 @@ import com.yusys.portal.util.date.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.Resource;
 import java.util.*;
 

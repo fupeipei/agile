@@ -33,8 +33,6 @@ import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueRichTextFactory;
 import com.yusys.agile.issue.utils.IssueRuleFactory;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.service.SprintService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -42,6 +40,8 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.yusys.agile.fault.enums.*;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.utils.YuItUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
@@ -60,7 +60,6 @@ import org.slf4j.Marker;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
@@ -76,60 +75,44 @@ public class FaultServiceImpl implements FaultService {
 
     @Resource
     private FaultLevelMapper faultLevelMapper;
-
     @Resource
     private FaultTypeMapper faultTypeMapper;
-
     @Resource
     private IssueMapper issueMapper;
-
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
-
-    @Autowired
-    private SprintService sprintService;
-
     @Autowired
     private IssueService issueService;
-
     @Autowired
     private IssueRichTextFactory issueRichTextFactory;
-
     @Autowired
     private IssueRuleFactory ruleFactory;
     @Resource
     private HeaderFieldMapper headerFieldMapper;
-
-    private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
-
     @Resource
     private CommissionService commissionService;
-
     @Resource
     private IssueFactory issueFactory;
-
     @Resource
     private IssueCustomFieldService issueCustomFieldService;
-
     @Resource
     private RabbitTemplate rabbitTemplate;
-
+    @Autowired
+    private Sprintv3Service sprintService;
     /**
      * 分页阈值
      */
     private static final int THRESHOLD = 1000;
-
     /**
      * 默认个数为0
      */
     private static final int DEFAULT_NUMBER_ZERO = 0;
-
     private static final String TOTAL = "total";
-
     /**
      * 修复率
      */
     private static final String REPAIR_RATE = "repairRate";
+    private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
     @Override
     public void addFault(IssueDTO issueDTO) {
@@ -222,13 +205,12 @@ public class FaultServiceImpl implements FaultService {
 
         // 缺陷类型
         if (null != issueDTO.getFaultType()) {
-            //issueDTO.setFaultTypeName(getOperationValue(issueDTO.getFaultType(), HeaderFieldUtil.FAULTTYPE));
             issueDTO.setFaultTypeName(FaultTypeEnum.getMsgById(issueDTO.getFaultType()));
         }
 
         // 迭代
         if (null != issueDTO.getSprintId() && null != issueDTO.getProjectId()) {
-            SprintDTO sprintDTO = sprintService.viewEdit(issueDTO.getSprintId(), issueDTO.getProjectId());
+            SprintV3DTO sprintDTO = sprintService.viewEdit(issueDTO.getSprintId());
             if (null != sprintDTO) {
                 issueDTO.setSprintName(sprintDTO.getSprintName());
             }
@@ -244,10 +226,8 @@ public class FaultServiceImpl implements FaultService {
                 issueDTO.setParentName(story.getTitle());
             }
         }
-        //LOGGER.info("查询描述前的issueDTO={}", JSON.toJSONString(issueDTO));
         //查询富文本内容
         issueRichTextFactory.queryIssueRichText(issueDTO);
-        //LOGGER.info("查询描述后的issueDTO={}", JSON.toJSONString(issueDTO));
 
         //查询自定义字段
         issueDTO.setCustomFieldDetailDTOList(issueCustomFieldService.listCustomFieldByIssueId(issueId));

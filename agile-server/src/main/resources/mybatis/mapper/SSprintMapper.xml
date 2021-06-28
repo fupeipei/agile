@@ -918,4 +918,29 @@
         where team_id = #{teamId}
         and state = 'U'
     </select>
+
+    <select id="getOneSprintByTeamId" resultType="com.yusys.agile.sprintv3.domain.SSprint">
+        select <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from sprint where team_id = #{teamId} and status in (0,2,3,4) and state = 'U' ORDER BY update_time DESC, create_time DESC LIMIT 1
+    </select>
+
+    <select id="selectByExampleDTO" resultType="com.yusys.agile.sprintV3.dto.SprintV3DTO">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from s_sprint
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+
 </mapper>

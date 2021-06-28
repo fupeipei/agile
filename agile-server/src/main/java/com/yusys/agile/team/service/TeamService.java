@@ -1,7 +1,7 @@
 package com.yusys.agile.team.service;
 
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.team.dto.TeamDTO;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.entity.SsoUser;
@@ -38,5 +38,5 @@ public interface TeamService {
      * @Description 增加成员迭代时长信息
      * @Return void
      */
-    void getUserSprintHour(List<UserSprintHourDTO> userSprintHourDTOS, List<UserSprintHour> userSprintHours, IFacadeUserApi iFacadeUserApi);
+    void getUserSprintHour(List<SprintV3UserHourDTO> userSprintHourDTOS, List<SSprintUserHour> userSprintHours, IFacadeUserApi iFacadeUserApi);
 }

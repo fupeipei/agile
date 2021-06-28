@@ -35,6 +35,7 @@ import com.yusys.agile.module.service.ModuleService;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.set.stage.service.IStageService;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
@@ -50,8 +51,6 @@ import com.yusys.agile.review.service.ReviewService;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.service.StageService;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.service.SprintService;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.teamv3.service.Teamv3Service;
@@ -146,8 +145,6 @@ public class IssueServiceImpl implements IssueService {
     @Resource
     private IssueMapper issueMapper;
     @Resource
-    private SprintService sprintService;
-    @Resource
     private Sprintv3Service sprintv3Service;
     @Resource
     private IssueFactory issueFactory;
@@ -206,6 +203,8 @@ public class IssueServiceImpl implements IssueService {
     private LeanKanbanService leanKanbanService;
     @Autowired
     private SLeanKanbanMapper leanKanbanMapper;
+    @Autowired
+    private Sprintv3Service sprintService;
 
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
@@ -2208,10 +2207,10 @@ public class IssueServiceImpl implements IssueService {
 
         //迭代id集合，并去重
         List<Long> sprintIdSet = issueList.stream().map(Issue::getSprintId).distinct().collect(Collectors.toList());
-        Map<Long, List<SprintDTO>> sprintMap = Maps.newHashMap();
+        Map<Long, List<SprintV3DTO>> sprintMap = Maps.newHashMap();
         if (sprintIdSet != null && !sprintIdSet.isEmpty()) {
-            List<SprintDTO> sprintDTOS = sprintService.selectSprintsBySprintIdList(sprintIdSet);
-            sprintMap = sprintDTOS.stream().collect(Collectors.groupingBy(SprintDTO::getSprintId));
+            List<SprintV3DTO> sprintDTOS = sprintService.selectSprintsBySprintIdList(sprintIdSet);
+            sprintMap = sprintDTOS.stream().collect(Collectors.groupingBy(SprintV3DTO::getSprintId));
         }
         mapResult.put(SPRINTMAP, sprintMap);
 
@@ -2264,7 +2263,7 @@ public class IssueServiceImpl implements IssueService {
             if (mapMap.containsKey(SPRINTMAP)&&
                     Optional.ofNullable(mapMap.get(SPRINTMAP)).isPresent()&&
                     mapMap.get(SPRINTMAP).containsKey(issue.getSprintId())) {
-                Map<Long, List<SprintDTO>> sprintMap = mapMap.get(SPRINTMAP);
+                Map<Long, List<SprintV3DTO>> sprintMap = mapMap.get(SPRINTMAP);
                 map = new HashMap<String, String>();
                 map.put("name", sprintMap.get(issue.getSprintId()).get(0).getSprintName());
                 map.put("id", issue.getSprintId());

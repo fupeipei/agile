@@ -3,7 +3,6 @@ package com.yusys.agile.sprintv3.rest;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
-import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
@@ -18,7 +17,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 /**
@@ -173,7 +171,7 @@ public class Sprintv3Controller {
      */
     @ApiOperation(value = "关联迭代")
     @PostMapping("/relation/issue")
-    public ControllerResponse arrangeIssue(@RequestBody SprintDTO sprintDTO) {
+    public ControllerResponse arrangeIssue(@RequestBody SprintV3DTO sprintDTO) {
         if (sprintv3Service.arrangeIssue(sprintDTO)) {
             return ControllerResponse.success("关联成功！");
         }

@@ -3,11 +3,8 @@ package com.yusys.agile.sprintV3.dto;
 import com.yusys.agile.project.dto.ProjectFaultDTO;
 import com.yusys.agile.project.dto.ProjectStoryDTO;
 import com.yusys.agile.project.dto.ProjectTaskDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
-import com.yusys.agile.team.dto.TeamDTO;
 import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import lombok.Data;
-
 import java.util.Date;
 import java.util.List;
 
