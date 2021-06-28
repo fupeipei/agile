@@ -239,17 +239,6 @@ public interface IssueService {
     void sortIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
 
     /**
-     * @param queryType
-     * @param rootIds
-     * @param issueListDTO
-     * @param mapMap
-     * @Date 2021/2/16
-     * @Description 功能描述  版本管理中递归查找Issue的children
-     * @Return void
-     */
-    void sortVersionIssueDTO(Byte queryType, String rootIds, IssueListDTO issueListDTO, Map<String, Map> mapMap);
-
-    /**
      * 功能描述 获取基础和扩展信息
      *
      * @param bizBacklogId
