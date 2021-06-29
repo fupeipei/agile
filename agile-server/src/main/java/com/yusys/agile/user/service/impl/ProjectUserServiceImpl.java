@@ -2,9 +2,7 @@ package com.yusys.agile.user.service.impl;
 
 import com.yusys.agile.commit.dto.CommitDTO;
 import com.yusys.agile.commit.service.CommitService;
-import com.yusys.agile.fault.enums.UserRelateTypeEnum;
 import com.yusys.agile.issue.dao.IssueMapper;
-import com.yusys.agile.team.service.TeamService;
 import com.yusys.agile.user.dto.ProjectUserDTO;
 import com.yusys.agile.user.service.ProjectUserService;
 import com.github.pagehelper.Page;
@@ -15,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +28,9 @@ public class ProjectUserServiceImpl implements ProjectUserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectUserServiceImpl.class);
 
     @Resource
-    private TeamService teamService;
-    @Resource
     private IssueMapper issueMapper;
     @Resource
     private CommitService commitService;
-
-    @Override
-    public PageInfo projectUserInfo(Long projectId, Integer pageNum, Integer pageSize) {
-        List<SsoUser> ssoUserList = teamService.listMemberUsers(projectId, UserRelateTypeEnum.PROJECT.getValue());
-        PageInfo result = commitUserInfo(projectId, null, pageNum, pageSize, ssoUserList);
-        return result;
-    }
 
     @Override
     public PageInfo commitUserInfo(Long projectId, Long sprintId, Integer pageNum, Integer pageSize, List<SsoUser> ssoUserList) {
