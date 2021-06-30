@@ -28,9 +28,9 @@ import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
-import com.yusys.agile.sprint.dao.UserSprintHourMapper;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.domain.UserSprintHourExample;
+import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
+import com.yusys.agile.sprintv3.domain.SSprintUserHour;
+import com.yusys.agile.sprintv3.domain.SSprintUserHourExample;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,43 +57,31 @@ import java.util.stream.Collectors;
 @Component
 public class MailSendUtil {
     @Resource
-    private RabbitTemplate rabbitTemplate;
-
-    @Resource
-    private UserSprintHourMapper sprintHourMapper;
-
+    private SSprintUserHourMapper sprintHourMapper;
     @Resource
     private IFacadeUserApi iFacadeUserApi;
-
     @Resource
     private IFacadeProjectApi iFacadeProjectApi;
-
     @Resource
     private MailSwitchMapper mailSwitchMapper;
-
     @Resource
     private IssueMapper issueMapper;
-
     @Resource
     private IssueHistoryRecordMapper issueHistoryRecordMapper;
-
     @Resource
     private KanbanStageInstanceMapper stageInstanceMapper;
-
     @Resource
     private BusinessMapper businessMapper;
     @Resource
     private BusinessKanbanMapper businessKanbanMapper;
 
     private static final Logger log = LoggerFactory.getLogger(MailSendUtil.class);
-
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
     @Value("${YuDO.url}")
     private String YuDOWebIp;
     @Value("${project.location}")
     private String projectLocation;
-
 
     /**
      * @param issue
@@ -203,9 +190,9 @@ public class MailSendUtil {
             userIds.add(createUid);
             //1、如果迭代不为空，则将迭代团队人员添加发送邮件集合中
             if (Optional.ofNullable(sprintId).isPresent()) {
-                UserSprintHourExample hourExample = new UserSprintHourExample();
+                SSprintUserHourExample hourExample = new SSprintUserHourExample();
                 hourExample.createCriteria().andSprintIdEqualTo(sprintId);
-                List<UserSprintHour> userSprintHours = sprintHourMapper.selectByExample(hourExample);
+                List<SSprintUserHour> userSprintHours = sprintHourMapper.selectByExample(hourExample);
                 if (CollectionUtils.isNotEmpty(userSprintHours)) {
                     userSprintHours.forEach(userSprintHour -> {
                         userIds.add(userSprintHour.getUserId());
@@ -739,31 +726,5 @@ public class MailSendUtil {
         }
         return projectName;
     }
-
-    public void sendMailtoBAPerson(Long userId, String mailSubject, String mailContent) {
-        SsoUser ssoUserDTO = iFacadeUserApi.queryUserById(userId);
-        if (Optional.ofNullable(ssoUserDTO).isPresent()) {
-            log.error("当前用户不存在");
-            return;
-        }
-        String userMail = null;
-        if (Optional.ofNullable(ssoUserDTO.getUserMail()).isPresent()) {
-            userMail = ssoUserDTO.getUserMail();
-        } else {
-            log.error("当前用户的邮箱不存在");
-            return;
-        }
-        MailSendDTO mailSendDTO = new MailSendDTO();
-        mailSendDTO.setMailSubject(mailSubject);
-        mailSendDTO.setMailContent(mailContent);
-        mailSendDTO.setMailReceivers(userMail);
-        mailSendDTO.setMailType(MailTypeEnum.MAIL_TYPE_1.getType());
-        try {
-            //rabbitTemplate.convertAndSend(FlowConstant.Queue.MAIL_SEND_QUEUE, mailSendDTO);
-        } catch (Exception e) {
-            log.error("局方下发变更发送邮件异常:{}" + mailSubject, e);
-        }
-    }
-
 
 }

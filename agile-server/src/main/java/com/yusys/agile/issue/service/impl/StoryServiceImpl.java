@@ -22,11 +22,11 @@ import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
@@ -57,7 +57,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  *  @Description: 用户故事实现类
@@ -81,8 +80,6 @@ public class StoryServiceImpl implements StoryService {
     @Resource
     private IFacadeUserApi iFacadeUserApi;
     @Resource
-    private IssueAcceptanceMapper issueAcceptanceMapper;
-    @Resource
     private SysExtendFieldDetailService sysExtendFieldDetailService;
     @Resource
     private IssueRichTextFactory issueRichTextFactory;
@@ -94,12 +91,6 @@ public class StoryServiceImpl implements StoryService {
     private IFacadeSystemApi iFacadeSystemApi;
     @Resource
     private STeamSystemMapper teamSystemMapper;
-
-    @Resource
-    private IssueSystemRelpMapper issueSystemRelpMapper;
-
-    @Resource
-    private IssueSystemRelpService issueSystemRelpService;
     @Resource
     private SIssueRichtextMapper sIssueRichtextMapper;
 
@@ -117,7 +108,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public Long createStory(IssueDTO issueDTO) {
         //设置默认创建
-        Long[] stages = issueDTO.getStages();
+        Long[] stages;
         if(!Optional.ofNullable(issueDTO.getSprintId()).isPresent()){
             stages = new Long[]{
                     StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue(),

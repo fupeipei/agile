@@ -1,11 +1,9 @@
 package com.yusys.agile.issue.dto;
 
-import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import lombok.Data;
-
 import java.util.List;
 
 /**

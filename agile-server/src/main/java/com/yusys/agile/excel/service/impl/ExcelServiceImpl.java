@@ -27,15 +27,15 @@ import com.yusys.agile.issue.dto.IssueStringDTO;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.issue.service.*;
 import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprint;
+import com.yusys.agile.sprintv3.domain.SSprintExample;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.Sprint;
-import com.yusys.agile.sprint.domain.SprintExample;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.service.SprintService;
 import com.yusys.agile.utils.DateTools;
 import com.yusys.agile.utils.ExcelUtil;
 import com.yusys.agile.utils.ReflectObjectUtil;
@@ -72,7 +72,6 @@ import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -104,7 +103,7 @@ public class ExcelServiceImpl implements ExcelService {
     private IFacadeSystemApi iFacadeSystemApi;
 
     @Autowired
-    private SprintService sprintService;
+    private Sprintv3Service sprintService;
 
     @Autowired
     private IssueService issueService;
@@ -128,7 +127,7 @@ public class ExcelServiceImpl implements ExcelService {
     private IssueMapper issueMapper;
 
     @Autowired
-    private SprintMapper sprintMapper;
+    private SSprintMapper sprintMapper;
 
     @Autowired
     private IssueSystemRelpService issueSystemRelpService;
@@ -938,12 +937,12 @@ public class ExcelServiceImpl implements ExcelService {
      * @date 2021/2/1
      */
     private String[] getUnFinishedSprintNamesByProjectId(Long projectId) {
-        List<SprintDTO> result = sprintService.queryUnFinishedByProjectId(null, projectId, 1, 10000);
+        List<SprintV3DTO> result = sprintService.queryUnFinishedByProjectId(null, projectId, 1, 10000);
         if (CollectionUtils.isEmpty(result)) {
             return null;
         }
         List<String> list = Lists.newArrayList();
-        for (SprintDTO temp : result) {
+        for (SprintV3DTO temp : result) {
             Long sprintId = temp.getSprintId();
             String sprintName = temp.getSprintName();
             list.add(sprintId + "+" + sprintName);
@@ -1620,11 +1619,11 @@ public class ExcelServiceImpl implements ExcelService {
             }
         }
         //根据项目id查询迭代名称
-        SprintExample sprintExample = new SprintExample();
-        sprintExample.createCriteria().andProjectIdEqualTo(projectId);
-        List<Sprint> sprintList = sprintMapper.selectByExample(sprintExample);
+        SSprintExample sprintExample = new SSprintExample();
+        sprintExample.createCriteria();
+        List<SSprint> sprintList = sprintMapper.selectByExample(sprintExample);
         if (CollectionUtils.isNotEmpty(sprintList)) {
-            for (Sprint sprint : sprintList) {
+            for (SSprint sprint : sprintList) {
                 sprintMap.put(sprint.getSprintId(), sprint.getSprintName());
             }
         }
