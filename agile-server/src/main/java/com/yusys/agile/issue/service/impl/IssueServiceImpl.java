@@ -371,11 +371,11 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         issueListDTO.setChildren(issueListDTOS);
-         //自定义字段
-         Map<Long, List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>> mapListIssueCustomField = mapMap.containsKey(MAPLISTISSUECUSTOMFIELD)?mapMap.get(MAPLISTISSUECUSTOMFIELD):new HashMap<>();
-         if (mapListIssueCustomField.containsKey(issueListDTO.getIssueId())) {
-         issueListDTO.setCustomFieldList(mapListIssueCustomField.get(issueListDTO.getIssueId()));
-         }
+        //自定义字段
+        Map<Long, List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>> mapListIssueCustomField = mapMap.containsKey(MAPLISTISSUECUSTOMFIELD)?mapMap.get(MAPLISTISSUECUSTOMFIELD):new HashMap<>();
+        if (mapListIssueCustomField.containsKey(issueListDTO.getIssueId())) {
+            issueListDTO.setCustomFieldList(mapListIssueCustomField.get(issueListDTO.getIssueId()));
+        }
     }
 
     @Override
@@ -470,7 +470,7 @@ public class IssueServiceImpl implements IssueService {
         Map<Long, String> userMap = mapMap.containsKey(USERMAP)?mapMap.get(USERMAP):new HashMap<>();
         Map map = new HashMap<>();
         //Issue类型
-        if (!Optional.ofNullable(issue.getIssueType()).isPresent()) {
+        if (Optional.ofNullable(issue.getIssueType()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", IssueTypeEnum.getName(issue.getIssueType()));
             map.put("id", issue.getIssueType());
@@ -487,11 +487,11 @@ public class IssueServiceImpl implements IssueService {
         //列头的Coentent数据
         Map<String, HashMap<String, String>> mapHeaderFieldContent = mapMap.containsKey(MAPHEADERFIELDCONTENT)?mapMap.get(MAPUSERATTENTION):new HashMap<>();
         //任务类型
-        if (!Optional.ofNullable(issue.getTaskType()).isPresent()) {
+        if (Optional.ofNullable(issue.getTaskType()).isPresent()) {
             issueListDTO.setTaskType(getOptionList(issue.getTaskType().toString(), "taskType", mapHeaderFieldContent));
         }
         //迭代ID
-        if (!Optional.ofNullable(issue.getSprintId()).isPresent()) {
+        if (Optional.ofNullable(issue.getSprintId()).isPresent()) {
             if (mapMap.containsKey(SPRINTMAP)&&mapMap.get(SPRINTMAP).containsKey(issue.getSprintId())) {
                 Map<Long, List<SSprint>> sprintMap = mapMap.get(SPRINTMAP);
                 map = new HashMap<String, String>();
@@ -502,14 +502,14 @@ public class IssueServiceImpl implements IssueService {
         }
         //模块ID
         Map<Long, String> moduleMap = mapMap.containsKey(MODULEMAP)?mapMap.get(MODULEMAP):new HashMap<>();
-        if (!Optional.ofNullable(issue.getModuleId()).isPresent()) {
+        if (Optional.ofNullable(issue.getModuleId()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", moduleMap.get(issue.getModuleId()));
             map.put("id", issue.getModuleId());
             issueListDTO.setModuleId(map);
         }
         //系统ID
-        if (!Optional.ofNullable(issue.getIssueId()).isPresent()) {
+        if (Optional.ofNullable(issue.getIssueId()).isPresent()) {
             String systemName;
             Long systemId;
             Long parentIssueSystemId = null;
@@ -521,7 +521,7 @@ public class IssueServiceImpl implements IssueService {
                 }
             }
             Map<Long, List<SsoSystemRestDTO>> mapSsoSystem = mapMap.containsKey(MAPSSOSYSTEM)?mapMap.get(MAPSSOSYSTEM):new HashMap<>();
-            if (!Optional.ofNullable(parentIssueSystemId).isPresent()) {
+            if (Optional.ofNullable(parentIssueSystemId).isPresent()) {
                 systemName = mapSsoSystem.containsKey(parentIssueSystemId) ? mapSsoSystem.get(parentIssueSystemId).get(0).getSystemName() : "";
                 systemId = parentIssueSystemId;
             } else {
@@ -536,33 +536,33 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         //对应的团队
-        if (!Optional.ofNullable(issue.getIssueId()).isPresent()) {
+        if (Optional.ofNullable(issue.getIssueId()).isPresent()) {
             issueListDTO.setTeamId(getIssueTeamMap(issue.getIssueId(), issue.getIssueType(), mapMap));
         }
         //priority优先级
-        if (!Optional.ofNullable(issue.getPriority()).isPresent()) {
+        if (Optional.ofNullable(issue.getPriority()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", issue.getPriority());
             map.put("id", issue.getPriority());
             issueListDTO.setPriority(map);
         }
         //importance
-        if (!Optional.ofNullable(issue.getImportance()).isPresent()) {
+        if (Optional.ofNullable(issue.getImportance()).isPresent()) {
             issueListDTO.setImportance(getOptionList(issue.getImportance().toString(), HeaderFieldUtil.IMPORTANCE, mapHeaderFieldContent));
         }
         //completion
-        if (!Optional.ofNullable(issue.getCompletion()).isPresent()) {
+        if (Optional.ofNullable(issue.getCompletion()).isPresent()) {
             issueListDTO.setCompletion(getOptionList(issue.getCompletion(), HeaderFieldUtil.COMPLETION, mapHeaderFieldContent));
         }
         //createUid
-        if (!Optional.ofNullable(issue.getCreateUid()).isPresent()) {
+        if (Optional.ofNullable(issue.getCreateUid()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", MapUtils.getString(userMap, issue.getCreateUid()));
             map.put("id", issue.getCreateUid());
             issueListDTO.setCreateUid(map);
         }
         //handler 处理人
-        if (!Optional.ofNullable(issue.getHandler()).isPresent()) {
+        if (Optional.ofNullable(issue.getHandler()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", MapUtils.getString(userMap, issue.getHandler()));
             map.put("id", issue.getHandler());
@@ -574,7 +574,7 @@ public class IssueServiceImpl implements IssueService {
         }
 
         //       updateUid
-        if (!Optional.ofNullable(issue.getUpdateUid()).isPresent()) {
+        if (Optional.ofNullable(issue.getUpdateUid()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", MapUtils.getString(userMap, issue.getUpdateUid()));
             map.put("id", issue.getUpdateUid());
@@ -582,42 +582,42 @@ public class IssueServiceImpl implements IssueService {
         }
         // stageId
         //当阶段id不在 FirstStageEnum (1-8) 之间时会导致 "查询Issue异常：null"
-        if (!Optional.ofNullable(issue.getStageId()).isPresent()) {
+        if (Optional.ofNullable(issue.getStageId()).isPresent()) {
             issueListDTO.setStageId(getFirstStageMapByTypeAndId(issue.getStageId()));
         }
         //laneId
-        if (!Optional.ofNullable(issue.getLaneId()).isPresent()) {
+        if (Optional.ofNullable(issue.getLaneId()).isPresent()) {
             issueListDTO.setLaneId(getSecondStageMapByTypeAndId(issue.getLaneId(), issue.getIssueType(), issue.getStageId()));
         }
         //  将阶段与状态拼成   ""/"" 形式
-        if (!Optional.ofNullable(issue.getStageId()).isPresent()&&
-                !Optional.ofNullable(issueListDTO.getStageId()).isPresent()&&
+        if (Optional.ofNullable(issue.getStageId()).isPresent()&&
+                Optional.ofNullable(issueListDTO.getStageId()).isPresent()&&
                 issueListDTO.getStageId().containsKey("name")&&
-                !Optional.ofNullable(issue.getLaneId()).isPresent() &&
-                !Optional.ofNullable(issueListDTO.getLaneId()).isPresent()&&
+                Optional.ofNullable(issue.getLaneId()).isPresent() &&
+                Optional.ofNullable(issueListDTO.getLaneId()).isPresent()&&
                 issueListDTO.getLaneId().containsKey("name")) {
-                String name = issueListDTO.getStageId().get("name").toString();
-                name = name.trim() + "/" + issueListDTO.getLaneId().get("name").toString().trim();
-                issueListDTO.getStageId().put("name", name);
+            String name = issueListDTO.getStageId().get("name").toString();
+            name = name.trim() + "/" + issueListDTO.getLaneId().get("name").toString().trim();
+            issueListDTO.getStageId().put("name", name);
         }
 
         // 缺陷类型
-        if (!Optional.ofNullable(issue.getFaultType()).isPresent()) {
+        if (Optional.ofNullable(issue.getFaultType()).isPresent()) {
             issueListDTO.setFaultType(getOptionList(issue.getFaultType().toString(), HeaderFieldUtil.FAULTTYPE, mapHeaderFieldContent));
         }
         // 缺陷等级
-        if (!Optional.ofNullable(issue.getFaultLevel()).isPresent()) {
+        if (Optional.ofNullable(issue.getFaultLevel()).isPresent()) {
             issueListDTO.setFaultLevel(getOptionList(issue.getFaultLevel().toString(), HeaderFieldUtil.FAULTLEVEL, mapHeaderFieldContent));
         }
         // 解决人
-        if (!Optional.ofNullable(issue.getFixedUid()).isPresent()) {
+        if (Optional.ofNullable(issue.getFixedUid()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", MapUtils.getString(userMap, issue.getFixedUid()));
             map.put("id", issue.getFixedUid());
             issueListDTO.setFixedUid(map);
         }
         // 验证人
-        if (!Optional.ofNullable(issue.getTestUid()).isPresent()) {
+        if (Optional.ofNullable(issue.getTestUid()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", MapUtils.getString(userMap, issue.getTestUid()));
             map.put("id", issue.getTestUid());
@@ -682,7 +682,7 @@ public class IssueServiceImpl implements IssueService {
             Long sprintId = issue.getSprintId();
             map.put("sprintId", sprintId);
             SSprintWithBLOBs sprint = ssprintMapper.selectByPrimaryKey(sprintId);
-            if (!Optional.ofNullable(sprint).isPresent()) {
+            if (Optional.ofNullable(sprint).isPresent()) {
                 map.put("sprintName", sprint.getSprintName());
             }
             Long issueSystemId = issue.getSystemId();
@@ -690,7 +690,7 @@ public class IssueServiceImpl implements IssueService {
             try {
                 if (null != issueSystemId) {
                     SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(issue.getSystemId());
-                    map.put("systemName", !Optional.ofNullable(ssoSystem).isPresent() ? ssoSystem.getSystemName() : null);
+                    map.put("systemName", Optional.ofNullable(ssoSystem).isPresent() ? ssoSystem.getSystemName() : null);
                 } else {
                     map.put("systemName", "");
                 }
@@ -910,9 +910,9 @@ public class IssueServiceImpl implements IssueService {
                         issueHistoryRecordDTO.setOldValue("");
                         issueHistoryRecordDTO.setNewValue("");
                     }
-                    if (!Optional.ofNullable(issueHistoryRecordDTO.getCreateUid()).isPresent()) {
+                    if (Optional.ofNullable(issueHistoryRecordDTO.getCreateUid()).isPresent()) {
                         SsoUser ssoUserDTO = iFacadeUserApi.queryUserById(issueHistoryRecordDTO.getCreateUid());
-                        if (!Optional.ofNullable(ssoUserDTO).isPresent()) {
+                        if (Optional.ofNullable(ssoUserDTO).isPresent()) {
                             issueHistoryRecordDTO.setCreateName(ssoUserDTO.getUserName());
                         }
                     } else {
@@ -1006,13 +1006,13 @@ public class IssueServiceImpl implements IssueService {
                         case "开发负责人":
                             if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
                                 SsoUser ssoUserDTO = iFacadeUserApi.queryUserById(Long.valueOf(oldValue));
-                                if (!Optional.ofNullable(ssoUserDTO).isPresent()) {
+                                if (Optional.ofNullable(ssoUserDTO).isPresent()) {
                                     issueHistoryRecordDTO.setOldValue(ssoUserDTO.getUserName());
                                 }
                             }
                             if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(oldValue)) {
                                 SsoUser ssoUserDTO = iFacadeUserApi.queryUserById(Long.valueOf(newValue));
-                                if (!Optional.ofNullable(ssoUserDTO).isPresent()) {
+                                if (Optional.ofNullable(ssoUserDTO).isPresent()) {
                                     issueHistoryRecordDTO.setNewValue(ssoUserDTO.getUserName());
                                 }
                             }
@@ -1161,7 +1161,7 @@ public class IssueServiceImpl implements IssueService {
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
         IssueRecord issueRecord = new IssueRecord();
         Long systemId = null;
-        if (map.containsKey("systemId") && !Optional.ofNullable(map.get("systemId")).isPresent()) {
+        if (map.containsKey("systemId") && Optional.ofNullable(map.get("systemId")).isPresent()) {
             systemId = Long.parseLong(map.get("systemId").toString());
         }
         String tenantCode = UserThreadLocalUtil.getTenantCode();
@@ -1317,7 +1317,7 @@ public class IssueServiceImpl implements IssueService {
             if (StringUtils.isNotEmpty(title)) {
                 criteria.andTitleLike(PERCENT_SIGN + title + PERCENT_SIGN);
             }
-            if (!Optional.ofNullable(stages).isPresent() && !"".equals(stages)) {
+            if (Optional.ofNullable(stages).isPresent() && !"".equals(stages)) {
                 String[] split = stages.split(",");
                 Long stageId = Long.parseLong(split[0]);
                 criteria.andStageIdEqualTo(stageId);
@@ -1677,32 +1677,32 @@ public class IssueServiceImpl implements IssueService {
         }
         Map<Long, List<UserAttention>> mapUserAttention = userAttentions.stream().collect(Collectors.groupingBy(UserAttention::getSubjectId));
         mapResult.put(MAPUSERATTENTION, mapUserAttention);
-         //查询当前租户下的所有自定义字段数据对象
-         List<SIssueCustomField> issueCustomFields = issueCustomFieldService.selectIssueIdByTenantCode(tenantCode);
-         Map<Long, List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>> mapListIssueCustomField = new HashMap<>();
-         List<com.yusys.agile.issue.dto.IssueCustomFieldDTO> issueCustomFieldDTOS = Lists.newArrayList();
-         try {
-         issueCustomFieldDTOS = ReflectUtil.copyProperties4List(issueCustomFields, com.yusys.agile.issue.dto.IssueCustomFieldDTO.class);
-         } catch (Exception e) {
-         loggr.error(e.getMessage());
-         }
-         //租户下所有的自定义字段列头对象
-         List<HeaderField> headerFields = headerFieldService.getAllCustomHeaderField(tenantCode);
-         Map<String, List<HeaderField>> mapHeaderField = headerFields.stream().collect(Collectors.groupingBy(HeaderField::getFieldCode));
-         mapResult.put("mapHeaderField", mapHeaderField);
-         //自定义字段
-         issueCustomFieldDTOS.forEach(IssueCustomFieldDTO -> {
-         if (mapHeaderField.containsKey(IssueCustomFieldDTO.getFieldId().toString())) {
-         IssueCustomFieldDTO.setFieldType(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldType());
-         IssueCustomFieldDTO.setFieldContent(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldContent());
-         IssueCustomFieldDTO.setFieldPoolCode(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldPoolCode());
-         //IssueCustomFieldDTO.setFieldCode(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldCode());
-         IssueCustomFieldDTO.setCategory(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getCategory().toString());
-         IssueCustomFieldDTO.setFieldCode(IssueCustomFieldDTO.getFieldPoolCode());
-         }
-         });
-         mapListIssueCustomField = issueCustomFieldDTOS.stream().collect(Collectors.groupingBy(com.yusys.agile.issue.dto.IssueCustomFieldDTO::getIssueId));
-         mapResult.put(MAPLISTISSUECUSTOMFIELD, mapListIssueCustomField);
+        //查询当前租户下的所有自定义字段数据对象
+        List<SIssueCustomField> issueCustomFields = issueCustomFieldService.selectIssueIdByTenantCode(tenantCode);
+        Map<Long, List<com.yusys.agile.issue.dto.IssueCustomFieldDTO>> mapListIssueCustomField = new HashMap<>();
+        List<com.yusys.agile.issue.dto.IssueCustomFieldDTO> issueCustomFieldDTOS = Lists.newArrayList();
+        try {
+            issueCustomFieldDTOS = ReflectUtil.copyProperties4List(issueCustomFields, com.yusys.agile.issue.dto.IssueCustomFieldDTO.class);
+        } catch (Exception e) {
+            loggr.error(e.getMessage());
+        }
+        //租户下所有的自定义字段列头对象
+        List<HeaderField> headerFields = headerFieldService.getAllCustomHeaderField(tenantCode);
+        Map<String, List<HeaderField>> mapHeaderField = headerFields.stream().collect(Collectors.groupingBy(HeaderField::getFieldCode));
+        mapResult.put("mapHeaderField", mapHeaderField);
+        //自定义字段
+        issueCustomFieldDTOS.forEach(IssueCustomFieldDTO -> {
+            if (mapHeaderField.containsKey(IssueCustomFieldDTO.getFieldId().toString())) {
+                IssueCustomFieldDTO.setFieldType(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldType());
+                IssueCustomFieldDTO.setFieldContent(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldContent());
+                IssueCustomFieldDTO.setFieldPoolCode(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldPoolCode());
+                //IssueCustomFieldDTO.setFieldCode(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getFieldCode());
+                IssueCustomFieldDTO.setCategory(mapHeaderField.get(IssueCustomFieldDTO.getFieldId().toString()).get(0).getCategory().toString());
+                IssueCustomFieldDTO.setFieldCode(IssueCustomFieldDTO.getFieldPoolCode());
+            }
+        });
+        mapListIssueCustomField = issueCustomFieldDTOS.stream().collect(Collectors.groupingBy(com.yusys.agile.issue.dto.IssueCustomFieldDTO::getIssueId));
+        mapResult.put(MAPLISTISSUECUSTOMFIELD, mapListIssueCustomField);
         //列头数据的Content
         Map<String, HashMap<String, String>> mapHeaderFieldContent = headerFieldService.getAllHeaderFieldContNotNull();
         mapResult.put(MAPHEADERFIELDCONTENT, mapHeaderFieldContent);
@@ -2057,7 +2057,7 @@ public class IssueServiceImpl implements IssueService {
             Issue issue = issueMapper.selectByPrimaryKey(story.getIssueId());
             Long moduleId = issue.getModuleId();
             Module issueModule = moduleService.detailModule(moduleId);
-            if (!Optional.ofNullable(issueModule).isPresent()) {
+            if (Optional.ofNullable(issueModule).isPresent()) {
                 panoramasStoryDTO.setModuleName(issueModule.getModuleName());
             } else {
                 panoramasStoryDTO.setModuleName("");
@@ -2109,11 +2109,11 @@ public class IssueServiceImpl implements IssueService {
 
     private String getName(SysExtendFieldDetail sysExtendFieldDetail) {
         String name = "";
-        if (!Optional.ofNullable(sysExtendFieldDetail).isPresent()) {
-            if (!Optional.ofNullable(sysExtendFieldDetail.getValue()).isPresent()) {
+        if (Optional.ofNullable(sysExtendFieldDetail).isPresent()) {
+            if (Optional.ofNullable(sysExtendFieldDetail.getValue()).isPresent()) {
                 try {
                     SsoUser user = userCache.get(Long.valueOf(sysExtendFieldDetail.getValue()));
-                    if (!Optional.ofNullable(user).isPresent()) {
+                    if (Optional.ofNullable(user).isPresent()) {
                         name = user.getUserName();
                     }
                 } catch (Exception e) {
@@ -2177,14 +2177,14 @@ public class IssueServiceImpl implements IssueService {
 
     private void setVersionName(com.yusys.agile.issue.dto.PanoramasEpicDTO panoramasEpicDTO, Long versionId) {
         VersionManagerDTO versionManagerDTO = versionManagerService.getVersionInfo(versionId);
-        if (!Optional.ofNullable(versionManagerDTO).isPresent()) {
+        if (Optional.ofNullable(versionManagerDTO).isPresent()) {
             panoramasEpicDTO.setVersionName(versionManagerDTO.getVersionName());
         }
     }
 
     private String getHandlerName(Map mapHandler) {
         String handlerName = "";
-        if (!Optional.ofNullable(mapHandler).isPresent()) {
+        if (Optional.ofNullable(mapHandler).isPresent()) {
             handlerName = (String) mapHandler.get("name");
         }
         return handlerName;
@@ -2241,16 +2241,16 @@ public class IssueServiceImpl implements IssueService {
         Map<Long, String> userMap = mapMap.containsKey(USERMAP)?mapMap.get("userMap"):new HashMap<>();
         Map map;
         //Issue类型
-        if (!Optional.ofNullable(issue.getIssueType()).isPresent()) {
+        if (Optional.ofNullable(issue.getIssueType()).isPresent()) {
             map = new HashMap<String, String>();
             map.put("name", IssueTypeEnum.getName(issue.getIssueType()));
             map.put("id", issue.getIssueType());
             issueListDTO.setIssueType(map);
             if (IssueTypeEnum.TYPE_FAULT.CODE.equals(issue.getIssueType())) {
-                if (!Optional.ofNullable(issue.getCreateTime()).isPresent()) {
+                if (Optional.ofNullable(issue.getCreateTime()).isPresent()) {
                     issueListDTO.setBeginDate(issue.getCreateTime());
                 }
-                if ( !Optional.ofNullable(issue.getDeadline()).isPresent()){
+                if ( Optional.ofNullable(issue.getDeadline()).isPresent()){
                     issueListDTO.setEndDate(issue.getDeadline());
                 }
             }
@@ -2259,9 +2259,9 @@ public class IssueServiceImpl implements IssueService {
         Map<String, HashMap<String, String>> mapHeaderFieldContent = mapMap.containsKey(MAPHEADERFIELDCONTENT)?mapMap.get(MAPHEADERFIELDCONTENT):new HashMap<>();
 
         //迭代ID
-        if (!Optional.ofNullable(issue.getSprintId()).isPresent()) {
+        if (Optional.ofNullable(issue.getSprintId()).isPresent()) {
             if (mapMap.containsKey(SPRINTMAP)&&
-                    !Optional.ofNullable(mapMap.get(SPRINTMAP)).isPresent()&&
+                    Optional.ofNullable(mapMap.get(SPRINTMAP)).isPresent()&&
                     mapMap.get(SPRINTMAP).containsKey(issue.getSprintId())) {
                 Map<Long, List<SprintV3DTO>> sprintMap = mapMap.get(SPRINTMAP);
                 map = new HashMap<String, String>();
@@ -2271,11 +2271,11 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         //priority优先级
-        if (!Optional.ofNullable(issue.getPriority()).isPresent()) {
+        if (Optional.ofNullable(issue.getPriority()).isPresent()) {
             issueListDTO.setPriority(getOptionList(issue.getPriority().toString(), HeaderFieldUtil.PRIORITY, mapHeaderFieldContent));
         }
         //handler 处理人
-        if (!Optional.ofNullable(issue.getHandler()).isPresent()) {
+        if (Optional.ofNullable(issue.getHandler()).isPresent()) {
             if (userMap != null && userMap.containsKey(issue.getHandler())) {
                 map = new HashMap<String, String>();
                 map.put("name", MapUtils.getString(userMap, issue.getHandler()));
@@ -2285,9 +2285,9 @@ public class IssueServiceImpl implements IssueService {
         }
 
         //projectId 项目名称
-        if (!Optional.ofNullable(issue.getProjectId()).isPresent()) {
+        if (Optional.ofNullable(issue.getProjectId()).isPresent()) {
             if (mapMap.containsKey("projectMap")&&
-                    !Optional.ofNullable(mapMap.get("projectMap")).isPresent() &&
+                    Optional.ofNullable(mapMap.get("projectMap")).isPresent() &&
                     mapMap.get("projectMap").containsKey(issue.getProjectId())) {
                 Map<Long, String> projectMap = mapMap.get("projectMap");
                 map = new HashMap<String, String>();
@@ -2568,14 +2568,14 @@ public class IssueServiceImpl implements IssueService {
             //处理系统信息
             Long systemId = issueDTO.getSystemId();
             SsoSystem ssoSystem = systemCache.get(systemId);
-            if (!Optional.ofNullable(ssoSystem).isPresent()) {
+            if (Optional.ofNullable(ssoSystem).isPresent()) {
                 issueDTO.setSystemCode(ssoSystem.getSystemCode());
                 issueDTO.setSystemName(ssoSystem.getSystemName());
             }
             //处理人信息
             Long handler = issueDTO.getHandler();
             SsoUser user = userCache.get(handler);
-            if (!Optional.ofNullable(user).isPresent()) {
+            if (Optional.ofNullable(user).isPresent()) {
                 issueDTO.setHandlerAccount(user.getUserAccount());
                 issueDTO.setHandlerName(user.getUserName());
             }
@@ -2678,11 +2678,11 @@ public class IssueServiceImpl implements IssueService {
 
             Long storyId = issue.getParentId();
             Issue story = issueMapper.selectByPrimaryKey(storyId);
-            if (!Optional.ofNullable(story).isPresent()) {
+            if (Optional.ofNullable(story).isPresent()) {
 
                 Long featureId = story.getParentId();
                 Issue feature = issueMapper.selectByPrimaryKey(featureId);
-                if (!Optional.ofNullable(feature).isPresent()) {
+                if (Optional.ofNullable(feature).isPresent()) {
                     //返回前端变更数据
                     IssueDTO storyDTO = ReflectUtil.copyProperties(story, IssueDTO.class);
                     IssueDTO taskDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
@@ -2708,7 +2708,7 @@ public class IssueServiceImpl implements IssueService {
         //处理系统信息
         Long systemId = issueDTO.getSystemId();
         SsoSystem ssoSystem = systemCache.get(systemId);
-        if (!Optional.ofNullable(ssoSystem).isPresent()) {
+        if (Optional.ofNullable(ssoSystem).isPresent()) {
 
             issueDTO.setSystemCode(ssoSystem.getSystemCode());
             issueDTO.setSystemName(ssoSystem.getSystemName());
@@ -2716,7 +2716,7 @@ public class IssueServiceImpl implements IssueService {
         //处理人信息
         Long handler = issueDTO.getHandler();
         SsoUser ssoUser = userCache.get(handler);
-        if (!Optional.ofNullable(ssoUser).isPresent()) {
+        if (Optional.ofNullable(ssoUser).isPresent()) {
 
             issueDTO.setHandlerAccount(ssoUser.getUserAccount());
             issueDTO.setHandlerName(ssoUser.getUserName());
@@ -2756,7 +2756,7 @@ public class IssueServiceImpl implements IssueService {
     public void updateTaskParentStatus(Long issueId, Long kanbanId) {
 
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
-        if (!Optional.ofNullable(issue).isPresent()) {
+        if (Optional.ofNullable(issue).isPresent()) {
 
             Long parentId = issue.getParentId();
             Byte type = issue.getIssueType();
@@ -2806,7 +2806,7 @@ public class IssueServiceImpl implements IssueService {
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
 
                                 Issue story = issueMapper.selectByPrimaryKey(parentId);
-                                if (!Optional.ofNullable(story).isPresent()) {
+                                if (Optional.ofNullable(story).isPresent()) {
                                     Long featureId = story.getParentId();
                                     story.setStageId(storyStageId);
                                     story.setLaneId(storyLaneId);
@@ -2819,7 +2819,7 @@ public class IssueServiceImpl implements IssueService {
                                     //如果feature 下故事都已经完成，则更新feature状态为 系统测试阶段，进行中
                                     if(result.size() == 1 && result.contains(storyLaneId)){
                                         Issue feature = issueMapper.selectByPrimaryKey(featureId);
-                                        if(!Optional.ofNullable(feature).isPresent()){
+                                        if(Optional.ofNullable(feature).isPresent()){
                                             feature.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
                                             feature.setLaneId(LaneKanbanStageConstant.SystemTestStageEnum.ONGOING.getValue());
                                             issueMapper.updateByPrimaryKeySelective(feature);
@@ -2841,7 +2841,7 @@ public class IssueServiceImpl implements IssueService {
                     }
 
                     Issue story = issueMapper.selectByPrimaryKey(parentId);
-                    if (!Optional.ofNullable(story).isPresent()) {
+                    if (Optional.ofNullable(story).isPresent()) {
                         story.setStageId(storyStageId);
                         story.setLaneId(storyLaneId);
                         issueMapper.updateByPrimaryKeySelective(story);
@@ -2860,7 +2860,7 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public void orgIssueExtendFields(Long issueId, Map<String, Object> map) {
-        if (!Optional.ofNullable(issueId).isPresent()) {
+        if (Optional.ofNullable(issueId).isPresent()) {
             List<Long> issueIds = Lists.newArrayList();
             issueIds.add(issueId);
             List<SysExtendFieldDetail> sysExtendFieldDetailList = sysExtendFieldDetailService.getIssueExtendDetailList(issueIds);
@@ -2971,18 +2971,18 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = selectIssueByIssueId(issueId);
         Long parentId = issue.getParentId();
         Long teamId = issue.getTeamId();
-        if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType) && !Optional.ofNullable(parentId).isPresent()) {
+        if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType) && Optional.ofNullable(parentId).isPresent()) {
             parentId = selectIssueByIssueId(parentId).getParentId();
-            if (!Optional.ofNullable(parentId).isPresent()) {
+            if (Optional.ofNullable(parentId).isPresent()) {
                 teamId = selectIssueByIssueId(parentId).getTeamId();
             }
         }
         if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
-            if (!Optional.ofNullable(parentId).isPresent()) {
+            if (Optional.ofNullable(parentId).isPresent()) {
                 teamId = selectIssueByIssueId(parentId).getTeamId();
             }
         }
-        if (!Optional.ofNullable(teamId).isPresent()) {
+        if (Optional.ofNullable(teamId).isPresent()) {
             Map<Long, List<STeam>> mapSTeam = mapMap.containsKey(MAPSTEAM)?mapMap.get(MAPSTEAM):new HashMap<>();
             if (mapSTeam.containsKey(teamId)) {
                 STeam sTeam = mapSTeam.get(teamId).get(0);
@@ -3095,8 +3095,8 @@ public class IssueServiceImpl implements IssueService {
      */
     public void orgIssueBasicParams(IssueRecord issueRecord,IssueStringDTO issueStringDTO){
 
-        if (!Optional.ofNullable(issueStringDTO.getPageNum()).isPresent()&&
-                !Optional.ofNullable(issueStringDTO.getPageSize()).isPresent() ) {
+        if (Optional.ofNullable(issueStringDTO.getPageNum()).isPresent()&&
+                Optional.ofNullable(issueStringDTO.getPageSize()).isPresent() ) {
             issueRecord.setPageNum(StringUtil.StringtoInteger(issueStringDTO.getPageNum()));
             issueRecord.setPageSize(StringUtil.StringtoInteger(issueStringDTO.getPageSize()));
         }
