@@ -693,7 +693,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public List<IssueHistoryRecord> createIssueHistoryRecordsForStory(Long from, Long to, Issue story) {
-        if(story==null||from==null||to==null){
+        if(story==null||from==null||to==null||to==from){
             return null;
         }
 
