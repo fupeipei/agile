@@ -136,4 +136,6 @@ public interface TaskService {
      * @return
      */
     StoryCreatePrepInfoDTO getTaskPreInfo(String userName,Integer page,Integer pageSize,Long systemId, Long storyId, Integer createType);
+
+    List<IssueHistoryRecord> createIssueHistoryRecordsForStory(Long from, Long to, Issue story);
 }
