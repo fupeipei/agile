@@ -681,4 +681,35 @@ public class TaskServiceImpl implements TaskService {
         createIssueHistoryRecords(records);
         return records;
     }
+
+
+    /**
+     * @param from
+     * @param to
+     * @param story
+     * @Date 2021/7/02
+     * @Description 任务卡片拖动增加历史记录
+     * @Return java.util.List<com.yusys.agile.issue.domain.IssueHistoryRecord>
+     */
+    @Override
+    public List<IssueHistoryRecord> createIssueHistoryRecordsForStory(Long from, Long to, Issue story) {
+        if(story==null||from==null||to==null){
+            return null;
+        }
+
+        List<IssueHistoryRecord> records = new ArrayList<>();
+        IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(
+                story.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.STAGEID.getDesc());
+        if (null != story.getIssueId()) {
+            nameHistory.setOldValue(StoryStatusEnum.getName(from));
+            if (null != story.getIssueId() && Optional.ofNullable(to).isPresent()) {
+                nameHistory.setOldValue(StoryStatusEnum.getName(from));
+                nameHistory.setNewValue(StoryStatusEnum.getName(to));
+            }
+            records.add(nameHistory);
+            createIssueHistoryRecords(records);
+        }
+        return records;
+    }
+
 }

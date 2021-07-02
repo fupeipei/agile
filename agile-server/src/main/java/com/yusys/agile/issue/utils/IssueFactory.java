@@ -43,6 +43,7 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
+import com.yusys.portal.util.spring.SpringBeanService;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -1521,8 +1522,17 @@ public class IssueFactory {
         }else{
             storyIssue.setLaneId(StoryStatusEnum.TYPE_ADD_STATE.CODE);
         }
+
+        Issue storyOld = issueMapper.selectByPrimaryKey(storyId);
+
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
         LOGGER.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
+
+        if(storyOld!=null&&i>0){
+            List<IssueHistoryRecord> issueHistoryRecordsForStory = SpringBeanService.getBean(TaskService.class).createIssueHistoryRecordsForStory(storyOld.getLaneId(), storyIssue.getLaneId(), storyIssue);
+            LOGGER.info("issueHistoryRecordsForStory" + JSONObject.toJSONString(issueHistoryRecordsForStory) );
+        }
+
 
         //如果故事更新，则调用向上更新方法。
         if(i>0){
