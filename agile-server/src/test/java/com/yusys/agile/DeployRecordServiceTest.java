@@ -19,8 +19,8 @@ public class DeployRecordServiceTest {
     private DeployRecordService deployRecordService;
     @Test
     public void queryDeployRecordTest(){
-        long issueId = 847878567016624827L;
-        Byte issueType = 3;
+        long issueId = 847878567016624445L;
+        Byte issueType = 4;
         Integer pageNum = 1;
         Integer pageSize = 10;
         PageInfo pageInfo = deployRecordService.queryDeployRecord(issueId,issueType,pageNum,pageSize);

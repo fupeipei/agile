@@ -291,7 +291,9 @@ public class PlatformStageServiceImpl implements IStageService {
             List<KanbanStageInstance> result = Lists.newArrayList();
 
             for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
-                if(IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType ||
+                //如果查询类型为story的并且阶段为 开发中 或者查询类型为feature 并且 阶段为开发中
+                if((IssueTypeEnum.TYPE_STORY.CODE.intValue() == stageType
+                        && StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())) ||
                         (StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())
                                 && IssueTypeEnum.TYPE_FEATURE.CODE.intValue() == stageType)){
                     if(IssueTypeEnum.TYPE_STORY.CODE.equals(kanbanStageInstance.getAppType())){
@@ -299,6 +301,7 @@ public class PlatformStageServiceImpl implements IStageService {
                         continue;
                     }
 
+                    //如果查询类型为 task 并且 为开发阶段
                 }else if(IssueTypeEnum.TYPE_TASK.CODE.intValue() == stageType &&
                         StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(kanbanStageInstance.getParentId())){
                     if(IssueTypeEnum.TYPE_TASK.CODE.equals(kanbanStageInstance.getAppType())){

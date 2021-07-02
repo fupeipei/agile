@@ -1,29 +1,20 @@
 package com.yusys.agile.sprintv3.service;
 
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.sprint.domain.UserSprintHour;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
-import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
-
 import java.util.Date;
 import java.util.List;
-
-import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
-import com.yusys.portal.model.facade.dto.SsoUserDTO;
-import com.yusys.portal.model.facade.entity.SsoSystem;
-import com.yusys.portal.util.code.ReflectUtil;
 
 /**
  * @Author zhaofeng
@@ -117,7 +108,7 @@ public interface Sprintv3Service {
      * @Description 迭代添加故事或缺陷
      * @Return int
      */
-    boolean arrangeIssue(SprintDTO sprintDTO);
+    boolean arrangeIssue(SprintV3DTO sprintDTO);
 
     /**
      * 按团队id查询有效迭代
@@ -236,4 +227,24 @@ public interface Sprintv3Service {
      * @return java.util.List<com.yusys.agile.sprintV3.dto.SprintListDTO>
      */
     List<SprintListDTO> listEffectiveSprintByTeamId(Long teamId);
+
+    /**
+     * 功能描述  根据迭代id集合查询迭代信息
+     *
+     * @param sprintIds
+     * @return com.yusys.agile.sprint.dto.SprintDTO
+     * @date 2020/10/21
+     */
+    List<SprintV3DTO> selectSprintsBySprintIdList(List<Long> sprintIds);
+
+    /**
+     * @param projectId
+     * @param idOrName
+     * @param pageNum
+     * @param pageSize
+     * @Date 2020/4/28
+     * @Description 分页查询项目中所有进行中/已完成迭代
+     * @Return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
+     */
+    List<SprintV3DTO> queryUnFinishedByProjectId(String idOrName, Long projectId, Integer pageNum, Integer pageSize);
 }

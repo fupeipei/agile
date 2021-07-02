@@ -1,10 +1,8 @@
 package com.yusys.agile.teamV3.dto;
 
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import lombok.Data;
-
 import java.util.Date;
 import java.util.List;
 

@@ -76,10 +76,11 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                     deleteIssueFilter(filterId, category);
                 }
             }
+            Long systemId = securityDTO.getSystemId();
             //1、新增过滤器
             issueFilter.setFilterType(NumberConstant.ONE.byteValue());
             issueFilter.setState(StateEnum.U.toString());
-            issueFilter.setSystemId(securityDTO.getSystemId());
+            issueFilter.setSystemId(systemId);
             issueFilter.setCreateTime(new Date());
             issueFilter.setCreateUid(securityDTO.getUserId());
             issueFilter.setCreateName(securityDTO.getUserName());
@@ -87,10 +88,12 @@ public class IssueFilterServiceImpl implements IssueFilterService {
 
             //2、根据类别、项目ID，人员ID，查询是否有默认的过滤器，存在，则更新为当前过滤器，不存在，则添加当前过滤器为默认过滤器
             IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
-            checkedExample.createCriteria()
-                    .andCategoryEqualTo(issueFilter.getCategory())
-                    .andSystemIdEqualTo(securityDTO.getSystemId())
+            IssueFilterRelatedCheckedExample.Criteria issueFilterRelatedCheckedCriteria = checkedExample.createCriteria();
+            issueFilterRelatedCheckedCriteria.andCategoryEqualTo(issueFilter.getCategory())
                     .andCreateUidEqualTo(securityDTO.getUserId());
+            if(null != systemId){
+                issueFilterRelatedCheckedCriteria.andSystemIdEqualTo(systemId);
+            }
             List<IssueFilterRelatedChecked> issueFilterRelatedCheckeds = relatedCheckedMapper.selectByExample(checkedExample);
             if (CollectionUtils.isNotEmpty(issueFilterRelatedCheckeds)) {
                 IssueFilterRelatedChecked relatedChecked = issueFilterRelatedCheckeds.get(0);
@@ -101,7 +104,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                 relatedChecked.setFilterId(issueFilter.getFilterId());
                 relatedChecked.setIdCheck(NumberConstant.ONE.byteValue());
                 relatedChecked.setCategory(issueFilter.getCategory());
-                relatedChecked.setSystemId(securityDTO.getSystemId());
+                relatedChecked.setSystemId(systemId);
                 relatedChecked.setCreateUid(securityDTO.getUserId());
                 relatedChecked.setCreateTime(new Date());
                 relatedCheckedMapper.insert(relatedChecked);

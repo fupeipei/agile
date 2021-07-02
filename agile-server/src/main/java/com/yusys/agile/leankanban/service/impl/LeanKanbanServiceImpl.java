@@ -15,12 +15,8 @@ import com.yusys.agile.set.stage.dto.StageTemplateConfigDTO;
 import com.yusys.agile.set.stage.enums.StageTypeEnum;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.set.stage.service.StageTemplateConfigService;
-import com.yusys.agile.team.dao.TeamMapper;
-import com.yusys.agile.team.domain.Team;
-import com.yusys.agile.team.service.TeamService;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.domain.STeam;
-import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.util.code.ReflectUtil;
@@ -28,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 /**

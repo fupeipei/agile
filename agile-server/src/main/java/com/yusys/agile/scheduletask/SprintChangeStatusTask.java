@@ -1,7 +1,6 @@
 package com.yusys.agile.scheduletask;
 
 import com.yusys.agile.constant.ScheduleConstant;
-import com.yusys.agile.sprint.service.SprintService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.JobHandler;
@@ -16,8 +15,6 @@ import javax.annotation.Resource;
 @Component
 @JobHandler(ScheduleConstant.TaskHandler.SPRINT_CHANGE_STATUS)
 public class SprintChangeStatusTask extends IJobHandler {
-    @Resource
-    private SprintService sprintService;
     @Resource
     private Sprintv3Service sprintv3Service;
 

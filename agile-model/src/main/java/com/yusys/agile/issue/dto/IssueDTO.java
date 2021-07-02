@@ -1,11 +1,10 @@
 package com.yusys.agile.issue.dto;
 
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
-import com.yusys.agile.sprint.dto.SprintDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -131,7 +130,7 @@ public class IssueDTO {
     // itc同步过来的bugId
     private Long bugId;
     //迭代对象
-    private SprintDTO sprintDTO;
+    private SprintV3DTO sprintDTO;
 
     //故事验收标准
     private String acceptanceCriteria;

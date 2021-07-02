@@ -124,14 +124,14 @@ public class TaskServiceImpl implements TaskService {
         if (null != issue) {
             IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
             //校验权限
-            this.checkAuth(issueDTO, issue, "delete","无法删除任务");
+            this.checkAuth(issueDTO, issue, "delete", "无法删除任务");
         }
-        issueFactory.deleteIssue(taskId,deleteChild);
+        issueFactory.deleteIssue(taskId, deleteChild);
 
         Long kanbanId = issue.getKanbanId();
-        if(Optional.ofNullable(kanbanId).isPresent()){
-            issueService.updateTaskParentStatus(issue.getIssueId(),kanbanId);
-        }else {
+        if (Optional.ofNullable(kanbanId).isPresent()) {
+            issueService.updateTaskParentStatus(issue.getIssueId(), kanbanId);
+        } else {
             int i = issueFactory.updateStoryLaneIdByTaskCount(issue);
             log.info("deleteTask_updateStoryStageIdByTaskCount=" + i);
         }
@@ -145,7 +145,7 @@ public class TaskServiceImpl implements TaskService {
             return;
         }
         //校验权限
-        this.checkAuth(issueDTO, oldTask, "edit","无法编辑任务");
+        this.checkAuth(issueDTO, oldTask, "edit", "无法编辑任务");
         Long projectId = oldTask.getProjectId();
         Issue task = issueFactory.editIssue(issueDTO, oldTask, projectId);
 
@@ -205,13 +205,12 @@ public class TaskServiceImpl implements TaskService {
         }
 
         Long kanbanId = issueDTO.getKanbanId();
-        if(Optional.ofNullable(kanbanId).isPresent()){
-            issueService.updateTaskParentStatus(issueDTO.getIssueId(),kanbanId);
-        }else {
+        if (Optional.ofNullable(kanbanId).isPresent()) {
+            issueService.updateTaskParentStatus(issueDTO.getIssueId(), kanbanId);
+        } else {
             int i = issueFactory.updateStoryLaneIdByTaskCount(task);
             log.info("editTask_updateStoryStageIdByTaskCound=" + i);
         }
-
 
 
         // 拖到完成
@@ -220,7 +219,7 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    private void checkAuth(IssueDTO issueDTO, Issue oldTask, String checkType,String errorMsg) {
+    private void checkAuth(IssueDTO issueDTO, Issue oldTask, String checkType, String errorMsg) {
         //        校验权限 1.SM角色，可以更新卡片上的任意信息
         //                2.团队成员角色，只允许更新领取人为自己的卡片信息
         //根据task获得team，根据team及当前登录人员进行判断：
@@ -235,7 +234,7 @@ public class TaskServiceImpl implements TaskService {
                 return;
             }
             //校验参数
-            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg,checkType);
+            this.ckeckTaksParams(sSprintWithBLOBs.getSprintId(), errorMsg, checkType);
             Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
             boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, sSprintWithBLOBs.getTeamId());
             //查询该迭代下的成员
@@ -246,21 +245,21 @@ public class TaskServiceImpl implements TaskService {
             } else if (CollectionUtils.isEmpty(sprintUsers)) {
                 throw new BusinessException("您无权限对此功能进行操作");
                 //2.当卡片没有领取时可以自己领取该卡片,且必须是是本人领取
-            }else if ("edit".equals(checkType)
+            } else if ("edit".equals(checkType)
                     && Optional.ofNullable(oldTask.getHandler()).isPresent()
-                    && !userId.equals(oldTask.getHandler())){
+                    && !userId.equals(oldTask.getHandler())) {
                 throw new BusinessException("当前任务已被他人领取,不允许修改");
-            }else if (("edit".equals(checkType)
+            } else if (("edit".equals(checkType)
                     && !Optional.ofNullable(oldTask.getHandler()).isPresent()
                     && Optional.ofNullable(issueDTO.getHandler()).isPresent()
                     && !userId.equals(issueDTO.getHandler()))
                     || ("create".equals(checkType)
                     && Optional.ofNullable(issueDTO.getHandler()).isPresent()
-                    && !userId.equals(issueDTO.getHandler()))){
+                    && !userId.equals(issueDTO.getHandler()))) {
                 throw new BusinessException("只有SM角色才允许分配任务");
-            }else if ("delete".equals(checkType)
+            } else if ("delete".equals(checkType)
                     && Optional.ofNullable(oldTask.getHandler()).isPresent()
-                    && !userId.equals(oldTask.getHandler())){
+                    && !userId.equals(oldTask.getHandler())) {
                 throw new BusinessException("当前任务已被他人领取,不允许删除");
             }
         }
@@ -276,7 +275,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
         Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
-        this.checkAuth(issueDTO,issue,"create","无法新建任务");
+        this.checkAuth(issueDTO, issue, "create", "无法新建任务");
         //设置默认创建
         Long[] stages = issueDTO.getStages();
         if (!Optional.ofNullable(stages).isPresent()) {
@@ -289,9 +288,9 @@ public class TaskServiceImpl implements TaskService {
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(taskId)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + taskId));
 
         Long kanbanId = task.getKanbanId();
-        if(Optional.ofNullable(kanbanId).isPresent()){
-            issueService.updateTaskParentStatus(taskId,kanbanId);
-        }else {
+        if (Optional.ofNullable(kanbanId).isPresent()) {
+            issueService.updateTaskParentStatus(taskId, kanbanId);
+        } else {
             int i = issueFactory.updateStoryLaneIdByTaskCount(task);
             log.info("createTask_updateStoryStageIdByTaskCount=" + i);
         }
@@ -310,7 +309,7 @@ public class TaskServiceImpl implements TaskService {
         return isTeamUsers;
     }
 
-    private void ckeckTaksParams(Long sprintId, String errorMsg,String checkType) {
+    private void ckeckTaksParams(Long sprintId, String errorMsg, String checkType) {
         //不允许新建删除  允许修改，
         //需要将删除权限加上。已完成／迭代结束日期《当前时间的迭代，不允许删除任务
         if (!Optional.ofNullable(sprintId).isPresent() || "edit".equals(checkType)) {
@@ -335,7 +334,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long copyTask(Long taskId) {
-        Long issue = issueFactory.copyIssue(taskId,"该复制的任务已失效！", "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
+        Long issue = issueFactory.copyIssue(taskId, "该复制的任务已失效！", "任务名称已存在！", "新增任务", IssueTypeEnum.TYPE_TASK.CODE);
 
         Issue task = Optional.ofNullable(issueMapper.selectByPrimaryKey(issue)).orElseThrow(() -> new BusinessException("任务不存在，taskId=" + issue));
 
@@ -422,7 +421,7 @@ public class TaskServiceImpl implements TaskService {
 
         List<SprintMembersWorkHours> sprintMembersWorkHours = sprintv3Service.sprintMembersWorkHours(task.getSprintId());
 
-        if (sprintMembersWorkHours == null||sprintMembersWorkHours.size()==0) {
+        if (sprintMembersWorkHours == null || sprintMembersWorkHours.size() == 0) {
             throw new BusinessException("根据迭代标识获取迭代成员信息为空" + task.getSprintId());
         }
 
@@ -668,23 +667,18 @@ public class TaskServiceImpl implements TaskService {
                 task.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.STAGEID.getDesc());
         if (null != task.getIssueId()) {
             nameHistory.setOldValue(TaskStatusEnum.getName(from));
-            if (TaskStatusEnum.TYPE_RECEIVED_STATE.CODE.equals(to)) {
-                if (null != task.getIssueId() && Optional.ofNullable(to).isPresent()) {
-                    nameHistory.setOldValue(TaskStatusEnum.getName(from));
-                    if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {
-                        nameHistory.setNewValue("任务已领取");
-                    }
-                    if (to.equals(TaskStatusEnum.TYPE_MODIFYING_STATE.CODE)) {
-                        nameHistory.setNewValue("任务开发中");
-                    }
-                    if (to.equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)) {
-                        nameHistory.setNewValue("任务开发完成");
-                    }
-                }
-                records.add(nameHistory);
-                createIssueHistoryRecords(records);
+            if (to.equals(TaskStatusEnum.TYPE_RECEIVED_STATE.CODE)) {
+                nameHistory.setNewValue("任务已领取");
+            }
+            if (to.equals(TaskStatusEnum.TYPE_MODIFYING_STATE.CODE)) {
+                nameHistory.setNewValue("任务开发中");
+            }
+            if (to.equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)) {
+                nameHistory.setNewValue("任务开发完成");
             }
         }
+        records.add(nameHistory);
+        createIssueHistoryRecords(records);
         return records;
     }
 

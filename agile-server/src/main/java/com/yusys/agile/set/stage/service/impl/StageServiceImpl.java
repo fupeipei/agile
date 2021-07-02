@@ -347,8 +347,9 @@ public class StageServiceImpl implements StageService {
         if (count > 0) {
             throw new StageException("该二级状态已存在");
         }
-        RLock rLock = redissonService.getLock(RedisCacheKeyConstant.SECOND_STAGE_STATUS_LOCK_KEY);
+        RLock rLock = null;
         try {
+            rLock = redissonService.getLock(RedisCacheKeyConstant.SECOND_STAGE_STATUS_LOCK_KEY);
             boolean result = false;
             for (int i = 0; i < 3; i++) {
                 result = rLock.tryLock(0, 50, TimeUnit.SECONDS);

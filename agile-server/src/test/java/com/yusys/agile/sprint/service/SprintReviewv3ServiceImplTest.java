@@ -1,8 +1,8 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.sprint.dto.SprintAttachmentDTO;
-import com.yusys.agile.sprint.dto.SprintReviewDTO;
+import com.yusys.agile.sprintV3.dto.SSprintAttachmentDTO;
+import com.yusys.agile.sprintV3.dto.SprintReviewDTO;
 import com.yusys.agile.sprintv3.service.SprintReviewv3Service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -113,7 +113,7 @@ public class SprintReviewv3ServiceImplTest {
     @Test
     public void getAttachmentList() {
         Long sprintId = 1234L;
-        List<SprintAttachmentDTO> sprintAttachmentList = sprintReviewv3Service.getSprintAttachmentList(sprintId);
+        List<SSprintAttachmentDTO> sprintAttachmentList = sprintReviewv3Service.getSprintAttachmentList(sprintId);
         Assert.assertNotNull(sprintAttachmentList);
     }
 

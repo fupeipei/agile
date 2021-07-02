@@ -1,13 +1,11 @@
 package com.yusys.agile.sprintv3.dao;
 
-import com.yusys.agile.issue.enums.IssueTypeEnum;
-import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import org.apache.ibatis.annotations.Param;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -345,4 +343,8 @@ public interface SSprintMapper {
      * @param teamId 团队id
      */
     List<SSprint> querySprintByTeamId(@Param("teamId") long teamId);
+
+    SSprint getOneSprintByTeamId(Long teamId);
+
+    List<SprintV3DTO> selectByExampleDTO(SSprintExample sprintExample);
 }

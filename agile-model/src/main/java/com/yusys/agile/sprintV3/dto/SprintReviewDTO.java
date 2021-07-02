@@ -1,9 +1,8 @@
-package com.yusys.agile.sprint.domain;
+package com.yusys.agile.sprintV3.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class SprintReview implements Serializable {
+public class SprintReviewDTO {
     private Long reviewId;
 
     private String reviewDesc;
@@ -22,9 +21,9 @@ public class SprintReview implements Serializable {
 
     private Date updateTime;
 
-    private String tenantCode;
+    private String proposeName;
 
-    private static final long serialVersionUID = 1L;
+    private String tenantCode;
 
     public Long getReviewId() {
         return reviewId;
@@ -39,7 +38,7 @@ public class SprintReview implements Serializable {
     }
 
     public void setReviewDesc(String reviewDesc) {
-        this.reviewDesc = reviewDesc == null ? null : reviewDesc.trim();
+        this.reviewDesc = reviewDesc;
     }
 
     public Long getReviewType() {
@@ -96,6 +95,14 @@ public class SprintReview implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getProposeName() {
+        return proposeName;
+    }
+
+    public void setProposeName(String proposeName) {
+        this.proposeName = proposeName;
     }
 
     public String getTenantCode() {

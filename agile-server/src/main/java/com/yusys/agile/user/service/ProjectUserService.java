@@ -12,15 +12,6 @@ import java.util.List;
  */
 public interface ProjectUserService {
 
-    /**
-     * @param projectId
-     * @param pageNum
-     * @param pageSize
-     * @Date 2021/2/6
-     * @Description 项目概览中获取人员信息
-     * @Return com.github.pagehelper.PageInfo
-     */
-    PageInfo projectUserInfo(Long projectId, Integer pageNum, Integer pageSize);
 
     /**
      * @param projectId
