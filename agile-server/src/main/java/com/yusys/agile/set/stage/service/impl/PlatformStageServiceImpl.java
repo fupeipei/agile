@@ -190,8 +190,9 @@ public class PlatformStageServiceImpl implements IStageService {
         List<Long> stageIds = Lists.newArrayList();
         switch (stageType){
             case 3:
-            case 4:
                 stageIds.add(StageConstant.FirstStageEnum.TEST_STAGE.getValue());
+                stageIds.add(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
+            case 4:
                 stageIds.add(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
         }
         //一级阶段集合
