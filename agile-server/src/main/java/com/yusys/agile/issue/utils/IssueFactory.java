@@ -200,7 +200,8 @@ public class IssueFactory {
                 }
             }
         }
-
+        //评审状态默认：通过
+        issue.setAssessIsPass(IssueAssessIsPassEnum.PASS.CODE);
         issueMapper.insertSelective(issue);
 
         /**  赋值issue ,保存富文本 */
