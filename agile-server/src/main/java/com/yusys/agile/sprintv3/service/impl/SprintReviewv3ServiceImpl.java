@@ -2,8 +2,8 @@ package com.yusys.agile.sprintv3.service.impl;
 
 import com.yusys.agile.file.domain.FileInfo;
 import com.yusys.agile.file.service.FileService;
-import com.yusys.agile.sprint.dto.SprintAttachmentDTO;
-import com.yusys.agile.sprint.dto.SprintReviewDTO;
+import com.yusys.agile.sprintV3.dto.SSprintAttachmentDTO;
+import com.yusys.agile.sprintV3.dto.SprintReviewDTO;
 import com.yusys.agile.sprintv3.dao.SSprintAttachmentMapper;
 import com.yusys.agile.sprintv3.dao.SSprintReviewMapper;
 import com.yusys.agile.sprintv3.domain.SSprintAttachment;
@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,15 +120,15 @@ public class SprintReviewv3ServiceImpl implements SprintReviewv3Service {
     }
 
     @Override
-    public List<SprintAttachmentDTO> getSprintAttachmentList(Long sprintId) {
+    public List<SSprintAttachmentDTO> getSprintAttachmentList(Long sprintId) {
         SSprintAttachmentExample sprintAttachmentExample = new SSprintAttachmentExample();
         SSprintAttachmentExample.Criteria criteria1 = sprintAttachmentExample.createCriteria();
         criteria1.andSprintIdEqualTo(sprintId);
         List<SSprintAttachment> attachments = sSprintAttachmentMapper.selectByExample(sprintAttachmentExample);
-        List<SprintAttachmentDTO> dtos = new ArrayList<>();
+        List<SSprintAttachmentDTO> dtos = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(attachments)) {
             try {
-                dtos = ReflectUtil.copyProperties4List(attachments, SprintAttachmentDTO.class);
+                dtos = ReflectUtil.copyProperties4List(attachments, SSprintAttachmentDTO.class);
             } catch (Exception e) {
                 log.error("列表转换出错{}", e.getMessage());
             }

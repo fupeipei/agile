@@ -1,21 +1,13 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
-import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.sprint.dto.UserSprintHourDTO;
-import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
-import com.yusys.agile.sprintv3.dao.SSprintMapper;
-import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
 import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
-import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.portal.common.exception.BusinessException;
-import com.yusys.portal.facade.client.api.IFacadeSystemApi;
-import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -25,8 +17,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

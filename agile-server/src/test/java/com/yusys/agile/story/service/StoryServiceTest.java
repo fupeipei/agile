@@ -6,13 +6,12 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
-import com.yusys.agile.sprint.dto.SprintDTO;
+import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.Resource;
@@ -128,7 +127,7 @@ public class StoryServiceTest {
 
    @Test
    public void testRelationIssue(){
-       SprintDTO sprintDTO=new SprintDTO();
+       SprintV3DTO sprintDTO=new SprintV3DTO();
        List<Long> issueIds =new ArrayList<>();
        for (int i = 9999; i < 10005; i++) {
            issueIds.add(i+1l);

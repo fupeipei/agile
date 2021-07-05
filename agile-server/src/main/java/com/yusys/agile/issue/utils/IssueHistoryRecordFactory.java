@@ -7,8 +7,8 @@ import com.yusys.agile.module.domain.ModuleExample;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.KanbanStageInstanceExample;
-import com.yusys.agile.sprint.dao.SprintMapper;
-import com.yusys.agile.sprint.domain.SprintWithBLOBs;
+import com.yusys.agile.sprintv3.dao.SSprintMapper;
+import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -27,13 +27,13 @@ import java.util.*;
 @Component
 public class IssueHistoryRecordFactory {
     @Autowired
-    private SprintMapper sprintMapper;
-    @Autowired
     private IFacadeSystemApi iFacadeSystemApi;
     @Autowired
     private ModuleMapper moduleMapper;
     @Autowired
     private KanbanStageInstanceMapper stageInstanceMapper;
+    @Autowired
+    private SSprintMapper sprintMapper;
 
     /**
      * 操作历史公共封装方法
@@ -65,7 +65,7 @@ public class IssueHistoryRecordFactory {
      * @param sprintMap
      */
     public void getSprintMapInfo(Long sprintId, Map<String, String> sprintMap) {
-        SprintWithBLOBs sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
+        SSprintWithBLOBs sprint = sprintMapper.selectByPrimaryKeyNotText(sprintId);
         if (Optional.ofNullable(sprint).isPresent()) {
             sprintMap.put(sprintId.toString(), sprint.getSprintName());
         }

@@ -1,6 +1,5 @@
 package com.yusys.agile.sprintv3.service.impl;
 
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
@@ -12,9 +11,6 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.StoryService;
-import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.sprint.dto.SprintDTO;
-import com.yusys.agile.sprint.enums.SprintStatusEnum;
 import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
@@ -22,6 +18,7 @@ import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintUserHour;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
+import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
 import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
@@ -56,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
@@ -64,6 +60,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.yusys.agile.constant.StringConstant.CREATE_TIME_DESC;
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_NO_START_STATE;
 import static com.yusys.agile.sprintv3.enums.SprintStatusEnum.TYPE_ONGOING_STATE;
 
@@ -83,8 +80,6 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private STeamMapper sTeamMapper;
     @Resource
     private STeamSystemMapper sTeamSystemMapper;
-    @Resource
-    private STeamMemberMapper sTeamMemberMapper;
     @Autowired
     private IFacadeSystemApi iFacadeSystemApi;
     @Autowired
@@ -843,7 +838,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     }
 
     @Override
-    public boolean arrangeIssue(SprintDTO sprintDTO) {
+    public boolean arrangeIssue(SprintV3DTO sprintDTO) {
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
         Long teamId = sprintDTO.getTeamId();
         boolean b = iFacadeUserApi.checkIsTeamPo(userId, teamId);
@@ -970,6 +965,47 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
             }
         }
         return sprintListDTOList;
+    }
+
+    @Override
+    public List<SprintV3DTO> selectSprintsBySprintIdList(List<Long> sprintIds) {
+        List<SprintV3DTO> sprintDTOS = Lists.newArrayList();
+        SSprintExample sprintExample = new SSprintExample();
+        SSprintExample.Criteria c = sprintExample.createCriteria();
+        if (CollectionUtils.isNotEmpty(sprintIds)) {
+            c.andSprintIdIn(sprintIds);
+        }
+        List<SSprintWithBLOBs> sprintWithBLOBs = ssprintMapper.selectByExampleWithBLOBs(sprintExample);
+        try {
+            sprintDTOS = ReflectUtil.copyProperties4List(sprintWithBLOBs, SprintV3DTO.class);
+        } catch (Exception e) {
+            log.error("selectSprintsBySprintIdList error:{}",e.getMessage());
+        }
+        return sprintDTOS;
+    }
+
+    @Override
+    public List<SprintV3DTO> queryUnFinishedByProjectId(String idOrName, Long projectId, Integer pageNum, Integer pageSize) {
+        if (null == projectId) {
+            return new ArrayList<>();
+        }
+        // 不传page信息时查全部数据
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        List<Byte> status = new ArrayList<>();
+        status.add(SprintStatusEnum.TYPE_NO_START_STATE.CODE);
+        status.add(SprintStatusEnum.TYPE_ONGOING_STATE.CODE);
+        SSprintExample sprintExample = new SSprintExample();
+        sprintExample.setOrderByClause(CREATE_TIME_DESC);
+        SSprintExample.Criteria criteria = sprintExample.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue()).andStatusIn(status);
+        criteria.andStateEqualTo(StateEnum.U.getValue()).andStatusIn(status);
+        List<SprintV3DTO> sprintDTOS = ssprintMapper.selectByExampleDTO(sprintExample);
+        if (CollectionUtils.isEmpty(sprintDTOS)) {
+            return new ArrayList<>();
+        }
+        return sprintDTOS;
     }
 
 }
