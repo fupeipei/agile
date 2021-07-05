@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -208,7 +209,9 @@ public class StoryController {
      */
     @PostMapping("/edit/storyAssess")
     public ControllerResponse editStoryAssess(@RequestBody IssueDTO issueDTO) {
-        Preconditions.checkArgument(issueDTO.getAssessRemarks().length() <= 100, "评审备注字段过长，不能超过100！");
+        if(Optional.ofNullable(issueDTO.getAssessRemarks()).isPresent()){
+            Preconditions.checkArgument(issueDTO.getAssessRemarks().length() <= 100, "评审备注字段过长，不能超过100！");
+        }
         int i = storyService.editStoryAssess(issueDTO);
         if (i == 0) {
             return ControllerResponse.fail("编辑故事验收标准失败!");

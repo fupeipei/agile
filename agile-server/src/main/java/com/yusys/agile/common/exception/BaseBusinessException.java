@@ -3,10 +3,13 @@ package com.yusys.agile.common.exception;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @Author: shtian
- * @Description:
- * @Date: Create in 2018/9/6 16:05
+ *  @Description:
+ *
+ *  @author: zhao_yd
+ *  @Date: 2021/7/2 3:42 下午
+ *
  */
+
 public class BaseBusinessException extends RuntimeException {
     private Integer code;
     private String errorMsg;
