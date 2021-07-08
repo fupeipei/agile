@@ -24,7 +24,6 @@ import java.util.Map;
  * @create 2021/2/1
  */
 @RestController
-@Api(tags = "自定义字段")
 @RequestMapping("/field")
 public class CustomFieldPoolController {
 

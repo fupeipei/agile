@@ -23,7 +23,6 @@ import java.util.List;
  * @Author zhaofeng
  * @Date 2021/5/11 14:50
  */
-@Api(tags = "迭代管理")
 @RestController
 @RequestMapping("/v3/sprint")
 public class Sprintv3Controller {
