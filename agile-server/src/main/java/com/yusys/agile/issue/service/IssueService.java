@@ -410,4 +410,14 @@ public interface IssueService {
     Issue getIssueByIssueId(Long issueId) throws Exception;
 
     List<Long> selectIssueIdByTenantCode(String tenantCode);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/7/13
+     * @Description epic和feature是否归档
+     * @param issueId
+     * @param isArchive
+     * @Return void
+     */
+    void isArchive(Long issueId, Byte isArchive);
 }

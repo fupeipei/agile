@@ -431,4 +431,23 @@ public class IssueController {
         }
     }
 
+    /**
+     * @Author maxp2
+     * @Date 2021/7/13
+     * @Description epic和feature是否归档
+     * @param issueId
+     * @param isArchive
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
+     */
+    @GetMapping("/issue/isArchive/{issueId}/{isArchive}")
+    public ControllerResponse isArchive(@PathVariable(name = "issueId") Long issueId, @PathVariable(name = "isArchive") Byte isArchive) {
+        try {
+            issueService.isArchive(issueId, isArchive);
+        } catch (Exception e) {
+            LOGGER.error(" 添加、取消Issue的收藏异常：{}", e);
+            return ControllerResponse.fail("添加、取消Issue的收藏异常：" + e.getMessage());
+        }
+        return ControllerResponse.success("操作成功");
+    }
+
 }

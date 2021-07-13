@@ -3204,4 +3204,13 @@ public class IssueServiceImpl implements IssueService {
             }
         }
     }
+
+    @Override
+    public void isArchive(Long issueId, Byte isArchive) {
+        Issue issue = issueMapper.selectByPrimaryKey(issueId);
+        if (!Optional.ofNullable(issue).isPresent()) {
+            throw new RuntimeException("工作项:[" + issueId + "]不存在");
+        }
+
+    }
 }
