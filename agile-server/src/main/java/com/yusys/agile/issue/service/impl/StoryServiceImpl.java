@@ -765,7 +765,7 @@ public class StoryServiceImpl implements StoryService {
     public int editStoryAssess(IssueDTO issueDTO) {
         String acceptanceCriteria = issueDTO.getAcceptanceCriteria();
        // List<IssueAcceptanceDTO> issueAcceptanceDTOS = issueDTO.getIssueAcceptanceDTOS();
-        if (StringUtils.isNotEmpty(acceptanceCriteria)) {
+        if (Optional.ofNullable(acceptanceCriteria).isPresent()) {
             SIssueRichtextWithBLOBs sIssueRichtextWithBLOB=new SIssueRichtextWithBLOBs();
             SIssueRichtextExample sIssueRichtextExample=new SIssueRichtextExample();
             SIssueRichtextExample.Criteria criteria = sIssueRichtextExample.createCriteria();
