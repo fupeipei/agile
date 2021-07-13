@@ -3208,9 +3208,14 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public void isArchive(Long issueId, Byte isArchive) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
-        if (!Optional.ofNullable(issue).isPresent()) {
-            throw new RuntimeException("工作项:[" + issueId + "]不存在");
+        Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在!"));
+        if (StateEnum.E.toString().equals(issue.getState())) {
+            throw new BusinessException("工作项不存在!");
         }
-
+        if(!StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(issue.getStageId())){
+            throw new BusinessException("非完成阶段不能归档!");
+        }
+        issue.setIsArchive(isArchive);
+        issueMapper.updateByPrimaryKeySelective(issue);
     }
 }

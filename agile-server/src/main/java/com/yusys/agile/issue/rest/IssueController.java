@@ -444,8 +444,8 @@ public class IssueController {
         try {
             issueService.isArchive(issueId, isArchive);
         } catch (Exception e) {
-            LOGGER.error(" 添加、取消Issue的收藏异常：{}", e);
-            return ControllerResponse.fail("添加、取消Issue的收藏异常：" + e.getMessage());
+            LOGGER.error("添加、取消Issue的归档异常：{}", e);
+            return ControllerResponse.fail("添加、取消Issue的归档异常：" + e.getMessage());
         }
         return ControllerResponse.success("操作成功");
     }
