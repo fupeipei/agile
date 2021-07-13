@@ -203,8 +203,6 @@ public class IssueServiceImpl implements IssueService {
     private LeanKanbanService leanKanbanService;
     @Autowired
     private SLeanKanbanMapper leanKanbanMapper;
-    @Autowired
-    private Sprintv3Service sprintService;
 
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
@@ -699,37 +697,56 @@ public class IssueServiceImpl implements IssueService {
             }
             //epic、feature设置团队信息
             if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(issue.getIssueType()) || IssueTypeEnum.TYPE_EPIC.CODE.equals(issue.getIssueType())) {
-                setTeamInfo(map, issue.getTeamId());
+                setTeamInfo(map, issue.getTeamId(),sprintId,issueId,issue.getIssueType());
             }
             if (IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType()) ||
                     IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())) {
-                Issue feature;
-                if (IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType())) {
-                    feature = issueMapper.getParentIssue(issueId);
-                } else {
+                if(IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
                     map.put("taskType", issue.getTaskType());
-                    Issue story = issueMapper.getParentIssue(issueId);
-                    feature = issueMapper.getParentIssue(story.getIssueId());
                 }
-                if (null != feature) {
-                    setTeamInfo(map, feature.getTeamId());
-                }
+                setTeamInfo(map,null,sprintId,issueId,issue.getIssueType());
             }
         }
         return map;
     }
 
-    private void setTeamInfo(Map map, Long teamId) {
-        map.put("teamId", teamId == null ? "" : teamId);
-        if (null != teamId) {
-            STeam sTeam = teamv3Service.getTeamById(teamId);
-            if (null != sTeam) {
-                map.put("teamName", sTeam.getTeamName());
-                map.put("teamType", sTeam.getTeamType());
+    private void setTeamInfo(Map map, Long teamId,Long sprintId,Long issueId,Byte issueType) {
+        if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(issueType)){
+            map.put("teamId", teamId == null ? "" : teamId);
+            if (null != teamId) {
+                STeam sTeam = teamv3Service.getTeamById(teamId);
+                setTeamDetail(map, sTeam);
             } else {
                 map.put("teamName", "");
                 map.put("teamType", "");
             }
+        }else{
+            //story or task
+            if(null != sprintId){
+                //根据迭代ID获取团队信息
+                SSprintWithBLOBs sprintWithBLOB = ssprintMapper.selectByPrimaryKey(sprintId);
+                STeam sTeam = teamv3Service.getTeamById(sprintWithBLOB.getTeamId());
+                setTeamDetail(map, sTeam);
+            }else{
+                //从feature上获取团队信息
+                Issue feature;
+                if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
+                    feature = issueMapper.getParentIssue(issueId);
+                } else {
+                    Issue story = issueMapper.getParentIssue(issueId);
+                    feature = issueMapper.getParentIssue(story.getIssueId());
+                }
+                if(null != feature){
+                    setTeamInfo(map, feature.getTeamId(),null,null,feature.getIssueType());
+                }
+            }
+        }
+    }
+
+    private void setTeamDetail(Map map, STeam sTeam) {
+        if (null != sTeam) {
+            map.put("teamName", sTeam.getTeamName());
+            map.put("teamType", sTeam.getTeamType());
         } else {
             map.put("teamName", "");
             map.put("teamType", "");
@@ -2209,7 +2226,7 @@ public class IssueServiceImpl implements IssueService {
         List<Long> sprintIdSet = issueList.stream().map(Issue::getSprintId).distinct().collect(Collectors.toList());
         Map<Long, List<SprintV3DTO>> sprintMap = Maps.newHashMap();
         if (sprintIdSet != null && !sprintIdSet.isEmpty()) {
-            List<SprintV3DTO> sprintDTOS = sprintService.selectSprintsBySprintIdList(sprintIdSet);
+            List<SprintV3DTO> sprintDTOS = sprintv3Service.selectSprintsBySprintIdList(sprintIdSet);
             sprintMap = sprintDTOS.stream().collect(Collectors.groupingBy(SprintV3DTO::getSprintId));
         }
         mapResult.put(SPRINTMAP, sprintMap);
