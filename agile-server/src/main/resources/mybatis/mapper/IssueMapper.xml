@@ -1887,12 +1887,31 @@
                 </if>
                 <if test=" issueRecord.prioritys.queryType ==2 and issueRecord.prioritys.dataByte.size()>0">
                     and iu.priority in
-                    <foreach collection="issueRecord.issueTypes.dataByte" open="(" close=")" separator="," item="iterm">
+                    <foreach collection="issueRecord.prioritys.dataByte" open="(" close=")" separator="," item="iterm">
                         #{iterm}
                     </foreach>
                 </if>
                 <if test="issueRecord.prioritys.queryType ==3 ">
                     and iu.priority is null
+                </if>
+            </if>
+
+            <if test="issueRecord.isArchive!= null">
+                <if test="issueRecord.isArchive.queryType ==1">
+                    and ( iu.is_archive in
+                    <foreach collection="issueRecord.isArchive.dataByte" open="(" close=")" separator="," item="iterm">
+                        #{iterm}
+                    </foreach>
+                    or is_archive is null )
+                </if>
+                <if test=" issueRecord.isArchive.queryType ==2 and issueRecord.isArchive.dataByte.size()>0">
+                    and iu.is_archive in
+                    <foreach collection="issueRecord.isArchive.dataByte" open="(" close=")" separator="," item="iterm">
+                        #{iterm}
+                    </foreach>
+                </if>
+                <if test="issueRecord.isArchive.queryType ==3 ">
+                    and iu.is_archive is null
                 </if>
             </if>
 
