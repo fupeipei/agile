@@ -2577,7 +2577,7 @@ public class IssueServiceImpl implements IssueService {
                 .andStateEqualTo(StateEnum.U.getValue())
                 .andIssueTypeEqualTo(issueType)
                 .andKanbanIdTo(kanbanId)
-                .andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_TRUE.CODE);
+                .andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_FALSE.CODE);
 
         example.setOrderByClause("create_time desc");
         List<Issue> issues = issueMapper.selectByExample(example);
