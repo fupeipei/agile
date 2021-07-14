@@ -450,4 +450,21 @@ public class IssueController {
         return ControllerResponse.success("操作成功");
     }
 
+    /**
+     * @Author yuzt
+     * @Description 根据featureId获取feature及其下的story和task
+     * @Date 10:02 上午 2021/7/14
+     * @Param [fertureId]
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     **/
+    @GetMapping("/issue/queryFeatureById")
+    public ControllerResponse queryFeatureById(Long fertureId) {
+        try {
+            return ControllerResponse.success(issueService.getIssueDtoByIssueId(fertureId));
+        } catch (Exception e) {
+            LOGGER.info("根据featureId获取feature及其下的所有story和task:{}", e.getMessage());
+            return ControllerResponse.fail(e.getMessage());
+        }
+    }
+
 }
