@@ -3190,6 +3190,9 @@ public class IssueServiceImpl implements IssueService {
         if (StringUtils.isNotEmpty(issueStringDTO.getUpdateTime())) {
             issueRecord.setUpdateTime(dealData(issueStringDTO.getUpdateTime(), DATE));
         }
+        if (StringUtils.isNotEmpty(issueStringDTO.getIsArchive())) {
+            issueRecord.setIsArchive(dealData(issueStringDTO.getIsArchive(), BYTE));
+        }
         // 判断是根据id还是name
         if (StringUtils.isNotEmpty(issueStringDTO.getIdOrTitle())) {
             String idOrTitle = issueStringDTO.getIdOrTitle();
