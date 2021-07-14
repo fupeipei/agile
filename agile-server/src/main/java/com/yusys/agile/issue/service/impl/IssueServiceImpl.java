@@ -3263,17 +3263,22 @@ public class IssueServiceImpl implements IssueService {
      * @Author yuzt
      * @Description 根据featureId获取feature及其下的story和task
      * @Date 10:05 上午 2021/7/14
-     * @Param [issueId]
+     * @Param [fertureMsg]
      * @return com.yusys.agile.issue.dto.IssueDTO
      **/
     @Override
-    public IssueDTO getIssueDtoByIssueId(Long issueId) {
-        if (issueId == null) {
-            throw new BusinessException("featureId不能为空");
+    public IssueDTO getIssueDtoByIssueId(Issue issue) {
+        if (null == issue) {
+            throw new BusinessException("参数不能为空");
         }
-        //获取featrue
-        Issue feature = issueMapper.selectByPrimaryKey(issueId);
-        IssueDTO featureDTO = ReflectUtil.copyProperties(feature, IssueDTO.class);
+
+        //获取featrue 名称或者编码为fertureMsg
+        List<IssueDTO> features = issueMapper.queryForFerture(issue);
+        if (features.size() == 0) {
+            return null;
+        }
+
+        IssueDTO featureDTO = features.get(0);
 
         //查询该feature下所有子故事
         List<IssueDTO> storys = getIssueForParentId(featureDTO.getIssueId());
@@ -3281,9 +3286,9 @@ public class IssueServiceImpl implements IssueService {
         Iterator<IssueDTO> iterator = storys.iterator();
         //获取子task
         for (Iterator<IssueDTO> it = iterator; it.hasNext(); ) {
-            IssueDTO issue = it.next();
-            List<IssueDTO> issueForParentId = getIssueForParentId(issue.getIssueId());
-            issue.setChildren(issueForParentId);
+            IssueDTO issue1 = it.next();
+            List<IssueDTO> issueForParentId = getIssueForParentId(issue1.getIssueId());
+            issue1.setChildren(issueForParentId);
         }
 
         featureDTO.setChildren(storys);

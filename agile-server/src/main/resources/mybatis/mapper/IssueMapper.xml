@@ -3201,4 +3201,18 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
     <select id="selectIssueIdByTenantCode" resultType="Long">
     select DISTINCT issue_id from s_issue where state = 'U' and  tenant_code = #{tenantCode};
   </select>
+
+    <select id="queryForFerture" parameterType="com.yusys.agile.issue.domain.Issue" resultType="com.yusys.agile.issue.dto.IssueDTO">
+        select
+        <include refid="Base_Column_List"/>
+        from s_issue where 1=1 state = 'U'
+        <if test="issueId != null and issueId != ''">
+            and issue_id = #{issueId,jdbcType=BIGINT}
+        </if>
+        <if test="title != null and title != ''">
+            and title = #{title,jdbcType=VARCHAR}
+        </if>
+
+    </select>
+
 </mapper>

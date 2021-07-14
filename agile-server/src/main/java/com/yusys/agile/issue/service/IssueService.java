@@ -424,8 +424,8 @@ public interface IssueService {
      * @Author yuzt
      * @Description 根据featureId获取feature及其下的story和task
      * @Date 6:17 下午 2021/7/13
-     * @Param [issueId]
+     * @Param [fertureMsg]
      * @return com.yusys.agile.issue.domain.Issue
      **/
-    IssueDTO getIssueDtoByIssueId(Long issueId);
+    IssueDTO getIssueDtoByIssueId(Issue issue);
 }

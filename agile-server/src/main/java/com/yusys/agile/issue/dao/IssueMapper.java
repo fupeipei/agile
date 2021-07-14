@@ -627,4 +627,6 @@ public interface IssueMapper {
     void batchUpdateIssueSystemId(@Param("issueIdList") List<Issue> issueIdList, @Param("systemId")Long systemId);
 
     List<Long> selectIssueIdByTenantCode(@Param("tenantCode") String  tenantCode);
+
+    List<IssueDTO> queryForFerture(Issue issue);
 }

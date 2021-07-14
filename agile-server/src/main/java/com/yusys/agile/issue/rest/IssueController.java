@@ -454,13 +454,13 @@ public class IssueController {
      * @Author yuzt
      * @Description 根据featureId获取feature及其下的story和task
      * @Date 10:02 上午 2021/7/14
-     * @Param [fertureId]
+     * @Param [fertureMsg]
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      **/
     @GetMapping("/issue/queryFeatureById")
-    public ControllerResponse queryFeatureById(Long fertureId) {
+    public ControllerResponse queryFeatureById(Issue issue) {
         try {
-            return ControllerResponse.success(issueService.getIssueDtoByIssueId(fertureId));
+            return ControllerResponse.success(issueService.getIssueDtoByIssueId(issue));
         } catch (Exception e) {
             LOGGER.info("根据featureId获取feature及其下的所有story和task:{}", e.getMessage());
             return ControllerResponse.fail(e.getMessage());
