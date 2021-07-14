@@ -46,5 +46,7 @@ public class IssueRecord {
     private FieldJsonType isArchive;
     private String tenantCode;
 
-
+    public int getFrom() {
+        return pageSize * (pageNum - 1);
+    }
 }
