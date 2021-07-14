@@ -99,7 +99,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import javax.annotation.Resource;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -2554,7 +2556,7 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * 精益看板获取树形工作项列表
-     *
+     * 默认不展示已归档的feature
      * @param kanbanId
      * @param issueType
      * @return
@@ -2565,7 +2567,8 @@ public class IssueServiceImpl implements IssueService {
         example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
                 .andIssueTypeEqualTo(issueType)
-                .andKanbanIdTo(kanbanId);
+                .andKanbanIdTo(kanbanId)
+                .andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_TRUE.CODE);
 
         example.setOrderByClause("create_time desc");
         List<Issue> issues = issueMapper.selectByExample(example);
@@ -3189,6 +3192,9 @@ public class IssueServiceImpl implements IssueService {
         if (StringUtils.isNotEmpty(issueStringDTO.getUpdateTime())) {
             issueRecord.setUpdateTime(dealData(issueStringDTO.getUpdateTime(), DATE));
         }
+        if (StringUtils.isNotEmpty(issueStringDTO.getIsArchive())) {
+            issueRecord.setIsArchive(dealData(issueStringDTO.getIsArchive(), BYTE));
+        }
         // 判断是根据id还是name
         if (StringUtils.isNotEmpty(issueStringDTO.getIdOrTitle())) {
             String idOrTitle = issueStringDTO.getIdOrTitle();
@@ -3255,4 +3261,65 @@ public class IssueServiceImpl implements IssueService {
         issueFactory.dealHistory(records);
         return records;
     }
+
+    /**
+     * @Author yuzt
+     * @Description 根据featureId获取feature及其下的story和task
+     * @Date 10:05 上午 2021/7/14
+     * @Param [issueId]
+     * @return com.yusys.agile.issue.dto.IssueDTO
+     **/
+    @Override
+    public IssueDTO getIssueDtoByIssueId(Long issueId) {
+        if (issueId == null) {
+            throw new BusinessException("featureId不能为空");
+        }
+        //获取featrue
+        Issue feature = issueMapper.selectByPrimaryKey(issueId);
+        IssueDTO featureDTO = ReflectUtil.copyProperties(feature, IssueDTO.class);
+
+        //查询该feature下所有子故事
+        List<IssueDTO> storys = getIssueForParentId(featureDTO.getIssueId());
+
+        Iterator<IssueDTO> iterator = storys.iterator();
+        //获取子task
+        for (Iterator<IssueDTO> it = iterator; it.hasNext(); ) {
+            IssueDTO issue = it.next();
+            List<IssueDTO> issueForParentId = getIssueForParentId(issue.getIssueId());
+            issue.setChildren(issueForParentId);
+        }
+
+        featureDTO.setChildren(storys);
+
+
+        return featureDTO;
+    }
+
+    /**
+     * @Author yuzt
+     * @Description 查询id下所有子issue
+     * @Date 10:23 上午 2021/7/14
+     * @Param [featureId]
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     **/
+    public List<IssueDTO> getIssueForParentId(Long parentId) {
+//        Issue issue = issueMapper.selectByPrimaryKey(featureId);
+
+        //查询该feature下所有子issue
+        IssueExample example = new IssueExample();
+        example.createCriteria().andParentIdEqualTo(parentId)
+                .andStateEqualTo(StateEnum.U.getValue());
+        List<Issue> storys = issueMapper.selectByExample(example);
+
+        List<IssueDTO> list = Lists.newArrayList();
+        //遍历赋值
+        for (Issue is : storys) {
+            IssueDTO storyDTO = ReflectUtil.copyProperties(is, IssueDTO.class);
+            list.add(storyDTO);
+        }
+
+        return list;
+    }
+
+
 }
