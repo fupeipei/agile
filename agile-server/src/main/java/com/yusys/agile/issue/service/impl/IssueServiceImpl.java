@@ -2554,7 +2554,7 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * 精益看板获取树形工作项列表
-     *
+     * 默认不展示已归档的feature
      * @param kanbanId
      * @param issueType
      * @return
