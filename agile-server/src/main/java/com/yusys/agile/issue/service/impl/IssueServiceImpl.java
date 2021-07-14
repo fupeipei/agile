@@ -248,7 +248,7 @@ public class IssueServiceImpl implements IssueService {
             pageInfo.setList(new ArrayList());
             return pageInfo;
         }
-        //项目下的当前页
+        //当前页
         Map<String, Map> mapMap = issueMap(null);
         if (issues != null && !issues.isEmpty()) {
             for (Issue issue : issues) {
@@ -623,6 +623,15 @@ public class IssueServiceImpl implements IssueService {
             map.put("id", issue.getTestUid());
             issueListDTO.setTestUid(map);
         }
+
+        //是否归档
+        if (Optional.ofNullable(issue.getIsArchive()).isPresent()) {
+            map = new HashMap<String, String>();
+            map.put("name", IsAchiveEnum.getName(issue.getIsArchive()));
+            map.put("id", issue.getIsArchive());
+            issueListDTO.setIsArchive(map);
+        }
+
         Map<Long, List<UserAttention>> mapUserAttention = mapMap.containsKey(MAPUSERATTENTION)?mapMap.get(MAPUSERATTENTION):new HashMap<>();
         if (mapUserAttention.keySet().contains(issue.getIssueId())) {
             issueListDTO.setIsCollect(Byte.parseByte("1"));
