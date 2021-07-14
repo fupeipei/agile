@@ -116,7 +116,7 @@ public class StoryServiceImpl implements StoryService {
 
             issueDTO.setStages(stages);
         }
-        if(!Optional.ofNullable(issueDTO.getParentId()).isPresent()){
+        if(Optional.ofNullable(issueDTO.getParentId()).isPresent()){
             Issue feature = issueMapper.selectByPrimaryKey(issueDTO.getParentId());
             if(IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(feature.getParentId())){
                 throw new BusinessException("工作项已归档不能新增故事");
