@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
 import com.yusys.agile.burndown.dao.BurnDownChartDao;
@@ -115,7 +116,8 @@ public class TaskServiceImpl implements TaskService {
     private STeamMemberMapper sTeamMemberMapper;
     @Autowired
     private IssueService issueService;
-
+    @Autowired
+    private IssueUpRegularFactory issueUpRegularFactory;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -550,6 +552,62 @@ public class TaskServiceImpl implements TaskService {
         rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_MAIL_SEND_QUEUE, issueMailSendDto);
 
         return task;
+    }
+
+    //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中
+    private int updateStoryLaneIdByTaskCount(Issue task) {
+       if (task == null || task.getParentId() == null) {
+            log.info("task或task.getParentId()为空" + JSONObject.toJSONString(task));
+            return -1;
+        }
+        Long storyId = task.getParentId();
+
+        IssueExample example1 = new IssueExample();
+        example1.createCriteria()
+                .andIssueIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> story = Optional.ofNullable(issueMapper.selectByExample(example1)).orElse(new ArrayList<>());
+
+        //故事的状态未开始的数量
+        long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
+        log.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
+//        if(unStartCount>0){
+//            return -2;
+//        }
+
+        IssueExample example = new IssueExample();
+        example.createCriteria()
+                .andParentIdEqualTo(storyId)
+                //.andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
+                .andStateEqualTo("U");
+
+        //根据故事查询所有有效的任务
+        List<Issue> tasks = Optional.ofNullable(issueMapper.selectByExample(example)).orElse(new ArrayList<>());
+        //完成的数量
+        long finishCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_CLOSED_STATE.CODE.equals(t.getLaneId())).count();
+
+        long doingCount = tasks.stream().filter(t -> TaskStatusEnum.TYPE_MODIFYING_STATE.CODE.equals(t.getLaneId())).count();
+        Issue storyIssue = new Issue();
+        storyIssue.setIssueId(storyId);
+        if (finishCount == tasks.size()) {//任务全部完成，则已完成
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
+        } else if(finishCount>0||doingCount>0){//有已完成的，则更新为进行中
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_MODIFYING_STATE.CODE);
+        }else{
+            storyIssue.setLaneId(StoryStatusEnum.TYPE_ADD_STATE.CODE);
+        }
+        int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
+        log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
+
+        //如果故事更新，则调用向上更新方法。
+        if(i>0){
+            issueUpRegularFactory.commonIssueUpRegular(storyId);
+        }
+
+        return i;
     }
 
     @Override
