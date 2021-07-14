@@ -3233,8 +3233,14 @@ public class IssueServiceImpl implements IssueService {
         createIsArhiveHistoryRecords(isArchive,issueDTO);
     }
 
-
-
+    /**
+     * @Author maxp2
+     * @Date 2021/7/14
+     * @Description 是否归档增加操作记录
+     * @param isArchive
+     * @param issueDTO
+     * @Return java.util.List<com.yusys.agile.issue.domain.IssueHistoryRecord>
+     */
     private List<IssueHistoryRecord> createIsArhiveHistoryRecords(Byte isArchive,IssueDTO issueDTO) {
         List<IssueHistoryRecord> records = new ArrayList<>();
         IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(
