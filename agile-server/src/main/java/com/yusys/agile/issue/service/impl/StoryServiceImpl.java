@@ -116,6 +116,12 @@ public class StoryServiceImpl implements StoryService {
 
             issueDTO.setStages(stages);
         }
+        if(!Optional.ofNullable(issueDTO.getParentId()).isPresent()){
+            Issue feature = issueMapper.selectByPrimaryKey(issueDTO.getParentId());
+            if(IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(feature.getParentId())){
+                throw new BusinessException("工作项已归档不能新增故事");
+            }
+        }
         Long storyId = issueFactory.createIssue(issueDTO, "用户故事名称已存在！", "新增用户故事", IssueTypeEnum.TYPE_STORY.CODE);
         Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
         issue.setIssueType(IssueTypeEnum.TYPE_STORY.CODE);

@@ -1034,6 +1034,14 @@ public class IssueServiceImpl implements IssueService {
                                 }
                             }
                             break;
+                        case "是否归档":
+                            if (StringUtils.isNotEmpty(oldValue)) {
+                            issueHistoryRecordDTO.setOldValue(IsAchiveEnum.getName(Byte.valueOf(oldValue)));
+                        }
+                            if (StringUtils.isNotEmpty(newValue)) {
+                                issueHistoryRecordDTO.setNewValue(IsAchiveEnum.getName(Byte.valueOf(newValue)));
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -3205,12 +3213,46 @@ public class IssueServiceImpl implements IssueService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void isArchive(Long issueId, Byte isArchive) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
-        if (!Optional.ofNullable(issue).isPresent()) {
-            throw new RuntimeException("工作项:[" + issueId + "]不存在");
+        IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
+        Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在"));
+        if (StateEnum.E.toString().equals(issue.getState())) {
+            throw new BusinessException("工作项不存在");
         }
+        if(!StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(issue.getStageId())){
+            throw new BusinessException("非完成阶段不能归档");
+        }
+        if(IsAchiveEnum.ACHIVEA_FALSE.CODE.equals(isArchive) || IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
+            throw new BusinessException("已归档不能修改归档状态");
+        }
+        issue.setIsArchive(isArchive);
+        issueMapper.updateByPrimaryKeySelective(issue);
+        createIsArhiveHistoryRecords(isArchive,issueDTO);
+    }
 
+    /**
+     * @Author maxp2
+     * @Date 2021/7/14
+     * @Description 是否归档增加操作记录
+     * @param isArchive
+     * @param issueDTO
+     * @Return java.util.List<com.yusys.agile.issue.domain.IssueHistoryRecord>
+     */
+    private List<IssueHistoryRecord> createIsArhiveHistoryRecords(Byte isArchive,IssueDTO issueDTO) {
+        List<IssueHistoryRecord> records = new ArrayList<>();
+        IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(
+                issueDTO.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.ISARCHIVE.getDesc());
+        if (null != issueDTO.getIssueId()) {
+            nameHistory.setOldValue(IsAchiveEnum.ACHIVEA_FALSE.CODE.toString());
+            if (isArchive.equals(IsAchiveEnum.ACHIVEA_TRUE.CODE)) {
+                nameHistory.setNewValue(IsAchiveEnum.ACHIVEA_TRUE.CODE.toString());
+            }
+        }
+        records.add(nameHistory);
+        issueFactory.dealHistory(records);
+        return records;
     }
 }

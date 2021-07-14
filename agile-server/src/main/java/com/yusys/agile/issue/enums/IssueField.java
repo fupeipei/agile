@@ -36,7 +36,8 @@ public enum IssueField {
     EXTERNALHANDLERID("externalHandlerId", "测试负责人"),
     DEVLOPMANAGER("devlopManager", "开发负责人"),
     TEAMID("teamId", "团队ID"),
-    KANBANID("kanbanId", "看板ID");
+    KANBANID("kanbanId", "看板ID"),
+    ISARCHIVE("isArchive", "是否归档");
 
     private String key;
     private String desc;
