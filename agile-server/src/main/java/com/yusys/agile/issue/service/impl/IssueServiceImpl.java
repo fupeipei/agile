@@ -2565,7 +2565,8 @@ public class IssueServiceImpl implements IssueService {
         example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
                 .andIssueTypeEqualTo(issueType)
-                .andKanbanIdTo(kanbanId);
+                .andKanbanIdTo(kanbanId)
+                .andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_TRUE.CODE);
 
         example.setOrderByClause("create_time desc");
         List<Issue> issues = issueMapper.selectByExample(example);
