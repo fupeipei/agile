@@ -420,4 +420,12 @@ public interface IssueService {
      * @Return void
      */
     void isArchive(Long issueId, Byte isArchive);
+    /**
+     * @Author yuzt
+     * @Description 根据featureId获取feature及其下的story和task
+     * @Date 6:17 下午 2021/7/13
+     * @Param [issueId]
+     * @return com.yusys.agile.issue.domain.Issue
+     **/
+    IssueDTO getIssueDtoByIssueId(Long issueId);
 }
