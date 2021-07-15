@@ -3301,6 +3301,7 @@ public class IssueServiceImpl implements IssueService {
 
         //获取featrue 名称或者编码为fertureMsg
         issue.setIssueType(IssueTypeEnum.TYPE_FEATURE.CODE);
+        issue.setKanbanId(kanbanId);
         List<IssueDTO> features = issueMapper.queryForFerture(issue);
         if (features.size() == 0) {
             return null;
