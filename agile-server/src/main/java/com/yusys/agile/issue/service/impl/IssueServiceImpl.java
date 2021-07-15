@@ -3327,7 +3327,9 @@ public class IssueServiceImpl implements IssueService {
 
         List<IssueDTO> issueDTOS = Lists.newArrayList();
         for (IssueDTO feature : features) {
-            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList);
+            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList, feature.getKanbanId());
+            feature.setStoryTotalNum(child.size());
+            feature.setStroyFinishNum(getIssueFinishNum(feature.getIssueId(),kanbanId));
             feature.setChildren(child);
 
         }
@@ -3343,7 +3345,7 @@ public class IssueServiceImpl implements IssueService {
      * @Param [id, issueDTOList]
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      **/
-    private List<IssueDTO> getChild(Long id, List<IssueDTO> issueDTOList) {
+    private List<IssueDTO> getChild(Long id, List<IssueDTO> issueDTOList, Long kanbanId) {
         // 子菜单
         List<IssueDTO> childList = new ArrayList<>();
         for (IssueDTO issueDTO : issueDTOList) {
@@ -3359,7 +3361,10 @@ public class IssueServiceImpl implements IssueService {
             //每到任务继续取子菜单
             if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issueDTO.getIssueType())) {
                 // 递归
-                issueDTO.setChildren(getChild(issueDTO.getIssueId(), issueDTOList));
+                List<IssueDTO> child = getChild(issueDTO.getIssueId(), issueDTOList, kanbanId);
+                issueDTO.setTaskNum(child.size());
+                issueDTO.setTaskFinishNum(getIssueFinishNum(issueDTO.getIssueId(),kanbanId));
+                issueDTO.setChildren(child);
             }
         } // 递归退出条件
         if (childList.size() == 0) {
