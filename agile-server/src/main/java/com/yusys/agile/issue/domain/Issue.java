@@ -117,6 +117,8 @@ public class Issue implements Serializable {
     /**看板id*/
     private Long  kanbanId;
 
+    private String featureIdOrName;
+
     private static final long serialVersionUID = 1L;
 
 }

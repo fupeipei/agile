@@ -3279,10 +3279,16 @@ public class IssueServiceImpl implements IssueService {
      * @return com.yusys.agile.issue.dto.IssueDTO
      **/
     @Override
-    public IssueDTO getIssueDtoByIssueId(Issue issue) {
+    public List<IssueDTO> getIssueDtoByIssueId(Issue issue) {
         if (null == issue) {
             throw new BusinessException("参数不能为空");
         }
+        if (StringUtils.isEmpty(issue.getFeatureIdOrName())) {
+            throw new BusinessException("参数不能为空");
+        }
+
+        //查询所有的issue数据
+        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(new Issue());
 
         //获取featrue 名称或者编码为fertureMsg
         List<IssueDTO> features = issueMapper.queryForFerture(issue);
@@ -3290,49 +3296,71 @@ public class IssueServiceImpl implements IssueService {
             return null;
         }
 
-        IssueDTO featureDTO = features.get(0);
+        for (IssueDTO feature : features) {
+            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList);
+            feature.setChildren(child);
 
-        //查询该feature下所有子故事
-        List<IssueDTO> storys = getIssueForParentId(featureDTO.getIssueId());
-
-        Iterator<IssueDTO> iterator = storys.iterator();
-        //获取子task
-        for (Iterator<IssueDTO> it = iterator; it.hasNext(); ) {
-            IssueDTO issue1 = it.next();
-            List<IssueDTO> issueForParentId = getIssueForParentId(issue1.getIssueId());
-            issue1.setChildren(issueForParentId);
         }
 
-        featureDTO.setChildren(storys);
 
-
-        return featureDTO;
+        return features;
     }
 
+//    /**
+//     * @Author yuzt
+//     * @Description 查询id下所有子issue
+//     * @Date 10:23 上午 2021/7/14
+//     * @Param [featureId]
+//     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+//     **/
+//    public List<IssueDTO> getIssueForParentId(Long parentId) {
+////        Issue issue = issueMapper.selectByPrimaryKey(featureId);
+//
+//        //查询该feature下所有子issue
+//        IssueExample example = new IssueExample();
+//        example.createCriteria().andParentIdEqualTo(parentId)
+//                .andStateEqualTo(StateEnum.U.getValue());
+//        List<Issue> storys = issueMapper.selectByExample(example);
+//
+//        List<IssueDTO> list = Lists.newArrayList();
+//        //遍历赋值
+//        for (Issue is : storys) {
+//            IssueDTO storyDTO = ReflectUtil.copyProperties(is, IssueDTO.class);
+//            list.add(storyDTO);
+//        }
+//
+//        return list;
+//    }
     /**
      * @Author yuzt
-     * @Description 查询id下所有子issue
-     * @Date 10:23 上午 2021/7/14
-     * @Param [featureId]
+     * @Description 查询feature及下到task的数据
+     * @Date 3:48 上午 2021/7/15
+     * @Param [id, issueDTOList]
      * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      **/
-    public List<IssueDTO> getIssueForParentId(Long parentId) {
-//        Issue issue = issueMapper.selectByPrimaryKey(featureId);
-
-        //查询该feature下所有子issue
-        IssueExample example = new IssueExample();
-        example.createCriteria().andParentIdEqualTo(parentId)
-                .andStateEqualTo(StateEnum.U.getValue());
-        List<Issue> storys = issueMapper.selectByExample(example);
-
-        List<IssueDTO> list = Lists.newArrayList();
-        //遍历赋值
-        for (Issue is : storys) {
-            IssueDTO storyDTO = ReflectUtil.copyProperties(is, IssueDTO.class);
-            list.add(storyDTO);
+    private List<IssueDTO> getChild(Long id, List<IssueDTO> issueDTOList) {
+        // 子菜单
+        List<IssueDTO> childList = new ArrayList<>();
+        for (IssueDTO issueDTO : issueDTOList) {
+            // 遍历所有节点，将父菜单id与传过来的id比较
+            if (null != issueDTO.getParentId() && issueDTO.getParentId() != 0) {
+                if (issueDTO.getParentId().equals(id)) {
+                    childList.add(issueDTO);
+                }
+            }
         }
-
-        return list;
+        // 把子菜单的子菜单再循环一遍
+        for (IssueDTO issueDTO : childList) {
+            //每到任务继续取子菜单
+            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issueDTO.getIssueType())) {
+                // 递归
+                issueDTO.setChildren(getChild(issueDTO.getIssueId(), issueDTOList));
+            }
+        } // 递归退出条件
+        if (childList.size() == 0) {
+            return null;
+        }
+        return childList;
     }
 
 
