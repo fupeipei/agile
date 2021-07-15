@@ -740,12 +740,14 @@ public class IssueServiceImpl implements IssueService {
                 setTeamDetail(map, sTeam);
             }else{
                 //从feature上获取团队信息
-                Issue feature;
+                Issue feature = null;
                 if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
                     feature = issueMapper.getParentIssue(issueId);
                 } else {
                     Issue story = issueMapper.getParentIssue(issueId);
-                    feature = issueMapper.getParentIssue(story.getIssueId());
+                    if(Optional.ofNullable(story).isPresent()){
+                        feature = issueMapper.getParentIssue(story.getIssueId());
+                    }
                 }
                 if(null != feature){
                     setTeamInfo(map, feature.getTeamId(),null,null,feature.getIssueType());
