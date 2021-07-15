@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.yusys.agile.commit.dto.CommitDTO;
+import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.fault.enums.FaultTypeEnum;
 import com.yusys.agile.fault.service.FaultService;
@@ -3248,6 +3249,12 @@ public class IssueServiceImpl implements IssueService {
         }
         if(IsAchiveEnum.ACHIVEA_FALSE.CODE.equals(isArchive) || IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
             throw new BusinessException("已归档不能修改归档状态");
+        }
+        if(IssueTypeEnum.TYPE_EPIC.CODE.equals(issue.getIssueType())){
+            Integer count = issueMapper.countIsArchive(issueId);
+            if(count > NumberConstant.ZERO){
+                throw new BusinessException("epic下存在未归档的feature不能归档");
+            }
         }
         issue.setIsArchive(isArchive);
         issueMapper.updateByPrimaryKeySelective(issue);

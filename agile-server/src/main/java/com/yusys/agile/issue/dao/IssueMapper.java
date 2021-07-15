@@ -629,4 +629,6 @@ public interface IssueMapper {
     List<Long> selectIssueIdByTenantCode(@Param("tenantCode") String  tenantCode);
 
     List<IssueDTO> queryForFerture(Issue issue);
+
+    int countIsArchive(Long issueId);
 }

@@ -434,7 +434,7 @@ public class IssueController {
     /**
      * @Author maxp2
      * @Date 2021/7/13
-     * @Description epic和feature是否归档
+     * @Description epic和feature设置归档
      * @param issueId
      * @param isArchive
      * @Return com.yusys.portal.model.common.dto.ControllerResponse

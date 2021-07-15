@@ -56,7 +56,7 @@ public class IssueServiceTest {
      */
     @Test
     public void isArchive(){
-        Long issueId = 847878567016625384L;
+        Long issueId = 847878567016625462L;
         Byte isArchive = 1 ;
         try {
             issueService.isArchive(issueId,isArchive);

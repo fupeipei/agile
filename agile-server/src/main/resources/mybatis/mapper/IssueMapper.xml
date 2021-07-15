@@ -3231,4 +3231,10 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
 
     </select>
 
+    <select id="countIsArchive" resultType="Integer">
+        select
+        count(*)
+        from s_issue a where 1=1 and a.state = 'U' and a.parent_id = #{epicId} and a.is_archive = 0
+    </select>
+
 </mapper>
