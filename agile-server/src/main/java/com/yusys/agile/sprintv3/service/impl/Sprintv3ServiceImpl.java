@@ -802,6 +802,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 }
             }
         }
+        userSprintHours = userSprintHours.stream().filter(x-> StringUtils.isNotEmpty(x.getUserAccount()) && StringUtils.isNotEmpty(x.getUserName())).collect(Collectors.toList());
         return userSprintHours;
     }
 
