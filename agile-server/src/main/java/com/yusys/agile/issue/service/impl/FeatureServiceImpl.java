@@ -4,6 +4,7 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.issue.enums.IsAchiveEnum;
 import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.FeatureService;
@@ -103,6 +104,12 @@ public class FeatureServiceImpl implements FeatureService {
 
     @Override
     public Long createFeature(IssueDTO issueDTO) {
+        if(Optional.ofNullable(issueDTO.getParentId()).isPresent()){
+            Issue issue = issueMapper.selectByPrimaryKey(issueDTO.getParentId());
+            if(IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
+                throw new BusinessException("工作项已归档不能新增feature");
+            }
+        }
         //判断如果是精益团队则处理人必填
         if(checkIsLeanTeanm(issueDTO.getTeamId()) && null == issueDTO.getHandler()){
             throw new BusinessException("选择了精益团队请选择一个处理人！");

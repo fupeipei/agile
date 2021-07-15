@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.yusys.agile.commit.dto.CommitDTO;
+import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.fault.enums.FaultTypeEnum;
 import com.yusys.agile.fault.service.FaultService;
@@ -293,6 +294,12 @@ public class IssueServiceImpl implements IssueService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void createRelation(Long parentId, Long issueId) {
+        if(Optional.ofNullable(parentId).isPresent()){
+            Issue issue = issueMapper.selectByPrimaryKey(parentId);
+            if(IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
+                throw new BusinessException("工作项已归档不能关联");
+            }
+        }
         List<IssueHistoryRecord> history = new ArrayList<>();
         Issue issueOld = issueMapper.selectByPrimaryKey(issueId);
         String oldValue = Optional.ofNullable(issueOld.getParentId()).toString();
@@ -3244,6 +3251,12 @@ public class IssueServiceImpl implements IssueService {
         }
         if(IsAchiveEnum.ACHIVEA_FALSE.CODE.equals(isArchive) || IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
             throw new BusinessException("已归档不能修改归档状态");
+        }
+        if(IssueTypeEnum.TYPE_EPIC.CODE.equals(issue.getIssueType())){
+            Integer count = issueMapper.countIsArchive(issueId);
+            if(count > NumberConstant.ZERO){
+                throw new BusinessException("epic下存在未归档的feature不能归档");
+            }
         }
         issue.setIsArchive(isArchive);
         issueMapper.updateByPrimaryKeySelective(issue);
