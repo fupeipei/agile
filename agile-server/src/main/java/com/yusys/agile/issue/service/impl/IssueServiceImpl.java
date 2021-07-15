@@ -293,6 +293,12 @@ public class IssueServiceImpl implements IssueService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void createRelation(Long parentId, Long issueId) {
+        if(Optional.ofNullable(parentId).isPresent()){
+            Issue issue = issueMapper.selectByPrimaryKey(parentId);
+            if(IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
+                throw new BusinessException("工作项已归档不能关联");
+            }
+        }
         List<IssueHistoryRecord> history = new ArrayList<>();
         Issue issueOld = issueMapper.selectByPrimaryKey(issueId);
         String oldValue = Optional.ofNullable(issueOld.getParentId()).toString();
