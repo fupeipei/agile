@@ -3295,9 +3295,25 @@ public class IssueServiceImpl implements IssueService {
      **/
     @Override
     public List<IssueDTO> getIssueDtoByIssueId(Long kanbanId, Issue issue) throws ExecutionException {
-
         //查询所有的issue数据
-//        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(new Issue());
+        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(new Issue());
+        for (IssueDTO issueDTO : issueDTOList) {
+            Long issueId = issueDTO.getIssueId();
+            //处理系统信息
+            Long systemId = issueDTO.getSystemId();
+            SsoSystem ssoSystem = systemCache.get(systemId);
+            if (Optional.ofNullable(ssoSystem).isPresent()) {
+                issueDTO.setSystemCode(ssoSystem.getSystemCode());
+                issueDTO.setSystemName(ssoSystem.getSystemName());
+            }
+            //处理人信息
+            Long handler = issueDTO.getHandler();
+            SsoUser user = userCache.get(handler);
+            if (Optional.ofNullable(user).isPresent()) {
+                issueDTO.setHandlerAccount(user.getUserAccount());
+                issueDTO.setHandlerName(user.getUserName());
+            }
+        }
 
         //获取featrue 名称或者编码为fertureMsg
         issue.setIssueType(IssueTypeEnum.TYPE_FEATURE.CODE);
@@ -3309,13 +3325,12 @@ public class IssueServiceImpl implements IssueService {
 
         recursionGetIssues(features,kanbanId);
 
-//        List<IssueDTO> issueDTOS = Lists.newArrayList();
-//        for (IssueDTO feature : features) {
-//            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList);
-//            recursionGetIssues(issueDTOS,kanbanId);
-//            feature.setChildren(child);
+        List<IssueDTO> issueDTOS = Lists.newArrayList();
+        for (IssueDTO feature : features) {
+            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList);
+            feature.setChildren(child);
 
-//        }
+        }
 
 
         return features;
