@@ -427,5 +427,5 @@ public interface IssueService {
      * @Param [fertureMsg]
      * @return com.yusys.agile.issue.domain.Issue
      **/
-    List<IssueDTO> getIssueDtoByIssueId(Issue issue);
+    List<IssueDTO> getIssueDtoByIssueId(Long kanbanId, Issue issue) throws ExecutionException;
 }

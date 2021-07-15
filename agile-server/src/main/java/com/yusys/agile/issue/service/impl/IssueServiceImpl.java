@@ -3294,58 +3294,32 @@ public class IssueServiceImpl implements IssueService {
      * @return com.yusys.agile.issue.dto.IssueDTO
      **/
     @Override
-    public List<IssueDTO> getIssueDtoByIssueId(Issue issue) {
-        if (null == issue) {
-            throw new BusinessException("参数不能为空");
-        }
-        if (StringUtils.isEmpty(issue.getFeatureIdOrName())) {
-            throw new BusinessException("参数不能为空");
-        }
+    public List<IssueDTO> getIssueDtoByIssueId(Long kanbanId, Issue issue) throws ExecutionException {
 
         //查询所有的issue数据
-        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(new Issue());
+//        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(new Issue());
 
         //获取featrue 名称或者编码为fertureMsg
+        issue.setIssueType(IssueTypeEnum.TYPE_FEATURE.CODE);
         List<IssueDTO> features = issueMapper.queryForFerture(issue);
         if (features.size() == 0) {
             return null;
         }
 
-        for (IssueDTO feature : features) {
-            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList);
-            feature.setChildren(child);
+        recursionGetIssues(features,kanbanId);
 
-        }
+//        List<IssueDTO> issueDTOS = Lists.newArrayList();
+//        for (IssueDTO feature : features) {
+//            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList);
+//            recursionGetIssues(issueDTOS,kanbanId);
+//            feature.setChildren(child);
+
+//        }
 
 
         return features;
     }
 
-//    /**
-//     * @Author yuzt
-//     * @Description 查询id下所有子issue
-//     * @Date 10:23 上午 2021/7/14
-//     * @Param [featureId]
-//     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
-//     **/
-//    public List<IssueDTO> getIssueForParentId(Long parentId) {
-////        Issue issue = issueMapper.selectByPrimaryKey(featureId);
-//
-//        //查询该feature下所有子issue
-//        IssueExample example = new IssueExample();
-//        example.createCriteria().andParentIdEqualTo(parentId)
-//                .andStateEqualTo(StateEnum.U.getValue());
-//        List<Issue> storys = issueMapper.selectByExample(example);
-//
-//        List<IssueDTO> list = Lists.newArrayList();
-//        //遍历赋值
-//        for (Issue is : storys) {
-//            IssueDTO storyDTO = ReflectUtil.copyProperties(is, IssueDTO.class);
-//            list.add(storyDTO);
-//        }
-//
-//        return list;
-//    }
     /**
      * @Author yuzt
      * @Description 查询feature及下到task的数据
