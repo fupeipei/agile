@@ -630,5 +630,12 @@ public interface IssueMapper {
 
     List<IssueDTO> queryForFerture(Issue issue);
 
+    /**
+     * @Author maxp2
+     * @Date 2021/7/15
+     * @Description 判断epic下的feature是否全部已归档
+     * @param issueId
+     * @Return int
+     */
     int countIsArchive(Long issueId);
 }
