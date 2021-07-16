@@ -107,6 +107,16 @@ public class StoryServiceImpl implements StoryService {
 
     @Override
     public Long createStory(IssueDTO issueDTO) {
+
+        //校验故事在迭代内不允许更改阶段和状态
+        if(Optional.ofNullable(issueDTO.getSprintId()).isPresent()) {
+            Long teamId = getTeamIdBySprintId(issueDTO.getSprintId());
+            Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+            if (!iFacadeUserApi.checkIsTeamPo(userId, teamId)) {
+                throw new BusinessException("非迭代PO不允许新增故事！");
+            }
+        }
+
         //设置默认创建
         Long[] stages;
         if(!Optional.ofNullable(issueDTO.getSprintId()).isPresent()){
