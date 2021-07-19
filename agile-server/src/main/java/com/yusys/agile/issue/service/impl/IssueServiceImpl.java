@@ -492,7 +492,7 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         //列头的Coentent数据
-        Map<String, HashMap<String, String>> mapHeaderFieldContent = mapMap.containsKey(MAPHEADERFIELDCONTENT)?mapMap.get(MAPUSERATTENTION):new HashMap<>();
+        Map<String, HashMap<String, String>> mapHeaderFieldContent = mapMap.containsKey(MAPHEADERFIELDCONTENT)?mapMap.get(MAPHEADERFIELDCONTENT):new HashMap<>();
         //任务类型
         if (Optional.ofNullable(issue.getTaskType()).isPresent()) {
             issueListDTO.setTaskType(getOptionList(issue.getTaskType().toString(), "taskType", mapHeaderFieldContent));
