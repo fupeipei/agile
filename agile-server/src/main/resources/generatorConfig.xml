@@ -22,7 +22,7 @@
 		</javaTypeResolver>
 		<!-- targetPackage:包名；targetProject：生成文件的位置（相对于generatorConfig.xml所在项目，这里指的是agile-server）-->
 		<javaModelGenerator
-				targetPackage="com.yusys.agile.leankanban.domain"
+				targetPackage="com.yusys.agile.scheduleplan.domain"
 				targetProject="./src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
@@ -32,7 +32,7 @@
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<javaClientGenerator
-				targetPackage="com.yusys.agile.leankanban.dao"
+				targetPackage="com.yusys.agile.scheduleplan.dao"
 				targetProject="./src/main/java" type="XMLMAPPER">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
@@ -44,7 +44,7 @@
 		<!--		<table tableName="s_team_sm"/>-->
 		<!--		<table tableName="s_team_user"/>-->
 		<!--		<table tableName="s_sprint"/>-->
-		<table tableName="s_lean_kanban"/>
+		<table tableName="s_schedule"/>
 
 	</context>
 </generatorConfiguration>

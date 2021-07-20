@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
@@ -10,6 +11,8 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.EpicService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
+import com.yusys.agile.scheduleplan.dto.ScheduleplanDTO;
+import com.yusys.agile.scheduleplan.service.SchedulePlanService;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.domain.STeam;
@@ -21,18 +24,22 @@ import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.entity.SsoSystem;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * @Date: 15:57
  */
+@Slf4j
 @Service
 public class EpicServiceImpl implements EpicService {
 
@@ -51,9 +58,20 @@ public class EpicServiceImpl implements EpicService {
     @Resource
     private STeamMapper sTeamMapper;
 
+    @Autowired
+    private SchedulePlanService schedulePlanService;
+
     @Override
     public Long createEpic(IssueDTO issueDTO) {
-        return issueFactory.createIssue(issueDTO, "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
+        Long issueId = issueFactory.createIssue(issueDTO, "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
+        ScheduleplanDTO scheduleplan = issueDTO.getScheduleplan();
+        if(Optional.ofNullable(scheduleplan).isPresent()){
+            scheduleplan.setEpicId(issueId);
+
+            log.info("需求排期获取接口入参:{}", JSONObject.toJSONString(scheduleplan));
+            schedulePlanService.saveSchedulePlan(scheduleplan);
+        }
+        return issueId;
     }
 
     @Override
@@ -66,7 +84,10 @@ public class EpicServiceImpl implements EpicService {
     @Override
     public IssueDTO queryEpic(Long issueId) {
         Long projectId = issueFactory.getSystemIdByIssueId(issueId);
-        return issueFactory.queryIssue(issueId, projectId);
+        IssueDTO issueDTO = issueFactory.queryIssue(issueId, projectId);
+        ScheduleplanDTO schedulePlan = schedulePlanService.getSchedulePlan(issueId);
+        issueDTO.setScheduleplan(schedulePlan);
+        return issueDTO;
     }
 
     @Override
@@ -90,6 +111,12 @@ public class EpicServiceImpl implements EpicService {
         count = issueMapper.updateByPrimaryKeySelectiveWithNull(epic);
         if (count != 1) {
             throw new BusinessException("更新业务需求失败！");
+        }
+        //排期
+        ScheduleplanDTO scheduleplan = issueDTO.getScheduleplan();
+        if(Optional.ofNullable(scheduleplan).isPresent()){
+            scheduleplan.setEpicId(issueDTO.getIssueId());
+            schedulePlanService.saveSchedulePlan(scheduleplan);
         }
     }
 

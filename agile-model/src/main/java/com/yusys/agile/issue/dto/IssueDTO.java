@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.dto;
 
+import com.yusys.agile.scheduleplan.dto.ScheduleplanDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
@@ -298,6 +299,9 @@ public class IssueDTO {
 
     @ApiModelProperty("故事下缺陷类任务完成数量")
     private Integer bugTaskFinishNum;
+
+    @ApiModelProperty("排期计划")
+    private ScheduleplanDTO scheduleplan;
 
 
     /**

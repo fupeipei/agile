@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.scheduleplan.dao.SEpicSystemRelateMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.scheduleplan.domain.SEpicSystemRelate">
+    <id column="relate_id" jdbcType="BIGINT" property="relateId" />
+    <result column="epic_id" jdbcType="BIGINT" property="epicId" />
+    <result column="system_id" jdbcType="BIGINT" property="systemId" />
+    <result column="system_uid" jdbcType="BIGINT" property="systemUid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_uid" jdbcType="BIGINT" property="createUid" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="is_handle" jdbcType="TINYINT" property="isHandle" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    relate_id, epic_id, system_id, system_uid, create_time, create_uid, state, is_handle, 
+    tenant_code
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelateExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from s_epic_system_relate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from s_epic_system_relate
+    where relate_id = #{relateId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from s_epic_system_relate
+    where relate_id = #{relateId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelateExample">
+    delete from s_epic_system_relate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelate">
+    insert into s_epic_system_relate (relate_id, epic_id, system_id, 
+      system_uid, create_time, create_uid, 
+      state, is_handle, tenant_code
+      )
+    values (#{relateId,jdbcType=BIGINT}, #{epicId,jdbcType=BIGINT}, #{systemId,jdbcType=BIGINT}, 
+      #{systemUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{createUid,jdbcType=BIGINT}, 
+      #{state,jdbcType=VARCHAR}, #{isHandle,jdbcType=TINYINT}, #{tenantCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelate">
+    insert into s_epic_system_relate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="relateId != null">
+        relate_id,
+      </if>
+      <if test="epicId != null">
+        epic_id,
+      </if>
+      <if test="systemId != null">
+        system_id,
+      </if>
+      <if test="systemUid != null">
+        system_uid,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUid != null">
+        create_uid,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="isHandle != null">
+        is_handle,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="relateId != null">
+        #{relateId,jdbcType=BIGINT},
+      </if>
+      <if test="epicId != null">
+        #{epicId,jdbcType=BIGINT},
+      </if>
+      <if test="systemId != null">
+        #{systemId,jdbcType=BIGINT},
+      </if>
+      <if test="systemUid != null">
+        #{systemUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="isHandle != null">
+        #{isHandle,jdbcType=TINYINT},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelateExample" resultType="java.lang.Long">
+    select count(*) from s_epic_system_relate
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+
+  <select id="queryToDoList" resultType="com.yusys.agile.scheduleplan.dto.ToDoListDTO">
+     select
+     sesr.relate_id as relateId,
+     sesr.epic_id as epicId,
+     sesr.create_uid as createUid,
+     si.title as title ,
+     sesr.is_handle as isHandle
+     from  s_epic_system_relate sesr
+     left join
+     s_issue si
+     on sesr.epic_id = si.issue_id
+     where
+      sesr.is_handle = 0  and
+      sesr.create_uid = #{userId}
+      <choose>
+        <when test="epicId != null and epicId  != ''">
+          and  (sesr.epic_id = #{epicId} or si.title like  CONCAT('%',#{title},'%') ))
+        </when>
+        <otherwise>
+          <if test="title != null  and title != ''">
+            and si.title like  CONCAT('%',#{title},'%') )
+          </if>
+        </otherwise>
+      </choose>
+
+  </select>
+
+  <update id="updateByExampleSelective" parameterType="map">
+    update s_epic_system_relate
+    <set>
+      <if test="record.relateId != null">
+        relate_id = #{record.relateId,jdbcType=BIGINT},
+      </if>
+      <if test="record.epicId != null">
+        epic_id = #{record.epicId,jdbcType=BIGINT},
+      </if>
+      <if test="record.systemId != null">
+        system_id = #{record.systemId,jdbcType=BIGINT},
+      </if>
+      <if test="record.systemUid != null">
+        system_uid = #{record.systemUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUid != null">
+        create_uid = #{record.createUid,jdbcType=BIGINT},
+      </if>
+      <if test="record.state != null">
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isHandle != null">
+        is_handle = #{record.isHandle,jdbcType=TINYINT},
+      </if>
+      <if test="record.tenantCode != null">
+        tenant_code = #{record.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update s_epic_system_relate
+    set relate_id = #{record.relateId,jdbcType=BIGINT},
+      epic_id = #{record.epicId,jdbcType=BIGINT},
+      system_id = #{record.systemId,jdbcType=BIGINT},
+      system_uid = #{record.systemUid,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      create_uid = #{record.createUid,jdbcType=BIGINT},
+      state = #{record.state,jdbcType=VARCHAR},
+      is_handle = #{record.isHandle,jdbcType=TINYINT},
+      tenant_code = #{record.tenantCode,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelate">
+    update s_epic_system_relate
+    <set>
+      <if test="epicId != null">
+        epic_id = #{epicId,jdbcType=BIGINT},
+      </if>
+      <if test="systemId != null">
+        system_id = #{systemId,jdbcType=BIGINT},
+      </if>
+      <if test="systemUid != null">
+        system_uid = #{systemUid,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUid != null">
+        create_uid = #{createUid,jdbcType=BIGINT},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="isHandle != null">
+        is_handle = #{isHandle,jdbcType=TINYINT},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where relate_id = #{relateId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelate">
+    update s_epic_system_relate
+    set epic_id = #{epicId,jdbcType=BIGINT},
+      system_id = #{systemId,jdbcType=BIGINT},
+      system_uid = #{systemUid,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_uid = #{createUid,jdbcType=BIGINT},
+      state = #{state,jdbcType=VARCHAR},
+      is_handle = #{isHandle,jdbcType=TINYINT},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where relate_id = #{relateId,jdbcType=BIGINT}
+  </update>
+</mapper>
