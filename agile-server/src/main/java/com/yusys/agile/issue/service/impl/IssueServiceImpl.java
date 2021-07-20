@@ -3287,55 +3287,19 @@ public class IssueServiceImpl implements IssueService {
     }
 
     /**
+     * @return com.yusys.agile.issue.dto.IssueDTO
      * @Author yuzt
      * @Description 根据featureId获取feature及其下的story和task
      * @Date 10:05 上午 2021/7/14
      * @Param [fertureMsg]
-     * @return com.yusys.agile.issue.dto.IssueDTO
      **/
     @Override
-    public List<IssueDTO> getIssueDtoByIssueId(Long kanbanId, Issue issue) throws ExecutionException {
-        //查询所有的issue数据
-        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(new Issue());
-        for (IssueDTO issueDTO : issueDTOList) {
-            Long issueId = issueDTO.getIssueId();
-            //处理系统信息
-            Long systemId = issueDTO.getSystemId();
-            SsoSystem ssoSystem = systemCache.get(systemId);
-            if (Optional.ofNullable(ssoSystem).isPresent()) {
-                issueDTO.setSystemCode(ssoSystem.getSystemCode());
-                issueDTO.setSystemName(ssoSystem.getSystemName());
-            }
-            //处理人信息
-            Long handler = issueDTO.getHandler();
-            SsoUser user = userCache.get(handler);
-            if (Optional.ofNullable(user).isPresent()) {
-                issueDTO.setHandlerAccount(user.getUserAccount());
-                issueDTO.setHandlerName(user.getUserName());
-            }
-        }
-
-        //获取featrue 名称或者编码为fertureMsg
+    public List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException {
+        issue.setState(StateEnum.U.getValue());
         issue.setIssueType(IssueTypeEnum.TYPE_FEATURE.CODE);
-        issue.setKanbanId(kanbanId);
-        List<IssueDTO> features = issueMapper.queryForFerture(issue);
-        if (features.size() == 0) {
-            return null;
-        }
-
-        recursionGetIssues(features,kanbanId);
-
-        List<IssueDTO> issueDTOS = Lists.newArrayList();
-        for (IssueDTO feature : features) {
-            List<IssueDTO> child = getChild(feature.getIssueId(), issueDTOList, feature.getKanbanId());
-            feature.setStoryTotalNum(child.size());
-            feature.setStroyFinishNum(getIssueFinishNum(feature.getIssueId(),kanbanId));
-            feature.setChildren(child);
-
-        }
-
-
-        return features;
+        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(issue);
+        recursionGetIssues(issueDTOList, issue.getKanbanId());
+        return issueDTOList;
     }
 
     /**

@@ -458,9 +458,9 @@ public class IssueController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      **/
     @GetMapping("/issue/queryFeatureById")
-    public ControllerResponse queryFeatureById(@RequestParam("kanbanId") Long kanbanId, Issue issue) {
+    public ControllerResponse queryFeatureById(Issue issue) {
         try {
-            return ControllerResponse.success(issueService.getIssueDtoByIssueId(kanbanId, issue));
+            return ControllerResponse.success(issueService.getIssueDtoByIssueId(issue));
         } catch (Exception e) {
             LOGGER.info("根据featureId获取feature及其下的所有story和task:{}", e.getMessage());
             return ControllerResponse.fail(e.getMessage());
