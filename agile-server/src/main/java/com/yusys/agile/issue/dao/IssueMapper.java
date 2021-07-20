@@ -638,4 +638,7 @@ public interface IssueMapper {
      * @Return int
      */
     int countIsArchive(Long issueId);
+
+    List<IssueDTO> queryFeatureScheduleRel(@Param("featureIds") List<Long> featureIds,@Param("teamId") Long teamId,@Param("searchKey") String searchKey,@Param("systemId") Long systemId);
+
 }
