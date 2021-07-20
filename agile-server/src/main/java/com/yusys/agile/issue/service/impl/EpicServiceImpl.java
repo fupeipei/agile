@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
@@ -23,6 +24,7 @@ import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.entity.SsoSystem;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 /**
  * @Date: 15:57
  */
+@Slf4j
 @Service
 public class EpicServiceImpl implements EpicService {
 
@@ -64,6 +67,8 @@ public class EpicServiceImpl implements EpicService {
         ScheduleplanDTO scheduleplan = issueDTO.getScheduleplan();
         if(Optional.ofNullable(scheduleplan).isPresent()){
             scheduleplan.setEpicId(issueId);
+
+            log.info("需求排期获取接口入参:{}", JSONObject.toJSONString(scheduleplan));
             schedulePlanService.saveSchedulePlan(scheduleplan);
         }
         return issueId;

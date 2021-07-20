@@ -1,5 +1,7 @@
 package com.yusys.agile.scheduleplan.rest;
 
+import com.github.pagehelper.PageInfo;
+import com.yusys.agile.scheduleplan.dto.ToDoListDTO;
 import com.yusys.agile.scheduleplan.service.SchedulePlanService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -20,9 +24,11 @@ public class SchedulePlanController {
 
     @ApiOperation(value = "查询工作项拆分待办事项")
     @GetMapping("/epicSplit/list")
-    public ControllerResponse queryToDoList(@RequestParam(value = "epicId",required = false) Long epicId,
-                                       @RequestParam(value = "title",required = false)String title) {
-        return ControllerResponse.success(schedulePlanService.queryToDoList(epicId,title));
+    public ControllerResponse queryToDoList(@RequestParam(value = "target",required = false) String target,
+                                            @RequestParam(value = "pageNum", required = false) Integer pageNum,
+                                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        List<ToDoListDTO> toDoListDTOS = schedulePlanService.queryToDoList(target, pageNum, pageSize);
+        return ControllerResponse.success(new PageInfo<>(toDoListDTOS));
     }
 
     @ApiOperation(value = "处理待办工作项")

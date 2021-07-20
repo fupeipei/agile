@@ -197,12 +197,17 @@
      where
       sesr.is_handle = 0  and
       sesr.create_uid = #{userId}
-     <if test="epicId != null  and epicId  != ''">
-       and  sesr.epic_id = #{epicId}
-     </if>
-     <if test="title != null  and title != ''">
-       and si.title like  CONCAT('%',#{title},'%') )
-     </if>
+      <choose>
+        <when test="epicId != null and epicId  != ''">
+          and  (sesr.epic_id = #{epicId} or si.title like  CONCAT('%',#{title},'%') ))
+        </when>
+        <otherwise>
+          <if test="title != null  and title != ''">
+            and si.title like  CONCAT('%',#{title},'%') )
+          </if>
+        </otherwise>
+      </choose>
+
   </select>
 
   <update id="updateByExampleSelective" parameterType="map">

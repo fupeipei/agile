@@ -1,6 +1,7 @@
 package com.yusys.agile.scheduleplan.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.yusys.agile.scheduleplan.dao.SEpicSystemRelateMapper;
 import com.yusys.agile.scheduleplan.dao.SScheduleMapper;
 import com.yusys.agile.scheduleplan.domain.SEpicSystemRelate;
@@ -59,7 +60,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
     @Override
     @Transactional
     public void saveSchedulePlan(ScheduleplanDTO scheduleplanDTO) {
-
+        log.info("需求排期获取接口入参:{}", JSONObject.toJSONString(scheduleplanDTO));
         Long epicId = scheduleplanDTO.getEpicId();
         //删除之前数据
         SScheduleExample sScheduleExample = new SScheduleExample();
@@ -74,8 +75,6 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         epicSystemRelate.setState(StateEnum.E.getValue());
         epicSystemRelateMapper.updateByExampleSelective(epicSystemRelate,sEpicSystemRelateExample);
 
-
-        log.info("需求排期获取接口入参:{}", JSONObject.toJSONString(scheduleplanDTO));
         List<SystemInfoDTO> systemInfo = scheduleplanDTO.getSystemInfo();
         if(CollectionUtils.isNotEmpty(systemInfo)){
             for(SystemInfoDTO systemInfoDTO : systemInfo){
@@ -132,9 +131,20 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
     }
 
     @Override
-    public List<ToDoListDTO> queryToDoList(Long epicId, String title) {
+    public List<ToDoListDTO> queryToDoList(String target,Integer pageNum, Integer pageSize) {
+        if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
-        List<ToDoListDTO> toDoListDTOS = epicSystemRelateMapper.queryToDoList(epicId, title, userId);
+        Long epicId = null;
+        try {
+             epicId = Long.valueOf(target);
+        }catch (Exception e){
+            log.info("target不为Long类型{}",target);
+        }
+
+        List<ToDoListDTO> toDoListDTOS = epicSystemRelateMapper.queryToDoList(epicId, target, userId);
         if(CollectionUtils.isNotEmpty(toDoListDTOS)){
             for(ToDoListDTO toDoListDTO:toDoListDTOS){
                 SsoUser ssoUserInfo = getSsoUserInfo(toDoListDTO.getCreateUid());
