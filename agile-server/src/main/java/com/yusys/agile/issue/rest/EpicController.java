@@ -49,6 +49,8 @@ public class EpicController {
             //批量新增或者批量更新扩展字段值
             issueDTO.setIssueType(new Byte("1"));
             issueDTO.setIssueId(issueId);
+            //默认为未发起
+            issueDTO.setStartSchedule((byte)1);
             issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
             return ControllerResponse.success(issueId);
