@@ -399,7 +399,7 @@
     <include refid="Blob_Column_List" />
     from s_version_manager where state = 'U'
     <if test="searchKey != null and searchKey != ''">
-      and (version_manager_id like concat('%',#{searchKey},'%') OR version_name concat('%',#{searchKey},'%'))
+      and (version_manager_id like concat('%',#{searchKey},'%') OR version_name like concat('%',#{searchKey},'%'))
     </if>
     <if test="systemId != null">
       AND system_id = #{systemId}
