@@ -1,0 +1,32 @@
+package com.yusys.agile.versionmanagerV3;
+
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @author 李艮艮
+ */
+@Data
+public class SVersionManagerDTO implements Serializable {
+
+    private Long versionManagerId;
+
+    private String versionName;
+
+    private String versionDescribe;
+
+    private Date releaseDate;
+
+    private Date raiseTestDate;
+
+    private int relateNum = 0;
+
+    private List<Long> versionIssueRelateIds;
+
+    private List<SVersionIssueRelateDTO> sVersionIssueRelateDTOList;
+
+
+}

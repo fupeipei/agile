@@ -299,4 +299,24 @@ public class IssueDTO {
     @ApiModelProperty("故事下缺陷类任务完成数量")
     private Integer bugTaskFinishNum;
 
+
+    /**
+     * 上线时间
+     */
+    private Date releaseDate;
+
+    /**
+     * 提测时间时间
+     */
+    private Date raiseTestDate;
+
+    /**
+     * 排期名称
+     */
+    private String scheduleName;
+
+
+    private String teamName;
+
+
 }

@@ -3338,6 +3338,11 @@ public class IssueServiceImpl implements IssueService {
         return features;
     }
 
+    @Override
+    public List<IssueDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId) {
+        return issueMapper.queryFeatureScheduleRel(featureIds,teamId,searchKey,systemId);
+    }
+
     /**
      * @Author yuzt
      * @Description 查询feature及下到task的数据
