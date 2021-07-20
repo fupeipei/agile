@@ -428,7 +428,6 @@ public interface IssueService {
      * @return com.yusys.agile.issue.domain.Issue
      **/
     List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException;
-    List<IssueDTO> getIssueDtoByIssueId(Long kanbanId, Issue issue) throws ExecutionException;
 
     List<IssueDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId);
 }
