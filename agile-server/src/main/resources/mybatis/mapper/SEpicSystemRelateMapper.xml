@@ -10,6 +10,7 @@
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="is_handle" jdbcType="TINYINT" property="isHandle" />
+    <result column="master" jdbcType="TINYINT" property="master"/>
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -72,7 +73,7 @@
   </sql>
   <sql id="Base_Column_List">
     relate_id, epic_id, system_id, system_uid, create_time, create_uid, state, is_handle, 
-    tenant_code
+    tenant_code,master
   </sql>
   <select id="selectByExample" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelateExample" resultMap="BaseResultMap">
     select
@@ -144,6 +145,9 @@
       <if test="tenantCode != null">
         tenant_code,
       </if>
+      <if test="master != null">
+        master,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="relateId != null">
@@ -173,6 +177,9 @@
       <if test="tenantCode != null">
         #{tenantCode,jdbcType=VARCHAR},
       </if>
+      <if test="master != null">
+        #{master,jdbcType=TINYINT},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.scheduleplan.domain.SEpicSystemRelateExample" resultType="java.lang.Long">
@@ -195,8 +202,9 @@
      s_issue si
      on sesr.epic_id = si.issue_id
      where
-      sesr.is_handle = 0  and
-      sesr.create_uid = #{userId}
+      sesr.is_handle = 0
+      and si.start_schedule = 1
+      and sesr.create_uid = #{userId}
       <choose>
         <when test="epicId != null and epicId  != ''">
           and  (sesr.epic_id = #{epicId} or si.title like  CONCAT('%',#{title},'%') ))
