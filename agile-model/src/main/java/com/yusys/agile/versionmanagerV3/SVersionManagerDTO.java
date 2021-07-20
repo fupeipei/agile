@@ -24,6 +24,10 @@ public class SVersionManagerDTO implements Serializable {
 
     private int relateNum = 0;
 
+    private String createName;
+
+    private Date createTime;
+
     private List<Long> versionIssueRelateIds;
 
     private List<SVersionIssueRelateDTO> sVersionIssueRelateDTOList;

@@ -57,7 +57,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
         SVersionManager sVersionManager = ReflectUtil.copyProperties(sVersionManagerDTO, SVersionManager.class);
         sVersionManager.setCreateUid(UserThreadLocalUtil.getUserInfo().getUserId());
         sVersionManager.setCreateName(UserThreadLocalUtil.getUserInfo().getUserName());
-//        sVersionManager.setSystemId(UserThreadLocalUtil.getUserInfo().getSystemId());
+        sVersionManager.setSystemId(UserThreadLocalUtil.getUserInfo().getSystemId());
         sVersionManagerMapper.insertSelective(sVersionManager);
         List<Long> versionIssueRelateIds = sVersionManagerDTO.getVersionIssueRelateIds();
         this.batchInsertSVersionIssueRelate(versionIssueRelateIds, sVersionManager.getVersionManagerId());
