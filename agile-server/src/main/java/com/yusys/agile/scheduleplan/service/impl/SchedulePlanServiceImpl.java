@@ -121,6 +121,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
                         systemInfoDTO.setSystemUserName(userName);
                         systemInfoDTO.setSystemUserAccount(userAccount);
                     }
+                    scheduleplanDTO.setSystemInfo(systemInfoDTOS);
                 } catch (Exception e) {
                     log.info("获取排期异常:{}",e.getMessage());
                 }

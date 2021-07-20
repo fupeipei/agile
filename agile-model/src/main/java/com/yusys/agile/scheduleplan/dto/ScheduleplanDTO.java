@@ -10,7 +10,7 @@ public class ScheduleplanDTO {
 
     private Long epicId;
 
-    private String scheduleplanName;
+    private String scheduleName;
 
     private Date releaseDate;
 

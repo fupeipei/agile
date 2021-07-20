@@ -25,8 +25,8 @@ public class SchedulePlanController {
     @ApiOperation(value = "查询工作项拆分待办事项")
     @GetMapping("/epicSplit/list")
     public ControllerResponse queryToDoList(@RequestParam(value = "target",required = false) String target,
-                                            @RequestParam(value = "pageNum", required = false) Integer pageNum,
-                                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+                                            @RequestParam(value = "pageNum") Integer pageNum,
+                                            @RequestParam(value = "pageSize") Integer pageSize) {
         List<ToDoListDTO> toDoListDTOS = schedulePlanService.queryToDoList(target, pageNum, pageSize);
         return ControllerResponse.success(new PageInfo<>(toDoListDTOS));
     }
