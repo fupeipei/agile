@@ -126,7 +126,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
                 if (CollectionUtils.isNotEmpty(sVersionIssueRelateList)) {
                     try {
                         List<Long> featureIds = sVersionIssueRelateList.stream().map(SVersionIssueRelate::getIssueId).distinct().collect(Collectors.toList());
-                        List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(featureIds, null, null,UserThreadLocalUtil.getUserInfo().getSystemId());
+                        List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(featureIds, null, null,null);
                         sVersionManagerDTO.setSVersionIssueRelateDTOList(sVersionIssueRelateDTOS);
                         sVersionManagerDTO.setRelateNum(sVersionIssueRelateDTOS.size());
                     } catch (Exception e) {
