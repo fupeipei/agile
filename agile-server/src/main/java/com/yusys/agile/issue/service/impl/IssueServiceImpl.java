@@ -3342,5 +3342,14 @@ public class IssueServiceImpl implements IssueService {
         return childList;
     }
 
-
+    @Override
+    public Integer updateStageIdAndLaneId(List<IssueDTO> issueDTOList) {
+        List<Issue> issueList = ReflectObjectUtil.copyProperties4List(issueDTOList,Issue.class);
+       if(CollectionUtils.isNotEmpty(issueList)){
+           for (Issue issue:issueList) {
+               issueMapper.updateByPrimaryKeySelective(issue);
+           }
+       }
+        return  issueList.size();
+    }
 }
