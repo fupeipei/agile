@@ -56,6 +56,9 @@
         <result column="is_cancel" jdbcType="TINYINT" property="isCancel"/>
         <result column="kanban_id" jdbcType="BIGINT" property="kanbanId"/>
         <result column="team_id" jdbcType="BIGINT" property="teamId"/>
+        <result column="start_schedule" jdbcType="TINYINT" property="startSchedule"/>
+        <result column="release_date" jdbcType="TIMESTAMP" property="releaseDate"/>
+        <result column="raise_test_date" jdbcType="TIMESTAMP" property="raiseTestDate"/>
     </resultMap>
     <sql id="Example_Where_Clause">
         <where>
@@ -124,7 +127,7 @@
     create_time, update_uid, update_time, fault_type, fault_level, fixed_time, close_time, 
     fixed_uid, test_uid, version_id, case_id, deadline, file, urgency, cause, detected_phase, 
     manual_case_id, source, remain_workload, bug_id, `order`, block_state, reopen_times,assess_is_pass,assess_remarks,tenant_code,
-    cmp_sync_result,is_archive,is_cancel,kanban_id,team_id
+    cmp_sync_result,is_archive,is_cancel,kanban_id,team_id,start_schedule,release_date,raise_test_date
   </sql>
 
     <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.issue.domain.IssueExample"
@@ -189,7 +192,7 @@
       urgency, cause, detected_phase, 
       manual_case_id, source, remain_workload, 
       bug_id, `order`, block_state,
-      reopen_times,assess_is_pass,assess_remarks,tenant_code,team_id,kanban_id)
+      reopen_times,assess_is_pass,assess_remarks,tenant_code,team_id,kanban_id,start_schedule,release_date,raise_test_date)
     values (#{issueId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
       #{issueType,jdbcType=TINYINT}, #{sprintId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, 
       #{systemId,jdbcType=BIGINT}, #{handler,jdbcType=BIGINT}, #{beginDate,jdbcType=TIMESTAMP}, 
@@ -206,7 +209,8 @@
       #{manualCaseId,jdbcType=BIGINT}, #{source,jdbcType=TINYINT}, #{remainWorkload,jdbcType=INTEGER}, 
       #{bugId,jdbcType=BIGINT}, #{order,jdbcType=INTEGER}, #{blockState,jdbcType=TINYINT}, 
       #{reopenTimes,jdbcType=INTEGER}, #{assessIsPass,jdbcType=TINYINT},#{assessRemarks,jdbcType=VARCHAR},
-      #{tenantCode},#{teamId,jdbcType=BIGINT},#{kanbanId,jdbcType=BIGINT})
+      #{tenantCode},#{teamId,jdbcType=BIGINT},#{kanbanId,jdbcType=BIGINT},#{startSchedule,jdbcType=TINYINT},
+       #{releaseDate,jdbcType=TIMESTAMP}, #{raiseTestDate,jdbcType=TIMESTAMP})
   </insert>
     <insert id="insertSelective" parameterType="com.yusys.agile.issue.domain.Issue" useGeneratedKeys="true"
             keyProperty="issueId">
@@ -371,6 +375,15 @@
             <if test="kanbanId != null">
                 kanban_id,
             </if>
+            <if test="startSchedule != null">
+                start_schedule,
+            </if>
+            <if test="releaseDate != null">
+                release_date,
+            </if>
+            <if test="raiseTestDate != null">
+                raise_test_date,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <!--<if test="issueId != null">-->
@@ -531,6 +544,15 @@
             </if>
             <if test="kanbanId != null">
                 #{kanbanId,jdbcType=BIGINT},
+            </if>
+            <if test="startSchedule != null">
+                #{startSchedule,jdbcType=TINYINT},
+            </if>
+            <if test="releaseDate != null">
+                #{releaseDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="raiseTestDate != null">
+                #{raiseTestDate,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
@@ -697,10 +719,19 @@
                 is_archive = #{record.isArchive,jdbcType=TINYINT},
             </if>
             <if test="record.isCancel != null">
-                is_cancel = #{record.isCancel,jdbcType=TINYINT}
+                is_cancel = #{record.isCancel,jdbcType=TINYINT},
             </if>
             <if test="record.teamId != null">
-                team_id = #{record.teamId,jdbcType=BIGINT}
+                team_id = #{record.teamId,jdbcType=BIGINT},
+            </if>
+            <if test="startSchedule != null">
+                start_schedule = #{startSchedule,jdbcType=TINYINT},
+            </if>
+            <if test="releaseDate != null">
+                release_date = #{releaseDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="raiseTestDate != null">
+                raise_test_date = #{raiseTestDate,jdbcType=TIMESTAMP}
             </if>
         </set>
         <if test="_parameter != null">
@@ -980,7 +1011,16 @@
                 is_cancel = #{isCancel,jdbcType=TINYINT},
             </if>
             <if test="teamId != null">
-                team_id = #{teamId,jdbcType=BIGINT}
+                team_id = #{teamId,jdbcType=BIGINT},
+            </if>
+            <if test="startSchedule != null">
+                start_schedule = #{startSchedule,jdbcType=TINYINT},
+            </if>
+            <if test="releaseDate != null">
+                release_date = #{releaseDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="raiseTestDate != null">
+                raise_test_date = #{raiseTestDate,jdbcType=TIMESTAMP}
             </if>
         </set>
         where issue_id = #{issueId,jdbcType=BIGINT}

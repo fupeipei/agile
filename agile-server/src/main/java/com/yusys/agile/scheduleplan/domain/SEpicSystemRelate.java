@@ -22,6 +22,8 @@ public class SEpicSystemRelate implements Serializable {
 
     private String tenantCode;
 
+    private Byte master;
+
     private static final long serialVersionUID = 1L;
 
     public Long getRelateId() {
@@ -94,5 +96,13 @@ public class SEpicSystemRelate implements Serializable {
 
     public void setTenantCode(String tenantCode) {
         this.tenantCode = tenantCode == null ? null : tenantCode.trim();
+    }
+
+    public Byte getMaster() {
+        return master;
+    }
+
+    public void setMaster(Byte master) {
+        this.master = master;
     }
 }

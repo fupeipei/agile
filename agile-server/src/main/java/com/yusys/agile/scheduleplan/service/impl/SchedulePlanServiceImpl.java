@@ -87,6 +87,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
                 Integer value = YesOrNoEnum.NO.getValue();
                 sEpicSystemRelate.setIsHandle(Byte.valueOf(value.toString()));
                 sEpicSystemRelate.setCreateUid(UserThreadLocalUtil.getUserInfo().getUserId());
+                sEpicSystemRelate.setMaster(systemInfoDTO.getMaster());
                 epicSystemRelateMapper.insertSelective(sEpicSystemRelate);
             }
         }
