@@ -1,5 +1,6 @@
 package com.yusys.agile.versionmanagerV3;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -30,7 +31,7 @@ public class SVersionManagerDTO implements Serializable {
 
     private List<Long> versionIssueRelateIds;
 
-    private List<SVersionIssueRelateDTO> sVersionIssueRelateDTOList;
+    private List<SVersionIssueRelateDTO> sVersionIssueRelateDTOList = Lists.newArrayList();
 
 
 }

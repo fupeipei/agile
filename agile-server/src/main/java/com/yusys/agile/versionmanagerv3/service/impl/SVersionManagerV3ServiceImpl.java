@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -65,7 +62,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
 
 
     private void batchInsertSVersionIssueRelate(List<Long> versionIssueRelateIds, Long sVersionManagerId) {
-        List<SVersionIssueRelate> sVersionIssueRelateList = versionIssueRelateIds.stream().map(x -> {
+        List<SVersionIssueRelate> sVersionIssueRelateList = new HashSet<>(versionIssueRelateIds).stream().map(x -> {
             SVersionIssueRelate sVersionIssueRelate = new SVersionIssueRelate();
             sVersionIssueRelate.setIssueId(x);
             sVersionIssueRelate.setIssueType(IssueTypeEnum.TYPE_FEATURE.CODE);
@@ -128,11 +125,13 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
             sVersionManagerDTOList.stream().map(x -> {
                 SVersionManagerDTO sVersionManagerDTO = ReflectUtil.copyProperties(x, SVersionManagerDTO.class);
                 SVersionIssueRelateExample sVersionIssueRelateExample = new SVersionIssueRelateExample();
-                sVersionIssueRelateExample.createCriteria().andVersionIdEqualTo(x.getVersionManagerId());
+                sVersionIssueRelateExample.setDistinct(true);
+                sVersionIssueRelateExample.createCriteria()
+                        .andVersionIdEqualTo(x.getVersionManagerId());
                 List<SVersionIssueRelate> sVersionIssueRelateList = sVersionIssueRelateMapper.selectByExample(sVersionIssueRelateExample);
                 if (CollectionUtils.isNotEmpty(sVersionIssueRelateList)) {
                     try {
-                        List<Long> featureIds = sVersionIssueRelateList.stream().map(SVersionIssueRelate::getIssueId).distinct().collect(Collectors.toList());
+                        List<Long> featureIds = sVersionIssueRelateList.stream().map(SVersionIssueRelate::getIssueId).collect(Collectors.toList());
                         List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(featureIds, null, null, null);
                         sVersionManagerDTO.setSVersionIssueRelateDTOList(sVersionIssueRelateDTOS);
                         sVersionManagerDTO.setRelateNum(sVersionIssueRelateDTOS.size());
