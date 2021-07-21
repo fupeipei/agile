@@ -77,11 +77,16 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
         });
     }
 
+    /**
+     * 校验本系统下名称要保持唯一
+     * @param sVersionManagerDTO
+     */
     private void checkUniqueVersionName(SVersionManagerDTO sVersionManagerDTO) {
         //本系统下发布版本计划唯一
         String versionName = sVersionManagerDTO.getVersionName();
         SVersionManagerExample sVersionManagerExample = new SVersionManagerExample();
         sVersionManagerExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
                 .andVersionNameEqualTo(versionName)
                 .andSystemIdEqualTo(UserThreadLocalUtil.getUserInfo().getSystemId());
         List<SVersionManager> sVersionManagers = sVersionManagerMapper.selectByExample(sVersionManagerExample);

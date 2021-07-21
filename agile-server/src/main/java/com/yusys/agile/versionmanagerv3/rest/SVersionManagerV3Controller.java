@@ -58,7 +58,12 @@ public class SVersionManagerV3Controller {
         }
     }
 
-
+    /**
+     * 修改版本计划
+     *
+     * @param sVersionManagerDTO
+     * @return
+     */
     @PostMapping("/updateVersionManager")
     public ControllerResponse updateVersionManager(@RequestBody SVersionManagerDTO sVersionManagerDTO) {
         try {
@@ -73,21 +78,48 @@ public class SVersionManagerV3Controller {
     }
 
 
+    /**
+     * 删除版本计划
+     *
+     * @param id
+     * @return
+     */
     @PostMapping("/deleteVersionManager/{id}")
     public ControllerResponse deleteVersionManager(@PathVariable(name = "id") Long id) {
         sVersionManagerV3Service.deleteVersionManager(id);
         return ControllerResponse.success();
     }
 
+    /**
+     * 查询版本计划列表
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param searchKey
+     * @return
+     */
     @GetMapping("/queryVersionManagerList")
     public ControllerResponse queryVersionManagerList(@RequestParam(name = "pageNum") Integer pageNum,
                                                       @RequestParam(name = "pageSize") Integer pageSize,
                                                       @RequestParam(name = "searchKey", required = false) String searchKey
     ) {
-        PageInfo<SVersionManagerDTO> sVersionManagerDTOPageInfo = sVersionManagerV3Service.queryVersionManagerList(pageNum, pageSize, searchKey);
-        return ControllerResponse.success(sVersionManagerDTOPageInfo);
+        try {
+            PageInfo<SVersionManagerDTO> sVersionManagerDTOPageInfo = sVersionManagerV3Service.queryVersionManagerList(pageNum, pageSize, searchKey);
+            return ControllerResponse.success(sVersionManagerDTOPageInfo);
+        } catch (Exception e) {
+            return ControllerResponse.fail("查询版本计划列表失败" + e);
+        }
     }
 
+    /**
+     * 查询需求列表
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param searchKey
+     * @param teamId
+     * @return
+     */
     @GetMapping("/queryRequirementRelList")
     public ControllerResponse queryRequirementRelList(@RequestParam(name = "pageNum") Integer pageNum,
                                                       @RequestParam(name = "pageSize") Integer pageSize,
