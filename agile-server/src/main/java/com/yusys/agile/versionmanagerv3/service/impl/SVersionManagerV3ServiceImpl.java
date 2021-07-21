@@ -79,18 +79,20 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
 
     /**
      * 校验本系统下名称要保持唯一
+     *
      * @param sVersionManagerDTO
      */
     private void checkUniqueVersionName(SVersionManagerDTO sVersionManagerDTO) {
         //本系统下发布版本计划唯一
         String versionName = sVersionManagerDTO.getVersionName();
         SVersionManagerExample sVersionManagerExample = new SVersionManagerExample();
-        sVersionManagerExample.createCriteria()
-                .andStateEqualTo(StateEnum.U.getValue())
+        SVersionManagerExample.Criteria criteria = sVersionManagerExample.createCriteria();
+        criteria.andStateEqualTo(StateEnum.U.getValue())
                 .andVersionNameEqualTo(versionName)
                 .andSystemIdEqualTo(UserThreadLocalUtil.getUserInfo().getSystemId());
         List<SVersionManager> sVersionManagers = sVersionManagerMapper.selectByExample(sVersionManagerExample);
-        if (CollectionUtils.isNotEmpty(sVersionManagers)) {
+        if (CollectionUtils.isNotEmpty(sVersionManagers)
+                && (sVersionManagerDTO.getVersionManagerId() == null || !sVersionManagers.get(0).getVersionManagerId().equals(sVersionManagerDTO.getVersionManagerId()))) {
             throw new BusinessException("版本计划名称要唯一");
         }
     }
@@ -98,6 +100,11 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateVersionManager(SVersionManagerDTO sVersionManagerDTO) {
+        String versionName = sVersionManagerDTO.getVersionName();
+        Long versionManagerId = sVersionManagerDTO.getVersionManagerId();
+
+        Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
+
         SVersionManager sVersionManager = ReflectUtil.copyProperties(sVersionManagerDTO, SVersionManager.class);
         int i = sVersionManagerMapper.updateByPrimaryKeySelective(sVersionManager);
         List<Long> versionIssueRelateIds = sVersionManagerDTO.getVersionIssueRelateIds();
@@ -118,12 +125,11 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
     }
 
     @Override
-    public PageInfo<SVersionManagerDTO> queryVersionManagerList(Integer pageNum, Integer pageSize, String searchKey) {
-        List<SVersionManagerDTO> sVersionManagerDTOList = Lists.newArrayList();
+    public PageInfo<SVersionManagerDTO> queryVersionManagerList(Integer pageNum, Integer pageSize, String searchKey) throws Exception {
         PageHelper.startPage(pageNum, pageSize);
-        List<SVersionManager> sVersionManagers = sVersionManagerMapper.queryVersionManagerListByExample(searchKey,UserThreadLocalUtil.getUserInfo().getSystemId());
-        if (CollectionUtils.isNotEmpty(sVersionManagers)) {
-            sVersionManagerDTOList = sVersionManagers.stream().map(x -> {
+        List<SVersionManagerDTO> sVersionManagerDTOList = sVersionManagerMapper.queryVersionManagerListByExample(searchKey, UserThreadLocalUtil.getUserInfo().getSystemId());
+        if (CollectionUtils.isNotEmpty(sVersionManagerDTOList)) {
+            sVersionManagerDTOList.stream().map(x -> {
                 SVersionManagerDTO sVersionManagerDTO = ReflectUtil.copyProperties(x, SVersionManagerDTO.class);
                 SVersionIssueRelateExample sVersionIssueRelateExample = new SVersionIssueRelateExample();
                 sVersionIssueRelateExample.createCriteria().andVersionIdEqualTo(x.getVersionManagerId());
@@ -131,11 +137,11 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
                 if (CollectionUtils.isNotEmpty(sVersionIssueRelateList)) {
                     try {
                         List<Long> featureIds = sVersionIssueRelateList.stream().map(SVersionIssueRelate::getIssueId).distinct().collect(Collectors.toList());
-                        List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(featureIds, null, null,null);
+                        List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(featureIds, null, null, null);
                         sVersionManagerDTO.setSVersionIssueRelateDTOList(sVersionIssueRelateDTOS);
                         sVersionManagerDTO.setRelateNum(sVersionIssueRelateDTOS.size());
                     } catch (Exception e) {
-                        log.error("数据转换异常",e);
+                        log.error("数据转换异常", e);
                     }
                 }
                 return sVersionManagerDTO;
@@ -152,11 +158,11 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
     }
 
 
-    private List<SVersionIssueRelateDTO> querySVersionIssueRelateList(List<Long> featureIds,Long teamId,String searchKey,Long systemId) throws Exception {
-        List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRel(featureIds, teamId, searchKey,systemId);
-        if (CollectionUtils.isNotEmpty(issueDTOS)){
+    private List<SVersionIssueRelateDTO> querySVersionIssueRelateList(List<Long> featureIds, Long teamId, String searchKey, Long systemId) throws Exception {
+        List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRel(featureIds, teamId, searchKey, systemId);
+        if (CollectionUtils.isNotEmpty(issueDTOS)) {
             List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = ReflectUtil.copyProperties4List(issueDTOS, SVersionIssueRelateDTO.class);
-            sVersionIssueRelateDTOS.forEach(x->{
+            sVersionIssueRelateDTOS.forEach(x -> {
                 Long laneId = x.getLaneId();
                 Long teamId1 = x.getTeamId();
                 String langName = getLangName(teamId1, laneId);
@@ -170,12 +176,10 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
     }
 
 
-    public String getLangName(Long teamId,Long langId){
+    public String getLangName(Long teamId, Long langId) {
         Map<Long, String> stageMapByTeamId = iStageService.getStageMapByTeamId(teamId);
         return stageMapByTeamId.get(langId);
     }
-
-
 
 
 }
