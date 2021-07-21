@@ -3,6 +3,7 @@ package com.yusys.agile.issue.rest;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
+import com.yusys.agile.issue.enums.StartScheduleStatusEnum;
 import com.yusys.agile.issue.service.EpicService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -45,7 +46,7 @@ public class EpicController {
             JSONObject jsonObject = new JSONObject(epicMap);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
             //默认为未发起
-            issueDTO.setStartSchedule((byte)1);
+            issueDTO.setStartSchedule(StartScheduleStatusEnum.NO_TINITIATED.CODE);
             Long issueId = epicService.createEpic(issueDTO);
 
             //批量新增或者批量更新扩展字段值
