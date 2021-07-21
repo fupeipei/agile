@@ -122,8 +122,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
         PageHelper.startPage(pageNum, pageSize);
         List<SVersionManagerDTO> sVersionManagerDTOList = sVersionManagerMapper.queryVersionManagerListByExample(searchKey, UserThreadLocalUtil.getUserInfo().getSystemId());
         if (CollectionUtils.isNotEmpty(sVersionManagerDTOList)) {
-            sVersionManagerDTOList.stream().map(x -> {
-                SVersionManagerDTO sVersionManagerDTO = ReflectUtil.copyProperties(x, SVersionManagerDTO.class);
+            sVersionManagerDTOList.forEach(x -> {
                 SVersionIssueRelateExample sVersionIssueRelateExample = new SVersionIssueRelateExample();
                 sVersionIssueRelateExample.setDistinct(true);
                 sVersionIssueRelateExample.createCriteria()
@@ -133,14 +132,14 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
                     try {
                         List<Long> featureIds = sVersionIssueRelateList.stream().map(SVersionIssueRelate::getIssueId).collect(Collectors.toList());
                         List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(featureIds, null, null, null);
-                        sVersionManagerDTO.setSVersionIssueRelateDTOList(sVersionIssueRelateDTOS);
-                        sVersionManagerDTO.setRelateNum(sVersionIssueRelateDTOS.size());
+                        x.setSVersionIssueRelateDTOList(sVersionIssueRelateDTOS);
+                        x.setRelateNum(sVersionIssueRelateDTOS.size());
                     } catch (Exception e) {
                         log.error("数据转换异常", e);
                     }
                 }
-                return sVersionManagerDTO;
-            }).collect(Collectors.toList());
+
+            });
         }
         return new PageInfo(sVersionManagerDTOList);
     }
