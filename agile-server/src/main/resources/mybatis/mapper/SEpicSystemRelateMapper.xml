@@ -197,7 +197,7 @@
      sesr.create_uid as createUid,
      si.title as title ,
      sesr.is_handle as isHandle,
-    sesr.create_time as createDate
+     sesr.create_time as createDate
      from  s_epic_system_relate sesr
      left join
      s_issue si
@@ -207,10 +207,10 @@
       and si.start_schedule = 1
       and sesr.system_uid = #{userId}
       <if test="epicId != null and epicId  != '' and title != null  and title != ''">
-        and  (sesr.epic_id = #{epicId} or si.title like  CONCAT('%',#{title},'%') ))
+        and  (sesr.epic_id = #{epicId} or si.title like  CONCAT('%',#{title},'%') )
       </if>
       <if test="epicId == null and title != null  and title != ''">
-        and si.title like  CONCAT('%',#{title},'%') )
+        and si.title like  CONCAT('%',#{title},'%')
       </if>
   </select>
 
