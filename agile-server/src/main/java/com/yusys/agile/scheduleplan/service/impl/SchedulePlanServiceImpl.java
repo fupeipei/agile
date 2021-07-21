@@ -106,6 +106,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         List<SSchedule> sSchedules = scheduleMapper.selectByExample(sScheduleExample);
         if(CollectionUtils.isNotEmpty(sSchedules)){
             SSchedule sSchedule = sSchedules.get(0);
+
             ScheduleplanDTO scheduleplanDTO = ReflectUtil.copyProperties(sSchedule, ScheduleplanDTO.class);
 
             SEpicSystemRelateExample epicSystemRelateExample = new SEpicSystemRelateExample();
@@ -115,8 +116,10 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
                 try {
                     List<SystemInfoDTO> systemInfoDTOS = ReflectUtil.copyProperties4List(sEpicSystemRelates, SystemInfoDTO.class);
                     for(SystemInfoDTO systemInfoDTO:systemInfoDTOS){
+
                         Long systemId = systemInfoDTO.getSystemId();
                         String systemName = getSystemName(systemId);
+
                         Long systemUid = systemInfoDTO.getSystemUid();
                         SsoUser ssoUserInfo = getSsoUserInfo(systemUid);
                         String userAccount = ssoUserInfo.getUserAccount();
