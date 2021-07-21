@@ -2,6 +2,10 @@ package com.yusys.agile.scheduleplan.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.yusys.agile.issue.dao.IssueMapper;
+import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.domain.IssueExample;
+import com.yusys.agile.issue.enums.StartScheduleStatusEnum;
 import com.yusys.agile.scheduleplan.dao.SEpicSystemRelateMapper;
 import com.yusys.agile.scheduleplan.dao.SScheduleMapper;
 import com.yusys.agile.scheduleplan.domain.SEpicSystemRelate;
@@ -12,6 +16,7 @@ import com.yusys.agile.scheduleplan.dto.ScheduleplanDTO;
 import com.yusys.agile.scheduleplan.dto.SystemInfoDTO;
 import com.yusys.agile.scheduleplan.dto.ToDoListDTO;
 import com.yusys.agile.scheduleplan.service.SchedulePlanService;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
@@ -27,10 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -52,6 +54,8 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
     private IFacadeUserApi userApi;
     @Autowired
     private IFacadeSystemApi systemApi;
+    @Autowired
+    private IssueMapper issueMapper;
 
     private static Map<Long, SsoUser> USERMAP = new ConcurrentHashMap<>();
     private static Map<Long, String> SYSTEMMAP = new ConcurrentHashMap<>();
@@ -167,6 +171,25 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         SEpicSystemRelate sEpicSystemRelate = new SEpicSystemRelate();
         sEpicSystemRelate.setIsHandle(Byte.valueOf(YesOrNoEnum.YES.getValue().toString()));
         epicSystemRelateMapper.updateByExampleSelective(sEpicSystemRelate,sEpicSystemRelateExample);
+    }
+
+    @Override
+    public void startSchedulePlan(Long epicId, Byte state) {
+        StartScheduleStatusEnum[] values = StartScheduleStatusEnum.values();
+        List<Byte> result = Lists.newArrayList();
+        Arrays.asList(values).stream().forEach(s->{
+            result.add(s.CODE);
+        });
+
+        if(!result.contains(state)){
+            new BusinessException("传入参数错误");
+        }
+
+        IssueExample example = new IssueExample();
+        example.createCriteria().andIssueIdEqualTo(epicId).andStateEqualTo(StateEnum.U.getValue());
+        Issue issue = new Issue();
+        issue.setStartSchedule(state);
+        issueMapper.updateByExampleSelective(issue,example);
     }
 
 
