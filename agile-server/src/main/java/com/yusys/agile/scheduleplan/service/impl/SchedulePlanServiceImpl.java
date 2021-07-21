@@ -178,6 +178,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
 
     @Override
     public void startSchedulePlan(Long epicId, Byte state) {
+        log.info("发起或者结束排期入参数:{}",state);
         StartScheduleStatusEnum[] values = StartScheduleStatusEnum.values();
         List<Byte> result = Lists.newArrayList();
         Arrays.asList(values).stream().forEach(s->{
@@ -188,11 +189,10 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
             new BusinessException("传入参数错误");
         }
 
-        IssueExample example = new IssueExample();
-        example.createCriteria().andIssueIdEqualTo(epicId).andStateEqualTo(StateEnum.U.getValue());
         Issue issue = new Issue();
         issue.setStartSchedule(state);
-        issueMapper.updateByExampleSelective(issue,example);
+        issue.setIssueId(epicId);
+        issueMapper.updateByPrimaryKeySelective(issue);
     }
 
 
