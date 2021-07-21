@@ -153,6 +153,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
             log.info("target不为Long类型{}",target);
         }
 
+        log.info("查询待办入参epicId:{},target:{}",epicId,target);
         List<ToDoListDTO> toDoListDTOS = epicSystemRelateMapper.queryToDoList(epicId, target, userId);
         if(CollectionUtils.isNotEmpty(toDoListDTOS)){
             for(ToDoListDTO toDoListDTO:toDoListDTOS){
