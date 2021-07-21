@@ -1,5 +1,6 @@
 package com.yusys.agile.versionmanagerv3.dao;
 
+import com.yusys.agile.versionmanagerV3.SVersionManagerDTO;
 import com.yusys.agile.versionmanagerv3.domain.SVersionManager;
 import com.yusys.agile.versionmanagerv3.domain.SVersionManagerExample;
 import java.util.List;
@@ -34,5 +35,5 @@ public interface SVersionManagerMapper {
 
     int updateByPrimaryKey(SVersionManager record);
 
-    List<SVersionManager> queryVersionManagerListByExample(String searchKey,Long systemId);
+    List<SVersionManagerDTO> queryVersionManagerListByExample(String searchKey, Long systemId);
 }

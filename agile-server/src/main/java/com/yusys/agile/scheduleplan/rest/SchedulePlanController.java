@@ -41,4 +41,16 @@ public class SchedulePlanController {
         }
         return ControllerResponse.success("操作成功");
     }
+
+    @ApiOperation(value = "发起或者结束排期")
+    @GetMapping("/dealSchedule")
+    public ControllerResponse dealSchedule(@RequestParam(value = "epicId") Long epicId,
+                                           @RequestParam(value = "scheduleState") Byte state) {
+        try {
+            schedulePlanService.startSchedulePlan(epicId,state);
+        }catch (Exception e){
+            log.info("处理待办工作项异常：{}",e.getMessage());
+        }
+        return ControllerResponse.success("操作成功");
+    }
 }

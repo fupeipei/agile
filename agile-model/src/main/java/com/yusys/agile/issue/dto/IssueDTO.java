@@ -303,15 +303,13 @@ public class IssueDTO {
     @ApiModelProperty("排期计划")
     private ScheduleplanDTO scheduleplan;
 
+    @ApiModelProperty("是否发起排期 0未发起 1 发起")
+    private Byte startSchedule;
 
-    /**
-     * 上线时间
-     */
+    @ApiModelProperty("上线时间")
     private Date releaseDate;
 
-    /**
-     * 提测时间时间
-     */
+    @ApiModelProperty("提测时间")
     private Date raiseTestDate;
 
     /**
@@ -321,6 +319,4 @@ public class IssueDTO {
 
 
     private String teamName;
-
-
 }

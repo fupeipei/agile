@@ -392,19 +392,17 @@
     where version_manager_id = #{versionManagerId,jdbcType=BIGINT}
   </update>
 
-  <select id="queryVersionManagerListByExample" resultMap="ResultMapWithBLOBs">
+  <select id="queryVersionManagerListByExample" resultType="com.yusys.agile.versionmanagerV3.SVersionManagerDTO">
     select
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from s_version_manager where state = 'U'
     <if test="searchKey != null and searchKey != ''">
-      and (version_manager_id like concat('%',#{searchKey},'%') OR version_name concat('%',#{searchKey},'%'))
+      and (version_manager_id like concat('%',#{searchKey},'%') OR version_name like concat('%',#{searchKey},'%'))
     </if>
     <if test="systemId != null">
       AND system_id = #{systemId}
     </if>
-
-
   </select>
 </mapper>

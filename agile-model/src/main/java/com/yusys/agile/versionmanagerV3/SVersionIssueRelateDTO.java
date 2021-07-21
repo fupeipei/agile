@@ -12,6 +12,8 @@ public class SVersionIssueRelateDTO implements Serializable {
 
     private Long issueId;
 
+    private String title;
+
     private Long issueType;
 
     private Long versionId;

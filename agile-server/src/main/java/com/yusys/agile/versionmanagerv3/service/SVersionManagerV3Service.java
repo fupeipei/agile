@@ -13,7 +13,7 @@ public interface SVersionManagerV3Service {
 
     void deleteVersionManager(Long id);
 
-    PageInfo<SVersionManagerDTO> queryVersionManagerList(Integer pageNum, Integer pageSize, String searchKey);
+    PageInfo<SVersionManagerDTO> queryVersionManagerList(Integer pageNum, Integer pageSize, String searchKey) throws Exception;
 
     PageInfo<SVersionIssueRelateDTO> queryRequirementRelList(Integer pageNum, Integer pageSize, String searchKey, Long teamId) throws Exception;
 }
