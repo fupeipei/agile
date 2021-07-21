@@ -196,7 +196,8 @@
      sesr.epic_id as epicId,
      sesr.create_uid as createUid,
      si.title as title ,
-     sesr.is_handle as isHandle
+     sesr.is_handle as isHandle,
+    sesr.create_time as createDate
      from  s_epic_system_relate sesr
      left join
      s_issue si
