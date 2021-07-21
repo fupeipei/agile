@@ -1492,6 +1492,15 @@
             <if test="kanbanId != null">
                 kanban_id = #{kanbanId,jdbcType=BIGINT},
             </if>
+            <if test="startSchedule != null">
+                start_schedule = #{startSchedule,jdbcType=TINYINT},
+            </if>
+            <if test="releaseDate != null">
+                release_date = #{releaseDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="raiseTestDate != null">
+                raise_test_date = #{raiseTestDate,jdbcType=TIMESTAMP}
+            </if>
         </set>
         where issue_id = #{issueId,jdbcType=BIGINT}
     </update>
