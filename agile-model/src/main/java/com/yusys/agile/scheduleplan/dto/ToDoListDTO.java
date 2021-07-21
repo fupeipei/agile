@@ -25,7 +25,7 @@ public class ToDoListDTO {
     private Long epicId;
 
     @ApiModelProperty("标题")
-    private Long title;
+    private String title;
 
     @ApiModelProperty("创建时间")
     private Date createDate;
