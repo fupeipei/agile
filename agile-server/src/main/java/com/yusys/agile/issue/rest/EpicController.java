@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -92,6 +93,10 @@ public class EpicController {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
+            //针对老数据
+            if(Optional.ofNullable(issueDTO.getStartSchedule()).isPresent()){
+                issueDTO.setStartSchedule(StartScheduleStatusEnum.NO_TINITIATED.CODE);
+            }
             epicService.editEpic(issueDTO);
             //批量新增或者批量更新扩展字段值
             issueDTO.setIssueType(new Byte("1"));
