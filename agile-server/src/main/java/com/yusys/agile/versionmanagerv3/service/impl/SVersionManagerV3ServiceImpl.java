@@ -100,11 +100,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateVersionManager(SVersionManagerDTO sVersionManagerDTO) {
-        String versionName = sVersionManagerDTO.getVersionName();
-        Long versionManagerId = sVersionManagerDTO.getVersionManagerId();
-
-        Long systemId = UserThreadLocalUtil.getUserInfo().getSystemId();
-
+        checkUniqueVersionName(sVersionManagerDTO);
         SVersionManager sVersionManager = ReflectUtil.copyProperties(sVersionManagerDTO, SVersionManager.class);
         int i = sVersionManagerMapper.updateByPrimaryKeySelective(sVersionManager);
         List<Long> versionIssueRelateIds = sVersionManagerDTO.getVersionIssueRelateIds();
