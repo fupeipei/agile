@@ -94,7 +94,7 @@ public class EpicController {
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
             //针对老数据
-            if(Optional.ofNullable(issueDTO.getStartSchedule()).isPresent()){
+            if(!Optional.ofNullable(issueDTO.getStartSchedule()).isPresent()){
                 issueDTO.setStartSchedule(StartScheduleStatusEnum.NO_TINITIATED.CODE);
             }
             epicService.editEpic(issueDTO);
