@@ -3352,5 +3352,4 @@ public class IssueServiceImpl implements IssueService {
        }
         return  issueList.size();
     }
-
 }
