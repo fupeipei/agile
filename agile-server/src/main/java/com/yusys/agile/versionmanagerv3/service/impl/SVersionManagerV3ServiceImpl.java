@@ -150,10 +150,10 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
         //添加的时候需求列表只能展示feature未关联的版本
         List<Long> filterIssueIds = Lists.newArrayList();
         if ("insert".equals(operateType)) {
-            filterIssueIds = sVersionManagerMapper.selectAllIssueIds(issueIds, UserThreadLocalUtil.getUserInfo().getSystemId());
+            filterIssueIds = sVersionManagerMapper.selectAllIssueIds(null, UserThreadLocalUtil.getUserInfo().getSystemId());
             //修改的时候只能展示feature未关联的版本以及本身已选的feature
         } else if ("update".equals(operateType)) {
-            filterIssueIds = sVersionManagerMapper.selectAllIssueIds(null, UserThreadLocalUtil.getUserInfo().getSystemId());
+            filterIssueIds = sVersionManagerMapper.selectAllIssueIds(issueIds, UserThreadLocalUtil.getUserInfo().getSystemId());
         }
         PageHelper.startPage(pageNum, pageSize);
         List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRelByOperateType(teamId, searchKey, UserThreadLocalUtil.getUserInfo().getSystemId(),filterIssueIds);
