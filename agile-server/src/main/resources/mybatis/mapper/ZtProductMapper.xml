@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.zentao.dao.ZtProductMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.zentao.domain.ZtProduct">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="line" jdbcType="INTEGER" property="line" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="PO" jdbcType="VARCHAR" property="po" />
+    <result column="QD" jdbcType="VARCHAR" property="qd" />
+    <result column="RD" jdbcType="VARCHAR" property="rd" />
+    <result column="acl" jdbcType="CHAR" property="acl" />
+    <result column="createdBy" jdbcType="VARCHAR" property="createdby" />
+    <result column="createdDate" jdbcType="TIMESTAMP" property="createddate" />
+    <result column="createdVersion" jdbcType="VARCHAR" property="createdversion" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="deleted" jdbcType="CHAR" property="deleted" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.zentao.domain.ZtProductWithBLOBs">
+    <result column="desc" jdbcType="LONGVARCHAR" property="desc" />
+    <result column="whitelist" jdbcType="LONGVARCHAR" property="whitelist" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name, code, line, `type`, status, PO, QD, RD, acl, createdBy, createdDate, createdVersion,
+    `order`, deleted
+  </sql>
+  <sql id="Blob_Column_List">
+    `desc`, whitelist
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtProductExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_product
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      `order` by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yusys.agile.zentao.domain.ZtProductExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from zt_product
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      `order` by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_product
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from zt_product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.zentao.domain.ZtProductExample">
+    delete from zt_product
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.zentao.domain.ZtProductWithBLOBs">
+    insert into zt_product (id, name, code, 
+      line, `type`, status, 
+      PO, QD, RD, acl, 
+      createdBy, createdDate, createdVersion, 
+      `order`, deleted, `desc`,
+      whitelist)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{line,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{po,jdbcType=VARCHAR}, #{qd,jdbcType=VARCHAR}, #{rd,jdbcType=VARCHAR}, #{acl,jdbcType=CHAR}, 
+      #{createdby,jdbcType=VARCHAR}, #{createddate,jdbcType=TIMESTAMP}, #{createdversion,jdbcType=VARCHAR}, 
+      #{order,jdbcType=INTEGER}, #{deleted,jdbcType=CHAR}, #{desc,jdbcType=LONGVARCHAR}, 
+      #{whitelist,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.zentao.domain.ZtProductWithBLOBs">
+    insert into zt_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="line != null">
+        line,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="po != null">
+        PO,
+      </if>
+      <if test="qd != null">
+        QD,
+      </if>
+      <if test="rd != null">
+        RD,
+      </if>
+      <if test="acl != null">
+        acl,
+      </if>
+      <if test="createdby != null">
+        createdBy,
+      </if>
+      <if test="createddate != null">
+        createdDate,
+      </if>
+      <if test="createdversion != null">
+        createdVersion,
+      </if>
+      <if test="order != null">
+        `order`,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="desc != null">
+        `desc`,
+      </if>
+      <if test="whitelist != null">
+        whitelist,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="line != null">
+        #{line,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="po != null">
+        #{po,jdbcType=VARCHAR},
+      </if>
+      <if test="qd != null">
+        #{qd,jdbcType=VARCHAR},
+      </if>
+      <if test="rd != null">
+        #{rd,jdbcType=VARCHAR},
+      </if>
+      <if test="acl != null">
+        #{acl,jdbcType=CHAR},
+      </if>
+      <if test="createdby != null">
+        #{createdby,jdbcType=VARCHAR},
+      </if>
+      <if test="createddate != null">
+        #{createddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdversion != null">
+        #{createdversion,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null">
+        #{order,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="desc != null">
+        #{desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="whitelist != null">
+        #{whitelist,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.zentao.domain.ZtProductExample" resultType="java.lang.Long">
+    select count(*) from zt_product
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update zt_product
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.code != null">
+        code = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.line != null">
+        line = #{record.line,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null">
+       `type`= #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.po != null">
+        PO = #{record.po,jdbcType=VARCHAR},
+      </if>
+      <if test="record.qd != null">
+        QD = #{record.qd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rd != null">
+        RD = #{record.rd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acl != null">
+        acl = #{record.acl,jdbcType=CHAR},
+      </if>
+      <if test="record.createdby != null">
+        createdBy = #{record.createdby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createddate != null">
+        createdDate = #{record.createddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createdversion != null">
+        createdVersion = #{record.createdversion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.order != null">
+       `order`= #{record.order,jdbcType=INTEGER},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=CHAR},
+      </if>
+      <if test="record.desc != null">
+       `desc`= #{record.desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.whitelist != null">
+        whitelist = #{record.whitelist,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update zt_product
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      code = #{record.code,jdbcType=VARCHAR},
+      line = #{record.line,jdbcType=INTEGER},
+     `type`= #{record.type,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=VARCHAR},
+      PO = #{record.po,jdbcType=VARCHAR},
+      QD = #{record.qd,jdbcType=VARCHAR},
+      RD = #{record.rd,jdbcType=VARCHAR},
+      acl = #{record.acl,jdbcType=CHAR},
+      createdBy = #{record.createdby,jdbcType=VARCHAR},
+      createdDate = #{record.createddate,jdbcType=TIMESTAMP},
+      createdVersion = #{record.createdversion,jdbcType=VARCHAR},
+     `order`= #{record.order,jdbcType=INTEGER},
+      deleted = #{record.deleted,jdbcType=CHAR},
+     `desc`= #{record.desc,jdbcType=LONGVARCHAR},
+      whitelist = #{record.whitelist,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update zt_product
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      code = #{record.code,jdbcType=VARCHAR},
+      line = #{record.line,jdbcType=INTEGER},
+     `type`= #{record.type,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=VARCHAR},
+      PO = #{record.po,jdbcType=VARCHAR},
+      QD = #{record.qd,jdbcType=VARCHAR},
+      RD = #{record.rd,jdbcType=VARCHAR},
+      acl = #{record.acl,jdbcType=CHAR},
+      createdBy = #{record.createdby,jdbcType=VARCHAR},
+      createdDate = #{record.createddate,jdbcType=TIMESTAMP},
+      createdVersion = #{record.createdversion,jdbcType=VARCHAR},
+     `order`= #{record.order,jdbcType=INTEGER},
+      deleted = #{record.deleted,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.zentao.domain.ZtProductWithBLOBs">
+    update zt_product
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="line != null">
+        line = #{line,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+       `type`= #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="po != null">
+        PO = #{po,jdbcType=VARCHAR},
+      </if>
+      <if test="qd != null">
+        QD = #{qd,jdbcType=VARCHAR},
+      </if>
+      <if test="rd != null">
+        RD = #{rd,jdbcType=VARCHAR},
+      </if>
+      <if test="acl != null">
+        acl = #{acl,jdbcType=CHAR},
+      </if>
+      <if test="createdby != null">
+        createdBy = #{createdby,jdbcType=VARCHAR},
+      </if>
+      <if test="createddate != null">
+        createdDate = #{createddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdversion != null">
+        createdVersion = #{createdversion,jdbcType=VARCHAR},
+      </if>
+      <if test="order != null">
+       `order`= #{order,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="desc != null">
+       `desc`= #{desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="whitelist != null">
+        whitelist = #{whitelist,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtProductWithBLOBs">
+    update zt_product
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      line = #{line,jdbcType=INTEGER},
+     `type`= #{type,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      PO = #{po,jdbcType=VARCHAR},
+      QD = #{qd,jdbcType=VARCHAR},
+      RD = #{rd,jdbcType=VARCHAR},
+      acl = #{acl,jdbcType=CHAR},
+      createdBy = #{createdby,jdbcType=VARCHAR},
+      createdDate = #{createddate,jdbcType=TIMESTAMP},
+      createdVersion = #{createdversion,jdbcType=VARCHAR},
+     `order`= #{order,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=CHAR},
+     `desc`= #{desc,jdbcType=LONGVARCHAR},
+      whitelist = #{whitelist,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.zentao.domain.ZtProduct">
+    update zt_product
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      line = #{line,jdbcType=INTEGER},
+     `type`= #{type,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      PO = #{po,jdbcType=VARCHAR},
+      QD = #{qd,jdbcType=VARCHAR},
+      RD = #{rd,jdbcType=VARCHAR},
+      acl = #{acl,jdbcType=CHAR},
+      createdBy = #{createdby,jdbcType=VARCHAR},
+      createdDate = #{createddate,jdbcType=TIMESTAMP},
+      createdVersion = #{createdversion,jdbcType=VARCHAR},
+     `order`= #{order,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
