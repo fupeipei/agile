@@ -38,6 +38,7 @@ public class SchedulePlanController {
             schedulePlanService.dealToDoList(relateId);
         }catch (Exception e){
             log.info("处理待办工作项异常：{}",e.getMessage());
+            return ControllerResponse.fail(e.getMessage());
         }
         return ControllerResponse.success("操作成功");
     }

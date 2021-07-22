@@ -172,6 +172,21 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
     public void dealToDoList(Long relateId) {
         SEpicSystemRelateExample sEpicSystemRelateExample = new SEpicSystemRelateExample();
         sEpicSystemRelateExample.createCriteria().andRelateIdEqualTo(relateId).andStateEqualTo(StateEnum.U.getValue());
+        List<SEpicSystemRelate> sEpicSystemRelates = epicSystemRelateMapper.selectByExample(sEpicSystemRelateExample);
+        if(CollectionUtils.isNotEmpty(sEpicSystemRelates)){
+            SEpicSystemRelate sEpicSystemRelate = sEpicSystemRelates.get(0);
+            Long epicId = sEpicSystemRelate.getEpicId();
+            Long systemId = sEpicSystemRelate.getSystemId();
+            IssueExample example = new IssueExample();
+            example.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andParentIdEqualTo(epicId).andSystemIdEqualTo(systemId);
+            List<Issue> issueList = issueMapper.selectByExample(example);
+            if(CollectionUtils.isEmpty(issueList)){
+             throw new BusinessException("工作项还未进行拆分，请先点击【去拆分】进行工作项拆分操作，再点击【确认】");
+            }
+        }else {
+            throw new BusinessException("处理待办失败");
+        }
+
         SEpicSystemRelate sEpicSystemRelate = new SEpicSystemRelate();
         sEpicSystemRelate.setIsHandle(Byte.valueOf(YesOrNoEnum.YES.getValue().toString()));
         epicSystemRelateMapper.updateByExampleSelective(sEpicSystemRelate,sEpicSystemRelateExample);
