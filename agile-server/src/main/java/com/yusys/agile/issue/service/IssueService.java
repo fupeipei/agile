@@ -384,7 +384,7 @@ public interface IssueService {
      * @param laneId
      * @return
      */
-    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId) throws ExecutionException;
+    IssueDTO dragIssueCard(Long issueId,Long fromStageId,Long fromLaneId,Long stageId, Long laneId) throws ExecutionException;
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
@@ -430,8 +430,9 @@ public interface IssueService {
     List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException;
 
 
-    Integer  updateStageIdAndLaneId(List<IssueDTO> issueDTOList);
+    Integer  updateIssueByIssueId(List<IssueDTO> issueDTOList);
 
     List<IssueDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId);
+
 
 }

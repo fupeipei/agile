@@ -19,10 +19,7 @@ import com.yusys.agile.issue.dao.IssueHistoryRecordMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.UserAttentionMapper;
 import com.yusys.agile.issue.dto.*;
-import com.yusys.agile.issue.service.IssueCustomFieldService;
-import com.yusys.agile.issue.service.IssueService;
-import com.yusys.agile.issue.service.IssueSystemRelpService;
-import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.service.*;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
@@ -206,6 +203,8 @@ public class IssueServiceImpl implements IssueService {
     private LeanKanbanService leanKanbanService;
     @Autowired
     private SLeanKanbanMapper leanKanbanMapper;
+    @Autowired
+    private IssueHistoryRecordService issueHistoryRecordService;
 
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
@@ -2696,9 +2695,14 @@ public class IssueServiceImpl implements IssueService {
      * @return
      */
     @Override
-    public IssueDTO dragIssueCard(Long issueId, Long stageId, Long laneId) throws ExecutionException {
+    @Transactional
+    public IssueDTO dragIssueCard(Long issueId, Long fromStageId,Long fromLaneId,Long stageId, Long laneId) throws ExecutionException {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long kanbanId = issue.getKanbanId();
+
+        SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
+        Long teamId = sLeanKanban.getTeamId();
+        Map<Long, String> stageMap= iStageService.getStageMapByTeamId(teamId);
 
         if (!Optional.ofNullable(kanbanId).isPresent()) {
             throw new BusinessException("该工作项不属于精益看板，不能拖拽!");
@@ -2716,11 +2720,14 @@ public class IssueServiceImpl implements IssueService {
         //feature向上汇总改变epic状态
         if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)) {
 
+            createHistory(issueId,fromStageId+"-"+ fromLaneId,stageId+"-"+laneId,"阶段id");
             issueUpRegularFactory.commonIssueUpRegular(issueId);
 
         } else if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
             //task改变后状态向 上汇总
             updateTaskParentStatus(issueId, kanbanId);
+
+            createHistory(issueId,stageMap.get(fromLaneId),stageMap.get(laneId),"阶段id");
 
             Long storyId = issue.getParentId();
             Issue story = issueMapper.selectByPrimaryKey(storyId);
@@ -2746,9 +2753,25 @@ public class IssueServiceImpl implements IssueService {
                     return issueDTO;
                 }
             }
+            //保存历史记录
+
+
         }
         return null;
     }
+
+    private int createHistory(Long issueId,String oldMsg ,String newMsg,String msg) {
+        IssueHistoryRecord history = new IssueHistoryRecord();
+        history.setOperationField(msg);
+        history.setIssueId(issueId);
+        history.setNewValue(newMsg);
+        history.setOldValue(oldMsg);
+        history.setIsCustom(NumberConstant.ZERO.byteValue());
+        history.setRecordType(NumberConstant.ZERO.byteValue());
+        int count = issueHistoryRecordService.createHistory(history);
+        return count;
+    }
+
 
     private void setOtherInfo(IssueDTO issueDTO) throws ExecutionException {
         //处理系统信息
@@ -2807,6 +2830,9 @@ public class IssueServiceImpl implements IssueService {
             Long parentId = issue.getParentId();
             Byte type = issue.getIssueType();
 
+            SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
+            Map<Long, String> stageMap = iStageService.getStageMapByTeamId(sLeanKanban.getTeamId());
+
             //如果工作项类型为任务,阶段分为 开发和测试阶段
             if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
                 List<Issue> issueList = issueMapper.selectIssueListByParentId(parentId, kanbanId);
@@ -2852,6 +2878,7 @@ public class IssueServiceImpl implements IssueService {
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
 
                                 Issue story = issueMapper.selectByPrimaryKey(parentId);
+                                Long oldLaneId = story.getLaneId();
                                 if (Optional.ofNullable(story).isPresent()) {
                                     Long featureId = story.getParentId();
                                     story.setStageId(storyStageId);
@@ -2865,12 +2892,18 @@ public class IssueServiceImpl implements IssueService {
                                     //如果feature 下故事都已经完成，则更新feature状态为 系统测试阶段，进行中
                                     if(result.size() == 1 && result.contains(storyLaneId)){
                                         Issue feature = issueMapper.selectByPrimaryKey(featureId);
+                                        Long featureLaneId = feature.getLaneId();
+                                        Long featureStageId = feature.getStageId();
                                         if(Optional.ofNullable(feature).isPresent()){
                                             feature.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
                                             feature.setLaneId(LaneKanbanStageConstant.SystemTestStageEnum.ONGOING.getValue());
                                             issueMapper.updateByPrimaryKeySelective(feature);
                                             //向上汇总状态
                                             issueUpRegularFactory.commonIssueUpRegular(feature.getIssueId());
+
+                                            //创建历史
+                                            createHistory(parentId,stageMap.get(oldLaneId),stageMap.get(storyLaneId),"阶段id");
+                                            createHistory(featureId,featureStageId+"-"+featureLaneId,feature.getStageId()+"-"+feature.getLaneId(),"阶段id");
                                             return;
                                         }
                                     }else {
@@ -2887,12 +2920,16 @@ public class IssueServiceImpl implements IssueService {
                     }
 
                     Issue story = issueMapper.selectByPrimaryKey(parentId);
+                    Long oldLaneId = story.getLaneId();
                     if (Optional.ofNullable(story).isPresent()) {
                         story.setStageId(storyStageId);
                         story.setLaneId(storyLaneId);
                         issueMapper.updateByPrimaryKeySelective(story);
                         //向上汇总状态
                         issueUpRegularFactory.commonIssueUpRegular(story.getIssueId());
+
+                        //创建历史
+                        createHistory(parentId,stageMap.get(oldLaneId),stageMap.get(storyLaneId),"阶段id");
                     }
                 }
             }
@@ -3343,7 +3380,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Integer updateStageIdAndLaneId(List<IssueDTO> issueDTOList) {
+    public Integer updateIssueByIssueId(List<IssueDTO> issueDTOList) {
         List<Issue> issueList = ReflectObjectUtil.copyProperties4List(issueDTOList,Issue.class);
        if(CollectionUtils.isNotEmpty(issueList)){
            for (Issue issue:issueList) {
