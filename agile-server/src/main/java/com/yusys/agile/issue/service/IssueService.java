@@ -430,8 +430,9 @@ public interface IssueService {
     List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException;
 
 
-    Integer  updateStageIdAndLaneId(List<IssueDTO> issueDTOList);
+    Integer  updateIssueByIssueId(List<IssueDTO> issueDTOList);
 
     List<IssueDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId);
+
 
 }

@@ -3343,7 +3343,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Integer updateStageIdAndLaneId(List<IssueDTO> issueDTOList) {
+    public Integer updateIssueByIssueId(List<IssueDTO> issueDTOList) {
         List<Issue> issueList = ReflectObjectUtil.copyProperties4List(issueDTOList,Issue.class);
        if(CollectionUtils.isNotEmpty(issueList)){
            for (Issue issue:issueList) {

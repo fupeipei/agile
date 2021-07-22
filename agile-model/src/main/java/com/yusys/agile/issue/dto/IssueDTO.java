@@ -319,4 +319,6 @@ public class IssueDTO {
 
 
     private String teamName;
+
+    private Byte cmpSyncResult;
 }
