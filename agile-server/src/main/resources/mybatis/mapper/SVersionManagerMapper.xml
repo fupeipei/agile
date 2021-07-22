@@ -408,11 +408,15 @@
 
   <select id="selectAllIssueIds" resultType="java.lang.Long">
     SELECT svir.issue_id FROM  s_version_manager svm ,s_version_issue_relate svir WHERE svm.version_manager_id =svir.version_id and svm.state = 'U'
-    <if test="issueIds != null and issueIds.size!=0">
-      and svir.issue_id not in
-      <foreach collection="issueIds" item="item" separator="," open="(" close=")">
-        #{item}
-      </foreach>
+    <if test="versionManagerId != null">
+      and svir.issue_id not in (
+      SELECT svir.issue_id FROM  s_version_manager svm ,s_version_issue_relate svir
+      WHERE svm.version_manager_id =svir.version_id and svm.state = 'U'
+      and  svm.version_manager_id= #{versionManagerId,jdbcType=BIGINT}
+      <if test="systemId != null">
+        AND svm.system_id = #{systemId}
+      </if>
+      )
     </if>
     <if test="systemId != null">
       AND svm.system_id = #{systemId}

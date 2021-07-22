@@ -126,9 +126,9 @@ public class SVersionManagerV3Controller {
                                                       @RequestParam(name = "searchKey", required = false) String searchKey,
                                                       @RequestParam(name = "teamId", required = false) Long teamId,
                                                       @RequestParam(name = "operateType") String operateType,
-                                                      @RequestParam(name = "issueIds",required = false)List<Long> issueIds) {
+                                                      @RequestParam(name = "versionManagerId",required = false)Long versionManagerId) {
         try {
-            PageInfo<SVersionIssueRelateDTO> sVersionIssueRelateDTOPageInfo = sVersionManagerV3Service.queryRequirementRelList(pageNum, pageSize, searchKey, teamId,operateType,issueIds);
+            PageInfo<SVersionIssueRelateDTO> sVersionIssueRelateDTOPageInfo = sVersionManagerV3Service.queryRequirementRelList(pageNum, pageSize, searchKey, teamId,operateType,versionManagerId);
             return ControllerResponse.success(sVersionIssueRelateDTOPageInfo);
         } catch (Exception e) {
             return ControllerResponse.fail("查询关联需求失败" + e);
