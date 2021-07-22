@@ -54,6 +54,12 @@ frame:
         username: root
         password: root+654321
         driverClassName: com.mysql.cj.jdbc.Driver
+      zentao:
+        url: jdbc:mysql://192.168.48.14:3307/zentao?serverTimezone=Asia/Shanghai
+        username: root
+        password: 123456
+        driverClassName: com.mysql.cj.jdbc.Driver
+
 uuidFlag: ${UUID_FLAG:""}
 xxl:
   job:

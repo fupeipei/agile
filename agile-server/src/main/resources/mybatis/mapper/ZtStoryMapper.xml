@@ -1,0 +1,759 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.zentao.dao.ZtStoryMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.zentao.domain.ZtStory">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product" jdbcType="INTEGER" property="product" />
+    <result column="branch" jdbcType="INTEGER" property="branch" />
+    <result column="module" jdbcType="INTEGER" property="module" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="sourceNote" jdbcType="VARCHAR" property="sourcenote" />
+    <result column="fromBug" jdbcType="INTEGER" property="frombug" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="keywords" jdbcType="VARCHAR" property="keywords" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="pri" jdbcType="TINYINT" property="pri" />
+    <result column="estimate" jdbcType="REAL" property="estimate" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="color" jdbcType="CHAR" property="color" />
+    <result column="stage" jdbcType="CHAR" property="stage" />
+    <result column="openedBy" jdbcType="VARCHAR" property="openedby" />
+    <result column="openedDate" jdbcType="TIMESTAMP" property="openeddate" />
+    <result column="assignedTo" jdbcType="VARCHAR" property="assignedto" />
+    <result column="assignedDate" jdbcType="TIMESTAMP" property="assigneddate" />
+    <result column="lastEditedBy" jdbcType="VARCHAR" property="lasteditedby" />
+    <result column="lastEditedDate" jdbcType="TIMESTAMP" property="lastediteddate" />
+    <result column="reviewedBy" jdbcType="VARCHAR" property="reviewedby" />
+    <result column="reviewedDate" jdbcType="DATE" property="revieweddate" />
+    <result column="closedBy" jdbcType="VARCHAR" property="closedby" />
+    <result column="closedDate" jdbcType="TIMESTAMP" property="closeddate" />
+    <result column="closedReason" jdbcType="VARCHAR" property="closedreason" />
+    <result column="toBug" jdbcType="INTEGER" property="tobug" />
+    <result column="childStories" jdbcType="VARCHAR" property="childstories" />
+    <result column="linkStories" jdbcType="VARCHAR" property="linkstories" />
+    <result column="duplicateStory" jdbcType="INTEGER" property="duplicatestory" />
+    <result column="version" jdbcType="SMALLINT" property="version" />
+    <result column="deleted" jdbcType="CHAR" property="deleted" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.zentao.domain.ZtStoryWithBLOBs">
+    <result column="plan" jdbcType="LONGVARCHAR" property="plan" />
+    <result column="mailto" jdbcType="LONGVARCHAR" property="mailto" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, product, branch, module, source, sourceNote, fromBug, title, keywords, type, 
+    pri, estimate, status, color, stage, openedBy, openedDate, assignedTo, assignedDate, 
+    lastEditedBy, lastEditedDate, reviewedBy, reviewedDate, closedBy, closedDate, closedReason, 
+    toBug, childStories, linkStories, duplicateStory, version, deleted
+  </sql>
+  <sql id="Blob_Column_List">
+    plan, mailto
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtStoryExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_story
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yusys.agile.zentao.domain.ZtStoryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from zt_story
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_story
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from zt_story
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.zentao.domain.ZtStoryExample">
+    delete from zt_story
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.zentao.domain.ZtStoryWithBLOBs">
+    insert into zt_story (id, product, branch, 
+      module, source, sourceNote, 
+      fromBug, title, keywords, 
+      type, pri, estimate, status, 
+      color, stage, openedBy, openedDate, 
+      assignedTo, assignedDate, lastEditedBy, 
+      lastEditedDate, reviewedBy, reviewedDate, 
+      closedBy, closedDate, closedReason, 
+      toBug, childStories, linkStories, 
+      duplicateStory, version, deleted, 
+      plan, mailto)
+    values (#{id,jdbcType=INTEGER}, #{product,jdbcType=INTEGER}, #{branch,jdbcType=INTEGER}, 
+      #{module,jdbcType=INTEGER}, #{source,jdbcType=VARCHAR}, #{sourcenote,jdbcType=VARCHAR}, 
+      #{frombug,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{keywords,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{pri,jdbcType=TINYINT}, #{estimate,jdbcType=REAL}, #{status,jdbcType=CHAR}, 
+      #{color,jdbcType=CHAR}, #{stage,jdbcType=CHAR}, #{openedby,jdbcType=VARCHAR}, #{openeddate,jdbcType=TIMESTAMP}, 
+      #{assignedto,jdbcType=VARCHAR}, #{assigneddate,jdbcType=TIMESTAMP}, #{lasteditedby,jdbcType=VARCHAR}, 
+      #{lastediteddate,jdbcType=TIMESTAMP}, #{reviewedby,jdbcType=VARCHAR}, #{revieweddate,jdbcType=DATE}, 
+      #{closedby,jdbcType=VARCHAR}, #{closeddate,jdbcType=TIMESTAMP}, #{closedreason,jdbcType=VARCHAR}, 
+      #{tobug,jdbcType=INTEGER}, #{childstories,jdbcType=VARCHAR}, #{linkstories,jdbcType=VARCHAR}, 
+      #{duplicatestory,jdbcType=INTEGER}, #{version,jdbcType=SMALLINT}, #{deleted,jdbcType=CHAR}, 
+      #{plan,jdbcType=LONGVARCHAR}, #{mailto,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.zentao.domain.ZtStoryWithBLOBs">
+    insert into zt_story
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+
+      <if test="product != null">
+        product,
+      </if>
+      <if test="branch != null">
+        branch,
+      </if>
+      <if test="module != null">
+        module,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="sourcenote != null">
+        sourceNote,
+      </if>
+      <if test="frombug != null">
+        fromBug,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="keywords != null">
+        keywords,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="pri != null">
+        pri,
+      </if>
+      <if test="estimate != null">
+        estimate,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="stage != null">
+        stage,
+      </if>
+      <if test="openedby != null">
+        openedBy,
+      </if>
+      <if test="openeddate != null">
+        openedDate,
+      </if>
+      <if test="assignedto != null">
+        assignedTo,
+      </if>
+      <if test="assigneddate != null">
+        assignedDate,
+      </if>
+      <if test="lasteditedby != null">
+        lastEditedBy,
+      </if>
+      <if test="lastediteddate != null">
+        lastEditedDate,
+      </if>
+      <if test="reviewedby != null">
+        reviewedBy,
+      </if>
+      <if test="revieweddate != null">
+        reviewedDate,
+      </if>
+      <if test="closedby != null">
+        closedBy,
+      </if>
+      <if test="closeddate != null">
+        closedDate,
+      </if>
+      <if test="closedreason != null">
+        closedReason,
+      </if>
+      <if test="tobug != null">
+        toBug,
+      </if>
+      <if test="childstories != null">
+        childStories,
+      </if>
+      <if test="linkstories != null">
+        linkStories,
+      </if>
+      <if test="duplicatestory != null">
+        duplicateStory,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="plan != null">
+        plan,
+      </if>
+      <if test="mailto != null">
+        mailto,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+      <if test="product != null">
+        #{product,jdbcType=INTEGER},
+      </if>
+      <if test="branch != null">
+        #{branch,jdbcType=INTEGER},
+      </if>
+      <if test="module != null">
+        #{module,jdbcType=INTEGER},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcenote != null">
+        #{sourcenote,jdbcType=VARCHAR},
+      </if>
+      <if test="frombug != null">
+        #{frombug,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null">
+        #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="pri != null">
+        #{pri,jdbcType=TINYINT},
+      </if>
+      <if test="estimate != null">
+        #{estimate,jdbcType=REAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=CHAR},
+      </if>
+      <if test="stage != null">
+        #{stage,jdbcType=CHAR},
+      </if>
+      <if test="openedby != null">
+        #{openedby,jdbcType=VARCHAR},
+      </if>
+      <if test="openeddate != null">
+        #{openeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignedto != null">
+        #{assignedto,jdbcType=VARCHAR},
+      </if>
+      <if test="assigneddate != null">
+        #{assigneddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lasteditedby != null">
+        #{lasteditedby,jdbcType=VARCHAR},
+      </if>
+      <if test="lastediteddate != null">
+        #{lastediteddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reviewedby != null">
+        #{reviewedby,jdbcType=VARCHAR},
+      </if>
+      <if test="revieweddate != null">
+        #{revieweddate,jdbcType=DATE},
+      </if>
+      <if test="closedby != null">
+        #{closedby,jdbcType=VARCHAR},
+      </if>
+      <if test="closeddate != null">
+        #{closeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closedreason != null">
+        #{closedreason,jdbcType=VARCHAR},
+      </if>
+      <if test="tobug != null">
+        #{tobug,jdbcType=INTEGER},
+      </if>
+      <if test="childstories != null">
+        #{childstories,jdbcType=VARCHAR},
+      </if>
+      <if test="linkstories != null">
+        #{linkstories,jdbcType=VARCHAR},
+      </if>
+      <if test="duplicatestory != null">
+        #{duplicatestory,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=SMALLINT},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="plan != null">
+        #{plan,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="mailto != null">
+        #{mailto,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.zentao.domain.ZtStoryExample" resultType="java.lang.Long">
+    select count(*) from zt_story
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update zt_story
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.product != null">
+        product = #{record.product,jdbcType=INTEGER},
+      </if>
+      <if test="record.branch != null">
+        branch = #{record.branch,jdbcType=INTEGER},
+      </if>
+      <if test="record.module != null">
+        module = #{record.module,jdbcType=INTEGER},
+      </if>
+      <if test="record.source != null">
+        source = #{record.source,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourcenote != null">
+        sourceNote = #{record.sourcenote,jdbcType=VARCHAR},
+      </if>
+      <if test="record.frombug != null">
+        fromBug = #{record.frombug,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.keywords != null">
+        keywords = #{record.keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pri != null">
+        pri = #{record.pri,jdbcType=TINYINT},
+      </if>
+      <if test="record.estimate != null">
+        estimate = #{record.estimate,jdbcType=REAL},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=CHAR},
+      </if>
+      <if test="record.color != null">
+        color = #{record.color,jdbcType=CHAR},
+      </if>
+      <if test="record.stage != null">
+        stage = #{record.stage,jdbcType=CHAR},
+      </if>
+      <if test="record.openedby != null">
+        openedBy = #{record.openedby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.openeddate != null">
+        openedDate = #{record.openeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.assignedto != null">
+        assignedTo = #{record.assignedto,jdbcType=VARCHAR},
+      </if>
+      <if test="record.assigneddate != null">
+        assignedDate = #{record.assigneddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.lasteditedby != null">
+        lastEditedBy = #{record.lasteditedby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastediteddate != null">
+        lastEditedDate = #{record.lastediteddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.reviewedby != null">
+        reviewedBy = #{record.reviewedby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.revieweddate != null">
+        reviewedDate = #{record.revieweddate,jdbcType=DATE},
+      </if>
+      <if test="record.closedby != null">
+        closedBy = #{record.closedby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.closeddate != null">
+        closedDate = #{record.closeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.closedreason != null">
+        closedReason = #{record.closedreason,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tobug != null">
+        toBug = #{record.tobug,jdbcType=INTEGER},
+      </if>
+      <if test="record.childstories != null">
+        childStories = #{record.childstories,jdbcType=VARCHAR},
+      </if>
+      <if test="record.linkstories != null">
+        linkStories = #{record.linkstories,jdbcType=VARCHAR},
+      </if>
+      <if test="record.duplicatestory != null">
+        duplicateStory = #{record.duplicatestory,jdbcType=INTEGER},
+      </if>
+      <if test="record.version != null">
+        version = #{record.version,jdbcType=SMALLINT},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=CHAR},
+      </if>
+      <if test="record.plan != null">
+        plan = #{record.plan,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.mailto != null">
+        mailto = #{record.mailto,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update zt_story
+    set id = #{record.id,jdbcType=INTEGER},
+      product = #{record.product,jdbcType=INTEGER},
+      branch = #{record.branch,jdbcType=INTEGER},
+      module = #{record.module,jdbcType=INTEGER},
+      source = #{record.source,jdbcType=VARCHAR},
+      sourceNote = #{record.sourcenote,jdbcType=VARCHAR},
+      fromBug = #{record.frombug,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      keywords = #{record.keywords,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      pri = #{record.pri,jdbcType=TINYINT},
+      estimate = #{record.estimate,jdbcType=REAL},
+      status = #{record.status,jdbcType=CHAR},
+      color = #{record.color,jdbcType=CHAR},
+      stage = #{record.stage,jdbcType=CHAR},
+      openedBy = #{record.openedby,jdbcType=VARCHAR},
+      openedDate = #{record.openeddate,jdbcType=TIMESTAMP},
+      assignedTo = #{record.assignedto,jdbcType=VARCHAR},
+      assignedDate = #{record.assigneddate,jdbcType=TIMESTAMP},
+      lastEditedBy = #{record.lasteditedby,jdbcType=VARCHAR},
+      lastEditedDate = #{record.lastediteddate,jdbcType=TIMESTAMP},
+      reviewedBy = #{record.reviewedby,jdbcType=VARCHAR},
+      reviewedDate = #{record.revieweddate,jdbcType=DATE},
+      closedBy = #{record.closedby,jdbcType=VARCHAR},
+      closedDate = #{record.closeddate,jdbcType=TIMESTAMP},
+      closedReason = #{record.closedreason,jdbcType=VARCHAR},
+      toBug = #{record.tobug,jdbcType=INTEGER},
+      childStories = #{record.childstories,jdbcType=VARCHAR},
+      linkStories = #{record.linkstories,jdbcType=VARCHAR},
+      duplicateStory = #{record.duplicatestory,jdbcType=INTEGER},
+      version = #{record.version,jdbcType=SMALLINT},
+      deleted = #{record.deleted,jdbcType=CHAR},
+      plan = #{record.plan,jdbcType=LONGVARCHAR},
+      mailto = #{record.mailto,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update zt_story
+    set id = #{record.id,jdbcType=INTEGER},
+      product = #{record.product,jdbcType=INTEGER},
+      branch = #{record.branch,jdbcType=INTEGER},
+      module = #{record.module,jdbcType=INTEGER},
+      source = #{record.source,jdbcType=VARCHAR},
+      sourceNote = #{record.sourcenote,jdbcType=VARCHAR},
+      fromBug = #{record.frombug,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      keywords = #{record.keywords,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      pri = #{record.pri,jdbcType=TINYINT},
+      estimate = #{record.estimate,jdbcType=REAL},
+      status = #{record.status,jdbcType=CHAR},
+      color = #{record.color,jdbcType=CHAR},
+      stage = #{record.stage,jdbcType=CHAR},
+      openedBy = #{record.openedby,jdbcType=VARCHAR},
+      openedDate = #{record.openeddate,jdbcType=TIMESTAMP},
+      assignedTo = #{record.assignedto,jdbcType=VARCHAR},
+      assignedDate = #{record.assigneddate,jdbcType=TIMESTAMP},
+      lastEditedBy = #{record.lasteditedby,jdbcType=VARCHAR},
+      lastEditedDate = #{record.lastediteddate,jdbcType=TIMESTAMP},
+      reviewedBy = #{record.reviewedby,jdbcType=VARCHAR},
+      reviewedDate = #{record.revieweddate,jdbcType=DATE},
+      closedBy = #{record.closedby,jdbcType=VARCHAR},
+      closedDate = #{record.closeddate,jdbcType=TIMESTAMP},
+      closedReason = #{record.closedreason,jdbcType=VARCHAR},
+      toBug = #{record.tobug,jdbcType=INTEGER},
+      childStories = #{record.childstories,jdbcType=VARCHAR},
+      linkStories = #{record.linkstories,jdbcType=VARCHAR},
+      duplicateStory = #{record.duplicatestory,jdbcType=INTEGER},
+      version = #{record.version,jdbcType=SMALLINT},
+      deleted = #{record.deleted,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.zentao.domain.ZtStoryWithBLOBs">
+    update zt_story
+    <set>
+      <if test="product != null">
+        product = #{product,jdbcType=INTEGER},
+      </if>
+      <if test="branch != null">
+        branch = #{branch,jdbcType=INTEGER},
+      </if>
+      <if test="module != null">
+        module = #{module,jdbcType=INTEGER},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcenote != null">
+        sourceNote = #{sourcenote,jdbcType=VARCHAR},
+      </if>
+      <if test="frombug != null">
+        fromBug = #{frombug,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="keywords != null">
+        keywords = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="pri != null">
+        pri = #{pri,jdbcType=TINYINT},
+      </if>
+      <if test="estimate != null">
+        estimate = #{estimate,jdbcType=REAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=CHAR},
+      </if>
+      <if test="stage != null">
+        stage = #{stage,jdbcType=CHAR},
+      </if>
+      <if test="openedby != null">
+        openedBy = #{openedby,jdbcType=VARCHAR},
+      </if>
+      <if test="openeddate != null">
+        openedDate = #{openeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assignedto != null">
+        assignedTo = #{assignedto,jdbcType=VARCHAR},
+      </if>
+      <if test="assigneddate != null">
+        assignedDate = #{assigneddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lasteditedby != null">
+        lastEditedBy = #{lasteditedby,jdbcType=VARCHAR},
+      </if>
+      <if test="lastediteddate != null">
+        lastEditedDate = #{lastediteddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reviewedby != null">
+        reviewedBy = #{reviewedby,jdbcType=VARCHAR},
+      </if>
+      <if test="revieweddate != null">
+        reviewedDate = #{revieweddate,jdbcType=DATE},
+      </if>
+      <if test="closedby != null">
+        closedBy = #{closedby,jdbcType=VARCHAR},
+      </if>
+      <if test="closeddate != null">
+        closedDate = #{closeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closedreason != null">
+        closedReason = #{closedreason,jdbcType=VARCHAR},
+      </if>
+      <if test="tobug != null">
+        toBug = #{tobug,jdbcType=INTEGER},
+      </if>
+      <if test="childstories != null">
+        childStories = #{childstories,jdbcType=VARCHAR},
+      </if>
+      <if test="linkstories != null">
+        linkStories = #{linkstories,jdbcType=VARCHAR},
+      </if>
+      <if test="duplicatestory != null">
+        duplicateStory = #{duplicatestory,jdbcType=INTEGER},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=SMALLINT},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="plan != null">
+        plan = #{plan,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="mailto != null">
+        mailto = #{mailto,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtStoryWithBLOBs">
+    update zt_story
+    set product = #{product,jdbcType=INTEGER},
+      branch = #{branch,jdbcType=INTEGER},
+      module = #{module,jdbcType=INTEGER},
+      source = #{source,jdbcType=VARCHAR},
+      sourceNote = #{sourcenote,jdbcType=VARCHAR},
+      fromBug = #{frombug,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      pri = #{pri,jdbcType=TINYINT},
+      estimate = #{estimate,jdbcType=REAL},
+      status = #{status,jdbcType=CHAR},
+      color = #{color,jdbcType=CHAR},
+      stage = #{stage,jdbcType=CHAR},
+      openedBy = #{openedby,jdbcType=VARCHAR},
+      openedDate = #{openeddate,jdbcType=TIMESTAMP},
+      assignedTo = #{assignedto,jdbcType=VARCHAR},
+      assignedDate = #{assigneddate,jdbcType=TIMESTAMP},
+      lastEditedBy = #{lasteditedby,jdbcType=VARCHAR},
+      lastEditedDate = #{lastediteddate,jdbcType=TIMESTAMP},
+      reviewedBy = #{reviewedby,jdbcType=VARCHAR},
+      reviewedDate = #{revieweddate,jdbcType=DATE},
+      closedBy = #{closedby,jdbcType=VARCHAR},
+      closedDate = #{closeddate,jdbcType=TIMESTAMP},
+      closedReason = #{closedreason,jdbcType=VARCHAR},
+      toBug = #{tobug,jdbcType=INTEGER},
+      childStories = #{childstories,jdbcType=VARCHAR},
+      linkStories = #{linkstories,jdbcType=VARCHAR},
+      duplicateStory = #{duplicatestory,jdbcType=INTEGER},
+      version = #{version,jdbcType=SMALLINT},
+      deleted = #{deleted,jdbcType=CHAR},
+      plan = #{plan,jdbcType=LONGVARCHAR},
+      mailto = #{mailto,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.zentao.domain.ZtStory">
+    update zt_story
+    set product = #{product,jdbcType=INTEGER},
+      branch = #{branch,jdbcType=INTEGER},
+      module = #{module,jdbcType=INTEGER},
+      source = #{source,jdbcType=VARCHAR},
+      sourceNote = #{sourcenote,jdbcType=VARCHAR},
+      fromBug = #{frombug,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      pri = #{pri,jdbcType=TINYINT},
+      estimate = #{estimate,jdbcType=REAL},
+      status = #{status,jdbcType=CHAR},
+      color = #{color,jdbcType=CHAR},
+      stage = #{stage,jdbcType=CHAR},
+      openedBy = #{openedby,jdbcType=VARCHAR},
+      openedDate = #{openeddate,jdbcType=TIMESTAMP},
+      assignedTo = #{assignedto,jdbcType=VARCHAR},
+      assignedDate = #{assigneddate,jdbcType=TIMESTAMP},
+      lastEditedBy = #{lasteditedby,jdbcType=VARCHAR},
+      lastEditedDate = #{lastediteddate,jdbcType=TIMESTAMP},
+      reviewedBy = #{reviewedby,jdbcType=VARCHAR},
+      reviewedDate = #{revieweddate,jdbcType=DATE},
+      closedBy = #{closedby,jdbcType=VARCHAR},
+      closedDate = #{closeddate,jdbcType=TIMESTAMP},
+      closedReason = #{closedreason,jdbcType=VARCHAR},
+      toBug = #{tobug,jdbcType=INTEGER},
+      childStories = #{childstories,jdbcType=VARCHAR},
+      linkStories = #{linkstories,jdbcType=VARCHAR},
+      duplicateStory = #{duplicatestory,jdbcType=INTEGER},
+      version = #{version,jdbcType=SMALLINT},
+      deleted = #{deleted,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

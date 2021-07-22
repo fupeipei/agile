@@ -50,6 +50,11 @@ frame:
         username: ${MYSQL_USER:root}
         password: ${MYSQL_ROOT_PASSWD}
         driverClassName: com.mysql.cj.jdbc.Driver
+      zentao:
+        url: jdbc:mysql://${ZT_MYSQL_IP}:${ZT_MYSQL_PORT}/zentao?serverTimezone=Asia/Shanghai
+        username: ${ZT_MYSQL_USER:root}
+        password: ${ZT_MYSQL_ROOT_PASSWD}
+        driverClassName: com.mysql.cj.jdbc.Driver
 uuidFlag: ${UUID_FLAG:""}
 xxl:
   job:
