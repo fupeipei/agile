@@ -66,9 +66,9 @@ xxl:
       logpath: /data/applogs/xxl-job/jobhandler
       logretentiondays: 3
     accessToken:
-#缺陷来源 itc或者YuDO
+#缺陷来源
 fault:
-  source: ${FAULT_SOURCE:itc}
+  source: ${FAULT_SOURCE:yusys}
 
 issue:
   regular:

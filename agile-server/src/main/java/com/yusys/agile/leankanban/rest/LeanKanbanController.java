@@ -75,7 +75,7 @@ public class LeanKanbanController {
             //校验卡片位置
             issueService.checkIssueState(issueId, fromStageId, fromLaneId,stageId,laneId,kanbanId);
 
-            return ControllerResponse.success(issueService.dragIssueCard(issueId,stageId,laneId));
+            return ControllerResponse.success(issueService.dragIssueCard(issueId,fromStageId, fromLaneId,stageId,laneId));
         } catch (Exception e) {
             log.info("拖拽卡片异常:{}",e.getMessage());
             return ControllerResponse.fail(e.getMessage());

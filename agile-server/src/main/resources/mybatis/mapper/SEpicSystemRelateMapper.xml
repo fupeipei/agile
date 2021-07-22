@@ -206,6 +206,7 @@
       sesr.is_handle = 0
       and si.start_schedule = 1
       and sesr.system_uid = #{userId}
+      and sesr.state = 'U'
       <if test="epicId != null and epicId  != '' and title != null  and title != ''">
         and  (sesr.epic_id = #{epicId} or si.title like  CONCAT('%',#{title},'%') )
       </if>

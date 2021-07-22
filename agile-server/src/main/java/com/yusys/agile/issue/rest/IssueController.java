@@ -45,7 +45,6 @@ public class IssueController {
     @Resource
     private IssueUpRegularFactory issueUpRegularFactory;
 
-
     /**
      * 功能描述  初始化Issue列表
      *
