@@ -1,16 +1,16 @@
 package com.yusys.agile.openapi.rest;
 
 
-
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.openapi.service.IssueSyncService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,12 +28,45 @@ public class IssueSyncController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      * @date 2020/4/21
      */
-    @GetMapping("/issue/sync")
-    public ControllerResponse getIssueList() {
+    @PostMapping("/issue/sync/add")
+    public ControllerResponse issueSyncAdd(@RequestBody List<IssueDTO> list) {
 
         try {
-            List<IssueDTO> list = new ArrayList<>();
              issueSyncService.issueSyncAdd(list);
+        } catch (Exception e) {
+            LOGGER.error("同步新增Issue异常", e);
+            return ControllerResponse.fail("同步新增Issue异常：" + e.getMessage());
+        }
+        return ControllerResponse.success("同步新增Issue成功");
+    }
+    /**
+     * 功能描述  同步需求
+     *
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @date 2020/4/21
+     */
+    @PostMapping ("/issue/sync/update")
+    public ControllerResponse issueSyncUpdate(@RequestBody List<IssueDTO> list) {
+
+        try {
+            issueSyncService.issueSyncUpdate(list);
+        } catch (Exception e) {
+            LOGGER.error("同步新增Issue异常", e);
+            return ControllerResponse.fail("同步新增Issue异常：" + e.getMessage());
+        }
+        return ControllerResponse.success("同步新增Issue成功");
+    }
+    /**
+     * 功能描述  同步需求
+     *
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @date 2020/4/21
+     */
+    @PostMapping ("/issue/sync/delete")
+    public ControllerResponse issueSyncDelete(@RequestBody List<Long> list) {
+
+        try {
+            issueSyncService.issueSyncDelete(list);
         } catch (Exception e) {
             LOGGER.error("同步新增Issue异常", e);
             return ControllerResponse.fail("同步新增Issue异常：" + e.getMessage());
