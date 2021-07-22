@@ -147,6 +147,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
 
     @Override
     public PageInfo<SVersionIssueRelateDTO> queryRequirementRelList(Integer pageNum, Integer pageSize, String searchKey, Long teamId, String operateType, Long versionManagerId) throws Exception {
+        PageHelper.startPage(pageNum, pageSize);
         //添加的时候需求列表只能展示feature未关联的版本
         List<Long> filterIssueIds = Lists.newArrayList();
         if ("insert".equals(operateType)) {
@@ -155,11 +156,27 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
         } else if ("update".equals(operateType)) {
             filterIssueIds = sVersionManagerMapper.selectAllIssueIds(versionManagerId, UserThreadLocalUtil.getUserInfo().getSystemId());
         }
-        PageHelper.startPage(pageNum, pageSize);
-        List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRelByOperateType(teamId, searchKey, UserThreadLocalUtil.getUserInfo().getSystemId(),filterIssueIds);
-        return new PageInfo(buildSVersionIssueRelateList(issueDTOS));
+        List<SVersionIssueRelateDTO> build = build(teamId, searchKey, filterIssueIds);
+        return new PageInfo(build);
     }
 
+
+    public List<SVersionIssueRelateDTO> build(Long teamId,String searchKey,List<Long> filterIssueIds) throws Exception {
+        List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRelByOperateType(teamId, searchKey, UserThreadLocalUtil.getUserInfo().getSystemId(),filterIssueIds);
+        if (CollectionUtils.isNotEmpty(issueDTOS)) {
+            List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = ReflectUtil.copyProperties4List(issueDTOS, SVersionIssueRelateDTO.class);
+            sVersionIssueRelateDTOS.forEach(x -> {
+                Long laneId = x.getLaneId();
+                Long teamId1 = x.getTeamId();
+                String langName = getLangName(teamId1, laneId);
+                String firstStageName = StageConstant.FirstStageEnum.getFirstStageName(x.getStageId());
+                x.setLangName(langName);
+                x.setStageName(firstStageName);
+            });
+            return sVersionIssueRelateDTOS;
+        }
+        return new ArrayList<>();
+    }
 
     private List<SVersionIssueRelateDTO> buildSVersionIssueRelateList(List<IssueDTO> issueDTOS) throws Exception {
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
