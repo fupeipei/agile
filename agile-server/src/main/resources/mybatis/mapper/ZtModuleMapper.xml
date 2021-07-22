@@ -172,9 +172,7 @@
       <if test="owner != null">
         owner,
       </if>
-      <if test="short != null">
         short,
-      </if>
       <if test="deleted != null">
         deleted,
       </if>
@@ -213,9 +211,7 @@
       <if test="owner != null">
         #{owner,jdbcType=VARCHAR},
       </if>
-      <if test="short != null">
-        #{short,jdbcType=VARCHAR},
-      </if>
+        "",
       <if test="deleted != null">
         #{deleted,jdbcType=CHAR},
       </if>

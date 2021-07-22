@@ -50,6 +50,14 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
             record.setStatus("normal");
             record.setCreatedby("admin");
             record.setDeleted("0");
+            record.setDesc("");
+            record.setPo("");
+            record.setQd("");
+            record.setRd("");
+            record.setWhitelist("");
+            record.setCreateddate(new Date());
+            record.setCreatedversion("10.0");
+            record.setOrder(5);
             ztProductMapper.insertSelective(record);
             ztProducts =  ztProductMapper.selectByExampleWithBLOBs(ztProductExample);
         }
@@ -70,6 +78,8 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
             ztModule.setOrder((short) 10);
             ztModule.setType("story");
             ztModule.setDeleted("0");
+            ztModule.setOwner("");
+            ztModule.setCollector("");
             ztModuleMapper.insertSelective(ztModule);
             ztModules = ztModuleMapper.selectByExample(ztModuleExample);
         }
