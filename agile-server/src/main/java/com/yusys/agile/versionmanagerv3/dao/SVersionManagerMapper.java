@@ -35,5 +35,7 @@ public interface SVersionManagerMapper {
 
     int updateByPrimaryKey(SVersionManager record);
 
-    List<SVersionManagerDTO> queryVersionManagerListByExample(String searchKey, Long systemId);
+    List<SVersionManagerDTO> queryVersionManagerListByExample(@Param("searchKey") String searchKey,@Param("systemId") Long systemId);
+
+    List<Long> selectAllIssueIds(@Param("issueIds") List<Long> issueIds,@Param("systemId") Long systemId);
 }

@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.agile.versionmanagerV3.SVersionManagerDTO;
 
+import java.util.List;
+
 
 public interface SVersionManagerV3Service {
 
@@ -15,5 +17,5 @@ public interface SVersionManagerV3Service {
 
     PageInfo<SVersionManagerDTO> queryVersionManagerList(Integer pageNum, Integer pageSize, String searchKey) throws Exception;
 
-    PageInfo<SVersionIssueRelateDTO> queryRequirementRelList(Integer pageNum, Integer pageSize, String searchKey, Long teamId) throws Exception;
+    PageInfo<SVersionIssueRelateDTO> queryRequirementRelList(Integer pageNum, Integer pageSize, String searchKey, Long teamId, String operateType, List<Long> issueIds) throws Exception;
 }

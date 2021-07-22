@@ -434,4 +434,6 @@ public interface IssueService {
 
     List<IssueDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId);
 
+    List<IssueDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds);
+
 }

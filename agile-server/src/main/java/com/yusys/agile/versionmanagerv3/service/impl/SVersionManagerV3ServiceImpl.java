@@ -131,7 +131,8 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
                 if (CollectionUtils.isNotEmpty(sVersionIssueRelateList)) {
                     try {
                         List<Long> featureIds = sVersionIssueRelateList.stream().map(SVersionIssueRelate::getIssueId).collect(Collectors.toList());
-                        List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(featureIds, null, null, null);
+                        List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRel(featureIds, null, null, null);
+                        List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = buildSVersionIssueRelateList(issueDTOS);
                         x.setSVersionIssueRelateDTOList(sVersionIssueRelateDTOS);
                         x.setRelateNum(sVersionIssueRelateDTOS.size());
                     } catch (Exception e) {
@@ -145,15 +146,22 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
     }
 
     @Override
-    public PageInfo<SVersionIssueRelateDTO> queryRequirementRelList(Integer pageNum, Integer pageSize, String searchKey, Long teamId) throws Exception {
+    public PageInfo<SVersionIssueRelateDTO> queryRequirementRelList(Integer pageNum, Integer pageSize, String searchKey, Long teamId, String operateType, List<Long> issueIds) throws Exception {
+        //添加的时候需求列表只能展示feature未关联的版本
+        List<Long> filterIssueIds = Lists.newArrayList();
+        if ("insert".equals(operateType)) {
+            filterIssueIds = sVersionManagerMapper.selectAllIssueIds(issueIds, UserThreadLocalUtil.getUserInfo().getSystemId());
+            //修改的时候只能展示feature未关联的版本以及本身已选的feature
+        } else if ("update".equals(operateType)) {
+            filterIssueIds = sVersionManagerMapper.selectAllIssueIds(null, UserThreadLocalUtil.getUserInfo().getSystemId());
+        }
         PageHelper.startPage(pageNum, pageSize);
-        List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = querySVersionIssueRelateList(null, teamId, searchKey, UserThreadLocalUtil.getUserInfo().getSystemId());
-        return new PageInfo(sVersionIssueRelateDTOS);
+        List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRelByOperateType(teamId, searchKey, UserThreadLocalUtil.getUserInfo().getSystemId(),filterIssueIds);
+        return new PageInfo(buildSVersionIssueRelateList(issueDTOS));
     }
 
 
-    private List<SVersionIssueRelateDTO> querySVersionIssueRelateList(List<Long> featureIds, Long teamId, String searchKey, Long systemId) throws Exception {
-        List<IssueDTO> issueDTOS = issueService.queryFeatureScheduleRel(featureIds, teamId, searchKey, systemId);
+    private List<SVersionIssueRelateDTO> buildSVersionIssueRelateList(List<IssueDTO> issueDTOS) throws Exception {
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = ReflectUtil.copyProperties4List(issueDTOS, SVersionIssueRelateDTO.class);
             sVersionIssueRelateDTOS.forEach(x -> {

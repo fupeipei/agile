@@ -3306,4 +3306,25 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         </if>
         ORDER BY si.create_time DESC
     </select>
+
+
+    <select id="queryFeatureScheduleRelByOperateType" resultType="com.yusys.agile.issue.dto.IssueDTO">
+        SELECT si.issue_id ,tp.schedule_name,si.release_date,si.raise_test_date,si.team_id,si.title,si.stage_id,si.lane_id,st.team_name FROM s_issue si,s_team st,
+        (SELECT ss.schedule_name,ss.epic_id FROM s_issue si ,s_schedule ss WHERE si.issue_id = ss.epic_id and ss.state = 'U' and si.state = 'U') tp
+        WHERE tp.epic_id = si.parent_id and st.team_id = si.team_id and si.state = 'U'
+        <if test="issueIds != null and issueIds.size!=0">
+            and si.issue_id not in
+            (SELECT svir.issue_id FROM s_version_manager svm,s_version_issue_relate svir WHERE svm.state = 'U' and svm.version_manager_id = svir.version_id)
+        </if>
+        <if test="teamId != null and teamId != ''">
+            and si.team_id = #{teamId}
+        </if>
+        <if test="searchKey != null and searchKey != '' ">
+            and (si.title like CONCAT('%',#{searchKey},'%') or si.issue_id like CONCAT('%',#{searchKey},'%'))
+        </if>
+        <if test="systemId != null and systemId != '' ">
+            and si.system_id = #{systemId}
+        </if>
+        ORDER BY si.create_time DESC
+    </select>
 </mapper>
