@@ -384,7 +384,7 @@ public interface IssueService {
      * @param laneId
      * @return
      */
-    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId) throws ExecutionException;
+    IssueDTO dragIssueCard(Long issueId,Long fromStageId,Long fromLaneId,Long stageId, Long laneId) throws ExecutionException;
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
