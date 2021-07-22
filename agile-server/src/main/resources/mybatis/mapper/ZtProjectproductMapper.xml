@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.zentao.dao.ZtProjectproductMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.zentao.domain.ZtProjectproduct">
+    <id column="project" jdbcType="INTEGER" property="project" />
+    <id column="product" jdbcType="INTEGER" property="product" />
+    <result column="branch" jdbcType="INTEGER" property="branch" />
+    <result column="plan" jdbcType="INTEGER" property="plan" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    project, product, branch, plan
+  </sql>
+  <select id="selectByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectproductExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from zt_projectproduct
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="com.yusys.agile.zentao.domain.ZtProjectproductKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from zt_projectproduct
+    where project = #{project,jdbcType=INTEGER}
+      and product = #{product,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.yusys.agile.zentao.domain.ZtProjectproductKey">
+    delete from zt_projectproduct
+    where project = #{project,jdbcType=INTEGER}
+      and product = #{product,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectproductExample">
+    delete from zt_projectproduct
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.zentao.domain.ZtProjectproduct">
+    insert into zt_projectproduct (project, product, branch, 
+      plan)
+    values (#{project,jdbcType=INTEGER}, #{product,jdbcType=INTEGER}, #{branch,jdbcType=INTEGER}, 
+      #{plan,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.zentao.domain.ZtProjectproduct">
+    insert into zt_projectproduct
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="project != null">
+        project,
+      </if>
+      <if test="product != null">
+        product,
+      </if>
+      <if test="branch != null">
+        branch,
+      </if>
+      <if test="plan != null">
+        plan,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="project != null">
+        #{project,jdbcType=INTEGER},
+      </if>
+      <if test="product != null">
+        #{product,jdbcType=INTEGER},
+      </if>
+      <if test="branch != null">
+        #{branch,jdbcType=INTEGER},
+      </if>
+      <if test="plan != null">
+        #{plan,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectproductExample" resultType="java.lang.Long">
+    select count(*) from zt_projectproduct
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update zt_projectproduct
+    <set>
+      <if test="record.project != null">
+        project = #{record.project,jdbcType=INTEGER},
+      </if>
+      <if test="record.product != null">
+        product = #{record.product,jdbcType=INTEGER},
+      </if>
+      <if test="record.branch != null">
+        branch = #{record.branch,jdbcType=INTEGER},
+      </if>
+      <if test="record.plan != null">
+        plan = #{record.plan,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update zt_projectproduct
+    set project = #{record.project,jdbcType=INTEGER},
+      product = #{record.product,jdbcType=INTEGER},
+      branch = #{record.branch,jdbcType=INTEGER},
+      plan = #{record.plan,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.zentao.domain.ZtProjectproduct">
+    update zt_projectproduct
+    <set>
+      <if test="branch != null">
+        branch = #{branch,jdbcType=INTEGER},
+      </if>
+      <if test="plan != null">
+        plan = #{plan,jdbcType=INTEGER},
+      </if>
+    </set>
+    where project = #{project,jdbcType=INTEGER}
+      and product = #{product,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.zentao.domain.ZtProjectproduct">
+    update zt_projectproduct
+    set branch = #{branch,jdbcType=INTEGER},
+      plan = #{plan,jdbcType=INTEGER}
+    where project = #{project,jdbcType=INTEGER}
+      and product = #{product,jdbcType=INTEGER}
+  </update>
+</mapper>
