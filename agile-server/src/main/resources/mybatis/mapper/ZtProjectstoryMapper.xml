@@ -67,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    project, product, story, version, order
+    project, product, story, version,`order`
   </sql>
   <select id="selectByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectstoryExample" resultMap="BaseResultMap">
     select
@@ -80,7 +80,7 @@
       <include refid="Example_Where_Clause" />
     </if>
     <if test="orderByClause != null">
-     `order`by ${orderByClause}
+     `order` by ${orderByClause}
     </if>
   </select>
   <delete id="deleteByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectstoryExample">
@@ -91,7 +91,7 @@
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.zentao.domain.ZtProjectstory">
     insert into zt_projectstory (project, product, story, 
-      version, order)
+      version,`order`)
     values (#{project,jdbcType=INTEGER}, #{product,jdbcType=INTEGER}, #{story,jdbcType=INTEGER}, 
       #{version,jdbcType=SMALLINT}, #{order,jdbcType=SMALLINT})
   </insert>
@@ -111,7 +111,7 @@
         version,
       </if>
       <if test="order != null">
-        order,
+       `order`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
