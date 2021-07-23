@@ -2013,7 +2013,7 @@
                                      item="iterm">
                                 #{iterm}
                             </foreach>
-                            or ( iu.lane_id in
+                            and ( iu.lane_id in
                             <foreach collection="issueRecord.stageIds.dataLong" open="(" close=")" separator=","
                                      item="iterm">
                                 #{iterm}
@@ -2031,7 +2031,7 @@
                                      item="iterm">
                                 #{iterm}
                             </foreach>
-                            or iu.lane_id in
+                            and iu.lane_id in
                             <foreach collection="issueRecord.stageIds.dataLong" open="(" close=")" separator=","
                                      item="iterm">
                                 #{iterm}
