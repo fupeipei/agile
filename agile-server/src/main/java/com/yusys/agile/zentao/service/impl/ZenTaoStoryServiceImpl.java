@@ -68,7 +68,7 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
         ztProjectproduct.setProduct(ztProduct.getId());
         ztProjectproduct.setProject(1);
         ztProjectproduct.setPlan(0);
-        ztProjectproduct.setPlan(0);
+        ztProjectproduct.setBranch(0);
         ztProjectproductMapper.insertSelective(ztProjectproduct);
         ztStory.setProduct(ztProduct.getId());
         //获取模块id,无则新增
