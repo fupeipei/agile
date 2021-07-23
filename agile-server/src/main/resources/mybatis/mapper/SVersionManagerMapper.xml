@@ -404,6 +404,7 @@
     <if test="systemId != null">
       AND system_id = #{systemId}
     </if>
+    order by create_time desc
   </select>
 
   <select id="selectAllIssueIds" resultType="java.lang.Long">
