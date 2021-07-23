@@ -72,6 +72,7 @@ import com.google.common.collect.Maps;
 import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.versionmanager.service.VersionManagerService;
+import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
@@ -3340,12 +3341,12 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<IssueDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId) {
+    public List<SVersionIssueRelateDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId) {
         return issueMapper.queryFeatureScheduleRel(featureIds,teamId,searchKey,systemId);
     }
 
     @Override
-    public List<IssueDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds) {
+    public List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds) {
         return issueMapper.queryFeatureScheduleRelByOperateType(teamId,searchKey,systemId,issueIds);
     }
 

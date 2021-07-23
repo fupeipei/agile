@@ -7,6 +7,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.PanoramasEpicDTO;
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
@@ -432,9 +433,9 @@ public interface IssueService {
 
     Integer  updateIssueByIssueId(List<IssueDTO> issueDTOList);
 
-    List<IssueDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId);
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId);
 
 
-    List<IssueDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds);
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds);
 
 }

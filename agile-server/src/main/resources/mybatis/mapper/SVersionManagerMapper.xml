@@ -407,7 +407,7 @@
   </select>
 
   <select id="selectAllIssueIds" resultType="java.lang.Long">
-    SELECT svir.issue_id FROM  s_version_manager svm ,s_version_issue_relate svir WHERE svm.version_manager_id =svir.version_id and svm.state = 'U'
+    SELECT distinct svir.issue_id FROM  s_version_manager svm ,s_version_issue_relate svir WHERE svm.version_manager_id =svir.version_id and svm.state = 'U'
     <if test="versionManagerId != null">
       and svir.issue_id not in (
       SELECT svir.issue_id FROM  s_version_manager svm ,s_version_issue_relate svir

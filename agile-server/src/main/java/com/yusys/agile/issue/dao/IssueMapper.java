@@ -7,6 +7,7 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
+import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -639,9 +640,9 @@ public interface IssueMapper {
      */
     int countIsArchive(Long issueId);
 
-    List<IssueDTO> queryFeatureScheduleRel(@Param("featureIds") List<Long> featureIds,@Param("teamId") Long teamId,@Param("searchKey") String searchKey,@Param("systemId") Long systemId);
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRel(@Param("featureIds") List<Long> featureIds,@Param("teamId") Long teamId,@Param("searchKey") String searchKey,@Param("systemId") Long systemId);
 
-    List<IssueDTO> queryFeatureScheduleRelByOperateType(@Param("teamId") Long teamId, @Param("searchKey")String searchKey,@Param("systemId") Long systemId, @Param("issueIds")List<Long> issueIds);
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(@Param("teamId") Long teamId, @Param("searchKey")String searchKey, @Param("systemId") Long systemId, @Param("issueIds")List<Long> issueIds);
 
 
 }

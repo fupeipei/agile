@@ -3294,7 +3294,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
     </select>
 
 
-    <select id="queryFeatureScheduleRel" resultType="com.yusys.agile.issue.dto.IssueDTO">
+    <select id="queryFeatureScheduleRel" resultType="com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO">
         SELECT si.issue_id ,tp.schedule_name,si.release_date,si.raise_test_date,si.team_id,si.title,si.stage_id,si.lane_id,st.team_name FROM s_issue si,s_team st,
         (SELECT ss.schedule_name,ss.epic_id FROM s_issue si ,s_schedule ss WHERE si.issue_id = ss.epic_id and ss.state = 'U' and si.state = 'U') tp
         WHERE tp.epic_id = si.parent_id and st.team_id = si.team_id and si.state = 'U'
@@ -3317,7 +3317,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
     </select>
 
 
-    <select id="queryFeatureScheduleRelByOperateType" resultType="com.yusys.agile.issue.dto.IssueDTO">
+    <select id="queryFeatureScheduleRelByOperateType" resultType="com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO">
         SELECT si.issue_id ,tp.schedule_name,si.release_date,si.raise_test_date,si.team_id,si.title,si.stage_id,si.lane_id,st.team_name FROM s_issue si,s_team st,
         (SELECT ss.schedule_name,ss.epic_id FROM s_issue si ,s_schedule ss WHERE si.issue_id = ss.epic_id and ss.state = 'U' and si.state = 'U') tp
         WHERE tp.epic_id = si.parent_id and st.team_id = si.team_id and si.state = 'U'
