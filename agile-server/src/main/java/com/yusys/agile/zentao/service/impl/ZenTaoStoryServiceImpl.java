@@ -1,10 +1,7 @@
 package com.yusys.agile.zentao.service.impl;
 
 import com.yusys.agile.utils.ReflectObjectUtil;
-import com.yusys.agile.zentao.dao.ZtModuleMapper;
-import com.yusys.agile.zentao.dao.ZtProductMapper;
-import com.yusys.agile.zentao.dao.ZtStoryMapper;
-import com.yusys.agile.zentao.dao.ZtStoryspecMapper;
+import com.yusys.agile.zentao.dao.*;
 import com.yusys.agile.zentao.domain.*;
 import com.yusys.agile.zentao.dto.ZtStoryDTO;
 import com.yusys.agile.zentao.service.ZenTaoStoryService;
@@ -29,6 +26,10 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
     private ZtModuleMapper  ztModuleMapper;
     @Resource
     private ZtStoryspecMapper ztStoryspecMapper;
+    @Resource
+    private ZtProjectstoryMapper ztProjectstoryMapper;
+    @Resource
+    private ZtProjectproductMapper ztProjectproductMapper;
 
     @Override
   // @Transactional(rollbackFor =  Exception.class,propagation = Propagation.REQUIRES_NEW,transactionManager.)
@@ -60,17 +61,24 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
             record.setOrder(5);
             ztProductMapper.insertSelective(record);
             ztProducts =  ztProductMapper.selectByExampleWithBLOBs(ztProductExample);
+
         }
         ZtProduct ztProduct = ztProducts.get(0);
+        ZtProjectproduct ztProjectproduct = new ZtProjectproduct();
+        ztProjectproduct.setProduct(ztProduct.getId());
+        ztProjectproduct.setProject(1);
+        ztProjectproduct.setPlan(0);
+        ztProjectproduct.setPlan(0);
+        ztProjectproductMapper.insertSelective(ztProjectproduct);
         ztStory.setProduct(ztProduct.getId());
         //获取模块id,无则新增
         ZtModuleExample ztModuleExample = new ZtModuleExample();
-        ztModuleExample.createCriteria().andDeletedEqualTo("0");
+        ztModuleExample.createCriteria().andDeletedEqualTo("0").andRootEqualTo(ztProduct.getId());
         List<ZtModule> ztModules = ztModuleMapper.selectByExample(ztModuleExample);
         if(CollectionUtils.isEmpty(ztModules)){
             ZtModule ztModule = new ZtModule();
             ztModule.setBranch(0);
-            ztModule.setRoot(1);
+            ztModule.setRoot(ztProduct.getId());
             ztModule.setName("默认模块");
             ztModule.setParent(0);
             ztModule.setPath(",1,");
@@ -122,6 +130,14 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
             record.setVersion((short) 1);
             record.setTitle(ztStory1.getTitle());
             ztStoryspecMapper.insertSelective(record);
+
+            ZtProjectstory ztProjectstory = new ZtProjectstory();
+            ztProjectstory.setProduct(ztProduct.getId());
+            ztProjectstory.setOrder((short) 1);
+            ztProjectstory.setProject(1);
+            ztProjectstory.setStory(ztStory1.getId());
+            ztProjectstory.setVersion((short) 1);
+            ztProjectstoryMapper.insertSelective(ztProjectstory);
         }
 
     }
