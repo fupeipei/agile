@@ -434,7 +434,7 @@ public class IssueController {
     /**
      * @Author maxp2
      * @Date 2021/7/13
-     * @Description epic和feature是否归档
+     * @Description epic和feature设置归档
      * @param issueId
      * @param isArchive
      * @Return com.yusys.portal.model.common.dto.ControllerResponse
@@ -448,6 +448,23 @@ public class IssueController {
             return ControllerResponse.fail("添加、取消Issue的归档异常：" + e.getMessage());
         }
         return ControllerResponse.success("操作成功");
+    }
+
+    /**
+     * @Author yuzt
+     * @Description 根据featureId获取feature及其下的story和task
+     * @Date 10:02 上午 2021/7/14
+     * @Param [fertureMsg]
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     **/
+    @GetMapping("/issue/queryFeatureById")
+    public ControllerResponse queryFeatureById(Issue issue) {
+        try {
+            return ControllerResponse.success(issueService.getIssueDtoByIssueId(issue));
+        } catch (Exception e) {
+            LOGGER.info("根据featureId获取feature及其下的所有story和task:{}", e.getMessage());
+            return ControllerResponse.fail(e.getMessage());
+        }
     }
 
 }

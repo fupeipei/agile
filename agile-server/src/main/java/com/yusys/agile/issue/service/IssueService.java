@@ -7,6 +7,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.PanoramasEpicDTO;
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 
@@ -384,7 +385,7 @@ public interface IssueService {
      * @param laneId
      * @return
      */
-    IssueDTO dragIssueCard(Long issueId,Long stageId, Long laneId) throws ExecutionException;
+    IssueDTO dragIssueCard(Long issueId,Long fromStageId,Long fromLaneId,Long stageId, Long laneId) throws ExecutionException;
 
     void orgIssueExtendFields(Long epicId, Map<String, Object> map);
 
@@ -420,4 +421,21 @@ public interface IssueService {
      * @Return void
      */
     void isArchive(Long issueId, Byte isArchive);
+    /**
+     * @Author yuzt
+     * @Description 根据featureId获取feature及其下的story和task
+     * @Date 6:17 下午 2021/7/13
+     * @Param [fertureMsg]
+     * @return com.yusys.agile.issue.domain.Issue
+     **/
+    List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException;
+
+
+    Integer  updateIssueByIssueId(List<IssueDTO> issueDTOList);
+
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId);
+
+
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds);
+
 }

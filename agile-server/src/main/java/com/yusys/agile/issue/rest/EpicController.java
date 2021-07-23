@@ -3,6 +3,7 @@ package com.yusys.agile.issue.rest;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
+import com.yusys.agile.issue.enums.StartScheduleStatusEnum;
 import com.yusys.agile.issue.service.EpicService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -44,6 +46,8 @@ public class EpicController {
             //保存基本字段
             JSONObject jsonObject = new JSONObject(epicMap);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
+            //默认为未发起
+            issueDTO.setStartSchedule(StartScheduleStatusEnum.NO_TINITIATED.CODE);
             Long issueId = epicService.createEpic(issueDTO);
 
             //批量新增或者批量更新扩展字段值
@@ -89,6 +93,10 @@ public class EpicController {
             //暂时先将扩展字段扔掉
             JSONObject jsonObject = new JSONObject(map);
             IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
+            //针对老数据
+            if(!Optional.ofNullable(issueDTO.getStartSchedule()).isPresent()){
+                issueDTO.setStartSchedule(StartScheduleStatusEnum.NO_TINITIATED.CODE);
+            }
             epicService.editEpic(issueDTO);
             //批量新增或者批量更新扩展字段值
             issueDTO.setIssueType(new Byte("1"));

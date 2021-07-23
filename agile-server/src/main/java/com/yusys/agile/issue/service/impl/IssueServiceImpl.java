@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.yusys.agile.commit.dto.CommitDTO;
+import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.fault.enums.FaultTypeEnum;
 import com.yusys.agile.fault.service.FaultService;
@@ -18,10 +19,7 @@ import com.yusys.agile.issue.dao.IssueHistoryRecordMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.UserAttentionMapper;
 import com.yusys.agile.issue.dto.*;
-import com.yusys.agile.issue.service.IssueCustomFieldService;
-import com.yusys.agile.issue.service.IssueService;
-import com.yusys.agile.issue.service.IssueSystemRelpService;
-import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.issue.service.*;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
@@ -74,6 +72,7 @@ import com.google.common.collect.Maps;
 import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.versionmanager.service.VersionManagerService;
+import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
@@ -99,7 +98,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import javax.annotation.Resource;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -203,6 +204,8 @@ public class IssueServiceImpl implements IssueService {
     private LeanKanbanService leanKanbanService;
     @Autowired
     private SLeanKanbanMapper leanKanbanMapper;
+    @Autowired
+    private IssueHistoryRecordService issueHistoryRecordService;
 
 
     private LoadingCache<Long, SsoUser> userCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, SsoUser>() {
@@ -246,7 +249,7 @@ public class IssueServiceImpl implements IssueService {
             pageInfo.setList(new ArrayList());
             return pageInfo;
         }
-        //项目下的当前页
+        //当前页
         Map<String, Map> mapMap = issueMap(null);
         if (issues != null && !issues.isEmpty()) {
             for (Issue issue : issues) {
@@ -291,6 +294,12 @@ public class IssueServiceImpl implements IssueService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void createRelation(Long parentId, Long issueId) {
+        if(Optional.ofNullable(parentId).isPresent()){
+            Issue issue = issueMapper.selectByPrimaryKey(parentId);
+            if(IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
+                throw new BusinessException("工作项已归档不能关联");
+            }
+        }
         List<IssueHistoryRecord> history = new ArrayList<>();
         Issue issueOld = issueMapper.selectByPrimaryKey(issueId);
         String oldValue = Optional.ofNullable(issueOld.getParentId()).toString();
@@ -483,7 +492,7 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         //列头的Coentent数据
-        Map<String, HashMap<String, String>> mapHeaderFieldContent = mapMap.containsKey(MAPHEADERFIELDCONTENT)?mapMap.get(MAPUSERATTENTION):new HashMap<>();
+        Map<String, HashMap<String, String>> mapHeaderFieldContent = mapMap.containsKey(MAPHEADERFIELDCONTENT)?mapMap.get(MAPHEADERFIELDCONTENT):new HashMap<>();
         //任务类型
         if (Optional.ofNullable(issue.getTaskType()).isPresent()) {
             issueListDTO.setTaskType(getOptionList(issue.getTaskType().toString(), "taskType", mapHeaderFieldContent));
@@ -621,6 +630,15 @@ public class IssueServiceImpl implements IssueService {
             map.put("id", issue.getTestUid());
             issueListDTO.setTestUid(map);
         }
+
+        //是否归档
+        if (Optional.ofNullable(issue.getIsArchive()).isPresent()) {
+            map = new HashMap<String, String>();
+            map.put("name", IsAchiveEnum.getName(issue.getIsArchive()));
+            map.put("id", issue.getIsArchive());
+            issueListDTO.setIsArchive(map);
+        }
+
         Map<Long, List<UserAttention>> mapUserAttention = mapMap.containsKey(MAPUSERATTENTION)?mapMap.get(MAPUSERATTENTION):new HashMap<>();
         if (mapUserAttention.keySet().contains(issue.getIssueId())) {
             issueListDTO.setIsCollect(Byte.parseByte("1"));
@@ -729,12 +747,14 @@ public class IssueServiceImpl implements IssueService {
                 setTeamDetail(map, sTeam);
             }else{
                 //从feature上获取团队信息
-                Issue feature;
+                Issue feature = null;
                 if (IssueTypeEnum.TYPE_STORY.CODE.equals(issueType)) {
                     feature = issueMapper.getParentIssue(issueId);
                 } else {
                     Issue story = issueMapper.getParentIssue(issueId);
-                    feature = issueMapper.getParentIssue(story.getIssueId());
+                    if(Optional.ofNullable(story).isPresent()){
+                        feature = issueMapper.getParentIssue(story.getIssueId());
+                    }
                 }
                 if(null != feature){
                     setTeamInfo(map, feature.getTeamId(),null,null,feature.getIssueType());
@@ -2554,7 +2574,7 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * 精益看板获取树形工作项列表
-     *
+     * 默认不展示已归档的feature
      * @param kanbanId
      * @param issueType
      * @return
@@ -2565,7 +2585,8 @@ public class IssueServiceImpl implements IssueService {
         example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
                 .andIssueTypeEqualTo(issueType)
-                .andKanbanIdTo(kanbanId);
+                .andKanbanIdTo(kanbanId)
+                .andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_FALSE.CODE);
 
         example.setOrderByClause("create_time desc");
         List<Issue> issues = issueMapper.selectByExample(example);
@@ -2675,9 +2696,14 @@ public class IssueServiceImpl implements IssueService {
      * @return
      */
     @Override
-    public IssueDTO dragIssueCard(Long issueId, Long stageId, Long laneId) throws ExecutionException {
+    @Transactional
+    public IssueDTO dragIssueCard(Long issueId, Long fromStageId,Long fromLaneId,Long stageId, Long laneId) throws ExecutionException {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long kanbanId = issue.getKanbanId();
+
+        SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
+        Long teamId = sLeanKanban.getTeamId();
+        Map<Long, String> stageMap= iStageService.getStageMapByTeamId(teamId);
 
         if (!Optional.ofNullable(kanbanId).isPresent()) {
             throw new BusinessException("该工作项不属于精益看板，不能拖拽!");
@@ -2695,11 +2721,14 @@ public class IssueServiceImpl implements IssueService {
         //feature向上汇总改变epic状态
         if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)) {
 
+            createHistory(issueId,fromStageId+"-"+ fromLaneId,stageId+"-"+laneId,"阶段id");
             issueUpRegularFactory.commonIssueUpRegular(issueId);
 
         } else if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
             //task改变后状态向 上汇总
             updateTaskParentStatus(issueId, kanbanId);
+
+            createHistory(issueId,stageMap.get(fromLaneId),stageMap.get(laneId),"阶段id");
 
             Long storyId = issue.getParentId();
             Issue story = issueMapper.selectByPrimaryKey(storyId);
@@ -2725,9 +2754,25 @@ public class IssueServiceImpl implements IssueService {
                     return issueDTO;
                 }
             }
+            //保存历史记录
+
+
         }
         return null;
     }
+
+    private int createHistory(Long issueId,String oldMsg ,String newMsg,String msg) {
+        IssueHistoryRecord history = new IssueHistoryRecord();
+        history.setOperationField(msg);
+        history.setIssueId(issueId);
+        history.setNewValue(newMsg);
+        history.setOldValue(oldMsg);
+        history.setIsCustom(NumberConstant.ZERO.byteValue());
+        history.setRecordType(NumberConstant.ZERO.byteValue());
+        int count = issueHistoryRecordService.createHistory(history);
+        return count;
+    }
+
 
     private void setOtherInfo(IssueDTO issueDTO) throws ExecutionException {
         //处理系统信息
@@ -2786,6 +2831,9 @@ public class IssueServiceImpl implements IssueService {
             Long parentId = issue.getParentId();
             Byte type = issue.getIssueType();
 
+            SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
+            Map<Long, String> stageMap = iStageService.getStageMapByTeamId(sLeanKanban.getTeamId());
+
             //如果工作项类型为任务,阶段分为 开发和测试阶段
             if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
                 List<Issue> issueList = issueMapper.selectIssueListByParentId(parentId, kanbanId);
@@ -2831,6 +2879,7 @@ public class IssueServiceImpl implements IssueService {
                                 storyStageId = StageConstant.FirstStageEnum.TEST_STAGE.getValue();
 
                                 Issue story = issueMapper.selectByPrimaryKey(parentId);
+                                Long oldLaneId = story.getLaneId();
                                 if (Optional.ofNullable(story).isPresent()) {
                                     Long featureId = story.getParentId();
                                     story.setStageId(storyStageId);
@@ -2844,12 +2893,18 @@ public class IssueServiceImpl implements IssueService {
                                     //如果feature 下故事都已经完成，则更新feature状态为 系统测试阶段，进行中
                                     if(result.size() == 1 && result.contains(storyLaneId)){
                                         Issue feature = issueMapper.selectByPrimaryKey(featureId);
+                                        Long featureLaneId = feature.getLaneId();
+                                        Long featureStageId = feature.getStageId();
                                         if(Optional.ofNullable(feature).isPresent()){
                                             feature.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
                                             feature.setLaneId(LaneKanbanStageConstant.SystemTestStageEnum.ONGOING.getValue());
                                             issueMapper.updateByPrimaryKeySelective(feature);
                                             //向上汇总状态
                                             issueUpRegularFactory.commonIssueUpRegular(feature.getIssueId());
+
+                                            //创建历史
+                                            createHistory(parentId,stageMap.get(oldLaneId),stageMap.get(storyLaneId),"阶段id");
+                                            createHistory(featureId,featureStageId+"-"+featureLaneId,feature.getStageId()+"-"+feature.getLaneId(),"阶段id");
                                             return;
                                         }
                                     }else {
@@ -2866,12 +2921,16 @@ public class IssueServiceImpl implements IssueService {
                     }
 
                     Issue story = issueMapper.selectByPrimaryKey(parentId);
+                    Long oldLaneId = story.getLaneId();
                     if (Optional.ofNullable(story).isPresent()) {
                         story.setStageId(storyStageId);
                         story.setLaneId(storyLaneId);
                         issueMapper.updateByPrimaryKeySelective(story);
                         //向上汇总状态
                         issueUpRegularFactory.commonIssueUpRegular(story.getIssueId());
+
+                        //创建历史
+                        createHistory(parentId,stageMap.get(oldLaneId),stageMap.get(storyLaneId),"阶段id");
                     }
                 }
             }
@@ -3189,6 +3248,9 @@ public class IssueServiceImpl implements IssueService {
         if (StringUtils.isNotEmpty(issueStringDTO.getUpdateTime())) {
             issueRecord.setUpdateTime(dealData(issueStringDTO.getUpdateTime(), DATE));
         }
+        if (StringUtils.isNotEmpty(issueStringDTO.getIsArchive())) {
+            issueRecord.setIsArchive(dealData(issueStringDTO.getIsArchive(), BYTE));
+        }
         // 判断是根据id还是name
         if (StringUtils.isNotEmpty(issueStringDTO.getIdOrTitle())) {
             String idOrTitle = issueStringDTO.getIdOrTitle();
@@ -3228,6 +3290,12 @@ public class IssueServiceImpl implements IssueService {
         if(IsAchiveEnum.ACHIVEA_FALSE.CODE.equals(isArchive) || IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
             throw new BusinessException("已归档不能修改归档状态");
         }
+        if(IssueTypeEnum.TYPE_EPIC.CODE.equals(issue.getIssueType())){
+            Integer count = issueMapper.countIsArchive(issueId);
+            if(count > NumberConstant.ZERO){
+                throw new BusinessException("epic下存在未归档的feature不能归档");
+            }
+        }
         issue.setIsArchive(isArchive);
         issueMapper.updateByPrimaryKeySelective(issue);
         createIsArhiveHistoryRecords(isArchive,issueDTO);
@@ -3254,5 +3322,77 @@ public class IssueServiceImpl implements IssueService {
         records.add(nameHistory);
         issueFactory.dealHistory(records);
         return records;
+    }
+
+    /**
+     * @return com.yusys.agile.issue.dto.IssueDTO
+     * @Author yuzt
+     * @Description 根据featureId获取feature及其下的story和task
+     * @Date 10:05 上午 2021/7/14
+     * @Param [fertureMsg]
+     **/
+    @Override
+    public List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException {
+        issue.setState(StateEnum.U.getValue());
+        issue.setIssueType(IssueTypeEnum.TYPE_FEATURE.CODE);
+        List<IssueDTO> issueDTOList = issueMapper.queryForFerture(issue);
+        recursionGetIssues(issueDTOList, issue.getKanbanId());
+        return issueDTOList;
+    }
+
+    @Override
+    public List<SVersionIssueRelateDTO> queryFeatureScheduleRel(List<Long> featureIds,Long teamId,String searchKey,Long systemId) {
+        return issueMapper.queryFeatureScheduleRel(featureIds,teamId,searchKey,systemId);
+    }
+
+    @Override
+    public List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds) {
+        return issueMapper.queryFeatureScheduleRelByOperateType(teamId,searchKey,systemId,issueIds);
+    }
+
+    /**
+     * @Author yuzt
+     * @Description 查询feature及下到task的数据
+     * @Date 3:48 上午 2021/7/15
+     * @Param [id, issueDTOList]
+     * @return java.util.List<com.yusys.agile.issue.dto.IssueDTO>
+     **/
+    private List<IssueDTO> getChild(Long id, List<IssueDTO> issueDTOList, Long kanbanId) {
+        // 子菜单
+        List<IssueDTO> childList = new ArrayList<>();
+        for (IssueDTO issueDTO : issueDTOList) {
+            // 遍历所有节点，将父菜单id与传过来的id比较
+            if (null != issueDTO.getParentId() && issueDTO.getParentId() != 0) {
+                if (issueDTO.getParentId().equals(id)) {
+                    childList.add(issueDTO);
+                }
+            }
+        }
+        // 把子菜单的子菜单再循环一遍
+        for (IssueDTO issueDTO : childList) {
+            //每到任务继续取子菜单
+            if (!IssueTypeEnum.TYPE_TASK.CODE.equals(issueDTO.getIssueType())) {
+                // 递归
+                List<IssueDTO> child = getChild(issueDTO.getIssueId(), issueDTOList, kanbanId);
+                issueDTO.setTaskNum(child.size());
+                issueDTO.setTaskFinishNum(getIssueFinishNum(issueDTO.getIssueId(),kanbanId));
+                issueDTO.setChildren(child);
+            }
+        } // 递归退出条件
+        if (childList.size() == 0) {
+            return null;
+        }
+        return childList;
+    }
+
+    @Override
+    public Integer updateIssueByIssueId(List<IssueDTO> issueDTOList) {
+        List<Issue> issueList = ReflectObjectUtil.copyProperties4List(issueDTOList,Issue.class);
+       if(CollectionUtils.isNotEmpty(issueList)){
+           for (Issue issue:issueList) {
+               issueMapper.updateByPrimaryKeySelective(issue);
+           }
+       }
+        return  issueList.size();
     }
 }

@@ -7,6 +7,7 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
+import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -627,4 +628,21 @@ public interface IssueMapper {
     void batchUpdateIssueSystemId(@Param("issueIdList") List<Issue> issueIdList, @Param("systemId")Long systemId);
 
     List<Long> selectIssueIdByTenantCode(@Param("tenantCode") String  tenantCode);
+
+    List<IssueDTO> queryForFerture(Issue issue);
+
+    /**
+     * @Author maxp2
+     * @Date 2021/7/15
+     * @Description 判断epic下的feature是否全部已归档
+     * @param issueId
+     * @Return int
+     */
+    int countIsArchive(Long issueId);
+
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRel(@Param("featureIds") List<Long> featureIds,@Param("teamId") Long teamId,@Param("searchKey") String searchKey,@Param("systemId") Long systemId);
+
+    List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(@Param("teamId") Long teamId, @Param("searchKey")String searchKey, @Param("systemId") Long systemId, @Param("issueIds")List<Long> issueIds);
+
+
 }

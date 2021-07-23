@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.zentao.dao.ZtProjectMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.zentao.domain.ZtProject">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="isCat" jdbcType="CHAR" property="iscat" />
+    <result column="catID" jdbcType="INTEGER" property="catid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="parent" jdbcType="INTEGER" property="parent" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="begin" jdbcType="DATE" property="begin" />
+    <result column="end" jdbcType="DATE" property="end" />
+    <result column="days" jdbcType="SMALLINT" property="days" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="statge" jdbcType="CHAR" property="statge" />
+    <result column="pri" jdbcType="CHAR" property="pri" />
+    <result column="openedBy" jdbcType="VARCHAR" property="openedby" />
+    <result column="openedDate" jdbcType="TIMESTAMP" property="openeddate" />
+    <result column="openedVersion" jdbcType="VARCHAR" property="openedversion" />
+    <result column="closedBy" jdbcType="VARCHAR" property="closedby" />
+    <result column="closedDate" jdbcType="TIMESTAMP" property="closeddate" />
+    <result column="canceledBy" jdbcType="VARCHAR" property="canceledby" />
+    <result column="canceledDate" jdbcType="TIMESTAMP" property="canceleddate" />
+    <result column="PO" jdbcType="VARCHAR" property="po" />
+    <result column="PM" jdbcType="VARCHAR" property="pm" />
+    <result column="QD" jdbcType="VARCHAR" property="qd" />
+    <result column="RD" jdbcType="VARCHAR" property="rd" />
+    <result column="team" jdbcType="VARCHAR" property="team" />
+    <result column="acl" jdbcType="CHAR" property="acl" />
+    <result column="order" jdbcType="INTEGER" property="order" />
+    <result column="deleted" jdbcType="CHAR" property="deleted" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.zentao.domain.ZtProjectWithBLOBs">
+    <result column="desc" jdbcType="LONGVARCHAR" property="desc" />
+    <result column="whitelist" jdbcType="LONGVARCHAR" property="whitelist" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, isCat, catID, type, parent, name, code, begin, end, days, status, statge, pri, 
+    openedBy, openedDate, openedVersion, closedBy, closedDate, canceledBy, canceledDate, 
+    PO, PM, QD, RD, team, acl, order, deleted
+  </sql>
+  <sql id="Blob_Column_List">
+    desc, whitelist
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtProjectExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_project
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+     `order`by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from zt_project
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+     `order`by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_project
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from zt_project
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectExample">
+    delete from zt_project
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.zentao.domain.ZtProjectWithBLOBs">
+    insert into zt_project (id, isCat, catID, 
+      type, parent, name, 
+      code, begin, end, days, 
+      status, statge, pri, openedBy, 
+      openedDate, openedVersion, closedBy, 
+      closedDate, canceledBy, canceledDate, 
+      PO, PM, QD, RD, 
+      team, acl, order, deleted, 
+      desc, whitelist)
+    values (#{id,jdbcType=INTEGER}, #{iscat,jdbcType=CHAR}, #{catid,jdbcType=INTEGER}, 
+      #{type,jdbcType=VARCHAR}, #{parent,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR}, #{begin,jdbcType=DATE}, #{end,jdbcType=DATE}, #{days,jdbcType=SMALLINT}, 
+      #{status,jdbcType=VARCHAR}, #{statge,jdbcType=CHAR}, #{pri,jdbcType=CHAR}, #{openedby,jdbcType=VARCHAR}, 
+      #{openeddate,jdbcType=TIMESTAMP}, #{openedversion,jdbcType=VARCHAR}, #{closedby,jdbcType=VARCHAR}, 
+      #{closeddate,jdbcType=TIMESTAMP}, #{canceledby,jdbcType=VARCHAR}, #{canceleddate,jdbcType=TIMESTAMP}, 
+      #{po,jdbcType=VARCHAR}, #{pm,jdbcType=VARCHAR}, #{qd,jdbcType=VARCHAR}, #{rd,jdbcType=VARCHAR}, 
+      #{team,jdbcType=VARCHAR}, #{acl,jdbcType=CHAR}, #{order,jdbcType=INTEGER}, #{deleted,jdbcType=CHAR}, 
+      #{desc,jdbcType=LONGVARCHAR}, #{whitelist,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.zentao.domain.ZtProjectWithBLOBs">
+    insert into zt_project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="iscat != null">
+        isCat,
+      </if>
+      <if test="catid != null">
+        catID,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="parent != null">
+        parent,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="begin != null">
+        begin,
+      </if>
+      <if test="end != null">
+        end,
+      </if>
+      <if test="days != null">
+        days,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="statge != null">
+        statge,
+      </if>
+      <if test="pri != null">
+        pri,
+      </if>
+      <if test="openedby != null">
+        openedBy,
+      </if>
+      <if test="openeddate != null">
+        openedDate,
+      </if>
+      <if test="openedversion != null">
+        openedVersion,
+      </if>
+      <if test="closedby != null">
+        closedBy,
+      </if>
+      <if test="closeddate != null">
+        closedDate,
+      </if>
+      <if test="canceledby != null">
+        canceledBy,
+      </if>
+      <if test="canceleddate != null">
+        canceledDate,
+      </if>
+      <if test="po != null">
+        PO,
+      </if>
+      <if test="pm != null">
+        PM,
+      </if>
+      <if test="qd != null">
+        QD,
+      </if>
+      <if test="rd != null">
+        RD,
+      </if>
+      <if test="team != null">
+        team,
+      </if>
+      <if test="acl != null">
+        acl,
+      </if>
+      <if test="order != null">
+        order,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="desc != null">
+        desc,
+      </if>
+      <if test="whitelist != null">
+        whitelist,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="iscat != null">
+        #{iscat,jdbcType=CHAR},
+      </if>
+      <if test="catid != null">
+        #{catid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="parent != null">
+        #{parent,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="begin != null">
+        #{begin,jdbcType=DATE},
+      </if>
+      <if test="end != null">
+        #{end,jdbcType=DATE},
+      </if>
+      <if test="days != null">
+        #{days,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="statge != null">
+        #{statge,jdbcType=CHAR},
+      </if>
+      <if test="pri != null">
+        #{pri,jdbcType=CHAR},
+      </if>
+      <if test="openedby != null">
+        #{openedby,jdbcType=VARCHAR},
+      </if>
+      <if test="openeddate != null">
+        #{openeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openedversion != null">
+        #{openedversion,jdbcType=VARCHAR},
+      </if>
+      <if test="closedby != null">
+        #{closedby,jdbcType=VARCHAR},
+      </if>
+      <if test="closeddate != null">
+        #{closeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="canceledby != null">
+        #{canceledby,jdbcType=VARCHAR},
+      </if>
+      <if test="canceleddate != null">
+        #{canceleddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="po != null">
+        #{po,jdbcType=VARCHAR},
+      </if>
+      <if test="pm != null">
+        #{pm,jdbcType=VARCHAR},
+      </if>
+      <if test="qd != null">
+        #{qd,jdbcType=VARCHAR},
+      </if>
+      <if test="rd != null">
+        #{rd,jdbcType=VARCHAR},
+      </if>
+      <if test="team != null">
+        #{team,jdbcType=VARCHAR},
+      </if>
+      <if test="acl != null">
+        #{acl,jdbcType=CHAR},
+      </if>
+      <if test="order != null">
+        #{order,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="desc != null">
+        #{desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="whitelist != null">
+        #{whitelist,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.zentao.domain.ZtProjectExample" resultType="java.lang.Long">
+    select count(*) from zt_project
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update zt_project
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.iscat != null">
+        isCat = #{record.iscat,jdbcType=CHAR},
+      </if>
+      <if test="record.catid != null">
+        catID = #{record.catid,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parent != null">
+        parent = #{record.parent,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.code != null">
+        code = #{record.code,jdbcType=VARCHAR},
+      </if>
+      <if test="record.begin != null">
+        begin = #{record.begin,jdbcType=DATE},
+      </if>
+      <if test="record.end != null">
+        end = #{record.end,jdbcType=DATE},
+      </if>
+      <if test="record.days != null">
+        days = #{record.days,jdbcType=SMALLINT},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.statge != null">
+        statge = #{record.statge,jdbcType=CHAR},
+      </if>
+      <if test="record.pri != null">
+        pri = #{record.pri,jdbcType=CHAR},
+      </if>
+      <if test="record.openedby != null">
+        openedBy = #{record.openedby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.openeddate != null">
+        openedDate = #{record.openeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.openedversion != null">
+        openedVersion = #{record.openedversion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.closedby != null">
+        closedBy = #{record.closedby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.closeddate != null">
+        closedDate = #{record.closeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.canceledby != null">
+        canceledBy = #{record.canceledby,jdbcType=VARCHAR},
+      </if>
+      <if test="record.canceleddate != null">
+        canceledDate = #{record.canceleddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.po != null">
+        PO = #{record.po,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pm != null">
+        PM = #{record.pm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.qd != null">
+        QD = #{record.qd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rd != null">
+        RD = #{record.rd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.team != null">
+        team = #{record.team,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acl != null">
+        acl = #{record.acl,jdbcType=CHAR},
+      </if>
+      <if test="record.order != null">
+       `order`= #{record.order,jdbcType=INTEGER},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=CHAR},
+      </if>
+      <if test="record.desc != null">
+       `desc`= #{record.desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.whitelist != null">
+        whitelist = #{record.whitelist,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update zt_project
+    set id = #{record.id,jdbcType=INTEGER},
+      isCat = #{record.iscat,jdbcType=CHAR},
+      catID = #{record.catid,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=VARCHAR},
+      parent = #{record.parent,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      code = #{record.code,jdbcType=VARCHAR},
+      begin = #{record.begin,jdbcType=DATE},
+      end = #{record.end,jdbcType=DATE},
+      days = #{record.days,jdbcType=SMALLINT},
+      status = #{record.status,jdbcType=VARCHAR},
+      statge = #{record.statge,jdbcType=CHAR},
+      pri = #{record.pri,jdbcType=CHAR},
+      openedBy = #{record.openedby,jdbcType=VARCHAR},
+      openedDate = #{record.openeddate,jdbcType=TIMESTAMP},
+      openedVersion = #{record.openedversion,jdbcType=VARCHAR},
+      closedBy = #{record.closedby,jdbcType=VARCHAR},
+      closedDate = #{record.closeddate,jdbcType=TIMESTAMP},
+      canceledBy = #{record.canceledby,jdbcType=VARCHAR},
+      canceledDate = #{record.canceleddate,jdbcType=TIMESTAMP},
+      PO = #{record.po,jdbcType=VARCHAR},
+      PM = #{record.pm,jdbcType=VARCHAR},
+      QD = #{record.qd,jdbcType=VARCHAR},
+      RD = #{record.rd,jdbcType=VARCHAR},
+      team = #{record.team,jdbcType=VARCHAR},
+      acl = #{record.acl,jdbcType=CHAR},
+     `order`= #{record.order,jdbcType=INTEGER},
+      deleted = #{record.deleted,jdbcType=CHAR},
+     `desc`= #{record.desc,jdbcType=LONGVARCHAR},
+      whitelist = #{record.whitelist,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update zt_project
+    set id = #{record.id,jdbcType=INTEGER},
+      isCat = #{record.iscat,jdbcType=CHAR},
+      catID = #{record.catid,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=VARCHAR},
+      parent = #{record.parent,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      code = #{record.code,jdbcType=VARCHAR},
+      begin = #{record.begin,jdbcType=DATE},
+      end = #{record.end,jdbcType=DATE},
+      days = #{record.days,jdbcType=SMALLINT},
+      status = #{record.status,jdbcType=VARCHAR},
+      statge = #{record.statge,jdbcType=CHAR},
+      pri = #{record.pri,jdbcType=CHAR},
+      openedBy = #{record.openedby,jdbcType=VARCHAR},
+      openedDate = #{record.openeddate,jdbcType=TIMESTAMP},
+      openedVersion = #{record.openedversion,jdbcType=VARCHAR},
+      closedBy = #{record.closedby,jdbcType=VARCHAR},
+      closedDate = #{record.closeddate,jdbcType=TIMESTAMP},
+      canceledBy = #{record.canceledby,jdbcType=VARCHAR},
+      canceledDate = #{record.canceleddate,jdbcType=TIMESTAMP},
+      PO = #{record.po,jdbcType=VARCHAR},
+      PM = #{record.pm,jdbcType=VARCHAR},
+      QD = #{record.qd,jdbcType=VARCHAR},
+      RD = #{record.rd,jdbcType=VARCHAR},
+      team = #{record.team,jdbcType=VARCHAR},
+      acl = #{record.acl,jdbcType=CHAR},
+     `order`= #{record.order,jdbcType=INTEGER},
+      deleted = #{record.deleted,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.zentao.domain.ZtProjectWithBLOBs">
+    update zt_project
+    <set>
+      <if test="iscat != null">
+        isCat = #{iscat,jdbcType=CHAR},
+      </if>
+      <if test="catid != null">
+        catID = #{catid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="parent != null">
+        parent = #{parent,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="begin != null">
+        begin = #{begin,jdbcType=DATE},
+      </if>
+      <if test="end != null">
+        end = #{end,jdbcType=DATE},
+      </if>
+      <if test="days != null">
+        days = #{days,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="statge != null">
+        statge = #{statge,jdbcType=CHAR},
+      </if>
+      <if test="pri != null">
+        pri = #{pri,jdbcType=CHAR},
+      </if>
+      <if test="openedby != null">
+        openedBy = #{openedby,jdbcType=VARCHAR},
+      </if>
+      <if test="openeddate != null">
+        openedDate = #{openeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openedversion != null">
+        openedVersion = #{openedversion,jdbcType=VARCHAR},
+      </if>
+      <if test="closedby != null">
+        closedBy = #{closedby,jdbcType=VARCHAR},
+      </if>
+      <if test="closeddate != null">
+        closedDate = #{closeddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="canceledby != null">
+        canceledBy = #{canceledby,jdbcType=VARCHAR},
+      </if>
+      <if test="canceleddate != null">
+        canceledDate = #{canceleddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="po != null">
+        PO = #{po,jdbcType=VARCHAR},
+      </if>
+      <if test="pm != null">
+        PM = #{pm,jdbcType=VARCHAR},
+      </if>
+      <if test="qd != null">
+        QD = #{qd,jdbcType=VARCHAR},
+      </if>
+      <if test="rd != null">
+        RD = #{rd,jdbcType=VARCHAR},
+      </if>
+      <if test="team != null">
+        team = #{team,jdbcType=VARCHAR},
+      </if>
+      <if test="acl != null">
+        acl = #{acl,jdbcType=CHAR},
+      </if>
+      <if test="order != null">
+       `order`= #{order,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="desc != null">
+       `desc`= #{desc,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="whitelist != null">
+        whitelist = #{whitelist,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtProjectWithBLOBs">
+    update zt_project
+    set isCat = #{iscat,jdbcType=CHAR},
+      catID = #{catid,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      parent = #{parent,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      begin = #{begin,jdbcType=DATE},
+      end = #{end,jdbcType=DATE},
+      days = #{days,jdbcType=SMALLINT},
+      status = #{status,jdbcType=VARCHAR},
+      statge = #{statge,jdbcType=CHAR},
+      pri = #{pri,jdbcType=CHAR},
+      openedBy = #{openedby,jdbcType=VARCHAR},
+      openedDate = #{openeddate,jdbcType=TIMESTAMP},
+      openedVersion = #{openedversion,jdbcType=VARCHAR},
+      closedBy = #{closedby,jdbcType=VARCHAR},
+      closedDate = #{closeddate,jdbcType=TIMESTAMP},
+      canceledBy = #{canceledby,jdbcType=VARCHAR},
+      canceledDate = #{canceleddate,jdbcType=TIMESTAMP},
+      PO = #{po,jdbcType=VARCHAR},
+      PM = #{pm,jdbcType=VARCHAR},
+      QD = #{qd,jdbcType=VARCHAR},
+      RD = #{rd,jdbcType=VARCHAR},
+      team = #{team,jdbcType=VARCHAR},
+      acl = #{acl,jdbcType=CHAR},
+     `order`= #{order,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=CHAR},
+     `desc`= #{desc,jdbcType=LONGVARCHAR},
+      whitelist = #{whitelist,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.zentao.domain.ZtProject">
+    update zt_project
+    set isCat = #{iscat,jdbcType=CHAR},
+      catID = #{catid,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      parent = #{parent,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      begin = #{begin,jdbcType=DATE},
+      end = #{end,jdbcType=DATE},
+      days = #{days,jdbcType=SMALLINT},
+      status = #{status,jdbcType=VARCHAR},
+      statge = #{statge,jdbcType=CHAR},
+      pri = #{pri,jdbcType=CHAR},
+      openedBy = #{openedby,jdbcType=VARCHAR},
+      openedDate = #{openeddate,jdbcType=TIMESTAMP},
+      openedVersion = #{openedversion,jdbcType=VARCHAR},
+      closedBy = #{closedby,jdbcType=VARCHAR},
+      closedDate = #{closeddate,jdbcType=TIMESTAMP},
+      canceledBy = #{canceledby,jdbcType=VARCHAR},
+      canceledDate = #{canceleddate,jdbcType=TIMESTAMP},
+      PO = #{po,jdbcType=VARCHAR},
+      PM = #{pm,jdbcType=VARCHAR},
+      QD = #{qd,jdbcType=VARCHAR},
+      RD = #{rd,jdbcType=VARCHAR},
+      team = #{team,jdbcType=VARCHAR},
+      acl = #{acl,jdbcType=CHAR},
+     `order`= #{order,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

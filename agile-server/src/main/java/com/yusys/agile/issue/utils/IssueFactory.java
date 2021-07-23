@@ -1149,7 +1149,7 @@ public class IssueFactory {
         }
         //true表示全量查询，false表示只查询未关联父工作项的
         if (!isAll) {
-            criteria.andParentIdIsNull();
+            criteria.andParentIdIsNull().andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_TRUE.CODE);
         }
         example.setOrderByClause("`order` desc,create_time desc");
         List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);

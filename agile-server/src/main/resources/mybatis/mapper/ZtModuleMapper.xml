@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yusys.agile.zentao.dao.ZtModuleMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.zentao.domain.ZtModule">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="root" jdbcType="INTEGER" property="root" />
+    <result column="branch" jdbcType="INTEGER" property="branch" />
+    <result column="name" jdbcType="CHAR" property="name" />
+    <result column="parent" jdbcType="INTEGER" property="parent" />
+    <result column="path" jdbcType="CHAR" property="path" />
+    <result column="grade" jdbcType="TINYINT" property="grade" />
+    <result column="order" jdbcType="SMALLINT" property="order" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="owner" jdbcType="VARCHAR" property="owner" />
+    <result column="deleted" jdbcType="CHAR" property="deleted" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.yusys.agile.zentao.domain.ZtModule">
+    <result column="collector" jdbcType="LONGVARCHAR" property="collector" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, root, branch, name, parent, path, grade,`order`, type, owner, short, deleted
+  </sql>
+  <sql id="Blob_Column_List">
+    collector
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtModuleExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_module
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+     `order`by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.yusys.agile.zentao.domain.ZtModuleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from zt_module
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+     `order`by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from zt_module
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from zt_module
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.yusys.agile.zentao.domain.ZtModuleExample">
+    delete from zt_module
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yusys.agile.zentao.domain.ZtModule">
+    insert into zt_module (id, root, branch, 
+      name, parent, path, grade, 
+     `order`,`type`, owner, short,
+      deleted, collector)
+    values (#{id,jdbcType=INTEGER}, #{root,jdbcType=INTEGER}, #{branch,jdbcType=INTEGER}, 
+      #{name,jdbcType=CHAR}, #{parent,jdbcType=INTEGER}, #{path,jdbcType=CHAR}, #{grade,jdbcType=TINYINT}, 
+      #{order,jdbcType=SMALLINT}, #{type,jdbcType=CHAR}, #{owner,jdbcType=VARCHAR}, #{short,jdbcType=VARCHAR}, 
+      #{deleted,jdbcType=CHAR}, #{collector,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yusys.agile.zentao.domain.ZtModule">
+    insert into zt_module
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="root != null">
+        root,
+      </if>
+      <if test="branch != null">
+        branch,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="parent != null">
+        parent,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="grade != null">
+        grade,
+      </if>
+      <if test="order != null">
+       `order`,
+      </if>
+      <if test="type != null">
+       `type`,
+      </if>
+      <if test="owner != null">
+        owner,
+      </if>
+        short,
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="collector != null">
+        collector,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="root != null">
+        #{root,jdbcType=INTEGER},
+      </if>
+      <if test="branch != null">
+        #{branch,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=CHAR},
+      </if>
+      <if test="parent != null">
+        #{parent,jdbcType=INTEGER},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=CHAR},
+      </if>
+      <if test="grade != null">
+        #{grade,jdbcType=TINYINT},
+      </if>
+      <if test="order != null">
+        #{order,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+      <if test="owner != null">
+        #{owner,jdbcType=VARCHAR},
+      </if>
+        "",
+      <if test="deleted != null">
+        #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="collector != null">
+        #{collector,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yusys.agile.zentao.domain.ZtModuleExample" resultType="java.lang.Long">
+    select count(*) from zt_module
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update zt_module
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.root != null">
+        root = #{record.root,jdbcType=INTEGER},
+      </if>
+      <if test="record.branch != null">
+        branch = #{record.branch,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=CHAR},
+      </if>
+      <if test="record.parent != null">
+        parent = #{record.parent,jdbcType=INTEGER},
+      </if>
+      <if test="record.path != null">
+        path = #{record.path,jdbcType=CHAR},
+      </if>
+      <if test="record.grade != null">
+        grade = #{record.grade,jdbcType=TINYINT},
+      </if>
+      <if test="record.order != null">
+       `order`= #{record.order,jdbcType=SMALLINT},
+      </if>
+      <if test="record.type != null">
+       `type` = #{record.type,jdbcType=CHAR},
+      </if>
+      <if test="record.owner != null">
+        owner = #{record.owner,jdbcType=VARCHAR},
+      </if>
+      <if test="record.short != null">
+        short = #{record.short,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=CHAR},
+      </if>
+      <if test="record.collector != null">
+        collector = #{record.collector,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update zt_module
+    set id = #{record.id,jdbcType=INTEGER},
+      root = #{record.root,jdbcType=INTEGER},
+      branch = #{record.branch,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=CHAR},
+      parent = #{record.parent,jdbcType=INTEGER},
+      path = #{record.path,jdbcType=CHAR},
+      grade = #{record.grade,jdbcType=TINYINT},
+     `order`= #{record.order,jdbcType=SMALLINT},
+     `type` = #{record.type,jdbcType=CHAR},
+      owner = #{record.owner,jdbcType=VARCHAR},
+      short = #{record.short,jdbcType=VARCHAR},
+      deleted = #{record.deleted,jdbcType=CHAR},
+      collector = #{record.collector,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update zt_module
+    set id = #{record.id,jdbcType=INTEGER},
+      root = #{record.root,jdbcType=INTEGER},
+      branch = #{record.branch,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=CHAR},
+      parent = #{record.parent,jdbcType=INTEGER},
+      path = #{record.path,jdbcType=CHAR},
+      grade = #{record.grade,jdbcType=TINYINT},
+     `order`= #{record.order,jdbcType=SMALLINT},
+     `type` = #{record.type,jdbcType=CHAR},
+      owner = #{record.owner,jdbcType=VARCHAR},
+      short = #{record.short,jdbcType=VARCHAR},
+      deleted = #{record.deleted,jdbcType=CHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.zentao.domain.ZtModule">
+    update zt_module
+    <set>
+      <if test="root != null">
+        root = #{root,jdbcType=INTEGER},
+      </if>
+      <if test="branch != null">
+        branch = #{branch,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=CHAR},
+      </if>
+      <if test="parent != null">
+        parent = #{parent,jdbcType=INTEGER},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=CHAR},
+      </if>
+      <if test="grade != null">
+        grade = #{grade,jdbcType=TINYINT},
+      </if>
+      <if test="order != null">
+       `order`= #{order,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+       `type` = #{type,jdbcType=CHAR},
+      </if>
+      <if test="owner != null">
+        owner = #{owner,jdbcType=VARCHAR},
+      </if>
+      <if test="short != null">
+        short = #{short,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=CHAR},
+      </if>
+      <if test="collector != null">
+        collector = #{collector,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.zentao.domain.ZtModule">
+    update zt_module
+    set root = #{root,jdbcType=INTEGER},
+      branch = #{branch,jdbcType=INTEGER},
+      name = #{name,jdbcType=CHAR},
+      parent = #{parent,jdbcType=INTEGER},
+      path = #{path,jdbcType=CHAR},
+      grade = #{grade,jdbcType=TINYINT},
+     `order`= #{order,jdbcType=SMALLINT},
+     `type` = #{type,jdbcType=CHAR},
+      owner = #{owner,jdbcType=VARCHAR},
+      short = #{short,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=CHAR},
+      collector = #{collector,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.zentao.domain.ZtModule">
+    update zt_module
+    set root = #{root,jdbcType=INTEGER},
+      branch = #{branch,jdbcType=INTEGER},
+      name = #{name,jdbcType=CHAR},
+      parent = #{parent,jdbcType=INTEGER},
+      path = #{path,jdbcType=CHAR},
+      grade = #{grade,jdbcType=TINYINT},
+     `order`= #{order,jdbcType=SMALLINT},
+     `type` = #{type,jdbcType=CHAR},
+      owner = #{owner,jdbcType=VARCHAR},
+      short = #{short,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -117,6 +117,23 @@ public class Issue implements Serializable {
     /**看板id*/
     private Long  kanbanId;
 
+    private String featureIdOrName;
+
+    /**
+     * 是否发起了排期 0 未发起 1 发起
+     */
+    private Byte startSchedule;
+
+    /**
+     * 上线时间
+     */
+    private Date releaseDate;
+
+    /**
+     * 提测时间
+     */
+    private Date raiseTestDate;
+
     private static final long serialVersionUID = 1L;
 
 }

@@ -46,4 +46,23 @@ public class IssueServiceTest {
         issueDTO.setSprintId(130213L);
         storyService.listStorysAndTasks(issueDTO);
     }
+
+    /**
+     * @Author maxp2
+     * @Date 2021/7/14
+     * @Description 设置工作项归档，0：未归档，1：已归档
+     * @param
+     * @Return void
+     */
+    @Test
+    public void isArchive(){
+        Long issueId = 847878567016625462L;
+        Byte isArchive = 1 ;
+        try {
+            issueService.isArchive(issueId,isArchive);
+            Assert.assertTrue("设置归档成功", true);
+        }catch (Exception e){
+            Assert.assertTrue(e.getMessage() != null);
+        }
+    }
 }
