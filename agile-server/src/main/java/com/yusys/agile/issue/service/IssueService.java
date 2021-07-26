@@ -438,4 +438,15 @@ public interface IssueService {
 
     List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(Long teamId, String searchKey, Long systemId, List<Long> issueIds);
 
+
+    /**
+     * 新建历史
+     *
+     * @param issueId
+     * @param oldMsg
+     * @param newMsg
+     * @param msg
+     */
+    void createHistory(Long issueId,String oldMsg ,String newMsg,String msg);
+
 }

@@ -2761,7 +2761,8 @@ public class IssueServiceImpl implements IssueService {
         return null;
     }
 
-    private int createHistory(Long issueId,String oldMsg ,String newMsg,String msg) {
+    @Override
+    public void createHistory(Long issueId,String oldMsg ,String newMsg,String msg) {
         IssueHistoryRecord history = new IssueHistoryRecord();
         history.setOperationField(msg);
         history.setIssueId(issueId);
@@ -2769,8 +2770,7 @@ public class IssueServiceImpl implements IssueService {
         history.setOldValue(oldMsg);
         history.setIsCustom(NumberConstant.ZERO.byteValue());
         history.setRecordType(NumberConstant.ZERO.byteValue());
-        int count = issueHistoryRecordService.createHistory(history);
-        return count;
+        issueHistoryRecordService.createHistory(history);
     }
 
 
