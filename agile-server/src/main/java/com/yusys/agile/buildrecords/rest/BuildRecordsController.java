@@ -39,6 +39,7 @@ public class BuildRecordsController {
                                                    @RequestParam("pageNum") Integer pageNum,
                                                    @RequestParam("pageSize") Integer pageSize) {
         try {
+
             PageInfo pageInfo = buildDeployService.queryBuildRecord(issueId, pageNum, pageSize);
             return ControllerResponse.success(pageInfo);
         } catch (Exception e) {
