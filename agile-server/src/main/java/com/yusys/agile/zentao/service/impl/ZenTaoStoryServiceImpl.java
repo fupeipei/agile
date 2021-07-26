@@ -61,15 +61,16 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
             record.setOrder(5);
             ztProductMapper.insertSelective(record);
             ztProducts =  ztProductMapper.selectByExampleWithBLOBs(ztProductExample);
+            ZtProduct ztProduct = ztProducts.get(0);
+            ZtProjectproduct ztProjectproduct = new ZtProjectproduct();
+            ztProjectproduct.setProduct(ztProduct.getId());
+            ztProjectproduct.setProject(1);
+            ztProjectproduct.setPlan(0);
+            ztProjectproduct.setBranch(0);
+            ztProjectproductMapper.insertSelective(ztProjectproduct);
 
         }
         ZtProduct ztProduct = ztProducts.get(0);
-        ZtProjectproduct ztProjectproduct = new ZtProjectproduct();
-        ztProjectproduct.setProduct(ztProduct.getId());
-        ztProjectproduct.setProject(1);
-        ztProjectproduct.setPlan(0);
-        ztProjectproduct.setBranch(0);
-        ztProjectproductMapper.insertSelective(ztProjectproduct);
         ztStory.setProduct(ztProduct.getId());
         //获取模块id,无则新增
         ZtModuleExample ztModuleExample = new ZtModuleExample();
@@ -117,6 +118,7 @@ public class ZenTaoStoryServiceImpl implements ZenTaoStoryService {
         ztStory.setLinkstories("");
         ztStory.setKeywords("");
         ztStory.setColor("");
+        ztStory.setPlan("");
         ztStoryMapper.insertSelective(ztStory);
         ZtStoryExample example = new ZtStoryExample();
         example.createCriteria().andTitleEqualTo(ztStory.getTitle()).andDeletedEqualTo("0");
