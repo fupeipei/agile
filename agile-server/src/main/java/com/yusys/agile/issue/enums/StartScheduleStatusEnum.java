@@ -10,7 +10,7 @@ package com.yusys.agile.issue.enums;
 public enum StartScheduleStatusEnum {
 
     NO_TINITIATED ("未发起", (byte)0),
-    INITIATED("已发起", (byte)1),
+    INITIATED("发起", (byte)1),
     FINISH ("结束", (byte)2);
 
 
@@ -30,5 +30,14 @@ public enum StartScheduleStatusEnum {
     StartScheduleStatusEnum(String name, Byte code) {
         this.CODE = code;
         this.NAME = name;
+    }
+
+    public static String getByCode(Byte code) {
+        for (StartScheduleStatusEnum name : StartScheduleStatusEnum.values()) {
+            if (name.CODE.equals(code)) {
+                return name.NAME;
+            }
+        }
+        return null;
     }
 }

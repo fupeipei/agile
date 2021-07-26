@@ -6,6 +6,7 @@ import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.enums.StartScheduleStatusEnum;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.scheduleplan.dao.SEpicSystemRelateMapper;
 import com.yusys.agile.scheduleplan.dao.SScheduleMapper;
 import com.yusys.agile.scheduleplan.domain.SEpicSystemRelate;
@@ -56,6 +57,8 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
     private IFacadeSystemApi systemApi;
     @Autowired
     private IssueMapper issueMapper;
+    @Autowired
+    private IssueService issueService;
 
     private static Map<Long, SsoUser> USERMAP = new ConcurrentHashMap<>();
     private static Map<Long, String> SYSTEMMAP = new ConcurrentHashMap<>();
@@ -68,7 +71,13 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         Long epicId = scheduleplanDTO.getEpicId();
         //删除之前数据
         SScheduleExample sScheduleExample = new SScheduleExample();
-        sScheduleExample.createCriteria().andEpicIdEqualTo(epicId);
+        sScheduleExample.createCriteria().andEpicIdEqualTo(epicId).andStateEqualTo(StateEnum.U.getValue());
+        List<SSchedule> sSchedules = scheduleMapper.selectByExample(sScheduleExample);
+        if(sSchedules.isEmpty()){
+            //记录新建排期
+            issueService.createHistory(epicId,null,"新建排期","排期");
+        }
+
         SSchedule schedule = new SSchedule();
         schedule.setState(StateEnum.E.getValue());
         scheduleMapper.updateByExampleSelective(schedule,sScheduleExample);
@@ -209,6 +218,8 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         issue.setStartSchedule(state);
         issue.setIssueId(epicId);
         issueMapper.updateByPrimaryKeySelective(issue);
+        //新建历史
+        issueService.createHistory(epicId,null,StartScheduleStatusEnum.getByCode(state)+"排期","排期");
     }
 
 
