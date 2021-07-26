@@ -17,10 +17,7 @@ import java.util.*;
 
 @Slf4j
 public class SqlLoadTest {
-    @Test
-    public void testSql() {
-        log.info("test");
-    }
+
 
 //    @Test
 //    public void testSqlFromFile() {

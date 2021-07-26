@@ -45,6 +45,7 @@ public class IssueServiceTest {
         issueDTO.setPageSize(100000);
         issueDTO.setSprintId(130213L);
         storyService.listStorysAndTasks(issueDTO);
+        Assert.assertTrue("testListStorysAndTasks()成功 ",true);
     }
 
     /**

@@ -326,11 +326,6 @@ public class TaskServiceTest {
         Assert.assertNotNull("查询成功",taskPreInfo);
     }
 
-    @Test
-    public void getCurrentTime(){
-        Date date = TimeUtil.parseDate("2021-06-15 13:40:50");
-        log.info(date+"");
-    }
 
    /* @Test
     public void getgetSystemDateTime(){
