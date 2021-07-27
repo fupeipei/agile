@@ -25,7 +25,11 @@ public class IssueServiceTest {
         map.put("issueType",3);
         map.put("pageNum",2);
         map.put("pageSize",10);
-        issueService.getIssueList(map);
+        try {
+            issueService.getIssueList(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Assert.assertTrue("getIssueListTest成功", true);
     }
     @Test
