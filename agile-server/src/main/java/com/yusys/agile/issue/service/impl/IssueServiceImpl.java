@@ -767,9 +767,11 @@ public class IssueServiceImpl implements IssueService {
 
     private void setTeamDetail(Map map, STeam sTeam) {
         if (null != sTeam) {
+            map.put("teamName", sTeam.getTeamId());
             map.put("teamName", sTeam.getTeamName());
             map.put("teamType", sTeam.getTeamType());
         } else {
+            map.put("teamId", "");
             map.put("teamName", "");
             map.put("teamType", "");
         }
