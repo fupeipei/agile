@@ -20,6 +20,7 @@ public class IssueRecord {
     private FieldJsonType importances;
     private FieldJsonType completions;
     private FieldJsonType stageIds;
+    private FieldJsonType laneIds;
     private FieldJsonType faultLevels;
     private FieldJsonType faultTypes;
     private FieldJsonType orders;

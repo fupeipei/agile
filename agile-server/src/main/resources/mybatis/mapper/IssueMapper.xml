@@ -725,13 +725,13 @@
                 team_id = #{record.teamId,jdbcType=BIGINT},
             </if>
             <if test="startSchedule != null">
-                start_schedule = #{startSchedule,jdbcType=TINYINT},
+                start_schedule = #{record.startSchedule,jdbcType=TINYINT},
             </if>
             <if test="releaseDate != null">
-                release_date = #{releaseDate,jdbcType=TIMESTAMP},
+                release_date = #{record.releaseDate,jdbcType=TIMESTAMP},
             </if>
             <if test="raiseTestDate != null">
-                raise_test_date = #{raiseTestDate,jdbcType=TIMESTAMP}
+                raise_test_date = #{record.raiseTestDate,jdbcType=TIMESTAMP}
             </if>
         </set>
         <if test="_parameter != null">
@@ -2004,58 +2004,48 @@
                     and iu.completion is null
                 </if>
             </if>
-            <choose>
-                <when test="issueRecord.stageIds!= null and issueRecord.stageIds.dataLong.size()>0">
-                    <if test="issueRecord.stageIds!= null">
-                        <if test="issueRecord.stageIds.queryType ==1 and issueRecord.stageIds.dataLong.size()>0">
+             <if test="issueRecord.stageIds!= null">
+                     <if test="issueRecord.stageIds.queryType ==1 and issueRecord.stageIds.dataLong.size()>0">
                             and ( iu.stage_id in
                             <foreach collection="issueRecord.stageIds.dataLong" open="(" close=")" separator=","
                                      item="iterm">
                                 #{iterm}
                             </foreach>
-                            or ( iu.lane_id in
+                            or iu.stage_id is null
+                            )
+                     </if>
+                     <if test="issueRecord.stageIds.queryType ==2 and issueRecord.stageIds.dataLong.size()>0">
+                            and  iu.stage_id in
                             <foreach collection="issueRecord.stageIds.dataLong" open="(" close=")" separator=","
                                      item="iterm">
                                 #{iterm}
                             </foreach>
-                            or ( iu.stage_id not in (1,8) and iu.lane_id IS NULL )
-                            )
-                            <if test="issueRecord.blockState != null ">
-                                or iu.block_state = #{issueRecord.blockState}
-                            </if>
-                            )
-                        </if>
-                        <if test="issueRecord.stageIds.queryType ==2 and issueRecord.stageIds.dataLong.size()>0">
-                            and ( iu.stage_id in
-                            <foreach collection="issueRecord.stageIds.dataLong" open="(" close=")" separator=","
-                                     item="iterm">
-                                #{iterm}
-                            </foreach>
-                            or iu.lane_id in
-                            <foreach collection="issueRecord.stageIds.dataLong" open="(" close=")" separator=","
-                                     item="iterm">
-                                #{iterm}
-                            </foreach>
-                            <if test="issueRecord.blockState != null ">
-                                or iu.block_state = #{issueRecord.blockState}
-                            </if>
-                            )
-                        </if>
-                        <if test="issueRecord.stageIds.queryType ==3 ">
-                            and ( iu.stage_id not in (1,8) and iu.lane_id IS NULL
-                            <if test="issueRecord.blockState != null ">
-                                or iu.block_state = #{issueRecord.blockState}
-                            </if>
-                            )
-                        </if>
-                    </if>
-                </when>
-                <otherwise>
-                    <if test="issueRecord.blockState != null ">
-                        and iu.block_state = #{issueRecord.blockState}
-                    </if>
-                </otherwise>
-            </choose>
+                     </if>
+                 <if test="issueRecord.stageIds.queryType ==3 ">
+                            and  iu.stage_id is null
+                 </if>
+             </if>
+            <if test="issueRecord.laneIds!= null">
+                <if test="issueRecord.laneIds.queryType ==1 and issueRecord.laneIds.dataLong.size()>0">
+                    and ( iu.lane_id in
+                    <foreach collection="issueRecord.laneIds.dataLong" open="(" close=")" separator=","
+                             item="iterm">
+                        #{iterm}
+                    </foreach>
+                    or iu.lane_id is null
+                    )
+                </if>
+                <if test="issueRecord.laneIds.queryType ==2 and issueRecord.laneIds.dataLong.size()>0">
+                    and  iu.lane_id in
+                    <foreach collection="issueRecord.laneIds.dataLong" open="(" close=")" separator=","
+                             item="iterm">
+                        #{iterm}
+                    </foreach>
+                </if>
+                <if test="issueRecord.laneIds.queryType ==3 ">
+                    and  iu.lane_id is null
+                </if>
+            </if>
             <if test="issueRecord.faultLevels!= null">
                 <if test="issueRecord.faultLevels.queryType ==1 and issueRecord.faultLevels.dataLong.size()>0">
                     and ( iu.fault_level in

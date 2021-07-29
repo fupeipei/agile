@@ -20,6 +20,10 @@ import com.yusys.agile.issue.service.*;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.set.stage.constant.StageConstant;
+import com.yusys.agile.set.stage.domain.KanbanStageInstance;
+import com.yusys.agile.set.stage.domain.StageInstance;
+import com.yusys.agile.set.stage.service.IStageService;
+import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
@@ -115,6 +119,8 @@ public class IssueFactory {
     private STeamMapper sTeamMapper;
     @Resource
     private IssueUpRegularFactory issueUpRegularFactory;
+    @Resource
+    private IStageService iStageService;
 
     @Transactional(rollbackFor = Exception.class)
     public Long createIssue(IssueDTO issueDTO, String checkErrMsg, String newMsg, Byte issueType) {
@@ -1169,21 +1175,38 @@ public class IssueFactory {
      * @Return: void
      */
     public void setHandlersAndStageName(List<IssueDTO> issueDTOList, List<Long> handlers, Byte issueType) {
+        List<StageInstance> stageInstanceList = Lists.newArrayList();
+        Map<Long,String> map = new HashMap<>();
+        try{
+            stageInstanceList = iStageService.getStages(Integer.parseInt(issueType.toString()),null,null);
+            if(CollectionUtils.isNotEmpty(stageInstanceList)){
+                for(StageInstance stageInstance:stageInstanceList){
+                    map.put(stageInstance.getStageId(),stageInstance.getStageName());
+                    List<KanbanStageInstance> kanbanStageInstances = stageInstance.getSecondStages();
+                    if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
+                        for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
+                            map.put(kanbanStageInstance.getStageId(),kanbanStageInstance.getStageName());
+                        }
+                    }
+                }
+            }
+
+        }catch (Exception e){
+            LOGGER.error(e.getMessage());
+        }
+
         for (IssueDTO issueDTO : issueDTOList) {
             if (null != issueDTO.getHandler()) {
                 handlers.add(issueDTO.getHandler());
             }
-
-            if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType) || IssueTypeEnum.TYPE_FAULT.CODE.equals(issueType)) {
-                if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                    issueDTO.setStageName(TaskStatusEnum.getName(issueDTO.getStageId()));
-                } else {
-                    issueDTO.setStageName(FaultStatusEnum.getMsg(issueDTO.getStageId()));
-                }
-            } else {
-                if (StringUtils.isNotBlank(issueDTO.getLaneName()) && StringUtils.isNotBlank(issueDTO.getStageName())) {
-                    issueDTO.setStageName(issueDTO.getStageName() + "/" + issueDTO.getLaneName());
-                }
+            if (Optional.ofNullable(issueDTO.getStageId()).isPresent()&&map.containsKey(issueDTO.getStageId())) {
+                issueDTO.setStageName(map.get(issueDTO.getStageId()));
+            }
+            if (Optional.ofNullable(issueDTO.getLaneId()).isPresent()&&map.containsKey(issueDTO.getLaneId())) {
+                issueDTO.setLaneName(map.get(issueDTO.getLaneId()));
+            }
+            if(StringUtils.isNotEmpty(issueDTO.getStageName())&&StringUtils.isNotEmpty(issueDTO.getLaneName())){
+                issueDTO.setStageName(issueDTO.getStageName()+"/"+issueDTO.getLaneName());
             }
         }
     }

@@ -98,7 +98,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import javax.annotation.Resource;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -131,6 +130,8 @@ public class IssueServiceImpl implements IssueService {
     private static final String MAPUSERATTENTION =  "mapUserAttention";
     private static final String MAPLISTISSUECUSTOMFIELD =  "mapListIssueCustomField";
     private static final String MAPHEADERFIELDCONTENT=  "mapHeaderFieldContent";
+    private static final String STAGEID=  "stageId";
+    private static final String LANEID=  "laneId";
 
 
 
@@ -230,13 +231,14 @@ public class IssueServiceImpl implements IssueService {
      * @date 2020/4/20
      */
     @Override
-    public PageInfo getIssueList(Map<String, Object> map) {
+    public PageInfo getIssueList(Map<String, Object> map) throws Exception {
         PageInfo pageInfo = new PageInfo();
         List<Map> maps = Lists.newArrayList();
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
         JSONObject jsonObject = new JSONObject(map);
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
         Byte issueType = Byte.parseByte(map.get("issueType").toString());
+       //根据查询条件过滤issue
         List<Issue> issues = queryIssueList(map);
         if (CollectionUtils.isEmpty(issues)) {
             pageInfo.setList(new ArrayList());
@@ -765,9 +767,11 @@ public class IssueServiceImpl implements IssueService {
 
     private void setTeamDetail(Map map, STeam sTeam) {
         if (null != sTeam) {
+            map.put("teamName", sTeam.getTeamId());
             map.put("teamName", sTeam.getTeamName());
             map.put("teamType", sTeam.getTeamType());
         } else {
+            map.put("teamId", "");
             map.put("teamName", "");
             map.put("teamType", "");
         }
@@ -958,31 +962,31 @@ public class IssueServiceImpl implements IssueService {
                     String operationField = Optional.ofNullable(issueHistoryRecordDTO.getOperationField()).orElse("");
                     String oldValue = issueHistoryRecordDTO.getOldValue();
                     String newValue = issueHistoryRecordDTO.getNewValue();
+                    //map
+                    Map<Long,String> map = new HashMap<>();
+                    try{
+                        List<StageInstance> stageInstanceList  = iStageService.getStages(Integer.parseInt(issueType.toString()),null,null);
+                        if(CollectionUtils.isNotEmpty(stageInstanceList)){
+                            for(StageInstance stageInstance:stageInstanceList){
+                                map.put(stageInstance.getStageId(),stageInstance.getStageName());
+                                List<KanbanStageInstance> kanbanStageInstances = stageInstance.getSecondStages();
+                                if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
+                                    for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
+                                        map.put(kanbanStageInstance.getStageId(),kanbanStageInstance.getStageName());
+                                    }
+                                }
+                            }
+                        }
+
+                    }catch (Exception e){
+                        loggr.error(e.getMessage());
+                    }
                     switch (operationField) {
                         case "阶段id":
                         case "二阶段状态id":
-                            if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                                if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
-                                    issueHistoryRecordDTO.setOldValue(TaskStatusEnum.getName(Long.valueOf(oldValue)));
-                                }
-                                if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
-                                    issueHistoryRecordDTO.setNewValue(TaskStatusEnum.getName(Long.valueOf(newValue)));
-                                }
-                            } else if (IssueTypeEnum.TYPE_FAULT.CODE.equals(issueType)) {
-                                if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
-                                    issueHistoryRecordDTO.setOldValue(FaultStatusEnum.getMsg(Long.valueOf(oldValue)));
-                                }
-                                if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
-                                    issueHistoryRecordDTO.setNewValue(FaultStatusEnum.getMsg(Long.valueOf(newValue)));
-                                }
-                            } else {
-//                                if (StringUtils.isNotEmpty(oldValue)) {
-//                                    issueHistoryRecordDTO.setOldValue(stagesInstanceMapInfo.get(oldValue));
-//                                }
-//                                if (StringUtils.isNotEmpty(newValue)) {
-//                                    issueHistoryRecordDTO.setNewValue(stagesInstanceMapInfo.get(newValue));
-//                                }
-                            }
+                            issueHistoryRecordDTO.setOldValue(dealHistoryStage(map,oldValue));
+                            issueHistoryRecordDTO.setNewValue(dealHistoryStage(map,newValue));
+
                             break;
                         case "优先级":
                             if (StringUtils.isNotEmpty(oldValue)) {
@@ -1201,7 +1205,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<Issue> queryIssueList(Map<String, Object> map) {
+    public List<Issue> queryIssueList(Map<String, Object> map) throws Exception{
         JSONObject jsonObject = new JSONObject(map);
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
         IssueRecord issueRecord = new IssueRecord();
@@ -3177,7 +3181,7 @@ public class IssueServiceImpl implements IssueService {
      * @param issueRecord
      * @param issueStringDTO
      */
-    public void orgIssueBasicParams(IssueRecord issueRecord,IssueStringDTO issueStringDTO){
+    public void orgIssueBasicParams(IssueRecord issueRecord,IssueStringDTO issueStringDTO) throws Exception{
 
         if (Optional.ofNullable(issueStringDTO.getPageNum()).isPresent()&&
                 Optional.ofNullable(issueStringDTO.getPageSize()).isPresent() ) {
@@ -3197,8 +3201,18 @@ public class IssueServiceImpl implements IssueService {
         if (StringUtils.isNotEmpty(issueStringDTO.getCompletion())) {
             issueRecord.setCompletions(dealData(issueStringDTO.getCompletion(), STRING));
         }
+        /**
+         * 阶段需要单独处理，需要分出哪些是阶段哪些是状态
+         */
         if (StringUtils.isNotEmpty(issueStringDTO.getStageId())) {
-            issueRecord.setStageIds(dealData(issueStringDTO.getStageId(), LONG));
+            //一级阶段
+            Map<String,String> map = dealStageIdAndLaneId(dealStageIdAndLaneId(Byte.parseByte(issueStringDTO.getIssueType())),issueStringDTO.getStageId());
+            if(StringUtils.isNotEmpty(map.get(STAGEID))){
+               issueRecord.setStageIds(dealData(map.get(STAGEID), LONG));
+            }
+            if(StringUtils.isNotEmpty(map.get(LANEID))){
+                issueRecord.setLaneIds(dealData(map.get(LANEID), LONG));
+            }
         }
         if (StringUtils.isNotEmpty(issueStringDTO.getFaultLevel())) {
             issueRecord.setFaultLevels(dealData(issueStringDTO.getFaultLevel(), LONG));
@@ -3394,5 +3408,113 @@ public class IssueServiceImpl implements IssueService {
            }
        }
         return  issueList.size();
+    }
+
+    /**
+     * 根据工作项类型区分一阶段与二阶段
+     * @param issueType
+     * @return
+     * @throws Exception
+     */
+    public Map dealStageIdAndLaneId(Byte issueType)throws  Exception{
+        Map<String,String> map = new HashMap<>();
+        map.put(STAGEID,"");
+        map.put(LANEID,"");
+        List<StageInstance> stageInstanceList = iStageService.getStages(Integer.parseInt(issueType.toString()),null,null);
+        for (StageInstance stageInstance:stageInstanceList) {
+            String  stageInstanceStageId = stageInstance.getStageId().toString();
+            if(!map.get(STAGEID).contains(stageInstanceStageId)){
+                String temp = map.get(STAGEID);
+                if(StringUtils.isEmpty(temp)){
+                    temp +=stageInstanceStageId;
+                    map.put(STAGEID,temp);
+                }else{
+                    temp =temp+","+stageInstanceStageId;
+                    map.put(STAGEID,temp);
+                }
+            }
+            List<KanbanStageInstance> kanbanStageInstanceList = stageInstance.getSecondStages();
+            if(CollectionUtils.isNotEmpty(kanbanStageInstanceList)){
+                for (KanbanStageInstance kanbanStageInstance:kanbanStageInstanceList) {
+                    String  secondStageInstanceStageId = kanbanStageInstance.getStageId().toString();
+                    if(!map.get(LANEID).contains(secondStageInstanceStageId)){
+                        String temp = map.get(LANEID);
+                        if(StringUtils.isEmpty(temp)){
+                            temp +=secondStageInstanceStageId;
+                            map.put(LANEID,temp);
+                        }else{
+                            temp =temp+","+secondStageInstanceStageId;
+                            map.put(LANEID,temp);
+                        }
+                    }
+                }
+            }
+        }
+        return  map;
+    }
+
+    /**
+     * 当前工作项类型所有一阶段与二阶段的集合，将阶段与状态分开
+     *
+     * @param map 当前工作项类型所有一阶段与二阶段的集合
+     * @param s 待分开的数据
+     * @return
+     * @throws Exception
+     */
+    public Map dealStageIdAndLaneId(Map<String,String> map,String s)throws  Exception{
+        Map<String,String> mapResult = new HashMap<>();
+        mapResult.put(STAGEID,"");
+        mapResult.put(LANEID,"");
+        if(StringUtils.isNotEmpty(s)){
+            String[] strings =  s.split(",");
+            for (String s1:strings) {
+                if(map.get(STAGEID).contains(s1)){
+                    String temp = mapResult.get(STAGEID);
+                    if(StringUtils.isEmpty(temp)){
+                        temp +=s1;
+                        mapResult.put(STAGEID,temp);
+                    }else{
+                        temp =temp+","+s1;
+                        mapResult.put(STAGEID,temp);
+                    }
+                }
+                else if(map.get(LANEID).contains(s1)){
+                    String temp = mapResult.get(LANEID);
+                    if(StringUtils.isEmpty(temp)){
+                        temp +=s1;
+                        mapResult.put(LANEID,temp);
+                    }else{
+                        temp =temp+","+s1;
+                        mapResult.put(LANEID,temp);
+                    }
+                }
+            }
+        }
+        return  mapResult;
+    }
+
+    /**
+     * 翻译 操作历史记录的阶段
+     * @param map
+     * @param value
+     * @return
+     */
+    public String  dealHistoryStage( Map<Long,String> map,String value){
+        String result = "";
+        if (StringUtils.isNotEmpty(value)) {
+            String[] strings = value.split("-");
+            List<String> ids =Lists.newArrayList(strings);
+            List<String> names =Lists.newArrayList();
+            for(int i = 0;i<ids.size();i++){
+                String s = ids.get(i);
+                if(NumberUtil.isLong(s)&&map.containsKey(Long.parseLong(s))){
+                    names.add(map.get(Long.parseLong(s)));
+                }
+            }
+            if(CollectionUtils.isNotEmpty(names)){
+             result = String.join("/",names);
+            }
+        }
+        return result;
     }
 }
