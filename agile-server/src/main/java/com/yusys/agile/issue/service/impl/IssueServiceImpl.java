@@ -3503,11 +3503,11 @@ public class IssueServiceImpl implements IssueService {
      * @return
      */
     public String  dealHistoryStage( Map<Long,String> map,String value){
-        String result = value;
+        String result = "";
         if (StringUtils.isNotEmpty(value)) {
             String[] strings = value.split("-");
             List<String> ids =Lists.newArrayList(strings);
-            List<String> names =Lists.newArrayList(strings);
+            List<String> names =Lists.newArrayList();
             for(int i= 0;i<ids.size();i++){
                 String s = ids.get(i);
                 if(NumberUtil.isLong(s)&&map.containsKey(Long.parseLong(s))){
