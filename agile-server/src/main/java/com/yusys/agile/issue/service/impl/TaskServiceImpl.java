@@ -126,7 +126,7 @@ public class TaskServiceImpl implements TaskService {
         if (null != issue) {
             IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
             //校验权限
-            this.checkAuth(issueDTO, issue, "delete", "无法删除任务");
+            this.checkAuth(issueDTO, issue, "delete", "无法删除任务","非迭代成员，不允许删除任务");
         }
         issueFactory.deleteIssue(taskId, deleteChild);
 
@@ -147,7 +147,7 @@ public class TaskServiceImpl implements TaskService {
             return;
         }
         //校验权限
-        this.checkAuth(issueDTO, oldTask, "edit", "无法编辑任务");
+        this.checkAuth(issueDTO, oldTask, "edit", "无法编辑任务","非迭代成员，不允许编辑任务");
         Long projectId = oldTask.getProjectId();
         Issue task = issueFactory.editIssue(issueDTO, oldTask, projectId);
 
@@ -221,7 +221,7 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    private void checkAuth(IssueDTO issueDTO, Issue oldTask, String checkType, String errorMsg) {
+    private void checkAuth(IssueDTO issueDTO, Issue oldTask, String checkType, String errorMsg,String warningMsg) {
         //        校验权限 1.SM角色，可以更新卡片上的任意信息
         //                2.团队成员角色，只允许更新领取人为自己的卡片信息
         //根据task获得team，根据team及当前登录人员进行判断：
@@ -246,7 +246,7 @@ public class TaskServiceImpl implements TaskService {
             List<Long> userIds = Optional.ofNullable(sprintUsers).orElse(new ArrayList<>()).stream().map(SprintV3UserHourDTO::getUserId).collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(userIds)
                     && !userIds.contains(UserThreadLocalUtil.getUserInfo().getUserId())){
-                throw new BusinessException("非迭代成员，不允许创建任务");
+                throw new BusinessException(warningMsg);
             }
             //1.SM角色，可以更新卡片上的任意信息
             if (isSM) {
@@ -284,7 +284,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(rollbackFor = Exception.class)
     public Long createTask(IssueDTO issueDTO) {
         Issue issue = ReflectUtil.copyProperties(issueDTO, Issue.class);
-        this.checkAuth(issueDTO, issue, "create", "无法新建任务");
+        this.checkAuth(issueDTO, issue, "create", "无法新建任务","非迭代成员，不允许创建任务");
         //设置默认创建
         Long[] stages = issueDTO.getStages();
         if (!Optional.ofNullable(stages).isPresent()) {
