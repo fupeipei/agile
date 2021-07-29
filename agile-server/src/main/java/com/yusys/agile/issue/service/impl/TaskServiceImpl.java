@@ -241,6 +241,13 @@ public class TaskServiceImpl implements TaskService {
             boolean isSM = iFacadeUserApi.checkIsTeamSm(userId, sSprintWithBLOBs.getTeamId());
             //查询该迭代下的成员
             List<SprintV3UserHourDTO> sprintUsers = sprintv3Service.getUsersBySprintId(sSprintWithBLOBs.getSprintId());
+
+            //非迭代成员不允许新建任务
+            List<Long> userIds = Optional.ofNullable(sprintUsers).orElse(new ArrayList<>()).stream().map(SprintV3UserHourDTO::getUserId).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(userIds)
+                    && !userIds.contains(UserThreadLocalUtil.getUserInfo().getUserId())){
+                throw new BusinessException("非迭代成员，不允许创建任务");
+            }
             //1.SM角色，可以更新卡片上的任意信息
             if (isSM) {
                 return;
@@ -425,6 +432,17 @@ public class TaskServiceImpl implements TaskService {
 
         if (sprintMembersWorkHours == null || sprintMembersWorkHours.size() == 0) {
             throw new BusinessException("根据迭代标识获取迭代成员信息为空" + task.getSprintId());
+        }
+        //非迭代成员不允许拖拽任务卡片
+        if (Optional.ofNullable(task.getSprintId()).isPresent()){
+            //查询该迭代下的成员
+            List<SprintV3UserHourDTO> sprintUsers = sprintv3Service.getUsersBySprintId(task.getSprintId());
+            //非迭代成员不允许新建任务
+            List<Long> userIds = Optional.ofNullable(sprintUsers).orElse(new ArrayList<>()).stream().map(SprintV3UserHourDTO::getUserId).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(userIds)
+                    && !userIds.contains(UserThreadLocalUtil.getUserInfo().getUserId())){
+                throw new BusinessException("非迭代成员，不允许拖拽任务");
+            }
         }
 
         QueryTeamResponse queryTeamResponse = teamv3Service.queryTeam(sprintDTO1.getTeamId());
