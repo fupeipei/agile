@@ -984,12 +984,9 @@ public class IssueServiceImpl implements IssueService {
                     switch (operationField) {
                         case "阶段id":
                         case "二阶段状态id":
-                            if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
-                                issueHistoryRecordDTO.setOldValue(dealHistoryStage(map,oldValue));
-                            }
-                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
-                                issueHistoryRecordDTO.setNewValue(dealHistoryStage(map,newValue));
-                            }
+                            issueHistoryRecordDTO.setOldValue(dealHistoryStage(map,oldValue));
+                            issueHistoryRecordDTO.setNewValue(dealHistoryStage(map,newValue));
+
                             break;
                         case "优先级":
                             if (StringUtils.isNotEmpty(oldValue)) {
@@ -3508,7 +3505,7 @@ public class IssueServiceImpl implements IssueService {
             String[] strings = value.split("-");
             List<String> ids =Lists.newArrayList(strings);
             List<String> names =Lists.newArrayList();
-            for(int i= 0;i<ids.size();i++){
+            for(int i = 0;i<ids.size();i++){
                 String s = ids.get(i);
                 if(NumberUtil.isLong(s)&&map.containsKey(Long.parseLong(s))){
                     names.add(map.get(Long.parseLong(s)));
