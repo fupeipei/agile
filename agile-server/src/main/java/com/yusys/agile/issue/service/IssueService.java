@@ -27,7 +27,7 @@ public interface IssueService {
      * @date 2020/4/16
      */
 
-    PageInfo getIssueList(Map<String, Object> map);
+    PageInfo getIssueList(Map<String, Object> map)throws Exception;
 
     /**
      * @param issueId
