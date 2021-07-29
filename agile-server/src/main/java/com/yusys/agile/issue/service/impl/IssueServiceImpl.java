@@ -962,31 +962,31 @@ public class IssueServiceImpl implements IssueService {
                     String operationField = Optional.ofNullable(issueHistoryRecordDTO.getOperationField()).orElse("");
                     String oldValue = issueHistoryRecordDTO.getOldValue();
                     String newValue = issueHistoryRecordDTO.getNewValue();
+                    //map
+                    Map<Long,String> map = new HashMap<>();
+                    try{
+                        List<StageInstance> stageInstanceList  = iStageService.getStages(Integer.parseInt(issueType.toString()),null,null);
+                        if(CollectionUtils.isNotEmpty(stageInstanceList)){
+                            for(StageInstance stageInstance:stageInstanceList){
+                                map.put(stageInstance.getStageId(),stageInstance.getStageName());
+                                List<KanbanStageInstance> kanbanStageInstances = stageInstance.getSecondStages();
+                                if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
+                                    for(KanbanStageInstance kanbanStageInstance:kanbanStageInstances){
+                                        map.put(kanbanStageInstance.getStageId(),kanbanStageInstance.getStageName());
+                                    }
+                                }
+                            }
+                        }
+
+                    }catch (Exception e){
+                        loggr.error(e.getMessage());
+                    }
                     switch (operationField) {
                         case "阶段id":
                         case "二阶段状态id":
-                            if (IssueTypeEnum.TYPE_TASK.CODE.equals(issueType)) {
-                                if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
-                                    issueHistoryRecordDTO.setOldValue(TaskStatusEnum.getName(Long.valueOf(oldValue)));
-                                }
-                                if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
-                                    issueHistoryRecordDTO.setNewValue(TaskStatusEnum.getName(Long.valueOf(newValue)));
-                                }
-                            } else if (IssueTypeEnum.TYPE_FAULT.CODE.equals(issueType)) {
-                                if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
-                                    issueHistoryRecordDTO.setOldValue(FaultStatusEnum.getMsg(Long.valueOf(oldValue)));
-                                }
-                                if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
-                                    issueHistoryRecordDTO.setNewValue(FaultStatusEnum.getMsg(Long.valueOf(newValue)));
-                                }
-                            } else {
-//                                if (StringUtils.isNotEmpty(oldValue)) {
-//                                    issueHistoryRecordDTO.setOldValue(stagesInstanceMapInfo.get(oldValue));
-//                                }
-//                                if (StringUtils.isNotEmpty(newValue)) {
-//                                    issueHistoryRecordDTO.setNewValue(stagesInstanceMapInfo.get(newValue));
-//                                }
-                            }
+                            issueHistoryRecordDTO.setOldValue(dealHistoryStage(map,oldValue));
+                            issueHistoryRecordDTO.setNewValue(dealHistoryStage(map,newValue));
+
                             break;
                         case "优先级":
                             if (StringUtils.isNotEmpty(oldValue)) {
@@ -3491,5 +3491,30 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         return  mapResult;
+    }
+
+    /**
+     * 翻译 操作历史记录的阶段
+     * @param map
+     * @param value
+     * @return
+     */
+    public String  dealHistoryStage( Map<Long,String> map,String value){
+        String result = "";
+        if (StringUtils.isNotEmpty(value)) {
+            String[] strings = value.split("-");
+            List<String> ids =Lists.newArrayList(strings);
+            List<String> names =Lists.newArrayList();
+            for(int i = 0;i<ids.size();i++){
+                String s = ids.get(i);
+                if(NumberUtil.isLong(s)&&map.containsKey(Long.parseLong(s))){
+                    names.add(map.get(Long.parseLong(s)));
+                }
+            }
+            if(CollectionUtils.isNotEmpty(names)){
+             result = String.join("/",names);
+            }
+        }
+        return result;
     }
 }
