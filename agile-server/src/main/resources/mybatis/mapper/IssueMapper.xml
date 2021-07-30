@@ -724,13 +724,13 @@
             <if test="record.teamId != null">
                 team_id = #{record.teamId,jdbcType=BIGINT},
             </if>
-            <if test="startSchedule != null">
+            <if test="record.startSchedule != null">
                 start_schedule = #{record.startSchedule,jdbcType=TINYINT},
             </if>
-            <if test="releaseDate != null">
+            <if test="record.releaseDate != null">
                 release_date = #{record.releaseDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="raiseTestDate != null">
+            <if test="record.raiseTestDate != null">
                 raise_test_date = #{record.raiseTestDate,jdbcType=TIMESTAMP}
             </if>
         </set>
