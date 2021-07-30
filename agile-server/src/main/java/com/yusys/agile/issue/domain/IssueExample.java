@@ -3284,6 +3284,80 @@ public class IssueExample {
             addCriterion("is_cancel not between", value1, value2, "isCancel");
             return (Criteria) this;
         }
+
+        ///////////
+
+        public Criteria andStartScheduleIsNull() {
+            addCriterion("start_schedule is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleIsNotNull() {
+            addCriterion("start_schedule is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleEqualTo(String value) {
+            addCriterion("start_schedule =", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleNotEqualTo(String value) {
+            addCriterion("start_schedule <>", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleGreaterThan(String value) {
+            addCriterion("start_schedule >", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleGreaterThanOrEqualTo(String value) {
+            addCriterion("start_schedule >=", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleLessThan(String value) {
+            addCriterion("start_schedule <", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleLessThanOrEqualTo(String value) {
+            addCriterion("start_schedule <=", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleLike(String value) {
+            addCriterion("start_schedule like", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleNotLike(String value) {
+            addCriterion("start_schedule not like", value, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleIn(List<String> values) {
+            addCriterion("start_schedule in", values, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleNotIn(List<String> values) {
+            addCriterion("start_schedule not in", values, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleBetween(String value1, String value2) {
+            addCriterion("start_schedule between", value1, value2, "startSchedule");
+            return (Criteria) this;
+        }
+
+        public Criteria andStartScheduleNotBetween(String value1, String value2) {
+            addCriterion("start_schedule not between", value1, value2, "startSchedule");
+            return (Criteria) this;
+        }
+
+
     }
 
     public static class Criteria extends GeneratedCriteria {
