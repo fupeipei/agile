@@ -65,7 +65,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             Long filterId = issueFilter.getFilterId();
             String filterName = issueFilter.getName();
             Byte category = issueFilter.getCategory();
-            if (!checkFilterNameUnqiue(filterId, filterName, category)) {
+            if (!checkFilterNameUnqiue(filterId, filterName, category,securityDTO.getTenantCode())) {
                 return ControllerResponse.fail("过滤器名称重复!");
             }
             //
@@ -85,6 +85,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             issueFilter.setCreateTime(new Date());
             issueFilter.setCreateUid(securityDTO.getUserId());
             issueFilter.setCreateName(securityDTO.getUserName());
+            issueFilter.setTenantCode(securityDTO.getTenantCode());
             filterMapper.insert(issueFilter);
 
             //2、根据类别、项目ID，人员ID，查询是否有默认的过滤器，存在，则更新为当前过滤器，不存在，则添加当前过滤器为默认过滤器
@@ -406,7 +407,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         return fieldValues;
     }
 
-    private Boolean checkFilterNameUnqiue(Long filterId, String filterName, Byte category) {
+    private Boolean checkFilterNameUnqiue(Long filterId, String filterName, Byte category,String tenantCode) {
         Boolean flag = true;
         IssueFilterExample filterExample = new IssueFilterExample();
         IssueFilterExample.Criteria criteria = filterExample.createCriteria();
@@ -414,6 +415,9 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                 .andNameEqualTo(filterName);
         if (Optional.ofNullable(filterId).isPresent()) {
             criteria.andFilterIdNotEqualTo(filterId);
+        }
+        if(StringUtils.isNotEmpty(tenantCode)){
+            criteria.andTenantCodeEqualTo(tenantCode);
         }
         List<IssueFilter> issueFilters = filterMapper.selectByExample(filterExample);
         if (CollectionUtils.isNotEmpty(issueFilters)) {
