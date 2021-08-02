@@ -14,7 +14,7 @@
 	<plugins>
 		<plugin interceptor="com.yusys.portal.common.interceptor.TenantInterceptor">
 			<property name="excludeTables" value="sso_user,sso_tenant,sso_user_tenant_rlat,sso_menu,sso_menu_func_rlat,sso_function,sso_func_res_rlat,sso_resource,sso_role,sso_role_func_rlat,
-													header_field,issue_filter,external_api_config,fault_level,fault_type" />
+													header_field,issue_filter,external_api_config,fault_level,fault_type,s_kanban_stage_instance,s_stage_template_config" />
 			<property name="tenantSwitch" value="true"/>
 		</plugin>
 		<plugin interceptor="com.yusys.portal.common.interceptor.MyBatisInsertInterceptor">
