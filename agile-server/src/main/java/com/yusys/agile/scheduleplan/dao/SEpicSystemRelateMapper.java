@@ -30,5 +30,5 @@ public interface SEpicSystemRelateMapper {
 
     int updateByPrimaryKey(SEpicSystemRelate record);
 
-    List<ToDoListDTO> queryToDoList(@Param("epicId")Long epicId,@Param("title")String title,@Param("userId") Long userId);
+    List<ToDoListDTO> queryToDoList(@Param("epicId")Long epicId,@Param("title")String title,@Param("userId") Long userId,@Param("tenantCode")String tenantCode);
 }
