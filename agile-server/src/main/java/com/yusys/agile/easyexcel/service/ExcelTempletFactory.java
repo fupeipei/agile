@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExcelTempletFactory implements ApplicationContextAware {
 
+    private static final String Epic = "Epic";
     private static final String STORY = "Story";
     private static final String TASK = "Task";
 
@@ -24,6 +25,9 @@ public class ExcelTempletFactory implements ApplicationContextAware {
     public static DownloadExcelTempletService get(String type){
         DownloadExcelTempletService downloadExcelTempletService;
         switch (type){
+            case Epic:
+                downloadExcelTempletService = (DownloadExcelTempletService) applicationContext.getBean("epicTemplateDownloadService");
+                break;
             case STORY:
                 downloadExcelTempletService = (DownloadExcelTempletService) applicationContext.getBean("storyTemplateDownloadService");
                 break;
