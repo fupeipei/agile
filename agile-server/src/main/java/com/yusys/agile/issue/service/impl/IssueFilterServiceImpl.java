@@ -22,6 +22,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.util.code.ReflectUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,12 +162,15 @@ public class IssueFilterServiceImpl implements IssueFilterService {
     public ControllerResponse getIssueFilters(Byte category, SecurityDTO securityDTO) {
         try {
             //系统ID
-            Long userId = securityDTO.getUserId();
+            Long userId =  securityDTO.getUserId();
             IssueFilterExample filterExample = new IssueFilterExample();
-            filterExample.createCriteria()
-                    .andCategoryEqualTo(category)
+            IssueFilterExample.Criteria criteriaT = filterExample.createCriteria();
+            criteriaT.andCategoryEqualTo(category)
                     .andCreateUidEqualTo(userId).andStateEqualTo(StateEnum.U.toString());
-
+            String  tenantCode =  securityDTO.getTenantCode();
+            if(StringUtils.isNotEmpty(tenantCode)){
+                criteriaT.andTenantCodeEqualTo(tenantCode);
+            }
             IssueFilterExample filterExample1 = new IssueFilterExample();
             IssueFilterExample.Criteria criteria = filterExample1.createCriteria();
             criteria.andCategoryEqualTo(NumberConstant.ZERO.byteValue())

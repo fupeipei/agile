@@ -674,6 +674,76 @@ public class IssueFilterExample {
             addCriterion("state not between", value1, value2, "state");
             return (Criteria) this;
         }
+
+        public Criteria andTenantCodeIsNull() {
+            addCriterion("tenant_code is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeIsNotNull() {
+            addCriterion("tenant_code is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeEqualTo(String value) {
+            addCriterion("tenant_code =", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeNotEqualTo(String value) {
+            addCriterion("tenant_code <>", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeGreaterThan(String value) {
+            addCriterion("tenant_code >", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeGreaterThanOrEqualTo(String value) {
+            addCriterion("tenant_code >=", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeLessThan(String value) {
+            addCriterion("tenant_code <", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeLessThanOrEqualTo(String value) {
+            addCriterion("tenant_code <=", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeLike(String value) {
+            addCriterion("tenant_code like", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeNotLike(String value) {
+            addCriterion("tenant_code not like", value, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeIn(List<String> values) {
+            addCriterion("tenant_code in", values, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeNotIn(List<String> values) {
+            addCriterion("tenant_code not in", values, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeBetween(String value1, String value2) {
+            addCriterion("tenant_code between", value1, value2, "tenantCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andTenantCodeNotBetween(String value1, String value2) {
+            addCriterion("tenant_code not between", value1, value2, "tenantCode");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

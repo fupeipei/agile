@@ -13,7 +13,7 @@
 	</typeAliases>
 	<plugins>
 		<plugin interceptor="com.yusys.portal.common.interceptor.TenantInterceptor">
-			<property name="excludeTables" value="s_issue,s_header_field,s_issue_filter" />
+			<property name="excludeTables" value="s_issue,s_header_field,s_issue_filter,s_sys_extend_field,s_sys_field,s_sys_extend_field_detail" />
 			<property name="tenantSwitch" value="true"/>
 		</plugin>
 		<plugin interceptor="com.yusys.portal.common.interceptor.MyBatisInsertInterceptor">
