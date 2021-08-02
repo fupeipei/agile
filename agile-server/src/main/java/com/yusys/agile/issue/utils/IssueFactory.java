@@ -1169,6 +1169,7 @@ public class IssueFactory {
      * @param handlers
      * @param issueType
      * @Date: 2021/2/4 16:11
+     *
      * @Description: 设置处理人id列表及状态名称
      * @Param: * @param issueDTOList
      * @Return: void

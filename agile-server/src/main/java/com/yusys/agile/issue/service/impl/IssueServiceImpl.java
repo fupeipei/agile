@@ -138,8 +138,10 @@ public class IssueServiceImpl implements IssueService {
     private static final String STAGEID = "stageId";
     private static final String LANEID = "laneId";
 
-//    @Autowired
-//    private IMailApi iMailApi;
+
+
+
+
 
 
     /**
@@ -772,7 +774,7 @@ public class IssueServiceImpl implements IssueService {
 
     private void setTeamDetail(Map map, STeam sTeam) {
         if (null != sTeam) {
-            map.put("teamName", sTeam.getTeamId());
+            map.put("teamId", sTeam.getTeamId());
             map.put("teamName", sTeam.getTeamName());
             map.put("teamType", sTeam.getTeamType());
         } else {
@@ -995,6 +997,9 @@ public class IssueServiceImpl implements IssueService {
                             if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
                                 issueHistoryRecordDTO.setNewValue(dealHistoryStage(map, newValue));
                             }
+                            issueHistoryRecordDTO.setOldValue(dealHistoryStage(map,oldValue));
+                            issueHistoryRecordDTO.setNewValue(dealHistoryStage(map,newValue));
+
                             break;
                         case "优先级":
                             if (StringUtils.isNotEmpty(oldValue)) {
@@ -2494,7 +2499,7 @@ public class IssueServiceImpl implements IssueService {
             if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
                 Map<String, Map> mapMap = issueMap(null);
                 for (SysExtendFieldDetail s : sysExtendFieldDetailList) {
-                    mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue().trim(), issueType, mapMap));
+                    mapT.put(s.getFieldId(), translateExtendFieldMap(s.getFieldId(), s.getValue().trim(),issueType,mapMap ));
                 }
             }
         }
@@ -2587,7 +2592,6 @@ public class IssueServiceImpl implements IssueService {
     /**
      * 精益看板获取树形工作项列表
      * 默认不展示已归档的feature
-     *
      * @param kanbanId
      * @param issueType
      * @return
@@ -2649,14 +2653,14 @@ public class IssueServiceImpl implements IssueService {
             if (CollectionUtils.isNotEmpty(issueList)) {
                 //处理卡片上显示数据
                 Byte type = issueDTO.getIssueType();
-                if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)) {
+                if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
 
                     issueDTO.setStoryTotalNum(issueList.size());
-                    issueDTO.setStroyFinishNum(getIssueFinishNum(issueId, kanbanId));
-                } else if (IssueTypeEnum.TYPE_STORY.CODE.equals(type)) {
+                    issueDTO.setStroyFinishNum(getIssueFinishNum(issueId,kanbanId));
+                }else if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
 
                     issueDTO.setTaskNum(issueList.size());
-                    issueDTO.setTaskFinishNum(getIssueFinishNum(issueId, kanbanId));
+                    issueDTO.setTaskFinishNum(getIssueFinishNum(issueId,kanbanId));
                 }
 
                 try {
@@ -2672,7 +2676,7 @@ public class IssueServiceImpl implements IssueService {
         }
     }
 
-    private int getIssueFinishNum(Long issueId, Long kanbanId) {
+    private int getIssueFinishNum(Long issueId,Long kanbanId){
         List<Long> laneIds = Lists.newArrayList();
         laneIds.add(LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue());
         laneIds.add(LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue());
@@ -2683,7 +2687,7 @@ public class IssueServiceImpl implements IssueService {
                 .andParentIdEqualTo(issueId)
                 .andLaneIdIn(laneIds);
         long count = issueMapper.countByExample(issueExample);
-        return (int) count;
+        return (int)count;
     }
 
     @Override
@@ -2710,19 +2714,20 @@ public class IssueServiceImpl implements IssueService {
      */
     @Override
     @Transactional
-    public IssueDTO dragIssueCard(Long issueId, Long fromStageId, Long fromLaneId, Long stageId, Long laneId) throws ExecutionException {
+    public IssueDTO dragIssueCard(Long issueId, Long fromStageId,Long fromLaneId,Long stageId, Long laneId) throws ExecutionException {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Long kanbanId = issue.getKanbanId();
+
         SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
         Long teamId = sLeanKanban.getTeamId();
-        Map<Long, String> stageMap = iStageService.getStageMapByTeamId(teamId);
+        Map<Long, String> stageMap= iStageService.getStageMapByTeamId(teamId);
 
         if (!Optional.ofNullable(kanbanId).isPresent()) {
             throw new BusinessException("该工作项不属于精益看板，不能拖拽!");
         }
         issue.setStageId(stageId);
         issue.setLaneId(laneId);
-        if (StageConstant.FirstStageEnum.READY_STAGE.equals(stageId)) {
+        if(StageConstant.FirstStageEnum.READY_STAGE.equals(stageId)){
             throw new BusinessException("工作项不能拖拽到就绪阶段!");
         }
         issueMapper.updateByPrimaryKey(issue);
@@ -2733,14 +2738,14 @@ public class IssueServiceImpl implements IssueService {
         //feature向上汇总改变epic状态
         if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)) {
 
-            createHistory(issueId, fromStageId + "-" + fromLaneId, stageId + "-" + laneId, "阶段id");
+            createHistory(issueId,fromStageId+"-"+ fromLaneId,stageId+"-"+laneId,"阶段id");
             issueUpRegularFactory.commonIssueUpRegular(issueId);
 
         } else if (IssueTypeEnum.TYPE_TASK.CODE.equals(type)) {
             //task改变后状态向 上汇总
             updateTaskParentStatus(issueId, kanbanId);
 
-            createHistory(issueId, stageMap.get(fromLaneId), stageMap.get(laneId), "阶段id");
+            createHistory(issueId,stageMap.get(fromLaneId),stageMap.get(laneId),"阶段id");
 
             Long storyId = issue.getParentId();
             Issue story = issueMapper.selectByPrimaryKey(storyId);
@@ -2763,7 +2768,6 @@ public class IssueServiceImpl implements IssueService {
                     storyDTOS.add(storyDTO);
                     storyDTO.setChildren(taskDTOS);
                     issueDTO.setChildren(storyDTOS);
-                    notifyBaseLine(issue,laneId,stageId);
                     return issueDTO;
                 }
             }
@@ -2771,56 +2775,11 @@ public class IssueServiceImpl implements IssueService {
 
 
         }
-        notifyBaseLine(issue,laneId,stageId);
         return null;
     }
 
-    /**
-     * 通知打基线版本
-     */
-
-
-    private void notifyBaseLine(Issue issue, Long laneId, Long stageId) {
-        Long teamId = issue.getTeamId();
-        SLeanKanbanDTO sLeanKanbanDTO = leanKanbanService.queryLeanKanbanInfo(teamId);
-        if (!Optional.ofNullable(sLeanKanbanDTO).isPresent()
-                || !Optional.ofNullable(stageId).isPresent()
-                || !Optional.ofNullable(laneId).isPresent()) {
-            return;
-        }
-        List<KanbanStageInstanceDTO> kanbanStageInstances = sLeanKanbanDTO.getKanbanStageInstances();
-        if (CollectionUtils.isNotEmpty(kanbanStageInstances) && kanbanStageInstances.size() >= 2) {
-            //大的最终阶段的下一级阶段  而且是下一级阶段中小阶段的完成阶段
-            KanbanStageInstanceDTO kanbanStageInstanceDTO = kanbanStageInstances.get(kanbanStageInstances.size() - 2);
-            List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
-            if (stageId.equals(kanbanStageInstanceDTO.getStageId())
-                    && CollectionUtils.isNotEmpty(secondStages)
-                    && laneId.equals(secondStages.get(secondStages.size() -1).getStageId())) {
-                //发送给拖动卡片的人
-                Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
-                SsoUser ssoUser = iFacadeUserApi.queryUserById(userId);
-                String userMail = ssoUser.getUserMail();
-                String mailContent = String.format("主题：DevOps系统需求-【需求标题%s】代码基线版本管理", issue.getTitle());
-                MailSendDTO mailSendDTO = new MailSendDTO();
-                mailSendDTO.setMailReceivers(userMail);
-                mailSendDTO.setMailSubject(mailContent);
-                mailSendDTO.setMailType(MailTypeEnum.MAIL_TYPE_2.getType());
-                Map<String, String> contentParams = Maps.newHashMap();
-                contentParams.put("featureName",issue.getTitle());
-                contentParams.put("stageName",kanbanStageInstanceDTO.getStageName());
-                contentParams.put("laneName",secondStages.get(secondStages.size() -1).getStageName());
-                mailSendDTO.setTemplateData(contentParams);
-                mailSendDTO.setMailTemplateType(MailTemplateTypeEnum.BASE_LINE_MANAGER.getValue());
-                rabbitTemplate.convertAndSend(FlowConstant.Queue.MAIL_SEND_QUEUE, mailSendDTO);
-            }
-        }
-
-
-    }
-
-
     @Override
-    public void createHistory(Long issueId, String oldMsg, String newMsg, String msg) {
+    public void createHistory(Long issueId,String oldMsg ,String newMsg,String msg) {
         IssueHistoryRecord history = new IssueHistoryRecord();
         history.setOperationField(msg);
         history.setIssueId(issueId);
@@ -2855,17 +2814,17 @@ public class IssueServiceImpl implements IssueService {
         Long kanbanId = issueDTO.getKanbanId();
         Byte type = issueDTO.getIssueType();
 
-        if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)) {
-            issueDTO.setStoryTotalNum(getIssueChildNum(issueId, kanbanId));
-            issueDTO.setStroyFinishNum(getIssueFinishNum(issueId, kanbanId));
+        if(IssueTypeEnum.TYPE_FEATURE.CODE.equals(type)){
+            issueDTO.setStoryTotalNum(getIssueChildNum(issueId,kanbanId));
+            issueDTO.setStroyFinishNum(getIssueFinishNum(issueId,kanbanId));
 
-        } else if (IssueTypeEnum.TYPE_STORY.CODE.equals(type)) {
-            issueDTO.setTaskNum(getIssueChildNum(issueId, kanbanId));
-            issueDTO.setTaskFinishNum(getIssueFinishNum(issueId, kanbanId));
+        }else if(IssueTypeEnum.TYPE_STORY.CODE.equals(type)){
+            issueDTO.setTaskNum(getIssueChildNum(issueId,kanbanId));
+            issueDTO.setTaskFinishNum(getIssueFinishNum(issueId,kanbanId));
         }
     }
 
-    private int getIssueChildNum(Long issueId, Long kanbanId) {
+    private int getIssueChildNum(Long issueId ,Long kanbanId){
         IssueExample example = new IssueExample();
         example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
                 .andKanbanIdTo(kanbanId).andParentIdEqualTo(issueId);
@@ -2949,11 +2908,11 @@ public class IssueServiceImpl implements IssueService {
                                     List<Issue> issues = issueMapper.selectByExample(example);
                                     Set<Long> result = issues.stream().map(issu -> issu.getLaneId()).collect(Collectors.toSet());
                                     //如果feature 下故事都已经完成，则更新feature状态为 系统测试阶段，进行中
-                                    if (result.size() == 1 && result.contains(storyLaneId)) {
+                                    if(result.size() == 1 && result.contains(storyLaneId)){
                                         Issue feature = issueMapper.selectByPrimaryKey(featureId);
                                         Long featureLaneId = feature.getLaneId();
                                         Long featureStageId = feature.getStageId();
-                                        if (Optional.ofNullable(feature).isPresent()) {
+                                        if(Optional.ofNullable(feature).isPresent()){
                                             feature.setStageId(StageConstant.FirstStageEnum.SYS_TEST_STAGE.getValue());
                                             feature.setLaneId(LaneKanbanStageConstant.SystemTestStageEnum.ONGOING.getValue());
                                             issueMapper.updateByPrimaryKeySelective(feature);
@@ -2961,11 +2920,11 @@ public class IssueServiceImpl implements IssueService {
                                             issueUpRegularFactory.commonIssueUpRegular(feature.getIssueId());
 
                                             //创建历史
-                                            createHistory(parentId, stageMap.get(oldLaneId), stageMap.get(storyLaneId), "阶段id");
-                                            createHistory(featureId, featureStageId + "-" + featureLaneId, feature.getStageId() + "-" + feature.getLaneId(), "阶段id");
+                                            createHistory(parentId,stageMap.get(oldLaneId),stageMap.get(storyLaneId),"阶段id");
+                                            createHistory(featureId,featureStageId+"-"+featureLaneId,feature.getStageId()+"-"+feature.getLaneId(),"阶段id");
                                             return;
                                         }
-                                    } else {
+                                    }else {
                                         //向上汇总状态
                                         issueUpRegularFactory.commonIssueUpRegular(story.getIssueId());
                                         return;
@@ -2988,7 +2947,7 @@ public class IssueServiceImpl implements IssueService {
                         issueUpRegularFactory.commonIssueUpRegular(story.getIssueId());
 
                         //创建历史
-                        createHistory(parentId, stageMap.get(oldLaneId), stageMap.get(storyLaneId), "阶段id");
+                        createHistory(parentId,stageMap.get(oldLaneId),stageMap.get(storyLaneId),"阶段id");
                     }
                 }
             }
@@ -3013,41 +2972,41 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void checkIssueState(Long issueId, Long fromStageId, Long fromLaneId, Long toStageId, Long toLaneId, Long fromKanbanId) {
+    public void checkIssueState(Long issueId, Long fromStageId,Long fromLaneId, Long toStageId,Long toLaneId,Long fromKanbanId) {
 
-        loggr.info("校验卡片状态入参: issueId{},fromStageId:{},fromLaneId:{},toStageId:{},toLaneId:{}", issueId, fromStageId, fromLaneId, toStageId, toLaneId);
+        loggr.info("校验卡片状态入参: issueId{},fromStageId:{},fromLaneId:{},toStageId:{},toLaneId:{}",issueId,fromStageId,fromLaneId,toStageId,toLaneId);
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
 
 
-        if (!fromKanbanId.equals(issue.getKanbanId())) {
+        if(!fromKanbanId.equals(issue.getKanbanId())){
             throw new BusinessException("卡片拖动失败,,当前卡片不在此看板,请刷新");
         }
 
         boolean isOrigPosition = true;
         Long laneId = issue.getLaneId();
         Long stageId = issue.getStageId();
-        loggr.info("数据库issue状态: laneId{},stageId{}", laneId, stageId);
+        loggr.info("数据库issue状态: laneId{},stageId{}",laneId,stageId);
         if (fromStageId.equals(stageId)) {
-            if (laneId != null && fromLaneId != null && !laneId.equals(fromLaneId)) {
-                isOrigPosition = false;
-            } else {
-                if ((fromLaneId == null && laneId != null) || (laneId == null && fromLaneId != null)) {
-                    isOrigPosition = false;
+            if(laneId != null && fromLaneId != null && !laneId.equals(fromLaneId)){
+                isOrigPosition =  false;
+            }else {
+                if((fromLaneId == null && laneId != null) || (laneId == null && fromLaneId != null) ){
+                    isOrigPosition =  false;
                 }
             }
-        } else {
+        }else {
             isOrigPosition = false;
         }
 
-        if (!isOrigPosition) {
+        if(!isOrigPosition){
             throw new BusinessException("卡片拖动失败,卡片位置不在当前位置,请刷新");
         }
 
         Long teamId = issue.getTeamId();
-        if (!Optional.ofNullable(teamId).isPresent()) {
+        if(!Optional.ofNullable(teamId).isPresent()){
             Long kanbanId = issue.getKanbanId();
             SLeanKanban sLeanKanban = leanKanbanMapper.selectByPrimaryKey(kanbanId);
-            if (!Optional.ofNullable(sLeanKanban).isPresent()) {
+            if(!Optional.ofNullable(sLeanKanban).isPresent()){
                 throw new BusinessException("当前看板不存在");
             }
             teamId = sLeanKanban.getTeamId();
@@ -3059,21 +3018,21 @@ public class IssueServiceImpl implements IssueService {
             stageIds.add(values[i].getValue());
         }
         stageIds = stageIds.stream().sorted().collect(Collectors.toList());
-        if (stageIds.indexOf(toStageId) < stageIds.indexOf(fromStageId)) {
+        if(stageIds.indexOf(toStageId) < stageIds.indexOf(fromStageId)){
 
             throw new BusinessException("任务卡片不能往回拖动");
         }
 
-        if (fromLaneId != null && toLaneId != null) {
+        if(fromLaneId != null  && toLaneId != null){
             SLeanKanbanDTO leanKanbanDTO = leanKanbanService.queryLeanKanbanInfo(teamId);
             List<KanbanStageInstanceDTO> kanbanStageInstances = leanKanbanDTO.getKanbanStageInstances();
             List<Long> laneIds = Lists.newArrayList();
             kanbanStageInstances.forEach(
                     kanbanStageInstanceDTO -> {
                         List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
-                        if (CollectionUtils.isNotEmpty(secondStages)) {
+                        if(CollectionUtils.isNotEmpty(secondStages)){
                             secondStages.forEach(
-                                    secondStage -> {
+                                    secondStage->{
                                         laneIds.add(secondStage.getStageId());
                                     }
                             );
@@ -3081,18 +3040,18 @@ public class IssueServiceImpl implements IssueService {
                     }
             );
 
-            loggr.info("获取看板:{},所有laneId集合 :{}", leanKanbanDTO.getKanbanName(), JSONObject.toJSONString(laneIds));
-            if (laneIds.indexOf(toLaneId) < laneIds.indexOf(fromLaneId)) {
+            loggr.info("获取看板:{},所有laneId集合 :{}",leanKanbanDTO.getKanbanName(),JSONObject.toJSONString(laneIds));
+            if(laneIds.indexOf(toLaneId) < laneIds.indexOf(fromLaneId)){
 
                 throw new BusinessException("任务卡片不能往回拖动");
             }
         }
 
-        if (IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())) {
+        if(IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())){
             //开发类任务不能拖入测试中
-            if (!TaskTypeEnum.TEST.CODE.equals(issue.getTaskType())) {
+            if(!TaskTypeEnum.TEST.CODE.equals(issue.getTaskType())){
 
-                if (StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(toStageId)) {
+                if(StageConstant.FirstStageEnum.TEST_STAGE.getValue().equals(toStageId)){
                     throw new BusinessException("开发任务不能拖入测试阶段.");
                 }
             }
@@ -3125,7 +3084,7 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         if (Optional.ofNullable(teamId).isPresent()) {
-            Map<Long, List<STeam>> mapSTeam = mapMap.containsKey(MAPSTEAM) ? mapMap.get(MAPSTEAM) : new HashMap<>();
+            Map<Long, List<STeam>> mapSTeam = mapMap.containsKey(MAPSTEAM)?mapMap.get(MAPSTEAM):new HashMap<>();
             if (mapSTeam.containsKey(teamId)) {
                 STeam sTeam = mapSTeam.get(teamId).get(0);
                 map.put("name", sTeam.getTeamName());
@@ -3232,14 +3191,13 @@ public class IssueServiceImpl implements IssueService {
 
     /**
      * 组织基本字段查询条件
-     *
      * @param issueRecord
      * @param issueStringDTO
      */
-    public void orgIssueBasicParams(IssueRecord issueRecord, IssueStringDTO issueStringDTO) throws Exception {
+    public void orgIssueBasicParams(IssueRecord issueRecord,IssueStringDTO issueStringDTO) throws Exception{
 
-        if (Optional.ofNullable(issueStringDTO.getPageNum()).isPresent() &&
-                Optional.ofNullable(issueStringDTO.getPageSize()).isPresent()) {
+        if (Optional.ofNullable(issueStringDTO.getPageNum()).isPresent()&&
+                Optional.ofNullable(issueStringDTO.getPageSize()).isPresent() ) {
             issueRecord.setPageNum(StringUtil.StringtoInteger(issueStringDTO.getPageNum()));
             issueRecord.setPageSize(StringUtil.StringtoInteger(issueStringDTO.getPageSize()));
         }
@@ -3261,11 +3219,11 @@ public class IssueServiceImpl implements IssueService {
          */
         if (StringUtils.isNotEmpty(issueStringDTO.getStageId())) {
             //一级阶段
-            Map<String, String> map = dealStageIdAndLaneId(dealStageIdAndLaneId(Byte.parseByte(issueStringDTO.getIssueType())), issueStringDTO.getStageId());
-            if (StringUtils.isNotEmpty(map.get(STAGEID))) {
-                issueRecord.setStageIds(dealData(map.get(STAGEID), LONG));
+            Map<String,String> map = dealStageIdAndLaneId(dealStageIdAndLaneId(Byte.parseByte(issueStringDTO.getIssueType())),issueStringDTO.getStageId());
+            if(StringUtils.isNotEmpty(map.get(STAGEID))){
+               issueRecord.setStageIds(dealData(map.get(STAGEID), LONG));
             }
-            if (StringUtils.isNotEmpty(map.get(LANEID))) {
+            if(StringUtils.isNotEmpty(map.get(LANEID))){
                 issueRecord.setLaneIds(dealData(map.get(LANEID), LONG));
             }
         }
@@ -3353,32 +3311,32 @@ public class IssueServiceImpl implements IssueService {
         if (StateEnum.E.toString().equals(issue.getState())) {
             throw new BusinessException("工作项不存在");
         }
-        if (!StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(issue.getStageId())) {
+        if(!StageConstant.FirstStageEnum.FINISH_STAGE.getValue().equals(issue.getStageId())){
             throw new BusinessException("非完成阶段不能归档");
         }
-        if (IsAchiveEnum.ACHIVEA_FALSE.CODE.equals(isArchive) || IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())) {
+        if(IsAchiveEnum.ACHIVEA_FALSE.CODE.equals(isArchive) || IsAchiveEnum.ACHIVEA_TRUE.CODE.equals(issue.getIsArchive())){
             throw new BusinessException("已归档不能修改归档状态");
         }
-        if (IssueTypeEnum.TYPE_EPIC.CODE.equals(issue.getIssueType())) {
+        if(IssueTypeEnum.TYPE_EPIC.CODE.equals(issue.getIssueType())){
             Integer count = issueMapper.countIsArchive(issueId);
-            if (count > NumberConstant.ZERO) {
+            if(count > NumberConstant.ZERO){
                 throw new BusinessException("epic下存在未归档的feature不能归档");
             }
         }
         issue.setIsArchive(isArchive);
         issueMapper.updateByPrimaryKeySelective(issue);
-        createIsArhiveHistoryRecords(isArchive, issueDTO);
+        createIsArhiveHistoryRecords(isArchive,issueDTO);
     }
 
     /**
-     * @param isArchive
-     * @param issueDTO
      * @Author maxp2
      * @Date 2021/7/14
      * @Description 是否归档增加操作记录
+     * @param isArchive
+     * @param issueDTO
      * @Return java.util.List<com.yusys.agile.issue.domain.IssueHistoryRecord>
      */
-    private List<IssueHistoryRecord> createIsArhiveHistoryRecords(Byte isArchive, IssueDTO issueDTO) {
+    private List<IssueHistoryRecord> createIsArhiveHistoryRecords(Byte isArchive,IssueDTO issueDTO) {
         List<IssueHistoryRecord> records = new ArrayList<>();
         IssueHistoryRecord nameHistory = IssueHistoryRecordFactory.createHistoryRecord(
                 issueDTO.getIssueId(), IsCustomEnum.FALSE.getValue(), IssueHistoryRecordTypeEnum.TYPE_NORMAL_TEXT.CODE, IssueField.ISARCHIVE.getDesc());
@@ -3555,13 +3513,13 @@ public class IssueServiceImpl implements IssueService {
      * @param value
      * @return
      */
-    public String dealHistoryStage(Map<Long, String> map, String value) {
-        String result = value;
+    public String  dealHistoryStage( Map<Long,String> map,String value){
+        String result = "";
         if (StringUtils.isNotEmpty(value)) {
             String[] strings = value.split("-");
-            List<String> ids = Lists.newArrayList(strings);
-            List<String> names = Lists.newArrayList(strings);
-            for (int i = 0; i < ids.size(); i++) {
+            List<String> ids =Lists.newArrayList(strings);
+            List<String> names =Lists.newArrayList();
+            for(int i = 0;i<ids.size();i++){
                 String s = ids.get(i);
                 if (NumberUtil.isLong(s) && map.containsKey(Long.parseLong(s))) {
                     names.add(map.get(Long.parseLong(s)));

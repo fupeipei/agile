@@ -163,7 +163,9 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         }
 
         log.info("查询待办入参epicId:{},target:{}",epicId,target);
-        List<ToDoListDTO> toDoListDTOS = epicSystemRelateMapper.queryToDoList(epicId, target, userId);
+
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        List<ToDoListDTO> toDoListDTOS = epicSystemRelateMapper.queryToDoList(epicId, target, userId,tenantCode);
         if(CollectionUtils.isNotEmpty(toDoListDTOS)){
             for(ToDoListDTO toDoListDTO:toDoListDTOS){
                 SsoUser ssoUserInfo = getSsoUserInfo(toDoListDTO.getCreateUid());
