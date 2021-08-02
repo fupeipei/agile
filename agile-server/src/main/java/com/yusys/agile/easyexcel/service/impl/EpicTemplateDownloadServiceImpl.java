@@ -51,7 +51,7 @@ public class EpicTemplateDownloadServiceImpl implements DownloadExcelTempletServ
         Map<Integer,String []> mapDropDown = new HashMap<>();
         String[] epicPriority = getEpicPriority();
         String[] epicImportance = getEpicImportance();
-        mapDropDown.put(4,epicPriority);
+        mapDropDown.put(5,epicPriority);
         mapDropDown.put(6,epicImportance);
         return mapDropDown;
     }

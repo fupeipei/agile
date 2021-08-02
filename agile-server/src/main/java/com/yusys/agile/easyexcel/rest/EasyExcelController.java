@@ -117,4 +117,21 @@ public class EasyExcelController {
         }
     }
 
+
+    @ApiOperation("epic导入")
+    @PostMapping("/uploadEpics")
+    public ControllerResponse uploadEpics(@RequestParam("file") MultipartFile file) {
+        FileInfo fileInfo;
+        try {
+            ExcelCommentField field = new ExcelCommentField();
+            fileInfo = iExcelService.uploadEpics(file,field);
+        } catch (Exception e) {
+            return ControllerResponse.fail("上传失败:" + e.getMessage());
+        }
+        if (Optional.ofNullable(fileInfo).isPresent()) {
+            return ControllerResponse.fail(fileInfo);
+        }
+        return ControllerResponse.success("上传成功");
+    }
+
 }
