@@ -8,6 +8,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.enums.IsAchiveEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
+import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.service.EpicService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -63,6 +64,13 @@ public class EpicServiceImpl implements EpicService {
 
     @Override
     public Long createEpic(IssueDTO issueDTO) {
+        //设置默认创建
+        Long[] stages = issueDTO.getStages();
+        if(!Optional.ofNullable(stages).isPresent()){
+            stages = new Long[]{
+                    StageConstant.FirstStageEnum.READY_STAGE.getValue()};
+            issueDTO.setStages(stages);
+        }
         Long issueId = issueFactory.createIssue(issueDTO, "业务需求名称已存在！", "新增业务需求", IssueTypeEnum.TYPE_EPIC.CODE);
         ScheduleplanDTO scheduleplan = issueDTO.getScheduleplan();
         if(Optional.ofNullable(scheduleplan).isPresent()){
