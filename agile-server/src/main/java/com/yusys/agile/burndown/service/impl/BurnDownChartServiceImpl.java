@@ -127,17 +127,18 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
 
     /**
      * 创建每日剩余故事数
-     * @param sprintId
+     * @param sprint
      * @param sprintTime
      * @param storyId
      * @param storyState
      * @return
      */
-    private BurnDownChartStory generateChartStory(Long sprintId, Date sprintTime, Long storyId, Long storyState) {
+    private BurnDownChartStory generateChartStory(SSprintWithBLOBs sprint, Date sprintTime, Long storyId, Long storyState) {
         BurnDownChartStory chartStory = new BurnDownChartStory();
-        chartStory.setSprintId(sprintId);
+        chartStory.setSprintId(sprint.getSprintId());
         chartStory.setSprintTime(sprintTime);
         chartStory.setStoryId(storyId.toString());
+        chartStory.setTenantCode(sprint.getTenantCode());
         if (null != storyState) {
             chartStory.setStoryState(storyState.byteValue());
         }
@@ -319,20 +320,19 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
 //    }
 
     private void calculateStorys(SSprintWithBLOBs sprint) {
-        Long sprintId = sprint.getSprintId();
         Date target = DateUtil.preDay(new Date());
         if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
-            List<Issue> stories = issueMapper.getStoryBySprintId(sprintId);
+            List<Issue> stories = issueMapper.getStoryBySprintId(sprint.getSprintId());
             if (CollectionUtils.isNotEmpty(stories)) {
                 for (Issue story : stories) {
                     if (story != null) {
                         Long laneId = story.getLaneId();
-                        BurnDownChartStory burnDownChartStory = generateChartStory(sprintId, target, story.getIssueId(), laneId);
+                        BurnDownChartStory burnDownChartStory = generateChartStory(sprint, target, story.getIssueId(), laneId);
                         burnDownChartStoryDao.create(burnDownChartStory);
                     }
                 }
             } else {
-                BurnDownChartStory chartStory = generateChartStory(sprintId, target, -1L, -1L);
+                BurnDownChartStory chartStory = generateChartStory(sprint, target, -1L, -1L);
                 burnDownChartStoryDao.create(chartStory);
             }
         }
