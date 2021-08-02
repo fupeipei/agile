@@ -2768,6 +2768,7 @@ public class IssueServiceImpl implements IssueService {
                     storyDTOS.add(storyDTO);
                     storyDTO.setChildren(taskDTOS);
                     issueDTO.setChildren(storyDTOS);
+                    notifyBaseLine(issue,laneId,stageId);
                     return issueDTO;
                 }
             }
@@ -2775,7 +2776,52 @@ public class IssueServiceImpl implements IssueService {
 
 
         }
+        notifyBaseLine(issue,laneId,stageId);
         return null;
+    }
+
+
+    /**
+     * 通知打基线版本
+     */
+
+
+    private void notifyBaseLine(Issue issue, Long laneId, Long stageId) {
+        Long teamId = issue.getTeamId();
+        SLeanKanbanDTO sLeanKanbanDTO = leanKanbanService.queryLeanKanbanInfo(teamId);
+        if (!Optional.ofNullable(sLeanKanbanDTO).isPresent()
+                || !Optional.ofNullable(stageId).isPresent()
+                || !Optional.ofNullable(laneId).isPresent()) {
+            return;
+        }
+        List<KanbanStageInstanceDTO> kanbanStageInstances = sLeanKanbanDTO.getKanbanStageInstances();
+        if (CollectionUtils.isNotEmpty(kanbanStageInstances) && kanbanStageInstances.size() >= 2) {
+            //大的最终阶段的下一级阶段  而且是下一级阶段中小阶段的完成阶段
+            KanbanStageInstanceDTO kanbanStageInstanceDTO = kanbanStageInstances.get(kanbanStageInstances.size() - 2);
+            List<KanbanStageInstanceDTO> secondStages = kanbanStageInstanceDTO.getSecondStages();
+            if (stageId.equals(kanbanStageInstanceDTO.getStageId())
+                    && CollectionUtils.isNotEmpty(secondStages)
+                    && laneId.equals(secondStages.get(secondStages.size() -1).getStageId())) {
+                //发送给拖动卡片的人
+                Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+                SsoUser ssoUser = iFacadeUserApi.queryUserById(userId);
+                String userMail = ssoUser.getUserMail();
+                String mailContent = String.format("主题：DevOps系统需求-【需求标题%s】代码基线版本管理", issue.getTitle());
+                MailSendDTO mailSendDTO = new MailSendDTO();
+                mailSendDTO.setMailReceivers(userMail);
+                mailSendDTO.setMailSubject(mailContent);
+                mailSendDTO.setMailType(MailTypeEnum.MAIL_TYPE_2.getType());
+                Map<String, String> contentParams = Maps.newHashMap();
+                contentParams.put("featureName",issue.getTitle());
+                contentParams.put("stageName",kanbanStageInstanceDTO.getStageName());
+                contentParams.put("laneName",secondStages.get(secondStages.size() -1).getStageName());
+                mailSendDTO.setTemplateData(contentParams);
+                mailSendDTO.setMailTemplateType(MailTemplateTypeEnum.BASE_LINE_MANAGER.getValue());
+                rabbitTemplate.convertAndSend(FlowConstant.Queue.MAIL_SEND_QUEUE, mailSendDTO);
+            }
+        }
+
+
     }
 
     @Override
