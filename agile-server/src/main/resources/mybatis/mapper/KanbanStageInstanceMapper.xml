@@ -792,5 +792,6 @@
      and stage_type = 2
      and  level  = 1
      and  kanban_id = #{kanbanId}
+     order by order_id
   </select>
 </mapper>
