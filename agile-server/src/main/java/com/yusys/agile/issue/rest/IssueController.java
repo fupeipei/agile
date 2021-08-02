@@ -53,7 +53,7 @@ public class IssueController {
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
-    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map, @RequestHeader(name = "systemId") Long systemId) {
+    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map, @RequestHeader(name = "systemId",required = false) Long systemId) {
         PageInfo result;
         try {
         if(systemId!=null){
