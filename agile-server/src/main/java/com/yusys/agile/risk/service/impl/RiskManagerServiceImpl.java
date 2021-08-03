@@ -16,6 +16,7 @@ import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.util.code.ReflectUtil;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -66,8 +67,8 @@ public class RiskManagerServiceImpl implements RiskManagerService {
             Optional.ofNullable(riskManager1).orElseThrow(() -> new BusinessException("更新的风险信息不存在"));
             riskManagerMapper.updateByPrimaryKeySelective(riskManager);
         } else {
-            riskManager.setCreateName(securityDTO.getUserName());
-            riskManager.setProjectId(securityDTO.getProjectId());
+            riskManager.setCreateName(UserThreadLocalUtil.getUserInfo().getUserName());
+            riskManager.setProjectId(riskManagerDTO.getProjectId());
             riskManagerMapper.insert(riskManager);
         }
     }
