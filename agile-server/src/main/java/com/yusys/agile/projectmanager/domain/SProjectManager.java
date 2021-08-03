@@ -16,11 +16,11 @@ public class SProjectManager implements Serializable {
 
     private Date endTime;
 
-    private Integer projectStatus;
+    private Long projectStatusId;
 
-    private Integer projectType;
+    private Long projectTypeId;
 
-    private Integer researchModel;
+    private Long researchModelId;
 
     private Integer relProductId;
 
@@ -90,28 +90,28 @@ public class SProjectManager implements Serializable {
         this.endTime = endTime;
     }
 
-    public Integer getProjectStatus() {
-        return projectStatus;
+    public Long getProjectStatusId() {
+        return projectStatusId;
     }
 
-    public void setProjectStatus(Integer projectStatus) {
-        this.projectStatus = projectStatus;
+    public void setProjectStatusId(Long projectStatusId) {
+        this.projectStatusId = projectStatusId;
     }
 
-    public Integer getProjectType() {
-        return projectType;
+    public Long getProjectTypeId() {
+        return projectTypeId;
     }
 
-    public void setProjectType(Integer projectType) {
-        this.projectType = projectType;
+    public void setProjectTypeId(Long projectTypeId) {
+        this.projectTypeId = projectTypeId;
     }
 
-    public Integer getResearchModel() {
-        return researchModel;
+    public Long getResearchModelId() {
+        return researchModelId;
     }
 
-    public void setResearchModel(Integer researchModel) {
-        this.researchModel = researchModel;
+    public void setResearchModelId(Long researchModelId) {
+        this.researchModelId = researchModelId;
     }
 
     public Integer getRelProductId() {
