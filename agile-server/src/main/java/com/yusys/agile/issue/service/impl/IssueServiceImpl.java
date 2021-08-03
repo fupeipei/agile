@@ -3569,7 +3569,7 @@ public class IssueServiceImpl implements IssueService {
                 result = String.join("/", names);
             }
         }
-        if(StringUtils.isEmpty(value)){
+        if(StringUtils.isEmpty(result)){
             result = value;
         }
         return result;
