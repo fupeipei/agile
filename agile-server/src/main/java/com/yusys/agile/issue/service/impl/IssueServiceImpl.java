@@ -991,12 +991,6 @@ public class IssueServiceImpl implements IssueService {
                     switch (operationField) {
                         case "阶段id":
                         case "二阶段状态id":
-                            if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
-                                issueHistoryRecordDTO.setOldValue(dealHistoryStage(map, oldValue));
-                            }
-                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
-                                issueHistoryRecordDTO.setNewValue(dealHistoryStage(map, newValue));
-                            }
                             issueHistoryRecordDTO.setOldValue(dealHistoryStage(map,oldValue));
                             issueHistoryRecordDTO.setNewValue(dealHistoryStage(map,newValue));
 
@@ -3574,6 +3568,9 @@ public class IssueServiceImpl implements IssueService {
             if (CollectionUtils.isNotEmpty(names)) {
                 result = String.join("/", names);
             }
+        }
+        if(StringUtils.isEmpty(value)){
+            result = value;
         }
         return result;
     }
