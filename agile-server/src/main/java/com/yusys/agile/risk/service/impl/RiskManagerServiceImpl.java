@@ -48,7 +48,6 @@ public class RiskManagerServiceImpl implements RiskManagerService {
 
         RiskManagerExample riskManagerExample = new RiskManagerExample();
         RiskManagerExample.Criteria criteria = riskManagerExample.createCriteria();
-        criteria.andProjectIdEqualTo(securityDTO.getProjectId());
         if (StringUtils.isNotEmpty(title)) {
             criteria.andTitleLike(StringUtils.join(StringConstant.PERCENT_SIGN, title, StringConstant.PERCENT_SIGN));
         }
