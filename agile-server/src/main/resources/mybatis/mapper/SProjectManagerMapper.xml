@@ -11,8 +11,6 @@
     <result column="project_status_id" jdbcType="BIGINT" property="projectStatusId" />
     <result column="project_type_id" jdbcType="BIGINT" property="projectTypeId" />
     <result column="research_model_id" jdbcType="BIGINT" property="researchModelId" />
-    <result column="rel_product_id" jdbcType="INTEGER" property="relProductId" />
-    <result column="rel_system_id" jdbcType="INTEGER" property="relSystemId" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
@@ -83,8 +81,8 @@
   </sql>
   <sql id="Base_Column_List">
     project_id, project_name, project_code, principal, start_time, end_time, project_status_id, 
-    project_type_id, research_model_id, rel_product_id, rel_system_id, create_uid, create_time, 
-    update_uid, update_time, tenant_code, state
+    project_type_id, research_model_id, create_uid, create_time, update_uid, update_time, 
+    tenant_code, state
   </sql>
   <sql id="Blob_Column_List">
     project_content
@@ -141,17 +139,15 @@
     insert into s_project_manager (project_id, project_name, project_code, 
       principal, start_time, end_time, 
       project_status_id, project_type_id, research_model_id, 
-      rel_product_id, rel_system_id, create_uid, 
-      create_time, update_uid, update_time, 
-      tenant_code, state, project_content
-      )
+      create_uid, create_time, update_uid, 
+      update_time, tenant_code, state, 
+      project_content)
     values (#{projectId,jdbcType=BIGINT}, #{projectName,jdbcType=VARCHAR}, #{projectCode,jdbcType=VARCHAR}, 
       #{principal,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{projectStatusId,jdbcType=BIGINT}, #{projectTypeId,jdbcType=BIGINT}, #{researchModelId,jdbcType=BIGINT}, 
-      #{relProductId,jdbcType=INTEGER}, #{relSystemId,jdbcType=INTEGER}, #{createUid,jdbcType=BIGINT}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{tenantCode,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, #{projectContent,jdbcType=LONGVARCHAR}
-      )
+      #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, 
+      #{projectContent,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectManager">
     insert into s_project_manager
@@ -182,12 +178,6 @@
       </if>
       <if test="researchModelId != null">
         research_model_id,
-      </if>
-      <if test="relProductId != null">
-        rel_product_id,
-      </if>
-      <if test="relSystemId != null">
-        rel_system_id,
       </if>
       <if test="createUid != null">
         create_uid,
@@ -238,12 +228,6 @@
       </if>
       <if test="researchModelId != null">
         #{researchModelId,jdbcType=BIGINT},
-      </if>
-      <if test="relProductId != null">
-        #{relProductId,jdbcType=INTEGER},
-      </if>
-      <if test="relSystemId != null">
-        #{relSystemId,jdbcType=INTEGER},
       </if>
       <if test="createUid != null">
         #{createUid,jdbcType=BIGINT},
@@ -304,12 +288,6 @@
       <if test="record.researchModelId != null">
         research_model_id = #{record.researchModelId,jdbcType=BIGINT},
       </if>
-      <if test="record.relProductId != null">
-        rel_product_id = #{record.relProductId,jdbcType=INTEGER},
-      </if>
-      <if test="record.relSystemId != null">
-        rel_system_id = #{record.relSystemId,jdbcType=INTEGER},
-      </if>
       <if test="record.createUid != null">
         create_uid = #{record.createUid,jdbcType=BIGINT},
       </if>
@@ -347,8 +325,6 @@
       project_status_id = #{record.projectStatusId,jdbcType=BIGINT},
       project_type_id = #{record.projectTypeId,jdbcType=BIGINT},
       research_model_id = #{record.researchModelId,jdbcType=BIGINT},
-      rel_product_id = #{record.relProductId,jdbcType=INTEGER},
-      rel_system_id = #{record.relSystemId,jdbcType=INTEGER},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
@@ -371,8 +347,6 @@
       project_status_id = #{record.projectStatusId,jdbcType=BIGINT},
       project_type_id = #{record.projectTypeId,jdbcType=BIGINT},
       research_model_id = #{record.researchModelId,jdbcType=BIGINT},
-      rel_product_id = #{record.relProductId,jdbcType=INTEGER},
-      rel_system_id = #{record.relSystemId,jdbcType=INTEGER},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
@@ -410,12 +384,6 @@
       <if test="researchModelId != null">
         research_model_id = #{researchModelId,jdbcType=BIGINT},
       </if>
-      <if test="relProductId != null">
-        rel_product_id = #{relProductId,jdbcType=INTEGER},
-      </if>
-      <if test="relSystemId != null">
-        rel_system_id = #{relSystemId,jdbcType=INTEGER},
-      </if>
       <if test="createUid != null">
         create_uid = #{createUid,jdbcType=BIGINT},
       </if>
@@ -450,8 +418,6 @@
       project_status_id = #{projectStatusId,jdbcType=BIGINT},
       project_type_id = #{projectTypeId,jdbcType=BIGINT},
       research_model_id = #{researchModelId,jdbcType=BIGINT},
-      rel_product_id = #{relProductId,jdbcType=INTEGER},
-      rel_system_id = #{relSystemId,jdbcType=INTEGER},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_uid = #{updateUid,jdbcType=BIGINT},
@@ -471,8 +437,6 @@
       project_status_id = #{projectStatusId,jdbcType=BIGINT},
       project_type_id = #{projectTypeId,jdbcType=BIGINT},
       research_model_id = #{researchModelId,jdbcType=BIGINT},
-      rel_product_id = #{relProductId,jdbcType=INTEGER},
-      rel_system_id = #{relSystemId,jdbcType=INTEGER},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_uid = #{updateUid,jdbcType=BIGINT},

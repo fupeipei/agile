@@ -22,10 +22,6 @@ public class SProjectManager implements Serializable {
 
     private Long researchModelId;
 
-    private Integer relProductId;
-
-    private Integer relSystemId;
-
     private Long createUid;
 
     private Date createTime;
@@ -112,22 +108,6 @@ public class SProjectManager implements Serializable {
 
     public void setResearchModelId(Long researchModelId) {
         this.researchModelId = researchModelId;
-    }
-
-    public Integer getRelProductId() {
-        return relProductId;
-    }
-
-    public void setRelProductId(Integer relProductId) {
-        this.relProductId = relProductId;
-    }
-
-    public Integer getRelSystemId() {
-        return relSystemId;
-    }
-
-    public void setRelSystemId(Integer relSystemId) {
-        this.relSystemId = relSystemId;
     }
 
     public Long getCreateUid() {
