@@ -2,12 +2,13 @@ package com.yusys.agile.projectmanager.rest;
 
 
 import com.github.pagehelper.PageInfo;
-import com.yusys.agile.projectmanager.domain.SStaticProjectData;
+import com.yusys.agile.projectmanager.domain.SProjectManager;
 import com.yusys.agile.projectmanager.dto.ProjectDataDto;
 import com.yusys.agile.projectmanager.dto.ProjectDemandDto;
 import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,7 +90,31 @@ public class SProjectManagerController {
 
     }
 
+    /**
+     * @Author fupp1
+     * @Description 获取所有项目信息
+     * @Date 20:12 2021/8/4
+     * @Param []
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     **/
+    @GetMapping("/queryAllProjectManager")
+    public ControllerResponse queryProjectManagers(){
+        List<SProjectManager> sProjectManagers = projectManagerService.queryProjectManagers();
+        return ControllerResponse.success(sProjectManagers);
+    }
 
+    /**
+     * @Author fupp1
+     * @Description 获取项目下所有成员
+     * @Date 20:20 2021/8/4
+     * @Param [projectId]
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     **/
+    @GetMapping("/queryUserByProjectId")
+    public ControllerResponse queryUserByProjectId(@RequestParam("projectId") Long projectId){
+        List<SsoUser>  ssoUsers = projectManagerService.queryUserByProjectId(projectId);
+        return ControllerResponse.success(ssoUsers);
+    }
     /**
      * 查询需求列表
      * @return
