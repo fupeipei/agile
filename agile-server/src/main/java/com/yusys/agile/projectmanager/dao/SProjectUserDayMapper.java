@@ -3,7 +3,6 @@ package com.yusys.agile.projectmanager.dao;
 import com.yusys.agile.projectmanager.domain.SProjectUserDay;
 import com.yusys.agile.projectmanager.domain.SProjectUserDayExample;
 import java.util.List;
-import java.util.Map;
 
 import com.yusys.agile.projectmanager.dto.ProjectUserTotalHourDto;
 import org.apache.ibatis.annotations.Param;
@@ -13,7 +12,7 @@ public interface SProjectUserDayMapper {
 
     int deleteByExample(SProjectUserDayExample example);
 
-    int deleteByPrimaryKey(Integer dayId);
+    int deleteByPrimaryKey(Long dayId);
 
     int insert(SProjectUserDay record);
 
@@ -23,7 +22,7 @@ public interface SProjectUserDayMapper {
 
     List<SProjectUserDay> selectByExample(SProjectUserDayExample example);
 
-    SProjectUserDay selectByPrimaryKey(Integer dayId);
+    SProjectUserDay selectByPrimaryKey(Long dayId);
 
     int updateByExampleSelective(@Param("record") SProjectUserDay record, @Param("example") SProjectUserDayExample example);
 
@@ -37,6 +36,6 @@ public interface SProjectUserDayMapper {
 
     int updateByPrimaryKey(SProjectUserDay record);
 
-    List<ProjectUserTotalHourDto> getTotalDays(@Param("projectId") Integer projectId, @Param("userId") Long userId,
+    List<ProjectUserTotalHourDto> getTotalDays(@Param("projectId") Long projectId, @Param("userId") Long userId,
                                                @Param("startDate") String startDate, @Param("endDate") String endDate);
 }

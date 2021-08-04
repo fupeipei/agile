@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 public class SProjectUserDay implements Serializable {
-    private Integer dayId;
+    private Long dayId;
 
     private Integer reallyWorkload;
 
@@ -15,7 +15,7 @@ public class SProjectUserDay implements Serializable {
 
     private Long workUid;
 
-    private Integer projectId;
+    private Long projectId;
 
     private String state;
 

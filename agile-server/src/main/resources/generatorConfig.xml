@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration>
 	<classPathEntry
-			location="D:\maven\apache-maven-3.3.9\repository1\mysql\mysql-connector-java\8.0.13\mysql-connector-java-8.0.13.jar" />
+			location="C:/Users/move9/.m2/repository/mysql/mysql-connector-java/8.0.25/mysql-connector-java-8.0.25.jar" />
 	<context id="context">
 		<!-- 生成的pojo，将implements Serializable-->
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
@@ -51,6 +51,8 @@
 		<!--<table tableName="s_project_manager"/>-->
 		<!--<table tableName="s_project_system_rel"/>-->
 		<!--<table tableName="s_project_user_rel"/>-->
+		<!--<table tableName="s_project_user_day"/>-->
+		<!--<table tableName="s_project_user_hour"/>-->
 
 	</context>
 </generatorConfiguration>

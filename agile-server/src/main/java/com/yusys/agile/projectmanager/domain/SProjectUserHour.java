@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 @Data
 public class SProjectUserHour implements Serializable {
-    private Integer hourId;
+    private Long hourId;
 
     private Integer reallyWorkload;
 
@@ -16,9 +16,9 @@ public class SProjectUserHour implements Serializable {
 
     private Long issueId;
 
-    private Integer projectId;
+    private Long projectId;
 
-    private Integer dayId;
+    private Long dayId;
 
     private String state;
 
