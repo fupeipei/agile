@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.yusys.agile.projectmanager.domain.SStaticProjectData;
 import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
-import com.yusys.portal.model.facade.entity.SsoUser;
 
 import java.util.List;
 
@@ -19,4 +18,6 @@ public interface ProjectManagerService {
     ProjectManagerDto queryProjectManagerByProjectId(Long projectId);
 
     List<SsoUserDTO> querySsoUserByProjectId(Long projectId);
+
+    ProjectManagerDto updateProjectManager(ProjectManagerDto projectManagerDto);
 }

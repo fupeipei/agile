@@ -168,6 +168,40 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
         return userList;
     }
 
+    @Override
+    @Transactional
+    public ProjectManagerDto updateProjectManager(ProjectManagerDto projectManagerDto) {
+        //
+        SProjectManager sProjectManager = ReflectUtil.copyProperties(projectManagerDto, SProjectManager.class);
+        int i = sProjectManagerMapper.updateByPrimaryKeySelective(sProjectManager);
+        //保存人员
+        SProjectUserRelExample sProjectUserRelExample = new SProjectUserRelExample();
+        sProjectUserRelExample.createCriteria()
+                .andProjectIdEqualTo(projectManagerDto.getProjectId());
+        sProjectUserRelMapper.deleteByExample(sProjectUserRelExample);
+
+        List<Long> userIds = projectManagerDto.getUserIds();
+        Long projectId = sProjectManager.getProjectId();
+        List<SProjectUserRel> sProjectUserRels = buildProjectUserRels(projectId, userIds);
+        sProjectUserRelMapper.batchInsertProjectUsers(sProjectUserRels);
+        //保存 产品线
+        SProjectProductLineRelExample sProjectProductLineRelExample = new SProjectProductLineRelExample();
+        sProjectProductLineRelExample.createCriteria().andProjectIdEqualTo(projectManagerDto.getProjectId());
+        sProjectProductLineRelMapper.deleteByExample(sProjectProductLineRelExample);
+
+        List<SProjectProductLineRel> sProjectProductLineRels = buildSProjectProductLineRel(projectId, projectManagerDto.getProductIds());
+        sProjectProductLineRelMapper.batchInsertProjectProductLineRel(sProjectProductLineRels);
+        //保存系统
+        SProjectSystemRelExample sProjectSystemRelExample = new SProjectSystemRelExample();
+        sProjectSystemRelExample.createCriteria().andProjectIdEqualTo(projectManagerDto.getProjectId());
+        sProjectSystemRelMapper.deleteByExample(sProjectSystemRelExample);
+
+        List<SProjectSystemRel> sProjectSystemRels = buildSProjectSystemRel(projectId, projectManagerDto.getSystemIds());
+        sProjectSystemRelMapper.batchInsertProjectSystemRelMapper(sProjectSystemRels);
+
+        return projectManagerDto;
+    }
+
     private List<ProjectManagerDto> buildProjectManagerDtoPageInfo (List<ProjectManagerDto> projectManagerDtos){
         List<ProjectManagerDto> result = projectManagerDtos.stream().map(x -> {
             Long principal = x.getPrincipal();
