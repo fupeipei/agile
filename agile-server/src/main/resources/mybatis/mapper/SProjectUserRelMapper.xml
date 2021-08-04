@@ -285,4 +285,11 @@
       )
     </foreach>
   </insert>
+
+  <select id="queryUserIdListByProIdAndUId" resultType="com.yusys.agile.projectmanager.dto.ProjectUserTotalHourDto">
+    SELECT DISTINCT user_id,create_time FROM s_project_user_rel WHERE state = 'U' AND project_id = #{projectId}
+    <if test="null != userId and '' != userId">
+      AND user_id = #{userId}
+    </if>
+  </select>
 </mapper>

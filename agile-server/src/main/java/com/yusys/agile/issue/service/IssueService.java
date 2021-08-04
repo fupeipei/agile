@@ -449,4 +449,13 @@ public interface IssueService {
      */
     void createHistory(Long issueId,String oldMsg ,String newMsg,String msg);
 
+    /**
+     * @Author fupp1
+     * @Description 根据projectId和处理人获取所有的issue
+     * @Date 17:29 2021/8/3
+     * @Param [projectId, securityDTO]
+     * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     **/
+    List<Issue> listIssueOfProjectAndUser(Long projectId, SecurityDTO securityDTO);
+
 }

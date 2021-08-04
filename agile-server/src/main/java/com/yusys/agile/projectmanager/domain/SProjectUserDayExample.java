@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SProjectUserHourExample {
+public class SProjectUserDayExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public SProjectUserHourExample() {
+    public SProjectUserDayExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -105,63 +105,63 @@ public class SProjectUserHourExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andHourIdIsNull() {
-            addCriterion("hour_id is null");
+        public Criteria andDayIdIsNull() {
+            addCriterion("day_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdIsNotNull() {
-            addCriterion("hour_id is not null");
+        public Criteria andDayIdIsNotNull() {
+            addCriterion("day_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdEqualTo(Integer value) {
-            addCriterion("hour_id =", value, "hourId");
+        public Criteria andDayIdEqualTo(Integer value) {
+            addCriterion("day_id =", value, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdNotEqualTo(Integer value) {
-            addCriterion("hour_id <>", value, "hourId");
+        public Criteria andDayIdNotEqualTo(Integer value) {
+            addCriterion("day_id <>", value, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdGreaterThan(Integer value) {
-            addCriterion("hour_id >", value, "hourId");
+        public Criteria andDayIdGreaterThan(Integer value) {
+            addCriterion("day_id >", value, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("hour_id >=", value, "hourId");
+        public Criteria andDayIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("day_id >=", value, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdLessThan(Integer value) {
-            addCriterion("hour_id <", value, "hourId");
+        public Criteria andDayIdLessThan(Integer value) {
+            addCriterion("day_id <", value, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdLessThanOrEqualTo(Integer value) {
-            addCriterion("hour_id <=", value, "hourId");
+        public Criteria andDayIdLessThanOrEqualTo(Integer value) {
+            addCriterion("day_id <=", value, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdIn(List<Integer> values) {
-            addCriterion("hour_id in", values, "hourId");
+        public Criteria andDayIdIn(List<Integer> values) {
+            addCriterion("day_id in", values, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdNotIn(List<Integer> values) {
-            addCriterion("hour_id not in", values, "hourId");
+        public Criteria andDayIdNotIn(List<Integer> values) {
+            addCriterion("day_id not in", values, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdBetween(Integer value1, Integer value2) {
-            addCriterion("hour_id between", value1, value2, "hourId");
+        public Criteria andDayIdBetween(Integer value1, Integer value2) {
+            addCriterion("day_id between", value1, value2, "dayId");
             return (Criteria) this;
         }
 
-        public Criteria andHourIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("hour_id not between", value1, value2, "hourId");
+        public Criteria andDayIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("day_id not between", value1, value2, "dayId");
             return (Criteria) this;
         }
 
@@ -345,66 +345,6 @@ public class SProjectUserHourExample {
             return (Criteria) this;
         }
 
-        public Criteria andIssueIdIsNull() {
-            addCriterion("issue_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdIsNotNull() {
-            addCriterion("issue_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdEqualTo(Long value) {
-            addCriterion("issue_id =", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotEqualTo(Long value) {
-            addCriterion("issue_id <>", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdGreaterThan(Long value) {
-            addCriterion("issue_id >", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("issue_id >=", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdLessThan(Long value) {
-            addCriterion("issue_id <", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdLessThanOrEqualTo(Long value) {
-            addCriterion("issue_id <=", value, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdIn(List<Long> values) {
-            addCriterion("issue_id in", values, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotIn(List<Long> values) {
-            addCriterion("issue_id not in", values, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdBetween(Long value1, Long value2) {
-            addCriterion("issue_id between", value1, value2, "issueId");
-            return (Criteria) this;
-        }
-
-        public Criteria andIssueIdNotBetween(Long value1, Long value2) {
-            addCriterion("issue_id not between", value1, value2, "issueId");
-            return (Criteria) this;
-        }
-
         public Criteria andProjectIdIsNull() {
             addCriterion("project_id is null");
             return (Criteria) this;
@@ -462,66 +402,6 @@ public class SProjectUserHourExample {
 
         public Criteria andProjectIdNotBetween(Integer value1, Integer value2) {
             addCriterion("project_id not between", value1, value2, "projectId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdIsNull() {
-            addCriterion("day_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdIsNotNull() {
-            addCriterion("day_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdEqualTo(Integer value) {
-            addCriterion("day_id =", value, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdNotEqualTo(Integer value) {
-            addCriterion("day_id <>", value, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdGreaterThan(Integer value) {
-            addCriterion("day_id >", value, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("day_id >=", value, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdLessThan(Integer value) {
-            addCriterion("day_id <", value, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdLessThanOrEqualTo(Integer value) {
-            addCriterion("day_id <=", value, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdIn(List<Integer> values) {
-            addCriterion("day_id in", values, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdNotIn(List<Integer> values) {
-            addCriterion("day_id not in", values, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdBetween(Integer value1, Integer value2) {
-            addCriterion("day_id between", value1, value2, "dayId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDayIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("day_id not between", value1, value2, "dayId");
             return (Criteria) this;
         }
 
