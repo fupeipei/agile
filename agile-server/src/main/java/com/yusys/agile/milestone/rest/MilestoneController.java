@@ -51,17 +51,13 @@ public class MilestoneController {
 
 
     /**
-     * 功能描述:修改里程碑
-     *
+     * 修改里程碑
      * @param milestoneDTO
-     * @param projectId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/8/13
+     * @return
      */
     @PostMapping("/editMilestone")
-    public ControllerResponse editMilestone(@RequestBody MilestoneDTO milestoneDTO, @RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse editMilestone(@RequestBody MilestoneDTO milestoneDTO) {
         try {
-            milestoneDTO.setProjectId(projectId);
             return ControllerResponse.success(milestoneService.editMilestone(milestoneDTO));
         } catch (Exception e) {
             LOGGER.error("修改里程碑失败！e:{}" + e);
@@ -84,14 +80,13 @@ public class MilestoneController {
     }
 
     /**
-     * 功能描述: 按时间顺序展示里程碑
+     * 按时间顺序展示里程碑
      *
      * @param projectId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/8/17
+     * @return
      */
     @GetMapping("/listMilestones")
-    public ControllerResponse listMilestones(@RequestHeader(name = "projectId") Long projectId) {
+    public ControllerResponse listMilestones(@RequestParam(name = "projectId") Long projectId) {
         return ControllerResponse.success(milestoneService.listMilestones(projectId));
     }
 
