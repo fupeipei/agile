@@ -315,52 +315,52 @@ public class SProjectManagerExample {
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalEqualTo(Integer value) {
+        public Criteria andPrincipalEqualTo(Long value) {
             addCriterion("principal =", value, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalNotEqualTo(Integer value) {
+        public Criteria andPrincipalNotEqualTo(Long value) {
             addCriterion("principal <>", value, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalGreaterThan(Integer value) {
+        public Criteria andPrincipalGreaterThan(Long value) {
             addCriterion("principal >", value, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalGreaterThanOrEqualTo(Integer value) {
+        public Criteria andPrincipalGreaterThanOrEqualTo(Long value) {
             addCriterion("principal >=", value, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalLessThan(Integer value) {
+        public Criteria andPrincipalLessThan(Long value) {
             addCriterion("principal <", value, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalLessThanOrEqualTo(Integer value) {
+        public Criteria andPrincipalLessThanOrEqualTo(Long value) {
             addCriterion("principal <=", value, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalIn(List<Integer> values) {
+        public Criteria andPrincipalIn(List<Long> values) {
             addCriterion("principal in", values, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalNotIn(List<Integer> values) {
+        public Criteria andPrincipalNotIn(List<Long> values) {
             addCriterion("principal not in", values, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalBetween(Integer value1, Integer value2) {
+        public Criteria andPrincipalBetween(Long value1, Long value2) {
             addCriterion("principal between", value1, value2, "principal");
             return (Criteria) this;
         }
 
-        public Criteria andPrincipalNotBetween(Integer value1, Integer value2) {
+        public Criteria andPrincipalNotBetween(Long value1, Long value2) {
             addCriterion("principal not between", value1, value2, "principal");
             return (Criteria) this;
         }

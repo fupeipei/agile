@@ -10,7 +10,7 @@ public class SProjectManager implements Serializable {
 
     private String projectCode;
 
-    private Integer principal;
+    private Long principal;
 
     private Date startTime;
 
@@ -62,11 +62,11 @@ public class SProjectManager implements Serializable {
         this.projectCode = projectCode == null ? null : projectCode.trim();
     }
 
-    public Integer getPrincipal() {
+    public Long getPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(Integer principal) {
+    public void setPrincipal(Long principal) {
         this.principal = principal;
     }
 

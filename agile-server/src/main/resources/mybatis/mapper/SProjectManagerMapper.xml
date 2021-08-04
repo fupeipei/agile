@@ -5,7 +5,7 @@
     <id column="project_id" jdbcType="BIGINT" property="projectId" />
     <result column="project_name" jdbcType="VARCHAR" property="projectName" />
     <result column="project_code" jdbcType="VARCHAR" property="projectCode" />
-    <result column="principal" jdbcType="INTEGER" property="principal" />
+    <result column="principal" jdbcType="BIGINT" property="principal" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="project_status_id" jdbcType="BIGINT" property="projectStatusId" />
@@ -143,7 +143,7 @@
       update_time, tenant_code, state, 
       project_content)
     values (#{projectId,jdbcType=BIGINT}, #{projectName,jdbcType=VARCHAR}, #{projectCode,jdbcType=VARCHAR}, 
-      #{principal,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{principal,jdbcType=BIGINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{projectStatusId,jdbcType=BIGINT}, #{projectTypeId,jdbcType=BIGINT}, #{researchModelId,jdbcType=BIGINT}, 
       #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, 
@@ -212,7 +212,7 @@
         #{projectCode,jdbcType=VARCHAR},
       </if>
       <if test="principal != null">
-        #{principal,jdbcType=INTEGER},
+        #{principal,jdbcType=BIGINT},
       </if>
       <if test="startTime != null">
         #{startTime,jdbcType=TIMESTAMP},
@@ -271,7 +271,7 @@
         project_code = #{record.projectCode,jdbcType=VARCHAR},
       </if>
       <if test="record.principal != null">
-        principal = #{record.principal,jdbcType=INTEGER},
+        principal = #{record.principal,jdbcType=BIGINT},
       </if>
       <if test="record.startTime != null">
         start_time = #{record.startTime,jdbcType=TIMESTAMP},
@@ -319,7 +319,7 @@
     set project_id = #{record.projectId,jdbcType=BIGINT},
       project_name = #{record.projectName,jdbcType=VARCHAR},
       project_code = #{record.projectCode,jdbcType=VARCHAR},
-      principal = #{record.principal,jdbcType=INTEGER},
+      principal = #{record.principal,jdbcType=BIGINT},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
       project_status_id = #{record.projectStatusId,jdbcType=BIGINT},
@@ -341,7 +341,7 @@
     set project_id = #{record.projectId,jdbcType=BIGINT},
       project_name = #{record.projectName,jdbcType=VARCHAR},
       project_code = #{record.projectCode,jdbcType=VARCHAR},
-      principal = #{record.principal,jdbcType=INTEGER},
+      principal = #{record.principal,jdbcType=BIGINT},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
       project_status_id = #{record.projectStatusId,jdbcType=BIGINT},
@@ -367,7 +367,7 @@
         project_code = #{projectCode,jdbcType=VARCHAR},
       </if>
       <if test="principal != null">
-        principal = #{principal,jdbcType=INTEGER},
+        principal = #{principal,jdbcType=BIGINT},
       </if>
       <if test="startTime != null">
         start_time = #{startTime,jdbcType=TIMESTAMP},
@@ -412,7 +412,7 @@
     update s_project_manager
     set project_name = #{projectName,jdbcType=VARCHAR},
       project_code = #{projectCode,jdbcType=VARCHAR},
-      principal = #{principal,jdbcType=INTEGER},
+      principal = #{principal,jdbcType=BIGINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       project_status_id = #{projectStatusId,jdbcType=BIGINT},
@@ -431,7 +431,7 @@
     update s_project_manager
     set project_name = #{projectName,jdbcType=VARCHAR},
       project_code = #{projectCode,jdbcType=VARCHAR},
-      principal = #{principal,jdbcType=INTEGER},
+      principal = #{principal,jdbcType=BIGINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       project_status_id = #{projectStatusId,jdbcType=BIGINT},

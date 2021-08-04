@@ -3,12 +3,12 @@ package com.yusys.agile.projectmanager.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-public class SProjectUserRel implements Serializable {
-    private Long projectUserRelId;
+public class SProjectSystemRel implements Serializable {
+    private Long projectSystemRelId;
 
     private Long projectId;
 
-    private Long userId;
+    private Long relSystemId;
 
     private Long createUid;
 
@@ -24,12 +24,12 @@ public class SProjectUserRel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getProjectUserRelId() {
-        return projectUserRelId;
+    public Long getProjectSystemRelId() {
+        return projectSystemRelId;
     }
 
-    public void setProjectUserRelId(Long projectUserRelId) {
-        this.projectUserRelId = projectUserRelId;
+    public void setProjectSystemRelId(Long projectSystemRelId) {
+        this.projectSystemRelId = projectSystemRelId;
     }
 
     public Long getProjectId() {
@@ -40,12 +40,12 @@ public class SProjectUserRel implements Serializable {
         this.projectId = projectId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getRelSystemId() {
+        return relSystemId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setRelSystemId(Long relSystemId) {
+        this.relSystemId = relSystemId;
     }
 
     public Long getCreateUid() {

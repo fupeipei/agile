@@ -10,8 +10,6 @@ public class SProjectProductLineRel implements Serializable {
 
     private Long relProductId;
 
-    private Long relSystemId;
-
     private Long createUid;
 
     private Date createTime;
@@ -48,14 +46,6 @@ public class SProjectProductLineRel implements Serializable {
 
     public void setRelProductId(Long relProductId) {
         this.relProductId = relProductId;
-    }
-
-    public Long getRelSystemId() {
-        return relSystemId;
-    }
-
-    public void setRelSystemId(Long relSystemId) {
-        this.relSystemId = relSystemId;
     }
 
     public Long getCreateUid() {

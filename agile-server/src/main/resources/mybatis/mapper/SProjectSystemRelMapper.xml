@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yusys.agile.projectmanager.dao.SProjectUserRelMapper">
-  <resultMap id="BaseResultMap" type="com.yusys.agile.projectmanager.domain.SProjectUserRel">
-    <id column="project_user_rel_id" jdbcType="BIGINT" property="projectUserRelId" />
+<mapper namespace="com.yusys.agile.projectmanager.dao.SProjectSystemRelMapper">
+  <resultMap id="BaseResultMap" type="com.yusys.agile.projectmanager.domain.SProjectSystemRel">
+    <id column="project_system_rel_id" jdbcType="BIGINT" property="projectSystemRelId" />
     <result column="project_id" jdbcType="BIGINT" property="projectId" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="rel_system_id" jdbcType="BIGINT" property="relSystemId" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_uid" jdbcType="BIGINT" property="updateUid" />
@@ -71,16 +71,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    project_user_rel_id, project_id, user_id, create_uid, create_time, update_uid, update_time, 
-    tenant_code, state
+    project_system_rel_id, project_id, rel_system_id, create_uid, create_time, update_uid, 
+    update_time, tenant_code, state
   </sql>
-  <select id="selectByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserRelExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectSystemRelExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from s_project_user_rel
+    from s_project_system_rel
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -91,40 +91,40 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from s_project_user_rel
-    where project_user_rel_id = #{projectUserRelId,jdbcType=BIGINT}
+    from s_project_system_rel
+    where project_system_rel_id = #{projectSystemRelId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from s_project_user_rel
-    where project_user_rel_id = #{projectUserRelId,jdbcType=BIGINT}
+    delete from s_project_system_rel
+    where project_system_rel_id = #{projectSystemRelId,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserRelExample">
-    delete from s_project_user_rel
+  <delete id="deleteByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectSystemRelExample">
+    delete from s_project_system_rel
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserRel">
-    insert into s_project_user_rel (project_user_rel_id, project_id, user_id, 
+  <insert id="insert" parameterType="com.yusys.agile.projectmanager.domain.SProjectSystemRel">
+    insert into s_project_system_rel (project_system_rel_id, project_id, rel_system_id, 
       create_uid, create_time, update_uid, 
       update_time, tenant_code, state
       )
-    values (#{projectUserRelId,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
+    values (#{projectSystemRelId,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{relSystemId,jdbcType=BIGINT}, 
       #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserRel">
-    insert into s_project_user_rel
+  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectSystemRel">
+    insert into s_project_system_rel
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="projectUserRelId != null">
-        project_user_rel_id,
+      <if test="projectSystemRelId != null">
+        project_system_rel_id,
       </if>
       <if test="projectId != null">
         project_id,
       </if>
-      <if test="userId != null">
-        user_id,
+      <if test="relSystemId != null">
+        rel_system_id,
       </if>
       <if test="createUid != null">
         create_uid,
@@ -146,14 +146,14 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="projectUserRelId != null">
-        #{projectUserRelId,jdbcType=BIGINT},
+      <if test="projectSystemRelId != null">
+        #{projectSystemRelId,jdbcType=BIGINT},
       </if>
       <if test="projectId != null">
         #{projectId,jdbcType=BIGINT},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
+      <if test="relSystemId != null">
+        #{relSystemId,jdbcType=BIGINT},
       </if>
       <if test="createUid != null">
         #{createUid,jdbcType=BIGINT},
@@ -175,23 +175,23 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserRelExample" resultType="java.lang.Long">
-    select count(*) from s_project_user_rel
+  <select id="countByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectSystemRelExample" resultType="java.lang.Long">
+    select count(*) from s_project_system_rel
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update s_project_user_rel
+    update s_project_system_rel
     <set>
-      <if test="record.projectUserRelId != null">
-        project_user_rel_id = #{record.projectUserRelId,jdbcType=BIGINT},
+      <if test="record.projectSystemRelId != null">
+        project_system_rel_id = #{record.projectSystemRelId,jdbcType=BIGINT},
       </if>
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=BIGINT},
       </if>
-      <if test="record.userId != null">
-        user_id = #{record.userId,jdbcType=BIGINT},
+      <if test="record.relSystemId != null">
+        rel_system_id = #{record.relSystemId,jdbcType=BIGINT},
       </if>
       <if test="record.createUid != null">
         create_uid = #{record.createUid,jdbcType=BIGINT},
@@ -217,10 +217,10 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update s_project_user_rel
-    set project_user_rel_id = #{record.projectUserRelId,jdbcType=BIGINT},
+    update s_project_system_rel
+    set project_system_rel_id = #{record.projectSystemRelId,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
-      user_id = #{record.userId,jdbcType=BIGINT},
+      rel_system_id = #{record.relSystemId,jdbcType=BIGINT},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_uid = #{record.updateUid,jdbcType=BIGINT},
@@ -231,14 +231,14 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserRel">
-    update s_project_user_rel
+  <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectSystemRel">
+    update s_project_system_rel
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
       </if>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
+      <if test="relSystemId != null">
+        rel_system_id = #{relSystemId,jdbcType=BIGINT},
       </if>
       <if test="createUid != null">
         create_uid = #{createUid,jdbcType=BIGINT},
@@ -259,18 +259,18 @@
         state = #{state,jdbcType=VARCHAR},
       </if>
     </set>
-    where project_user_rel_id = #{projectUserRelId,jdbcType=BIGINT}
+    where project_system_rel_id = #{projectSystemRelId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserRel">
-    update s_project_user_rel
+  <update id="updateByPrimaryKey" parameterType="com.yusys.agile.projectmanager.domain.SProjectSystemRel">
+    update s_project_system_rel
     set project_id = #{projectId,jdbcType=BIGINT},
-      user_id = #{userId,jdbcType=BIGINT},
+      rel_system_id = #{relSystemId,jdbcType=BIGINT},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_uid = #{updateUid,jdbcType=BIGINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{tenantCode,jdbcType=VARCHAR},
       state = #{state,jdbcType=VARCHAR}
-    where project_user_rel_id = #{projectUserRelId,jdbcType=BIGINT}
+    where project_system_rel_id = #{projectSystemRelId,jdbcType=BIGINT}
   </update>
 </mapper>

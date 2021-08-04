@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SProjectUserRelExample {
+public class SProjectSystemRelExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public SProjectUserRelExample() {
+    public SProjectSystemRelExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -105,63 +105,63 @@ public class SProjectUserRelExample {
             criteria.add(new Criterion(condition, value1, value2));
         }
 
-        public Criteria andProjectUserRelIdIsNull() {
-            addCriterion("project_user_rel_id is null");
+        public Criteria andProjectSystemRelIdIsNull() {
+            addCriterion("project_system_rel_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdIsNotNull() {
-            addCriterion("project_user_rel_id is not null");
+        public Criteria andProjectSystemRelIdIsNotNull() {
+            addCriterion("project_system_rel_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdEqualTo(Long value) {
-            addCriterion("project_user_rel_id =", value, "projectUserRelId");
+        public Criteria andProjectSystemRelIdEqualTo(Long value) {
+            addCriterion("project_system_rel_id =", value, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdNotEqualTo(Long value) {
-            addCriterion("project_user_rel_id <>", value, "projectUserRelId");
+        public Criteria andProjectSystemRelIdNotEqualTo(Long value) {
+            addCriterion("project_system_rel_id <>", value, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdGreaterThan(Long value) {
-            addCriterion("project_user_rel_id >", value, "projectUserRelId");
+        public Criteria andProjectSystemRelIdGreaterThan(Long value) {
+            addCriterion("project_system_rel_id >", value, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("project_user_rel_id >=", value, "projectUserRelId");
+        public Criteria andProjectSystemRelIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("project_system_rel_id >=", value, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdLessThan(Long value) {
-            addCriterion("project_user_rel_id <", value, "projectUserRelId");
+        public Criteria andProjectSystemRelIdLessThan(Long value) {
+            addCriterion("project_system_rel_id <", value, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdLessThanOrEqualTo(Long value) {
-            addCriterion("project_user_rel_id <=", value, "projectUserRelId");
+        public Criteria andProjectSystemRelIdLessThanOrEqualTo(Long value) {
+            addCriterion("project_system_rel_id <=", value, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdIn(List<Long> values) {
-            addCriterion("project_user_rel_id in", values, "projectUserRelId");
+        public Criteria andProjectSystemRelIdIn(List<Long> values) {
+            addCriterion("project_system_rel_id in", values, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdNotIn(List<Long> values) {
-            addCriterion("project_user_rel_id not in", values, "projectUserRelId");
+        public Criteria andProjectSystemRelIdNotIn(List<Long> values) {
+            addCriterion("project_system_rel_id not in", values, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdBetween(Long value1, Long value2) {
-            addCriterion("project_user_rel_id between", value1, value2, "projectUserRelId");
+        public Criteria andProjectSystemRelIdBetween(Long value1, Long value2) {
+            addCriterion("project_system_rel_id between", value1, value2, "projectSystemRelId");
             return (Criteria) this;
         }
 
-        public Criteria andProjectUserRelIdNotBetween(Long value1, Long value2) {
-            addCriterion("project_user_rel_id not between", value1, value2, "projectUserRelId");
+        public Criteria andProjectSystemRelIdNotBetween(Long value1, Long value2) {
+            addCriterion("project_system_rel_id not between", value1, value2, "projectSystemRelId");
             return (Criteria) this;
         }
 
@@ -225,63 +225,63 @@ public class SProjectUserRelExample {
             return (Criteria) this;
         }
 
-        public Criteria andUserIdIsNull() {
-            addCriterion("user_id is null");
+        public Criteria andRelSystemIdIsNull() {
+            addCriterion("rel_system_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdIsNotNull() {
-            addCriterion("user_id is not null");
+        public Criteria andRelSystemIdIsNotNull() {
+            addCriterion("rel_system_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdEqualTo(Long value) {
-            addCriterion("user_id =", value, "userId");
+        public Criteria andRelSystemIdEqualTo(Long value) {
+            addCriterion("rel_system_id =", value, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotEqualTo(Long value) {
-            addCriterion("user_id <>", value, "userId");
+        public Criteria andRelSystemIdNotEqualTo(Long value) {
+            addCriterion("rel_system_id <>", value, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThan(Long value) {
-            addCriterion("user_id >", value, "userId");
+        public Criteria andRelSystemIdGreaterThan(Long value) {
+            addCriterion("rel_system_id >", value, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("user_id >=", value, "userId");
+        public Criteria andRelSystemIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("rel_system_id >=", value, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdLessThan(Long value) {
-            addCriterion("user_id <", value, "userId");
+        public Criteria andRelSystemIdLessThan(Long value) {
+            addCriterion("rel_system_id <", value, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdLessThanOrEqualTo(Long value) {
-            addCriterion("user_id <=", value, "userId");
+        public Criteria andRelSystemIdLessThanOrEqualTo(Long value) {
+            addCriterion("rel_system_id <=", value, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdIn(List<Long> values) {
-            addCriterion("user_id in", values, "userId");
+        public Criteria andRelSystemIdIn(List<Long> values) {
+            addCriterion("rel_system_id in", values, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotIn(List<Long> values) {
-            addCriterion("user_id not in", values, "userId");
+        public Criteria andRelSystemIdNotIn(List<Long> values) {
+            addCriterion("rel_system_id not in", values, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdBetween(Long value1, Long value2) {
-            addCriterion("user_id between", value1, value2, "userId");
+        public Criteria andRelSystemIdBetween(Long value1, Long value2) {
+            addCriterion("rel_system_id between", value1, value2, "relSystemId");
             return (Criteria) this;
         }
 
-        public Criteria andUserIdNotBetween(Long value1, Long value2) {
-            addCriterion("user_id not between", value1, value2, "userId");
+        public Criteria andRelSystemIdNotBetween(Long value1, Long value2) {
+            addCriterion("rel_system_id not between", value1, value2, "relSystemId");
             return (Criteria) this;
         }
 

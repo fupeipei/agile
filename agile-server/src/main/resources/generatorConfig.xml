@@ -47,6 +47,10 @@
 		<!--<table tableName="s_project_product_line_rel"/>
 		<table tableName="s_static_project_data"/>
 		<table tableName="s_project_manager"/>-->
+		<!--<table tableName="s_project_product_line_rel"/>-->
+		<!--<table tableName="s_project_manager"/>-->
+		<!--<table tableName="s_project_system_rel"/>-->
+		<!--<table tableName="s_project_user_rel"/>-->
 
 	</context>
 </generatorConfiguration>

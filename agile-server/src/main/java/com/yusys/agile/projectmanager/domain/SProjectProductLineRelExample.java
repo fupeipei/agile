@@ -285,66 +285,6 @@ public class SProjectProductLineRelExample {
             return (Criteria) this;
         }
 
-        public Criteria andRelSystemIdIsNull() {
-            addCriterion("rel_system_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdIsNotNull() {
-            addCriterion("rel_system_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdEqualTo(Long value) {
-            addCriterion("rel_system_id =", value, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdNotEqualTo(Long value) {
-            addCriterion("rel_system_id <>", value, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdGreaterThan(Long value) {
-            addCriterion("rel_system_id >", value, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("rel_system_id >=", value, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdLessThan(Long value) {
-            addCriterion("rel_system_id <", value, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdLessThanOrEqualTo(Long value) {
-            addCriterion("rel_system_id <=", value, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdIn(List<Long> values) {
-            addCriterion("rel_system_id in", values, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdNotIn(List<Long> values) {
-            addCriterion("rel_system_id not in", values, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdBetween(Long value1, Long value2) {
-            addCriterion("rel_system_id between", value1, value2, "relSystemId");
-            return (Criteria) this;
-        }
-
-        public Criteria andRelSystemIdNotBetween(Long value1, Long value2) {
-            addCriterion("rel_system_id not between", value1, value2, "relSystemId");
-            return (Criteria) this;
-        }
-
         public Criteria andCreateUidIsNull() {
             addCriterion("create_uid is null");
             return (Criteria) this;
