@@ -84,7 +84,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from milestone
+    from s_milestone
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -95,21 +95,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from milestone
+    from s_milestone
     where milestone_id = #{milestoneId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from milestone
+    delete from s_milestone
     where milestone_id = #{milestoneId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.milestone.domain.MilestoneExample">
-    delete from milestone
+    delete from s_milestone
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.milestone.domain.Milestone" useGeneratedKeys="true" keyProperty="milestoneId">
-    insert into milestone (milestone_id, milestone_name, milestone_status, 
+    insert into s_milestone (milestone_id, milestone_name, milestone_status, 
       description, state, project_id, 
       plan_finish_time, real_finish_time, create_time, 
       create_uid, update_time, update_uid, 
@@ -121,7 +121,7 @@
       #{tenantCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.milestone.domain.Milestone" useGeneratedKeys="true" keyProperty="milestoneId">
-    insert into milestone
+    insert into s_milestone
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="milestoneId != null">
         milestone_id,
@@ -206,13 +206,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.milestone.domain.MilestoneExample" resultType="java.lang.Long">
-    select count(*) from milestone
+    select count(*) from s_milestone
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update milestone
+   update s_milestone
     <set>
       <if test="record.milestoneId != null">
         milestone_id = #{record.milestoneId,jdbcType=BIGINT},
@@ -259,7 +259,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update milestone
+   update s_milestone
     set milestone_id = #{record.milestoneId,jdbcType=BIGINT},
       milestone_name = #{record.milestoneName,jdbcType=VARCHAR},
       milestone_status = #{record.milestoneStatus,jdbcType=INTEGER},
@@ -278,7 +278,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.milestone.domain.Milestone">
-    update milestone
+   update s_milestone
     <set>
       <if test="milestoneName != null">
         milestone_name = #{milestoneName,jdbcType=VARCHAR},
@@ -320,7 +320,7 @@
     where milestone_id = #{milestoneId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.milestone.domain.Milestone">
-    update milestone
+   update s_milestone
     set milestone_name = #{milestoneName,jdbcType=VARCHAR},
       milestone_status = #{milestoneStatus,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
@@ -339,7 +339,7 @@
 
 
   <update id="updateByPrimaryKeySelectiveWithNull" parameterType="com.yusys.agile.milestone.domain.Milestone">
-    update milestone
+   update s_milestone
     <set>
       <if test="milestoneName != null">
         milestone_name = #{milestoneName,jdbcType=VARCHAR},
