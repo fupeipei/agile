@@ -246,7 +246,7 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     }
 
     @Override
-    public List<SProjectManager> queryProjectManagerList() {
+    public List<SProjectManager> queryProjectManagers() {
         SProjectManagerExample sProjectManagerExample = new SProjectManagerExample();
         sProjectManagerExample.createCriteria().andStateEqualTo(StateEnum.U.getValue());
         sProjectManagerExample.setOrderByClause("create_time desc");

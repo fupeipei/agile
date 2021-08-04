@@ -97,9 +97,9 @@ public class SProjectManagerController {
      * @Param []
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      **/
-    @GetMapping("/queryProjectManagerList")
-    public ControllerResponse queryProjectManagerList(){
-        List<SProjectManager> sProjectManagers = projectManagerService.queryProjectManagerList();
+    @GetMapping("/queryAllProjectManager")
+    public ControllerResponse queryProjectManagers(){
+        List<SProjectManager> sProjectManagers = projectManagerService.queryProjectManagers();
         return ControllerResponse.success(sProjectManagers);
     }
 

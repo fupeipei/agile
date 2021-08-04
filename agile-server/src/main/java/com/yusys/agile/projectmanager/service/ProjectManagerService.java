@@ -25,7 +25,7 @@ public interface ProjectManagerService {
 
     ProjectManagerDto updateProjectManager(ProjectManagerDto projectManagerDto);
 
-    List<SProjectManager> queryProjectManagerList();
+    List<SProjectManager> queryProjectManagers();
 
     List<SsoUser> queryUserByProjectId(Long projectId);
 
