@@ -33,5 +33,5 @@ public interface SProjectUserRelMapper {
 
     void batchInsertProjectUsers(@Param("projectUserRels")  List<SProjectUserRel> projectUserRels);
 
-    List<ProjectUserTotalHourDto> queryUserIdListByProIdAndUId(@Param("projectId") Integer projectId, @Param("userId") Long userId);
+    List<ProjectUserTotalHourDto> queryUserIdListByProIdAndUId(@Param("projectId") Long projectId, @Param("userId") Long userId);
 }

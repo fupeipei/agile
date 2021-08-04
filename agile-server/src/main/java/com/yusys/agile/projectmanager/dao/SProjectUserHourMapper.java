@@ -10,7 +10,7 @@ public interface SProjectUserHourMapper {
 
     int deleteByExample(SProjectUserHourExample example);
 
-    int deleteByPrimaryKey(Integer hourId);
+    int deleteByPrimaryKey(Long hourId);
 
     int insert(SProjectUserHour record);
 
@@ -18,7 +18,7 @@ public interface SProjectUserHourMapper {
 
     List<SProjectUserHour> selectByExample(SProjectUserHourExample example);
 
-    SProjectUserHour selectByPrimaryKey(Integer hourId);
+    SProjectUserHour selectByPrimaryKey(Long hourId);
 
     int updateByExampleSelective(@Param("record") SProjectUserHour record, @Param("example") SProjectUserHourExample example);
 
@@ -27,4 +27,8 @@ public interface SProjectUserHourMapper {
     int updateByPrimaryKeySelective(SProjectUserHour record);
 
     int updateByPrimaryKey(SProjectUserHour record);
+
+    void batchInsertSelective(@Param("list") List<SProjectUserHour> projectUserHours);
+
+    void deleteByDayId(Long dayId);
 }

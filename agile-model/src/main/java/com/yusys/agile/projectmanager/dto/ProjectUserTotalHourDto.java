@@ -27,5 +27,5 @@ public class ProjectUserTotalHourDto {
     @ApiModelProperty("进入项目时间")
     private String createTime;
     @ApiModelProperty("项目id")
-    private Integer projectId;
+    private Long projectId;
 }

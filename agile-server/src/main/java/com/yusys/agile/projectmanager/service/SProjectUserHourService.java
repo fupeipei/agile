@@ -40,5 +40,5 @@ public interface SProjectUserHourService {
      * @Param [hourId]
      * @return com.yusys.agile.projectmanager.dto.ProjectUserHourDto
      **/
-    ProjectUserDayDto getProjectUserHourInfo(Integer projectId, String workDate, Long userId) throws ParseException;
+    ProjectUserDayDto getProjectUserHourInfo(Long projectId, String workDate, Long userId) throws ParseException;
 }

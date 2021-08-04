@@ -27,7 +27,7 @@ public class ProjectUserHourDto {
     @ApiModelProperty("用户账号")
     private String userAccount;
     @ApiModelProperty("项目id")
-    private Integer projectId;
+    private Long projectId;
     @ApiModelProperty("工时日期")
     private String workDate;
     @ApiModelProperty("开始时间")

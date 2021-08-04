@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.projectmanager.dao.SProjectUserDayMapper">
   <resultMap id="BaseResultMap" type="com.yusys.agile.projectmanager.domain.SProjectUserDay">
-    <id column="day_id" jdbcType="INTEGER" property="dayId" />
+    <id column="day_id" jdbcType="BIGINT" property="dayId" />
     <result column="really_workload" jdbcType="INTEGER" property="reallyWorkload" />
     <result column="work_date" jdbcType="TIMESTAMP" property="workDate" />
     <result column="work_uid" jdbcType="BIGINT" property="workUid" />
-    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
     <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -76,7 +76,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    day_id, really_workload, work_date, work_uid, project_id, state, create_uid, create_time,
+    day_id, really_workload, work_date, work_uid, project_id, state, create_uid, create_time, 
     update_uid, update_time, tenant_code
   </sql>
   <sql id="Blob_Column_List">
@@ -112,17 +112,17 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-    select
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from s_project_user_day
-    where day_id = #{dayId,jdbcType=INTEGER}
+    where day_id = #{dayId,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from s_project_user_day
-    where day_id = #{dayId,jdbcType=INTEGER}
+    where day_id = #{dayId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserDayExample">
     delete from s_project_user_day
@@ -132,17 +132,17 @@
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserDay" useGeneratedKeys="true" keyProperty="dayId">
     insert into s_project_user_day ( really_workload, work_date,
-      work_uid, project_id, state,
-      create_uid, create_time, update_uid,
+      work_uid, project_id, state, 
+      create_uid, create_time, update_uid, 
       update_time, tenant_code, work_desc
       )
     values ( #{reallyWorkload,jdbcType=INTEGER}, #{workDate,jdbcType=TIMESTAMP},
-      #{workUid,jdbcType=BIGINT}, #{projectId,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR},
-      #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT},
+      #{workUid,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, #{state,jdbcType=VARCHAR}, 
+      #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, #{workDesc,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserDay"  useGeneratedKeys="true" keyProperty="dayId">
+  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserDay" useGeneratedKeys="true" keyProperty="dayId">
     insert into s_project_user_day
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="reallyWorkload != null">
@@ -190,7 +190,7 @@
         #{workUid,jdbcType=BIGINT},
       </if>
       <if test="projectId != null">
-        #{projectId,jdbcType=INTEGER},
+        #{projectId,jdbcType=BIGINT},
       </if>
       <if test="state != null">
         #{state,jdbcType=VARCHAR},
@@ -225,7 +225,7 @@
     update s_project_user_day
     <set>
       <if test="record.dayId != null">
-        day_id = #{record.dayId,jdbcType=INTEGER},
+        day_id = #{record.dayId,jdbcType=BIGINT},
       </if>
       <if test="record.reallyWorkload != null">
         really_workload = #{record.reallyWorkload,jdbcType=INTEGER},
@@ -237,7 +237,7 @@
         work_uid = #{record.workUid,jdbcType=BIGINT},
       </if>
       <if test="record.projectId != null">
-        project_id = #{record.projectId,jdbcType=INTEGER},
+        project_id = #{record.projectId,jdbcType=BIGINT},
       </if>
       <if test="record.state != null">
         state = #{record.state,jdbcType=VARCHAR},
@@ -267,11 +267,11 @@
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update s_project_user_day
-    set day_id = #{record.dayId,jdbcType=INTEGER},
+    set day_id = #{record.dayId,jdbcType=BIGINT},
       really_workload = #{record.reallyWorkload,jdbcType=INTEGER},
       work_date = #{record.workDate,jdbcType=TIMESTAMP},
       work_uid = #{record.workUid,jdbcType=BIGINT},
-      project_id = #{record.projectId,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=BIGINT},
       state = #{record.state,jdbcType=VARCHAR},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -285,11 +285,11 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update s_project_user_day
-    set day_id = #{record.dayId,jdbcType=INTEGER},
+    set day_id = #{record.dayId,jdbcType=BIGINT},
       really_workload = #{record.reallyWorkload,jdbcType=INTEGER},
       work_date = #{record.workDate,jdbcType=TIMESTAMP},
       work_uid = #{record.workUid,jdbcType=BIGINT},
-      project_id = #{record.projectId,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=BIGINT},
       state = #{record.state,jdbcType=VARCHAR},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -313,7 +313,7 @@
         work_uid = #{workUid,jdbcType=BIGINT},
       </if>
       <if test="projectId != null">
-        project_id = #{projectId,jdbcType=INTEGER},
+        project_id = #{projectId,jdbcType=BIGINT},
       </if>
       <if test="state != null">
         state = #{state,jdbcType=VARCHAR},
@@ -337,14 +337,14 @@
         work_desc = #{workDesc,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where day_id = #{dayId,jdbcType=INTEGER}
+    where day_id = #{dayId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserDay">
     update s_project_user_day
     set really_workload = #{reallyWorkload,jdbcType=INTEGER},
       work_date = #{workDate,jdbcType=TIMESTAMP},
       work_uid = #{workUid,jdbcType=BIGINT},
-      project_id = #{projectId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=BIGINT},
       state = #{state,jdbcType=VARCHAR},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -352,23 +352,22 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{tenantCode,jdbcType=VARCHAR},
       work_desc = #{workDesc,jdbcType=LONGVARCHAR}
-    where day_id = #{dayId,jdbcType=INTEGER}
+    where day_id = #{dayId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserDay">
     update s_project_user_day
     set really_workload = #{reallyWorkload,jdbcType=INTEGER},
       work_date = #{workDate,jdbcType=TIMESTAMP},
       work_uid = #{workUid,jdbcType=BIGINT},
-      project_id = #{projectId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=BIGINT},
       state = #{state,jdbcType=VARCHAR},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_uid = #{updateUid,jdbcType=BIGINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{tenantCode,jdbcType=VARCHAR}
-    where day_id = #{dayId,jdbcType=INTEGER}
+    where day_id = #{dayId,jdbcType=BIGINT}
   </update>
-
   <select id="getTotalDays" resultType="com.yusys.agile.projectmanager.dto.ProjectUserTotalHourDto">
     SELECT COUNT(*) as totalDays, COUNT(*)*8 as totalPlanWorkload,SUM(really_workload) as totalReallyWorkload,work_uid as userId
     FROM s_project_user_day

@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yusys.agile.projectmanager.dao.SProjectUserHourMapper">
   <resultMap id="BaseResultMap" type="com.yusys.agile.projectmanager.domain.SProjectUserHour">
-    <id column="hour_id" jdbcType="INTEGER" property="hourId" />
+    <id column="hour_id" jdbcType="BIGINT" property="hourId" />
     <result column="really_workload" jdbcType="INTEGER" property="reallyWorkload" />
     <result column="work_date" jdbcType="TIMESTAMP" property="workDate" />
     <result column="work_uid" jdbcType="BIGINT" property="workUid" />
     <result column="issue_id" jdbcType="BIGINT" property="issueId" />
-    <result column="project_id" jdbcType="INTEGER" property="projectId" />
-    <result column="day_id" jdbcType="INTEGER" property="dayId" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
+    <result column="day_id" jdbcType="BIGINT" property="dayId" />
     <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="create_uid" jdbcType="BIGINT" property="createUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -92,15 +92,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from s_project_user_hour
-    where hour_id = #{hourId,jdbcType=INTEGER}
+    where hour_id = #{hourId,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from s_project_user_hour
-    where hour_id = #{hourId,jdbcType=INTEGER}
+    where hour_id = #{hourId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserHourExample">
     delete from s_project_user_hour
@@ -108,19 +108,19 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserHour" useGeneratedKeys="true" keyProperty="hourId">
-    insert into s_project_user_hour (really_workload, work_date,
+  <insert id="insert" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserHour"  useGeneratedKeys="true" keyProperty="hourId">
+    insert into s_project_user_hour ( really_workload, work_date,
       work_uid, issue_id, project_id, 
       day_id, state, create_uid, 
       create_time, update_uid, update_time, 
       tenant_code)
     values ( #{reallyWorkload,jdbcType=INTEGER}, #{workDate,jdbcType=TIMESTAMP},
-      #{workUid,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{projectId,jdbcType=INTEGER}, 
-      #{dayId,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR}, #{createUid,jdbcType=BIGINT}, 
+      #{workUid,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{projectId,jdbcType=BIGINT}, 
+      #{dayId,jdbcType=BIGINT}, #{state,jdbcType=VARCHAR}, #{createUid,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{tenantCode,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserHour" useGeneratedKeys="true" keyProperty="hourId">
+  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserHour"  useGeneratedKeys="true" keyProperty="hourId">
     insert into s_project_user_hour
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="reallyWorkload != null">
@@ -174,10 +174,10 @@
         #{issueId,jdbcType=BIGINT},
       </if>
       <if test="projectId != null">
-        #{projectId,jdbcType=INTEGER},
+        #{projectId,jdbcType=BIGINT},
       </if>
       <if test="dayId != null">
-        #{dayId,jdbcType=INTEGER},
+        #{dayId,jdbcType=BIGINT},
       </if>
       <if test="state != null">
         #{state,jdbcType=VARCHAR},
@@ -209,7 +209,7 @@
     update s_project_user_hour
     <set>
       <if test="record.hourId != null">
-        hour_id = #{record.hourId,jdbcType=INTEGER},
+        hour_id = #{record.hourId,jdbcType=BIGINT},
       </if>
       <if test="record.reallyWorkload != null">
         really_workload = #{record.reallyWorkload,jdbcType=INTEGER},
@@ -224,10 +224,10 @@
         issue_id = #{record.issueId,jdbcType=BIGINT},
       </if>
       <if test="record.projectId != null">
-        project_id = #{record.projectId,jdbcType=INTEGER},
+        project_id = #{record.projectId,jdbcType=BIGINT},
       </if>
       <if test="record.dayId != null">
-        day_id = #{record.dayId,jdbcType=INTEGER},
+        day_id = #{record.dayId,jdbcType=BIGINT},
       </if>
       <if test="record.state != null">
         state = #{record.state,jdbcType=VARCHAR},
@@ -254,13 +254,13 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update s_project_user_hour
-    set hour_id = #{record.hourId,jdbcType=INTEGER},
+    set hour_id = #{record.hourId,jdbcType=BIGINT},
       really_workload = #{record.reallyWorkload,jdbcType=INTEGER},
       work_date = #{record.workDate,jdbcType=TIMESTAMP},
       work_uid = #{record.workUid,jdbcType=BIGINT},
       issue_id = #{record.issueId,jdbcType=BIGINT},
-      project_id = #{record.projectId,jdbcType=INTEGER},
-      day_id = #{record.dayId,jdbcType=INTEGER},
+      project_id = #{record.projectId,jdbcType=BIGINT},
+      day_id = #{record.dayId,jdbcType=BIGINT},
       state = #{record.state,jdbcType=VARCHAR},
       create_uid = #{record.createUid,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -287,10 +287,10 @@
         issue_id = #{issueId,jdbcType=BIGINT},
       </if>
       <if test="projectId != null">
-        project_id = #{projectId,jdbcType=INTEGER},
+        project_id = #{projectId,jdbcType=BIGINT},
       </if>
       <if test="dayId != null">
-        day_id = #{dayId,jdbcType=INTEGER},
+        day_id = #{dayId,jdbcType=BIGINT},
       </if>
       <if test="state != null">
         state = #{state,jdbcType=VARCHAR},
@@ -311,7 +311,7 @@
         tenant_code = #{tenantCode,jdbcType=VARCHAR},
       </if>
     </set>
-    where hour_id = #{hourId,jdbcType=INTEGER}
+    where hour_id = #{hourId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.projectmanager.domain.SProjectUserHour">
     update s_project_user_hour
@@ -319,14 +319,32 @@
       work_date = #{workDate,jdbcType=TIMESTAMP},
       work_uid = #{workUid,jdbcType=BIGINT},
       issue_id = #{issueId,jdbcType=BIGINT},
-      project_id = #{projectId,jdbcType=INTEGER},
-      day_id = #{dayId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=BIGINT},
+      day_id = #{dayId,jdbcType=BIGINT},
       state = #{state,jdbcType=VARCHAR},
       create_uid = #{createUid,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_uid = #{updateUid,jdbcType=BIGINT},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       tenant_code = #{tenantCode,jdbcType=VARCHAR}
-    where hour_id = #{hourId,jdbcType=INTEGER}
+    where hour_id = #{hourId,jdbcType=BIGINT}
+  </update>
+  <insert id="batchInsertSelective">
+    insert into s_project_user_hour (really_workload, work_date,
+    work_uid, issue_id, project_id,
+    day_id, state, create_uid,
+    create_time, update_uid, update_time,
+    tenant_code)
+    values
+    <foreach collection="list" separator="," item="item">
+      ( #{item.reallyWorkload,jdbcType=INTEGER}, #{item.workDate,jdbcType=TIMESTAMP},
+      #{item.workUid,jdbcType=BIGINT}, #{item.issueId,jdbcType=BIGINT}, #{item.projectId,jdbcType=INTEGER},
+      #{item.dayId,jdbcType=INTEGER}, #{item.state,jdbcType=VARCHAR}, #{item.createUid,jdbcType=BIGINT},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateUid,jdbcType=BIGINT}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.tenantCode,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <update id="deleteByDayId" parameterType="long">
+    UPDATE s_project_user_hour SET state = 'E' WHERE day_id=#{dayId}
   </update>
 </mapper>

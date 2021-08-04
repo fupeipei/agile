@@ -69,7 +69,7 @@ public class SProjectUserHourController {
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      **/
     @GetMapping("/getProjectUserHourInfo")
-    public ControllerResponse getProjectUserHourInfo(@RequestParam("projectId") Integer projectId,
+    public ControllerResponse getProjectUserHourInfo(@RequestParam("projectId") Long projectId,
                                                      @RequestParam("workDate") String workDate,
                                                      @RequestParam("userId") Long userId){
         try {
