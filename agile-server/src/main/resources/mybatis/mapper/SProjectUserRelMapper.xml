@@ -292,4 +292,7 @@
       AND user_id = #{userId}
     </if>
   </select>
+  <select id="queryUserIdListByProId" resultType="long">
+    SELECT user_id FROM s_project_user_rel WHERE state = 'U' AND project_id = #{projectId} order by create_time desc
+  </select>
 </mapper>

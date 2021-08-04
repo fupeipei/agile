@@ -5,10 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.enums.EpicStageEnum;
-import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
-import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.projectmanager.dao.*;
 import com.yusys.agile.projectmanager.domain.*;
@@ -20,9 +18,6 @@ import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
 import com.yusys.agile.projectmanager.service.StaticProjectDataService;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.domain.KanbanStageInstance;
-import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
-import com.yusys.agile.versionmanager.enums.OperateTypeEnum;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
@@ -231,6 +226,22 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
         sProjectSystemRelMapper.batchInsertProjectSystemRelMapper(sProjectSystemRels);
 
         return projectManagerDto;
+    }
+
+    @Override
+    public List<SProjectManager> queryProjectManagerList() {
+        SProjectManagerExample sProjectManagerExample = new SProjectManagerExample();
+        sProjectManagerExample.createCriteria().andStateEqualTo(StateEnum.U.getValue());
+        sProjectManagerExample.setOrderByClause("create_time desc");
+        List<SProjectManager> sProjectManagers = sProjectManagerMapper.selectByExample(sProjectManagerExample);
+        return sProjectManagers;
+    }
+
+    @Override
+    public List<SsoUser> queryUserByProjectId(Long projectId) {
+        List<Long> userIds = sProjectUserRelMapper.queryUserIdListByProId(projectId);
+        List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
+        return ssoUsers;
     }
 
     private List<ProjectManagerDto> buildProjectManagerDtoPageInfo (List<ProjectManagerDto> projectManagerDtos){
