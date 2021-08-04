@@ -21,7 +21,7 @@ public class ProjectManagerDto implements Serializable {
 
     private Long principal;
 
-    private Double projectProgress;
+    private Integer projectProgress = 0;
 
     private String principalUserName;
 
@@ -33,9 +33,15 @@ public class ProjectManagerDto implements Serializable {
 
     private Long projectStatusId;
 
+    private String projectStatusName;
+
     private Long projectTypeId;
 
+    private String projectTypeName;
+
     private Long researchModelId;
+
+    private String researchModeName;
 
     private String projectContent;
 

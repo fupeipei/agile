@@ -37,4 +37,6 @@ public interface SProjectManagerMapper {
     int updateByPrimaryKey(SProjectManager record);
 
     List<ProjectManagerDto> queryProjectManagerList(@Param("searchKey") String searchKey);
+
+    List<ProjectManagerDto> queryProjectManagerListByUserId(@Param("userId") Long userId);
 }
