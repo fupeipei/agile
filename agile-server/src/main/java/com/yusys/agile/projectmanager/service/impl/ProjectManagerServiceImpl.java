@@ -5,12 +5,15 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.enums.EpicStageEnum;
+import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
+import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.projectmanager.dao.*;
 import com.yusys.agile.projectmanager.domain.*;
 import com.yusys.agile.projectmanager.dto.ProjectDataDto;
+import com.yusys.agile.projectmanager.dto.ProjectDemandDto;
 import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
 import com.yusys.agile.projectmanager.dto.SStaticProjectDataDto;
 import com.yusys.agile.projectmanager.enmu.StaticProjectDataEnum;
@@ -18,16 +21,21 @@ import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
 import com.yusys.agile.projectmanager.service.StaticProjectDataService;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
+import com.yusys.agile.set.stage.domain.KanbanStageInstance;
+import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
+import com.yusys.agile.versionmanager.enums.OperateTypeEnum;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,11 +150,20 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
         SProjectManager sProjectManager = sProjectManagerMapper.selectByPrimaryKey(projectId);
         if (Optional.ofNullable(sProjectManager).isPresent()){
             projectManagerDto = ReflectUtil.copyProperties(sProjectManager, ProjectManagerDto.class);
-            //
-            staticProjectDataService.queryStaticProjectDataById(projectManagerDto.getProjectStatusId());
+            //项目状态
+            SStaticProjectData sStaticProjectData1 = staticProjectDataService.queryStaticProjectDataById(projectManagerDto.getProjectStatusId());
+            projectManagerDto.setProjectName(sStaticProjectData1.getName());
+            //项目类型
+            SStaticProjectData sStaticProjectData2 = staticProjectDataService.queryStaticProjectDataById(projectManagerDto.getProjectTypeId());
+            projectManagerDto.setProjectTypeName(sStaticProjectData2.getName());
+            //项目模式
+            SStaticProjectData sStaticProjectData3 = staticProjectDataService.queryStaticProjectDataById(projectManagerDto.getResearchModelId());
+            projectManagerDto.setResearchModeName(sStaticProjectData3.getName());
             //查询人员
             List<SsoUserDTO> userList = querySsoUserByProjectId(projectId);
             projectManagerDto.setUserList(userList);
+            List<Long> userIds = userList.stream().map(SsoUserDTO::getUserId).collect(Collectors.toList());
+            projectManagerDto.setUserIds(userIds);
             //查询负责人
             Long principal = projectManagerDto.getPrincipal();
             SsoUser ssoUser = iFacadeUserApi.queryUserById(principal);
@@ -244,6 +261,37 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
         return ssoUsers;
     }
 
+    @Override
+    public List<ProjectDemandDto> queryProjectDemandList(Long projectId) {
+        SProjectSystemRelExample sProjectSystemRelExample = new SProjectSystemRelExample();
+        sProjectSystemRelExample.createCriteria().andProjectIdEqualTo(projectId)
+                .andStateEqualTo(StateEnum.U.getValue());
+        List<SProjectSystemRel> sProjectSystemRels = sProjectSystemRelMapper.selectByExample(sProjectSystemRelExample);
+        List<Long> systemIds = sProjectSystemRels.stream().map(SProjectSystemRel::getRelSystemId).collect(Collectors.toList());
+
+        return null;
+    }
+
+    @Override
+    public List<ProjectManagerDto> queryProjectManagerList() {
+        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+        List<ProjectManagerDto> projectManagerDtos = sProjectManagerMapper.queryProjectManagerListByUserId(userId);
+//        List<ProjectManagerDto> result = Lists.newArrayList();
+//        if (CollectionUtils.isNotEmpty(projectManagerDtos)){
+//            projectManagerDtos.stream().forEach(x->{
+//                ProjectManagerDto projectManagerDto = this.queryProjectManagerByProjectId(x.getProjectId());
+//                result.add(projectManagerDto);
+//            });
+//        }
+        return projectManagerDtos;
+    }
+
+    private void buildProjectDemandList(List<Long> systemIds){
+        for (Long systemId : systemIds) {
+//            issueService.get
+        }
+    }
+
     private List<ProjectManagerDto> buildProjectManagerDtoPageInfo (List<ProjectManagerDto> projectManagerDtos){
         List<ProjectManagerDto> result = projectManagerDtos.stream().map(x -> {
             Long principal = x.getPrincipal();
@@ -254,26 +302,21 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
             //项目进度
             List<SProjectSystemRel> sProjectSystemRels = projectSystemRelService.queryProjectSystemRelList(x.getProjectId());
             List<Long> systemIds = Optional.ofNullable(sProjectSystemRels).orElse(new ArrayList<>()).stream().map(SProjectSystemRel::getRelSystemId).collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(systemIds)){
-                x.setProjectProgress(0.00);
-                return x;
-            }
-            List<Issue> issues = issueService.queryIssueListBySystemIds(systemIds, IssueTypeEnum.TYPE_EPIC.CODE);
-            if (CollectionUtils.isEmpty(issues)){
-                x.setProjectProgress(0.00);
-            }else {
-                List<Issue> doneIssueList = Lists.newArrayList();
-                for (Issue issue : issues) {
-                    Long stageId = issue.getStageId();
-                    //epic的完成阶段
-                    if (Optional.ofNullable(stageId).isPresent()
-                            && EpicStageEnum.COMPLETE.getStageId().equals(stageId)){
-                        doneIssueList.add(issue);
+            if (CollectionUtils.isNotEmpty(systemIds)) {
+                List<Issue> issues = issueService.queryIssueListBySystemIds(systemIds, IssueTypeEnum.TYPE_EPIC.CODE);
+                if (CollectionUtils.isNotEmpty(issues)) {
+                    List<Issue> doneIssueList = Lists.newArrayList();
+                    for (Issue issue : issues) {
+                        Long stageId = issue.getStageId();
+                        //epic的完成阶段
+                        if (Optional.ofNullable(stageId).isPresent()
+                                && EpicStageEnum.COMPLETE.getStageId().equals(stageId)) {
+                            doneIssueList.add(issue);
+                        }
                     }
+                    Integer projectProgress = (doneIssueList.size() / issues.size());
+                    x.setProjectProgress(projectProgress);
                 }
-                DecimalFormat decimalFormat = new DecimalFormat("0.00");
-                Double projectProgress = Double.valueOf(decimalFormat.format((double) (doneIssueList.size() / issues.size())));
-                x.setProjectProgress(projectProgress);
             }
             return x;
         }).collect(Collectors.toList());

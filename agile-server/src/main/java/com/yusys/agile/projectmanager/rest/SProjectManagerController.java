@@ -4,6 +4,7 @@ package com.yusys.agile.projectmanager.rest;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.projectmanager.domain.SProjectManager;
 import com.yusys.agile.projectmanager.dto.ProjectDataDto;
+import com.yusys.agile.projectmanager.dto.ProjectDemandDto;
 import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -88,7 +89,7 @@ public class SProjectManagerController {
         }
 
     }
-    
+
     /**
      * @Author fupp1
      * @Description 获取所有项目信息
@@ -114,5 +115,27 @@ public class SProjectManagerController {
         List<SsoUser>  ssoUsers = projectManagerService.queryUserByProjectId(projectId);
         return ControllerResponse.success(ssoUsers);
     }
+    /**
+     * 查询需求列表
+     * @return
+     */
+    @GetMapping("/queryProjectDemandList")
+    public ControllerResponse queryProjectDemandList(@RequestParam(name = "projectId") Long projectId){
+        List<ProjectDemandDto> projectDemandDtos = projectManagerService.queryProjectDemandList(projectId);
+        return ControllerResponse.success(projectDemandDtos);
+    }
+
+
+    @GetMapping("/queryProjectManagerList")
+    public ControllerResponse queryProjectManagerList(){
+        try {
+            List<ProjectManagerDto> projectManagerDtos = projectManagerService.queryProjectManagerList();
+            return ControllerResponse.success(projectManagerDtos);
+        } catch (Exception e) {
+            return ControllerResponse.fail("查询失败"+e);
+        }
+    }
+
+
 
 }

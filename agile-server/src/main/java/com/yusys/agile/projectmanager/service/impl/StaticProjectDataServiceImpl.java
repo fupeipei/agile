@@ -17,9 +17,7 @@ public class StaticProjectDataServiceImpl implements StaticProjectDataService {
 
     @Override
     public SStaticProjectData queryStaticProjectDataById(Long projectStatusId) {
-        SStaticProjectDataExample sStaticProjectDataExample = new SStaticProjectDataExample();
-        sStaticProjectDataExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
-                .andStaticProjectDataIdEqualTo(projectStatusId);
-        return null;
+        SStaticProjectData sStaticProjectData = sStaticProjectDataMapper.selectByPrimaryKey(projectStatusId);
+        return sStaticProjectData;
     }
 }
