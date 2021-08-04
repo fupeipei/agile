@@ -258,17 +258,16 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
 
     @Override
     public List<ProjectManagerDto> queryProjectManagerList() {
-        UserThreadLocalUtil.getUserInfo().setUserId(842399068826558464L);
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
         List<ProjectManagerDto> projectManagerDtos = sProjectManagerMapper.queryProjectManagerListByUserId(userId);
-        List<ProjectManagerDto> result = Lists.newArrayList();
-        if (CollectionUtils.isNotEmpty(projectManagerDtos)){
-            projectManagerDtos.stream().forEach(x->{
-                ProjectManagerDto projectManagerDto = this.queryProjectManagerByProjectId(x.getProjectId());
-                result.add(projectManagerDto);
-            });
-        }
-        return result;
+//        List<ProjectManagerDto> result = Lists.newArrayList();
+//        if (CollectionUtils.isNotEmpty(projectManagerDtos)){
+//            projectManagerDtos.stream().forEach(x->{
+//                ProjectManagerDto projectManagerDto = this.queryProjectManagerByProjectId(x.getProjectId());
+//                result.add(projectManagerDto);
+//            });
+//        }
+        return projectManagerDtos;
     }
 
     private void buildProjectDemandList(List<Long> systemIds){
