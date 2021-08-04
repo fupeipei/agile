@@ -467,4 +467,21 @@ public class IssueController {
         }
     }
 
+    /**
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @Author fupp1
+     * @Description 根据projectId和处理人获取所有的issue
+     * @Date 17:20 2021/8/3
+     * @Param [projectId, securityDTO]
+     **/
+    @GetMapping("/issue/listIssueOfProjectAndUser")
+    public ControllerResponse listIssueOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO) {
+        try {
+            return ControllerResponse.success(issueService.listIssueOfProjectAndUser(projectId, securityDTO));
+        } catch (Exception e) {
+            LOGGER.info("根据projectId和处理人获取所有的issue:{}", e.getMessage());
+            return ControllerResponse.fail(e.getMessage());
+        }
+    }
+
 }

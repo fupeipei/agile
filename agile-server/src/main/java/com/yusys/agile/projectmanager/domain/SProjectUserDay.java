@@ -4,9 +4,10 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+
 @Data
-public class SProjectUserHour implements Serializable {
-    private Integer hourId;
+public class SProjectUserDay implements Serializable {
+    private Integer dayId;
 
     private Integer reallyWorkload;
 
@@ -14,11 +15,7 @@ public class SProjectUserHour implements Serializable {
 
     private Long workUid;
 
-    private Long issueId;
-
     private Integer projectId;
-
-    private Integer dayId;
 
     private String state;
 
@@ -31,6 +28,8 @@ public class SProjectUserHour implements Serializable {
     private Date updateTime;
 
     private String tenantCode;
+
+    private String workDesc;
 
     private static final long serialVersionUID = 1L;
 }

@@ -10,27 +10,21 @@ public interface SProjectUserHourMapper {
 
     int deleteByExample(SProjectUserHourExample example);
 
-    int deleteByPrimaryKey(Long hourId);
+    int deleteByPrimaryKey(Integer hourId);
 
     int insert(SProjectUserHour record);
 
     int insertSelective(SProjectUserHour record);
 
-    List<SProjectUserHour> selectByExampleWithBLOBs(SProjectUserHourExample example);
-
     List<SProjectUserHour> selectByExample(SProjectUserHourExample example);
 
-    SProjectUserHour selectByPrimaryKey(Long hourId);
+    SProjectUserHour selectByPrimaryKey(Integer hourId);
 
     int updateByExampleSelective(@Param("record") SProjectUserHour record, @Param("example") SProjectUserHourExample example);
-
-    int updateByExampleWithBLOBs(@Param("record") SProjectUserHour record, @Param("example") SProjectUserHourExample example);
 
     int updateByExample(@Param("record") SProjectUserHour record, @Param("example") SProjectUserHourExample example);
 
     int updateByPrimaryKeySelective(SProjectUserHour record);
-
-    int updateByPrimaryKeyWithBLOBs(SProjectUserHour record);
 
     int updateByPrimaryKey(SProjectUserHour record);
 }

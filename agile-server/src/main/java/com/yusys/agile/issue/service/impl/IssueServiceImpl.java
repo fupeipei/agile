@@ -2840,6 +2840,19 @@ public class IssueServiceImpl implements IssueService {
         return issueMapper.selectByExample(issueExample);
     }
 
+    /**
+     * @Author fupp1
+     * @Description 根据projectId和处理人获取所有的issue
+     * @Date 17:26 2021/8/3
+     * @Param [projectId, securityDTO]
+     * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     **/
+    @Override
+    public List<Issue> listIssueOfProjectAndUser(Long projectId, SecurityDTO securityDTO) {
+        //根据项目获取系统ids
+        List<Issue> issueList = issueMapper.listIssueOfProjectAndUser(projectId,securityDTO.getUserId());
+        return issueList;
+    }
 
     private void setOtherInfo(IssueDTO issueDTO) throws ExecutionException {
         //处理系统信息

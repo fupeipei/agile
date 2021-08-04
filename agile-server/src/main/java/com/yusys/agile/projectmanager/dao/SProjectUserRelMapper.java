@@ -3,6 +3,9 @@ package com.yusys.agile.projectmanager.dao;
 import com.yusys.agile.projectmanager.domain.SProjectUserRel;
 import com.yusys.agile.projectmanager.domain.SProjectUserRelExample;
 import java.util.List;
+import java.util.Map;
+
+import com.yusys.agile.projectmanager.dto.ProjectUserTotalHourDto;
 import org.apache.ibatis.annotations.Param;
 
 public interface SProjectUserRelMapper {
@@ -29,4 +32,6 @@ public interface SProjectUserRelMapper {
     int updateByPrimaryKey(SProjectUserRel record);
 
     void batchInsertProjectUsers(@Param("projectUserRels")  List<SProjectUserRel> projectUserRels);
+
+    List<ProjectUserTotalHourDto> queryUserIdListByProIdAndUId(@Param("projectId") Integer projectId, @Param("userId") Long userId);
 }
