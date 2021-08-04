@@ -27,4 +27,7 @@ public interface SProjectSystemRelMapper {
     int updateByPrimaryKeySelective(SProjectSystemRel record);
 
     int updateByPrimaryKey(SProjectSystemRel record);
+
+    void batchInsertProjectSystemRelMapper(@Param("sProjectSystemRels")List<SProjectSystemRel> sProjectSystemRels);
+
 }

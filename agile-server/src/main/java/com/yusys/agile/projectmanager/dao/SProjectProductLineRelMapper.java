@@ -27,4 +27,8 @@ public interface SProjectProductLineRelMapper {
     int updateByPrimaryKeySelective(SProjectProductLineRel record);
 
     int updateByPrimaryKey(SProjectProductLineRel record);
+
+    void batchInsertProjectProductLineRel(@Param("sProjectProductLineRels") List<SProjectProductLineRel> sProjectProductLineRels);
+
+
 }

@@ -3,6 +3,8 @@ package com.yusys.agile.projectmanager.dao;
 import com.yusys.agile.projectmanager.domain.SProjectManager;
 import com.yusys.agile.projectmanager.domain.SProjectManagerExample;
 import java.util.List;
+
+import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
 import org.apache.ibatis.annotations.Param;
 
 public interface SProjectManagerMapper {
@@ -33,4 +35,6 @@ public interface SProjectManagerMapper {
     int updateByPrimaryKeyWithBLOBs(SProjectManager record);
 
     int updateByPrimaryKey(SProjectManager record);
+
+    List<ProjectManagerDto> queryProjectManagerList(@Param("searchKey") String searchKey);
 }

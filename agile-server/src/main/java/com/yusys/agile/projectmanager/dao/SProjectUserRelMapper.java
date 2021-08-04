@@ -27,4 +27,6 @@ public interface SProjectUserRelMapper {
     int updateByPrimaryKeySelective(SProjectUserRel record);
 
     int updateByPrimaryKey(SProjectUserRel record);
+
+    void batchInsertProjectUsers(@Param("projectUserRels")  List<SProjectUserRel> projectUserRels);
 }

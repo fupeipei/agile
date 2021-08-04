@@ -273,4 +273,21 @@
       state = #{state,jdbcType=VARCHAR}
     where project_system_rel_id = #{projectSystemRelId,jdbcType=BIGINT}
   </update>
+
+  <insert id="batchInsertProjectSystemRelMapper" parameterType="map">
+    insert into s_project_system_rel (project_id, rel_system_id,
+                                      create_uid, create_time, update_uid,
+                                      update_time, tenant_code, state
+    )
+    values
+    <foreach collection="sProjectSystemRels" separator="," item="projectSystemRel">
+      ( #{projectSystemRel.projectId,jdbcType=BIGINT}, #{projectSystemRel.relSystemId,jdbcType=BIGINT},
+      #{projectSystemRel.createUid,jdbcType=BIGINT}, #{projectSystemRel.createTime,jdbcType=TIMESTAMP}, #{projectSystemRel.updateUid,jdbcType=BIGINT},
+      #{projectSystemRel.updateTime,jdbcType=TIMESTAMP}, #{projectSystemRel.tenantCode,jdbcType=VARCHAR}, #{projectSystemRel.state,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+
+  </insert>
+
 </mapper>

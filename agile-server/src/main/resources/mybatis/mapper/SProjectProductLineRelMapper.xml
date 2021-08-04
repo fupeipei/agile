@@ -273,4 +273,18 @@
       state = #{state,jdbcType=VARCHAR}
     where project_product_line_rel_id = #{projectProductLineRelId,jdbcType=BIGINT}
   </update>
+
+  <insert id="batchInsertProjectProductLineRel" parameterType="map">
+    insert into s_project_product_line_rel ( project_id,
+                                            rel_product_id, create_uid, create_time,
+                                            update_uid, update_time, tenant_code,
+                                            state)
+    values
+    <foreach collection="sProjectProductLineRels" separator="," item="projectProductLineRels">
+      (#{projectProductLineRels.projectId,jdbcType=BIGINT},
+      #{projectProductLineRels.relProductId,jdbcType=BIGINT}, #{projectProductLineRels.createUid,jdbcType=BIGINT}, #{projectProductLineRels.createTime,jdbcType=TIMESTAMP},
+      #{projectProductLineRels.updateUid,jdbcType=BIGINT}, #{projectProductLineRels.updateTime,jdbcType=TIMESTAMP}, #{projectProductLineRels.tenantCode,jdbcType=VARCHAR},
+      #{projectProductLineRels.state,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
 </mapper>

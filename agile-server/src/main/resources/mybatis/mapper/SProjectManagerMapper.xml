@@ -149,12 +149,12 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{tenantCode,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, 
       #{projectContent,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectManager">
+  <insert id="insertSelective" parameterType="com.yusys.agile.projectmanager.domain.SProjectManager" useGeneratedKeys="true" keyProperty="projectId">
     insert into s_project_manager
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="projectId != null">
+      <!--<if test="projectId != null">
         project_id,
-      </if>
+      </if>-->
       <if test="projectName != null">
         project_name,
       </if>
@@ -202,9 +202,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="projectId != null">
+      <!--<if test="projectId != null">
         #{projectId,jdbcType=BIGINT},
-      </if>
+      </if>-->
       <if test="projectName != null">
         #{projectName,jdbcType=VARCHAR},
       </if>
@@ -445,4 +445,11 @@
       state = #{state,jdbcType=VARCHAR}
     where project_id = #{projectId,jdbcType=BIGINT}
   </update>
+
+  <select id="queryProjectManagerList" parameterType="map">
+    SELECT spm.project_id,spm.project_name,spm.project_code,spm.project_code FROM agile.s_project_manager spm
+      left join agile.s_static_project_data sspd on sspd.static_project_data_id = spm.project_status_id
+    WHERE spm.project_code LIKE CONCAT('%',#{searchKey},'%')
+       OR spm .project_name LIKE CONCAT('%',#{searchKey},'%')
+  </select>
 </mapper>
