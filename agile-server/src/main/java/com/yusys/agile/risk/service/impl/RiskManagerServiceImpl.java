@@ -17,6 +17,7 @@ import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import java.util.Optional;
  * @Date 2020/8/11 12:06
  * @Version 1.0
  */
+@Slf4j
 @Service
 public class RiskManagerServiceImpl implements RiskManagerService {
     @Resource
@@ -69,6 +71,7 @@ public class RiskManagerServiceImpl implements RiskManagerService {
         } else {
             riskManager.setCreateName(UserThreadLocalUtil.getUserInfo().getUserName());
             riskManager.setProjectId(riskManagerDTO.getProjectId());
+            log.info("获取项目Id:{}",riskManagerDTO.getProjectId());
             riskManagerMapper.insert(riskManager);
         }
     }

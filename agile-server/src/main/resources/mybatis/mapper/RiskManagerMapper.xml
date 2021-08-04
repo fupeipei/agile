@@ -103,7 +103,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from risk_manager
+    from s_risk_manager
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -117,7 +117,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from risk_manager
+    from s_risk_manager
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -128,21 +128,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from risk_manager
+    from s_risk_manager
     where risk_id = #{riskId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from risk_manager
+    delete from s_risk_manager
     where risk_id = #{riskId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.risk.domain.RiskManagerExample">
-    delete from risk_manager
+    delete from s_risk_manager
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.risk.domain.RiskManager">
-    insert into risk_manager (risk_id, project_id, system_id, 
+    insert into s_risk_manager (risk_id, project_id, system_id, 
       tenant_code, title, risk_level, 
       risk_status, risk_start_time, risk_end_time, 
       remark, create_uid, create_name, 
@@ -156,7 +156,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.risk.domain.RiskManager">
-    insert into risk_manager
+    insert into s_risk_manager
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="riskId != null">
         risk_id,
@@ -253,13 +253,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.risk.domain.RiskManagerExample" resultType="java.lang.Long">
-    select count(*) from risk_manager
+    select count(*) from s_risk_manager
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update risk_manager
+    update s_risk_manager
     <set>
       <if test="record.riskId != null">
         risk_id = #{record.riskId,jdbcType=BIGINT},
@@ -312,7 +312,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update risk_manager
+    update s_risk_manager
     set risk_id = #{record.riskId,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
       system_id = #{record.systemId,jdbcType=BIGINT},
@@ -333,7 +333,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.risk.domain.RiskManager">
-    update risk_manager
+    update s_risk_manager
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
@@ -381,7 +381,7 @@
     where risk_id = #{riskId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.risk.domain.RiskManager">
-    update risk_manager
+    update s_risk_manager
     set project_id = #{projectId,jdbcType=BIGINT},
       system_id = #{systemId,jdbcType=BIGINT},
       tenant_code = #{tenantCode,jdbcType=VARCHAR},
