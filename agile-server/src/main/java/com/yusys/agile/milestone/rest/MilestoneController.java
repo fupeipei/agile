@@ -22,18 +22,15 @@ public class MilestoneController {
     @Autowired
     private MilestoneService milestoneService;
 
+
     /**
-     * 功能描述:新增里程碑
+     * 新增里程碑
      *
      * @param milestoneDTO
-     * @param projectId
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @date 2020/8/12
+     * @return
      */
     @PostMapping("/addMilestone")
-    public ControllerResponse addMilestone(@RequestBody MilestoneDTO milestoneDTO, @RequestHeader(name = "projectId") Long projectId) {
-
-        milestoneDTO.setProjectId(projectId);
+    public ControllerResponse addMilestone(@RequestBody MilestoneDTO milestoneDTO) {
         MilestoneDTO returnMilestoneDTO = milestoneService.addMilestone(milestoneDTO);
         return ControllerResponse.success(returnMilestoneDTO);
     }
