@@ -3,10 +3,10 @@ package com.yusys.agile.projectmanager.rest;
 
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.projectmanager.domain.SStaticProjectData;
+import com.yusys.agile.projectmanager.dto.ProjectDataDto;
 import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
-import com.yusys.portal.util.code.ReflectUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,13 +38,16 @@ public class SProjectManagerController {
 
     /**
      * 根据类型查询状态等列表
-     * @param type
      * @return
      */
     @GetMapping("/queryStaticDataByType")
-    public ControllerResponse queryStaticDataByType(@RequestParam(name = "type",required = true) Integer type){
-        List<SStaticProjectData> sStaticProjectData = projectManagerService.queryStaticDataByType(type);
-        return ControllerResponse.success(sStaticProjectData);
+    public ControllerResponse queryStaticDataByType(){
+        try {
+            List<ProjectDataDto> projectDataDtos = projectManagerService.queryStaticData();
+            return ControllerResponse.success(projectDataDtos);
+        } catch (Exception e) {
+            return ControllerResponse.fail("查询异常"+e);
+        }
     }
 
 

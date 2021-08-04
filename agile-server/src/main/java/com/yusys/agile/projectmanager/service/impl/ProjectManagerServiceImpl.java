@@ -12,12 +12,17 @@ import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.projectmanager.dao.*;
 import com.yusys.agile.projectmanager.domain.*;
+import com.yusys.agile.projectmanager.dto.ProjectDataDto;
 import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
+import com.yusys.agile.projectmanager.dto.SStaticProjectDataDto;
+import com.yusys.agile.projectmanager.enmu.StaticProjectDataEnum;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
+import com.yusys.agile.projectmanager.service.StaticProjectDataService;
 import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
+import com.yusys.agile.versionmanager.enums.OperateTypeEnum;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
@@ -72,6 +77,10 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     private LeanKanbanService leanKanbanService;
 
 
+    @Autowired
+    private StaticProjectDataService staticProjectDataService;
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ProjectManagerDto insertProjectManager(ProjectManagerDto projectManagerDto) {
@@ -93,12 +102,32 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     }
 
     @Override
-    public List<SStaticProjectData> queryStaticDataByType(Integer type) {
+    public List<ProjectDataDto> queryStaticData() throws Exception {
         SStaticProjectDataExample sStaticProjectDataExample = new SStaticProjectDataExample();
-        sStaticProjectDataExample.createCriteria().andTypeEqualTo(type)
+        sStaticProjectDataExample.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue());
         List<SStaticProjectData> sStaticProjectData = sStaticProjectDataMapper.selectByExample(sStaticProjectDataExample);
-        return sStaticProjectData;
+        List<ProjectDataDto> result = Lists.newArrayList();
+        List<SStaticProjectData> projectStatus = Optional.ofNullable(sStaticProjectData).orElse(new ArrayList<>()).stream().filter(x -> StaticProjectDataEnum.PROJECT_STATUS.getCODE().equals(x.getType())).collect(Collectors.toList());
+        List<SStaticProjectDataDto> sStaticProjectDataDtos = ReflectUtil.copyProperties4List(projectStatus, SStaticProjectDataDto.class);
+        ProjectDataDto projectDataDto = new ProjectDataDto();
+        projectDataDto.setCode(StaticProjectDataEnum.PROJECT_STATUS.getCODE());
+        projectDataDto.setSStaticProjectDataDtoList(sStaticProjectDataDtos);
+        result.add(projectDataDto);
+        List<SStaticProjectData> projectType = Optional.ofNullable(sStaticProjectData).orElse(new ArrayList<>()).stream().filter(x -> StaticProjectDataEnum.PROJECT_TYPE.getCODE().equals(x.getType())).collect(Collectors.toList());
+        List<SStaticProjectDataDto> sStaticProjectDataDtos1 = ReflectUtil.copyProperties4List(projectType, SStaticProjectDataDto.class);
+
+        ProjectDataDto projectDataDto2 = new ProjectDataDto();
+        projectDataDto2.setCode(StaticProjectDataEnum.PROJECT_TYPE.getCODE());
+        projectDataDto2.setSStaticProjectDataDtoList(sStaticProjectDataDtos1);
+        result.add(projectDataDto2);
+        List<SStaticProjectData> projectModel = Optional.ofNullable(sStaticProjectData).orElse(new ArrayList<>()).stream().filter(x -> StaticProjectDataEnum.PROJECT_MODE.getCODE().equals(x.getType())).collect(Collectors.toList());
+        List<SStaticProjectDataDto> sStaticProjectDataDtos2 = ReflectUtil.copyProperties4List(projectModel, SStaticProjectDataDto.class);
+        ProjectDataDto projectDataDto3 = new ProjectDataDto();
+        projectDataDto3.setCode(StaticProjectDataEnum.PROJECT_MODE.getCODE());
+        projectDataDto3.setSStaticProjectDataDtoList(sStaticProjectDataDtos2);
+        result.add(projectDataDto3);
+        return result;
     }
 
     @Override
@@ -118,6 +147,8 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
         SProjectManager sProjectManager = sProjectManagerMapper.selectByPrimaryKey(projectId);
         if (Optional.ofNullable(sProjectManager).isPresent()){
             projectManagerDto = ReflectUtil.copyProperties(sProjectManager, ProjectManagerDto.class);
+            //
+            staticProjectDataService.queryStaticProjectDataById(projectManagerDto.getProjectStatusId());
             //查询人员
             List<SsoUserDTO> userList = querySsoUserByProjectId(projectId);
             projectManagerDto.setUserList(userList);
