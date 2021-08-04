@@ -449,4 +449,5 @@ public interface IssueService {
      */
     void createHistory(Long issueId,String oldMsg ,String newMsg,String msg);
 
+    List<Issue> queryIssueListBySystemIds(List<Long> systemIds, Byte type);
 }

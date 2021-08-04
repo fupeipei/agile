@@ -32,7 +32,7 @@ public class SProjectManagerController {
     }
 
     /**
-     * 查询列表
+     * 根据类型查询状态等列表
      * @param type
      * @return
      */
@@ -50,6 +50,12 @@ public class SProjectManagerController {
         PageInfo<ProjectManagerDto> projectManagerDtoPageInfo = projectManagerService.queryProjectManagerPageInfo(pageNum, pageSize, searchKey);
         return ControllerResponse.success(projectManagerDtoPageInfo);
 
+    }
+
+    @GetMapping("/queryProjectManagerByProjectId")
+    public ControllerResponse queryProjectManagerByProjectId(@RequestParam(name = "projectId") Long projectId){
+        ProjectManagerDto projectManagerDto = projectManagerService.queryProjectManagerByProjectId(projectId);
+        return ControllerResponse.success(projectManagerDto);
     }
 
 

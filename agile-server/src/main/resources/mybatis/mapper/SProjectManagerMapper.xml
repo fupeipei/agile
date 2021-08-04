@@ -446,10 +446,12 @@
     where project_id = #{projectId,jdbcType=BIGINT}
   </update>
 
-  <select id="queryProjectManagerList" parameterType="map">
-    SELECT spm.project_id,spm.project_name,spm.project_code,spm.project_code FROM agile.s_project_manager spm
+  <select id="queryProjectManagerList" parameterType="map" resultType="com.yusys.agile.projectmanager.dto.ProjectManagerDto">
+    SELECT spm.project_id,spm.project_name,spm.project_code,spm.project_code,spm.end_time,spm.principal,sspd.name FROM agile.s_project_manager spm
       left join agile.s_static_project_data sspd on sspd.static_project_data_id = spm.project_status_id
-    WHERE spm.project_code LIKE CONCAT('%',#{searchKey},'%')
-       OR spm .project_name LIKE CONCAT('%',#{searchKey},'%')
+    WHERE spm.state = 'U'
+          <if test="searchKey != null and searchKey != ''">
+            AND (spm.project_code LIKE CONCAT('%',#{searchKey},'%') OR spm.project_name LIKE CONCAT('%',#{searchKey},'%'))
+          </if>
   </select>
 </mapper>

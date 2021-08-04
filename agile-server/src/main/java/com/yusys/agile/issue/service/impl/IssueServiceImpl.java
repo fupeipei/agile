@@ -2830,6 +2830,16 @@ public class IssueServiceImpl implements IssueService {
         issueHistoryRecordService.createHistory(history);
     }
 
+    @Override
+    public List<Issue> queryIssueListBySystemIds(List<Long> systemIds, Byte type) {
+        IssueExample issueExample = new IssueExample();
+        issueExample.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue())
+                .andSystemIdIn(systemIds)
+                .andTaskTypeEqualTo(type.intValue());
+        return issueMapper.selectByExample(issueExample);
+    }
+
 
     private void setOtherInfo(IssueDTO issueDTO) throws ExecutionException {
         //处理系统信息
