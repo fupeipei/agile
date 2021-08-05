@@ -3,6 +3,7 @@ package com.yusys.agile.projectmanager.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,14 +21,14 @@ public class ProjectUserDayDto {
     @ApiModelProperty("用户账号")
     private String userAccount;
     @ApiModelProperty("项目id")
-    private Integer projectId;
+    private Long projectId;
     private List<UserHourDto> userHours;
     @ApiModelProperty("描述")
     private String workDesc;
     @ApiModelProperty("工时日期")
-    private String workDate;
+    private Date workDate;
     @ApiModelProperty("报工记录id")
-    private Integer dayId;
+    private Long dayId;
     @ApiModelProperty("实际总工时")
     private Integer totalReallyWorkload;
 }
