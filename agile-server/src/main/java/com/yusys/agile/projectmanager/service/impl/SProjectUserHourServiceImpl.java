@@ -224,36 +224,25 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
     public ProjectHourDto getProjectHourInfo(Long projectId) {
         ProjectHourDto projectHourDto = new ProjectHourDto();
         projectHourDto.setProjectId(projectId);
-        try {
-            //获取项目下所有的人(进入项目时间)
-            List<ProjectUserTotalHourDto> totalHourDtos = projectManagerService.queryUserIdListByProIdAndUId(projectId, null);
-            SProjectManager projectManager = projectManagerService.queryProjectManagerInfo(projectId);
-            // 项目标准工时：SUM[（项目结束日期-人员进入项目日期）*8]
-            Long normalWorkload = 0L;
-            String createTimeStr;
-            Date createTime;
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            for (ProjectUserTotalHourDto totalHourDto : totalHourDtos) {
-                createTimeStr = totalHourDto.getCreateTime();
-                createTime = format.parse(createTimeStr);
-                normalWorkload += DateUtil.between(createTime, projectManager.getEndTime(), DateUnit.DAY)*8;
-            }
-            projectHourDto.setNormalWorkload(normalWorkload);
-            // 项目预估工时：SUM（项目下所有工作项预估时间）
-            List<Issue> issues = issueService.listIssueOfProjectAndUser(projectId, null);
-            Long planWorkload = 0L;
-            for (Issue issue : issues) {
-                planWorkload += issue.getPlanWorkload();
-            }
-            projectHourDto.setPlanWorkload(planWorkload);
-            // 实际工时：SUM（项目成员报工的实际工时）
-            Long reallyWorkload = sProjectUserDayMapper.getTotalReallyWorkloadByProId(projectId);
-            projectHourDto.setReallyWorkload(reallyWorkload);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            log.info("获取项目工时:{}", e.getMessage());
-            throw new BusinessException("获取项目工时:{}", e.getMessage());
+        //获取项目下所有的人(进入项目时间)
+        List<ProjectUserTotalHourDto> totalHourDtos = projectManagerService.queryUserIdListByProIdAndUId(projectId, null);
+        SProjectManager projectManager = projectManagerService.queryProjectManagerInfo(projectId);
+        // 项目标准工时：SUM[（项目结束日期-人员进入项目日期）*8]
+        Long normalWorkload = 0L;
+        for (ProjectUserTotalHourDto totalHourDto : totalHourDtos) {
+            normalWorkload += DateUtil.between(totalHourDto.getCreateTime(), projectManager.getEndTime(), DateUnit.DAY) * 8;
         }
+        projectHourDto.setNormalWorkload(normalWorkload);
+        // 项目预估工时：SUM（项目下所有工作项预估时间）
+        List<Issue> issues = issueService.listIssueOfProjectAndUser(projectId, null);
+        Long planWorkload = 0L;
+        for (Issue issue : issues) {
+            planWorkload += issue.getPlanWorkload();
+        }
+        projectHourDto.setPlanWorkload(planWorkload);
+        // 实际工时：SUM（项目成员报工的实际工时）
+        Long reallyWorkload = sProjectUserDayMapper.getTotalReallyWorkloadByProId(projectId);
+        projectHourDto.setReallyWorkload(reallyWorkload);
         return projectHourDto;
     }
 }
