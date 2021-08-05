@@ -194,7 +194,7 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     }
 
     private String getUserAccount(Long userId){
-        if(!USERMAP.containsKey(userId) && !Optional.ofNullable(userId).isPresent()){
+        if(!USERMAP.containsKey(userId) && Optional.ofNullable(userId).isPresent()){
             try {
                 SsoUser ssoUser = userApi.queryUserById(userId);
                 if(Optional.ofNullable(ssoUser).isPresent()){
