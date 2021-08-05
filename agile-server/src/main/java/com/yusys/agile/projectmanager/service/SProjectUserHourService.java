@@ -1,5 +1,6 @@
 package com.yusys.agile.projectmanager.service;
 
+import com.yusys.agile.projectmanager.dto.ProjectHourDto;
 import com.yusys.agile.projectmanager.dto.ProjectUserDayDto;
 import com.yusys.agile.projectmanager.dto.ProjectUserHourDto;
 import com.yusys.agile.projectmanager.dto.ProjectUserTotalHourDto;
@@ -41,4 +42,6 @@ public interface SProjectUserHourService {
      * @return com.yusys.agile.projectmanager.dto.ProjectUserHourDto
      **/
     ProjectUserDayDto getProjectUserHourInfo(Long projectId, String workDate, Long userId) throws ParseException;
+
+    ProjectHourDto getProjectHourInfo(Long projectId);
 }

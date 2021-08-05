@@ -477,7 +477,7 @@ public class IssueController {
     @GetMapping("/issue/listIssueOfProjectAndUser")
     public ControllerResponse listIssueOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO) {
         try {
-            return ControllerResponse.success(issueService.listIssueOfProjectAndUser(projectId, securityDTO));
+            return ControllerResponse.success(issueService.listIssueOfProjectAndUser(projectId, securityDTO.getUserId()));
         } catch (Exception e) {
             LOGGER.info("根据projectId和处理人获取所有的issue:{}", e.getMessage());
             return ControllerResponse.fail(e.getMessage());

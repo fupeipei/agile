@@ -2848,9 +2848,9 @@ public class IssueServiceImpl implements IssueService {
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      **/
     @Override
-    public List<Issue> listIssueOfProjectAndUser(Long projectId, SecurityDTO securityDTO) {
+    public List<Issue> listIssueOfProjectAndUser(Long projectId, Long userId) {
         //根据项目获取系统ids
-        List<Issue> issueList = issueMapper.listIssueOfProjectAndUser(projectId,securityDTO.getUserId());
+        List<Issue> issueList = issueMapper.listIssueOfProjectAndUser(projectId,userId);
         return issueList;
     }
 
