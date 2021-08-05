@@ -12,10 +12,7 @@ import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.projectmanager.dao.*;
 import com.yusys.agile.projectmanager.domain.*;
-import com.yusys.agile.projectmanager.dto.ProjectDataDto;
-import com.yusys.agile.projectmanager.dto.ProjectDemandDto;
-import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
-import com.yusys.agile.projectmanager.dto.SStaticProjectDataDto;
+import com.yusys.agile.projectmanager.dto.*;
 import com.yusys.agile.projectmanager.enmu.StaticProjectDataEnum;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
@@ -284,6 +281,18 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
 //            });
 //        }
         return projectManagerDtos;
+    }
+
+    @Override
+    public List<ProjectUserTotalHourDto> queryUserIdListByProIdAndUId(Long projectId, Long userId) {
+        List<ProjectUserTotalHourDto> userTotalHourDtos = sProjectUserRelMapper.queryUserIdListByProIdAndUId(projectId, userId);
+        return userTotalHourDtos;
+    }
+
+    @Override
+    public SProjectManager queryProjectManagerInfo(Long projectId) {
+        SProjectManager sProjectManager = sProjectManagerMapper.queryProjectManagerInfo(projectId);
+        return sProjectManager;
     }
 
     private void buildProjectDemandList(List<Long> systemIds){
