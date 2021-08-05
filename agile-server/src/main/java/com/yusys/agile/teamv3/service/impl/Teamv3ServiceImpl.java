@@ -283,13 +283,13 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.insertSelective(team);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定PO
-        sTeamMemberMapper.batchInsert(team, teamPoS, TeamRoleEnum.PRODUCT_OWNER.roleId);
+        sTeamMemberMapper.batchInsert(teamPoS,team, TeamRoleEnum.PRODUCT_OWNER.roleId);
         //团队绑定SM
-        sTeamMemberMapper.batchInsert(team, teamSmS, TeamRoleEnum.SCRUM_MASTER.roleId);
+        sTeamMemberMapper.batchInsert(teamSmS,team, TeamRoleEnum.SCRUM_MASTER.roleId);
         //团队绑定其他成员
-        sTeamMemberMapper.batchInsert(team, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
+        sTeamMemberMapper.batchInsert(teamUsers,team, TeamRoleEnum.TEAM_MEMBER.roleId);
         //调门户服务，新增PO角色
         SsoSubjectUserDTO po = new SsoSubjectUserDTO();
         po.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
@@ -398,13 +398,13 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         sTeam.setTeamDesc(team.getTeamDesc());
         sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定PO
-        sTeamMemberMapper.batchInsert(team, teamPoS, TeamRoleEnum.PRODUCT_OWNER.roleId);
+        sTeamMemberMapper.batchInsert(teamPoS,team, TeamRoleEnum.PRODUCT_OWNER.roleId);
         //团队绑定SM
-        sTeamMemberMapper.batchInsert(team, teamSmS, TeamRoleEnum.SCRUM_MASTER.roleId);
+        sTeamMemberMapper.batchInsert(teamSmS,team, TeamRoleEnum.SCRUM_MASTER.roleId);
         //团队绑定其他成员
-        sTeamMemberMapper.batchInsert(team, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
+        sTeamMemberMapper.batchInsert(teamUsers,team, TeamRoleEnum.TEAM_MEMBER.roleId);
         //调门户服务，新增PO角色
         SsoSubjectUserDTO po = new SsoSubjectUserDTO();
         po.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
@@ -516,11 +516,11 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.insertSelective(team);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定 精益教练
-        sTeamMemberMapper.batchInsert(team, teamLean, TeamRoleEnum.LEAN_MASTER.roleId);
+        sTeamMemberMapper.batchInsert(teamLean,team,TeamRoleEnum.LEAN_MASTER.roleId);
         //团队绑定其他成员
-        sTeamMemberMapper.batchInsert(team, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
+        sTeamMemberMapper.batchInsert(teamUsers,team,TeamRoleEnum.TEAM_MEMBER.roleId);
         //调门户服务，新增精益教练角色
         SsoSubjectUserDTO lean = new SsoSubjectUserDTO();
         lean.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
@@ -571,11 +571,11 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定 精益教练
-        sTeamMemberMapper.batchInsert(team, teamLean, TeamRoleEnum.LEAN_MASTER.roleId);
+        sTeamMemberMapper.batchInsert(teamLean,team, TeamRoleEnum.LEAN_MASTER.roleId);
         //团队绑定其他成员
-        sTeamMemberMapper.batchInsert(team, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
+        sTeamMemberMapper.batchInsert(teamUsers,team, TeamRoleEnum.TEAM_MEMBER.roleId);
         //调门户服务，新增精益教练角色
         SsoSubjectUserDTO lean = new SsoSubjectUserDTO();
         lean.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
