@@ -266,9 +266,9 @@
       from s_risk_manager  srm
       left  join
       s_project_manager spm
-      on srm.project_id = spm.project_id
+      on  srm.project_id = spm.project_id
       where 1 = 1
-      and spm.tenant_code = #{tenantCode}
+      and  srm.tenant_code = #{tenantCode}
       <if test="title != null and  title != ''">
        and   srm.title like CONCAT('%',#{title},'%') )
       </if>
