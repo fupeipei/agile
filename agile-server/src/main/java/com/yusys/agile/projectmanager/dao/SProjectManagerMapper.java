@@ -36,7 +36,7 @@ public interface SProjectManagerMapper {
 
     int updateByPrimaryKey(SProjectManager record);
 
-    List<ProjectManagerDto> queryProjectManagerList(@Param("searchKey") String searchKey);
+    List<ProjectManagerDto> queryProjectManagerList(@Param("searchKey") String searchKey,@Param("tenantCode") String tenantCode);
 
     List<ProjectManagerDto> queryProjectManagerListByUserId(@Param("userId") Long userId);
 

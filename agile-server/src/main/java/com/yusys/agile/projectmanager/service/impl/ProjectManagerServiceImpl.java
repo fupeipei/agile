@@ -130,8 +130,9 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
 
     @Override
     public PageInfo<ProjectManagerDto> queryProjectManagerPageInfo(Integer pageNum, Integer pageSize, String searchKey) {
+        String tenantCode = UserThreadLocalUtil.getUserInfo().getTenantCode();
         PageHelper.startPage(pageNum,pageSize);
-        List<ProjectManagerDto> projectManagerDtos = sProjectManagerMapper.queryProjectManagerList(searchKey);
+        List<ProjectManagerDto> projectManagerDtos = sProjectManagerMapper.queryProjectManagerList(searchKey,tenantCode);
         if (CollectionUtils.isEmpty(projectManagerDtos)){
             return new PageInfo<>();
         }

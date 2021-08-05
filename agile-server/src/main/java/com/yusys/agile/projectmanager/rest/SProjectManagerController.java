@@ -7,9 +7,7 @@ import com.yusys.agile.projectmanager.dto.ProjectDataDto;
 import com.yusys.agile.projectmanager.dto.ProjectDemandDto;
 import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
-import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
-import org.bouncycastle.pqc.crypto.newhope.NHOtherInfoGenerator;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,13 +51,23 @@ public class SProjectManagerController {
         }
     }
 
-
+    /**
+     * 项目列表分页
+     * @param pageNum
+     * @param pageSize
+     * @param searchKey
+     * @return
+     */
     @GetMapping("/queryProjectManagerPageInfo")
     public ControllerResponse queryProjectManagerPageInfo(@RequestParam(name = "pageNum") Integer pageNum,
                                                           @RequestParam(name = "pageSize")Integer pageSize,
                                                           @RequestParam(name = "searchKey",required = false) String searchKey){
-        PageInfo<ProjectManagerDto> projectManagerDtoPageInfo = projectManagerService.queryProjectManagerPageInfo(pageNum, pageSize, searchKey);
-        return ControllerResponse.success(projectManagerDtoPageInfo);
+        try {
+            PageInfo<ProjectManagerDto> projectManagerDtoPageInfo = projectManagerService.queryProjectManagerPageInfo(pageNum, pageSize, searchKey);
+            return ControllerResponse.success(projectManagerDtoPageInfo);
+        } catch (Exception e) {
+            return ControllerResponse.fail("项目列表分页"+e);
+        }
 
     }
 
@@ -126,7 +134,13 @@ public class SProjectManagerController {
         return ControllerResponse.success(projectDemandDtos);
     }
 
-
+    /**
+     * 查询项目列表
+     * @param pageNum
+     * @param pageSize
+     * @param searchKey
+     * @return
+     */
     @GetMapping("/queryProjectManagerList")
     public ControllerResponse queryProjectManagerList(@RequestParam(name = "pageNum")Integer pageNum,
                                                       @RequestParam(name = "pageSize")Integer pageSize,
