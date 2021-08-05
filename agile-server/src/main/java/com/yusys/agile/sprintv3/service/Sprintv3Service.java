@@ -1,10 +1,7 @@
 package com.yusys.agile.sprintv3.service;
 
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.sprintV3.dto.SprintListDTO;
-import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
-import com.yusys.agile.sprintV3.dto.SprintV3DTO;
-import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
+import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
@@ -16,11 +13,21 @@ import java.util.Date;
 import java.util.List;
 import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 
+
+
 /**
  * @Author zhaofeng
  * @Date 2021/5/11 14:48
  */
 public interface Sprintv3Service {
+
+
+    /**
+     * 根据项目id查询迭代信息
+     * @param projectId
+     * @return
+     */
+    SprintProjectDTO showSprintByProject(Long projectId , Long teamId);
 
     /**
      * @param sprintId

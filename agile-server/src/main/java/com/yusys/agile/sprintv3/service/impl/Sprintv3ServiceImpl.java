@@ -11,6 +11,8 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.StoryService;
+import com.yusys.agile.projectmanager.domain.SProjectSystemRel;
+import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
 import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
@@ -23,6 +25,7 @@ import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
+import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
@@ -32,6 +35,7 @@ import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.service.STeamSystemService;
 import com.yusys.agile.teamv3.service.Teamv3Service;
+import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
@@ -92,8 +96,54 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private Teamv3Service teamv3Service;
     @Resource
     private STeamSystemService teamSystemService;
+    @Resource
+    private ProjectSystemRelService projectSystemRelService;
 
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+
+
+    @Override
+    public SprintProjectDTO showSprintByProject(Long projectId, Long teamId) {
+
+        //1 根据项目Id查询系统集合
+        List<SProjectSystemRel> sProjectSystemRels = projectSystemRelService.queryProjectSystemRelList(projectId);
+        List<Long> systemIdList = sProjectSystemRels.stream().map(a -> a.getRelSystemId()).collect(Collectors.toList());
+        //2 根据系统Ids查询团队集合
+        List<TeamListDTO> teamListDTOS = teamv3Service.queryTeamsBySystemIdList(systemIdList);
+        //3 根据teamid查询迭代集合
+        List<SSprint> sSprints = new ArrayList<>();
+        if (teamId == null) {
+            for (int i = 0; CollectionUtils.isEmpty(sSprints) && i<teamListDTOS.size(); i++) {
+                teamId = teamListDTOS.get(i).getTeamId();
+                sSprints = ssprintMapper.querySprintByTeamId(teamId);
+            }
+        }else {
+            sSprints = ssprintMapper.querySprintByTeamId(teamId);
+        }
+        //4 迭代返回类型设置
+        List<SprintListDTO> sprintListDTOS = new ArrayList<>();
+        try {
+            sprintListDTOS = ReflectUtil.copyProperties4List(sSprints, SprintListDTO.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for (SprintListDTO sprintListDTO : sprintListDTOS){
+            SprintStatisticalInformation information = sprintStatisticalInformation(sprintListDTO.getSprintId());
+            SprintTaskDTO story = new SprintTaskDTO();
+            story.setAll(information.getStoryPointSum());
+            story.setDone(information.getStoryPoint());
+            sprintListDTO.setStory(story);
+        }
+        //5 返回值设置
+        SprintProjectDTO sprintProjectDTO = new SprintProjectDTO();
+        STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
+        sprintProjectDTO.setTeamName(sTeam.getTeamName());
+        sprintProjectDTO.setTeamId(teamId);
+        sprintProjectDTO.setSprintListDTOS(sprintListDTOS);
+        sprintProjectDTO.setTeamListDTOS(teamListDTOS);
+        return sprintProjectDTO;
+    }
 
     @Override
     public SprintV3DTO viewEdit(Long sprintId) {
