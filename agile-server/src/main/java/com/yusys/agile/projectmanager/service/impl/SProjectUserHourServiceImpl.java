@@ -1,31 +1,28 @@
 package com.yusys.agile.projectmanager.service.impl;
 
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.github.pagehelper.PageHelper;
+import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.projectmanager.dao.SProjectUserDayMapper;
 import com.yusys.agile.projectmanager.dao.SProjectUserHourMapper;
-import com.yusys.agile.projectmanager.dao.SProjectUserRelMapper;
-import com.yusys.agile.projectmanager.domain.SProjectUserDay;
-import com.yusys.agile.projectmanager.domain.SProjectUserDayExample;
-import com.yusys.agile.projectmanager.domain.SProjectUserHour;
-import com.yusys.agile.projectmanager.domain.SProjectUserHourExample;
-import com.yusys.agile.projectmanager.dto.ProjectUserDayDto;
-import com.yusys.agile.projectmanager.dto.ProjectUserHourDto;
-import com.yusys.agile.projectmanager.dto.ProjectUserTotalHourDto;
-import com.yusys.agile.projectmanager.dto.UserHourDto;
+import com.yusys.agile.projectmanager.domain.*;
+import com.yusys.agile.projectmanager.dto.*;
+import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.agile.projectmanager.service.SProjectUserHourService;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,9 +43,12 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
     @Autowired
     private SProjectUserDayMapper sProjectUserDayMapper;
     @Autowired
-    private SProjectUserRelMapper sProjectUserRelMapper;
+    private ProjectManagerService projectManagerService;
     @Autowired
     private IFacadeUserApi iFacadeUserApi;
+    @Resource
+    private IssueService issueService;
+
     /**
      * @Author fupp1
      * @Description 获取项目下成员报工统计列表
@@ -83,7 +83,7 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
             }
             PageHelper.startPage(projectUserHourDto.getPageNum(),projectUserHourDto.getPageSize());
             //项目下员工id，进入项目时间
-            userList = sProjectUserRelMapper.queryUserIdListByProIdAndUId(projectUserHourDto.getProjectId(),projectUserHourDto.getUserId());
+            userList = projectManagerService.queryUserIdListByProIdAndUId(projectUserHourDto.getProjectId(),projectUserHourDto.getUserId());
             // 获取项目下所有的员工id
             List<Long> userIdList = new ArrayList<>();
             userList.forEach(item -> userIdList.add(item.getUserId()));
@@ -211,5 +211,49 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
             projectUserDayDto.setUserHours(userHourDtoList);
         }
         return projectUserDayDto;
+    }
+
+    /**
+     * @return com.yusys.agile.projectmanager.dto.ProjectHourDto
+     * @Author fupp1
+     * @Description 获取项目工时
+     * @Date 10:12 2021/8/5
+     * @Param [projectId]
+     **/
+    @Override
+    public ProjectHourDto getProjectHourInfo(Long projectId) {
+        ProjectHourDto projectHourDto = new ProjectHourDto();
+        projectHourDto.setProjectId(projectId);
+        try {
+            //获取项目下所有的人(进入项目时间)
+            List<ProjectUserTotalHourDto> totalHourDtos = projectManagerService.queryUserIdListByProIdAndUId(projectId, null);
+            SProjectManager projectManager = projectManagerService.queryProjectManagerInfo(projectId);
+            // 项目标准工时：SUM[（项目结束日期-人员进入项目日期）*8]
+            Long normalWorkload = 0L;
+            String createTimeStr;
+            Date createTime;
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (ProjectUserTotalHourDto totalHourDto : totalHourDtos) {
+                createTimeStr = totalHourDto.getCreateTime();
+                createTime = format.parse(createTimeStr);
+                normalWorkload += DateUtil.between(createTime, projectManager.getEndTime(), DateUnit.DAY)*8;
+            }
+            projectHourDto.setNormalWorkload(normalWorkload);
+            // 项目预估工时：SUM（项目下所有工作项预估时间）
+            List<Issue> issues = issueService.listIssueOfProjectAndUser(projectId, null);
+            Long planWorkload = 0L;
+            for (Issue issue : issues) {
+                planWorkload += issue.getPlanWorkload();
+            }
+            projectHourDto.setPlanWorkload(planWorkload);
+            // 实际工时：SUM（项目成员报工的实际工时）
+            Long reallyWorkload = sProjectUserDayMapper.getTotalReallyWorkloadByProId(projectId);
+            projectHourDto.setReallyWorkload(reallyWorkload);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            log.info("获取项目工时:{}", e.getMessage());
+            throw new BusinessException("获取项目工时:{}", e.getMessage());
+        }
+        return projectHourDto;
     }
 }

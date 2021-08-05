@@ -80,4 +80,21 @@ public class SProjectUserHourController {
         }
     }
 
+    /**
+     * @return com.yusys.portal.model.common.dto.ControllerResponse
+     * @Author fupp1
+     * @Description 获取项目工时
+     * @Date 10:04 2021/8/5
+     * @Param [projectId]
+     **/
+    @GetMapping("/getProjectHourInfo")
+    public ControllerResponse getProjectHourInfo(@RequestParam("projectId") Long projectId) {
+        try {
+            return ControllerResponse.success(sProjectUserHourService.getProjectHourInfo(projectId));
+        } catch (Exception e) {
+            log.info("获取项目下成员报工统计列表:{}", e.getMessage());
+            return ControllerResponse.fail(e.getMessage());
+        }
+    }
+
 }

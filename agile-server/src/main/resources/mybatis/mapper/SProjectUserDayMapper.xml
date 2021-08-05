@@ -377,4 +377,9 @@
     <if test="null != endDate and '' != endDate"> AND work_date &lt;= #{endDate}</if>
     GROUP BY work_uid
   </select>
+  <select id="getTotalReallyWorkloadByProId" parameterType="long" resultType="long">
+    SELECT SUM (really_workload)  AS really_workload
+    FROM s_project_user_day
+    WHERE state='U' AND project_id = #{projectId}
+  </select>
 </mapper>

@@ -38,4 +38,6 @@ public interface SProjectUserDayMapper {
 
     List<ProjectUserTotalHourDto> getTotalDays(@Param("projectId") Long projectId, @Param("userId") Long userId,
                                                @Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    Long getTotalReallyWorkloadByProId(Long projectId);
 }
