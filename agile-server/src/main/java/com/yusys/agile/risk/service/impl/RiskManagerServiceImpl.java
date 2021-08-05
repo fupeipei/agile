@@ -44,21 +44,23 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
     @Override
-    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
+    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, String projectName) {
         if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
             PageHelper.startPage(pageNum, pageSize);
         }
 
-        RiskManagerExample riskManagerExample = new RiskManagerExample();
-        RiskManagerExample.Criteria criteria = riskManagerExample.createCriteria();
-        if (StringUtils.isNotEmpty(title)) {
-            criteria.andTitleLike(StringUtils.join(StringConstant.PERCENT_SIGN, title, StringConstant.PERCENT_SIGN));
-        }
-        if (Optional.ofNullable(riskStatus).isPresent()) {
-            criteria.andRiskStatusEqualTo(riskStatus);
-        }
-        riskManagerExample.setOrderByClause(CREATE_TIME_DESC);
-        return getRiskManagerDTOS(riskManagerExample);
+//        RiskManagerExample riskManagerExample = new RiskManagerExample();
+//        RiskManagerExample.Criteria criteria = riskManagerExample.createCriteria();
+//        if (StringUtils.isNotEmpty(title)) {
+//            criteria.andTitleLike(StringUtils.join(StringConstant.PERCENT_SIGN, title, StringConstant.PERCENT_SIGN));
+//        }
+//        if (Optional.ofNullable(riskStatus).isPresent()) {
+//            criteria.andRiskStatusEqualTo(riskStatus);
+//        }
+//        riskManagerExample.setOrderByClause(CREATE_TIME_DESC);
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        List<RiskManagerDTO> riskManagerDTOS = riskManagerMapper.selectByCondition(title, riskStatus, projectName, tenantCode);
+        return getRiskManagerDTOS(riskManagerDTOS);
     }
 
     @Override
@@ -132,11 +134,11 @@ public class RiskManagerServiceImpl implements RiskManagerService {
             criteria.andRiskStartTimeLessThan(riskEndTime);
         }
         riskManagerExample.setOrderByClause("create_time asc");
-        return getRiskManagerDTOS(riskManagerExample);
+        List<RiskManagerDTO> riskManagers = riskManagerMapper.selectByExampleWithDTO(riskManagerExample);
+        return getRiskManagerDTOS(riskManagers);
     }
 
-    private List<RiskManagerDTO> getRiskManagerDTOS(RiskManagerExample riskManagerExample) {
-        List<RiskManagerDTO> riskManagers = riskManagerMapper.selectByExampleWithDTO(riskManagerExample);
+    private List<RiskManagerDTO> getRiskManagerDTOS(List<RiskManagerDTO> riskManagers ) {
         if (CollectionUtils.isNotEmpty(riskManagers)) {
             riskManagers.forEach(riskManager -> {
                 if (Optional.ofNullable(riskManager.getRiskLevel()).isPresent()) {

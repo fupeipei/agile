@@ -620,7 +620,7 @@
         <where>
             <include refid="query_other_list_param"/>
             <if test="params.user != null">
-                and (sp.create_uid = #{params.user} or stm.user_id = #{params.user} or stm.role_id = 103)
+                and (sp.create_uid = #{params.user} or (stm.user_id = #{params.user} AND stm.role_id !=103) OR (stm.user_id = #{params.user} AND stm.role_id =103))
             </if>
         </where>
         order by sp.create_time desc
