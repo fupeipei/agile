@@ -31,7 +31,7 @@ public interface STeamMemberMapper {
 
     int updateByPrimaryKey(STeamMember record);
 
-    void batchInsert(@Param("users") List<STeamMember> teamUsers,@Param("team") STeam team,@Param("roleId") int roleId);
+    void batchInsert(@Param("team") STeam team,@Param("users") List<STeamMember> teamUsers,@Param("roleId") int roleId);
 
     void deleteByTeamId(@Param("teamId") Long teamId);
 
