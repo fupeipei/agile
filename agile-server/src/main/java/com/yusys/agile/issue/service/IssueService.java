@@ -1,12 +1,9 @@
 package com.yusys.agile.issue.service;
 
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.commit.dto.CommitDTO;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.dto.DemandPlanDTO;
-import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.IssueListDTO;
-import com.yusys.agile.issue.dto.PanoramasEpicDTO;
-import com.github.pagehelper.PageInfo;
+import com.yusys.agile.issue.dto.*;
 import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -460,6 +457,14 @@ public interface IssueService {
     List<Issue> listIssueOfProjectAndUser(Long projectId, Long userId);
 
     List<Issue> queryIssueListBySystemIds(List<Long> systemIds, Byte type);
+    /**
+     * @return: java.util.List<com.yusys.agile.issue.dto.SProjectIssueDTO>
+     * @Author wangpf6
+     * @Description 条件查询需求
+     * @Date 16:19 2021/8/5
+     * @Param [projectName, pageNum, pageSize, issueTitle]
+     **/
+    List<SProjectIssueDTO> queryIssuesByCondition(String projectName, Integer pageNum, Integer pageSize, String issueTitle);
 
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(Long systemId);
 }
