@@ -2,6 +2,9 @@ package com.yusys.agile.risk.service.impl;
 
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.constant.StringConstant;
+import com.yusys.agile.projectmanager.dao.SProjectManagerMapper;
+import com.yusys.agile.projectmanager.domain.SProjectManager;
+import com.yusys.agile.projectmanager.domain.SProjectManagerExample;
 import com.yusys.agile.risk.dao.RiskManagerMapper;
 import com.yusys.agile.risk.domain.RiskManager;
 import com.yusys.agile.risk.domain.RiskManagerExample;
@@ -13,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.util.code.ReflectUtil;
@@ -40,6 +44,8 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     private RiskManagerMapper riskManagerMapper;
     @Resource
     private IFacadeSystemApi iFacadeSystemApi;
+    @Resource
+    private SProjectManagerMapper projectManagerMapper;
 
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
@@ -95,6 +101,18 @@ public class RiskManagerServiceImpl implements RiskManagerService {
                 riskManagerDTO.setSystemName(ssoSystem.getSystemName());
             }
         }
+        Long projectId = riskManagerDTO.getProjectId();
+        String projectName = null;
+        if(Optional.ofNullable(projectId).isPresent()){
+            SProjectManagerExample example = new SProjectManagerExample();
+            example.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId);
+            List<SProjectManager> sProjectManagers = projectManagerMapper.selectByExample(example);
+            if(CollectionUtils.isNotEmpty(sProjectManagers)){
+                projectName = sProjectManagers.get(0).getProjectName();
+            }
+
+        }
+        riskManagerDTO.setProjectName(projectName);
         return riskManagerDTO;
     }
 
