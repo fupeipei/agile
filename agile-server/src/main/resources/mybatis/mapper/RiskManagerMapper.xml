@@ -273,7 +273,7 @@
        and   srm.title like CONCAT('%',#{title},'%') )
       </if>
       <if test="projectName != null and projectName != ''">
-       and spm.s_project_manager  like CONCAT('%',#{projectName},'%') )
+       and spm.project_name  like CONCAT('%',#{projectName},'%') )
       </if>
       <if test="riskStatus != null and  riskStatus != ''">
        and  srm.risk_status = #{riskStatus}
