@@ -398,13 +398,13 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         sTeam.setTeamDesc(team.getTeamDesc());
         sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(sTeam, team.getSystemIds());
         //团队绑定PO
-        sTeamMemberMapper.batchInsert(team, teamPoS, TeamRoleEnum.PRODUCT_OWNER.roleId);
+        sTeamMemberMapper.batchInsert(sTeam, teamPoS, TeamRoleEnum.PRODUCT_OWNER.roleId);
         //团队绑定SM
-        sTeamMemberMapper.batchInsert(team, teamSmS, TeamRoleEnum.SCRUM_MASTER.roleId);
+        sTeamMemberMapper.batchInsert(sTeam, teamSmS, TeamRoleEnum.SCRUM_MASTER.roleId);
         //团队绑定其他成员
-        sTeamMemberMapper.batchInsert(team, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
+        sTeamMemberMapper.batchInsert(sTeam, teamUsers, TeamRoleEnum.TEAM_MEMBER.roleId);
         //调门户服务，新增PO角色
         SsoSubjectUserDTO po = new SsoSubjectUserDTO();
         po.setUserRelateType(RoleTypeEnum.PLATFORM.getValue());
