@@ -461,4 +461,7 @@
             FROM s_project_manager spm ,s_project_user_rel spur
     WHERE spm.state = 'U' AND spm.project_id = spur.project_id AND spur.user_id = #{userId}
   </select>
+  <select id="queryProjectManagerInfo" parameterType="long" resultType="com.yusys.agile.projectmanager.domain.SProjectManager">
+      SELECT project_id,end_time FROM s_project_manager WHERE project_id = #{projectId}
+  </select>
 </mapper>

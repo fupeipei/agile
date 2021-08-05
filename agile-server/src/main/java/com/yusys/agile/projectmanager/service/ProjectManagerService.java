@@ -2,10 +2,7 @@ package com.yusys.agile.projectmanager.service;
 
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.projectmanager.domain.SProjectManager;
-import com.yusys.agile.projectmanager.dto.ProjectDataDto;
-import com.yusys.agile.projectmanager.dto.ProjectDemandDto;
-import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
-import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
+import com.yusys.agile.projectmanager.dto.*;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 
@@ -32,4 +29,8 @@ public interface ProjectManagerService {
     List<ProjectDemandDto> queryProjectDemandList(Long projectId);
 
     List<ProjectManagerDto> queryProjectManagerList();
+
+    List<ProjectUserTotalHourDto> queryUserIdListByProIdAndUId (Long projectId,Long userId);
+
+    SProjectManager queryProjectManagerInfo(Long projectId);
 }
