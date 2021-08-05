@@ -344,7 +344,7 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     }
 
     private List<ProjectManagerDto> buildProjectManagerDtoPageInfo (List<ProjectManagerDto> projectManagerDtos){
-        List<ProjectManagerDto> result = projectManagerDtos.stream().map(x -> {
+        projectManagerDtos.stream().forEach(x -> {
             Long principal = x.getPrincipal();
             //项目负责人
             SsoUser ssoUser = iFacadeUserApi.queryUserById(principal);
@@ -370,9 +370,8 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
                     x.setProjectProgress(projectProgress);
                 }
             }
-            return x;
-        }).collect(Collectors.toList());
-        return result;
+        });
+        return projectManagerDtos;
     }
 
 

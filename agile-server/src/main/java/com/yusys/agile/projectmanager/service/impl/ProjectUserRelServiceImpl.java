@@ -47,6 +47,7 @@ public class ProjectUserRelServiceImpl implements ProjectUserRelService {
             resutl.setSize(ssoUserDTOPageInfoDTO.getSize());
             resutl.setPageNum(pageNum);
             resutl.setPageSize(pageSize);
+            resutl.setTotal(ssoUserDTOPageInfoDTO.getTotal());
         }
         return resutl;
     }
