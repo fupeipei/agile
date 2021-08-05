@@ -38,7 +38,7 @@ public interface STeamSystemMapper {
      *  @param team    团队
      * @param systemIds ids系统
      */
-    void bindingTeamAndSystem(@Param("systemIds") List<Long> systemIds,@Param("team") STeam team);
+    void bindingTeamAndSystem(@Param("team") STeam team, @Param("systemIds") List<Long> systemIds);
 
     /**
      * 通过团队id查询系统id
