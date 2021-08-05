@@ -262,7 +262,7 @@
     <select id="selectByCondition" resultType="com.yusys.agile.risk.dto.RiskManagerDTO">
       select
       srm.risk_id, srm.project_id, srm.system_id, srm.tenant_code, srm.title, srm.risk_level, srm.risk_status, srm.risk_start_time,
-      srm.risk_end_time, srm.remark, srm.create_uid, srm.create_name, srm.create_time, srm.update_uid, srm.update_time
+      srm.risk_end_time, srm.remark, srm.create_uid, srm.create_name, srm.create_time, srm.update_uid, srm.update_time, spm.project_name
       from s_risk_manager  srm
       left  join
       s_project_manager spm
