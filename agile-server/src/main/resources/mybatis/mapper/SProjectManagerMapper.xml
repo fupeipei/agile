@@ -459,6 +459,9 @@
     SELECT distinct spm.project_id, spm.project_name, spm.project_code, spm.principal, spm.start_time, spm.end_time, spm.project_status_id,
            spm.project_type_id, spm.research_model_id
             FROM s_project_manager spm ,s_project_user_rel spur
-    WHERE spm.state = 'U' AND spm.project_id = spur.project_id AND spur.user_id = #{userId}
+    WHERE spm.state = 'U'
+      AND spm.project_id = spur.project_id
+      AND  spm.tenant_code =#{tenantCode}
+      AND spur.user_id = #{userId}
   </select>
 </mapper>

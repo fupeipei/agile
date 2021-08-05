@@ -12,10 +12,7 @@ import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.projectmanager.dao.*;
 import com.yusys.agile.projectmanager.domain.*;
-import com.yusys.agile.projectmanager.dto.ProjectDataDto;
-import com.yusys.agile.projectmanager.dto.ProjectDemandDto;
-import com.yusys.agile.projectmanager.dto.ProjectManagerDto;
-import com.yusys.agile.projectmanager.dto.SStaticProjectDataDto;
+import com.yusys.agile.projectmanager.dto.*;
 import com.yusys.agile.projectmanager.enmu.StaticProjectDataEnum;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
@@ -24,9 +21,13 @@ import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.versionmanager.enums.OperateTypeEnum;
+import com.yusys.portal.facade.client.api.IFacadeProductLineApi;
+import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.model.facade.entity.PProductLine;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -74,14 +75,13 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     private IssueService issueService;
 
     @Autowired
-    private KanbanStageInstanceMapper kanbanStageInstanceMapper;
-
-    @Autowired
-    private LeanKanbanService leanKanbanService;
-
-
-    @Autowired
     private StaticProjectDataService staticProjectDataService;
+
+    @Autowired
+    private IFacadeSystemApi iFacadeSystemApi;
+
+    @Autowired
+    private IFacadeProductLineApi iFacadeProductLineApi;
 
 
     @Override
@@ -152,7 +152,7 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
             projectManagerDto = ReflectUtil.copyProperties(sProjectManager, ProjectManagerDto.class);
             //项目状态
             SStaticProjectData sStaticProjectData1 = staticProjectDataService.queryStaticProjectDataById(projectManagerDto.getProjectStatusId());
-            projectManagerDto.setProjectName(sStaticProjectData1.getName());
+            projectManagerDto.setProjectStatusName(sStaticProjectData1.getName());
             //项目类型
             SStaticProjectData sStaticProjectData2 = staticProjectDataService.queryStaticProjectDataById(projectManagerDto.getProjectTypeId());
             projectManagerDto.setProjectTypeName(sStaticProjectData2.getName());
@@ -178,6 +178,13 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
             List<SProjectSystemRel> sProjectSystemRels = sProjectSystemRelMapper.selectByExample(sProjectSystemRelExample);
             List<Long> systemIds = sProjectSystemRels.stream().map(SProjectSystemRel::getRelSystemId).distinct().collect(Collectors.toList());
             projectManagerDto.setSystemIds(systemIds);
+            List<SsoSystem> ssoSystemList = Lists.newArrayList();
+            Optional.ofNullable(systemIds).orElse(new ArrayList<>()).stream().forEach(systemId->{
+                List<SsoSystem> ssoSystems = iFacadeSystemApi.querySystemInfo(systemId);
+                SsoSystem ssoSystem = Optional.ofNullable(ssoSystems).get().get(0);
+                ssoSystemList.add(ssoSystem);
+            });
+            projectManagerDto.setSsoSystemList(ssoSystemList);
             //查询产品线
             SProjectProductLineRelExample sProjectProductLineRelExample = new SProjectProductLineRelExample();
             sProjectProductLineRelExample.createCriteria().andStateEqualTo(StateEnum.U.getValue())
@@ -185,6 +192,14 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
             List<SProjectProductLineRel> sProjectProductLineRels = sProjectProductLineRelMapper.selectByExample(sProjectProductLineRelExample);
             List<Long> productLineIds = sProjectProductLineRels.stream().map(SProjectProductLineRel::getRelProductId).distinct().collect(Collectors.toList());
             projectManagerDto.setProductIds(productLineIds);
+            List<PProductLine> pProductLines = Lists.newArrayList();
+            Optional.ofNullable(productLineIds).orElse(new ArrayList<>()).stream().forEach(productLineId->{
+                PProductLine pProductLine = iFacadeProductLineApi.queryProductLineByProductId(productLineId);
+                if (Optional.ofNullable(pProductLine).isPresent()){
+                    pProductLines.add(pProductLine);
+                }
+            });
+            projectManagerDto.setPProductLines(pProductLines);
         }
         return projectManagerDto;
     }
@@ -251,29 +266,51 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
         sProjectSystemRelExample.createCriteria().andProjectIdEqualTo(projectId)
                 .andStateEqualTo(StateEnum.U.getValue());
         List<SProjectSystemRel> sProjectSystemRels = sProjectSystemRelMapper.selectByExample(sProjectSystemRelExample);
-        List<Long> systemIds = sProjectSystemRels.stream().map(SProjectSystemRel::getRelSystemId).collect(Collectors.toList());
-
-        return null;
+        List<Long> systemIds = Optional.ofNullable(sProjectSystemRels).orElse(new ArrayList<>()).stream().map(SProjectSystemRel::getRelSystemId).collect(Collectors.toList());
+        return buildProjectDemandList(systemIds);
     }
 
     @Override
     public List<ProjectManagerDto> queryProjectManagerList() {
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
-        List<ProjectManagerDto> projectManagerDtos = sProjectManagerMapper.queryProjectManagerListByUserId(userId);
-//        List<ProjectManagerDto> result = Lists.newArrayList();
-//        if (CollectionUtils.isNotEmpty(projectManagerDtos)){
-//            projectManagerDtos.stream().forEach(x->{
-//                ProjectManagerDto projectManagerDto = this.queryProjectManagerByProjectId(x.getProjectId());
-//                result.add(projectManagerDto);
-//            });
-//        }
-        return projectManagerDtos;
+        String tenantCode = UserThreadLocalUtil.getUserInfo().getTenantCode();
+        return sProjectManagerMapper.queryProjectManagerListByUserId(userId,tenantCode);
     }
 
-    private void buildProjectDemandList(List<Long> systemIds){
+
+    private List<ProjectDemandDto> buildProjectDemandList(List<Long> systemIds){
+        List<ProjectDemandDto> projectDemandDtoList = Lists.newArrayList();
         for (Long systemId : systemIds) {
-//            issueService.get
+            ProjectDemandDto projectDemandDto = new ProjectDemandDto();
+            projectDemandDto.setSystemId(systemId);
+            List<SsoSystem> ssoSystems = iFacadeSystemApi.querySystemInfo(systemId);
+            String systemName = Optional.ofNullable(ssoSystems).get().get(0).getSystemName();
+            projectDemandDto.setSystemName(systemName);
+            List<StageNameAndValueDto> stageNameAndValueDtoList = issueService.getCollectIssueDataBySystemId(systemId);
+            if (CollectionUtils.isNotEmpty(stageNameAndValueDtoList)){
+                stageNameAndValueDtoList.stream().forEach(x->{
+                    if (EpicStageEnum.READY.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setReadyValue(x.getCountValue());
+                    }else if (EpicStageEnum.ANALYSE.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setAnalyseValue(x.getCountValue());
+                    }else if (EpicStageEnum.DESIGN.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setDesignValue(x.getCountValue());
+                    }else if (EpicStageEnum.DEVELOPMENT.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setDevlopmentValue(x.getCountValue());
+                    }else if (EpicStageEnum.TEST.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setTestValue(x.getCountValue());
+                    }else if (EpicStageEnum.SYSTEM_TEST.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setSystemTestValue(x.getCountValue());
+                    }else if (EpicStageEnum.RELEASE.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setReleaseValue(x.getCountValue());
+                    }else if (EpicStageEnum.COMPLETE.getStageId().equals(x.getStageId())){
+                        projectDemandDto.setCompleteValue(x.getCountValue());
+                    }
+                });
+            }
+            projectDemandDtoList.add(projectDemandDto);
         }
+        return projectDemandDtoList;
     }
 
     private List<ProjectManagerDto> buildProjectManagerDtoPageInfo (List<ProjectManagerDto> projectManagerDtos){
@@ -298,7 +335,8 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
                             doneIssueList.add(issue);
                         }
                     }
-                    Integer projectProgress = (doneIssueList.size() / issues.size());
+                    BigDecimal divide = new BigDecimal(doneIssueList.size()).divide(new BigDecimal(issues.size()), 2, BigDecimal.ROUND_HALF_UP);
+                    Integer projectProgress = new Double(Double.valueOf(divide.toString()) * 100).intValue();
                     x.setProjectProgress(projectProgress);
                 }
             }

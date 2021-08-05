@@ -30,7 +30,7 @@ import com.yusys.agile.leankanban.enums.LaneKanbanStageConstant;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.service.ModuleService;
-import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
+import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.set.stage.service.IStageService;
@@ -76,7 +76,6 @@ import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
-import com.yusys.portal.facade.client.api.ms.IMailApi;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -2832,12 +2831,12 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public List<Issue> queryIssueListBySystemIds(List<Long> systemIds, Byte type) {
-        IssueExample issueExample = new IssueExample();
-        issueExample.createCriteria()
-                .andStateEqualTo(StateEnum.U.getValue())
-                .andSystemIdIn(systemIds)
-                .andTaskTypeEqualTo(type.intValue());
-        return issueMapper.selectByExample(issueExample);
+        return issueMapper.queryIssueListBySystemIds(systemIds,type.intValue());
+    }
+
+    @Override
+    public List<StageNameAndValueDto> getCollectIssueDataBySystemId(Long systemId) {
+        return issueMapper.getCollectIssueDataBySystemId(systemId);
     }
 
     /**

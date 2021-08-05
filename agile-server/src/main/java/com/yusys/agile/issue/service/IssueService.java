@@ -7,6 +7,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.PanoramasEpicDTO;
 import com.github.pagehelper.PageInfo;
+import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -459,4 +460,6 @@ public interface IssueService {
     List<Issue> listIssueOfProjectAndUser(Long projectId, SecurityDTO securityDTO);
 
     List<Issue> queryIssueListBySystemIds(List<Long> systemIds, Byte type);
+
+    List<StageNameAndValueDto> getCollectIssueDataBySystemId(Long systemId);
 }

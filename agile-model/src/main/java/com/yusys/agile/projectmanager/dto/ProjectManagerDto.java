@@ -1,6 +1,8 @@
 package com.yusys.agile.projectmanager.dto;
 
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.model.facade.entity.PProductLine;
+import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import lombok.Data;
 
@@ -54,6 +56,11 @@ public class ProjectManagerDto implements Serializable {
     private List<Long> systemIds;
 
     private List<SsoUserDTO> userList;
+
+
+    private List<SsoSystem> ssoSystemList;
+
+    List<PProductLine> pProductLines;
 
 
 }

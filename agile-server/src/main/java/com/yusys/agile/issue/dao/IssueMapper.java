@@ -6,11 +6,10 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
 import java.util.List;
@@ -647,4 +646,8 @@ public interface IssueMapper {
     List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(@Param("teamId") Long teamId, @Param("searchKey")String searchKey, @Param("systemId") Long systemId, @Param("issueIds")List<Long> issueIds);
 
     List<Issue> listIssueOfProjectAndUser(@Param("projectId")Long projectId, @Param("userId") Long userId);
+
+    List<StageNameAndValueDto> getCollectIssueDataBySystemId(@Param("systemId")Long systemId);
+
+    List<Issue> queryIssueListBySystemIds(@Param("systemIds") List<Long> systemIds, @Param("issueType") Integer issueType);
 }
