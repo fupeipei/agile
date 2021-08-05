@@ -134,7 +134,7 @@ public class RiskManagerServiceImpl implements RiskManagerService {
             criteria.andRiskStartTimeLessThan(riskEndTime);
         }
         riskManagerExample.setOrderByClause("create_time asc");
-        List<RiskManagerDTO> riskManagers = riskManagerMapper.selectByExampleWithDTO(riskManagerExample)
+        List<RiskManagerDTO> riskManagers = riskManagerMapper.selectByExampleWithDTO(riskManagerExample);
         return getRiskManagerDTOS(riskManagers);
     }
 
