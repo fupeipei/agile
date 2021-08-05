@@ -41,6 +41,8 @@ public class RiskManagerDTO {
 
     private String createName;
 
+    private String createUserAccount;
+
     private Date createTime;
 
     private Long updateUid;
@@ -197,6 +199,15 @@ public class RiskManagerDTO {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+
+    public String getCreateUserAccount() {
+        return createUserAccount;
+    }
+
+    public void setCreateUserAccount(String createUserAccount) {
+        this.createUserAccount = createUserAccount;
     }
 
     @Override

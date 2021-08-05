@@ -16,9 +16,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
+import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +31,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName RiskManagerServiceImpl
@@ -46,6 +50,10 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     private IFacadeSystemApi iFacadeSystemApi;
     @Resource
     private SProjectManagerMapper projectManagerMapper;
+    @Resource
+    private IFacadeUserApi userApi;
+
+    private static Map<Long,String> USERMAP = new ConcurrentHashMap<>();
 
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
@@ -112,6 +120,10 @@ public class RiskManagerServiceImpl implements RiskManagerService {
             }
 
         }
+        Long createUid = riskManager.getCreateUid();
+        String userAccount = getUserAccount(createUid);
+        riskManagerDTO.setCreateUserAccount(userAccount);
+
         riskManagerDTO.setProjectName(projectName);
         return riskManagerDTO;
     }
@@ -172,9 +184,28 @@ public class RiskManagerServiceImpl implements RiskManagerService {
                         riskManager.setSystemName(ssoSystem.getSystemName());
                     }
                 }
+
+                Long createUid = riskManager.getCreateUid();
+                String userAccount = getUserAccount(createUid);
+                riskManager.setCreateUserAccount(userAccount);
             });
         }
         return riskManagers;
+    }
+
+    private String getUserAccount(Long userId){
+        if(!USERMAP.containsKey(userId) && !Optional.ofNullable(userId).isPresent()){
+            try {
+                SsoUser ssoUser = userApi.queryUserById(userId);
+                if(Optional.ofNullable(ssoUser).isPresent()){
+                    USERMAP.put(userId,ssoUser.getUserAccount());
+                }
+            }catch (Exception e){
+                log.info("获取人员信息异常：{}",e.getMessage());
+            }
+
+        }
+        return USERMAP.get(userId);
     }
 
 }
