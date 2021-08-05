@@ -3,6 +3,8 @@ package com.yusys.agile.projectmanager.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 
 /**
  * @ClassName: ProjectUserTotalHourDto
@@ -25,7 +27,7 @@ public class ProjectUserTotalHourDto {
     @ApiModelProperty("用户账号")
     private String userAccount;
     @ApiModelProperty("进入项目时间")
-    private String createTime;
+    private Date createTime;
     @ApiModelProperty("项目id")
     private Long projectId;
 }

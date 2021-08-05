@@ -3333,7 +3333,8 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
     <select id="listIssueOfProjectAndUser" resultType="com.yusys.agile.issue.domain.Issue">
         SELECT issue_id,title,parent_id,issue_type, handler,plan_workload
         FROM s_issue
-        WHERE handler = #{userId} AND state = 'U'
+        WHERE state = 'U'
+        <if test="null != userId and '' != userId"> AND handler = #{userId}  </if>
         AND  system_id IN (
             SELECT DISTINCT rel_system_id
             FROM

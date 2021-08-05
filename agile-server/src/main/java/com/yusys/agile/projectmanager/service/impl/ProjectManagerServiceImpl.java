@@ -17,10 +17,6 @@ import com.yusys.agile.projectmanager.enmu.StaticProjectDataEnum;
 import com.yusys.agile.projectmanager.service.ProjectManagerService;
 import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
 import com.yusys.agile.projectmanager.service.StaticProjectDataService;
-import com.yusys.agile.set.stage.dao.KanbanStageInstanceMapper;
-import com.yusys.agile.set.stage.domain.KanbanStageInstance;
-import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
-import com.yusys.agile.versionmanager.enums.OperateTypeEnum;
 import com.yusys.portal.facade.client.api.IFacadeProductLineApi;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
@@ -37,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -261,6 +256,22 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     }
 
     @Override
+    public List<SProjectManager> queryProjectManagers() {
+        SProjectManagerExample sProjectManagerExample = new SProjectManagerExample();
+        sProjectManagerExample.createCriteria().andStateEqualTo(StateEnum.U.getValue());
+        sProjectManagerExample.setOrderByClause("create_time desc");
+        List<SProjectManager> sProjectManagers = sProjectManagerMapper.selectByExample(sProjectManagerExample);
+        return sProjectManagers;
+    }
+
+    @Override
+    public List<SsoUser> queryUserByProjectId(Long projectId) {
+        List<Long> userIds = sProjectUserRelMapper.queryUserIdListByProId(projectId);
+        List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
+        return ssoUsers;
+    }
+
+    @Override
     public List<ProjectDemandDto> queryProjectDemandList(Long projectId) {
         SProjectSystemRelExample sProjectSystemRelExample = new SProjectSystemRelExample();
         sProjectSystemRelExample.createCriteria().andProjectIdEqualTo(projectId)
@@ -271,12 +282,30 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     }
 
     @Override
-    public List<ProjectManagerDto> queryProjectManagerList() {
-        Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
+    public PageInfo<ProjectManagerDto> queryProjectManagerList(Integer pageNum,Integer pageSize,String searchKey) {
+        /*Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
         String tenantCode = UserThreadLocalUtil.getUserInfo().getTenantCode();
-        return sProjectManagerMapper.queryProjectManagerListByUserId(userId,tenantCode);
+        return sProjectManagerMapper.queryProjectManagerListByUserId(userId,tenantCode);*/
+        //查询全部
+        String tenantCode = UserThreadLocalUtil.getUserInfo().getTenantCode();
+        PageHelper.startPage(pageNum,pageSize);
+        List<ProjectManagerDto> projectManagerDtos = sProjectManagerMapper.queryProjectManagerListByCondition(searchKey,tenantCode);
+        return new PageInfo<>(projectManagerDtos);
+
     }
 
+
+    @Override
+    public List<ProjectUserTotalHourDto> queryUserIdListByProIdAndUId(Long projectId, Long userId) {
+        List<ProjectUserTotalHourDto> userTotalHourDtos = sProjectUserRelMapper.queryUserIdListByProIdAndUId(projectId, userId);
+        return userTotalHourDtos;
+    }
+
+    @Override
+    public SProjectManager queryProjectManagerInfo(Long projectId) {
+        SProjectManager sProjectManager = sProjectManagerMapper.queryProjectManagerInfo(projectId);
+        return sProjectManager;
+    }
 
     private List<ProjectDemandDto> buildProjectDemandList(List<Long> systemIds){
         List<ProjectDemandDto> projectDemandDtoList = Lists.newArrayList();

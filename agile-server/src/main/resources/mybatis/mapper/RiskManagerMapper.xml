@@ -258,7 +258,30 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+
+    <select id="selectByCondition" resultType="com.yusys.agile.risk.dto.RiskManagerDTO">
+      select
+      srm.risk_id, srm.project_id, srm.system_id, srm.tenant_code, srm.title, srm.risk_level, srm.risk_status, srm.risk_start_time,
+      srm.risk_end_time, srm.remark, srm.create_uid, srm.create_name, srm.create_time, srm.update_uid, srm.update_time, spm.project_name
+      from s_risk_manager  srm
+      left  join
+      s_project_manager spm
+      on  srm.project_id = spm.project_id
+      where 1 = 1
+      and  srm.tenant_code = #{tenantCode}
+      <if test="title != null and  title != ''">
+       and   srm.title like CONCAT('%',#{title},'%') )
+      </if>
+      <if test="projectName != null and projectName != ''">
+       and spm.project_name  like CONCAT('%',#{projectName},'%')
+      </if>
+      <if test="riskStatus != null and  riskStatus != ''">
+       and  srm.risk_status = #{riskStatus}
+      </if>
+      order by srm.create_time desc
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map">
     update s_risk_manager
     <set>
       <if test="record.riskId != null">

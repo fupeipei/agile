@@ -124,5 +124,11 @@ public interface Teamv3Service {
 
     List<TeamListDTO> queryTeams(List<Long> teamIds,String teamName,Integer pageNum, Integer pageSize);
 
+    /**
+     * 根据系统id列表查询所有相关团队
+     * @param systemIdList
+     * @return
+     */
+    List<TeamListDTO> queryTeamsBySystemIdList(List<Long> systemIdList);
 
 }
