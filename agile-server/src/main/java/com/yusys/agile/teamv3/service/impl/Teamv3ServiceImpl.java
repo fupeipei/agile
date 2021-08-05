@@ -283,7 +283,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.insertSelective(team);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定PO
         sTeamMemberMapper.batchInsert(teamPoS,team, TeamRoleEnum.PRODUCT_OWNER.roleId);
         //团队绑定SM
@@ -398,7 +398,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         sTeam.setTeamDesc(team.getTeamDesc());
         sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定PO
         sTeamMemberMapper.batchInsert(teamPoS,team, TeamRoleEnum.PRODUCT_OWNER.roleId);
         //团队绑定SM
@@ -516,7 +516,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.insertSelective(team);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定 精益教练
         sTeamMemberMapper.batchInsert(teamLean,team,TeamRoleEnum.LEAN_MASTER.roleId);
         //团队绑定其他成员
@@ -571,7 +571,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         //插入团队
         sTeamMapper.updateByPrimaryKeySelective(sTeam);
         //团队绑定系统
-        teamSystemMapper.bindingTeamAndSystem(team, team.getSystemIds());
+        teamSystemMapper.bindingTeamAndSystem(team.getSystemIds(),team);
         //团队绑定 精益教练
         sTeamMemberMapper.batchInsert(teamLean,team, TeamRoleEnum.LEAN_MASTER.roleId);
         //团队绑定其他成员
