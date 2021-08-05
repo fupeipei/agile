@@ -13,6 +13,8 @@ public class RiskManagerDTO {
 
     private Long projectId;
 
+    private String projectName;
+
     private Long systemId;
 
     private String systemName;
@@ -45,7 +47,6 @@ public class RiskManagerDTO {
 
     private Date updateTime;
 
-
     public Long getRiskId() {
         return riskId;
     }
@@ -60,6 +61,14 @@ public class RiskManagerDTO {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public Long getSystemId() {
