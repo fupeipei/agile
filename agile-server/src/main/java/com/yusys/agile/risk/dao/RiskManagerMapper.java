@@ -32,6 +32,9 @@ public interface RiskManagerMapper {
 
     int updateByPrimaryKey(RiskManager record);
 
-    List<RiskManagerDTO> selectByCondition(@Param("title") String title,@Param("riskStatus") Byte riskStatus,
-                                           @Param("projectName") String projectName,@Param("tenantCode") String tenantCode);
+    List<RiskManagerDTO> selectByCondition(@Param("title") String title,
+                                           @Param("riskStatus") Byte riskStatus,
+                                           @Param("projectName") String projectName,
+                                           @Param("tenantCode") String tenantCode,
+                                           @Param("projectId") Long projectId);
 }

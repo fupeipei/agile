@@ -2,8 +2,17 @@ package com.yusys.agile.issue.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.yusys.agile.commit.dto.CommitDTO;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
@@ -18,7 +27,9 @@ import com.yusys.agile.headerfield.util.HeaderFieldUtil;
 import com.yusys.agile.issue.dao.IssueHistoryRecordMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.dao.UserAttentionMapper;
+import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.dto.*;
+import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.issue.service.*;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
@@ -31,9 +42,14 @@ import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.service.ModuleService;
 import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
+import com.yusys.agile.review.dto.StoryCheckResultDTO;
+import com.yusys.agile.review.service.ReviewService;
+import com.yusys.agile.set.stage.constant.StageConstant;
+import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.set.stage.service.IStageService;
+import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
@@ -45,34 +61,22 @@ import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.agile.sysextendfield.service.SysExtendFieldService;
 import com.yusys.agile.sysextendfield.util.SytExtendFieldDetailFactory;
-import com.yusys.agile.review.dto.StoryCheckResultDTO;
-import com.yusys.agile.review.service.ReviewService;
-import com.yusys.agile.set.stage.constant.StageConstant;
-import com.yusys.agile.set.stage.domain.KanbanStageInstance;
-import com.yusys.agile.set.stage.service.StageService;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.agile.user.service.ReqUserRlatService;
-import com.yusys.agile.utils.*;
+import com.yusys.agile.utils.DateTools;
+import com.yusys.agile.utils.ObjectUtil;
+import com.yusys.agile.utils.ReflectObjectUtil;
+import com.yusys.agile.utils.StringUtil;
 import com.yusys.agile.versionmanager.domain.VersionIssueRelate;
 import com.yusys.agile.versionmanager.dto.VersionManagerDTO;
 import com.yusys.agile.versionmanager.service.VersionIssueRelateService;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.yusys.agile.issue.domain.*;
-import com.yusys.agile.issue.enums.*;
 import com.yusys.agile.versionmanager.service.VersionManagerService;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.cicd.model.flow.constant.FlowConstant;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeProductLineApi;
 import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
@@ -81,9 +85,7 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
-import com.yusys.portal.model.facade.entity.SsoProject;
-import com.yusys.portal.model.facade.entity.SsoSystem;
-import com.yusys.portal.model.facade.entity.SsoUser;
+import com.yusys.portal.model.facade.entity.*;
 import com.yusys.portal.model.ms.dto.MailSendDTO;
 import com.yusys.portal.model.ms.enums.MailTemplateTypeEnum;
 import com.yusys.portal.model.ms.enums.MailTypeEnum;
@@ -100,10 +102,11 @@ import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -113,6 +116,7 @@ import java.util.stream.Collectors;
  * @Date: 2020/4/16
  * @Description: 1
  */
+@SuppressWarnings("ALL")
 @Service("issueService")
 public class IssueServiceImpl implements IssueService {
 
@@ -195,6 +199,8 @@ public class IssueServiceImpl implements IssueService {
     private ReqUserRlatService reqUserRlatService;
     @Resource
     private SytExtendFieldDetailFactory sytExtendFieldDetailFactory;
+    @Resource
+    private IFacadeProductLineApi iFacadeProductLineApi;
     @Autowired
     private StoryService storyService;
     @Autowired
@@ -3595,5 +3601,88 @@ public class IssueServiceImpl implements IssueService {
             result = value;
         }
         return result;
+    }
+    /**
+     * @return: java.util.List<com.yusys.agile.issue.dto.SProjectIssueDTO>
+     * @Author wangpf6
+     * @Description 条件查询项目需求数据
+     * @Date 14:58 2021/8/4
+     * @Param [projectName, pageNum, pageSize, issueTitle]
+     **/
+    @Override
+    public List<SProjectIssueDTO> queryIssuesByCondition(@RequestParam(name = "projectName", required = false)String projectName,
+                                                        @RequestParam(name = "pageNum") Integer pageNum,
+                                                        @RequestParam(name = "pageSize") Integer pageSize,
+                                                        @RequestHeader(name = "issueTitle",required = false)String issueTitle) {
+        //返回显示集合
+        List<SProjectIssueDTO> projectIssueDTOs=new LinkedList<>();
+        //查询集合
+        List<SProjectIssueDTO> sprojectIssueDTOs=new LinkedList<>();
+        //产品线集合
+        List<PProductLineSystemId> pProductLines=new LinkedList<>();
+        //系统id集合
+        List<Long> systemIds=new LinkedList<>();
+        //syste集合
+        List<SsoSystemRestDTO> systemByIds;
+        //模糊查询issue
+        PageHelper.startPage(pageNum, pageSize);
+        List<Issue> issues = issueMapper.queryIssuesByIssueTitle(issueTitle);
+        for (Issue issue : issues) {
+            systemIds.add(issue.getSystemId());
+            SProjectIssueDTO projectIssueDTO=new SProjectIssueDTO();
+            projectIssueDTO.setIssueId(issue.getIssueId());
+            projectIssueDTO.setDemandTitle(issue.getTitle());
+            projectIssueDTO.setSystemId(issue.getSystemId());
+            projectIssueDTO.setHandlerId(issue.getHandler());
+            projectIssueDTOs.add(projectIssueDTO);
+        }
+
+        //获取SsoSystemRestDTO集合
+        if (systemIds.size()>0) {
+            List<Long> userIds=issues.stream().map(Issue::getHandler).collect(Collectors.toList());
+            systemByIds = iFacadeSystemApi.getSystemByIds(systemIds);
+            sprojectIssueDTOs = issueMapper.queryIssuesByCondition(projectName,systemIds);
+            pProductLines = iFacadeProductLineApi.getProductLineBySystemIds(systemIds);
+            List<SsoUser> ssoUsers=new LinkedList<>();
+            if (userIds.size()>0){
+                ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
+            }
+            for (SProjectIssueDTO projectIssueDTO : projectIssueDTOs) {
+                for (SProjectIssueDTO issueDTO : sprojectIssueDTOs) {
+                    if (projectIssueDTO.getSystemId().equals(issueDTO.getSystemId())){
+                        projectIssueDTO.setProjectId(issueDTO.getProjectId());
+                        projectIssueDTO.setProjectName(issueDTO.getProjectName());
+                        projectIssueDTO.setProjectCode(issueDTO.getProjectCode());
+                        SsoSystemRestDTO ssoSystemRestDTO = systemByIds.stream().filter(system -> {
+                            if (system.getSystemId().equals(projectIssueDTO.getProjectId())) {
+                                return true;
+                            }
+                            return false;
+                        }).findAny().orElse(null);
+                        if(Optional.ofNullable(ssoSystemRestDTO).isPresent()){
+                            projectIssueDTO.setSystemName(ssoSystemRestDTO.getSystemName());
+                        }
+                        SsoUser ssoUser = ssoUsers.stream().filter(user -> {
+                            if (user.getUserId().equals(projectIssueDTO.getHandlerId()))
+                                return true;
+                            return false;
+                        }).findAny().orElse(null);
+                        if(Optional.ofNullable(ssoUser).isPresent()){
+                            projectIssueDTO.setHandler(ssoUser.getUserName());
+                        }
+                        PProductLineSystemId pProductLineSystemId = pProductLines.stream().filter(productLine -> {
+                            if (productLine.getSystemId().equals(projectIssueDTO.getSystemId()))
+                                return true;
+                            return false;
+                        }).findAny().orElse(null);
+                        if (Optional.ofNullable(pProductLineSystemId).isPresent())
+                            projectIssueDTO.setProductLine(pProductLineSystemId.getProductLineName());
+                        break;
+                    }
+                }
+            }
+        }
+
+        return projectIssueDTOs;
     }
 }

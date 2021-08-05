@@ -1,10 +1,13 @@
 package com.yusys.agile.issue.rest;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueListDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
+import com.yusys.agile.issue.dto.SProjectIssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
@@ -12,16 +15,17 @@ import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * :
@@ -482,6 +486,21 @@ public class IssueController {
             LOGGER.info("根据projectId和处理人获取所有的issue:{}", e.getMessage());
             return ControllerResponse.fail(e.getMessage());
         }
+    }
+    /**
+     * @return: com.yusys.portal.model.common.dto.ControllerResponse
+     * @Author wangpf6
+     * @Description 条件查询项目需求
+     * @Date 16:20 2021/8/5
+     * @Param [projectName, pageNum, pageSize, issueTitle]
+     **/
+    @GetMapping("/issue/queryIssuesByCondition")
+    public ControllerResponse queryUsersByCondition(@RequestParam(name = "projectName", required = false) String projectName,
+                                                    @RequestParam(name = "pageNum") Integer pageNum,
+                                                    @RequestParam(name = "pageSize") Integer pageSize,
+                                                    @RequestParam(name = "issueTitle",required = false) String issueTitle) {
+        List<SProjectIssueDTO> sProjectIssueDTOS = issueService.queryIssuesByCondition(projectName, pageNum, pageSize, issueTitle);
+        return ControllerResponse.success(new PageInfo<>(sProjectIssueDTOS));
     }
 
 }

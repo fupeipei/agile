@@ -40,9 +40,10 @@ public class RiskManagerController {
     public ControllerResponse getRiskPages(@RequestParam(value = "title", required = false) String title,
                                            @RequestParam(value = "riskStatus", required = false) Byte riskStatus,
                                            @RequestParam(value = "projectName", required = false) String projectName,
+                                           @RequestParam(value = "projectId", required = false)Long projectId,
                                            @RequestParam(value = "pageNum", required = false) Integer pageNum,
                                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        List<RiskManagerDTO> list = riskManagerService.getRiskPages(title, riskStatus, pageNum, pageSize, projectName);
+        List<RiskManagerDTO> list = riskManagerService.getRiskPages(title, riskStatus, pageNum, pageSize, projectName,projectId);
         return ControllerResponse.success(new PageInfo<>(list));
     }
 
