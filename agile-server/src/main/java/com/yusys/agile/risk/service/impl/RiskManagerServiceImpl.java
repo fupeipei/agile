@@ -58,7 +58,7 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
     @Override
-    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, String projectName) {
+    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, String projectName,Long projectId) {
         if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
             PageHelper.startPage(pageNum, pageSize);
         }
@@ -73,7 +73,7 @@ public class RiskManagerServiceImpl implements RiskManagerService {
 //        }
 //        riskManagerExample.setOrderByClause(CREATE_TIME_DESC);
         String tenantCode = UserThreadLocalUtil.getTenantCode();
-        List<RiskManagerDTO> riskManagerDTOS = riskManagerMapper.selectByCondition(title, riskStatus, projectName, tenantCode);
+        List<RiskManagerDTO> riskManagerDTOS = riskManagerMapper.selectByCondition(title, riskStatus, projectName, tenantCode, projectId);
         return getRiskManagerDTOS(riskManagerDTOS);
     }
 
