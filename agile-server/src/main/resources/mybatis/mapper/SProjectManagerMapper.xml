@@ -476,6 +476,6 @@
       and (project_name like concat('%',#{searchKey},'%')) or project_code like concat('%',#{searchKey},'%')
     </if>
     and tenant_code = #{tenantCode}
-    and order by create_time desc
+    order by create_time desc
   </select>
 </mapper>
