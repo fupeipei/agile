@@ -33,16 +33,16 @@ public class RiskManagerController {
      * @param title       标题
      * @param pageNum     分页数
      * @param pageSize    分页条数
-     * @param securityDTO
+     * @param projectName
      * @return
      */
     @GetMapping("/pages")
     public ControllerResponse getRiskPages(@RequestParam(value = "title", required = false) String title,
                                            @RequestParam(value = "riskStatus", required = false) Byte riskStatus,
+                                           @RequestParam(value = "projectName", required = false) String projectName,
                                            @RequestParam(value = "pageNum", required = false) Integer pageNum,
-                                           @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                           SecurityDTO securityDTO) {
-        List<RiskManagerDTO> list = riskManagerService.getRiskPages(title, riskStatus, pageNum, pageSize, securityDTO);
+                                           @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        List<RiskManagerDTO> list = riskManagerService.getRiskPages(title, riskStatus, pageNum, pageSize, projectName);
         return ControllerResponse.success(new PageInfo<>(list));
     }
 

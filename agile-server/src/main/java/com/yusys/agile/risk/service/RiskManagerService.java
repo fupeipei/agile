@@ -21,10 +21,9 @@ public interface RiskManagerService {
      * @param title       标题
      * @param pageNum     分页数
      * @param pageSize    分页条数
-     * @param securityDTO
      * @return
      */
-    List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, SecurityDTO securityDTO);
+    List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, String projectName);
 
     /**
      * 创建/新增风险点
