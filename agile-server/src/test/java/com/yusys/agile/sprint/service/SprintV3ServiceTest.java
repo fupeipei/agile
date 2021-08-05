@@ -1,6 +1,7 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.sprintV3.dto.SprintProjectDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
@@ -70,6 +71,8 @@ public class SprintV3ServiceTest {
             Assert.fail();
         }
     }
+
+
 
     /**
      * 取消迭代
@@ -286,6 +289,16 @@ public class SprintV3ServiceTest {
     @Test
     public void testListSprintBysystemId(){
         sprintv3Service.querySprintBySystemId(1L);
+        Assert.assertTrue("获取当前系统下的迭代列表成功", true);
+    }
+
+    /**
+     *查询团队下所有未开始进行中的迭代信息
+     */
+    @Test
+    public void testListEffectiveSprintByTeamId(){
+        SprintProjectDTO sprintProjectDTO = sprintv3Service.showSprintByProject(1234566L, null);
+        System.out.println(sprintProjectDTO);
         Assert.assertTrue("获取当前系统下的迭代列表成功", true);
     }
 }

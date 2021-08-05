@@ -11,9 +11,7 @@ import com.yusys.agile.team.dto.*;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
-import com.yusys.agile.teamv3.domain.STeam;
-import com.yusys.agile.teamv3.domain.STeamExample;
-import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.teamv3.domain.*;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
@@ -30,8 +28,10 @@ import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.model.facade.enums.AttentionTypeEnum;
 import com.yusys.portal.model.facade.enums.RoleTypeEnum;
+import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.math.ec.ScaleYPointMap;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -626,5 +626,30 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         List<TeamListDTO> sTeams = sTeamMapper.queryTeams(teamIds, teamName);
         //按ids分别查询团队/系统
         return buildResultList(sTeams);
+    }
+
+    /**
+     * 根据系统ids查询团队
+     * @param systemIdList
+     * @return
+     */
+    @Override
+    public List<TeamListDTO> queryTeamsBySystemIdList(List<Long> systemIdList) {
+        List<Long> teamIds = teamSystemMapper.queryTeamIdBySystemId(systemIdList);
+
+        if(CollectionUtils.isEmpty(teamIds)){
+            return Lists.newArrayList();
+        }
+
+        STeamExample teamExample = new STeamExample();
+        teamExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andTeamTypeEqualTo(TeamTypeEnum.agile_team.getCode()).andTeamIdIn(teamIds);
+        List<STeam> sTeams = sTeamMapper.selectByExample(teamExample);
+        List<TeamListDTO> teams = new ArrayList<>();
+        try {
+            teams = ReflectUtil.copyProperties4List(sTeams, TeamListDTO.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return teams;
     }
 }
