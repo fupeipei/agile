@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class StageNameAndValueDto {
 
-    private String stageName;
+    private Long stageId;
 
-    private Long value;
+    private Long countValue;
+
 }

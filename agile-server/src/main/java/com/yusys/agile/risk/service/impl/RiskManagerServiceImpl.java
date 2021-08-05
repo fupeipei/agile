@@ -2,6 +2,9 @@ package com.yusys.agile.risk.service.impl;
 
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.constant.StringConstant;
+import com.yusys.agile.projectmanager.dao.SProjectManagerMapper;
+import com.yusys.agile.projectmanager.domain.SProjectManager;
+import com.yusys.agile.projectmanager.domain.SProjectManagerExample;
 import com.yusys.agile.risk.dao.RiskManagerMapper;
 import com.yusys.agile.risk.domain.RiskManager;
 import com.yusys.agile.risk.domain.RiskManagerExample;
@@ -13,8 +16,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
+import com.yusys.portal.facade.client.api.IFacadeUserApi;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +31,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName RiskManagerServiceImpl
@@ -40,11 +48,17 @@ public class RiskManagerServiceImpl implements RiskManagerService {
     private RiskManagerMapper riskManagerMapper;
     @Resource
     private IFacadeSystemApi iFacadeSystemApi;
+    @Resource
+    private SProjectManagerMapper projectManagerMapper;
+    @Resource
+    private IFacadeUserApi userApi;
+
+    private static Map<Long,String> USERMAP = new ConcurrentHashMap<>();
 
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
     @Override
-    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, String projectName) {
+    public List<RiskManagerDTO> getRiskPages(String title, Byte riskStatus, Integer pageNum, Integer pageSize, String projectName,Long projectId) {
         if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
             PageHelper.startPage(pageNum, pageSize);
         }
@@ -59,7 +73,7 @@ public class RiskManagerServiceImpl implements RiskManagerService {
 //        }
 //        riskManagerExample.setOrderByClause(CREATE_TIME_DESC);
         String tenantCode = UserThreadLocalUtil.getTenantCode();
-        List<RiskManagerDTO> riskManagerDTOS = riskManagerMapper.selectByCondition(title, riskStatus, projectName, tenantCode);
+        List<RiskManagerDTO> riskManagerDTOS = riskManagerMapper.selectByCondition(title, riskStatus, projectName, tenantCode, projectId);
         return getRiskManagerDTOS(riskManagerDTOS);
     }
 
@@ -95,6 +109,22 @@ public class RiskManagerServiceImpl implements RiskManagerService {
                 riskManagerDTO.setSystemName(ssoSystem.getSystemName());
             }
         }
+        Long projectId = riskManagerDTO.getProjectId();
+        String projectName = null;
+        if(Optional.ofNullable(projectId).isPresent()){
+            SProjectManagerExample example = new SProjectManagerExample();
+            example.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andProjectIdEqualTo(projectId);
+            List<SProjectManager> sProjectManagers = projectManagerMapper.selectByExample(example);
+            if(CollectionUtils.isNotEmpty(sProjectManagers)){
+                projectName = sProjectManagers.get(0).getProjectName();
+            }
+
+        }
+        Long createUid = riskManager.getCreateUid();
+        String userAccount = getUserAccount(createUid);
+        riskManagerDTO.setCreateUserAccount(userAccount);
+
+        riskManagerDTO.setProjectName(projectName);
         return riskManagerDTO;
     }
 
@@ -154,9 +184,28 @@ public class RiskManagerServiceImpl implements RiskManagerService {
                         riskManager.setSystemName(ssoSystem.getSystemName());
                     }
                 }
+
+                Long createUid = riskManager.getCreateUid();
+                String userAccount = getUserAccount(createUid);
+                riskManager.setCreateUserAccount(userAccount);
             });
         }
         return riskManagers;
+    }
+
+    private String getUserAccount(Long userId){
+        if(!USERMAP.containsKey(userId) && Optional.ofNullable(userId).isPresent()){
+            try {
+                SsoUser ssoUser = userApi.queryUserById(userId);
+                if(Optional.ofNullable(ssoUser).isPresent()){
+                    USERMAP.put(userId,ssoUser.getUserAccount());
+                }
+            }catch (Exception e){
+                log.info("获取人员信息异常：{}",e.getMessage());
+            }
+
+        }
+        return USERMAP.get(userId);
     }
 
 }
