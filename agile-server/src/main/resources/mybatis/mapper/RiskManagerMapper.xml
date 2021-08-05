@@ -270,7 +270,7 @@
       where 1 = 1
       and  srm.tenant_code = #{tenantCode}
       <if test="title != null and  title != ''">
-       and   srm.title like CONCAT('%',#{title},'%') )
+       and   srm.title like CONCAT('%',#{title},'%')
       </if>
       <if test="projectName != null and projectName != ''">
        and spm.project_name  like CONCAT('%',#{projectName},'%')
