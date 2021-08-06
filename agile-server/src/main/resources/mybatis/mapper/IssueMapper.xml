@@ -127,11 +127,11 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-    issue_id, title, parent_id, issue_type, sprint_id, module_id, system_id, handler, 
-    begin_date, end_date, plan_workload, really_workload, priority, importance, stage_id, 
-    lane_id, state, status, project_id, is_collect, completion, task_type, create_uid, 
-    create_time, update_uid, update_time, fault_type, fault_level, fixed_time, close_time, 
-    fixed_uid, test_uid, version_id, case_id, deadline, file, urgency, cause, detected_phase, 
+    issue_id, title, parent_id, issue_type, sprint_id, module_id, system_id, handler,
+    begin_date, end_date, plan_workload, really_workload, priority, importance, stage_id,
+    lane_id, state, status, project_id, is_collect, completion, task_type, create_uid,
+    create_time, update_uid, update_time, fault_type, fault_level, fixed_time, close_time,
+    fixed_uid, test_uid, version_id, case_id, deadline, file, urgency, cause, detected_phase,
     manual_case_id, source, remain_workload, bug_id, `order`, block_state, reopen_times,assess_is_pass,assess_remarks,tenant_code,
     cmp_sync_result,is_archive,is_cancel,kanban_id,team_id,start_schedule,release_date,raise_test_date
   </sql>
@@ -183,37 +183,37 @@
     </delete>
     <insert id="insert" parameterType="com.yusys.agile.issue.domain.Issue" useGeneratedKeys="true"
             keyProperty="issueId">
-    insert into s_issue (issue_id, title, parent_id, 
-      issue_type, sprint_id, module_id, 
-      system_id, handler, begin_date, 
-      end_date, plan_workload, really_workload, 
-      priority, importance, stage_id, 
-      lane_id, state, status, 
-      project_id, is_collect, completion, 
-      task_type, create_uid, create_time, 
-      update_uid, update_time, fault_type, 
-      fault_level, fixed_time, close_time, 
-      fixed_uid, test_uid, version_id, 
-      case_id, deadline, file, 
-      urgency, cause, detected_phase, 
-      manual_case_id, source, remain_workload, 
+    insert into s_issue (issue_id, title, parent_id,
+      issue_type, sprint_id, module_id,
+      system_id, handler, begin_date,
+      end_date, plan_workload, really_workload,
+      priority, importance, stage_id,
+      lane_id, state, status,
+      project_id, is_collect, completion,
+      task_type, create_uid, create_time,
+      update_uid, update_time, fault_type,
+      fault_level, fixed_time, close_time,
+      fixed_uid, test_uid, version_id,
+      case_id, deadline, file,
+      urgency, cause, detected_phase,
+      manual_case_id, source, remain_workload,
       bug_id, `order`, block_state,
       reopen_times,assess_is_pass,assess_remarks,tenant_code,team_id,kanban_id,start_schedule,release_date,raise_test_date)
-    values (#{issueId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
-      #{issueType,jdbcType=TINYINT}, #{sprintId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, 
-      #{systemId,jdbcType=BIGINT}, #{handler,jdbcType=BIGINT}, #{beginDate,jdbcType=TIMESTAMP}, 
-      #{endDate,jdbcType=TIMESTAMP}, #{planWorkload,jdbcType=INTEGER}, #{reallyWorkload,jdbcType=INTEGER}, 
-      #{priority,jdbcType=TINYINT}, #{importance,jdbcType=TINYINT}, #{stageId,jdbcType=BIGINT}, 
-      #{laneId,jdbcType=BIGINT}, #{state,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{projectId,jdbcType=BIGINT}, #{isCollect,jdbcType=TINYINT}, #{completion,jdbcType=VARCHAR}, 
-      #{taskType,jdbcType=INTEGER}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{faultType,jdbcType=BIGINT}, 
-      #{faultLevel,jdbcType=BIGINT}, #{fixedTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, 
-      #{fixedUid,jdbcType=BIGINT}, #{testUid,jdbcType=BIGINT}, #{versionId,jdbcType=BIGINT}, 
-      #{caseId,jdbcType=BIGINT}, #{deadline,jdbcType=TIMESTAMP}, #{file,jdbcType=VARCHAR}, 
-      #{urgency,jdbcType=VARCHAR}, #{cause,jdbcType=VARCHAR}, #{detectedPhase,jdbcType=VARCHAR}, 
-      #{manualCaseId,jdbcType=BIGINT}, #{source,jdbcType=TINYINT}, #{remainWorkload,jdbcType=INTEGER}, 
-      #{bugId,jdbcType=BIGINT}, #{order,jdbcType=INTEGER}, #{blockState,jdbcType=TINYINT}, 
+    values (#{issueId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT},
+      #{issueType,jdbcType=TINYINT}, #{sprintId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT},
+      #{systemId,jdbcType=BIGINT}, #{handler,jdbcType=BIGINT}, #{beginDate,jdbcType=TIMESTAMP},
+      #{endDate,jdbcType=TIMESTAMP}, #{planWorkload,jdbcType=INTEGER}, #{reallyWorkload,jdbcType=INTEGER},
+      #{priority,jdbcType=TINYINT}, #{importance,jdbcType=TINYINT}, #{stageId,jdbcType=BIGINT},
+      #{laneId,jdbcType=BIGINT}, #{state,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+      #{projectId,jdbcType=BIGINT}, #{isCollect,jdbcType=TINYINT}, #{completion,jdbcType=VARCHAR},
+      #{taskType,jdbcType=INTEGER}, #{createUid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateUid,jdbcType=BIGINT}, #{updateTime,jdbcType=TIMESTAMP}, #{faultType,jdbcType=BIGINT},
+      #{faultLevel,jdbcType=BIGINT}, #{fixedTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP},
+      #{fixedUid,jdbcType=BIGINT}, #{testUid,jdbcType=BIGINT}, #{versionId,jdbcType=BIGINT},
+      #{caseId,jdbcType=BIGINT}, #{deadline,jdbcType=TIMESTAMP}, #{file,jdbcType=VARCHAR},
+      #{urgency,jdbcType=VARCHAR}, #{cause,jdbcType=VARCHAR}, #{detectedPhase,jdbcType=VARCHAR},
+      #{manualCaseId,jdbcType=BIGINT}, #{source,jdbcType=TINYINT}, #{remainWorkload,jdbcType=INTEGER},
+      #{bugId,jdbcType=BIGINT}, #{order,jdbcType=INTEGER}, #{blockState,jdbcType=TINYINT},
       #{reopenTimes,jdbcType=INTEGER}, #{assessIsPass,jdbcType=TINYINT},#{assessRemarks,jdbcType=VARCHAR},
       #{tenantCode},#{teamId,jdbcType=BIGINT},#{kanbanId,jdbcType=BIGINT},#{startSchedule,jdbcType=TINYINT},
        #{releaseDate,jdbcType=TIMESTAMP}, #{raiseTestDate,jdbcType=TIMESTAMP})
@@ -3174,7 +3174,7 @@
         select c.`value` from s_issue b,s_sys_extend_field_detail c  where b.issue_id = c.issue_id and c.field_id='externalHandlerId' and  b.parent_id in (
 select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U') and b.state = 'U';
     </select>
-    
+
     <select id="getParentIssue" parameterType="java.lang.Long" resultType="com.yusys.agile.issue.domain.Issue">
         select
           r.issue_id,
