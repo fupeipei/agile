@@ -3,7 +3,7 @@ package com.yusys.agile.projectmanager.service.impl;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.github.pagehelper.PageHelper;
-import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.projectmanager.dao.SProjectUserDayMapper;
 import com.yusys.agile.projectmanager.dao.SProjectUserHourMapper;
@@ -234,9 +234,9 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
         }
         projectHourDto.setNormalWorkload(normalWorkload);
         // 项目预估工时：SUM（项目下所有工作项预估时间）
-        List<Issue> issues = issueService.listIssueOfProjectAndUser(projectId, null);
+        List<IssueDTO> issues = issueService.listIssueOfProjectAndUser(projectId, null);
         Long planWorkload = 0L;
-        for (Issue issue : issues) {
+        for (IssueDTO issue : issues) {
             planWorkload += issue.getPlanWorkload();
         }
         projectHourDto.setPlanWorkload(planWorkload);
