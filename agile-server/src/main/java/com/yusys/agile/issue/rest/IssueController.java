@@ -487,6 +487,11 @@ public class IssueController {
             return ControllerResponse.fail(e.getMessage());
         }
     }
+
+    @GetMapping("/issue/listIssueDtoOfProjectAndUser")
+    public List<IssueDTO> listIssueDtoOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO) {
+        return issueService.listIssueOfProjectAndUser(projectId, securityDTO.getUserId());
+    }
     /**
      * @return: com.yusys.portal.model.common.dto.ControllerResponse
      * @Author wangpf6
