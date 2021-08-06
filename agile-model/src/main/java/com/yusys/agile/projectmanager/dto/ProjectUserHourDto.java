@@ -28,11 +28,11 @@ public class ProjectUserHourDto {
     private String userAccount;
     @ApiModelProperty("项目id")
     private Long projectId;
-    @ApiModelProperty("工时日期")
+    @ApiModelProperty("工时日期 格式:2021/08/01")
     private String workDate;
-    @ApiModelProperty("开始时间")
+    @ApiModelProperty("开始日期 格式:2021/08/01")
     private String startDate;
-    @ApiModelProperty("结束时间")
+    @ApiModelProperty("结束日期 格式:2021/08/01")
     private String endDate;
     @ApiModelProperty("每页几条")
     private Integer pageSize;
