@@ -194,7 +194,7 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
                 .andWorkUidEqualTo(userId).andWorkDateEqualTo(parse).andProjectIdEqualTo(projectId);
         List<SProjectUserDay> sProjectUserDays = sProjectUserDayMapper.selectByExampleWithBLOBs(sProjectUserDayExample);
         ProjectUserDayDto projectUserDayDto = new ProjectUserDayDto();
-        if (Optional.ofNullable(sProjectUserDays).isPresent()){
+        if (Optional.ofNullable(sProjectUserDays).isPresent() && sProjectUserDays.size()>0){
             SProjectUserDay sProjectUserDay = sProjectUserDays.get(0);
             BeanUtils.copyProperties(sProjectUserDay,projectUserDayDto);
 
