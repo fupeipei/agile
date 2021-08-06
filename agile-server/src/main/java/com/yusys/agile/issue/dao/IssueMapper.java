@@ -654,7 +654,7 @@ public interface IssueMapper {
      **/
     List<SProjectIssueDTO> queryIssuesByCondition(@Param("projectName")String projectName, @Param("systemIds")List<Long> systemIds);
 
-    List<Issue> listIssueOfProjectAndUser(@Param("projectId")Long projectId, @Param("userId") Long userId);
+    List<IssueDTO> listIssueOfProjectAndUser(@Param("projectId")Long projectId, @Param("userId") Long userId);
 
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(@Param("systemId")Long systemId);
 

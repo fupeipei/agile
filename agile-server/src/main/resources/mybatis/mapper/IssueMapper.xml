@@ -3336,7 +3336,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
     </select>
 
 
-    <select id="listIssueOfProjectAndUser" resultType="com.yusys.agile.issue.domain.Issue">
+    <select id="listIssueOfProjectAndUser" resultType="com.yusys.agile.issue.dto.IssueDTO">
         SELECT issue_id,title,parent_id,issue_type, handler,plan_workload
         FROM s_issue
         WHERE state = 'U'
