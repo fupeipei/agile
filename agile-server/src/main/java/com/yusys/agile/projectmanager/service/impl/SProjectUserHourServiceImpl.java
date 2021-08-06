@@ -72,7 +72,7 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
             // 校验开始时间和结束时间，结束时间不能早于开始时间
             if (Optional.ofNullable(projectUserHourDto.getStartDate()).isPresent()
                     && Optional.ofNullable(projectUserHourDto.getEndDate()).isPresent()){
-                DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 Date date_start = df.parse(projectUserHourDto.getStartDate());
                 Date date_end = df.parse(projectUserHourDto.getEndDate());
                 int compare = DateUtil.compare(date_start, date_end);
@@ -186,7 +186,7 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
      **/
     @Override
     public ProjectUserDayDto getProjectUserHourInfo(Long projectId, String workDate, Long userId) throws ParseException {
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date parse = df.parse(workDate);
         //获取指定日期报工记录
         SProjectUserDayExample sProjectUserDayExample = new SProjectUserDayExample();
