@@ -447,7 +447,7 @@
   </update>
 
   <select id="queryProjectManagerList" parameterType="map" resultType="com.yusys.agile.projectmanager.dto.ProjectManagerDto">
-    SELECT spm.project_id,spm.project_name,spm.project_code,spm.project_code,spm.end_time,spm.principal,sspd.name FROM s_project_manager spm
+    SELECT spm.project_id,spm.project_name,spm.project_code,spm.project_code,spm.end_time,spm.principal,sspd.name,spm.tenant_code FROM s_project_manager spm
       left join s_static_project_data sspd on sspd.static_project_data_id = spm.project_status_id
     WHERE spm.state = 'U' AND spm.tenant_code = #{tenantCode}
           <if test="searchKey != null and searchKey != ''">
