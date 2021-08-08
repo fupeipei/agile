@@ -658,5 +658,5 @@ public interface IssueMapper {
 
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(@Param("systemId")Long systemId);
 
-    List<Issue> queryIssueListBySystemIds(@Param("systemIds") List<Long> systemIds, @Param("issueType") Integer issueType);
+    List<IssueDTO> queryIssueListBySystemIds(@Param("systemIds") List<Long> systemIds, @Param("issueType") Integer issueType);
 }

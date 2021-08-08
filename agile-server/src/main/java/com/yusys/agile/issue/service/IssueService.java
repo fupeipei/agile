@@ -456,7 +456,7 @@ public interface IssueService {
      **/
     List<IssueDTO> listIssueOfProjectAndUser(Long projectId, Long userId);
 
-    List<Issue> queryIssueListBySystemIds(List<Long> systemIds, Byte type);
+    List<IssueDTO> queryIssueListBySystemIds(List<Long> systemIds, int type);
     /**
      * @return: java.util.List<com.yusys.agile.issue.dto.SProjectIssueDTO>
      * @Author wangpf6

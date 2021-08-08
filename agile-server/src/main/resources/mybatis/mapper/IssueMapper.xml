@@ -3359,7 +3359,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         GROUP BY si.stage_id
     </select>
 
-    <select id="queryIssueListBySystemIds" parameterType="map" resultType="com.yusys.agile.issue.domain.Issue">
+    <select id="queryIssueListBySystemIds" parameterType="map" resultType="com.yusys.agile.issue.dto.IssueDTO">
         SELECT si.issue_id, si.title, si.parent_id, si.issue_type,si.stage_id
         FROM s_issue si,s_epic_system_relate sisr
         WHERE sisr.epic_id =si.issue_id

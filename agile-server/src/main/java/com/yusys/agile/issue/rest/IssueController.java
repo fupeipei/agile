@@ -13,6 +13,7 @@ import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
+import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -506,6 +507,17 @@ public class IssueController {
                                                     @RequestParam(name = "issueTitle",required = false) String issueTitle) {
         List<SProjectIssueDTO> sProjectIssueDTOS = issueService.queryIssuesByCondition(projectName, pageNum, pageSize, issueTitle);
         return ControllerResponse.success(new PageInfo<>(sProjectIssueDTOS));
+    }
+
+    @GetMapping("/issue/getCollectIssueDataBySystemId")
+    List<StageNameAndValueDto> getCollectIssueDataBySystemId(@RequestParam("systemId")Long systemId){
+        return issueService.getCollectIssueDataBySystemId(systemId);
+
+    }
+
+    @GetMapping("/issue/queryIssueListBySystemIds")
+    List<IssueDTO> queryIssueListBySystemIds(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "issueType") int issueType){
+        return issueService.queryIssueListBySystemIds(systemIds,issueType);
     }
 
 }

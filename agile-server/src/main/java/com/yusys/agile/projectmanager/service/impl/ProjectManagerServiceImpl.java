@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.domain.Issue;
+import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.EpicStageEnum;
 import com.yusys.agile.issue.enums.IssueStateEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
@@ -354,15 +355,15 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
             List<SProjectSystemRel> sProjectSystemRels = projectSystemRelService.queryProjectSystemRelList(x.getProjectId());
             List<Long> systemIds = Optional.ofNullable(sProjectSystemRels).orElse(new ArrayList<>()).stream().map(SProjectSystemRel::getRelSystemId).collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(systemIds)) {
-                List<Issue> issues = issueService.queryIssueListBySystemIds(systemIds, IssueTypeEnum.TYPE_EPIC.CODE);
+                List<IssueDTO> issues = issueService.queryIssueListBySystemIds(systemIds, IssueTypeEnum.TYPE_EPIC.CODE);
                 if (CollectionUtils.isNotEmpty(issues)) {
-                    List<Issue> doneIssueList = Lists.newArrayList();
-                    for (Issue issue : issues) {
-                        Long stageId = issue.getStageId();
+                    List<IssueDTO> doneIssueList = Lists.newArrayList();
+                    for (IssueDTO issueDTO : issues) {
+                        Long stageId = issueDTO.getStageId();
                         //epic的完成阶段
                         if (Optional.ofNullable(stageId).isPresent()
                                 && EpicStageEnum.COMPLETE.getStageId().equals(stageId)) {
-                            doneIssueList.add(issue);
+                            doneIssueList.add(issueDTO);
                         }
                     }
                     BigDecimal divide = new BigDecimal(doneIssueList.size()).divide(new BigDecimal(issues.size()), 2, BigDecimal.ROUND_HALF_UP);

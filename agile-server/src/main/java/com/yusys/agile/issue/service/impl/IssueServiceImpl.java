@@ -2832,8 +2832,8 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<Issue> queryIssueListBySystemIds(List<Long> systemIds, Byte type) {
-        return issueMapper.queryIssueListBySystemIds(systemIds, type.intValue());
+    public List<IssueDTO> queryIssueListBySystemIds(List<Long> systemIds, int type) {
+        return issueMapper.queryIssueListBySystemIds(systemIds, type);
     }
 
     @Override
