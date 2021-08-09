@@ -17,6 +17,7 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,8 +71,8 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
                 throw new BusinessException("获取项目下成员报工统计列表请求参数错误");
             }
             // 校验开始时间和结束时间，结束时间不能早于开始时间
-            if (Optional.ofNullable(projectUserHourDto.getStartDate()).isPresent()
-                    && Optional.ofNullable(projectUserHourDto.getEndDate()).isPresent()){
+            if (Optional.ofNullable(projectUserHourDto.getStartDate()).isPresent() && StringUtils.isNotEmpty(projectUserHourDto.getStartDate())
+                    && Optional.ofNullable(projectUserHourDto.getEndDate()).isPresent() && StringUtils.isNotEmpty(projectUserHourDto.getEndDate())){
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 Date date_start = df.parse(projectUserHourDto.getStartDate());
                 Date date_end = df.parse(projectUserHourDto.getEndDate());
