@@ -511,10 +511,10 @@
         where sprint_id = #{sprintId,jdbcType=BIGINT}
     </update>
 
-    <select id="CheckSprintNameExistInTeam" resultType="int">
-        select if(count(sprint_id > 0), true, false)
+    <select id="CheckSprintNameExistInTeam" resultType="com.yusys.agile.sprintv3.domain.SSprint">
+        select <include refid="Base_Column_List"/>
         from s_sprint
-        where binary sprint_name = #{sprintName}
+        where sprint_name = #{sprintName}
           and team_id = #{teamId}
           and state = 'U'
           and status <![CDATA[<>]]> 0

@@ -13,9 +13,7 @@
 	</typeAliases>
 	<plugins>
 		<plugin interceptor="com.yusys.portal.common.interceptor.TenantInterceptor">
-			<property name="excludeTables" value="s_issue,s_header_field,s_issue_filter,s_sys_extend_field,s_sys_field,s_sys_extend_field_detail,
-			s_kanban_stage_instance,s_stage_template_config,s_version_issue_relate,s_risk_manager" />
-
+			<property name="excludeTables" value="s_issue,s_header_field,s_issue_filter,s_sys_extend_field,s_sys_field,s_sys_extend_field_detail,s_kanban_stage_instance,s_stage_template_config,s_version_issue_relate,s_risk_manager" />
 			<property name="tenantSwitch" value="true"/>
 		</plugin>
 		<plugin interceptor="com.yusys.portal.common.interceptor.MyBatisInsertInterceptor">
