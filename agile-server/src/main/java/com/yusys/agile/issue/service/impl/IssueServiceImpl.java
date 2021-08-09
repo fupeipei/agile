@@ -733,6 +733,8 @@ public class IssueServiceImpl implements IssueService {
                 }
                 setTeamInfo(map, null, sprintId, issueId, issue.getIssueType());
             }
+        }else{
+            throw new BusinessException("工作项不存在！");
         }
         return map;
     }
@@ -752,6 +754,9 @@ public class IssueServiceImpl implements IssueService {
             if (null != sprintId) {
                 //根据迭代ID获取团队信息
                 SSprintWithBLOBs sprintWithBLOB = ssprintMapper.selectByPrimaryKey(sprintId);
+                if(null == sprintWithBLOB){
+                    throw new BusinessException("迭代信息不存在！");
+                }
                 STeam sTeam = teamv3Service.getTeamById(sprintWithBLOB.getTeamId());
                 setTeamDetail(map, sTeam);
             } else {

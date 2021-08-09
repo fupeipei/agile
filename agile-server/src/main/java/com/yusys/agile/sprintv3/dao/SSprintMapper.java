@@ -39,7 +39,7 @@ public interface SSprintMapper {
 
     int updateByPrimaryKey(SSprint record);
 
-    int CheckSprintNameExistInTeam(@Param("sprintName") String sprintName, @Param("teamId") long teamId);
+    List<SSprint> CheckSprintNameExistInTeam(@Param("sprintName") String sprintName, @Param("teamId") long teamId);
 
     List<Long> getUnStartIds(Date date);
 
