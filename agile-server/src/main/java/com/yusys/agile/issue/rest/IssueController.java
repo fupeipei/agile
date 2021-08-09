@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.IssueListDTO;
-import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
-import com.yusys.agile.issue.dto.SProjectIssueDTO;
+import com.yusys.agile.issue.dto.*;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
@@ -18,6 +15,8 @@ import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -520,4 +519,20 @@ public class IssueController {
         return issueService.queryIssueListBySystemIds(systemIds,issueType);
     }
 
+
+    @PostMapping("/agile/issue/queryEpicList")
+    public PageInfo<IssueDTO> queryEpicList(@RequestBody IssueConditionDTO issueConditionDTO) {
+
+        Integer pageNum = issueConditionDTO.getPageNum();
+        Integer pageSize = issueConditionDTO.getPageSize();
+        List<Long> systemIds = issueConditionDTO.getSystemIds();
+
+        if(CollectionUtils.isEmpty(systemIds)){
+            return new PageInfo(Lists.newArrayList());
+        }
+
+        String title = issueConditionDTO.getTitle();
+        List<IssueDTO> issueDTOS = issueService.queryEpicList(pageNum,pageSize,title,systemIds);
+        return new PageInfo<IssueDTO>(issueDTOS);
+    }
 }

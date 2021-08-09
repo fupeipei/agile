@@ -2846,6 +2846,8 @@ public class IssueServiceImpl implements IssueService {
         return issueMapper.getCollectIssueDataBySystemId(systemId);
     }
 
+
+
     /**
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      * @Author fupp1
@@ -3754,5 +3756,16 @@ public class IssueServiceImpl implements IssueService {
                 projectIssueDTOs.add(projectIssueDTO);
             }
         }
+    }
+
+
+    @Override
+    public List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds) {
+
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        List<IssueDTO> issueDTOS = issueMapper.queryEpicListByCondition(systemIds, title);
+        return issueDTOS;
     }
 }

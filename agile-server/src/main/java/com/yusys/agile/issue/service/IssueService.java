@@ -8,6 +8,7 @@ import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
@@ -467,4 +468,7 @@ public interface IssueService {
     List<SProjectIssueDTO> queryIssuesByCondition(String projectName, Integer pageNum, Integer pageSize, String issueTitle);
 
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(Long systemId);
+
+
+    List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds);
 }

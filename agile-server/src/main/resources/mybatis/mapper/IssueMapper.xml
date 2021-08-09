@@ -3449,4 +3449,21 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             and (s_issue.title LIKE CONCAT('%', #{issueTitle}, '%'))
         </if>
     </select>
+
+
+
+    <select id="queryEpicListByCondition" resultType="com.yusys.agile.issue.dto.IssueDTO">
+        select distinct si.issue_id ,si.issue_type,si.title
+        from agile.s_epic_system_relate sesr
+        left join  s_issue si
+        on si.issue_id = sesr.epic_id
+        where
+        sesr.system_id  in
+        <foreach collection="systemIds" close=")" open=")" separator="," item="systemId">
+            #{systemId}
+        </foreach>
+        <if test="title != null  and title != ''">
+            and si.title LIKE CONCAT('%', #{title}, '%')
+        </if>
+    </select>
 </mapper>
