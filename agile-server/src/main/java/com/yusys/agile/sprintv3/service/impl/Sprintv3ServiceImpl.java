@@ -11,8 +11,6 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.enums.TaskStatusEnum;
 import com.yusys.agile.issue.service.StoryService;
-import com.yusys.agile.projectmanager.domain.SProjectSystemRel;
-import com.yusys.agile.projectmanager.service.ProjectSystemRelService;
 import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.dao.SSprintUserHourMapper;
@@ -28,15 +26,14 @@ import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.service.STeamSystemService;
 import com.yusys.agile.teamv3.service.Teamv3Service;
-import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeProjectSystemRelApi;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
@@ -96,9 +93,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private Teamv3Service teamv3Service;
     @Resource
     private STeamSystemService teamSystemService;
-    @Resource
-    private ProjectSystemRelService projectSystemRelService;
-
+    @Autowired
+    private IFacadeProjectSystemRelApi iFacadeProjectSystemRelApi;
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
 
@@ -106,8 +102,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     public SprintProjectDTO showSprintByProject(Long projectId, Long teamId) {
 
         //1 根据项目Id查询系统集合
-        List<SProjectSystemRel> sProjectSystemRels = projectSystemRelService.queryProjectSystemRelList(projectId);
-        List<Long> systemIdList = sProjectSystemRels.stream().map(a -> a.getRelSystemId()).collect(Collectors.toList());
+        List<SsoSystemDTO> sProjectSystemRels = iFacadeProjectSystemRelApi.getSystemListByProjectId(projectId);
+        List<Long> systemIdList = sProjectSystemRels.stream().map(a -> a.getSystemId()).collect(Collectors.toList());
         //2 根据系统Ids查询团队集合
         List<TeamListDTO> teamListDTOS = teamv3Service.queryTeamsBySystemIdList(systemIdList);
         //3 根据teamid查询迭代集合

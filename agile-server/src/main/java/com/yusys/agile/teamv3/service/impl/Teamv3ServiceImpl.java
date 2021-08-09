@@ -1,6 +1,7 @@
 package com.yusys.agile.teamv3.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
@@ -636,6 +637,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     @Override
     public List<TeamListDTO> queryTeamsBySystemIdList(List<Long> systemIdList) {
         List<Long> teamIds = teamSystemMapper.queryTeamIdBySystemId(systemIdList);
+
+        log.info("根据系统ID查询团队信息，teamIds,{}", JSONObject.toJSONString(teamIds));
 
         if(CollectionUtils.isEmpty(teamIds)){
             return Lists.newArrayList();
