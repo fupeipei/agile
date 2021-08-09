@@ -3341,12 +3341,24 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         FROM s_issue
         WHERE state = 'U'
         <if test="null != userId and '' != userId"> AND handler = #{userId}  </if>
-        AND  system_id IN (
-            SELECT DISTINCT rel_system_id
-            FROM
-             s_project_system_rel
-            WHERE project_id = #{projectId} AND state = 'U'
-        )
+        <if test="systemIds != null and systemIds.size!=0">
+            AND  system_id IN
+            <foreach collection="systemIds" separator="," open="(" close=")" item="systemId">
+                #{systemId}
+            </foreach>
+        </if>
+        union all
+        SELECT issue_id,title,parent_id,issue_type, handler,plan_workload
+        FROM s_issue
+        WHERE state = 'U'
+        <if test="null != userId and '' != userId"> AND handler = #{userId}  </if>
+        and issue_id in (SELECT epic_id FROM s_epic_system_relate WHERE state = 'U'
+        <if test="systemIds != null and systemIds.size!=0">
+            and system_id IN
+            <foreach collection="systemIds" separator="," open="(" close=")" item="systemId">
+            #{systemId}
+            </foreach>
+        </if>)
     </select>
 
     <select id="getCollectIssueDataBySystemId" resultType="com.yusys.agile.projectmanager.dto.StageNameAndValueDto">

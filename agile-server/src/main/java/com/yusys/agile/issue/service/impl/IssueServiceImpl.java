@@ -2849,9 +2849,12 @@ public class IssueServiceImpl implements IssueService {
      * @Param [projectId, securityDTO]
      **/
     @Override
-    public List<IssueDTO> listIssueOfProjectAndUser(Long projectId, Long userId) {
+    public List<IssueDTO> listIssueOfProjectAndUser(List<Long> systemIds, Long userId) {
         //根据项目获取系统ids
-        List<IssueDTO> issueList = issueMapper.listIssueOfProjectAndUser(projectId, userId);
+        List<IssueDTO> issueList = new ArrayList<>();
+        if(Optional.ofNullable(systemIds).isPresent() && systemIds.size()>0){
+            issueList = issueMapper.listIssueOfProjectAndUser(systemIds, userId);
+        }
         return issueList;
     }
 

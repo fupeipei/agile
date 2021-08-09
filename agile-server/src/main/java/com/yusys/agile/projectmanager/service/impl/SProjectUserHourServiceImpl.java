@@ -235,11 +235,11 @@ public class SProjectUserHourServiceImpl implements SProjectUserHourService {
         }
         projectHourDto.setNormalWorkload(normalWorkload);
         // 项目预估工时：SUM（项目下所有工作项预估时间）
-        List<IssueDTO> issues = issueService.listIssueOfProjectAndUser(projectId, null);
+//        List<IssueDTO> issues = issueService.listIssueOfProjectAndUser(projectId, null);
         Long planWorkload = 0L;
-        for (IssueDTO issue : issues) {
-            planWorkload += issue.getPlanWorkload();
-        }
+//        for (IssueDTO issue : issues) {
+//            planWorkload += issue.getPlanWorkload();
+//        }
         projectHourDto.setPlanWorkload(planWorkload);
         // 实际工时：SUM（项目成员报工的实际工时）
         Long reallyWorkload = sProjectUserDayMapper.getTotalReallyWorkloadByProId(projectId);
