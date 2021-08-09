@@ -22,8 +22,8 @@ import java.util.List;
 @FeignClient(name = "agile-server")
 public interface IssueApi {
 
-    @GetMapping("/agile/issue/listIssueDtoOfProjectAndUser")
-    public List<IssueDTO> listIssueDtoOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO);
+    @GetMapping("/agile/issue/listIssueOfProjectAndUser")
+    List<IssueDTO> listIssueOfProjectAndUser(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "userId") Long userId);
 
 
     @GetMapping("/agile/issue/getCollectIssueDataBySystemId")
