@@ -3465,7 +3465,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
 
 
     <select id="queryEpicListByCondition" resultType="com.yusys.agile.issue.dto.IssueDTO">
-        select distinct si.issue_id ,si.issue_type,si.title
+        select distinct si.issue_id ,si.issue_type,si.title,si.handler
         from agile.s_epic_system_relate sesr
         left join  s_issue si
         on si.issue_id = sesr.epic_id

@@ -503,7 +503,7 @@ public class IssueController {
     }
 
 
-    @PostMapping("/agile/issue/queryEpicList")
+    @PostMapping("/issue/queryEpicList")
     public PageInfo<IssueDTO> queryEpicList(@RequestBody IssueConditionDTO issueConditionDTO) {
 
         Integer pageNum = issueConditionDTO.getPageNum();
@@ -516,6 +516,9 @@ public class IssueController {
 
         String title = issueConditionDTO.getTitle();
         List<IssueDTO> issueDTOS = issueService.queryEpicList(pageNum,pageSize,title,systemIds);
-        return new PageInfo<IssueDTO>(issueDTOS);
+
+
+
+        return new PageInfo<>(issueDTOS);
     }
 }
