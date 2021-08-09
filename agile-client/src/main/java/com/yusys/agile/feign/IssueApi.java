@@ -19,7 +19,7 @@ import java.util.List;
 public interface IssueApi {
 
     @GetMapping("/agile/issue/listIssueDtoOfProjectAndUser")
-    public List<IssueDTO> listIssueDtoOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO);
+    List<IssueDTO> listIssueDtoOfProjectAndUser(@RequestParam("projectId") Long projectId);
 
 
     @GetMapping("/agile/issue/getCollectIssueDataBySystemId")

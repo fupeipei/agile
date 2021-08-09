@@ -490,8 +490,8 @@ public class IssueController {
     }
 
     @GetMapping("/issue/listIssueDtoOfProjectAndUser")
-    public List<IssueDTO> listIssueDtoOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO) {
-        return issueService.listIssueOfProjectAndUser(projectId, securityDTO.getUserId());
+    public List<IssueDTO> listIssueDtoOfProjectAndUser(@RequestParam("projectId") Long projectId) {
+        return issueService.listIssueOfProjectAndUser(projectId, null);
     }
     /**
      * @return: com.yusys.portal.model.common.dto.ControllerResponse
