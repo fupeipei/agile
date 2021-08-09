@@ -454,7 +454,7 @@ public interface IssueService {
      * @Param [projectId, securityDTO]
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      **/
-    List<IssueDTO> listIssueOfProjectAndUser(Long projectId, Long userId);
+    List<IssueDTO> listIssueOfProjectAndUser(List<Long> systemIds, Long userId);
 
     List<IssueDTO> queryIssueListBySystemIds(List<Long> systemIds, int type);
     /**
