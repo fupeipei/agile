@@ -659,4 +659,7 @@ public interface IssueMapper {
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(@Param("systemId")Long systemId);
 
     List<IssueDTO> queryIssueListBySystemIds(@Param("systemIds") List<Long> systemIds, @Param("issueType") Integer issueType);
+
+
+    List<IssueDTO> queryEpicListByCondition(@Param("systemIds")List<Long> systemIds,@Param("title")String title);
 }

@@ -44,6 +44,9 @@ import com.yusys.agile.module.service.ModuleService;
 import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.review.dto.StoryCheckResultDTO;
 import com.yusys.agile.review.service.ReviewService;
+import com.yusys.agile.scheduleplan.dao.SEpicSystemRelateMapper;
+import com.yusys.agile.scheduleplan.domain.SEpicSystemRelate;
+import com.yusys.agile.scheduleplan.domain.SEpicSystemRelateExample;
 import com.yusys.agile.set.stage.constant.StageConstant;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.StageInstance;
@@ -212,6 +215,8 @@ public class IssueServiceImpl implements IssueService {
     private SLeanKanbanMapper leanKanbanMapper;
     @Autowired
     private IssueHistoryRecordService issueHistoryRecordService;
+    @Autowired
+    private SEpicSystemRelateMapper epicSystemRelateMapper;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -2846,6 +2851,8 @@ public class IssueServiceImpl implements IssueService {
         return issueMapper.getCollectIssueDataBySystemId(systemId);
     }
 
+
+
     /**
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      * @Author fupp1
@@ -3757,5 +3764,43 @@ public class IssueServiceImpl implements IssueService {
                 projectIssueDTOs.add(projectIssueDTO);
             }
         }
+    }
+
+    @Override
+    public List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds) {
+
+        if (null != pageNum && null != pageSize) {
+            PageHelper.startPage(pageNum, pageSize);
+        }
+        List<IssueDTO> issueDTOS = issueMapper.queryEpicListByCondition(systemIds, title);
+
+        if(CollectionUtils.isNotEmpty(issueDTOS)){
+            issueDTOS.forEach(issueDTO -> {
+                Long issueId = issueDTO.getIssueId();
+                SEpicSystemRelateExample relateExample = new SEpicSystemRelateExample();
+                relateExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andEpicIdEqualTo(issueId);
+                List<SEpicSystemRelate> epicSystemRelates = epicSystemRelateMapper.selectByExample(relateExample);
+                if(CollectionUtils.isNotEmpty(epicSystemRelates)){
+                    List<Long> ids = epicSystemRelates.stream().map(s -> s.getSystemId()).collect(Collectors.toList());
+                    issueDTO.setSystemIds(ids);
+                }
+
+                Long handler = issueDTO.getHandler();
+                if(Optional.ofNullable(handler).isPresent()){
+                    try {
+                        SsoUser ssoUser = userCache.get(handler);
+                        if(Optional.ofNullable(ssoUser).isPresent()){
+                            String userAccount = ssoUser.getUserAccount();
+                            String userName = ssoUser.getUserName();
+                            issueDTO.setHandlerName(userName);
+                            issueDTO.setHandlerAccount(userAccount);
+                        }
+                    } catch (ExecutionException e) {
+                        loggr.info("获取人员信息异常:{}",e.getMessage());
+                    }
+                }
+            });
+        }
+        return issueDTOS;
     }
 }

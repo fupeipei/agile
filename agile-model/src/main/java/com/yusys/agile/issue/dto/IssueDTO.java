@@ -3,7 +3,9 @@ package com.yusys.agile.issue.dto;
 import com.yusys.agile.scheduleplan.dto.ScheduleplanDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sysextendfield.SysExtendFieldDetailDTO;
+import com.yusys.portal.model.facade.dto.ProductLineDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
+import com.yusys.portal.model.project.dto.ProjectManagerDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.ArrayList;
@@ -321,4 +323,12 @@ public class IssueDTO {
     private String teamName;
 
     private Byte cmpSyncResult;
+
+
+    @ApiModelProperty("系统信息")
+    private List<ProjectManagerDTO> projectManagerDTOS;
+
+    @ApiModelProperty("产品线信息")
+    private List<ProductLineDTO> productLineDTOS;
+
 }
