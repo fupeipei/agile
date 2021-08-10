@@ -1161,6 +1161,9 @@ public class IssueFactory {
         }
         example.setOrderByClause("`order` desc,create_time desc");
         List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
+        if(CollectionUtils.isEmpty(issueDTOList)){
+            return Lists.newArrayList();
+        }
         List<Long> handlers = new ArrayList<>();
         setHandlersAndStageName(issueDTOList, handlers, issueType);
         setHandlerName(handlers, issueDTOList);
@@ -1487,6 +1490,10 @@ public class IssueFactory {
             //敏捷，找对应团队下的所有迭代
             List<SSprint> sSprintList = sSprintMapper.querySprintByTeamId(sTeam.getTeamId());
             List<Long> sprintIdList = sSprintList.stream().map(SSprint::getSprintId).collect(Collectors.toList());
+            //如果无迭代，不往下过滤故事
+            if(CollectionUtils.isEmpty(sprintIdList)){
+               return Lists.newArrayList();
+            }
             criteria.andSprintIdIn(sprintIdList);
         }
 
@@ -1501,6 +1508,9 @@ public class IssueFactory {
         }
         example.setOrderByClause("`order` desc,create_time desc");
         List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
+        if(CollectionUtils.isEmpty(issueDTOList)){
+            return Lists.newArrayList();
+        }
         List<Long> handlers = new ArrayList<>();
         setHandlersAndStageName(issueDTOList, handlers, IssueTypeEnum.TYPE_STORY.CODE);
         setHandlerName(handlers, issueDTOList);
