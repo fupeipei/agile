@@ -258,22 +258,6 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
     }
 
     @Override
-    public List<SProjectManager> queryProjectManagers() {
-        SProjectManagerExample sProjectManagerExample = new SProjectManagerExample();
-        sProjectManagerExample.createCriteria().andStateEqualTo(StateEnum.U.getValue());
-        sProjectManagerExample.setOrderByClause("create_time desc");
-        List<SProjectManager> sProjectManagers = sProjectManagerMapper.selectByExample(sProjectManagerExample);
-        return sProjectManagers;
-    }
-
-    @Override
-    public List<SsoUser> queryUserByProjectId(Long projectId) {
-        List<Long> userIds = sProjectUserRelMapper.queryUserIdListByProId(projectId);
-        List<SsoUser> ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
-        return ssoUsers;
-    }
-
-    @Override
     public List<ProjectDemandDto> queryProjectDemandList(Long projectId) {
         SProjectSystemRelExample sProjectSystemRelExample = new SProjectSystemRelExample();
         sProjectSystemRelExample.createCriteria().andProjectIdEqualTo(projectId)
@@ -296,18 +280,6 @@ public class ProjectManagerServiceImpl implements ProjectManagerService {
 
     }
 
-
-    @Override
-    public List<ProjectUserTotalHourDto> queryUserIdListByProIdAndUId(Long projectId, Long userId) {
-        List<ProjectUserTotalHourDto> userTotalHourDtos = sProjectUserRelMapper.queryUserIdListByProIdAndUId(projectId, userId);
-        return userTotalHourDtos;
-    }
-
-    @Override
-    public SProjectManager queryProjectManagerInfo(Long projectId) {
-        SProjectManager sProjectManager = sProjectManagerMapper.queryProjectManagerInfo(projectId);
-        return sProjectManager;
-    }
 
     private List<ProjectDemandDto> buildProjectDemandList(List<Long> systemIds){
         List<ProjectDemandDto> projectDemandDtoList = Lists.newArrayList();
