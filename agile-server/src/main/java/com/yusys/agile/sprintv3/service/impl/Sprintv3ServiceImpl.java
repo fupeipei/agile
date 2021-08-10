@@ -108,7 +108,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<TeamListDTO> teamListDTOS = teamv3Service.queryTeamsBySystemIdList(systemIdList);
         //3 根据teamid查询迭代集合
         List<SSprint> sSprints = new ArrayList<>();
-        if (Optional.ofNullable(teamId).isPresent()) {
+        if (!Optional.ofNullable(teamId).isPresent()) {
             for (int i = 0; CollectionUtils.isEmpty(sSprints) && i<teamListDTOS.size(); i++) {
                 teamId = teamListDTOS.get(i).getTeamId();
                 sSprints = ssprintMapper.querySprintByTeamId(teamId);
@@ -116,20 +116,24 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }else {
             sSprints = ssprintMapper.querySprintByTeamId(teamId);
         }
+
         //4 迭代返回类型设置
         List<SprintListDTO> sprintListDTOS = new ArrayList<>();
-        try {
-            sprintListDTOS = ReflectUtil.copyProperties4List(sSprints, SprintListDTO.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (CollectionUtils.isEmpty(sSprints)){
 
-        for (SprintListDTO sprintListDTO : sprintListDTOS){
-            SprintStatisticalInformation information = sprintStatisticalInformation(sprintListDTO.getSprintId());
-            SprintTaskDTO story = new SprintTaskDTO();
-            story.setAll(information.getUserStorySum());
-            story.setDone(information.getUserStory());
-            sprintListDTO.setStory(story);
+        }else {
+            try {
+                sprintListDTOS = ReflectUtil.copyProperties4List(sSprints, SprintListDTO.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            for (SprintListDTO sprintListDTO : sprintListDTOS) {
+                SprintStatisticalInformation information = sprintStatisticalInformation(sprintListDTO.getSprintId());
+                SprintTaskDTO story = new SprintTaskDTO();
+                story.setAll(information.getUserStorySum());
+                story.setDone(information.getUserStory());
+                sprintListDTO.setStory(story);
+            }
         }
         //5 返回值设置
         SprintProjectDTO sprintProjectDTO = new SprintProjectDTO();
