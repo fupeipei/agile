@@ -9,7 +9,9 @@ import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeProjectSystemRelApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,6 +33,9 @@ public class SprintV3ServiceTest {
 
     @Autowired
     private Sprintv3Service sprintv3Service;
+
+    @Autowired
+    private IFacadeProjectSystemRelApi iFacadeProjectSystemRelApi;
 
     public SprintV3DTO initData() {
         SprintV3DTO sprintDTO = new SprintV3DTO();

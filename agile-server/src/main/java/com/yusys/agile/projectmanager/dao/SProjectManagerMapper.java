@@ -40,7 +40,6 @@ public interface SProjectManagerMapper {
 
     List<ProjectManagerDto> queryProjectManagerListByUserId(@Param("userId") Long userId);
 
-    SProjectManager queryProjectManagerInfo(@Param("projectId") Long projectId);
     List<ProjectManagerDto> queryProjectManagerListByUserId(@Param("userId") Long userId,@Param("tenantCode") String tenantCode);
 
     List<ProjectManagerDto> queryProjectManagerListByCondition(@Param("searchKey")String searchKey,@Param("tenantCode") String tenantCode);
