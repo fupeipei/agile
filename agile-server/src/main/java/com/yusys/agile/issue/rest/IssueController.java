@@ -475,21 +475,6 @@ public class IssueController {
     public List<IssueDTO> listIssueOfProjectAndUser(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "userId",required = false) Long userId) {
         return issueService.listIssueOfProjectAndUser(systemIds, userId);
     }
-    /**
-     * @return: com.yusys.portal.model.common.dto.ControllerResponse
-     * @Author wangpf6
-     * @Description 条件查询项目需求
-     * @Date 16:20 2021/8/5
-     * @Param [projectName, pageNum, pageSize, issueTitle]
-     **/
-    @GetMapping("/issue/queryIssuesByCondition")
-    public ControllerResponse queryUsersByCondition(@RequestParam(name = "projectName", required = false) String projectName,
-                                                    @RequestParam(name = "pageNum") Integer pageNum,
-                                                    @RequestParam(name = "pageSize") Integer pageSize,
-                                                    @RequestParam(name = "issueTitle",required = false) String issueTitle) {
-        List<SProjectIssueDTO> sProjectIssueDTOS = issueService.queryIssuesByCondition(projectName, pageNum, pageSize, issueTitle);
-        return ControllerResponse.success(new PageInfo<>(sProjectIssueDTOS));
-    }
 
     @GetMapping("/issue/getCollectIssueDataBySystemId")
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(@RequestParam("systemId")Long systemId){

@@ -6,7 +6,6 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.SProjectIssueDTO;
 import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
@@ -548,7 +547,6 @@ public interface IssueMapper {
 
     List<Long> listLevelIssueIdforTask(@Param("issueIds") List<Long> issueIdList, @Param("issueStoryIds") List<Long> issueStoryIds);
 
-    List<Issue> queryIssuesByIssueTitle(@Param("issueTitle")String issueTitle);
     int insertTmp(Issue record);
 
     int updateTmp(Issue record);
@@ -645,14 +643,6 @@ public interface IssueMapper {
     List<SVersionIssueRelateDTO> queryFeatureScheduleRel(@Param("featureIds") List<Long> featureIds,@Param("teamId") Long teamId,@Param("searchKey") String searchKey,@Param("systemId") Long systemId);
 
     List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(@Param("teamId") Long teamId, @Param("searchKey")String searchKey, @Param("systemId") Long systemId, @Param("issueIds")List<Long> issueIds);
-    /**
-     * @return: java.util.List<com.yusys.agile.issue.dto.SProjectIssueDTO>
-     * @Author wangpf6
-     * @Description 查询SProjectIssueDTO
-     * @Date 15:45 2021/8/4
-     * @Param [projectName]
-     **/
-    List<SProjectIssueDTO> queryIssuesByCondition(@Param("projectName")String projectName, @Param("systemIds")List<Long> systemIds);
 
     List<IssueDTO> listIssueOfProjectAndUser(@Param("systemIds")List<Long> systemIds, @Param("userId") Long userId);
 
