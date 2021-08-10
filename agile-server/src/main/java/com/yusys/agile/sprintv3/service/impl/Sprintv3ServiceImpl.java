@@ -97,7 +97,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private IFacadeProjectSystemRelApi iFacadeProjectSystemRelApi;
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
 
-
+    /**
+     * @Author wuzefei
+     * @Date 2021/8/10
+     * @Description 根据项目id查询迭代信息
+     * @param projectId,teamId
+     * @Return SprintProjectDTO
+     */
     @Override
     public SprintProjectDTO showSprintByProject(Long projectId, Long teamId) {
 
@@ -138,7 +144,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         //5 返回值设置
         SprintProjectDTO sprintProjectDTO = new SprintProjectDTO();
         STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
-        sprintProjectDTO.setTeamName(sTeam.getTeamName());
+        sprintProjectDTO.setTeamName(Optional.ofNullable(sTeam).isPresent()?sTeam.getTeamName():null);
         sprintProjectDTO.setTeamId(teamId);
         sprintProjectDTO.setSprintListDTOS(sprintListDTOS);
         sprintProjectDTO.setTeamListDTOS(teamListDTOS);

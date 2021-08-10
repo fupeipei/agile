@@ -23,9 +23,11 @@ public interface Sprintv3Service {
 
 
     /**
-     * 根据项目id查询迭代信息
-     * @param projectId
-     * @return
+     * @Author wuzefei
+     * @Date 2021/8/5
+     * @Description 根据项目id查询迭代信息
+     * @param projectId,teamId
+     * @Return SprintProjectDTO
      */
     SprintProjectDTO showSprintByProject(Long projectId , Long teamId);
 

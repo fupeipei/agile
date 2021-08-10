@@ -630,10 +630,13 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     }
 
     /**
-     * 根据系统ids查询团队
+     * @Author wuzefei
+     * @Date 2021/8/5
+     * @Description 根据系统id列表查询所有相关团队
      * @param systemIdList
-     * @return
+     * @Return List<TeamListDTO>
      */
+
     @Override
     public List<TeamListDTO> queryTeamsBySystemIdList(List<Long> systemIdList) {
         List<Long> teamIds = teamSystemMapper.queryTeamIdBySystemId(systemIdList);

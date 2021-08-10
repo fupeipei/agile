@@ -303,10 +303,11 @@ public class Sprintv3Controller {
     }
 
     /**
-     * 根据项目id查询迭代信息
-     *  @param  projectId
-     *  @param teamId
-     *  @return
+     * @Author wuzefei
+     * @Date 2021/8/5
+     * @Description 根据项目id查询迭代信息
+     * @param projectId,teamId
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
      */
     @GetMapping("/showSprintByProject")
     public ControllerResponse showSprintByProject(@RequestParam(name = "projectId") Long projectId,@RequestParam(name = "teamId") Long teamId){
