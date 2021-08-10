@@ -3619,10 +3619,9 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds) {
 
-        if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
-        }
+        PageHelper.startPage(pageNum, pageSize);
         List<IssueDTO> issueDTOS = issueMapper.queryEpicListByCondition(systemIds, title);
+
         loggr.info("查询出issueDTOS数据为：{}",JSONObject.toJSONString(issueDTOS));
         if(CollectionUtils.isNotEmpty(issueDTOS)){
             issueDTOS.forEach(issueDTO -> {

@@ -506,8 +506,8 @@ public class IssueController {
         String title = issueConditionDTO.getTitle();
         List<IssueDTO> issueDTOS = issueService.queryEpicList(pageNum,pageSize,title,systemIds);
 
-
-
-        return new PageInfo<>(issueDTOS);
+        PageInfo<IssueDTO> pageInfo = new PageInfo<>(issueDTOS);
+        log.info("epic数据查询结果集：{}",JSONObject.toJSONString(pageInfo));
+        return pageInfo;
     }
 }
