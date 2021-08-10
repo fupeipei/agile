@@ -458,14 +458,6 @@ public interface IssueService {
     List<IssueDTO> listIssueOfProjectAndUser(List<Long> systemIds, Long userId);
 
     List<IssueDTO> queryIssueListBySystemIds(List<Long> systemIds, int type);
-    /**
-     * @return: java.util.List<com.yusys.agile.issue.dto.SProjectIssueDTO>
-     * @Author wangpf6
-     * @Description 条件查询需求
-     * @Date 16:19 2021/8/5
-     * @Param [projectName, pageNum, pageSize, issueTitle]
-     **/
-    List<SProjectIssueDTO> queryIssuesByCondition(String projectName, Integer pageNum, Integer pageSize, String issueTitle);
 
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(Long systemId);
 
