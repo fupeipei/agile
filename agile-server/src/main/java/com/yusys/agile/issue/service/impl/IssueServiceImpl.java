@@ -88,7 +88,9 @@ import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import com.yusys.portal.model.facade.dto.SsoUserDTO;
-import com.yusys.portal.model.facade.entity.*;
+import com.yusys.portal.model.facade.entity.SsoProject;
+import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.model.ms.dto.MailSendDTO;
 import com.yusys.portal.model.ms.enums.MailTemplateTypeEnum;
 import com.yusys.portal.model.ms.enums.MailTypeEnum;
@@ -105,8 +107,6 @@ import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -3615,156 +3615,6 @@ public class IssueServiceImpl implements IssueService {
         return result;
     }
 
-    /**
-     * @return: java.util.List<com.yusys.agile.issue.dto.SProjectIssueDTO>
-     * @Author wangpf6
-     * @Description 条件查询项目需求数据
-     * @Date 14:58 2021/8/4
-     * @Param [projectName, pageNum, pageSize, issueTitle]
-     **/
-    @Override
-    public List<SProjectIssueDTO> queryIssuesByCondition(@RequestParam(name = "projectName", required = false) String projectName,
-                                                         @RequestParam(name = "pageNum") Integer pageNum,
-                                                         @RequestParam(name = "pageSize") Integer pageSize,
-                                                         @RequestHeader(name = "issueTitle", required = false) String issueTitle) {
-        //返回显示集合
-        List<SProjectIssueDTO> projectIssueDTOs = new LinkedList<>();
-        //查询集合
-        List<SProjectIssueDTO> sprojectIssueDTOs = new LinkedList<>();
-        //产品线集合
-        List<PProductLineSystemId> pProductLines = new LinkedList<>();
-        //系统id集合
-        List<Long> systemIds = new LinkedList<>();
-        //syste集合
-        List<SsoSystemRestDTO> systemByIds;
-        //需求集合
-        List<Issue> issues;
-        //模糊查询issue
-        if (projectName==null) {
-            //需求为维度查询
-            PageHelper.startPage(pageNum, pageSize);
-            issues = issueMapper.queryIssuesByIssueTitle(issueTitle);
-            extracted(projectIssueDTOs, systemIds, issues);
-            //获取SsoSystemRestDTO集合
-            if (systemIds.size() > 0) {
-                List<Long> userIds = issues.stream().map(Issue::getHandler).collect(Collectors.toList());
-                systemByIds = iFacadeSystemApi.getSystemByIds(systemIds);
-                sprojectIssueDTOs = issueMapper.queryIssuesByCondition(projectName, systemIds);
-                pProductLines = iFacadeProductLineApi.getProductLineBySystemIds(systemIds);
-                List<SsoUser> ssoUsers = new LinkedList<>();
-                if (userIds.size() > 0) {
-                    ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
-                }
-                for (SProjectIssueDTO projectIssueDTO : projectIssueDTOs) {
-                    for (SProjectIssueDTO issueDTO : sprojectIssueDTOs) {
-                        if (projectIssueDTO.getSystemId().equals(issueDTO.getSystemId())) {
-                            projectIssueDTO.setProjectId(issueDTO.getProjectId());
-                            projectIssueDTO.setProjectName(issueDTO.getProjectName());
-                            projectIssueDTO.setProjectCode(issueDTO.getProjectCode());
-                            SsoSystemRestDTO ssoSystemRestDTO = systemByIds.stream().filter(system -> {
-                                if (system.getSystemId().equals(projectIssueDTO.getProjectId())) {
-                                    return true;
-                                }
-                                return false;
-                            }).findAny().orElse(null);
-                            if (Optional.ofNullable(ssoSystemRestDTO).isPresent()) {
-                                projectIssueDTO.setSystemName(ssoSystemRestDTO.getSystemName());
-                            }
-                            SsoUser ssoUser = ssoUsers.stream().filter(user -> {
-                                if (user.getUserId().equals(projectIssueDTO.getHandlerId()))
-                                    return true;
-                                return false;
-                            }).findAny().orElse(null);
-                            if (Optional.ofNullable(ssoUser).isPresent()) {
-                                projectIssueDTO.setHandler(ssoUser.getUserName());
-                            }
-                            PProductLineSystemId pProductLineSystemId = pProductLines.stream().filter(productLine -> {
-                                if (productLine.getSystemId().equals(projectIssueDTO.getSystemId()))
-                                    return true;
-                                return false;
-                            }).findAny().orElse(null);
-                            if (Optional.ofNullable(pProductLineSystemId).isPresent())
-                                projectIssueDTO.setProductLine(pProductLineSystemId.getProductLineName());
-                            break;
-                        }
-                    }
-                }
-            }
-        }else {
-            List<SProjectIssueDTO> sProjectIssueDTOS = new LinkedList<>();
-            //以项目为维度查询
-            issues = issueMapper.queryIssuesByIssueTitle(issueTitle);
-            extracted(projectIssueDTOs, systemIds, issues);
-            //获取SsoSystemRestDTO集合
-            if (systemIds.size() > 0) {
-                List<Long> userIds = issues.stream().map(Issue::getHandler).collect(Collectors.toList());
-                systemByIds = iFacadeSystemApi.getSystemByIds(systemIds);
-                PageHelper.startPage(pageNum, pageSize);
-                sprojectIssueDTOs = issueMapper.queryIssuesByCondition(projectName, systemIds);
-                pProductLines = iFacadeProductLineApi.getProductLineBySystemIds(systemIds);
-                List<SsoUser> ssoUsers = new LinkedList<>();
-                if (userIds.size() > 0) {
-                    ssoUsers = iFacadeUserApi.listUsersByIds(userIds);
-                }
-                for (SProjectIssueDTO projectIssueDTO : projectIssueDTOs) {
-                    for (SProjectIssueDTO issueDTO : sprojectIssueDTOs) {
-                        System.out.println(projectIssueDTOs.indexOf(projectIssueDTO));
-                        System.out.println(sprojectIssueDTOs.indexOf(issueDTO));
-                        if (issueDTO.getSystemId()!=null&&projectIssueDTO.getIssueId()!=null&&projectIssueDTO.getSystemId().equals(issueDTO.getSystemId())) {
-                            projectIssueDTO.setProjectId(issueDTO.getProjectId());
-                            projectIssueDTO.setProjectName(issueDTO.getProjectName());
-                            projectIssueDTO.setProjectCode(issueDTO.getProjectCode());
-                            SsoSystemRestDTO ssoSystemRestDTO = systemByIds.stream().filter(system -> {
-                                if (system.getSystemId().equals(projectIssueDTO.getProjectId())) {
-                                    return true;
-                                }
-                                return false;
-                            }).findAny().orElse(null);
-                            if (Optional.ofNullable(ssoSystemRestDTO).isPresent()) {
-                                projectIssueDTO.setSystemName(ssoSystemRestDTO.getSystemName());
-                            }
-                            SsoUser ssoUser = ssoUsers.stream().filter(user -> {
-                                if (user.getUserId().equals(projectIssueDTO.getHandlerId()))
-                                    return true;
-                                return false;
-                            }).findAny().orElse(null);
-                            if (Optional.ofNullable(ssoUser).isPresent()) {
-                                projectIssueDTO.setHandler(ssoUser.getUserName());
-                            }
-                            PProductLineSystemId pProductLineSystemId = pProductLines.stream().filter(productLine -> {
-                                if (productLine.getSystemId().equals(projectIssueDTO.getSystemId()))
-                                    return true;
-                                return false;
-                            }).findAny().orElse(null);
-                            if (Optional.ofNullable(pProductLineSystemId).isPresent())
-                                projectIssueDTO.setProductLine(pProductLineSystemId.getProductLineName());
-                            sProjectIssueDTOS.add(projectIssueDTO);
-                            break;
-                        }
-                    }
-                }
-            }
-            projectIssueDTOs=sProjectIssueDTOS;
-        }
-
-
-        return projectIssueDTOs;
-    }
-
-    private void extracted(List<SProjectIssueDTO> projectIssueDTOs, List<Long> systemIds, List<Issue> issues) {
-        for (Issue issue : issues) {
-            //获取systemid集合
-            if (issue.getSystemId()!=null){
-                systemIds.add(issue.getSystemId());
-                SProjectIssueDTO projectIssueDTO = new SProjectIssueDTO();
-                projectIssueDTO.setIssueId(issue.getIssueId());
-                projectIssueDTO.setDemandTitle(issue.getTitle());
-                projectIssueDTO.setSystemId(issue.getSystemId());
-                projectIssueDTO.setHandlerId(issue.getHandler());
-                projectIssueDTOs.add(projectIssueDTO);
-            }
-        }
-    }
 
     @Override
     public List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds) {
