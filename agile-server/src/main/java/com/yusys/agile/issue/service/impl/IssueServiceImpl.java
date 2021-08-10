@@ -3623,7 +3623,7 @@ public class IssueServiceImpl implements IssueService {
             PageHelper.startPage(pageNum, pageSize);
         }
         List<IssueDTO> issueDTOS = issueMapper.queryEpicListByCondition(systemIds, title);
-
+        loggr.info("查询出issueDTOS数据为：{}",JSONObject.toJSONString(issueDTOS));
         if(CollectionUtils.isNotEmpty(issueDTOS)){
             issueDTOS.forEach(issueDTO -> {
                 Long issueId = issueDTO.getIssueId();

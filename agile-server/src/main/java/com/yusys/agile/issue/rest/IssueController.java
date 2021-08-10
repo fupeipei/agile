@@ -15,6 +15,7 @@ import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import java.util.Map;
  * @Date: 2020/4/16
  * @Description:
  */
+@Slf4j
 @RestController
 public class IssueController {
 
@@ -491,9 +493,11 @@ public class IssueController {
     @PostMapping("/issue/queryEpicList")
     public PageInfo<IssueDTO> queryEpicList(@RequestBody IssueConditionDTO issueConditionDTO) {
 
+        log.info("根据条件查询epic数据 入参条件为:{}",JSONObject.toJSONString(issueConditionDTO));
         Integer pageNum = issueConditionDTO.getPageNum();
         Integer pageSize = issueConditionDTO.getPageSize();
         List<Long> systemIds = issueConditionDTO.getSystemIds();
+
 
         if(CollectionUtils.isEmpty(systemIds)){
             return new PageInfo(Lists.newArrayList());
