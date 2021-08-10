@@ -60,12 +60,6 @@
         <result column="release_date" jdbcType="TIMESTAMP" property="releaseDate"/>
         <result column="raise_test_date" jdbcType="TIMESTAMP" property="raiseTestDate"/>
     </resultMap>
-    <resultMap id="projectIssue" type="com.yusys.agile.issue.dto.SProjectIssueDTO">
-        <result column="project_id" jdbcType="BIGINT" property="projectId"/>
-        <result column="project_name" jdbcType="VARCHAR" property="projectName"/>
-        <result column="project_code" jdbcType="VARCHAR" property="projectCode"/>
-        <result column="rel_system_id" jdbcType="BIGINT" property="systemId"/>
-    </resultMap>
     <sql id="Example_Where_Clause">
         <where>
             <foreach collection="oredCriteria" item="criteria" separator="or">
@@ -3341,12 +3335,24 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         FROM s_issue
         WHERE state = 'U'
         <if test="null != userId and '' != userId"> AND handler = #{userId}  </if>
-        AND  system_id IN (
-            SELECT DISTINCT rel_system_id
-            FROM
-             s_project_system_rel
-            WHERE project_id = #{projectId} AND state = 'U'
-        )
+        <if test="systemIds != null and systemIds.size!=0">
+            AND  system_id IN
+            <foreach collection="systemIds" separator="," open="(" close=")" item="systemId">
+                #{systemId}
+            </foreach>
+        </if>
+        union all
+        SELECT issue_id,title,parent_id,issue_type, handler,plan_workload
+        FROM s_issue
+        WHERE state = 'U'
+        <if test="null != userId and '' != userId"> AND handler = #{userId}  </if>
+        and issue_id in (SELECT epic_id FROM s_epic_system_relate WHERE state = 'U'
+        <if test="systemIds != null and systemIds.size!=0">
+            and system_id IN
+            <foreach collection="systemIds" separator="," open="(" close=")" item="systemId">
+            #{systemId}
+            </foreach>
+        </if>)
     </select>
 
     <select id="getCollectIssueDataBySystemId" resultType="com.yusys.agile.projectmanager.dto.StageNameAndValueDto">
@@ -3372,81 +3378,24 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
           and si.state = 'U'
           and si.issue_type = #{issueType}
     </select>
-    <select id="queryIssuesByCondition" resultMap="projectIssue">
-        select DISTINCT t1.project_id ,t1.project_name,t1.project_code,t2.rel_system_id from s_project_manager t1 inner join s_project_system_rel t2 on t1.project_id = t2.project_id where 1
-        <if test="projectName != null and projectName != ''">
-            and (t1.project_name LIKE CONCAT('%', #{projectName}, '%') or t1.project_code LIKE CONCAT('%', #{projectName}, '%'))
-        </if>
-        <if test="systemIds != null and systemIds.size !=0">
-            and t2.rel_system_id in
-            <foreach item="item" index="index" collection="systemIds" open="(" separator="," close=")">
-                #{item}
-            </foreach>
-        </if>
-    </select>
-    <select id="queryIssuesByIssueTitle" resultType="com.yusys.agile.issue.domain.Issue">
-        select
-        s_issue.issue_id        ,
-        s_issue.title           ,
-        s_issue.parent_id       ,
-        s_issue.issue_type      ,
-        s_issue.sprint_id       ,
-        s_issue.module_id       ,
-        s_epic_system_relate.system_id,
-        s_issue.handler         ,
-        s_issue.begin_date      ,
-        s_issue.end_date        ,
-        s_issue.plan_workload   ,
-        s_issue.really_workload ,
-        s_issue.priority        ,
-        s_issue.importance      ,
-        s_issue.stage_id        ,
-        s_issue.lane_id         ,
-        s_issue.state           ,
-        s_issue.status          ,
-        s_issue.project_id      ,
-        s_issue.is_collect      ,
-        s_issue.completion      ,
-        s_issue.task_type       ,
-        s_issue.create_uid      ,
-        s_issue.create_time     ,
-        s_issue.update_uid      ,
-        s_issue.update_time     ,
-        s_issue.fault_type      ,
-        s_issue.fault_level     ,
-        s_issue.fixed_time      ,
-        s_issue.close_time      ,
-        s_issue.fixed_uid       ,
-        s_issue.test_uid        ,
-        s_issue.version_id      ,
-        s_issue.case_id         ,
-        s_issue.deadline        ,
-        s_issue.file            ,
-        s_issue.urgency         ,
-        s_issue.cause           ,
-        s_issue.detected_phase  ,
-        s_issue.manual_case_id  ,
-        s_issue.source          ,
-        s_issue.remain_workload ,
-        s_issue.bug_id          ,
-        s_issue.`order`         ,
-        s_issue.block_state     ,
-        s_issue.reopen_times    ,
-        s_issue.assess_is_pass  ,
-        s_issue.assess_remarks  ,
-        s_issue.tenant_code     ,
-        s_issue.cmp_sync_result ,
-        s_issue.is_archive      ,
-        s_issue.is_cancel       ,
-        s_issue.team_id         ,
-        s_issue.kanban_id       ,
-        s_issue.release_date    ,
-        s_issue.raise_test_date ,
-        s_issue.start_schedule
-        from s_issue inner join s_epic_system_relate on s_issue.issue_id =s_epic_system_relate.epic_id where 1
-        and s_issue.issue_type=1
-        <if test="issueTitle != null and issueTitle != ''">
-            and (s_issue.title LIKE CONCAT('%', #{issueTitle}, '%'))
+
+
+
+
+    <select id="queryEpicListByCondition" resultType="com.yusys.agile.issue.dto.IssueDTO">
+        select distinct si.issue_id ,si.issue_type,si.title,si.handler
+        from
+        agile.s_epic_system_relate sesr
+        left join
+        s_issue si
+        on si.issue_id = sesr.epic_id
+        where
+        sesr.system_id  in
+        <foreach collection="systemIds" close=")" open=")" separator="," item="systemId">
+            #{systemId}
+        </foreach>
+        <if test="title != null  and title != ''">
+            and si.title LIKE CONCAT('%', #{title}, '%')
         </if>
     </select>
 </mapper>

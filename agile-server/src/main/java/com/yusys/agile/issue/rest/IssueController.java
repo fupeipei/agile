@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.IssueListDTO;
-import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
-import com.yusys.agile.issue.dto.SProjectIssueDTO;
+import com.yusys.agile.issue.dto.*;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
@@ -18,6 +15,9 @@ import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.utils.StringUtil;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -34,6 +34,7 @@ import java.util.Map;
  * @Date: 2020/4/16
  * @Description:
  */
+@Slf4j
 @RestController
 public class IssueController {
 
@@ -472,41 +473,9 @@ public class IssueController {
         }
     }
 
-    /**
-     * @return com.yusys.portal.model.common.dto.ControllerResponse
-     * @Author fupp1
-     * @Description 根据projectId和处理人获取所有的issue
-     * @Date 17:20 2021/8/3
-     * @Param [projectId, securityDTO]
-     **/
     @GetMapping("/issue/listIssueOfProjectAndUser")
-    public ControllerResponse listIssueOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO) {
-        try {
-            return ControllerResponse.success(issueService.listIssueOfProjectAndUser(projectId, securityDTO.getUserId()));
-        } catch (Exception e) {
-            LOGGER.info("根据projectId和处理人获取所有的issue:{}", e.getMessage());
-            return ControllerResponse.fail(e.getMessage());
-        }
-    }
-
-    @GetMapping("/issue/listIssueDtoOfProjectAndUser")
-    public List<IssueDTO> listIssueDtoOfProjectAndUser(@RequestParam("projectId") Long projectId, SecurityDTO securityDTO) {
-        return issueService.listIssueOfProjectAndUser(projectId, securityDTO.getUserId());
-    }
-    /**
-     * @return: com.yusys.portal.model.common.dto.ControllerResponse
-     * @Author wangpf6
-     * @Description 条件查询项目需求
-     * @Date 16:20 2021/8/5
-     * @Param [projectName, pageNum, pageSize, issueTitle]
-     **/
-    @GetMapping("/issue/queryIssuesByCondition")
-    public ControllerResponse queryUsersByCondition(@RequestParam(name = "projectName", required = false) String projectName,
-                                                    @RequestParam(name = "pageNum") Integer pageNum,
-                                                    @RequestParam(name = "pageSize") Integer pageSize,
-                                                    @RequestParam(name = "issueTitle",required = false) String issueTitle) {
-        List<SProjectIssueDTO> sProjectIssueDTOS = issueService.queryIssuesByCondition(projectName, pageNum, pageSize, issueTitle);
-        return ControllerResponse.success(new PageInfo<>(sProjectIssueDTOS));
+    public List<IssueDTO> listIssueOfProjectAndUser(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "userId",required = false) Long userId) {
+        return issueService.listIssueOfProjectAndUser(systemIds, userId);
     }
 
     @GetMapping("/issue/getCollectIssueDataBySystemId")
@@ -520,4 +489,25 @@ public class IssueController {
         return issueService.queryIssueListBySystemIds(systemIds,issueType);
     }
 
+
+    @PostMapping("/issue/queryEpicList")
+    public PageInfo<IssueDTO> queryEpicList(@RequestBody IssueConditionDTO issueConditionDTO) {
+
+        log.info("根据条件查询epic数据 入参条件为:{}",JSONObject.toJSONString(issueConditionDTO));
+        Integer pageNum = issueConditionDTO.getPageNum();
+        Integer pageSize = issueConditionDTO.getPageSize();
+        List<Long> systemIds = issueConditionDTO.getSystemIds();
+
+
+        if(CollectionUtils.isEmpty(systemIds)){
+            return new PageInfo(Lists.newArrayList());
+        }
+
+        String title = issueConditionDTO.getTitle();
+        List<IssueDTO> issueDTOS = issueService.queryEpicList(pageNum,pageSize,title,systemIds);
+
+
+
+        return new PageInfo<>(issueDTOS);
+    }
 }

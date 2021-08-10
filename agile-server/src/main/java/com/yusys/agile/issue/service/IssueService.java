@@ -8,6 +8,7 @@ import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
@@ -454,17 +455,12 @@ public interface IssueService {
      * @Param [projectId, securityDTO]
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      **/
-    List<IssueDTO> listIssueOfProjectAndUser(Long projectId, Long userId);
+    List<IssueDTO> listIssueOfProjectAndUser(List<Long> systemIds, Long userId);
 
     List<IssueDTO> queryIssueListBySystemIds(List<Long> systemIds, int type);
-    /**
-     * @return: java.util.List<com.yusys.agile.issue.dto.SProjectIssueDTO>
-     * @Author wangpf6
-     * @Description 条件查询需求
-     * @Date 16:19 2021/8/5
-     * @Param [projectName, pageNum, pageSize, issueTitle]
-     **/
-    List<SProjectIssueDTO> queryIssuesByCondition(String projectName, Integer pageNum, Integer pageSize, String issueTitle);
 
     List<StageNameAndValueDto> getCollectIssueDataBySystemId(Long systemId);
+
+
+    List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds);
 }
