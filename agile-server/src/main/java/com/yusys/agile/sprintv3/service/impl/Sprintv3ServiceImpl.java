@@ -108,7 +108,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         List<TeamListDTO> teamListDTOS = teamv3Service.queryTeamsBySystemIdList(systemIdList);
         //3 根据teamid查询迭代集合
         List<SSprint> sSprints = new ArrayList<>();
-        if (teamId == null) {
+        if (Optional.ofNullable(teamId).isPresent()) {
             for (int i = 0; CollectionUtils.isEmpty(sSprints) && i<teamListDTOS.size(); i++) {
                 teamId = teamListDTOS.get(i).getTeamId();
                 sSprints = ssprintMapper.querySprintByTeamId(teamId);
@@ -127,8 +127,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         for (SprintListDTO sprintListDTO : sprintListDTOS){
             SprintStatisticalInformation information = sprintStatisticalInformation(sprintListDTO.getSprintId());
             SprintTaskDTO story = new SprintTaskDTO();
-            story.setAll(information.getStoryPointSum());
-            story.setDone(information.getStoryPoint());
+            story.setAll(information.getUserStorySum());
+            story.setDone(information.getUserStory());
             sprintListDTO.setStory(story);
         }
         //5 返回值设置
