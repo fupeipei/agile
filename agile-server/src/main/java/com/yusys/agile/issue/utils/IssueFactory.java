@@ -1141,12 +1141,14 @@ public class IssueFactory {
         IssueExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
         criteria.andIssueTypeEqualTo(issueType);
-
-        if (null != parentId) {
+        if (Optional.ofNullable(parentId).isPresent()) {
             criteria.andParentIdEqualTo(parentId);
         }
-
-        if(null != systemId){
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        if (StringUtils.isNotEmpty(tenantCode)) {
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
+        if(Optional.ofNullable(systemId).isPresent()){
             criteria.andSystemIdEqualTo(systemId);
         }
 
@@ -1493,6 +1495,10 @@ public class IssueFactory {
         }
 
         criteria.andParentIdIsNull();
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        if (StringUtils.isNotEmpty(tenantCode)) {
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
         example.setOrderByClause("`order` desc,create_time desc");
         List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
         List<Long> handlers = new ArrayList<>();
