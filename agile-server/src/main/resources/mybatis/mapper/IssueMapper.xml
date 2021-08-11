@@ -3360,7 +3360,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
         FROM s_issue si,s_epic_system_relate sisr
         WHERE sisr.epic_id =si.issue_id
           and sisr.system_id = #{systemId}
-          and si.state = 'U'
+          and si.state = 'U' and sisr.state = 'U'
           and si.issue_type = '1'
         GROUP BY si.stage_id
     </select>
@@ -3375,7 +3375,7 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
                    #{systemId}
               </foreach>
           </if>
-          and si.state = 'U'
+          and si.state = 'U' and sisr.state = 'U'
           and si.issue_type = #{issueType}
     </select>
 
