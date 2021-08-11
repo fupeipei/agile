@@ -214,6 +214,7 @@
       <if test="epicId == null and title != null  and title != ''">
         and si.title like  CONCAT('%',#{title},'%')
       </if>
+      order by sesr.create_time  desc
   </select>
 
   <update id="updateByExampleSelective" parameterType="map">
