@@ -1141,12 +1141,14 @@ public class IssueFactory {
         IssueExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
         criteria.andIssueTypeEqualTo(issueType);
-
-        if (null != parentId) {
+        if (Optional.ofNullable(parentId).isPresent()) {
             criteria.andParentIdEqualTo(parentId);
         }
-
-        if(null != systemId){
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        if (StringUtils.isNotEmpty(tenantCode)) {
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
+        if(Optional.ofNullable(systemId).isPresent()){
             criteria.andSystemIdEqualTo(systemId);
         }
 
@@ -1155,10 +1157,13 @@ public class IssueFactory {
         }
         //true表示全量查询，false表示只查询未关联父工作项的
         if (!isAll) {
-            criteria.andParentIdIsNull().andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_TRUE.CODE);
+            criteria.andParentIdIsNull().andIsArchiveEqualTo(IsAchiveEnum.ACHIVEA_FALSE.CODE);
         }
         example.setOrderByClause("`order` desc,create_time desc");
         List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
+        if(CollectionUtils.isEmpty(issueDTOList)){
+            return Lists.newArrayList();
+        }
         List<Long> handlers = new ArrayList<>();
         setHandlersAndStageName(issueDTOList, handlers, issueType);
         setHandlerName(handlers, issueDTOList);
@@ -1485,6 +1490,10 @@ public class IssueFactory {
             //敏捷，找对应团队下的所有迭代
             List<SSprint> sSprintList = sSprintMapper.querySprintByTeamId(sTeam.getTeamId());
             List<Long> sprintIdList = sSprintList.stream().map(SSprint::getSprintId).collect(Collectors.toList());
+            //如果无迭代，不往下过滤故事
+            if(CollectionUtils.isEmpty(sprintIdList)){
+               return Lists.newArrayList();
+            }
             criteria.andSprintIdIn(sprintIdList);
         }
 
@@ -1493,8 +1502,15 @@ public class IssueFactory {
         }
 
         criteria.andParentIdIsNull();
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        if (StringUtils.isNotEmpty(tenantCode)) {
+            criteria.andTenantCodeEqualTo(tenantCode);
+        }
         example.setOrderByClause("`order` desc,create_time desc");
         List<IssueDTO> issueDTOList = issueMapper.selectByExampleDTO(example);
+        if(CollectionUtils.isEmpty(issueDTOList)){
+            return Lists.newArrayList();
+        }
         List<Long> handlers = new ArrayList<>();
         setHandlersAndStageName(issueDTOList, handlers, IssueTypeEnum.TYPE_STORY.CODE);
         setHandlerName(handlers, issueDTOList);

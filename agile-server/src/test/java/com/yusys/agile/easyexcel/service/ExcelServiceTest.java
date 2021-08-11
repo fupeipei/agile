@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service;
 
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.easyexcel.service.impl.EpicTemplateDownloadServiceImpl;
 import com.yusys.agile.easyexcel.service.impl.ExcelServiceImpl;
 import com.yusys.agile.easyexcel.service.impl.StoryTemplateDownloadServiceImpl;
 import com.yusys.agile.easyexcel.service.impl.TaskTemplateDownloadServiceImpl;
@@ -37,15 +38,17 @@ public class ExcelServiceTest {
     private ExcelServiceImpl excelService;
     @Resource
     private StoryTemplateDownloadServiceImpl storyTemplateDownloadService;
+    @Resource
+    private EpicTemplateDownloadServiceImpl epicTemplateDownloadService;
 
     @Test
     public void testTaskTemplateDownload() {
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
         ExcelCommentField filed = new ExcelCommentField();
-        filed.setSprintId(100029L);
-        Byte excelType = 4;
+        //filed.setSprintId(100029L);
+        Byte excelType = 1;
         //iExcelService.downLoadTemplate(excelType,httpServletResponse,filed);
-        taskTemplateDownloadService.download(httpServletResponse, filed);
+        epicTemplateDownloadService.download(httpServletResponse, filed);
         int status = httpServletResponse.getStatus();
         System.out.println(status);
         Assert.assertTrue("下载模板成功", true);

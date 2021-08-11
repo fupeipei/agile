@@ -6,6 +6,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.domain.IssueRecord;
 import com.yusys.agile.issue.dto.IssueDTO;
+import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.servicemanager.dto.ServiceManageIssueDTO;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import org.apache.ibatis.annotations.Param;
@@ -546,7 +547,6 @@ public interface IssueMapper {
 
     List<Long> listLevelIssueIdforTask(@Param("issueIds") List<Long> issueIdList, @Param("issueStoryIds") List<Long> issueStoryIds);
 
-
     int insertTmp(Issue record);
 
     int updateTmp(Issue record);
@@ -644,5 +644,12 @@ public interface IssueMapper {
 
     List<SVersionIssueRelateDTO> queryFeatureScheduleRelByOperateType(@Param("teamId") Long teamId, @Param("searchKey")String searchKey, @Param("systemId") Long systemId, @Param("issueIds")List<Long> issueIds);
 
+    List<IssueDTO> listIssueOfProjectAndUser(@Param("systemIds")List<Long> systemIds, @Param("userId") Long userId);
 
+    List<StageNameAndValueDto> getCollectIssueDataBySystemId(@Param("systemId")Long systemId);
+
+    List<IssueDTO> queryIssueListBySystemIds(@Param("systemIds") List<Long> systemIds, @Param("issueType") Integer issueType);
+
+
+    List<IssueDTO> queryEpicListByCondition(@Param("systemIds")List<Long> systemIds,@Param("title")String title);
 }

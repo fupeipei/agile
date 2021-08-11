@@ -23,9 +23,9 @@ import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintOverView;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
+import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
-import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamMember;
@@ -33,6 +33,7 @@ import com.yusys.agile.teamv3.domain.STeamSystem;
 import com.yusys.agile.teamv3.service.STeamSystemService;
 import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeProjectSystemRelApi;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
@@ -92,8 +93,63 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     private Teamv3Service teamv3Service;
     @Resource
     private STeamSystemService teamSystemService;
-
+    @Autowired
+    private IFacadeProjectSystemRelApi iFacadeProjectSystemRelApi;
     String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\]<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+
+    /**
+     * @Author wuzefei
+     * @Date 2021/8/10
+     * @Description 根据项目id查询迭代信息
+     * @param projectId,teamId
+     * @Return SprintProjectDTO
+     */
+    @Override
+    public SprintProjectDTO showSprintByProject(Long projectId, Long teamId) {
+
+        //1 根据项目Id查询系统集合
+        List<SsoSystemDTO> sProjectSystemRels = iFacadeProjectSystemRelApi.getSystemListByProjectId(projectId);
+        List<Long> systemIdList = sProjectSystemRels.stream().map(a -> a.getSystemId()).collect(Collectors.toList());
+        //2 根据系统Ids查询团队集合
+        List<TeamListDTO> teamListDTOS = teamv3Service.queryTeamsBySystemIdList(systemIdList);
+        //3 根据teamid查询迭代集合
+        List<SSprint> sSprints = new ArrayList<>();
+        if (!Optional.ofNullable(teamId).isPresent()) {
+            for (int i = 0; CollectionUtils.isEmpty(sSprints) && i<teamListDTOS.size(); i++) {
+                teamId = teamListDTOS.get(i).getTeamId();
+                sSprints = ssprintMapper.querySprintByTeamId(teamId);
+            }
+        }else {
+            sSprints = ssprintMapper.querySprintByTeamId(teamId);
+        }
+
+        //4 迭代返回类型设置
+        List<SprintListDTO> sprintListDTOS = new ArrayList<>();
+        if (CollectionUtils.isEmpty(sSprints)){
+
+        }else {
+            try {
+                sprintListDTOS = ReflectUtil.copyProperties4List(sSprints, SprintListDTO.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            for (SprintListDTO sprintListDTO : sprintListDTOS) {
+                SprintStatisticalInformation information = sprintStatisticalInformation(sprintListDTO.getSprintId());
+                SprintTaskDTO story = new SprintTaskDTO();
+                story.setAll(information.getUserStorySum());
+                story.setDone(information.getUserStory());
+                sprintListDTO.setStory(story);
+            }
+        }
+        //5 返回值设置
+        SprintProjectDTO sprintProjectDTO = new SprintProjectDTO();
+        STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
+        sprintProjectDTO.setTeamName(Optional.ofNullable(sTeam).isPresent()?sTeam.getTeamName():null);
+        sprintProjectDTO.setTeamId(teamId);
+        sprintProjectDTO.setSprintListDTOS(sprintListDTOS);
+        sprintProjectDTO.setTeamListDTOS(teamListDTOS);
+        return sprintProjectDTO;
+    }
 
     @Override
     public SprintV3DTO viewEdit(Long sprintId) {
@@ -346,8 +402,8 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         Preconditions.checkArgument(sprintDTO.getSprintName().length() <= 100, "迭代名称过长,不能大于100!");
         Preconditions.checkArgument(sprintDTO.getWorkHours().intValue() <= 24, "工作时间超长，不能大于24小时!");
         List<Date> sprintDayList = sprintDTO.getSprintDayList();
-        int sprintNameNumber = ssprintMapper.CheckSprintNameExistInTeam(sprintDTO.getSprintName(), sprintDTO.getTeamId());
-        if (sprintNameNumber > 0) {
+        List<SSprint> sSprintList = ssprintMapper.CheckSprintNameExistInTeam(sprintDTO.getSprintName(), sprintDTO.getTeamId());
+        if (CollectionUtils.isNotEmpty(sSprintList)) {
             throw new BusinessException("当前团队下迭代名称重复");
         }
         //迭代开始结束时间判断

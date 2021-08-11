@@ -1,6 +1,7 @@
 package com.yusys.agile.sprint.service;
 
 import com.yusys.agile.AgileApplication;
+import com.yusys.agile.sprintV3.dto.SprintProjectDTO;
 import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
@@ -8,7 +9,9 @@ import com.yusys.agile.sprintv3.responseModel.SprintMembersWorkHours;
 import com.yusys.agile.sprintv3.responseModel.SprintStatisticalInformation;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.common.exception.BusinessException;
+import com.yusys.portal.facade.client.api.IFacadeProjectSystemRelApi;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import com.yusys.portal.model.facade.dto.SsoSystemDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,6 +33,9 @@ public class SprintV3ServiceTest {
 
     @Autowired
     private Sprintv3Service sprintv3Service;
+
+    @Autowired
+    private IFacadeProjectSystemRelApi iFacadeProjectSystemRelApi;
 
     public SprintV3DTO initData() {
         SprintV3DTO sprintDTO = new SprintV3DTO();
@@ -70,6 +76,8 @@ public class SprintV3ServiceTest {
             Assert.fail();
         }
     }
+
+
 
     /**
      * 取消迭代
@@ -286,6 +294,16 @@ public class SprintV3ServiceTest {
     @Test
     public void testListSprintBysystemId(){
         sprintv3Service.querySprintBySystemId(1L);
+        Assert.assertTrue("获取当前系统下的迭代列表成功", true);
+    }
+
+    /**
+     *查询团队下所有未开始进行中的迭代信息
+     */
+    @Test
+    public void testListEffectiveSprintByTeamId(){
+        SprintProjectDTO sprintProjectDTO = sprintv3Service.showSprintByProject(1234566L, null);
+        System.out.println(sprintProjectDTO);
         Assert.assertTrue("获取当前系统下的迭代列表成功", true);
     }
 }

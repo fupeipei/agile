@@ -1,15 +1,14 @@
 package com.yusys.agile.issue.service;
 
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.commit.dto.CommitDTO;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.dto.DemandPlanDTO;
-import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.IssueListDTO;
-import com.yusys.agile.issue.dto.PanoramasEpicDTO;
-import com.github.pagehelper.PageInfo;
+import com.yusys.agile.issue.dto.*;
+import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
@@ -449,4 +448,19 @@ public interface IssueService {
      */
     void createHistory(Long issueId,String oldMsg ,String newMsg,String msg);
 
+    /**
+     * @Author fupp1
+     * @Description 根据projectId和处理人获取所有的issue
+     * @Date 17:29 2021/8/3
+     * @Param [projectId, securityDTO]
+     * @return java.util.List<com.yusys.agile.issue.domain.Issue>
+     **/
+    List<IssueDTO> listIssueOfProjectAndUser(List<Long> systemIds, Long userId);
+
+    List<IssueDTO> queryIssueListBySystemIds(List<Long> systemIds, int type);
+
+    List<StageNameAndValueDto> getCollectIssueDataBySystemId(Long systemId);
+
+
+    List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds);
 }

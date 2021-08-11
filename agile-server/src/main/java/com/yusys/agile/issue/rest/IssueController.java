@@ -1,27 +1,32 @@
 package com.yusys.agile.issue.rest;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.domain.Issue;
-import com.yusys.agile.issue.dto.IssueDTO;
-import com.yusys.agile.issue.dto.IssueListDTO;
-import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
+import com.yusys.agile.issue.dto.*;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
+import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
 import com.yusys.agile.servicemanager.dto.ServiceManageExceptionDTO;
 import com.yusys.agile.utils.StringUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageInfo;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * :
@@ -29,6 +34,7 @@ import java.util.*;
  * @Date: 2020/4/16
  * @Description:
  */
+@Slf4j
 @RestController
 public class IssueController {
 
@@ -53,7 +59,7 @@ public class IssueController {
      * @date 2020/4/21
      */
     @PostMapping("/issueList/query")
-    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map, @RequestHeader(name = "systemId") Long systemId) {
+    public ControllerResponse getIssueList(@RequestBody Map<String, Object> map, @RequestHeader(name = "systemId",required = false) Long systemId) {
         PageInfo result;
         try {
         if(systemId!=null){
@@ -467,4 +473,41 @@ public class IssueController {
         }
     }
 
+    @GetMapping("/issue/listIssueOfProjectAndUser")
+    public List<IssueDTO> listIssueOfProjectAndUser(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "userId",required = false) Long userId) {
+        return issueService.listIssueOfProjectAndUser(systemIds, userId);
+    }
+
+    @GetMapping("/issue/getCollectIssueDataBySystemId")
+    List<StageNameAndValueDto> getCollectIssueDataBySystemId(@RequestParam("systemId")Long systemId){
+        return issueService.getCollectIssueDataBySystemId(systemId);
+
+    }
+
+    @GetMapping("/issue/queryIssueListBySystemIds")
+    List<IssueDTO> queryIssueListBySystemIds(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "issueType") int issueType){
+        return issueService.queryIssueListBySystemIds(systemIds,issueType);
+    }
+
+
+    @PostMapping("/issue/queryEpicList")
+    public PageInfo<IssueDTO> queryEpicList(@RequestBody IssueConditionDTO issueConditionDTO) {
+
+        log.info("根据条件查询epic数据 入参条件为:{}",JSONObject.toJSONString(issueConditionDTO));
+        Integer pageNum = issueConditionDTO.getPageNum();
+        Integer pageSize = issueConditionDTO.getPageSize();
+        List<Long> systemIds = issueConditionDTO.getSystemIds();
+
+
+        if(CollectionUtils.isEmpty(systemIds)){
+            return new PageInfo(Lists.newArrayList());
+        }
+
+        String title = issueConditionDTO.getTitle();
+        List<IssueDTO> issueDTOS = issueService.queryEpicList(pageNum,pageSize,title,systemIds);
+
+        PageInfo<IssueDTO> pageInfo = new PageInfo<>(issueDTOS);
+        log.info("epic数据查询结果集：{}",JSONObject.toJSONString(pageInfo));
+        return pageInfo;
+    }
 }

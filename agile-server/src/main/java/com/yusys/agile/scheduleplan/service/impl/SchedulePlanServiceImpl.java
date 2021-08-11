@@ -163,7 +163,9 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         }
 
         log.info("查询待办入参epicId:{},target:{}",epicId,target);
-        List<ToDoListDTO> toDoListDTOS = epicSystemRelateMapper.queryToDoList(epicId, target, userId);
+
+        String tenantCode = UserThreadLocalUtil.getTenantCode();
+        List<ToDoListDTO> toDoListDTOS = epicSystemRelateMapper.queryToDoList(epicId, target, userId,tenantCode);
         if(CollectionUtils.isNotEmpty(toDoListDTOS)){
             for(ToDoListDTO toDoListDTO:toDoListDTOS){
                 SsoUser ssoUserInfo = getSsoUserInfo(toDoListDTO.getCreateUid());
@@ -185,12 +187,16 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         if(CollectionUtils.isNotEmpty(sEpicSystemRelates)){
             SEpicSystemRelate sEpicSystemRelate = sEpicSystemRelates.get(0);
             Long epicId = sEpicSystemRelate.getEpicId();
-            Long systemId = sEpicSystemRelate.getSystemId();
-            IssueExample example = new IssueExample();
-            example.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andParentIdEqualTo(epicId).andSystemIdEqualTo(systemId);
-            List<Issue> issueList = issueMapper.selectByExample(example);
-            if(CollectionUtils.isEmpty(issueList)){
-             throw new BusinessException("工作项还未进行拆分，请先点击【去拆分】进行工作项拆分操作，再点击【确认】");
+
+            Issue issue = issueMapper.selectByPrimaryKey(epicId);
+            if(StateEnum.U.getValue().equals(issue.getState())){
+                Long systemId = sEpicSystemRelate.getSystemId();
+                IssueExample example = new IssueExample();
+                example.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andParentIdEqualTo(epicId).andSystemIdEqualTo(systemId);
+                List<Issue> issueList = issueMapper.selectByExample(example);
+                if(CollectionUtils.isEmpty(issueList)){
+                    throw new BusinessException("工作项还未进行拆分，请先点击【去拆分】进行工作项拆分操作，再点击【确认】");
+                }
             }
         }else {
             throw new BusinessException("处理待办失败");

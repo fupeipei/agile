@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration>
 	<classPathEntry
-			location="/Users/zhaoyingdong/Utils/mysql-connector-java-8.0.12.jar" />
+			location="D:\maven\apache-maven-3.3.9\repository1\mysql\mysql-connector-java\8.0.13\mysql-connector-java-8.0.13.jar" />
 	<context id="context">
 		<!-- 生成的pojo，将implements Serializable-->
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
@@ -22,7 +22,7 @@
 		</javaTypeResolver>
 		<!-- targetPackage:包名；targetProject：生成文件的位置（相对于generatorConfig.xml所在项目，这里指的是agile-server）-->
 		<javaModelGenerator
-				targetPackage="com.yusys.agile.scheduleplan.domain"
+				targetPackage="com.yusys.agile.projectmanager.domain"
 				targetProject="./src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
@@ -32,7 +32,7 @@
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<javaClientGenerator
-				targetPackage="com.yusys.agile.scheduleplan.dao"
+				targetPackage="com.yusys.agile.projectmanager.dao"
 				targetProject="./src/main/java" type="XMLMAPPER">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
@@ -44,7 +44,15 @@
 		<!--		<table tableName="s_team_sm"/>-->
 		<!--		<table tableName="s_team_user"/>-->
 		<!--		<table tableName="s_sprint"/>-->
-		<table tableName="s_schedule"/>
+		<!--<table tableName="s_project_product_line_rel"/>
+		<table tableName="s_static_project_data"/>
+		<table tableName="s_project_manager"/>-->
+		<!--<table tableName="s_project_product_line_rel"/>-->
+		<!--<table tableName="s_project_manager"/>-->
+		<!--<table tableName="s_project_system_rel"/>-->
+		<!--<table tableName="s_project_user_rel"/>-->
+		<!--<table tableName="s_project_user_day"/>-->
+		<!--<table tableName="s_project_user_hour"/>-->
 
 	</context>
 </generatorConfiguration>

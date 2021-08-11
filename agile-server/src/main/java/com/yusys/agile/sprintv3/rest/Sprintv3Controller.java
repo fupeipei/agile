@@ -3,10 +3,7 @@ package com.yusys.agile.sprintv3.rest;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.StoryService;
-import com.yusys.agile.sprintV3.dto.SprintListDTO;
-import com.yusys.agile.sprintV3.dto.SprintQueryDTO;
-import com.yusys.agile.sprintV3.dto.SprintV3DTO;
-import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
+import com.yusys.agile.sprintV3.dto.*;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -303,6 +300,19 @@ public class Sprintv3Controller {
         List<SprintListDTO> result = sprintv3Service.listEffectiveSprintByTeamId(teamId);
         return ControllerResponse.success(result);
 
+    }
+
+    /**
+     * @Author wuzefei
+     * @Date 2021/8/5
+     * @Description 根据项目id查询迭代信息
+     * @param projectId,teamId
+     * @Return com.yusys.portal.model.common.dto.ControllerResponse
+     */
+    @GetMapping("/showSprintByProject")
+    public ControllerResponse showSprintByProject(@RequestParam(name = "projectId") Long projectId,@RequestParam(name = "teamId") Long teamId){
+        SprintProjectDTO result = sprintv3Service.showSprintByProject(projectId, teamId);
+        return ControllerResponse.success(result);
     }
 }
 

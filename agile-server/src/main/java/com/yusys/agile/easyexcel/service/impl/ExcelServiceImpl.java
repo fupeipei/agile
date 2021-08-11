@@ -26,8 +26,10 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueExportDTO;
 import com.yusys.agile.issue.dto.IssueStringDTO;
+import com.yusys.agile.issue.enums.IssueImportanceEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
+import com.yusys.agile.issue.service.EpicService;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
@@ -112,6 +114,8 @@ public class ExcelServiceImpl implements IExcelService {
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
     private IStageService stageService;
+    @Autowired
+    private EpicService epicService;
 
     /**
      * 缓存数据
@@ -121,6 +125,7 @@ public class ExcelServiceImpl implements IExcelService {
     private static Map<Long,String> userMap = new ConcurrentHashMap<>();
 
     private static final String MAX_ISSUE_EXPORT_THRESHOLD_KEY = "ISSUE_MAX_EXPORT_THRESHOLD";
+    private static final String[] EPIC_HEAD_LINE = {"*需求名称", "需求描述", "开始日期", "结束日期", "预计工时","需求优先级","重要程度"};
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
 
@@ -141,7 +146,7 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadStorys(MultipartFile file, ExcelCommentField field) throws Exception {
+    public FileInfo uploadEpics(MultipartFile file,ExcelCommentField field) throws Exception {
         //1、检查文件类型
         checkFileType(file);
 
@@ -151,21 +156,21 @@ public class ExcelServiceImpl implements IExcelService {
 
         //3、校验数据（必填项、数据格式等等）
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        boolean hasError = checkData(data,copyData, (byte) 3);
+        boolean hasError = checkData(data,copyData,IssueTypeEnum.TYPE_EPIC.CODE);
 
         //4、传错误文件
         if (hasError) {
-            return uploadFile(copyData, "storyImportError.xlsx", "storys", IssueTypeEnum.getName((byte) 3), field);
+            return uploadFile(copyData, "epicImportError.xlsx", "epics", IssueTypeEnum.getName((byte) 1),field);
         }
-        List<JSONObject> jsonObjects = analysisStoryData(data);
+        List<JSONObject> jsonObjects = analysisEpicData(data);
 
         //5、存入数据库
         if (CollectionUtils.isNotEmpty(jsonObjects)) {
             for (JSONObject jsonObject : jsonObjects) {
                 IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
-                Long issueId = storyService.createStory(issueDTO);
+                Long issueId = epicService.createEpic(issueDTO);
                 //批量新增或者批量更新扩展字段值
-                issueDTO.setIssueType(new Byte("3"));
+                issueDTO.setIssueType(IssueTypeEnum.TYPE_EPIC.CODE);
                 issueDTO.setIssueId(issueId);
                 issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
             }
@@ -260,6 +265,39 @@ public class ExcelServiceImpl implements IExcelService {
             issueDTO.setSystemId(userInfo.getSystemId());
             JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
             jsonObject.put("storyPoint", issueFiles.get(6));
+            jsonObjects.add(jsonObject);
+        }
+        return jsonObjects;
+    }
+
+
+    /**
+     * 解析epic数据
+     *
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    private List<JSONObject> analysisEpicData(List<List<String>> data) throws Exception {
+        List<JSONObject> jsonObjects = Lists.newArrayList();
+        int headSize = data.get(0).size();
+        for (int i = 1; i < data.size(); i++) {
+            List<String> issueFiles = data.get(i);
+            int size = issueFiles.size();
+            if (size < headSize) {
+                fillNull(issueFiles, size, headSize);
+            }
+            IssueDTO issueDTO = new IssueDTO();
+            issueDTO.setTitle(issueFiles.get(0));
+            issueDTO.setDescription(issueFiles.get(1));
+            issueDTO.setBeginDate(StringUtils.isNotBlank(issueFiles.get(2)) ? DateUtil.formatStrToDate(issueFiles.get(2)) : null);
+            issueDTO.setEndDate(StringUtils.isNotBlank(issueFiles.get(3)) ? DateUtil.formatStrToDate(issueFiles.get(3)) : null);
+            issueDTO.setPlanWorkload(StringUtils.isNotBlank(issueFiles.get(4)) ? Integer.valueOf(issueFiles.get(4)) : null);
+            issueDTO.setPriority(StringUtils.isNotBlank(issueFiles.get(5)) ? Byte.valueOf(issueFiles.get(5)) : null);
+            issueDTO.setImportance(StringUtils.isNotBlank(issueFiles.get(6)) ? IssueImportanceEnum.getCode(issueFiles.get(6)) : null);
+            SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
+            issueDTO.setTenantCode(userInfo.getTenantCode());
+            JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
             jsonObjects.add(jsonObject);
         }
         return jsonObjects;
@@ -420,6 +458,43 @@ public class ExcelServiceImpl implements IExcelService {
                         continue;
                     }
                 }
+            }else if(IssueTypeEnum.TYPE_EPIC.CODE.equals(type)){
+                    if (StringUtils.isBlank(line.get(0))) {
+                        fileResult.add(headSize, "epic名称不能为空");
+                        hasError = true;
+                        continue;
+                    }
+                    if(StringUtils.isNotBlank(line.get(2))){
+                        try {
+                            String startDate = line.get(2);
+                            DateUtil.formatStrToDate(startDate);
+                        }catch (Exception e){
+                            fileResult.add(headSize, "开始日期格式错误");
+                            hasError = true;
+                            continue;
+                        }
+                    }
+                    if(StringUtils.isNotBlank(line.get(3))){
+                        try {
+                            String endDate = line.get(3);
+                            DateUtil.formatStrToDate(endDate);
+                        }catch (Exception e){
+                            fileResult.add(headSize, "结束日期格式错误");
+                            hasError = true;
+                            continue;
+                        }
+                    }
+
+                    if(StringUtils.isNotBlank(line.get(4))){
+                        try {
+                            String str = line.get(4);
+                            Integer integer = Integer.valueOf(str);
+                        }catch (Exception e){
+                            fileResult.add(headSize, "预计工时格式错误");
+                            hasError = true;
+                            continue;
+                        }
+                    }
             }
         }
         return hasError;
@@ -445,6 +520,9 @@ public class ExcelServiceImpl implements IExcelService {
     private boolean checkHeadLine(List<String> excelhead, Byte excelType) {
         String[] headLine;
         switch (excelType) {
+            case 1:
+                headLine = EPIC_HEAD_LINE;
+                break;
             case 3:
                 headLine = STORY_HEAD_LINE;
                 break;
@@ -693,4 +771,37 @@ public class ExcelServiceImpl implements IExcelService {
         }
     }
 
+
+    @Override
+    public FileInfo uploadStorys(MultipartFile file, ExcelCommentField field) throws Exception {
+        //1、检查文件类型
+        checkFileType(file);
+
+        InputStream inputStream = file.getInputStream();
+        //2、从第一行开始读，带表头
+        List<List<String>> data = ExcelUtil.readExcel(inputStream, 0);
+
+        //3、校验数据（必填项、数据格式等等）
+        List<List<String>> copyData = CollectionUtil.deepCopy(data);
+        boolean hasError = checkData(data,copyData, (byte) 3);
+
+        //4、传错误文件
+        if (hasError) {
+            return uploadFile(copyData, "storyImportError.xlsx", "storys", IssueTypeEnum.getName((byte) 3), field);
+        }
+        List<JSONObject> jsonObjects = analysisStoryData(data);
+
+        //5、存入数据库
+        if (CollectionUtils.isNotEmpty(jsonObjects)) {
+            for (JSONObject jsonObject : jsonObjects) {
+                IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
+                Long issueId = storyService.createStory(issueDTO);
+                //批量新增或者批量更新扩展字段值
+                issueDTO.setIssueType(new Byte("3"));
+                issueDTO.setIssueId(issueId);
+                issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
+            }
+        }
+        return null;
+    }
 }

@@ -45,6 +45,15 @@ public interface IExcelService {
 
 
     /**
+     * epic上传
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    FileInfo uploadEpics(MultipartFile file,ExcelCommentField field) throws Exception;
+
+
+    /**
      * 工作项导出
      * @param issueType
      * @param systemId

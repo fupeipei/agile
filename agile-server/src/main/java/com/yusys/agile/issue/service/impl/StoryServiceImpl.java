@@ -807,6 +807,9 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<IssueDTO> queryStoryForEpic(Long projectId, Long epicId) {
         List<IssueDTO> issueDTOList = issueMapper.queryStoryForEpic(projectId, epicId);
+        if(CollectionUtils.isEmpty(issueDTOList)){
+            return Lists.newArrayList();
+        }
         List<Long> handlers = new ArrayList<>();
         issueFactory.setHandlersAndStageName(issueDTOList, handlers, IssueTypeEnum.TYPE_STORY.CODE);
         issueFactory.setHandlerName(handlers, issueDTOList);
