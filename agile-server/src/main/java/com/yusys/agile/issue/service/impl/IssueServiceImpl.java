@@ -2811,7 +2811,7 @@ public class IssueServiceImpl implements IssueService {
                 Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
                 SsoUser ssoUser = iFacadeUserApi.queryUserById(userId);
                 String userMail = ssoUser.getUserMail();
-                String mailContent = String.format("主题：DevOps系统需求-【需求标题%s】代码基线版本管理", issue.getTitle());
+                String mailContent = String.format("主题：DevOps系统需求-需求标题【%s】代码基线版本管理", issue.getTitle());
                 MailSendDTO mailSendDTO = new MailSendDTO();
                 mailSendDTO.setMailReceivers(userMail);
                 mailSendDTO.setMailSubject(mailContent);
