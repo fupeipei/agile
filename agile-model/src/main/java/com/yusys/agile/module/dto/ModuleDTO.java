@@ -35,4 +35,5 @@ public class ModuleDTO {
 
     private String moduleDesc;
 
+    private String tenantCode;
 }
