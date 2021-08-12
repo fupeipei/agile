@@ -316,7 +316,7 @@ public class IssueServiceImpl implements IssueService {
         }
         List<IssueHistoryRecord> history = new ArrayList<>();
         Issue issueOld = issueMapper.selectByPrimaryKey(issueId);
-        String oldValue = issueOld.getParentId().toString();
+        String oldValue = Optional.ofNullable(issueOld.getParentId()).toString();
         setHistoryRecordList(history, issueId, oldValue, parentId.toString());
         issueFactory.dealHistory(history);
         IssueExample issueExample = new IssueExample();
