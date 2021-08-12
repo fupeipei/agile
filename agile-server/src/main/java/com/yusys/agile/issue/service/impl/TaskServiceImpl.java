@@ -242,16 +242,16 @@ public class TaskServiceImpl implements TaskService {
             //查询该迭代下的成员
             List<SprintV3UserHourDTO> sprintUsers = sprintv3Service.getUsersBySprintId(sSprintWithBLOBs.getSprintId());
 
-            //非迭代成员不允许新建任务
+
             List<Long> userIds = Optional.ofNullable(sprintUsers).orElse(new ArrayList<>()).stream().map(SprintV3UserHourDTO::getUserId).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(userIds)
-                    && !userIds.contains(UserThreadLocalUtil.getUserInfo().getUserId())){
-                throw new BusinessException(warningMsg);
-            }
             //1.SM角色，可以更新卡片上的任意信息
             if (isSM) {
                 return;
-            } else if (CollectionUtils.isEmpty(sprintUsers)) {
+                //非迭代成员不允许新建任务
+            } else if (CollectionUtils.isNotEmpty(userIds)
+                    && !userIds.contains(UserThreadLocalUtil.getUserInfo().getUserId())){
+                throw new BusinessException(warningMsg);
+            }else if (CollectionUtils.isEmpty(sprintUsers)) {
                 throw new BusinessException("您无权限对此功能进行操作");
                 //2.当卡片没有领取时可以自己领取该卡片,且必须是是本人领取
             } else if ("edit".equals(checkType)
