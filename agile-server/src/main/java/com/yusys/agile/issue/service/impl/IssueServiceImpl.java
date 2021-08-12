@@ -316,7 +316,7 @@ public class IssueServiceImpl implements IssueService {
         }
         List<IssueHistoryRecord> history = new ArrayList<>();
         Issue issueOld = issueMapper.selectByPrimaryKey(issueId);
-        String oldValue = Optional.ofNullable(issueOld.getParentId()).toString();
+        String oldValue = issueOld.getParentId().toString();
         setHistoryRecordList(history, issueId, oldValue, parentId.toString());
         issueFactory.dealHistory(history);
         IssueExample issueExample = new IssueExample();
@@ -1081,6 +1081,20 @@ public class IssueServiceImpl implements IssueService {
                             }
                             if (StringUtils.isNotEmpty(newValue)) {
                                 issueHistoryRecordDTO.setNewValue(IsAchiveEnum.getName(Byte.valueOf(newValue)));
+                            }
+                            break;
+                        case "父工作项ID":
+                            if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
+                                Issue recordIssue = selectIssueByIssueId(Long.valueOf(oldValue));
+                                if (Optional.ofNullable(recordIssue).isPresent()) {
+                                    issueHistoryRecordDTO.setOldValue(recordIssue.getTitle());
+                                }
+                            }
+                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
+                                Issue recordIssue = selectIssueByIssueId(Long.valueOf(newValue));
+                                if (Optional.ofNullable(recordIssue).isPresent()) {
+                                    issueHistoryRecordDTO.setNewValue(recordIssue.getTitle());
+                                }
                             }
                             break;
                         default:
