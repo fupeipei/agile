@@ -23,28 +23,26 @@ public interface ModuleService {
      * @param moduleName 模块标识
      * @param pageNum    分页数
      * @param pageSize   分页条数
-     * @param projectId  项目ID
+     * @param systemId  系统ID
      * @return
      */
-    List<ModuleDTO> listModule(String moduleName, Integer pageNum, Integer pageSize, Long projectId);
+    List<ModuleDTO> listModule(String moduleName, Integer pageNum, Integer pageSize, Long systemId);
 
     /**
      * 模块创建/更新
      *
      * @param moduleDTO   模块Body
-     * @param securityDTO 登录人员信息
      * @return
      */
-    Module createOrUpdateModule(ModuleDTO moduleDTO, SecurityDTO securityDTO);
+    Module createOrUpdateModule(ModuleDTO moduleDTO);
 
     /**
      * 模块删除
      *
      * @param moduleId    模块ID
-     * @param securityDTO 登录信息
      * @return
      */
-    void deleteModule(Long moduleId, SecurityDTO securityDTO);
+    void deleteModule(Long moduleId);
 
     /**
      * 模块详情

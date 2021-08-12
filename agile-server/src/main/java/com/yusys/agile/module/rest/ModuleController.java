@@ -34,11 +34,10 @@ public class ModuleController {
     public ControllerResponse listModule(@ApiParam("模块标题") @RequestParam(name = "moduleName", required = false) String moduleName,
                                          @RequestParam(name = "pageNum") Integer pageNum,
                                          @RequestParam(name = "pageSize") Integer pageSize,
-                                         SecurityDTO securityDTO) {
-        Long projectId = securityDTO.getProjectId();
+                                         @RequestParam(name = "systemId") Long systemId) {
         List<ModuleDTO> modules = null;
         try {
-            modules = moduleService.listModule(moduleName, pageNum, pageSize, projectId);
+            modules = moduleService.listModule(moduleName, pageNum, pageSize, systemId);
         } catch (Exception e) {
             return ControllerResponse.fail("获取分页模块列表数据异常");
         }
@@ -47,17 +46,15 @@ public class ModuleController {
 
     @ApiOperation("模块创建/更新")
     @PostMapping("/insert")
-    public ControllerResponse createOrUpdateModule(@RequestBody ModuleDTO moduleDTO,
-                                                   SecurityDTO securityDTO) {
-        return ControllerResponse.success(moduleService.createOrUpdateModule(moduleDTO, securityDTO));
+    public ControllerResponse createOrUpdateModule(@RequestBody ModuleDTO moduleDTO) {
+        return ControllerResponse.success(moduleService.createOrUpdateModule(moduleDTO));
     }
 
     @ApiOperation("模块删除")
     @DeleteMapping("/delete/{moduleId}")
-    public ControllerResponse deleteModule(@PathVariable Long moduleId,
-                                           SecurityDTO securityDTO) {
+    public ControllerResponse deleteModule(@PathVariable Long moduleId) {
         try {
-            moduleService.deleteModule(moduleId, securityDTO);
+            moduleService.deleteModule(moduleId);
             return ControllerResponse.success("模块数据删除成功");
         } catch (Exception e) {
             return ControllerResponse.fail("模块数据删除失败");
@@ -92,4 +89,12 @@ public class ModuleController {
     public ControllerResponse listAllModules(@RequestBody List<Long> systemIds) {
         return ControllerResponse.success(moduleService.listModuleBySystemIds(systemIds));
     }
+
+    /*
+     * @Author wuzefei
+     * @Date 16:12 2021/8/12
+     * @Description
+     * @param null
+     * @return {@link null}
+     **/
 }
