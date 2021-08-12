@@ -34,7 +34,7 @@ public class ModuleController {
     public ControllerResponse listModule(@ApiParam("模块标题") @RequestParam(name = "moduleName", required = false) String moduleName,
                                          @RequestParam(name = "pageNum") Integer pageNum,
                                          @RequestParam(name = "pageSize") Integer pageSize,
-                                         @RequestParam(name = "systemId") Long systemId) {
+                                         @RequestHeader(name = "systemId") Long systemId) {
         List<ModuleDTO> modules = null;
         try {
             modules = moduleService.listModule(moduleName, pageNum, pageSize, systemId);
