@@ -69,6 +69,7 @@
 			<staticField>app_env:${graylog.appenv}</staticField>
 		</encoder>
 	</appender>
+	<logger name="org.springframework.boot.actuate.endpoint.web.servlet" level="trace"/>
 	<!-- 控制台输出日志级别 -->
 	<root level="INFO">
 		<appender-ref ref="console_log" />
