@@ -1083,6 +1083,20 @@ public class IssueServiceImpl implements IssueService {
                                 issueHistoryRecordDTO.setNewValue(IsAchiveEnum.getName(Byte.valueOf(newValue)));
                             }
                             break;
+                        case "父工作项ID":
+                            if (StringUtils.isNotEmpty(oldValue) && NumberUtil.isLong(oldValue)) {
+                                Issue recordIssue = selectIssueByIssueId(Long.valueOf(oldValue));
+                                if (Optional.ofNullable(recordIssue).isPresent()) {
+                                    issueHistoryRecordDTO.setOldValue(recordIssue.getTitle());
+                                }
+                            }
+                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
+                                Issue recordIssue = selectIssueByIssueId(Long.valueOf(newValue));
+                                if (Optional.ofNullable(recordIssue).isPresent()) {
+                                    issueHistoryRecordDTO.setNewValue(recordIssue.getTitle());
+                                }
+                            }
+                            break;
                         default:
                             break;
                     }
