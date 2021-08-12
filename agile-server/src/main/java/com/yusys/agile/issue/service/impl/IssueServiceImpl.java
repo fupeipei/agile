@@ -1020,7 +1020,7 @@ public class IssueServiceImpl implements IssueService {
                                 }
                                 issueHistoryRecordDTO.setOldValue(sprintMap.get(oldValue));
                             }
-                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(oldValue)) {
+                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
                                 if (!sprintMap.containsKey(newValue)) {
                                     recordFactory.getSprintMapInfo(Long.valueOf(newValue), sprintMap);
                                 }
@@ -1068,7 +1068,7 @@ public class IssueServiceImpl implements IssueService {
                                     issueHistoryRecordDTO.setOldValue(ssoUserDTO.getUserName());
                                 }
                             }
-                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(oldValue)) {
+                            if (StringUtils.isNotEmpty(newValue) && NumberUtil.isLong(newValue)) {
                                 SsoUser ssoUserDTO = iFacadeUserApi.queryUserById(Long.valueOf(newValue));
                                 if (Optional.ofNullable(ssoUserDTO).isPresent()) {
                                     issueHistoryRecordDTO.setNewValue(ssoUserDTO.getUserName());
