@@ -42,11 +42,11 @@ public class Teamv3ServiceImplTest {
     @Before
     public void setUp() {
         this.securityDTO = new SecurityDTO();
-        securityDTO.setUserId(812352455803777024L);
+        securityDTO.setUserId(871692844909600768L);
         securityDTO.setSystemId(817701268263542784L);
         securityDTO.setTenantCode("1");
-        securityDTO.setUserName("马雪萍");
-        securityDTO.setUserAcct("maxueq");
+        securityDTO.setUserName("王鹏飞");
+        securityDTO.setUserAcct("wangpf6");
     }
 
     /**

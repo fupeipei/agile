@@ -463,7 +463,7 @@
 	<select id="queryMyHiveTeam" parameterType="java.util.HashMap" resultMap="query_list_map">
 		select distinct
 		<include refid="query_list_column"/>
-		from s_team t INNER JOIN s_team_member tm on t.t.team_id =tm.team_id
+		from s_team t INNER JOIN s_team_member tm on t.team_id =tm.team_id
 		<where>
 			<if test="params.userId != null and params.userId != ''">
 				and (t.create_uid = #{params.userId} or exists(
