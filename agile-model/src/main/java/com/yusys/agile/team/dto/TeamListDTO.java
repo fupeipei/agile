@@ -45,4 +45,7 @@ public class TeamListDTO implements Serializable {
      */
     @ApiModelProperty("是否关注")
     private Integer attentionFlag;
+
+    @ApiModelProperty("加入时间")
+    private Date updateTime;
 }
