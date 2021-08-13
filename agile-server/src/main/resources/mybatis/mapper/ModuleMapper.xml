@@ -100,7 +100,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from module
+    from s_module
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -116,7 +116,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from module
+    from s_module
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -130,7 +130,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from module
+    from s_module
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -143,21 +143,21 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from module
+    from s_module
     where module_id = #{moduleId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from module
+    delete from s_module
     where module_id = #{moduleId,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.yusys.agile.module.domain.ModuleExample">
-    delete from module
+    delete from s_module
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   <insert id="insert" parameterType="com.yusys.agile.module.domain.Module" useGeneratedKeys="true" keyProperty="moduleId">
-    insert into module (module_id, system_id, module_name, 
+    insert into s_module (module_id, system_id, module_name, 
       state, create_uid, create_time, 
       update_uid, update_time, module_desc,tenant_code
       )
@@ -167,7 +167,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.yusys.agile.module.domain.Module">
-    insert into module
+    insert into s_module
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="moduleId != null">
         module_id,
@@ -234,13 +234,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.yusys.agile.module.domain.ModuleExample" resultType="java.lang.Long">
-    select count(*) from module
+    select count(*) from s_module
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update module
+    update s_module
     <set>
       <if test="record.moduleId != null">
         module_id = #{record.moduleId,jdbcType=BIGINT},
@@ -278,7 +278,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update module
+    update s_module
     set module_id = #{record.moduleId,jdbcType=BIGINT},
       system_id = #{record.systemId,jdbcType=BIGINT},
       module_name = #{record.moduleName,jdbcType=VARCHAR},
@@ -294,7 +294,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update module
+    update s_module
     set module_id = #{record.moduleId,jdbcType=BIGINT},
       system_id = #{record.systemId,jdbcType=BIGINT},
       module_name = #{record.moduleName,jdbcType=VARCHAR},
@@ -309,7 +309,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.yusys.agile.module.domain.Module">
-    update module
+    update s_module
     <set>
       <if test="systemId != null">
         system_id = #{systemId,jdbcType=BIGINT},
@@ -342,7 +342,7 @@
     where module_id = #{moduleId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yusys.agile.module.domain.Module">
-    update module
+    update s_module
     set system_id = #{systemId,jdbcType=BIGINT},
       module_name = #{moduleName,jdbcType=VARCHAR},
       state = #{state,jdbcType=VARCHAR},
@@ -355,7 +355,7 @@
     where module_id = #{moduleId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.yusys.agile.module.domain.Module">
-    update module
+    update s_module
     set system_id = #{systemId,jdbcType=BIGINT},
       module_name = #{moduleName,jdbcType=VARCHAR},
       state = #{state,jdbcType=VARCHAR},
