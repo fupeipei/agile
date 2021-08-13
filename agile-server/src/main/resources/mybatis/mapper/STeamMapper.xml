@@ -464,8 +464,9 @@
 		select distinct
 		<include refid="query_list_column"/>
 		from s_team t,
-		     s_team_system tss
+		     s_team_system tss,s_team_member tm
 		<where>
+			t.team_id =team_id
 			<include refid="query_list_param"/>
 			<if test="params.userId != null and params.userId != ''">
 				and (t.create_uid = #{params.userId} or exists(
@@ -481,7 +482,7 @@
 				and team_type = #{params.teamType}
 			</if>
 		</where>
-		order by t.create_time desc
+		order by tm.update_time desc
 	</select>
 
 	<select id="selectAll" resultType="com.yusys.agile.team.dto.TeamListDTO">
