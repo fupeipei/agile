@@ -69,13 +69,13 @@ public class EpicReviewRecordController {
      * @Param [recordId, securityDTO]
      * @return com.yusys.portal.model.common.dto.ControllerResponse
      **/
-    @DeleteMapping("removeEpicReviewRecord/{recordId}")
+    @DeleteMapping("/removeEpicReviewRecord/{recordId}")
     public ControllerResponse removeEpicReviewRecord(@PathVariable Long recordId,SecurityDTO securityDTO){
         try {
             epicReviewRecordService.removeEpicReviewRecord(recordId,securityDTO);
         } catch (Exception e) {
             log.error("删除业务需求评审失败：{}", e);
-            return ControllerResponse.fail("删除业务需求评审失败：" + e.getMessage());
+            return ControllerResponse.fail(e.getMessage());
         }
         return ControllerResponse.success("删除业务需求评审成功！");
     }

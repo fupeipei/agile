@@ -82,8 +82,8 @@ public class EpicReviewRecordServiceImpl implements EpicReviewRecordService {
             throw new BusinessException("该评审记录不存在");
         }
         if (!Objects.equals(record.getCreateUid(),securityDTO.getUserId())){
-            log.info("只允许删除本人评论");
-            throw new BusinessException("只允许删除本人评论");
+            log.info("非本人的评价信息，不允许删除");
+            throw new BusinessException("非本人的评价信息，不允许删除");
         }
         epicReviewRecordMapper.removeEpicReviewRecord(recordId);
     }
