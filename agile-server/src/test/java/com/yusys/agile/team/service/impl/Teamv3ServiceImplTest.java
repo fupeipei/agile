@@ -1,5 +1,6 @@
 package com.yusys.agile.team.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.yusys.agile.AgileApplication;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
@@ -214,7 +215,17 @@ public class Teamv3ServiceImplTest {
 
 
     }
-
+    @Test
+    public void testList4(){
+        TeamQueryDTO dto = new TeamQueryDTO();
+        dto.setPageSize(10);
+        dto.setPageNum(1);
+        dto.setTeam("");
+        dto.setPo("");
+        List<TeamListDTO> teamListDTOS = teamv3Service.listTeam(dto, this.securityDTO);
+        System.out.println(JSON.toJSONString(teamListDTOS));
+        Assert.assertTrue("testList4成功", true);
+    }
 
 
 }
