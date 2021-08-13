@@ -636,7 +636,6 @@ public class Teamv3ServiceImpl implements Teamv3Service {
      * @param systemIdList
      * @Return List<TeamListDTO>
      */
-
     @Override
     public List<TeamListDTO> queryTeamsBySystemIdList(List<Long> systemIdList) {
         List<Long> teamIds = teamSystemMapper.queryTeamIdBySystemId(systemIdList);

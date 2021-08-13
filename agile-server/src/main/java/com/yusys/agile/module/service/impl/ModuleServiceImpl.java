@@ -9,9 +9,11 @@ import com.yusys.agile.utils.RoleCheck;
 import com.github.pagehelper.PageHelper;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
+import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
+import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.code.ReflectUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,6 +43,8 @@ public class ModuleServiceImpl implements ModuleService {
     private IFacadeSystemApi iFacadeSystemApi;
     @Autowired
     private RoleCheck roleCheck;
+    @Autowired
+    private IFacadeUserApi iFacadeUserApi;
     /**
      * 百分号
      */
@@ -49,11 +53,11 @@ public class ModuleServiceImpl implements ModuleService {
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
 
     @Override
-    public List<ModuleDTO> listModule(String moduleName, Integer pageNum, Integer pageSize, Long projectId) {
+    public List<ModuleDTO> listModule(String moduleName, Integer pageNum, Integer pageSize, Long systemId) {
         PageHelper.startPage(pageNum, pageSize);
         ModuleExample example = new ModuleExample();
         ModuleExample.Criteria criteria = example.createCriteria();
-        criteria.andStateEqualTo(StateEnum.U.toString());
+        criteria.andStateEqualTo(StateEnum.U.toString()).andSystemIdEqualTo(systemId);
         if (StringUtils.isNotEmpty(moduleName)) {
             criteria.andModuleNameLike(StringUtils.join(PERCENT_SIGN, moduleName, PERCENT_SIGN));
         }
@@ -61,9 +65,14 @@ public class ModuleServiceImpl implements ModuleService {
         List<ModuleDTO> modules = moduleMapper.selectByExampleWithBLOBsDTO(example);
         if (CollectionUtils.isNotEmpty(modules)) {
             modules.forEach(module -> {
-                SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(module.getSystemId());
-                if (Optional.ofNullable(ssoSystem).isPresent()) {
-                    module.setProductName(ssoSystem.getSystemName());
+//                SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(module.getSystemId());
+//                if (Optional.ofNullable(ssoSystem).isPresent()) {
+//                    module.setProductName(ssoSystem.getSystemName());
+//                }
+                SsoUser ssoUser = iFacadeUserApi.queryUserById(module.getCreateUid());
+                if (Optional.ofNullable(ssoUser).isPresent()){
+                    module.setUserAccount(ssoUser.getUserAccount());
+                    module.setUserName(ssoUser.getUserName());
                 }
             });
         }
@@ -71,7 +80,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public Module createOrUpdateModule(ModuleDTO moduleDTO, SecurityDTO securityDTO) {
+    public Module createOrUpdateModule(ModuleDTO moduleDTO) {
         Module module = ReflectUtil.copyProperties(moduleDTO, Module.class);
         if (Optional.ofNullable(module.getModuleId()).isPresent()) {
             Module module1 = moduleMapper.selectByPrimaryKey(module.getModuleId());
@@ -84,7 +93,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    public void deleteModule(Long moduleId, SecurityDTO securityDTO) {
+    public void deleteModule(Long moduleId) {
         ModuleExample example = new ModuleExample();
         ModuleExample.Criteria criteria = example.createCriteria();
         criteria.andModuleIdEqualTo(moduleId).andStateEqualTo(StateEnum.U.toString());
