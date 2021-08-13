@@ -1010,10 +1010,10 @@ public class IssueServiceImpl implements IssueService {
                             break;
                         case "优先级":
                             if (StringUtils.isNotEmpty(oldValue)) {
-                                issueHistoryRecordDTO.setOldValue(IssuePriorityEnum.getName(Byte.valueOf(oldValue)));
+                                issueHistoryRecordDTO.setOldValue(oldValue);
                             }
                             if (StringUtils.isNotEmpty(newValue)) {
-                                issueHistoryRecordDTO.setNewValue(IssuePriorityEnum.getName(Byte.valueOf(newValue)));
+                                issueHistoryRecordDTO.setNewValue(newValue);
                             }
                             break;
                         case "迭代计划":
