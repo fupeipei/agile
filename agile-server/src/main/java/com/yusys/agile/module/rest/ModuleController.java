@@ -1,5 +1,6 @@
 package com.yusys.agile.module.rest;
 
+import com.ctc.wstx.io.SystemId;
 import com.yusys.agile.module.dto.ModuleDTO;
 import com.yusys.agile.module.service.ModuleService;
 import com.github.pagehelper.PageInfo;
@@ -46,7 +47,8 @@ public class ModuleController {
 
     @ApiOperation("模块创建/更新")
     @PostMapping("/insert")
-    public ControllerResponse createOrUpdateModule(@RequestBody ModuleDTO moduleDTO) {
+    public ControllerResponse createOrUpdateModule(@RequestBody ModuleDTO moduleDTO , @RequestHeader(name = "systemId") Long systemId) {
+        moduleDTO.setSystemId(systemId);
         return ControllerResponse.success(moduleService.createOrUpdateModule(moduleDTO));
     }
 
