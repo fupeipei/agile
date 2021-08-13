@@ -8,11 +8,16 @@ import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
-import com.yusys.agile.team.dto.*;
+import com.yusys.agile.team.dto.TeamListDTO;
+import com.yusys.agile.team.dto.TeamQueryDTO;
+import com.yusys.agile.team.dto.TeamSystemDTO;
+import com.yusys.agile.team.dto.TeamUserDTO;
 import com.yusys.agile.teamv3.dao.STeamMapper;
 import com.yusys.agile.teamv3.dao.STeamMemberMapper;
 import com.yusys.agile.teamv3.dao.STeamSystemMapper;
-import com.yusys.agile.teamv3.domain.*;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.domain.STeamExample;
+import com.yusys.agile.teamv3.domain.STeamMember;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
@@ -32,7 +37,6 @@ import com.yusys.portal.model.facade.enums.RoleTypeEnum;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.math.ec.ScaleYPointMap;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,6 +85,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (check) {
             rest = sTeamMapper.queryAllTeam(params);
         } else { //不是租户管理员
+            params.put("userId",security.getUserId());
             rest = sTeamMapper.queryMyHiveTeam(params);
         }
         rest.forEach(team -> {
