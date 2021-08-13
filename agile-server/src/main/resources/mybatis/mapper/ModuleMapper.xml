@@ -156,7 +156,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.yusys.agile.module.domain.Module">
+  <insert id="insert" parameterType="com.yusys.agile.module.domain.Module" useGeneratedKeys="true" keyProperty="moduleId">
     insert into module (module_id, system_id, module_name, 
       state, create_uid, create_time, 
       update_uid, update_time, module_desc,tenant_code
