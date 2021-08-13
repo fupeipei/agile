@@ -466,7 +466,7 @@
 		from s_team t,
 		     s_team_system tss,s_team_member tm
 		<where>
-			t.team_id =tm.team_id
+
 			<include refid="query_list_param"/>
 			<if test="params.userId != null and params.userId != ''">
 				and (t.create_uid = #{params.userId} or exists(
@@ -481,6 +481,7 @@
 			<if test="params.teamType != null">
 				and team_type = #{params.teamType}
 			</if>
+			and t.team_id =tm.team_id
 		</where>
 		order by tm.update_time desc
 	</select>
