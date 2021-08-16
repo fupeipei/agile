@@ -26,6 +26,7 @@ import com.yusys.agile.issue.domain.IssueExample;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueExportDTO;
 import com.yusys.agile.issue.dto.IssueStringDTO;
+import com.yusys.agile.issue.enums.IssueCompletionEnum;
 import com.yusys.agile.issue.enums.IssueImportanceEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.enums.TaskTypeEnum;
@@ -40,11 +41,15 @@ import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 
+import com.yusys.agile.sysextendfield.dao.SysExtendFieldDetailMapper;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
+import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample;
 import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
+import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
@@ -116,6 +121,8 @@ public class ExcelServiceImpl implements IExcelService {
     private IStageService stageService;
     @Autowired
     private EpicService epicService;
+    @Autowired
+    private SysExtendFieldDetailMapper sysExtendFieldDetailMapper;
 
     /**
      * 缓存数据
@@ -570,14 +577,16 @@ public class ExcelServiceImpl implements IExcelService {
         }
     }
 
+
     private List<List<String>> getExcelData(List<Issue> issueList, List<HeaderField> headerFieldList){
 
         List<List<String>> dataResult = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(issueList)) {
-
             List<IssueExportDTO> exportDTOList = transformaData(issueList);
             log.info("issue数据转换后:{}",JSONObject.toJSONString(exportDTOList));
             for(IssueExportDTO issue:exportDTOList){
+                String makeMan = getMakeMan(issue);
+                issue.setMakeMan(makeMan);
 
                 List<String> fieldList = Lists.newArrayList();
                 Class<?> issueClass = issue.getClass();
@@ -585,11 +594,11 @@ public class ExcelServiceImpl implements IExcelService {
 
                 for (HeaderField headerField : headerFieldList) {
                     for (Field field : fields) {
+
                         try {
                             field.setAccessible(true);
                             String fieldCode = headerField.getFieldCode();
                             String name = field.getName();
-
                             if (StringUtils.equals(fieldCode, name)) {
                                 Object o = field.get(issue);
                                 fieldList.add(o == null ? null:String.valueOf(o));
@@ -600,10 +609,40 @@ public class ExcelServiceImpl implements IExcelService {
                         }
                     }
                 }
+
                 dataResult.add(fieldList);
             }
         }
         return dataResult;
+    }
+
+
+    private String getUserName(Long userId){
+        if(Optional.ofNullable(userId).isPresent() && !userMap.containsKey(userId)){
+            try {
+                SsoUser user = iFacadeUserApi.queryUserById(userId);
+                userMap.put(userId,user.getUserName());
+            }catch (Exception e){
+                log.info("远程获取人员信息异常：{}",e.getMessage());
+            }
+        }
+        return userMap.get(userId);
+    }
+
+    private String getMakeMan(IssueExportDTO issue){
+        String issueId = issue.getIssueId();
+        if(Optional.ofNullable(issueId).isPresent()){
+            SysExtendFieldDetailExample extendFieldDetailExample = new SysExtendFieldDetailExample();
+            extendFieldDetailExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andIssueIdEqualTo(Long.valueOf(issueId));
+            List<SysExtendFieldDetail> sysExtendFieldDetails = sysExtendFieldDetailMapper.selectByExample(extendFieldDetailExample);
+            if(CollectionUtils.isNotEmpty(sysExtendFieldDetails)){
+                String userId = sysExtendFieldDetails.get(0).getValue();
+                if(Optional.ofNullable(userId).isPresent()){
+                    return getUserName(Long.valueOf(userId));
+                }
+            }
+        }
+        return null;
     }
 
     private List<IssueExportDTO> transformaData(List<Issue> issues){
@@ -663,8 +702,11 @@ public class ExcelServiceImpl implements IExcelService {
                             Method method = sourceClass.getMethod("getLaneId", new Class[]{});
                             method.setAccessible(true);
                             Object resultValue = method.invoke(issue, new Object[]{});
-                            Long laneId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(resultValue));
-                            KanbanStageInstance stageInfo = stageService.getStageInfoByStageId(laneId);
+                            KanbanStageInstance stageInfo = null;
+                            if (resultValue != null) {
+                                Long laneId = Long.valueOf(String.valueOf(resultValue));
+                                stageInfo = stageService.getStageInfoByStageId(laneId);
+                            }
                             StringBuffer buffer = new StringBuffer();
                             if(Optional.ofNullable(firstStageName).isPresent()){
                                 buffer.append(firstStageName);
@@ -678,6 +720,10 @@ public class ExcelServiceImpl implements IExcelService {
                             Integer taskType = s.get(issue) == null ? null : Integer.valueOf(String.valueOf(s.get(issue)));
                             String tasKName  = TaskTypeEnum.getName(taskType);
                             result = tasKName;
+                        }else if("completion".equals(name)){
+                            String completion = s.get(issue) == null? null : String.valueOf(s.get(issue));
+                            if(Optional.ofNullable(completion).isPresent())
+                                result = IssueCompletionEnum.getName(completion);
                         }
 
                         Type genericType = s.getGenericType();

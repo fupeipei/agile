@@ -116,6 +116,8 @@ public class IssueExportDTO {
 
     private String isCancel;
 
+    private String makeMan;
+
     public String getIssueId() {
         return issueId;
     }
@@ -530,5 +532,13 @@ public class IssueExportDTO {
 
     public void setIsCancel(String isCancel) {
         this.isCancel = isCancel;
+    }
+
+    public String getMakeMan() {
+        return makeMan;
+    }
+
+    public void setMakeMan(String makeMan) {
+        this.makeMan = makeMan;
     }
 }
