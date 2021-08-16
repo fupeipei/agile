@@ -50,6 +50,7 @@ import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
+import com.yusys.portal.model.common.enums.YesOrNoEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.entity.SsoSystem;
 import com.yusys.portal.model.facade.entity.SsoUser;
@@ -724,6 +725,13 @@ public class ExcelServiceImpl implements IExcelService {
                             String completion = s.get(issue) == null? null : String.valueOf(s.get(issue));
                             if(Optional.ofNullable(completion).isPresent())
                                 result = IssueCompletionEnum.getName(completion);
+                        }else if("isArchive".equals(name)){
+                            String isArchive = s.get(issue) == null ? null : String.valueOf(s.get(issue));
+                            if(YesOrNoEnum.YES.getValue().toString().equals(isArchive)){
+                                result = YesOrNoEnum.YES.getName();
+                            }else {
+                                result = YesOrNoEnum.NO.getName();
+                            }
                         }
 
                         Type genericType = s.getGenericType();
