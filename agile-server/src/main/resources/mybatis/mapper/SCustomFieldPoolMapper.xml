@@ -430,7 +430,7 @@
     </select>
 
     <select id="checkCustomFieldRepeatability" resultType="boolean">
-        select if(count(field_name) > 0, false, true)
+        select if(count(field_name)  <![CDATA[ > ]]> 0, false, true)
         from s_custom_field_pool
                 where binary field_name = #{fieldName}
         <if test="fieldId != null">
