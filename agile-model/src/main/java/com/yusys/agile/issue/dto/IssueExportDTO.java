@@ -118,6 +118,8 @@ public class IssueExportDTO {
 
     private String makeMan;
 
+    private String teamId;
+
     public String getIssueId() {
         return issueId;
     }
@@ -540,5 +542,13 @@ public class IssueExportDTO {
 
     public void setMakeMan(String makeMan) {
         this.makeMan = makeMan;
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
     }
 }

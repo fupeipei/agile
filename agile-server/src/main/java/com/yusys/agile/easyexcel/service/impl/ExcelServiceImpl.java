@@ -44,6 +44,8 @@ import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sysextendfield.dao.SysExtendFieldDetailMapper;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
 import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetailExample;
+import com.yusys.agile.teamv3.domain.STeam;
+import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
@@ -124,6 +126,8 @@ public class ExcelServiceImpl implements IExcelService {
     private EpicService epicService;
     @Autowired
     private SysExtendFieldDetailMapper sysExtendFieldDetailMapper;
+    @Autowired
+    private Teamv3Service teamv3Service;
 
     /**
      * 缓存数据
@@ -732,6 +736,10 @@ public class ExcelServiceImpl implements IExcelService {
                             }else {
                                 result = YesOrNoEnum.NO.getName();
                             }
+                        }else if("teamId".equals(name)){
+                            Long teamId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
+                            STeam team = teamv3Service.getTeamById(teamId);
+                            result = team.getTeamName();
                         }
 
                         Type genericType = s.getGenericType();
