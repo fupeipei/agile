@@ -1,5 +1,6 @@
 package com.yusys.agile.set.stage.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,6 +48,9 @@ import java.util.stream.Collectors;
 public class PlatformStageServiceImpl implements IStageService {
 
     private static final Logger log = LoggerFactory.getLogger(PlatformStageServiceImpl.class);
+    private static final String ORDER_ID_ASC = "order_id asc";
+
+
 
     @Resource
     private KanbanStageInstanceMapper kanbanStageInstanceMapper;
@@ -72,6 +76,8 @@ public class PlatformStageServiceImpl implements IStageService {
             case 3:
             case 4:
                 result = getStagesByTeamId(stageType,teamId,taskType);
+                break;
+            default:
                 break;
         }
         return result;
@@ -100,7 +106,7 @@ public class PlatformStageServiceImpl implements IStageService {
                             List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
                                     IssueTypeEnum.TYPE_STORY.CODE.equals(k.getAppType())).collect(Collectors.toList());
 
-                            log.info("故事阶段过滤后数据为:{}",JSONObject.toJSONString(secondStageResults));
+                            log.info("故事阶段过滤后数据为:{}",JSON.toJSONString(secondStageResults));
 
                             instanceDTO.setSecondStages(secondStageResults);
                         }
@@ -146,7 +152,7 @@ public class PlatformStageServiceImpl implements IStageService {
                         List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
                                 IssueTypeEnum.TYPE_TASK.CODE.equals(k.getAppType())).collect(Collectors.toList());
 
-                        log.info("任务阶段过滤后的数据为：{}",JSONObject.toJSONString(secondStageResults));
+                        log.info("任务阶段过滤后的数据为：{}",JSON.toJSONString(secondStageResults));
                         instanceDTO.setSecondStages(secondStageResults);
 
                     }
@@ -192,8 +198,12 @@ public class PlatformStageServiceImpl implements IStageService {
             case 3:
                 stageIds.add(StageConstant.FirstStageEnum.TEST_STAGE.getValue());
                 stageIds.add(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
+                break;
             case 4:
                 stageIds.add(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue());
+                break;
+            default:
+                break;
         }
         //一级阶段集合
         List<StageInstance> tempStageInstanceList = Lists.newArrayList();
@@ -206,7 +216,7 @@ public class PlatformStageServiceImpl implements IStageService {
         if(CollectionUtils.isNotEmpty(stageIds)){
             criteria.andStageIdIn(stageIds);
         }
-        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        kanbanStageInstanceExample.setOrderByClause(ORDER_ID_ASC);
         //一级阶段
         List<KanbanStageInstance> firstStageInstanceList = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
         if (CollectionUtils.isNotEmpty(firstStageInstanceList)) {
@@ -239,7 +249,7 @@ public class PlatformStageServiceImpl implements IStageService {
                 .andStateEqualTo(StageConstant.STATE_VALIDATE)
                 .andParentIdEqualTo(stageParentId)
                 .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE);
-        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        kanbanStageInstanceExample.setOrderByClause(ORDER_ID_ASC);
         List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
         List<StageInstance> stageInstances = Lists.newArrayList();
         try {
@@ -263,7 +273,7 @@ public class PlatformStageServiceImpl implements IStageService {
                 .andStateEqualTo(StageConstant.STATE_VALIDATE)
                 .andStageIdEqualTo(stageId)
                 .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE);
-        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        kanbanStageInstanceExample.setOrderByClause(ORDER_ID_ASC);
         List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
         if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
             return kanbanStageInstances.get(0);
@@ -287,7 +297,7 @@ public class PlatformStageServiceImpl implements IStageService {
                     .andStateEqualTo(StageConstant.STATE_VALIDATE)
                     .andStageTypeEqualTo(StageTypeEnum.AGILE.CODE)
                     .andParentIdEqualTo(stageId);
-            kanbanStageInstanceExample.setOrderByClause("order_id asc");
+            kanbanStageInstanceExample.setOrderByClause(ORDER_ID_ASC);
             List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
             List<KanbanStageInstance> result = Lists.newArrayList();
 
@@ -333,7 +343,7 @@ public class PlatformStageServiceImpl implements IStageService {
                 .andParentIdEqualTo(stageParentId)
                 .andKanbanIdEqualTo(kanbanId)
                 .andStageTypeEqualTo(StageTypeEnum.LEAN.CODE);
-        kanbanStageInstanceExample.setOrderByClause("order_id asc");
+        kanbanStageInstanceExample.setOrderByClause(ORDER_ID_ASC);
         List<KanbanStageInstance> kanbanStageInstances = kanbanStageInstanceMapper.selectByExampleWithBLOBs(kanbanStageInstanceExample);
         return kanbanStageInstances;
     }
@@ -370,7 +380,7 @@ public class PlatformStageServiceImpl implements IStageService {
 
             }
         }
-        log.info("查询阶段信息返回数据 map:{}", JSONObject.toJSONString(map));
+        log.info("查询阶段信息返回数据 map:{}", JSON.toJSONString(map));
         return map;
     }
 
