@@ -573,7 +573,7 @@ public class ExcelUtil {
                     cellValue = cell.getStringCellValue().trim();
                     break;
                 case NUMERIC:
-                    cellValue = new Double(cell.getNumericCellValue()).intValue() + "";
+                    cellValue = (Double)cell.getNumericCellValue() + "";
                     break;
                 case BOOLEAN:
                     cellValue = cell.getBooleanCellValue() + "";
