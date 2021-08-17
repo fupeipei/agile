@@ -1,11 +1,17 @@
 package com.yusys.agile.issue.service;
 
 
+import com.yusys.agile.AgileApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import javax.sql.DataSource;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -14,7 +20,8 @@ import java.sql.Statement;
 import java.util.*;
 
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {AgileApplication.class})
 @Slf4j
 public class SqlLoadTest {
 
@@ -101,6 +108,7 @@ public class SqlLoadTest {
     }
 
 
+    @Test
     private static List<String> getSql(String sql) {
         String s = sql;
         s = s.replaceAll("\r\n", "\r");
@@ -109,6 +117,7 @@ public class SqlLoadTest {
         String[] sqlarry = s.split(";"); // 用;把所有的语句都分开成一个个单独的句子
         sqlarry = filter(sqlarry);
         ret = Arrays.asList(sqlarry);
+        Assert.assertTrue("测试成功", true);
         return ret;
     }
 

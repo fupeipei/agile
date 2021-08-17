@@ -13,10 +13,7 @@ import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
 import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.portal.common.exception.BusinessException;
-import com.yusys.portal.facade.client.api.IFacadeProjectApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
-import com.yusys.portal.model.common.dto.ControllerResponse;
-import com.yusys.portal.model.facade.dto.SsoProjectDTO;
 import com.yusys.portal.model.facade.entity.SsoUser;
 import com.yusys.portal.util.date.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -27,6 +24,8 @@ import java.util.*;
 
 @Service
 public class BurnDownChartServiceImpl implements BurnDownChartService {
+
+    private static final String SPRINT_IS = "迭代计划不存在";
     @Resource
     private BurnDownChartDao burnDownChartDao;
     @Resource
@@ -190,7 +189,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
     public BurnDownStoryPointDTO getStoryPointBySprint(Long sprintId) {
         SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         //如果迭代不存在，抛出异常
-        Optional.ofNullable(sprint).orElseThrow(()-> new BusinessException("迭代计划不存在"));
+        if (!Optional.ofNullable(sprint).isPresent()){
+            throw new BusinessException(SPRINT_IS);
+        }
         //查询出迭代下故事点数的总数
         Integer count = issueMapper.countStoryPointsForSprint(sprintId);
         BurnDownStoryPointDTO storyPointDTO = new BurnDownStoryPointDTO();
@@ -308,17 +309,6 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
         }
         return taskDTOList;
     }
-
-//    public void calculateStorys(List<SprintWithBLOBs> sprints) {
-//        if (CollectionUtils.isNotEmpty(sprints)) {
-//            for (SprintWithBLOBs sprint : sprints) {
-//                if (sprint != null) {
-//                    calculateStorys(projectId, sprint);
-//                }
-//            }
-//        }
-//    }
-
     private void calculateStorys(SSprintWithBLOBs sprint) {
         Date target = DateUtil.preDay(new Date());
         if (sprintv3Service.legalDate(sprint.getSprintDays(), target)) {
@@ -347,7 +337,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
      */
     private List<BurnDownStory> getStorys(Long sprintId, Integer actualRemainStory) {
         SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
-        Optional.ofNullable(sprint).orElseThrow(() -> new BusinessException("迭代计划不存在"));
+        if (!Optional.ofNullable(sprint).isPresent()){
+            throw new BusinessException(SPRINT_IS);
+        }
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();
@@ -364,7 +356,9 @@ public class BurnDownChartServiceImpl implements BurnDownChartService {
 
     private List<BurnDownTask> getTasks(Long sprintId, Integer actualRemainTask) {
         SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
-        Optional.ofNullable(sprint).orElseThrow(() -> new BusinessException("迭代计划不存在"));
+        if (!Optional.ofNullable(sprint).isPresent()){
+            throw new BusinessException(SPRINT_IS);
+        }
         String sprintDays = sprint.getSprintDays();
         Date start = sprint.getStartTime();
         Date end = sprint.getEndTime();

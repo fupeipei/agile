@@ -6,7 +6,6 @@ import com.yusys.agile.issue.domain.SEpicReviewRecordExample;
 import com.yusys.agile.issue.dto.EpicReviewDto;
 import com.yusys.agile.issue.dto.EpicReviewRecordDto;
 import com.yusys.agile.issue.service.EpicReviewRecordService;
-import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
 import com.yusys.portal.model.common.enums.StateEnum;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
 import javax.validation.Valid;
 import java.util.ArrayList;

@@ -20,7 +20,7 @@ public class CustomizePageInfoDTO<T> implements Serializable {
     //当前页的数量
     private long size = 0;
     //每页记录
-    private List<T> list;
+    private transient List<T> list;
 
     public CustomizePageInfoDTO(int pageNum, int pageSize) {
         this.pageNum = pageNum;

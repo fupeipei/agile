@@ -8,7 +8,7 @@ public class BjVersionPlanBindingReqsDTO implements Serializable {
 
     private Long versionPlanId;
 
-    List<BusinessReqBindingDTO> reqBindingDTOList;
+    private transient List<BusinessReqBindingDTO> reqBindingDTOList;
 
     public Long getVersionPlanId() {
         return versionPlanId;

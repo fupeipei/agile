@@ -95,7 +95,7 @@ public class BusinessKanbanServiceImpl implements BusinessKanbanService {
         if (CollectionUtils.isNotEmpty(listC)) {
             BusinessExample businessExample = new BusinessExample();
             businessExample.createCriteria().andStateEqualTo(StateEnum.U.toString())
-                    .andBusinessStateNotEqualTo(BusinessState.COMPLETE.getNodeCode().byteValue())
+                    .andBusinessStateNotEqualTo(BusinessState.COMPLETE.getNodeCode())
                     .andBusinessOwnerIn(listC);
             List<Business> businesses = businessMapper.selectByExample(businessExample);
             if (CollectionUtils.isNotEmpty(businesses)) {
