@@ -10,8 +10,10 @@ import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.yusys.agile.utils.CollectionUtil;
 import com.yusys.cicd.feign.api.tools.IToolsChangeApi;
 import com.yusys.cicd.model.tools.dto.TaskCommitQueryDTO;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -35,6 +37,8 @@ public class CommitServiceImpl implements CommitService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommitServiceImpl.class);
 
+    private static final String ISSUE_ID_ASC = "issue_id asc";
+
     /**
      * 每次允许查询任务最大数
      */
@@ -45,10 +49,6 @@ public class CommitServiceImpl implements CommitService {
      */
     private static final int QUERY_TASK_BATCH_SIZE = 500;
 
-    /**
-     * 批处理数据量
-     */
-    private static final int BATCH_SIZE = 50;
 
     @Resource
     private IssueService issueService;
@@ -70,7 +70,7 @@ public class CommitServiceImpl implements CommitService {
         LOGGER.info("getMemberCommitRecord param commitDTO:{}", commitDTO);
         List<Long> memberIdList = commitDTO.getMemberIdList();
         if (CollectionUtils.isEmpty(memberIdList)) {
-            throw new RuntimeException("用户编号不能为空");
+            throw new BusinessException("用户编号不能为空");
         }
         //查询指定项目下用户任务总记录数
         long total = issueService.getProjectMemberTaskTotal(commitDTO);
@@ -159,37 +159,6 @@ public class CommitServiceImpl implements CommitService {
                 int commitTimes = 0;
                 int addLines = 0;
                 int deleteLines = 0;
-                List<String> tempTaskIdList = Lists.newArrayList();
-                List<String> taskIdList = entry.getValue();
-                int size = taskIdList.size();
-                for (int i = 0; i < size; i++) {
-                    /*tempTaskIdList.add(taskIdList.get(i));
-                    if (tempTaskIdList.size() % BATCH_SIZE == 0 || i == size - 1) {
-                        List<TaskResponseDTO> commitResponse = cmsChangeApi.queryCommitInfo(tempTaskIdList);
-                        if (CollectionUtils.isNotEmpty(commitResponse)) {
-                            //遍历单个任务提交次数
-                            for (TaskResponseDTO response : commitResponse) {
-                                List<com.ai.cicd.model.cms.dto.CommitDTO> commitList = response.getCommits();
-                                if (CollectionUtils.isNotEmpty(commitList)) {
-                                    Set<String> commitIdSet = Sets.newHashSet();
-                                    for (com.ai.cicd.model.cms.dto.CommitDTO commit : commitList) {
-                                        commitIdSet.add(commit.getCommitId());
-                                        //新增行数
-                                        int singleAddLines = Integer.parseInt(commit.getAddCount());
-                                        addLines += singleAddLines;
-                                        //删除行数
-                                        int singleDeleteLines = Integer.parseInt(commit.getDeleteCount());
-                                        deleteLines += singleDeleteLines;
-                                    }
-                                    //提交次数
-                                    int singleCommitTimes = commitIdSet.size();
-                                    commitTimes += singleCommitTimes;
-                                }
-                            }
-                        }
-                        tempTaskIdList.clear();
-                    }*/
-                }
                 //成员编号
                 String memberId = entry.getKey();
                 //提交次数
@@ -259,7 +228,7 @@ public class CommitServiceImpl implements CommitService {
     private TaskCommitQueryDTO assembleTaskIdsByStoryId(Long storyId) {
         TaskCommitQueryDTO commitQueryDTO = null;
         IssueExample issueExample = new IssueExample();
-        issueExample.setOrderByClause("issue_id asc");
+        issueExample.setOrderByClause(ISSUE_ID_ASC);
         issueExample.createCriteria()
             .andParentIdEqualTo(storyId)
                 .andIssueTypeEqualTo(IssueTypeEnum.TYPE_TASK.CODE)
@@ -276,23 +245,9 @@ public class CommitServiceImpl implements CommitService {
         return commitQueryDTO;
     }
 
-    private List<Long> querySubIssueIdList(Long issueId,Byte subIssueType){
-        IssueExample issueExample = new IssueExample();
-        issueExample.setOrderByClause("issue_id asc");
-        issueExample.createCriteria()
-                .andParentIdEqualTo(issueId)
-                .andIssueTypeEqualTo(subIssueType)
-                .andStateEqualTo(StateEnum.U.getValue());
-
-        List<Long> feaTureIdList = Optional.ofNullable(issueMapper.selectByExample(issueExample)).orElse(new ArrayList<>()).stream()
-                .map(issue -> issue.getIssueId()).collect(Collectors.toList());
-        return feaTureIdList;
-    }
-
-
     private List<Long> querySubIssueIdListByListId(List<Long> issueIds,Byte subIssueType){
         IssueExample issueExample = new IssueExample();
-        issueExample.setOrderByClause("issue_id asc");
+        issueExample.setOrderByClause(ISSUE_ID_ASC);
         issueExample.createCriteria()
                 .andParentIdIn(issueIds)
                 .andIssueTypeEqualTo(subIssueType)
@@ -331,10 +286,10 @@ public class CommitServiceImpl implements CommitService {
 
     private TaskCommitQueryDTO getTaskCommitQueryDTOByFeaTureId(List<Long> feaTureIdList) {
         TaskCommitQueryDTO commitQueryDTO = null;
-        if(feaTureIdList!=null&&feaTureIdList.size()>0){
+        if(CollectionUtils.isNotEmpty(feaTureIdList)){
             List<Long> listStory = this.querySubIssueIdListByListId(feaTureIdList, IssueTypeEnum.TYPE_STORY.CODE);
 
-            if(listStory!=null||listStory.size()>0){
+            if(CollectionUtils.isNotEmpty(listStory)){
                 List<Long> listTask = this.querySubIssueIdListByListId(listStory, IssueTypeEnum.TYPE_TASK.CODE);
                 if (CollectionUtils.isNotEmpty(listTask)) {
                     List<String> taskIds = Lists.newArrayList();
