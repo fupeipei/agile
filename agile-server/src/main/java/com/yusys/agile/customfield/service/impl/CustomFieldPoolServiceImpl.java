@@ -57,7 +57,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         BeanUtils.copyProperties(customFieldDTO, customFieldPool);
         //system为空则为系统外自定义字段,反之则为系统内自定义字段
         //>0 返回false
-        if (!customFieldPoolMapper.checkCustomFieldRepeatability(customFieldPool.getFieldId(), customFieldPool.getFieldName(), customFieldPool.getSystemId())) {
+        if (checkCustomFieldRepeatability(customFieldPool)) {
             throw new BusinessException("该字段名[" + customFieldPool.getFieldName() + "]已经存在！");
         }
         customFieldPool.setState(StateEnum.U.getValue());
@@ -109,8 +109,11 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         SCustomFieldPool customFieldPool = new SCustomFieldPool();
         BeanUtils.copyProperties(customFieldDTO, customFieldPool);
 
+
+
+
         //>0 返回false
-        if (!customFieldPoolMapper.checkCustomFieldRepeatability(customFieldPool.getFieldId(), customFieldPool.getFieldName(), customFieldPool.getSystemId())) {
+        if (checkCustomFieldRepeatability(customFieldPool)) {
             throw new BusinessException("该字段名[" + customFieldPool.getFieldName() + "]在项目中已经存在！");
         }
         //只允许修改名字和备注
@@ -229,5 +232,47 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
             criteria.andTenantCodeEqualTo(tenantCode);
         }
         return customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
+    }
+
+
+    /**
+     *         select if(count(field_name)  > 0, false, true)
+     *         from s_custom_field_pool
+     *             where binary field_name = #{fieldName}
+     *         ]]>
+     *         <if test="fieldId != null">
+     *             and field_id != #{fieldId}
+     *         </if>
+     *         <if test="systemId != null">
+     *             and system_id = #{systemId}
+     *         </if>
+     *         and state = 'U'
+     * @param customFieldPool
+     * @return
+     */
+
+    public boolean checkCustomFieldRepeatability(SCustomFieldPool customFieldPool) {
+        SCustomFieldPoolExample example = new SCustomFieldPoolExample();
+        SCustomFieldPoolExample.Criteria criteria = example.createCriteria()
+                .andStateEqualTo(StateEnum.U.getValue());
+        if (customFieldPool.getSystemId()!=null) {
+            criteria.andSystemIdEqualTo(customFieldPool.getSystemId());
+        }
+
+        if (customFieldPool.getFieldName()!=null) {
+            criteria.andFieldNameEqualTo(customFieldPool.getFieldName());
+        }
+
+        if (customFieldPool.getFieldId()!=null) {
+            criteria.andFieldIdEqualTo(customFieldPool.getFieldId());
+        }
+
+        criteria.andStateEqualTo("U");
+        List<CustomFieldDTO> customFieldDTOS = customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
+        boolean result=false;
+        if(customFieldDTOS!=null&&customFieldDTOS.size()>0){
+            result=true;
+        }
+        return result;
     }
 }
