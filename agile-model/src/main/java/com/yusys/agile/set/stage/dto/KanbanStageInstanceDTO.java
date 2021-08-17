@@ -46,7 +46,7 @@ public class KanbanStageInstanceDTO implements Serializable {
 
     private Date updateTime;
 
-    private List<IssueDTO> issueDTOS;
+    private transient List<IssueDTO> issueDTOS;
 
     private Boolean hasNext;
 
