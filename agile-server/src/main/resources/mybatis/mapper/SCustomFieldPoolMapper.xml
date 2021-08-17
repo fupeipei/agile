@@ -430,10 +430,11 @@
     </select>
 
     <select id="checkCustomFieldRepeatability" resultType="boolean">
-        select if(count(field_name)  &gt; 0, false, true)
-
+        <![CDATA[
+        select if(count(field_name)  > 0, false, true)
         from s_custom_field_pool
-                where binary field_name = #{fieldName}
+            where binary field_name = #{fieldName}
+        ]]>
         <if test="fieldId != null">
             and field_id != #{fieldId}
         </if>
@@ -441,6 +442,11 @@
             and system_id = #{systemId}
         </if>
         and state = 'U'
+
+
+
+
+
     </select>
     <update id="updateStateById">
         update s_custom_field_pool
