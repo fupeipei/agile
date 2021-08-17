@@ -75,7 +75,6 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     @Override
     public List<TeamListDTO> listTeam(TeamQueryDTO dto, SecurityDTO security) {
-        PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
         Long userId = security.getUserId();
         //构建查询参数
         HashMap<String, Object> params = buildQueryParams(dto, security);
@@ -84,6 +83,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         boolean check = iFacadeUserApi.checkIsTenantAdmin(userId);
         //如果是租户管理员
         if (check) {
+            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
             rest = sTeamMapper.queryAllTeam(params);
         } else { //不是租户管理员
             STeamMemberExample teamMemberExample=new STeamMemberExample();
@@ -95,6 +95,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
                 return rest;
             }
             List<Long> teamIds = sTeamMembers.stream().map(s -> s.getTeamId()).collect(Collectors.toList());
+            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
             rest=sTeamMapper.queryTeamsByOrderIds(teamIds);
         }
         rest.forEach(team -> {
