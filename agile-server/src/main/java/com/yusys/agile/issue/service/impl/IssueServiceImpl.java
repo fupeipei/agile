@@ -317,7 +317,7 @@ public class IssueServiceImpl implements IssueService {
         List<IssueHistoryRecord> history = new ArrayList<>();
         Issue issueOld = issueMapper.selectByPrimaryKey(issueId);
         String oldValue = "";
-        if(Optional.ofNullable(issueOld.getParentId()).isPresent()){
+        if (Optional.ofNullable(issueOld.getParentId()).isPresent()) {
             oldValue = issueOld.getParentId().toString();
         }
         setHistoryRecordList(history, issueId, oldValue, parentId.toString());
@@ -741,7 +741,7 @@ public class IssueServiceImpl implements IssueService {
                 }
                 setTeamInfo(map, null, sprintId, issueId, issue.getIssueType());
             }
-        }else{
+        } else {
             throw new BusinessException("工作项不存在！");
         }
         return map;
@@ -762,7 +762,7 @@ public class IssueServiceImpl implements IssueService {
             if (null != sprintId) {
                 //根据迭代ID获取团队信息
                 SSprintWithBLOBs sprintWithBLOB = ssprintMapper.selectByPrimaryKey(sprintId);
-                if(null == sprintWithBLOB){
+                if (null == sprintWithBLOB) {
                     throw new BusinessException("迭代信息不存在！");
                 }
                 STeam sTeam = teamv3Service.getTeamById(sprintWithBLOB.getTeamId());
@@ -2855,7 +2855,6 @@ public class IssueServiceImpl implements IssueService {
     }
 
 
-
     /**
      * @return java.util.List<com.yusys.agile.issue.domain.Issue>
      * @Author fupp1
@@ -2867,7 +2866,7 @@ public class IssueServiceImpl implements IssueService {
     public List<IssueDTO> listIssueOfProjectAndUser(List<Long> systemIds, Long userId) {
         //根据项目获取系统ids
         List<IssueDTO> issueList = new ArrayList<>();
-        if(Optional.ofNullable(systemIds).isPresent() && systemIds.size()>0){
+        if (Optional.ofNullable(systemIds).isPresent() && systemIds.size() > 0) {
             issueList = issueMapper.listIssueOfProjectAndUser(systemIds, userId);
         }
         return issueList;
@@ -3390,7 +3389,9 @@ public class IssueServiceImpl implements IssueService {
     public void isArchive(Long issueId, Byte isArchive) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
-        Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在"));
+        if (Optional.ofNullable(issue).isPresent()) {
+            throw new BusinessException("工作项不存在");
+        }
         if (StateEnum.E.toString().equals(issue.getState())) {
             throw new BusinessException("工作项不存在");
         }
@@ -3620,35 +3621,35 @@ public class IssueServiceImpl implements IssueService {
 
 
     @Override
-    public List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds) {
+    public List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title, List<Long> systemIds) {
 
         PageHelper.startPage(pageNum, pageSize);
         List<IssueDTO> issueDTOS = issueMapper.queryEpicListByCondition(systemIds, title);
 
-        loggr.info("查询出issueDTOS数据为：{}",JSONObject.toJSONString(issueDTOS));
-        if(CollectionUtils.isNotEmpty(issueDTOS)){
+        loggr.info("查询出issueDTOS数据为：{}", JSONObject.toJSONString(issueDTOS));
+        if (CollectionUtils.isNotEmpty(issueDTOS)) {
             issueDTOS.forEach(issueDTO -> {
                 Long issueId = issueDTO.getIssueId();
                 SEpicSystemRelateExample relateExample = new SEpicSystemRelateExample();
                 relateExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andEpicIdEqualTo(issueId);
                 List<SEpicSystemRelate> epicSystemRelates = epicSystemRelateMapper.selectByExample(relateExample);
-                if(CollectionUtils.isNotEmpty(epicSystemRelates)){
+                if (CollectionUtils.isNotEmpty(epicSystemRelates)) {
                     List<Long> ids = epicSystemRelates.stream().map(s -> s.getSystemId()).collect(Collectors.toList());
                     issueDTO.setSystemIds(ids);
                 }
 
                 Long handler = issueDTO.getHandler();
-                if(Optional.ofNullable(handler).isPresent()){
+                if (Optional.ofNullable(handler).isPresent()) {
                     try {
                         SsoUser ssoUser = userCache.get(handler);
-                        if(Optional.ofNullable(ssoUser).isPresent()){
+                        if (Optional.ofNullable(ssoUser).isPresent()) {
                             String userAccount = ssoUser.getUserAccount();
                             String userName = ssoUser.getUserName();
                             issueDTO.setHandlerName(userName);
                             issueDTO.setHandlerAccount(userAccount);
                         }
                     } catch (ExecutionException e) {
-                        loggr.info("获取人员信息异常:{}",e.getMessage());
+                        loggr.info("获取人员信息异常:{}", e.getMessage());
                     }
                 }
             });

@@ -479,13 +479,13 @@ public class IssueController {
     }
 
     @GetMapping("/issue/getCollectIssueDataBySystemId")
-    List<StageNameAndValueDto> getCollectIssueDataBySystemId(@RequestParam("systemId")Long systemId){
+    public List<StageNameAndValueDto> getCollectIssueDataBySystemId(@RequestParam("systemId")Long systemId){
         return issueService.getCollectIssueDataBySystemId(systemId);
 
     }
 
     @GetMapping("/issue/queryIssueListBySystemIds")
-    List<IssueDTO> queryIssueListBySystemIds(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "issueType") int issueType){
+    public List<IssueDTO> queryIssueListBySystemIds(@RequestParam(name = "systemIds")List<Long> systemIds,@RequestParam(name = "issueType") int issueType){
         return issueService.queryIssueListBySystemIds(systemIds,issueType);
     }
 
