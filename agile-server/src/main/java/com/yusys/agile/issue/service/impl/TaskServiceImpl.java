@@ -123,14 +123,15 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteTask(Long taskId, Boolean deleteChild) {
         Issue issue = issueMapper.selectByPrimaryKey(taskId);
+        Long kanbanId= null;
         if (null != issue) {
             IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
             //校验权限
             this.checkAuth(issueDTO, issue, "delete", "无法删除任务","非迭代成员，不允许删除任务");
+            kanbanId = issue.getKanbanId();
         }
         issueFactory.deleteIssue(taskId, deleteChild);
 
-        Long kanbanId = issue.getKanbanId();
         if (Optional.ofNullable(kanbanId).isPresent()) {
             issueService.updateTaskParentStatus(issue.getIssueId(), kanbanId);
         } else {
@@ -769,7 +770,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public List<IssueHistoryRecord> createIssueHistoryRecordsForStory(Long from, Long to, Issue story) {
-        if(story==null||from==null||to==null||to==from){
+        if(story==null||from==null||to==null|| to.equals(from)){
             return null;
         }
 

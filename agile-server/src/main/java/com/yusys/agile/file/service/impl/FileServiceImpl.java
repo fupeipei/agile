@@ -113,7 +113,10 @@ public class FileServiceImpl implements FileService {
      */
     private FileInfo fastdfsUpload(MultipartFile file, FileInfo fileInfo) throws Exception {
         String realFileName = file.getOriginalFilename();
-        int suffixIndex = realFileName.lastIndexOf('.');
+        int suffixIndex=0;
+        if (StringUtils.isNotEmpty(realFileName)) {
+            suffixIndex = realFileName.lastIndexOf('.');
+        }
         String[] result;
         String suffix;
         if (suffixIndex != -1) {

@@ -243,7 +243,7 @@ public class FaultServiceImpl implements FaultService {
      * @date 2021/2/25
      */
     private String getOperationValue(Long key, String fieldCode) {
-        Map map = new HashMap<String, String>();
+        Map<Object, Object> map = new HashMap<>();
         if (key != null) {
             HeaderFieldExample headerFieldExample = new HeaderFieldExample();
             headerFieldExample.createCriteria().andFieldCodeEqualTo(fieldCode);
@@ -251,7 +251,7 @@ public class FaultServiceImpl implements FaultService {
             JSONObject jsonObject = JSON.parseObject(headerFields.get(0).getFieldContent());
             JSONArray jsonArray = jsonObject.getJSONArray("optionList");
             for (int i = 0; i < jsonArray.size(); i++) {
-                if (jsonArray.getJSONObject(i).getString("key").equals(key)) {
+                if (jsonArray.getJSONObject(i).getString("key").equals(key.toString())) {
                     map.put("name", jsonArray.getJSONObject(i).getString("value"));
                     map.put("id", key);
                 }

@@ -217,7 +217,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
         });
 
         if(!result.contains(state)){
-            new BusinessException("传入参数错误");
+            throw new BusinessException("传入参数错误");
         }
 
         Issue issue = new Issue();

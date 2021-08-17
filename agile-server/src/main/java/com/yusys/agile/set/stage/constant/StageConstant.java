@@ -46,7 +46,7 @@ public class StageConstant {
         public static String getFirstStageName(Long id) {
             String name = null;
             for (FirstStageEnum firstStageEnum : FirstStageEnum.values()) {
-                if (id == firstStageEnum.getValue()) {
+                if (id.equals(firstStageEnum.getValue())) {
                     name = firstStageEnum.getName();
                     break;
                 }

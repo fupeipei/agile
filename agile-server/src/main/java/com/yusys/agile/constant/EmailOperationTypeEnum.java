@@ -37,7 +37,7 @@ public enum EmailOperationTypeEnum {
     // 普通方法
     public static EmailOperationTypeEnum getByCode(String code) {
         for (EmailOperationTypeEnum operationType : EmailOperationTypeEnum.values()) {
-            if (operationType.CODE.equals(code)) {
+            if (operationType.CODE.equals(Integer.valueOf(code))) {
                 return operationType;
             }
         }

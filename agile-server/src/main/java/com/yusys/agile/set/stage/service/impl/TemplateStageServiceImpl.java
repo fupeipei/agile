@@ -101,7 +101,7 @@ public class TemplateStageServiceImpl implements TemplateStageService {
         TemplateStage templateStage = null;
         for (TemplateStage template : templateStages) {
             Long stageId = template.getStageId();
-            if (stageId != StageConstant.FirstStageEnum.READY_STAGE.getValue() && stageId != StageConstant.FirstStageEnum.FINISH_STAGE.getValue()) {
+            if (!stageId.equals(StageConstant.FirstStageEnum.READY_STAGE.getValue()) && !stageId.equals(StageConstant.FirstStageEnum.FINISH_STAGE.getValue())) {
                 parentStageIdList.add(stageId);
             }
             templateStage = new TemplateStage();
@@ -187,7 +187,7 @@ public class TemplateStageServiceImpl implements TemplateStageService {
         while (iterator.hasNext()) {
             TemplateStage templateStage = iterator.next();
             Long stageId = templateStage.getStageId();
-            if (stageId == StageConstant.FirstStageEnum.READY_STAGE.getValue() || stageId == StageConstant.FirstStageEnum.FINISH_STAGE.getValue()) {
+            if (stageId.equals(StageConstant.FirstStageEnum.READY_STAGE.getValue()) || stageId.equals(StageConstant.FirstStageEnum.FINISH_STAGE.getValue())) {
                 iterator.remove();
             }
         }
