@@ -161,7 +161,7 @@ public class VersionManagerDTO implements Serializable {
         this.relatedRequirementList = relatedRequirementList;
     }
 
-    private List<SendRMSRequestDTO> relatedRequirementList;
+    private transient List<SendRMSRequestDTO> relatedRequirementList;
 
     public List<IssueDTO> getRelateIssueList() {
         return relateIssueList;
@@ -171,7 +171,7 @@ public class VersionManagerDTO implements Serializable {
         this.relateIssueList = relateIssueList;
     }
 
-    private List<IssueDTO> relateIssueList;
+    private transient List<IssueDTO> relateIssueList;
 
     private static final long serialVersionUID = 1L;
 
