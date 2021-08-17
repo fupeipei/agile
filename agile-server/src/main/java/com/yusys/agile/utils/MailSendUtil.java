@@ -600,7 +600,7 @@ public class MailSendUtil {
         BusinessExample businessExample = new BusinessExample();
         businessExample.createCriteria().andStateEqualTo(StateEnum.U.toString())
                 .andIsVisibleEqualTo(NumberConstant.ZERO.byteValue())
-                .andBusinessStateNotEqualTo(BusinessState.COMPLETE.getNodeCode().byteValue())
+                .andBusinessStateNotEqualTo(BusinessState.COMPLETE.getNodeCode())
                 .andPlanEndTimeLessThanOrEqualTo(new Date());
         businessExample.setOrderByClause(CREATE_TIME_DESC);
         List<Business> businesses = businessMapper.selectByExample(businessExample);
