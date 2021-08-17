@@ -72,6 +72,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -260,10 +261,13 @@ public class ExcelServiceImpl implements ExcelService {
     @Override
     public ControllerResponse importExcel(Byte excelType, Long projectId, Long sprintId, MultipartHttpServletRequest multiReq, HttpServletRequest request, HttpServletResponse response) throws Exception {
         MultipartFile file = multiReq.getFile("file");
+        String fileName = "";
         // upload
-        String fileName = file.getOriginalFilename();
+        if (Optional.ofNullable(file).isPresent()) {
+            fileName = file.getOriginalFilename();
         fileName = new String(fileName.getBytes(), "UTF-8");
         fileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
+        }
         Sheet sheet = null;
         Workbook wb = null;
         FileInputStream fis = (FileInputStream) file.getInputStream();
@@ -272,6 +276,7 @@ public class ExcelServiceImpl implements ExcelService {
         } else if (ExcelUtil.isExcel2007(fileName)) {
             wb = new XSSFWorkbook(fis);
         }
+
         Map<String, String> map = ExcelUtil.getExcelInfo(excelType.intValue());
         if (wb != null) {
             sheet = wb.getSheet(map.get("sheetName"));
@@ -300,6 +305,8 @@ public class ExcelServiceImpl implements ExcelService {
             }
             return ControllerResponse.fail("文件内容为空，请重新上传!");
         }
+
+
     }
 
     /**
@@ -1490,7 +1497,7 @@ public class ExcelServiceImpl implements ExcelService {
             List<Long> allIssueId = issueMapper.listAllIssueId(Lists.newArrayList(issueRestltMap.keySet()));
             if (CollectionUtils.isNotEmpty(allIssueId)) {
                 //项目下的当前页
-                Map<String, Map> map = issueService.issueMap( null);
+                Map<String, Map> map = issueService.issueMap(null);
                 if (MapUtils.isNotEmpty(map)) {
                     IssueStringDTO issueStringDTO = JSON.parseObject(JSON.toJSONString(mapStr), IssueStringDTO.class);
                     for (Issue issue : issues) {

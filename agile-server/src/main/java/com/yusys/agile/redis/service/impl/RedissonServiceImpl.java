@@ -56,6 +56,7 @@ public class RedissonServiceImpl implements RedissonService {
             return rLock.tryLock(waitTime, leaseTime, unit);
         } catch (InterruptedException e) {
             LOGGER.error("tryLock method occur exception:{}", e.getMessage());
+            Thread.currentThread().interrupt();
             return false;
         }
     }
@@ -74,6 +75,7 @@ public class RedissonServiceImpl implements RedissonService {
                     } catch (InterruptedException e) {
                         result = false;
                         LOGGER.error("tryLock method sleep occur exception:{}", e.getMessage());
+                        Thread.currentThread().interrupt();
                     }
                 }
             }

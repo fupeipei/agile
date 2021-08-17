@@ -132,12 +132,12 @@ public class ExcelServiceImpl implements IExcelService {
     /**
      * 缓存数据
      */
-    private static Map<Long,String> systemMap = new ConcurrentHashMap<>();
+    private static Map<Long, String> systemMap = new ConcurrentHashMap<>();
 
-    private static Map<Long,String> userMap = new ConcurrentHashMap<>();
+    private static Map<Long, String> userMap = new ConcurrentHashMap<>();
 
     private static final String MAX_ISSUE_EXPORT_THRESHOLD_KEY = "ISSUE_MAX_EXPORT_THRESHOLD";
-    private static final String[] EPIC_HEAD_LINE = {"*需求名称", "需求描述", "开始日期", "结束日期", "预计工时","需求优先级","重要程度"};
+    private static final String[] EPIC_HEAD_LINE = {"*需求名称", "需求描述", "开始日期", "结束日期", "预计工时", "需求优先级", "重要程度"};
     private static final String[] STORY_HEAD_LINE = {"*故事名称", "故事描述", "验收标准", "迭代", "优先级", "父工作项", "故事点", "开始日期", "结束日期", "预计工时"};
     private static final String[] TASK_HEAD_LINE = {"*故事ID", "*任务标题", "任务描述", "*任务类型", "预计工时"};
 
@@ -158,7 +158,7 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
     @Override
-    public FileInfo uploadEpics(MultipartFile file,ExcelCommentField field) throws Exception {
+    public FileInfo uploadEpics(MultipartFile file, ExcelCommentField field) throws Exception {
         //1、检查文件类型
         checkFileType(file);
 
@@ -168,11 +168,11 @@ public class ExcelServiceImpl implements IExcelService {
 
         //3、校验数据（必填项、数据格式等等）
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        boolean hasError = checkData(data,copyData,IssueTypeEnum.TYPE_EPIC.CODE);
+        boolean hasError = checkData(data, copyData, IssueTypeEnum.TYPE_EPIC.CODE);
 
         //4、传错误文件
         if (hasError) {
-            return uploadFile(copyData, "epicImportError.xlsx", "epics", IssueTypeEnum.getName((byte) 1),field);
+            return uploadFile(copyData, "epicImportError.xlsx", "epics", IssueTypeEnum.getName((byte) 1), field);
         }
         List<JSONObject> jsonObjects = analysisEpicData(data);
 
@@ -194,14 +194,14 @@ public class ExcelServiceImpl implements IExcelService {
     public FileInfo uploadTasks(MultipartFile file, ExcelCommentField field) throws Exception {
         Long sprintId = field.getSprintId();
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
-        SSprint sprint= sSprintMapper.selectByPrimaryKey(sprintId);
+        SSprint sprint = sSprintMapper.selectByPrimaryKey(sprintId);
         Long teamId = sprint.getTeamId();
-        checkIsSm(userId,teamId);
+        checkIsSm(userId, teamId);
         //检查文件类型
         checkFileType(file);
         List<List<String>> data = ExcelUtil.readExcel(file.getInputStream(), 0);
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        boolean hasError = checkData(data,copyData, (byte) 4);
+        boolean hasError = checkData(data, copyData, (byte) 4);
         if (hasError) {
             return uploadFile(copyData, "taskImportError.xlsx", "tasks", IssueTypeEnum.getName((byte) 4), field);
         }
@@ -326,15 +326,15 @@ public class ExcelServiceImpl implements IExcelService {
      *
      * @param copyData
      */
-    private boolean checkData(List<List<String>> data,List<List<String>> copyData, Byte type) {
+    private boolean checkData(List<List<String>> data, List<List<String>> copyData, Byte type) {
 
         //1、校验表头数据
-        if(copyData.size() > 0){
+        if (copyData.size() > 0) {
             boolean result = checkHeadLine(copyData.get(0), type);
             if (!result) {
                 throw new BusinessException("导入模版不正确，请检查!");
             }
-        }else {
+        } else {
             throw new BusinessException("导入文件为空，请检查!");
         }
 
@@ -350,8 +350,10 @@ public class ExcelServiceImpl implements IExcelService {
 
     private void checkFileType(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
-        if (!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)) {
-            throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
+        if (StringUtils.isNotEmpty(originalFilename)) {
+            if (!originalFilename.endsWith(ExcelUtil.XLS) && !originalFilename.endsWith(ExcelUtil.XLSX)) {
+                throw new BusinessException("只支持导入.xls、.xlsx类型的文件，请检查!");
+            }
         }
     }
 
@@ -389,6 +391,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 检查Excel文件数据
+     *
      * @param data
      * @param copyData
      * @param headSize
@@ -412,32 +415,32 @@ public class ExcelServiceImpl implements IExcelService {
                     hasError = true;
                     continue;
                 }
-                if(StringUtils.isNotBlank(line.get(7))){
+                if (StringUtils.isNotBlank(line.get(7))) {
                     try {
                         String startDate = line.get(7);
                         DateUtil.formatStrToDate(startDate);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         fileResult.add(headSize, "开始日期格式错误");
                         hasError = true;
                         continue;
                     }
                 }
-                if(StringUtils.isNotBlank(line.get(8))){
+                if (StringUtils.isNotBlank(line.get(8))) {
                     try {
                         String endDate = line.get(8);
                         DateUtil.formatStrToDate(endDate);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         fileResult.add(headSize, "结束日期格式错误");
                         hasError = true;
                         continue;
                     }
                 }
 
-                if(StringUtils.isNotBlank(line.get(9))){
+                if (StringUtils.isNotBlank(line.get(9))) {
                     try {
                         String str = line.get(9);
                         Integer integer = Integer.valueOf(str);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         fileResult.add(headSize, "预计工时格式错误");
                         hasError = true;
                         continue;
@@ -460,53 +463,53 @@ public class ExcelServiceImpl implements IExcelService {
                     hasError = true;
                     continue;
                 }
-                if(StringUtils.isNotBlank(line.get(4))){
+                if (StringUtils.isNotBlank(line.get(4))) {
                     try {
                         String str = line.get(4);
                         Integer integer = Integer.valueOf(str);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         fileResult.add(headSize, "预计工时格式错误");
                         hasError = true;
                         continue;
                     }
                 }
-            }else if(IssueTypeEnum.TYPE_EPIC.CODE.equals(type)){
-                    if (StringUtils.isBlank(line.get(0))) {
-                        fileResult.add(headSize, "epic名称不能为空");
+            } else if (IssueTypeEnum.TYPE_EPIC.CODE.equals(type)) {
+                if (StringUtils.isBlank(line.get(0))) {
+                    fileResult.add(headSize, "epic名称不能为空");
+                    hasError = true;
+                    continue;
+                }
+                if (StringUtils.isNotBlank(line.get(2))) {
+                    try {
+                        String startDate = line.get(2);
+                        DateUtil.formatStrToDate(startDate);
+                    } catch (Exception e) {
+                        fileResult.add(headSize, "开始日期格式错误");
                         hasError = true;
                         continue;
                     }
-                    if(StringUtils.isNotBlank(line.get(2))){
-                        try {
-                            String startDate = line.get(2);
-                            DateUtil.formatStrToDate(startDate);
-                        }catch (Exception e){
-                            fileResult.add(headSize, "开始日期格式错误");
-                            hasError = true;
-                            continue;
-                        }
+                }
+                if (StringUtils.isNotBlank(line.get(3))) {
+                    try {
+                        String endDate = line.get(3);
+                        DateUtil.formatStrToDate(endDate);
+                    } catch (Exception e) {
+                        fileResult.add(headSize, "结束日期格式错误");
+                        hasError = true;
+                        continue;
                     }
-                    if(StringUtils.isNotBlank(line.get(3))){
-                        try {
-                            String endDate = line.get(3);
-                            DateUtil.formatStrToDate(endDate);
-                        }catch (Exception e){
-                            fileResult.add(headSize, "结束日期格式错误");
-                            hasError = true;
-                            continue;
-                        }
-                    }
+                }
 
-                    if(StringUtils.isNotBlank(line.get(4))){
-                        try {
-                            String str = line.get(4);
-                            Integer integer = Integer.valueOf(str);
-                        }catch (Exception e){
-                            fileResult.add(headSize, "预计工时格式错误");
-                            hasError = true;
-                            continue;
-                        }
+                if (StringUtils.isNotBlank(line.get(4))) {
+                    try {
+                        String str = line.get(4);
+                        Integer integer = Integer.valueOf(str);
+                    } catch (Exception e) {
+                        fileResult.add(headSize, "预计工时格式错误");
+                        hasError = true;
+                        continue;
                     }
+                }
             }
         }
         return hasError;
@@ -525,6 +528,7 @@ public class ExcelServiceImpl implements IExcelService {
 
     /**
      * 功能描述: 校验列头
+     *
      * @param excelhead
      * @param excelType
      * @return
@@ -583,13 +587,13 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
 
-    private List<List<String>> getExcelData(List<Issue> issueList, List<HeaderField> headerFieldList){
+    private List<List<String>> getExcelData(List<Issue> issueList, List<HeaderField> headerFieldList) {
 
         List<List<String>> dataResult = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(issueList)) {
             List<IssueExportDTO> exportDTOList = transformaData(issueList);
-            log.info("issue数据转换后:{}",JSONObject.toJSONString(exportDTOList));
-            for(IssueExportDTO issue:exportDTOList){
+            log.info("issue数据转换后:{}", JSONObject.toJSONString(exportDTOList));
+            for (IssueExportDTO issue : exportDTOList) {
                 String makeMan = getMakeMan(issue);
                 issue.setMakeMan(makeMan);
 
@@ -606,7 +610,7 @@ public class ExcelServiceImpl implements IExcelService {
                             String name = field.getName();
                             if (StringUtils.equals(fieldCode, name)) {
                                 Object o = field.get(issue);
-                                fieldList.add(o == null ? null:String.valueOf(o));
+                                fieldList.add(o == null ? null : String.valueOf(o));
                                 break;
                             }
                         } catch (Exception e) {
@@ -622,27 +626,27 @@ public class ExcelServiceImpl implements IExcelService {
     }
 
 
-    private String getUserName(Long userId){
-        if(Optional.ofNullable(userId).isPresent() && !userMap.containsKey(userId)){
+    private String getUserName(Long userId) {
+        if (Optional.ofNullable(userId).isPresent() && !userMap.containsKey(userId)) {
             try {
                 SsoUser user = iFacadeUserApi.queryUserById(userId);
-                userMap.put(userId,user.getUserName());
-            }catch (Exception e){
-                log.info("远程获取人员信息异常：{}",e.getMessage());
+                userMap.put(userId, user.getUserName());
+            } catch (Exception e) {
+                log.info("远程获取人员信息异常：{}", e.getMessage());
             }
         }
         return userMap.get(userId);
     }
 
-    private String getMakeMan(IssueExportDTO issue){
+    private String getMakeMan(IssueExportDTO issue) {
         String issueId = issue.getIssueId();
-        if(Optional.ofNullable(issueId).isPresent()){
+        if (Optional.ofNullable(issueId).isPresent()) {
             SysExtendFieldDetailExample extendFieldDetailExample = new SysExtendFieldDetailExample();
             extendFieldDetailExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andIssueIdEqualTo(Long.valueOf(issueId));
             List<SysExtendFieldDetail> sysExtendFieldDetails = sysExtendFieldDetailMapper.selectByExample(extendFieldDetailExample);
-            if(CollectionUtils.isNotEmpty(sysExtendFieldDetails)){
+            if (CollectionUtils.isNotEmpty(sysExtendFieldDetails)) {
                 String userId = sysExtendFieldDetails.get(0).getValue();
-                if(Optional.ofNullable(userId).isPresent()){
+                if (Optional.ofNullable(userId).isPresent()) {
                     return getUserName(Long.valueOf(userId));
                 }
             }
@@ -650,10 +654,10 @@ public class ExcelServiceImpl implements IExcelService {
         return null;
     }
 
-    private List<IssueExportDTO> transformaData(List<Issue> issues){
+    private List<IssueExportDTO> transformaData(List<Issue> issues) {
         List<IssueExportDTO> exportDTOList = Lists.newArrayList();
-        if(CollectionUtils.isNotEmpty(issues)){
-            for(Issue issue : issues){
+        if (CollectionUtils.isNotEmpty(issues)) {
+            for (Issue issue : issues) {
                 IssueExportDTO target = new IssueExportDTO();
                 Class<?> sourceClass = issue.getClass();
                 Class<?> targetClass = target.getClass();
@@ -667,40 +671,40 @@ public class ExcelServiceImpl implements IExcelService {
                         t = targetClass.getDeclaredField(name);
                         t.setAccessible(true);
                         String result = null;
-                        if("issueType".equals(name)){
+                        if ("issueType".equals(name)) {
                             result = IssueTypeEnum.getName((Byte) s.get(issue));
-                        }else if("sprintId".equals(name)){
+                        } else if ("sprintId".equals(name)) {
                             Long sprintId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
-                            if(Optional.ofNullable(sprintId).isPresent()){
+                            if (Optional.ofNullable(sprintId).isPresent()) {
                                 SSprintWithBLOBs sprint = sSprintMapper.selectByPrimaryKey(sprintId);
                                 result = sprint.getSprintName();
                             }
 
-                        }else if("systemId".equals(name)){
+                        } else if ("systemId".equals(name)) {
                             Long systemId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
-                            if(Optional.ofNullable(systemId).isPresent() && !systemMap.containsKey(systemId)){
+                            if (Optional.ofNullable(systemId).isPresent() && !systemMap.containsKey(systemId)) {
                                 try {
                                     SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemId);
-                                    systemMap.put(systemId,ssoSystem.getSystemName());
-                                }catch (Exception e){
-                                    log.info("远程获取系统信息异常:{}",e.getMessage());
+                                    systemMap.put(systemId, ssoSystem.getSystemName());
+                                } catch (Exception e) {
+                                    log.info("远程获取系统信息异常:{}", e.getMessage());
                                 }
                             }
                             result = systemMap.get(systemId);
 
-                        }else if("createUid".equals(name) || "handler".equals(name) || "updateUid".equals(name)){
+                        } else if ("createUid".equals(name) || "handler".equals(name) || "updateUid".equals(name)) {
                             Long userId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
-                            if(Optional.ofNullable(userId).isPresent() && !userMap.containsKey(userId)){
+                            if (Optional.ofNullable(userId).isPresent() && !userMap.containsKey(userId)) {
                                 try {
                                     SsoUser user = iFacadeUserApi.queryUserById(userId);
-                                    userMap.put(userId,user.getUserName());
-                                }catch (Exception e){
-                                    log.info("远程获取人员信息异常：{}",e.getMessage());
+                                    userMap.put(userId, user.getUserName());
+                                } catch (Exception e) {
+                                    log.info("远程获取人员信息异常：{}", e.getMessage());
                                 }
                             }
                             result = userMap.get(userId);
 
-                        }else if("stageId".equals(name)){
+                        } else if ("stageId".equals(name)) {
                             Long stageId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
                             String firstStageName = StageConstant.FirstStageEnum.getFirstStageName(stageId);
 
@@ -713,30 +717,30 @@ public class ExcelServiceImpl implements IExcelService {
                                 stageInfo = stageService.getStageInfoByStageId(laneId);
                             }
                             StringBuffer buffer = new StringBuffer();
-                            if(Optional.ofNullable(firstStageName).isPresent()){
+                            if (Optional.ofNullable(firstStageName).isPresent()) {
                                 buffer.append(firstStageName);
-                                if(Optional.ofNullable(stageInfo).isPresent()){
+                                if (Optional.ofNullable(stageInfo).isPresent()) {
                                     buffer.append("/").append(stageInfo.getStageName());
                                 }
                             }
                             result = buffer.length() > 0 ? buffer.toString() : null;
 
-                        }else if("taskType".equals(name)){
+                        } else if ("taskType".equals(name)) {
                             Integer taskType = s.get(issue) == null ? null : Integer.valueOf(String.valueOf(s.get(issue)));
-                            String tasKName  = TaskTypeEnum.getName(taskType);
+                            String tasKName = TaskTypeEnum.getName(taskType);
                             result = tasKName;
-                        }else if("completion".equals(name)){
-                            String completion = s.get(issue) == null? null : String.valueOf(s.get(issue));
-                            if(Optional.ofNullable(completion).isPresent())
+                        } else if ("completion".equals(name)) {
+                            String completion = s.get(issue) == null ? null : String.valueOf(s.get(issue));
+                            if (Optional.ofNullable(completion).isPresent())
                                 result = IssueCompletionEnum.getName(completion);
-                        }else if("isArchive".equals(name)){
+                        } else if ("isArchive".equals(name)) {
                             String isArchive = s.get(issue) == null ? null : String.valueOf(s.get(issue));
-                            if(YesOrNoEnum.YES.getValue().toString().equals(isArchive)){
+                            if (YesOrNoEnum.YES.getValue().toString().equals(isArchive)) {
                                 result = YesOrNoEnum.YES.getName();
-                            }else {
+                            } else {
                                 result = YesOrNoEnum.NO.getName();
                             }
-                        }else if("teamId".equals(name)){
+                        } else if ("teamId".equals(name)) {
                             Long teamId = s.get(issue) == null ? null : Long.valueOf(String.valueOf(s.get(issue)));
                             STeam team = teamv3Service.getTeamById(teamId);
                             result = team.getTeamName();
@@ -744,18 +748,18 @@ public class ExcelServiceImpl implements IExcelService {
 
                         Type genericType = s.getGenericType();
                         String typeName = genericType.getTypeName();
-                        if("java.util.Date".equals(typeName)){
-                            Date date = s.get(issue) == null ? null :(Date)s.get(issue);
-                            if(Optional.ofNullable(date).isPresent()){
+                        if ("java.util.Date".equals(typeName)) {
+                            Date date = s.get(issue) == null ? null : (Date) s.get(issue);
+                            if (Optional.ofNullable(date).isPresent()) {
                                 try {
                                     String formatDate = DateUtil.formatDateToStr2(date);
                                     result = formatDate;
-                                }catch (Exception e){
-                                    log.info("日期转换异常:{}",e.getMessage());
+                                } catch (Exception e) {
+                                    log.info("日期转换异常:{}", e.getMessage());
                                 }
                             }
                         }
-                        t.set(target, result == null? (s.get(issue) == null ? null :s.get(issue).toString()) : result);
+                        t.set(target, result == null ? (s.get(issue) == null ? null : s.get(issue).toString()) : result);
                     } catch (Exception e) {
                         log.warn("|类转换异常|{}", s.toString());
                         continue;
@@ -845,7 +849,7 @@ public class ExcelServiceImpl implements IExcelService {
 
         //3、校验数据（必填项、数据格式等等）
         List<List<String>> copyData = CollectionUtil.deepCopy(data);
-        boolean hasError = checkData(data,copyData, (byte) 3);
+        boolean hasError = checkData(data, copyData, (byte) 3);
 
         //4、传错误文件
         if (hasError) {

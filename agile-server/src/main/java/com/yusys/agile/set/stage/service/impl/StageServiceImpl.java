@@ -34,6 +34,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -401,11 +402,13 @@ public class StageServiceImpl implements StageService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            if (rLock.isHeldByCurrentThread()) {
-                try {
-                    rLock.unlock();
-                } catch (Exception e) {
-                    LOGGER.error("release lock occur exception:{}", e.getMessage());
+            if (Optional.ofNullable(rLock).isPresent()) {
+                if (rLock.isHeldByCurrentThread()) {
+                    try {
+                        rLock.unlock();
+                    } catch (Exception e) {
+                        LOGGER.error("release lock occur exception:{}", e.getMessage());
+                    }
                 }
             }
         }

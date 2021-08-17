@@ -204,11 +204,7 @@ public class IssueUpRegularFactory {
                 Long stageId = stageInstance.getStageId();
                 Integer stayDays = Optional.ofNullable(stageInstance.getStayDays()).orElse(0);
                 String stages = parentId.equals(-1L) ? stageId + "" : StringUtils.join(parentId, "-", stageId);
-                if (stageProInstanceMap.containsKey(stages)) {
-                    stageProInstanceMap.put(stages, stayDays);
-                } else {
-                    stageProInstanceMap.put(stages, stayDays);
-                }
+                stageProInstanceMap.put(stages, stayDays);
             });
         }
         return stageProInstanceMap;

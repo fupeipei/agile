@@ -26,18 +26,6 @@ import java.util.*;
 public class SqlLoadTest {
 
 
-//    @Test
-//    public void testSqlFromFile() {
-//        try {
-//            log.info(new File(".").getAbsolutePath());
-//            //this.execute("src\\test\\java\\com\\yusys\\cicd\\component\\server\\components\\sql\\sqlFile.sql");
-//            this.execute("classpath:/sql/sqlFileForUnitTest.sql");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        log.info("test");
-//    }
-
 
     /*
      * 传入文件执行sql语句

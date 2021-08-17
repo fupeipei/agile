@@ -36,7 +36,7 @@ public class LaneKanbanStageConstant {
         public static String getStageName(Long id) {
             String name = null;
             for (AnalysisStageEnum firstStageEnum : AnalysisStageEnum.values()) {
-                if (id == firstStageEnum.getValue()) {
+                if (id.equals(firstStageEnum.getValue())) {
                     name = firstStageEnum.getName();
                     break;
                 }
@@ -71,7 +71,7 @@ public class LaneKanbanStageConstant {
         public static String getStageName(Long id) {
             String name = null;
             for (AnalysisStageEnum firstStageEnum : AnalysisStageEnum.values()) {
-                if (id == firstStageEnum.getValue()) {
+                if (id.equals(firstStageEnum.getValue())) {
                     name = firstStageEnum.getName();
                     break;
                 }
@@ -113,7 +113,7 @@ public class LaneKanbanStageConstant {
         public static String getStageName(Long id) {
             String name = null;
             for (AnalysisStageEnum firstStageEnum : AnalysisStageEnum.values()) {
-                if (id == firstStageEnum.getValue()) {
+                if (id.equals(firstStageEnum.getValue())) {
                     name = firstStageEnum.getName();
                     break;
                 }
@@ -148,7 +148,7 @@ public class LaneKanbanStageConstant {
         public static String getStageName(Long id) {
             String name = null;
             for (AnalysisStageEnum firstStageEnum : AnalysisStageEnum.values()) {
-                if (id == firstStageEnum.getValue()) {
+                if (id.equals(firstStageEnum.getValue())) {
                     name = firstStageEnum.getName();
                     break;
                 }
@@ -183,7 +183,7 @@ public class LaneKanbanStageConstant {
         public static String getStageName(Long id) {
             String name = null;
             for (AnalysisStageEnum firstStageEnum : AnalysisStageEnum.values()) {
-                if (id == firstStageEnum.getValue()) {
+                if (id.equals(firstStageEnum.getValue())) {
                     name = firstStageEnum.getName();
                     break;
                 }
@@ -219,7 +219,7 @@ public class LaneKanbanStageConstant {
         public static String getStageName(Long id) {
             String name = null;
             for (AnalysisStageEnum firstStageEnum : AnalysisStageEnum.values()) {
-                if (id == firstStageEnum.getValue()) {
+                if (id.equals(firstStageEnum.getValue())) {
                     name = firstStageEnum.getName();
                     break;
                 }

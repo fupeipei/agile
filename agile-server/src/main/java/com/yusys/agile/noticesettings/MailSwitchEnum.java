@@ -111,7 +111,7 @@ public enum MailSwitchEnum {
     // 普通方法
     public static MailSwitchEnum getByCode(String code) {
         for (MailSwitchEnum switchEnum : MailSwitchEnum.values()) {
-            if (switchEnum.mailType.equals(code)) {
+            if (switchEnum.mailType.toString().equals(code)) {
                 return switchEnum;
             }
         }

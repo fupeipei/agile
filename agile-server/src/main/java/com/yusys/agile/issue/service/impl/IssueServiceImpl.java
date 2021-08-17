@@ -967,7 +967,7 @@ public class IssueServiceImpl implements IssueService {
 //                Map<String, String> stagesInstanceMapInfo = recordFactory.getStagesInstanceMapInfo(systemId);
                 issueHistoryRecords.forEach(issueHistoryRecordDTO -> {
                     //recordType 0 常规文本 1 富文本
-                    if ("1".equals(issueHistoryRecordDTO.getRecordType())) {
+                    if ("1".equals(issueHistoryRecordDTO.getRecordType().toString())) {
                         issueHistoryRecordDTO.setOldValue("");
                         issueHistoryRecordDTO.setNewValue("");
                     }
@@ -2735,7 +2735,7 @@ public class IssueServiceImpl implements IssueService {
         }
         issue.setStageId(stageId);
         issue.setLaneId(laneId);
-        if (StageConstant.FirstStageEnum.READY_STAGE.equals(stageId)) {
+        if (StageConstant.FirstStageEnum.READY_STAGE.getValue().equals(stageId)) {
             throw new BusinessException("工作项不能拖拽到就绪阶段!");
         }
         issueMapper.updateByPrimaryKey(issue);
