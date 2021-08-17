@@ -562,4 +562,19 @@
 			AND (a.team_name LIKE CONCAT('%', #{teamName}, '%'))
 		</if>
 	</select>
+	<select id="queryTeamsByOrderIds"  resultType="com.yusys.agile.team.dto.TeamListDTO">
+		select a.*
+		from s_team a
+		where  a.state = 'U'
+		<if test="teamIds != null and teamIds.size > 0">
+			and a.team_id in
+			<foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
+				#{teamId}
+			</foreach>
+			order by field(`team_id`,
+			<foreach collection="teamIds" item="teamId"  separator="," close=")">
+				#{teamId}
+			</foreach>
+		</if>
+	</select>
 </mapper>

@@ -18,6 +18,7 @@ import com.yusys.agile.teamv3.dao.STeamSystemMapper;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.domain.STeamExample;
 import com.yusys.agile.teamv3.domain.STeamMember;
+import com.yusys.agile.teamv3.domain.STeamMemberExample;
 import com.yusys.agile.teamv3.enums.TeamRoleEnum;
 import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
@@ -85,8 +86,16 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (check) {
             rest = sTeamMapper.queryAllTeam(params);
         } else { //不是租户管理员
-            params.put("userId",security.getUserId());
-            rest = sTeamMapper.queryMyHiveTeam(params);
+            STeamMemberExample teamMemberExample=new STeamMemberExample();
+            teamMemberExample.setDistinct(true);
+            teamMemberExample.setOrderByClause("update_time desc");
+            teamMemberExample.createCriteria().andUserIdEqualTo(userId);
+            List<STeamMember> sTeamMembers = sTeamMemberMapper.selectByExample(teamMemberExample);
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(sTeamMembers)){
+                return rest;
+            }
+            List<Long> teamIds = sTeamMembers.stream().map(s -> s.getTeamId()).collect(Collectors.toList());
+            rest=sTeamMapper.queryTeamsByOrderIds(teamIds);
         }
         rest.forEach(team -> {
             //设置关注标识

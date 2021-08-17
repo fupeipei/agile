@@ -147,4 +147,15 @@ public interface STeamMapper {
      * @return
      */
     List<TeamListDTO> queryTeams(@Param("teamIds") List<Long> teamIds,@Param("teamName") String teamName);
+
+    /**
+     * @return: java.util.List<com.yusys.agile.team.dto.TeamListDTO>
+     * @Author wangpf6
+     * @Description 根据id返回固定顺序team
+     * @Date 15:19 2021/8/17
+     * @Param [teamIds, teamName]
+     **/
+    List<TeamListDTO> queryTeamsByOrderIds(@Param("teamIds") List<Long> teamIds);
+
+
 }
