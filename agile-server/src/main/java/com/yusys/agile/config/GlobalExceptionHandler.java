@@ -11,6 +11,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolationException;
 import javax.xml.bind.ValidationException;
+import java.util.Objects;
 
 
 @RestControllerAdvice
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ControllerResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         logger.error(e.getMessage(), e);
-        return new ControllerResponse(PARAM_FAIL_CODE, e.getBindingResult().getFieldError().getDefaultMessage(),null);
+        return new ControllerResponse(PARAM_FAIL_CODE, Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage(),null);
     }
 
     /**
