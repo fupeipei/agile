@@ -1,18 +1,16 @@
 package com.yusys.agile.issue.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.burndown.dao.BurnDownChartStoryDao;
 import com.yusys.agile.constant.StringConstant;
 import com.yusys.agile.fault.enums.FaultStatusEnum;
 import com.yusys.agile.headerfield.enums.IsCustomEnum;
-import com.yusys.agile.issue.dao.IssueAcceptanceMapper;
 import com.yusys.agile.issue.dao.IssueMapper;
-import com.yusys.agile.issue.dao.IssueSystemRelpMapper;
 import com.yusys.agile.issue.dao.SIssueRichtextMapper;
 import com.yusys.agile.issue.domain.*;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.StoryCreatePrepInfoDTO;
-import com.yusys.agile.issue.service.IssueSystemRelpService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.service.TaskService;
 import com.yusys.agile.issue.utils.IssueFactory;
@@ -34,7 +32,6 @@ import com.yusys.agile.teamv3.enums.TeamTypeEnum;
 import com.yusys.agile.utils.ObjectUtil;
 import com.yusys.agile.utils.exception.ExceptionCodeEnum;
 import com.yusys.agile.versionmanager.constants.VersionConstants;
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.enums.*;
 import com.yusys.portal.common.exception.BusinessException;
@@ -375,7 +372,7 @@ public class StoryServiceImpl implements StoryService {
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         IssueExample example = new IssueExample();
         example.setOrderByClause("priority desc,create_time desc");
@@ -725,7 +722,6 @@ public class StoryServiceImpl implements StoryService {
                 && ObjectUtil.equals(issueDTO.getStages()[0], StageConstant.FirstStageEnum.TEST_STAGE.getValue())
                 && !ObjectUtil.equals(oldIssue.getStageId(), StageConstant.FirstStageEnum.TEST_STAGE.getValue())) {
             Issue issue = issueMapper.selectByPrimaryKey(issueDTO.getIssueId());
-            ;
             // 不是删除的时候才需要查询一次测试负责人塞入issue
             SysExtendFieldDetail detail = sysExtendFieldDetailService.getSysExtendFieldDetail(issue.getIssueId(), "externalHandlerId");
             if (null == detail || null == detail.getValue()) {
@@ -740,7 +736,7 @@ public class StoryServiceImpl implements StoryService {
     public List<IssueDTO> listStoryAcceptance(IssueDTO issueDTO, Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
 
         IssueExample example = new IssueExample();
@@ -890,7 +886,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<IssueDTO> listUnFinisherStorysByProjectId(Long projectId, String name, Integer pageNum, Integer pageSize) {
         if (pageNum != null && pageSize != null) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         IssueExample example = new IssueExample();
         IssueExample.Criteria criteria = example.createCriteria();
@@ -1003,7 +999,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<IssueDTO> getUnfinishedStorysBySprintId(Long sprintId, Integer pageNum, Integer pageSize) {
         if (pageNum != null && pageSize != null) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         IssueExample example = new IssueExample();
         example.setOrderByClause("issue_id desc");
@@ -1079,7 +1075,7 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<IssueDTO> queryStoryBySystemId(Long systemId,String storyName,Integer pageNum,Integer pageSize) {
         if (pageNum != null && pageSize != null) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         IssueExample issueExample = new IssueExample();
         List<Long> listLageId = Lists.newArrayList(104L,105L);

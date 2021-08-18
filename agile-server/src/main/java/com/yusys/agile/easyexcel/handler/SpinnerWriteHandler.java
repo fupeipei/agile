@@ -111,6 +111,7 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
     @Override
     public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
 
+        throw new UnsupportedOperationException();
     }
 
 

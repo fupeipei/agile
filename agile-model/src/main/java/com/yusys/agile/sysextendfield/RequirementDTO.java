@@ -13,7 +13,7 @@ import java.util.Map;
 public class RequirementDTO extends IssueDTO {
 
 
-    Map sysExtendField;
+    public Map sysExtendField;
 
     public Map getSysExtendField() {
         return sysExtendField;

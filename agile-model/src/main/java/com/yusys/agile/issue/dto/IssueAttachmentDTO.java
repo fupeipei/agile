@@ -1,8 +1,11 @@
 package com.yusys.agile.issue.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class IssueAttachmentDTO {
+public class IssueAttachmentDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long attachmentId;
 
     private Long issueId;
@@ -31,7 +34,6 @@ public class IssueAttachmentDTO {
 
     private String attachmentDesc;
 
-    private static final long serialVersionUID = 1L;
 
     public String getAttachmentDesc() {
         return attachmentDesc;

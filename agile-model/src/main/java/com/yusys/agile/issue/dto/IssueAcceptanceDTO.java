@@ -1,11 +1,13 @@
 package com.yusys.agile.issue.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @Date: 2021/2/1
  */
-public class IssueAcceptanceDTO {
+public class IssueAcceptanceDTO  implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long acceptanceId;
 
     private Long issueId;
