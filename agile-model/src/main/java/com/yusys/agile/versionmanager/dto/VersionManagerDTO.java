@@ -3,6 +3,7 @@ package com.yusys.agile.versionmanager.dto;
 import com.yusys.agile.issue.dto.IssueDTO;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -153,25 +154,11 @@ public class VersionManagerDTO implements Serializable {
 
     private Integer operateType;
 
-    public List<SendRMSRequestDTO> getRelatedRequirementList() {
-        return relatedRequirementList;
-    }
 
-    public void setRelatedRequirementList(List<SendRMSRequestDTO> relatedRequirementList) {
-        this.relatedRequirementList = relatedRequirementList;
-    }
+    private ArrayList<SendRMSRequestDTO> relatedRequirementList;
 
-    private transient List<SendRMSRequestDTO> relatedRequirementList;
 
-    public List<IssueDTO> getRelateIssueList() {
-        return relateIssueList;
-    }
-
-    public void setRelateIssueList(List<IssueDTO> relateIssueList) {
-        this.relateIssueList = relateIssueList;
-    }
-
-    private transient List<IssueDTO> relateIssueList;
+    private  ArrayList<IssueDTO> relateIssueList;
 
     private static final long serialVersionUID = 1L;
 
@@ -453,5 +440,21 @@ public class VersionManagerDTO implements Serializable {
 
     public void setDeployTypeName(String deployTypeName) {
         this.deployTypeName = deployTypeName;
+    }
+
+    public ArrayList<SendRMSRequestDTO> getRelatedRequirementList() {
+        return relatedRequirementList;
+    }
+
+    public void setRelatedRequirementList(ArrayList<SendRMSRequestDTO> relatedRequirementList) {
+        this.relatedRequirementList = relatedRequirementList;
+    }
+
+    public ArrayList<IssueDTO> getRelateIssueList() {
+        return relateIssueList;
+    }
+
+    public void setRelateIssueList(ArrayList<IssueDTO> relateIssueList) {
+        this.relateIssueList = relateIssueList;
     }
 }
