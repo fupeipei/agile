@@ -6,6 +6,7 @@ import com.yusys.portal.model.facade.entity.SsoSystem;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,10 +55,10 @@ public class ProjectManagerDto implements Serializable {
 
     private List<Long> systemIds;
 
-    private transient List<SsoUserDTO> userList;
+    private ArrayList<SsoUserDTO> userList;
 
 
-    private transient List<SsoSystem> ssoSystemList;
+    private ArrayList<SsoSystem> ssoSystemList;
 
     private List<PProductLine> pProductLines;
 

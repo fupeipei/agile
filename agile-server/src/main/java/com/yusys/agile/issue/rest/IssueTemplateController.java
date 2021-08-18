@@ -1,9 +1,7 @@
 package com.yusys.agile.issue.rest;
 
-import com.github.pagehelper.PageInfo;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.issue.domain.IssueCustomRelationList;
-import com.yusys.agile.issue.domain.SIssueCustomRelation;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.service.IssueTemplateService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
@@ -19,7 +17,7 @@ import java.util.List;
  * :
  *
  * @Date: 2021/2/20
- * @Description: TODO
+ * @Description:
  */
 @RestController
 public class IssueTemplateController {

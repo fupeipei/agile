@@ -27,7 +27,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/issue/task")
 public class TaskController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
 
     @Resource
     private TaskService taskService;
@@ -63,10 +63,7 @@ public class TaskController {
         IssueDTO issueDTO = taskService.queryTask(taskId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
-            BeanMap beanMap = BeanMap.create(issueDTO);
-            for (Object key : beanMap.keySet()) {
-                map.put(key.toString(), beanMap.get(key));
-            }
+            map = BeanMap.create(issueDTO);
         }
         issueService.orgIssueExtendFields(taskId,map);
         return ControllerResponse.success(map);
@@ -99,8 +96,6 @@ public class TaskController {
     @PostMapping("/editTask")
     public ControllerResponse editTask(@RequestBody IssueDTO issueDTO, SecurityDTO securityDTO) {
 //        //暂时先将扩展字段扔掉
-//        JSONObject jsonObject = new JSONObject(map);
-//        IssueDTO issueDTO = JSON.parseObject(jsonObject.toJSONString(), IssueDTO.class);
         try {
             taskService.editTask(issueDTO,securityDTO);
             return ControllerResponse.success("编辑任务成功！");

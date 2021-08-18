@@ -4,15 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.yusys.agile.consumer.constant.AgileConstant;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.service.StoryService;
 import com.yusys.agile.issue.utils.IssueFactory;
-import com.yusys.agile.sysextendfield.domain.SysExtendFieldDetail;
-import com.yusys.agile.sysextendfield.service.SysExtendFieldDetailService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import org.slf4j.Logger;
@@ -36,7 +33,7 @@ import java.util.Optional;
 @RequestMapping("/issue/story")
 public class StoryController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StoryController.class);
     @Resource
     private StoryService storyService;
     @Resource
@@ -84,10 +81,7 @@ public class StoryController {
         IssueDTO issueDTO = storyService.queryStory(storyId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
-            BeanMap beanMap = BeanMap.create(issueDTO);
-            for (Object key : beanMap.keySet()) {
-                map.put(key.toString(), beanMap.get(key));
-            }
+            map = BeanMap.create(issueDTO);
         }
         issueService.orgIssueExtendFields(storyId,map);
         return ControllerResponse.success(map);

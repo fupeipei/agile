@@ -78,10 +78,7 @@ public class EpicController {
         IssueDTO issueDTO = epicService.queryEpic(epicId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
-            BeanMap beanMap = BeanMap.create(issueDTO);
-            for (Object key : beanMap.keySet()) {
-                map.put(key.toString(), beanMap.get(key));
-            }
+            map = BeanMap.create(issueDTO);
         }
         issueService.orgIssueExtendFields(epicId,map);
         return ControllerResponse.success(map);

@@ -3,6 +3,7 @@ package com.yusys.agile.set.stage.dto;
 import com.yusys.agile.issue.dto.IssueDTO;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class KanbanStageInstanceDTO implements Serializable {
 
     private Date updateTime;
 
-    private transient List<IssueDTO> issueDTOS;
+    private ArrayList<IssueDTO> issueDTOS;
 
     private Boolean hasNext;
 
@@ -240,11 +241,11 @@ public class KanbanStageInstanceDTO implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public List<IssueDTO> getIssueDTOS() {
+    public ArrayList<IssueDTO> getIssueDTOS() {
         return issueDTOS;
     }
 
-    public void setIssueDTOS(List<IssueDTO> issueDTOS) {
+    public void setIssueDTOS(ArrayList<IssueDTO> issueDTOS) {
         this.issueDTOS = issueDTOS;
     }
 

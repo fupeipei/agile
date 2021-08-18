@@ -1,6 +1,7 @@
 package com.yusys.agile.servicemanager.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class CustomizePageInfoDTO<T> implements Serializable {
     //当前页的数量
     private long size = 0;
     //每页记录
-    private transient List<T> list;
+    private ArrayList<T> list;
 
     public CustomizePageInfoDTO(int pageNum, int pageSize) {
         this.pageNum = pageNum;
@@ -59,11 +60,11 @@ public class CustomizePageInfoDTO<T> implements Serializable {
         this.size = size;
     }
 
-    public List<T> getList() {
+    public ArrayList<T> getList() {
         return list;
     }
 
-    public void setList(List<T> list) {
+    public void setList(ArrayList<T> list) {
         this.list = list;
     }
 
