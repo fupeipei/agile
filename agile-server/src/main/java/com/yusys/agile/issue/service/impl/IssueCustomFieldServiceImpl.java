@@ -126,7 +126,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         List<SIssueCustomField> addCustomFieldList = Lists.newArrayList();
         for (SIssueCustomField tempIssueCustomField : fieldsAfterEdit) {
                 // 新增时必须要填写实际值，修改时可以允许把值去掉
-            if (StringUtils.isBlank(tempIssueCustomField.getFieldValue())) {
+            if (!Optional.ofNullable(tempIssueCustomField.getFieldValue()).isPresent()) {
                     continue;
             }
             //先删除
