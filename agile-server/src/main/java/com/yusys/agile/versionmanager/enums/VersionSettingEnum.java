@@ -52,7 +52,7 @@ public enum VersionSettingEnum {
     // 普通方法
     public static VersionSettingEnum getByCode(String code) {
         for (VersionSettingEnum switchEnum : VersionSettingEnum.values()) {
-            if (switchEnum.issueType.equals(code)) {
+            if (switchEnum.issueType.toString().equals(code)) {
                 return switchEnum;
             }
         }

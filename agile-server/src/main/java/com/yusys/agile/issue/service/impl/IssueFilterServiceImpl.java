@@ -134,7 +134,10 @@ public class IssueFilterServiceImpl implements IssueFilterService {
     public ControllerResponse deleteIssueFilter(Long filterId, Byte category) {
 
         IssueFilter issueFilter = filterMapper.selectByPrimaryKey(filterId);
-        Optional.ofNullable(issueFilter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
+        if(!Optional.ofNullable(issueFilter).isPresent()){
+            throw new BusinessException("过滤器不存在!");
+        }
+      //  Optional.ofNullable(issueFilter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
 
         Long systemId = issueFilter.getSystemId();
         Long createUid = issueFilter.getCreateUid();
@@ -224,7 +227,10 @@ public class IssueFilterServiceImpl implements IssueFilterService {
     @Transactional(rollbackFor = Exception.class)
     public ControllerResponse putFilterCheckStatus(Long filterId, Byte category, SecurityDTO securityDTO) {
         IssueFilter filter = filterMapper.selectByPrimaryKey(filterId);
-        Optional.ofNullable(filter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
+        if(!Optional.ofNullable(filter).isPresent()){
+            throw new BusinessException("过滤器不存在!");
+        }
+        //Optional.ofNullable(filter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
 
         IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
         IssueFilterRelatedCheckedExample.Criteria issueFilterRelatedCheckedCriteria = checkedExample.createCriteria();

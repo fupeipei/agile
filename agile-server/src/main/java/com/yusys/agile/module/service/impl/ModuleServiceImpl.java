@@ -84,7 +84,10 @@ public class ModuleServiceImpl implements ModuleService {
         Module module = ReflectUtil.copyProperties(moduleDTO, Module.class);
         if (Optional.ofNullable(module.getModuleId()).isPresent()) {
             Module module1 = moduleMapper.selectByPrimaryKey(module.getModuleId());
-            Optional.ofNullable(module1).orElseThrow(() -> new BusinessException("更新的模块信息不存在"));
+            if(!Optional.ofNullable(module1).isPresent()){
+                throw new BusinessException("更新的模块信息不存在");
+            }
+           // Optional.ofNullable(module1).orElseThrow(() -> new BusinessException("更新的模块信息不存在"));
             moduleMapper.updateByPrimaryKeySelective(module);
         } else {
             moduleMapper.insert(module);

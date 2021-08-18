@@ -60,7 +60,9 @@ public class Ping {
             return false;
         } finally {
             try {
-                in.close();
+                if(in!=null){
+                    in.close();
+                }
             } catch (IOException e) {
                 logger.error(e.getMessage());
             }
@@ -71,7 +73,7 @@ public class Ping {
     private static int getCheckResult(String line) {  // System.out.println("控制台输出的结果为:"+line);
         Pattern pattern = Pattern.compile("(\\d+ms)(\\s+)(TTL=\\d+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(line);
-        while (matcher.find()) {
+        if (matcher.find()) {
             return 1;
         }
         return 0;
