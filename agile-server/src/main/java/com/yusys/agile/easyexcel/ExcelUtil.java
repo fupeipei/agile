@@ -1,12 +1,14 @@
 package com.yusys.agile.easyexcel;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.yusys.agile.easyexcel.vo.ExcelVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +16,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-
 /**
  *  @Description: Excel操作工具类
  *  @author: zhao_yd
@@ -48,8 +49,8 @@ public class ExcelUtil {
         long startTime = System.currentTimeMillis();
         List<List<String>> list = new ArrayList<>();
         try {
-            //todo 内存优化可以使用 ExcelListener
-            List<LinkedHashMap> data = EasyExcel.read(inputStream).sheet().headRowNumber(size).doReadSync();
+            // 内存优化可以使用 ExcelListener
+            List<LinkedHashMap> data = EasyExcelFactory.read(inputStream).sheet().headRowNumber(size).doReadSync();
 
             for (LinkedHashMap map : data) {
                 // 将该行数据添加至返回结果list
@@ -106,7 +107,7 @@ public class ExcelUtil {
             String fileName = vo.getFileName();
 
             // 通过fileName创建一个Excel工作簿
-            excelWriter = EasyExcel.write(dealResponse(fileName, response)).build();
+            excelWriter = EasyExcelFactory.write(dealResponse(fileName, response)).build();
 
             // 导出数据list
             List<List<String>> exportDataList = new ArrayList<>();
@@ -170,7 +171,7 @@ public class ExcelUtil {
      */
     public static void write(ExcelWriter excelWriter, ExcelVo vo, List<List<String>> exportDataList, int sheetNo) {
         // 创建Sheet
-        WriteSheet writeSheet = EasyExcel.writerSheet(sheetNo, "Sheet" + (sheetNo + 1)).build();
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet(sheetNo, "Sheet" + (sheetNo + 1)).build();
 
         // 设置首行标题
         convertCellText(writeSheet, vo.getCellText());

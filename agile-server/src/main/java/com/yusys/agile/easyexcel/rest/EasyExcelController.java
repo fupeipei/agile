@@ -30,6 +30,7 @@ public class EasyExcelController {
     @Autowired
     private IExcelService iExcelService;
 
+    private static final String UPLOAD = "上传失败:";
     @ApiOperation("模版下载")
     @GetMapping(value = "/downloadExcel/template/{excelType}")
     public void download(@PathVariable Byte excelType,
@@ -61,7 +62,7 @@ public class EasyExcelController {
 
             fileInfo = iExcelService.uploadStorys(file,field);
         } catch (Exception e) {
-            return ControllerResponse.fail("上传失败:" + e.getMessage());
+            return ControllerResponse.fail(UPLOAD+ e.getMessage());
         }
         if (Optional.ofNullable(fileInfo).isPresent()) {
             return ControllerResponse.fail(fileInfo);
@@ -78,7 +79,7 @@ public class EasyExcelController {
             field.setSprintId(sprintId);
             fileInfo = iExcelService.uploadTasks(file,field);
         } catch (Exception e) {
-            return ControllerResponse.fail("上传失败:" + e.getMessage());
+            return ControllerResponse.fail(UPLOAD + e.getMessage());
         }
         if (Optional.ofNullable(fileInfo).isPresent()) {
             return ControllerResponse.fail(fileInfo);
@@ -126,7 +127,7 @@ public class EasyExcelController {
             ExcelCommentField field = new ExcelCommentField();
             fileInfo = iExcelService.uploadEpics(file,field);
         } catch (Exception e) {
-            return ControllerResponse.fail("上传失败:" + e.getMessage());
+            return ControllerResponse.fail(UPLOAD + e.getMessage());
         }
         if (Optional.ofNullable(fileInfo).isPresent()) {
             return ControllerResponse.fail(fileInfo);

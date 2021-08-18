@@ -1,8 +1,10 @@
 package com.yusys.agile.issue.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class IssueCustomFieldDTO {
+public class IssueCustomFieldDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long extendId;
 
     private Long fieldId;
@@ -107,8 +109,6 @@ public class IssueCustomFieldDTO {
         this.fieldCode = fieldCode;
     }
 
-
-    private static final long serialVersionUID = 1L;
 
     public Long getExtendId() {
         return extendId;

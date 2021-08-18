@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 public class SCustomFieldPoolExample {
+
+    private static final String SYSTEM_ID = "systemId";
     protected String orderByClause;
 
     protected boolean distinct;
@@ -506,52 +508,52 @@ public class SCustomFieldPoolExample {
         }
 
         public Criteria andSystemIdEqualTo(Long value) {
-            addCriterion("system_id =", value, "systemId");
+            addCriterion("system_id =", value, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdNotEqualTo(Long value) {
-            addCriterion("system_id <>", value, "systemId");
+            addCriterion("system_id <>", value, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdGreaterThan(Long value) {
-            addCriterion("system_id >", value, "systemId");
+            addCriterion("system_id >", value, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("system_id >=", value, "systemId");
+            addCriterion("system_id >=", value, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdLessThan(Long value) {
-            addCriterion("system_id <", value, "systemId");
+            addCriterion("system_id <", value, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdLessThanOrEqualTo(Long value) {
-            addCriterion("system_id <=", value, "systemId");
+            addCriterion("system_id <=", value, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdIn(List<Long> values) {
-            addCriterion("system_id in", values, "systemId");
+            addCriterion("system_id in", values, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdNotIn(List<Long> values) {
-            addCriterion("system_id not in", values, "systemId");
+            addCriterion("system_id not in", values, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdBetween(Long value1, Long value2) {
-            addCriterion("system_id between", value1, value2, "systemId");
+            addCriterion("system_id between", value1, value2, SYSTEM_ID);
             return (Criteria) this;
         }
 
         public Criteria andSystemIdNotBetween(Long value1, Long value2) {
-            addCriterion("system_id not between", value1, value2, "systemId");
+            addCriterion("system_id not between", value1, value2, SYSTEM_ID);
             return (Criteria) this;
         }
 
