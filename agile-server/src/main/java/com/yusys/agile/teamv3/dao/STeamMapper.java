@@ -155,7 +155,7 @@ public interface STeamMapper {
      * @Date 15:19 2021/8/17
      * @Param [teamIds, teamName]
      **/
-    List<TeamListDTO> queryTeamsByOrderIds(@Param("teamIds") List<Long> teamIds);
+    List<TeamListDTO> queryTeamsByOrderIds(@Param("teamIds") List<Long> teamIds,@Param("team") String team,@Param("teamType")String teamType);
 
 
 }

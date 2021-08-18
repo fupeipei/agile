@@ -27,17 +27,17 @@ public class TeamListDTO implements Serializable {
     @ApiModelProperty("创建人id")
     private Long createUid;
     @ApiModelProperty("创建人")
-    private transient SsoUserDTO createUser;
+    private  SsoUserDTO createUser;
     @ApiModelProperty("团队po集合")
-    private transient List<TeamUserDTO> teamPoNames;
+    private  List<TeamUserDTO> teamPoNames;
     @ApiModelProperty("团队sm集合")
-    private transient List<TeamUserDTO> teamSmNames;
+    private  List<TeamUserDTO> teamSmNames;
     @ApiModelProperty("团队lean集合")
-    private transient List<TeamUserDTO> teamLeanNames;
+    private  List<TeamUserDTO> teamLeanNames;
     @ApiModelProperty("系统集合")
-    private transient List<TeamSystemDTO> systemNames;
+    private  List<TeamSystemDTO> systemNames;
     @ApiModelProperty("团队所有人员")
-    private transient List<TeamUserDTO> teamUsers;
+    private  List<TeamUserDTO> teamUsers;
     @ApiModelProperty("团队所有人员")
     private Integer teamUserCount;
     /**

@@ -571,6 +571,12 @@
 			<foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
 				#{teamId}
 			</foreach>
+			<if test="team!=null and team!=''">
+				and (a.team_name like concat('%', #{team}, '%') or a.team_id like concat('%', #{team}, '%'))
+			</if>
+			<if test="teamType!=null and teamType!=''">
+				and a.team_type=#{teamType}
+			</if>
 			order by field(`team_id`,
 			<foreach collection="teamIds" item="teamId"  separator="," close=")">
 				#{teamId}
