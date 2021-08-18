@@ -29,7 +29,6 @@ public interface EpicService {
      * @Param: * @param issueId
      * @Return: com.yusys.agile.issue.dto.IssueDTO
      */
-    //IssueDTO queryEpic(Long issueId, Long projectId);
     IssueDTO queryEpic(Long issueId);
 
 

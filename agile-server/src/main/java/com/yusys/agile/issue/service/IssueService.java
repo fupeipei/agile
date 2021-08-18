@@ -135,7 +135,6 @@ public interface IssueService {
      * @Param: projectId
      * @Return: java.util.List<com.yusys.agile.issue.dto.IssueDTO>
      */
-    //List<IssueDTO> listRelation(Long issueId, Byte issueType, Long projectId);
     List<IssueDTO> listRelation(Long issueId, Byte issueType);
 
     /**
