@@ -155,10 +155,10 @@ public class VersionManagerDTO implements Serializable {
     private Integer operateType;
 
 
-    private ArrayList<SendRMSRequestDTO> relatedRequirementList;
+    private List<SendRMSRequestDTO> relatedRequirementList;
 
 
-    private  ArrayList<IssueDTO> relateIssueList;
+    private  List<IssueDTO> relateIssueList;
 
     private static final long serialVersionUID = 1L;
 
@@ -442,19 +442,19 @@ public class VersionManagerDTO implements Serializable {
         this.deployTypeName = deployTypeName;
     }
 
-    public ArrayList<SendRMSRequestDTO> getRelatedRequirementList() {
+    public List<SendRMSRequestDTO> getRelatedRequirementList() {
         return relatedRequirementList;
     }
 
-    public void setRelatedRequirementList(ArrayList<SendRMSRequestDTO> relatedRequirementList) {
+    public void setRelatedRequirementList(List<SendRMSRequestDTO> relatedRequirementList) {
         this.relatedRequirementList = relatedRequirementList;
     }
 
-    public ArrayList<IssueDTO> getRelateIssueList() {
+    public List<IssueDTO> getRelateIssueList() {
         return relateIssueList;
     }
 
-    public void setRelateIssueList(ArrayList<IssueDTO> relateIssueList) {
+    public void setRelateIssueList(List<IssueDTO> relateIssueList) {
         this.relateIssueList = relateIssueList;
     }
 }

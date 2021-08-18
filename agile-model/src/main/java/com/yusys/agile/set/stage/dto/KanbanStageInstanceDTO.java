@@ -47,7 +47,7 @@ public class KanbanStageInstanceDTO implements Serializable {
 
     private Date updateTime;
 
-    private ArrayList<IssueDTO> issueDTOS;
+    private List<IssueDTO> issueDTOS;
 
     private Boolean hasNext;
 
@@ -241,13 +241,6 @@ public class KanbanStageInstanceDTO implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public ArrayList<IssueDTO> getIssueDTOS() {
-        return issueDTOS;
-    }
-
-    public void setIssueDTOS(ArrayList<IssueDTO> issueDTOS) {
-        this.issueDTOS = issueDTOS;
-    }
 
     public Boolean getHasNext() {
         return hasNext;
