@@ -1458,8 +1458,10 @@ public class IssueServiceImpl implements IssueService {
     @Transactional(rollbackFor = Exception.class)
     public void dragDemand(Long issueId, Long sprintId, Long parentId, Long projectId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
-
-        Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在!"));
+        if(!Optional.ofNullable(issue).isPresent()){
+        throw new BusinessException("工作项不存在!");
+        }
+        //Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在!"));
         if (StateEnum.E.toString().equals(issue.getState())) {
             throw new BusinessException("工作项不存在!");
         }
@@ -3395,7 +3397,7 @@ public class IssueServiceImpl implements IssueService {
     public void isArchive(Long issueId, Byte isArchive) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
-        if (Optional.ofNullable(issue).isPresent()) {
+        if (!Optional.ofNullable(issue).isPresent()) {
             throw new BusinessException("工作项不存在");
         }
         if (StateEnum.E.toString().equals(issue.getState())) {
