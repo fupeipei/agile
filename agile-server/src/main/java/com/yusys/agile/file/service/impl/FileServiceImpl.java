@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.Optional;
 
 /**
  * 文件上传下载
@@ -112,21 +113,28 @@ public class FileServiceImpl implements FileService {
      * @date 2020/4/21
      */
     private FileInfo fastdfsUpload(MultipartFile file, FileInfo fileInfo) throws Exception {
-        String realFileName = file.getOriginalFilename();
-        int suffixIndex=0;
-        if (StringUtils.isNotEmpty(realFileName)) {
-            suffixIndex = realFileName.lastIndexOf('.');
-        }
+        int suffixIndex = 0;
+        String realFileName = "";
         String[] result;
-        String suffix;
+
+        if (Optional.ofNullable(file).isPresent()) {
+            realFileName = file.getOriginalFilename();
+            if (StringUtils.isNotEmpty(realFileName)) {
+                suffixIndex = realFileName.lastIndexOf('.');
+            }
         if (suffixIndex != -1) {
-            suffix = realFileName.substring(realFileName.lastIndexOf('.') + 1, realFileName.length());
+            String suffix = "";
+            if (StringUtils.isNotEmpty(realFileName)) {
+                suffix = realFileName.substring(realFileName.lastIndexOf('.') + 1, realFileName.length());
+            }
             result = storageClient.upload_file(file.getBytes(), suffix, null);
         } else {
             result = storageClient.upload_file(file.getBytes(), null, null);
         }
+
         String remoteName = result[0] + "/" + result[1];
         fileInfo = new FileInfo(realFileName, remoteName, file.getSize(), null, this.fileServer);
+        }
         return fileInfo;
     }
 
