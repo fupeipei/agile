@@ -96,7 +96,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             }
             List<Long> teamIds = sTeamMembers.stream().map(s -> s.getTeamId()).collect(Collectors.toList());
             PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-            rest=sTeamMapper.queryTeamsByOrderIds(teamIds);
+            String team=dto.getTeam();
+            String teamType=dto.getTeamType();
+            rest=sTeamMapper.queryTeamsByOrderIds(teamIds,team,teamType);
         }
         rest.forEach(team -> {
             //设置关注标识
