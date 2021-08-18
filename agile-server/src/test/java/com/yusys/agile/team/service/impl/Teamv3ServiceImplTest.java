@@ -227,5 +227,14 @@ public class Teamv3ServiceImplTest {
         Assert.assertTrue("testList4成功", true);
     }
 
-
+    @Test
+    public void testList5(){
+        TeamQueryDTO dto=new TeamQueryDTO();
+        dto.setPageNum(1);
+        dto.setPageSize(10);
+        SecurityDTO securityDTO=new SecurityDTO();
+        securityDTO.setUserId(871692844909600768L);
+        securityDTO.setTenantCode("1");
+        teamv3Service.listTeam(dto,securityDTO);
+    }
 }
