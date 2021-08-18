@@ -97,7 +97,7 @@ public class CustomFieldPoolServiceTest {
         CustomFieldDTO customFieldDTO = initData();
         customFieldDTO.setFieldId(null);
         String s = customFieldPoolService.addCustomField(customFieldDTO);
-        Assert.assertNotNull(s, true);
+        Assert.assertNotNull(s);
     }
 
     /**

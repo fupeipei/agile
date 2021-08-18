@@ -260,23 +260,26 @@ public class ExcelServiceImpl implements ExcelService {
      */
     @Override
     public ControllerResponse importExcel(Byte excelType, Long projectId, Long sprintId, MultipartHttpServletRequest multiReq, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        MultipartFile file = multiReq.getFile("file");
+        MultipartFile file = null;
         String fileName = "";
-        // upload
-        if (Optional.ofNullable(file).isPresent()) {
-            fileName = file.getOriginalFilename();
-        fileName = new String(fileName.getBytes(), "UTF-8");
-        fileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
-        }
         Sheet sheet = null;
         Workbook wb = null;
-        FileInputStream fis = (FileInputStream) file.getInputStream();
-        if (ExcelUtil.isExcel2003(fileName)) {
-            wb = new HSSFWorkbook(fis);
-        } else if (ExcelUtil.isExcel2007(fileName)) {
-            wb = new XSSFWorkbook(fis);
+        if (Optional.ofNullable(multiReq).isPresent()) {
+            file = multiReq.getFile("file");
         }
-
+        if (Optional.ofNullable(file).isPresent()) {
+            fileName = file.getOriginalFilename();
+            if (Optional.ofNullable(fileName).isPresent()) {
+                fileName = new String(fileName.getBytes(), "UTF-8");
+                fileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
+                FileInputStream fis = (FileInputStream) file.getInputStream();
+                if (ExcelUtil.isExcel2003(fileName)) {
+                    wb = new HSSFWorkbook(fis);
+                } else if (ExcelUtil.isExcel2007(fileName)) {
+                    wb = new XSSFWorkbook(fis);
+                }
+            }
+        }
         Map<String, String> map = ExcelUtil.getExcelInfo(excelType.intValue());
         if (wb != null) {
             sheet = wb.getSheet(map.get("sheetName"));
