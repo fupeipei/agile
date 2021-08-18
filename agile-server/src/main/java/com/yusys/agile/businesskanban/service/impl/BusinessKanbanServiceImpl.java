@@ -63,7 +63,9 @@ public class BusinessKanbanServiceImpl implements BusinessKanbanService {
     @Transactional(rollbackFor = Exception.class)
     public int deleteBusinessKanban(Long kanbanId) {
         BusinessKanban businessKanban = businessKanbanMapper.selectByPrimaryKey(kanbanId);
-        Optional.ofNullable(businessKanban).orElseThrow(() -> new BusinessException("事务看板ID不存在,删除事务看板失败"));
+        if(!Optional.ofNullable(businessKanban).isPresent()){
+            throw new BusinessException("事务看板ID不存在,删除事务看板失败");
+        }
         businessKanban.setState(StateEnum.E.getValue());
         int i = 0;
         try {
