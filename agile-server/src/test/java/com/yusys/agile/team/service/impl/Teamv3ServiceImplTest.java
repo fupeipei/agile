@@ -235,6 +235,7 @@ public class Teamv3ServiceImplTest {
         SecurityDTO securityDTO=new SecurityDTO();
         securityDTO.setUserId(871692844909600768L);
         securityDTO.setTenantCode("1");
-        teamv3Service.listTeam(dto,securityDTO);
+        List<TeamListDTO> teamListDTOS = teamv3Service.listTeam(dto, securityDTO);
+        Assert.assertTrue(teamListDTOS.size()>0);
     }
 }

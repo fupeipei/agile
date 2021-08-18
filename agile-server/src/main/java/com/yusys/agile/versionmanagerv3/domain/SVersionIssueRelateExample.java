@@ -1,5 +1,7 @@
 package com.yusys.agile.versionmanagerv3.domain;
 
+import com.yusys.portal.common.exception.BusinessException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,14 @@ public class SVersionIssueRelateExample {
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
+
+    private static final String RELATED = "relateId";
+
+    private static final String ISSUE_ID = "issueId";
+
+    private static final String ISSUE_TYPE = "issueType";
+
+    private static final String VERSION_ID = "versionId";
 
     public SVersionIssueRelateExample() {
         oredCriteria = new ArrayList<Criteria>();
@@ -85,21 +95,21 @@ public class SVersionIssueRelateExample {
 
         protected void addCriterion(String condition) {
             if (condition == null) {
-                throw new RuntimeException("Value for condition cannot be null");
+                throw new BusinessException("Value for condition cannot be null");
             }
             criteria.add(new Criterion(condition));
         }
 
         protected void addCriterion(String condition, Object value, String property) {
             if (value == null) {
-                throw new RuntimeException("Value for " + property + " cannot be null");
+                throw new BusinessException("Value for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value));
         }
 
         protected void addCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
-                throw new RuntimeException("Between values for " + property + " cannot be null");
+                throw new BusinessException("Between values for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value1, value2));
         }
@@ -115,52 +125,52 @@ public class SVersionIssueRelateExample {
         }
 
         public Criteria andRelateIdEqualTo(Long value) {
-            addCriterion("relate_id =", value, "relateId");
+            addCriterion("relate_id =", value, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdNotEqualTo(Long value) {
-            addCriterion("relate_id <>", value, "relateId");
+            addCriterion("relate_id <>", value, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdGreaterThan(Long value) {
-            addCriterion("relate_id >", value, "relateId");
+            addCriterion("relate_id >", value, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("relate_id >=", value, "relateId");
+            addCriterion("relate_id >=", value, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdLessThan(Long value) {
-            addCriterion("relate_id <", value, "relateId");
+            addCriterion("relate_id <", value, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdLessThanOrEqualTo(Long value) {
-            addCriterion("relate_id <=", value, "relateId");
+            addCriterion("relate_id <=", value, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdIn(List<Long> values) {
-            addCriterion("relate_id in", values, "relateId");
+            addCriterion("relate_id in", values, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdNotIn(List<Long> values) {
-            addCriterion("relate_id not in", values, "relateId");
+            addCriterion("relate_id not in", values, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdBetween(Long value1, Long value2) {
-            addCriterion("relate_id between", value1, value2, "relateId");
+            addCriterion("relate_id between", value1, value2, RELATED);
             return (Criteria) this;
         }
 
         public Criteria andRelateIdNotBetween(Long value1, Long value2) {
-            addCriterion("relate_id not between", value1, value2, "relateId");
+            addCriterion("relate_id not between", value1, value2, RELATED);
             return (Criteria) this;
         }
 
@@ -175,52 +185,52 @@ public class SVersionIssueRelateExample {
         }
 
         public Criteria andIssueIdEqualTo(Long value) {
-            addCriterion("issue_id =", value, "issueId");
+            addCriterion("issue_id =", value, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdNotEqualTo(Long value) {
-            addCriterion("issue_id <>", value, "issueId");
+            addCriterion("issue_id <>", value, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdGreaterThan(Long value) {
-            addCriterion("issue_id >", value, "issueId");
+            addCriterion("issue_id >", value, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("issue_id >=", value, "issueId");
+            addCriterion("issue_id >=", value, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdLessThan(Long value) {
-            addCriterion("issue_id <", value, "issueId");
+            addCriterion("issue_id <", value, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdLessThanOrEqualTo(Long value) {
-            addCriterion("issue_id <=", value, "issueId");
+            addCriterion("issue_id <=", value, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdIn(List<Long> values) {
-            addCriterion("issue_id in", values, "issueId");
+            addCriterion("issue_id in", values, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdNotIn(List<Long> values) {
-            addCriterion("issue_id not in", values, "issueId");
+            addCriterion("issue_id not in", values, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdBetween(Long value1, Long value2) {
-            addCriterion("issue_id between", value1, value2, "issueId");
+            addCriterion("issue_id between", value1, value2, ISSUE_ID);
             return (Criteria) this;
         }
 
         public Criteria andIssueIdNotBetween(Long value1, Long value2) {
-            addCriterion("issue_id not between", value1, value2, "issueId");
+            addCriterion("issue_id not between", value1, value2, ISSUE_ID);
             return (Criteria) this;
         }
 
@@ -235,52 +245,52 @@ public class SVersionIssueRelateExample {
         }
 
         public Criteria andIssueTypeEqualTo(Byte value) {
-            addCriterion("issue_type =", value, "issueType");
+            addCriterion("issue_type =", value, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeNotEqualTo(Byte value) {
-            addCriterion("issue_type <>", value, "issueType");
+            addCriterion("issue_type <>", value, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeGreaterThan(Byte value) {
-            addCriterion("issue_type >", value, "issueType");
+            addCriterion("issue_type >", value, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeGreaterThanOrEqualTo(Byte value) {
-            addCriterion("issue_type >=", value, "issueType");
+            addCriterion("issue_type >=", value, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeLessThan(Byte value) {
-            addCriterion("issue_type <", value, "issueType");
+            addCriterion("issue_type <", value, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeLessThanOrEqualTo(Byte value) {
-            addCriterion("issue_type <=", value, "issueType");
+            addCriterion("issue_type <=", value, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeIn(List<Byte> values) {
-            addCriterion("issue_type in", values, "issueType");
+            addCriterion("issue_type in", values, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeNotIn(List<Byte> values) {
-            addCriterion("issue_type not in", values, "issueType");
+            addCriterion("issue_type not in", values, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeBetween(Byte value1, Byte value2) {
-            addCriterion("issue_type between", value1, value2, "issueType");
+            addCriterion("issue_type between", value1, value2, ISSUE_TYPE);
             return (Criteria) this;
         }
 
         public Criteria andIssueTypeNotBetween(Byte value1, Byte value2) {
-            addCriterion("issue_type not between", value1, value2, "issueType");
+            addCriterion("issue_type not between", value1, value2, ISSUE_TYPE);
             return (Criteria) this;
         }
 
@@ -295,52 +305,52 @@ public class SVersionIssueRelateExample {
         }
 
         public Criteria andVersionIdEqualTo(Long value) {
-            addCriterion("version_id =", value, "versionId");
+            addCriterion("version_id =", value, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdNotEqualTo(Long value) {
-            addCriterion("version_id <>", value, "versionId");
+            addCriterion("version_id <>", value, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdGreaterThan(Long value) {
-            addCriterion("version_id >", value, "versionId");
+            addCriterion("version_id >", value, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("version_id >=", value, "versionId");
+            addCriterion("version_id >=", value, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdLessThan(Long value) {
-            addCriterion("version_id <", value, "versionId");
+            addCriterion("version_id <", value, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdLessThanOrEqualTo(Long value) {
-            addCriterion("version_id <=", value, "versionId");
+            addCriterion("version_id <=", value, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdIn(List<Long> values) {
-            addCriterion("version_id in", values, "versionId");
+            addCriterion("version_id in", values, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdNotIn(List<Long> values) {
-            addCriterion("version_id not in", values, "versionId");
+            addCriterion("version_id not in", values, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdBetween(Long value1, Long value2) {
-            addCriterion("version_id between", value1, value2, "versionId");
+            addCriterion("version_id between", value1, value2, VERSION_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionIdNotBetween(Long value1, Long value2) {
-            addCriterion("version_id not between", value1, value2, "versionId");
+            addCriterion("version_id not between", value1, value2, VERSION_ID);
             return (Criteria) this;
         }
     }
