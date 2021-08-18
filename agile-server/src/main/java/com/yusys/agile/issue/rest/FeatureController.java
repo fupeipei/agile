@@ -61,10 +61,7 @@ public class FeatureController {
         IssueDTO issueDTO = featureService.queryFeature(featureId);
         Map<String, Object> map = Maps.newHashMap();
         if (null != issueDTO) {
-            BeanMap beanMap = BeanMap.create(issueDTO);
-            for (Object key : beanMap.keySet()) {
-                map.put(key.toString(), beanMap.get(key));
-            }
+            map = BeanMap.create(issueDTO);
         }
         issueService.orgIssueExtendFields(featureId,map);
         return ControllerResponse.success(map);
