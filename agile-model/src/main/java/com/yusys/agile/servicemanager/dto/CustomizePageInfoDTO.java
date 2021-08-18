@@ -21,7 +21,7 @@ public class CustomizePageInfoDTO<T> implements Serializable {
     //当前页的数量
     private long size = 0;
     //每页记录
-    private ArrayList<T> list;
+    private List<T> list;
 
     public CustomizePageInfoDTO(int pageNum, int pageSize) {
         this.pageNum = pageNum;
@@ -60,11 +60,11 @@ public class CustomizePageInfoDTO<T> implements Serializable {
         this.size = size;
     }
 
-    public ArrayList<T> getList() {
+    public List<T> getList() {
         return list;
     }
 
-    public void setList(ArrayList<T> list) {
+    public void setList(List<T> list) {
         this.list = list;
     }
 
