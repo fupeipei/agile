@@ -29,7 +29,7 @@ public class DateTools {
 
     public static final String DATETIME_END = " 23:59:59";
 
-    private static final long HOUR_OF_MILLIS = 1000 * 60 * 60;
+    private static final long HOUR_OF_MILLIS = 1000 * 60 * 60L;
 
     /**
      * 获取一个月之前的日期
