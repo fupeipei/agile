@@ -24,28 +24,30 @@ public class RedissonServiceImpl implements RedissonService {
 
     @Override
     public RLock getLock(String name) {
-        RLock rLock = redissonSentinel.getLock(name);
-        return rLock;
+        return redissonSentinel.getLock(name);
     }
 
     @Override
     public RLock lock(String name) {
         RLock rLock = redissonSentinel.getLock(name);
-        rLock.lock();
+            rLock.lock();
+            rLock.unlock();
         return rLock;
     }
 
     @Override
     public RLock lock(String name, long leaseTime) {
         RLock rLock = redissonSentinel.getLock(name);
-        rLock.lock(leaseTime, TimeUnit.SECONDS);
+            rLock.lock(leaseTime, TimeUnit.SECONDS);
+            rLock.unlock();
         return rLock;
     }
 
     @Override
     public RLock lock(String name, long leaseTime, TimeUnit unit) {
         RLock rLock = redissonSentinel.getLock(name);
-        rLock.lock(leaseTime, unit);
+            rLock.lock(leaseTime, unit);
+            rLock.unlock();
         return rLock;
     }
 
@@ -53,7 +55,9 @@ public class RedissonServiceImpl implements RedissonService {
     public boolean tryLock(String name, long waitTime, long leaseTime, TimeUnit unit) {
         RLock rLock = redissonSentinel.getLock(name);
         try {
-            return rLock.tryLock(waitTime, leaseTime, unit);
+            boolean b = rLock.tryLock(waitTime, leaseTime, unit);
+            rLock.unlock();
+            return b;
         } catch (InterruptedException e) {
             LOGGER.error("tryLock method occur exception:{}", e.getMessage());
             Thread.currentThread().interrupt();
@@ -73,7 +77,6 @@ public class RedissonServiceImpl implements RedissonService {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
-                        result = false;
                         LOGGER.error("tryLock method sleep occur exception:{}", e.getMessage());
                         Thread.currentThread().interrupt();
                     }

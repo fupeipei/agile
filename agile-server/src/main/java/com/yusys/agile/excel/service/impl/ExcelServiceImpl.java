@@ -1364,10 +1364,10 @@ public class ExcelServiceImpl implements ExcelService {
         Long epicIssueId = issueFactory.getEpicId(issueId, issueType);
         if (null != epicIssueId) {
             //版本名称
-            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
-            if (null != versionManagerDTO) {
-                versionNameMap.put("versionName", versionManagerDTO.getVersionName());
-            }
+//            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
+//            if (null != versionManagerDTO) {
+//                versionNameMap.put("versionName", versionManagerDTO.getVersionName());
+//            }
         }
         return versionNameMap;
     }
