@@ -7,12 +7,10 @@ import com.yusys.agile.issue.dao.IssueFilterRelatedCheckedMapper;
 import com.yusys.agile.issue.dto.IssueFilterContentDTO;
 import com.yusys.agile.issue.dto.IssueFilterDTO;
 import com.yusys.agile.issue.enums.IssueFilterCodeEnum;
-import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueFilterService;
 import com.yusys.agile.set.stage.domain.KanbanStageInstance;
 import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.service.IStageService;
-import com.yusys.agile.set.stage.service.StageService;
 import com.alibaba.fastjson.JSON;
 import com.yusys.agile.issue.domain.*;
 import com.yusys.portal.common.exception.BusinessException;
@@ -55,6 +53,9 @@ public class IssueFilterServiceImpl implements IssueFilterService {
     private IStageService iStageService;
 
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
+    private static final String KEY = "key";
+    private static final String VALUE = "value";
+    private static final String LEVEL = "level";
     private static final Logger log = LoggerFactory.getLogger(IssueFilterServiceImpl.class);
 
     @Override
@@ -65,7 +66,8 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             Long filterId = issueFilter.getFilterId();
             String filterName = issueFilter.getName();
             Byte category = issueFilter.getCategory();
-            if (!checkFilterNameUnqiue(filterId, filterName, category,securityDTO.getTenantCode())) {
+            Boolean b = checkFilterNameUnqiue(filterId, filterName, category,securityDTO.getTenantCode());
+            if (Boolean.FALSE.equals(b)) {
                 return ControllerResponse.fail("过滤器名称重复!");
             }
             //
@@ -137,7 +139,6 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         if(!Optional.ofNullable(issueFilter).isPresent()){
             throw new BusinessException("过滤器不存在!");
         }
-      //  Optional.ofNullable(issueFilter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
 
         Long systemId = issueFilter.getSystemId();
         Long createUid = issueFilter.getCreateUid();
@@ -186,6 +187,15 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             List<IssueFilter> issueFilters = filterMapper.selectByExample(filterExample);
             List<IssueFilterDTO> issueFilterDTOS = ReflectUtil.copyProperties4List(issueFilters, IssueFilterDTO.class);
             //组装过滤器内容
+            return ControllerResponse.success(buildIssueFilterDTOS(category,securityDTO,issueFilterDTOS));
+        } catch (Exception e) {
+            log.error("获取过滤器列表数据异常:{}", e);
+            return ControllerResponse.fail("获取过滤器列表数据异常!");
+        }
+    }
+
+    private List<IssueFilterDTO> buildIssueFilterDTOS(Byte category, SecurityDTO securityDTO,List<IssueFilterDTO> issueFilterDTOS){
+        try {
             if (CollectionUtils.isNotEmpty(issueFilterDTOS)) {
                 IssueFilterRelatedChecked relatedChecked = null;
                 IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
@@ -198,28 +208,36 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                     relatedChecked = issueFilterRelatedCheckeds.get(0);
                 }
                 for (IssueFilterDTO filterDTO : issueFilterDTOS) {
-                    if (Optional.ofNullable(relatedChecked).isPresent()
-                            && filterDTO.getFilterId().equals(relatedChecked.getFilterId())) {
-                        filterDTO.setIdCheck(relatedChecked.getIdCheck());
-                    } else {
-                        filterDTO.setIdCheck(NumberConstant.ZERO.byteValue());
-                    }
-                    IssueFilterContentExample contentExample = new IssueFilterContentExample();
-                    contentExample.createCriteria().andFilterIdEqualTo(filterDTO.getFilterId());
-                    List<IssueFilterContent> issueFilterContents = filterContentMapper.selectByExampleWithBLOBs(contentExample);
-                    if (CollectionUtils.isNotEmpty(issueFilterContents)) {
-                        List<IssueFilterContentDTO> issueFilterContentDTOS = ReflectUtil.copyProperties4List(issueFilterContents, IssueFilterContentDTO.class);
-                        if (NumberConstant.ZERO.toString().equals(filterDTO.getFilterType().toString())) {
-                            setFilterContentValues(issueFilterContentDTOS, stageList, securityDTO);
-                        }
-                        filterDTO.setFilterContentList(issueFilterContentDTOS);
-                    }
+                    buildIssueFilterDTO(relatedChecked,filterDTO,stageList,securityDTO);
                 }
             }
-            return ControllerResponse.success(issueFilterDTOS);
         } catch (Exception e) {
-            log.error("获取过滤器列表数据异常:{}", e);
-            return ControllerResponse.fail("获取过滤器列表数据异常!");
+            throw new BusinessException();
+        }
+        return issueFilterDTOS;
+    }
+
+    private void buildIssueFilterDTO(IssueFilterRelatedChecked relatedChecked,IssueFilterDTO filterDTO,
+                                     List<StageInstance> stageList,SecurityDTO securityDTO){
+        try {
+            if (Optional.ofNullable(relatedChecked).isPresent()
+                    && filterDTO.getFilterId().equals(relatedChecked.getFilterId())) {
+                filterDTO.setIdCheck(relatedChecked.getIdCheck());
+            } else {
+                filterDTO.setIdCheck(NumberConstant.ZERO.byteValue());
+            }
+            IssueFilterContentExample contentExample = new IssueFilterContentExample();
+            contentExample.createCriteria().andFilterIdEqualTo(filterDTO.getFilterId());
+            List<IssueFilterContent> issueFilterContents = filterContentMapper.selectByExampleWithBLOBs(contentExample);
+            if (CollectionUtils.isNotEmpty(issueFilterContents)) {
+                List<IssueFilterContentDTO> issueFilterContentDTOS = ReflectUtil.copyProperties4List(issueFilterContents, IssueFilterContentDTO.class);
+                if (NumberConstant.ZERO.toString().equals(filterDTO.getFilterType().toString())) {
+                    setFilterContentValues(issueFilterContentDTOS, stageList, securityDTO);
+                }
+                filterDTO.setFilterContentList(issueFilterContentDTOS);
+            }
+        } catch (Exception e) {
+            throw new BusinessException();
         }
     }
 
@@ -230,7 +248,6 @@ public class IssueFilterServiceImpl implements IssueFilterService {
         if(!Optional.ofNullable(filter).isPresent()){
             throw new BusinessException("过滤器不存在!");
         }
-        //Optional.ofNullable(filter).orElseThrow(() -> new BusinessException("过滤器不存在!"));
 
         IssueFilterRelatedCheckedExample checkedExample = new IssueFilterRelatedCheckedExample();
         IssueFilterRelatedCheckedExample.Criteria issueFilterRelatedCheckedCriteria = checkedExample.createCriteria();
@@ -278,86 +295,106 @@ public class IssueFilterServiceImpl implements IssueFilterService {
              */
             switch (contentDTO.getFilterId().intValue()) {
                 case 1:
-                    jsonObject.put("key", "ALL");
-                    jsonObject.put("value", "全部");
+                    jsonObject.put(KEY, "ALL");
+                    jsonObject.put(VALUE, "全部");
                     break;
                 case 2:
-                    if (IssueFilterCodeEnum.HANDLER.getValue().equals(contentDTO.getFieldCode())) {
-                        jsonObject.put("key", userId + "");
-                        jsonObject.put("value", userName);
-                    }
+                    checkHANDLER(jsonObject,contentDTO,userId,userName);
                     break;
                 case 3:
-                    if (IssueFilterCodeEnum.ISCOLLECT.getValue().equals(contentDTO.getFieldCode())) {
-                        jsonObject.put("key", 1);
-                        jsonObject.put("value", "收藏");
-                    }
+                    checkISCOLLECT(jsonObject,contentDTO);
                     break;
                 case 4:
                 case 5:
-                    if (IssueFilterCodeEnum.CREATEUID.getValue().equals(contentDTO.getFieldCode())) {
-                        jsonObject.put("key", userId + "");
-                        jsonObject.put("value", userName);
-                    }
+                    checkCREATEUID(jsonObject,contentDTO,userId,userName);
                     break;
                 case 6:
-                    if (IssueFilterCodeEnum.SPRINTID.getValue().equals(contentDTO.getFieldCode())) {
-                        jsonObject.put("key", "null");
-                        jsonObject.put("value", "未设置内容");
-                    }
+                    checkSPRINTID(jsonObject,contentDTO);
                     break;
                 case 7:
-                    if (IssueFilterCodeEnum.COMPLETION.getValue().equals(contentDTO.getFieldCode())) {
-                        contentDTO.setFieldCode(IssueFilterCodeEnum.STAGEID.getValue());
-                        contentDTO.setFieldName(IssueFilterCodeEnum.STAGEID.getName());
-                        List<List<JSONObject>> fieldValues = dealStageList(stageList);
-                        contentDTO.setFieldValue(JSON.toJSONString(fieldValues));
-                    }
+                    checkCOMPLETION(contentDTO,stageList);
                     break;
                 case 8:
-                    if (IssueFilterCodeEnum.ENDDATE.getValue().equals(contentDTO.getFieldCode())) {
-                        contentDTO.setFieldName(IssueFilterCodeEnum.ENDDATE.getName());
-                        String dateStr = "1970-01-02";
-                        LocalDate localDate = LocalDate.parse(dateStr);
-                        long startMillis = LocalDateTime.of(localDate, LocalTime.MIN).toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
-
-                        JSONObject startDateJSON = new JSONObject();
-                        startDateJSON.put("key", startMillis);
-                        startDateJSON.put("value", dateStr);
-
-                        LocalDate date = LocalDate.now();
-                        LocalDate localDate1 = date.minusDays(1);
-
-                        localDate = LocalDate.parse(localDate1.toString());
-                        long endMillis = LocalDateTime.of(localDate, LocalTime.MIN).toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
-
-                        JSONObject endDateJSON = new JSONObject();
-                        endDateJSON.put("key", endMillis);
-                        endDateJSON.put("value", localDate1 + "");
-
-                        List<Object> dateList = new ArrayList<>();
-                        dateList.add(startDateJSON);
-                        dateList.add(endDateJSON);
-                        contentDTO.setFieldValue(JSON.toJSONString(dateList));
-
-                    }
-                    if (IssueFilterCodeEnum.COMPLETION.getValue().equals(contentDTO.getFieldCode())) {
-                        contentDTO.setFieldCode(IssueFilterCodeEnum.STAGEID.getValue());
-                        contentDTO.setFieldName(IssueFilterCodeEnum.STAGEID.getName());
-                        List<List<JSONObject>> fieldValues = dealStageList(stageList);
-                        contentDTO.setFieldValue(JSON.toJSONString(fieldValues));
-                    }
+                    checkENDDATE(contentDTO);
+                    checkCOMPLETION(contentDTO,stageList);
                     break;
                 default:
                     break;
 
             }
-            if (!IssueFilterCodeEnum.STAGEID.getValue().equals(contentDTO.getFieldCode()) && !IssueFilterCodeEnum.ENDDATE.getValue().equals(contentDTO.getFieldCode())) {
+            if (!IssueFilterCodeEnum.STAGEID.getValue().equals(contentDTO.getFieldCode())
+                    && !IssueFilterCodeEnum.ENDDATE.getValue().equals(contentDTO.getFieldCode())) {
                 objects.add(jsonObject);
                 String fieldValue = JSON.toJSONString(objects);
                 contentDTO.setFieldValue(fieldValue);
             }
         });
+    }
+
+    private void checkHANDLER(JSONObject jsonObject, IssueFilterContentDTO contentDTO, Long userId, String userName) {
+        if (IssueFilterCodeEnum.HANDLER.getValue().equals(contentDTO.getFieldCode())) {
+            jsonObject.put(KEY, userId + "");
+            jsonObject.put(VALUE, userName);
+        }
+    }
+
+    private void checkISCOLLECT(JSONObject jsonObject, IssueFilterContentDTO contentDTO) {
+        if (IssueFilterCodeEnum.ISCOLLECT.getValue().equals(contentDTO.getFieldCode())) {
+            jsonObject.put(KEY, 1);
+            jsonObject.put(VALUE, "收藏");
+        }
+    }
+
+    private void checkCREATEUID(JSONObject jsonObject, IssueFilterContentDTO contentDTO, Long userId,String userName) {
+        if (IssueFilterCodeEnum.CREATEUID.getValue().equals(contentDTO.getFieldCode())) {
+            jsonObject.put(KEY, userId + "");
+            jsonObject.put(VALUE, userName);
+        }
+    }
+
+    private void checkSPRINTID(JSONObject jsonObject,IssueFilterContentDTO contentDTO) {
+        if (IssueFilterCodeEnum.SPRINTID.getValue().equals(contentDTO.getFieldCode())) {
+            jsonObject.put(KEY, "null");
+            jsonObject.put(VALUE, "未设置内容");
+        }
+    }
+
+    private void checkENDDATE(IssueFilterContentDTO contentDTO) {
+        if (IssueFilterCodeEnum.ENDDATE.getValue().equals(contentDTO.getFieldCode())) {
+            contentDTO.setFieldName(IssueFilterCodeEnum.ENDDATE.getName());
+            String dateStr = "1970-01-02";
+            LocalDate localDate = LocalDate.parse(dateStr);
+            long startMillis = LocalDateTime.of(localDate, LocalTime.MIN).toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
+
+            JSONObject startDateJSON = new JSONObject();
+            startDateJSON.put(KEY, startMillis);
+            startDateJSON.put(VALUE, dateStr);
+
+            LocalDate date = LocalDate.now();
+            LocalDate localDate1 = date.minusDays(1);
+
+            localDate = LocalDate.parse(localDate1.toString());
+            long endMillis = LocalDateTime.of(localDate, LocalTime.MIN).toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
+
+            JSONObject endDateJSON = new JSONObject();
+            endDateJSON.put(KEY, endMillis);
+            endDateJSON.put(VALUE, localDate1 + "");
+
+            List<Object> dateList = new ArrayList<>();
+            dateList.add(startDateJSON);
+            dateList.add(endDateJSON);
+            contentDTO.setFieldValue(JSON.toJSONString(dateList));
+
+        }
+    }
+
+    private void checkCOMPLETION(IssueFilterContentDTO contentDTO,List<StageInstance> stageList) {
+        if (IssueFilterCodeEnum.COMPLETION.getValue().equals(contentDTO.getFieldCode())) {
+            contentDTO.setFieldCode(IssueFilterCodeEnum.STAGEID.getValue());
+            contentDTO.setFieldName(IssueFilterCodeEnum.STAGEID.getName());
+            List<List<JSONObject>> fieldValues = dealStageList(stageList);
+            contentDTO.setFieldValue(JSON.toJSONString(fieldValues));
+        }
     }
 
     /**
@@ -381,9 +418,9 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                 if (!NumberConstant.EIGHT.equals(stageInstance.getStageId())) {
                     List<JSONObject> oneStages = new ArrayList<>();
                     JSONObject oneJson = new JSONObject();
-                    oneJson.put("key", stageInstance.getStageId());
-                    oneJson.put("value", stageInstance.getStageName());
-                    oneJson.put("level", 1);
+                    oneJson.put(KEY, stageInstance.getStageId());
+                    oneJson.put(VALUE, stageInstance.getStageName());
+                    oneJson.put(LEVEL, 1);
 
                     List<KanbanStageInstance> secondStages = stageInstance.getSecondStages();
                     if (CollectionUtils.isNotEmpty(secondStages)) {
@@ -391,13 +428,13 @@ public class IssueFilterServiceImpl implements IssueFilterService {
                         secondStages.forEach(secondStage -> {
                             List<JSONObject> twoStages = new ArrayList<>();
                             JSONObject secondJson = new JSONObject();
-                            secondJson.put("key", secondStage.getStageId());
-                            secondJson.put("value", secondStage.getStageName());
-                            secondJson.put("level", 2);
+                            secondJson.put(KEY, secondStage.getStageId());
+                            secondJson.put(VALUE, secondStage.getStageName());
+                            secondJson.put(LEVEL, 2);
                             JSONObject onesJson = new JSONObject();
-                            onesJson.put("key", stageInstance.getStageId());
-                            onesJson.put("value", stageInstance.getStageName());
-                            onesJson.put("level", 1);
+                            onesJson.put(KEY, stageInstance.getStageId());
+                            onesJson.put(VALUE, stageInstance.getStageName());
+                            onesJson.put(LEVEL, 1);
                             twoStages.add(onesJson);
                             twoStages.add(secondJson);
                             centerStages.add(twoStages);
