@@ -1,6 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
@@ -8,9 +8,7 @@ import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.dto.IssueStageIdCountDTO;
 import com.yusys.agile.issue.enums.IsAchiveEnum;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
-import com.yusys.agile.issue.enums.StoryStatusEnum;
 import com.yusys.agile.issue.service.EpicService;
-import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.issue.utils.IssueFactory;
 import com.yusys.agile.scheduleplan.dto.ScheduleplanDTO;
 import com.yusys.agile.scheduleplan.service.SchedulePlanService;
@@ -33,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,6 +60,14 @@ public class EpicServiceImpl implements EpicService {
 
     @Autowired
     private SchedulePlanService schedulePlanService;
+    private static final String READY_STAGE_NUM = "readyStageNum";
+    private static final String ANALYSIS_STAGE_NUM = "analysisStageNum";
+    private static final String DESIGN_STAGE_NUM = "designStageNum";
+    private static final String DEVELOP_STAGE_NUM = "developStageNum";
+    private static final String  TEST_STAGE_NUM = "testStageNum";
+    private static final String ONLINE_STAGE_NUM = "onlineStageNum";
+    private static final String FINISH_STAGE_NUM = "finishStageNum";
+
 
     @Override
     public Long createEpic(IssueDTO issueDTO) {
@@ -76,7 +83,7 @@ public class EpicServiceImpl implements EpicService {
         if(Optional.ofNullable(scheduleplan).isPresent()){
             scheduleplan.setEpicId(issueId);
 
-            log.info("需求排期获取接口入参:{}", JSONObject.toJSONString(scheduleplan));
+            log.info("需求排期获取接口入参:{}", JSON.toJSONString(scheduleplan));
             schedulePlanService.saveSchedulePlan(scheduleplan);
         }
         return issueId;
@@ -109,10 +116,8 @@ public class EpicServiceImpl implements EpicService {
             throw new BusinessException("epic下面存在精益看板Feature不允许变更阶段！");
         }
         //状态发生变更
-        if(stages.length > 1){
-            if(!oldEpic.getLaneId().equals(stages[1]) && hasLeanFeature(issueDTO.getIssueId()) ){
-                throw new BusinessException("epic下面存在精益看板Feature不允许变更状态！");
-            }
+        if(stages.length > 1 && !oldEpic.getLaneId().equals(stages[1]) && hasLeanFeature(issueDTO.getIssueId()) ){
+            throw new BusinessException("epic下面存在精益看板Feature不允许变更状态！");
         }
         Issue epic = issueFactory.editIssue(issueDTO, oldEpic, null);
         int count;
@@ -172,7 +177,15 @@ public class EpicServiceImpl implements EpicService {
                     List<IssueDTO> epicDTOS = issueMapper.selectBySystemIdAndVersion(projectId, ssoSystem.getSystemId(), versionManagerDTO.getId(), IssueTypeEnum.TYPE_EPIC.CODE);
                     countStageId(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO, epicDTOS);
                     if (CollectionUtils.isEmpty(epicDTOS)) {
-                        setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO, 0, 0, 0, 0, 0, 0, 0);
+                        HashMap<String, Integer> params = new HashMap<>();
+                        params.put(READY_STAGE_NUM,0);
+                        params.put(ANALYSIS_STAGE_NUM,0);
+                        params.put(DESIGN_STAGE_NUM,0);
+                        params.put(DEVELOP_STAGE_NUM,0);
+                        params.put(TEST_STAGE_NUM,0);
+                        params.put(ONLINE_STAGE_NUM,0);
+                        params.put(FINISH_STAGE_NUM,0);
+                        setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO, params);
                     }
                     issueStageIdCountDTOS.add(stageIdCountDTO);
                 }
@@ -242,7 +255,16 @@ public class EpicServiceImpl implements EpicService {
                 } else if (issueDTO.getStageId().equals(StageConstant.FirstStageEnum.FINISH_STAGE.getValue())) {
                     finishStageNum++;
                 }
-                setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO, readyStageNum, analysisStageNum, designStageNum, developStageNum, testStageNum, onlineStageNum, finishStageNum);
+                HashMap<String, Integer> params = new HashMap<>();
+                params.put(READY_STAGE_NUM,readyStageNum);
+                params.put(ANALYSIS_STAGE_NUM,analysisStageNum);
+                params.put(DESIGN_STAGE_NUM,designStageNum);
+                params.put(DEVELOP_STAGE_NUM,developStageNum);
+                params.put(TEST_STAGE_NUM,testStageNum);
+                params.put(ONLINE_STAGE_NUM,onlineStageNum);
+                params.put(FINISH_STAGE_NUM,finishStageNum);
+
+                setStageIdCountDTO(projectId, ssoSystem, versionManagerDTO, stageIdCountDTO,params);
             }
         }
     }
@@ -252,26 +274,26 @@ public class EpicServiceImpl implements EpicService {
      * @param ssoSystem
      * @param stageIdCountDTO
      * @param versionManagerDTO
-     * @param i，i2，i3，i4，i5，i5，i7
+     * @param params
      * @Date 2021/3/30
      * @Description 各阶段个数赋值
      * @Return void
      */
-    private void setStageIdCountDTO(Long projectId, SsoSystem ssoSystem, VersionManagerDTO versionManagerDTO, IssueStageIdCountDTO stageIdCountDTO,
-                                    int i, int i2, int i3, int i4, int i5, int i6, int i7) {
+    private void setStageIdCountDTO(Long projectId, SsoSystem ssoSystem,
+                                    VersionManagerDTO versionManagerDTO,
+                                    IssueStageIdCountDTO stageIdCountDTO,
+                                    HashMap<String, Integer> params) {
         stageIdCountDTO.setProjectId(projectId);
         stageIdCountDTO.setSystemId(ssoSystem.getSystemId());
         stageIdCountDTO.setSystemName(ssoSystem.getSystemName());
         stageIdCountDTO.setVersionId(versionManagerDTO.getId());
         stageIdCountDTO.setVersionName(versionManagerDTO.getVersionName());
-        stageIdCountDTO.setReadyStageNum(i);
-        stageIdCountDTO.setAnalysisStageNum(i2);
-        stageIdCountDTO.setDesignStageNum(i3);
-        stageIdCountDTO.setDevelopStageNum(i4);
-        stageIdCountDTO.setTestStageNum(i5);
-        stageIdCountDTO.setOnlineStageNum(i6);
-        stageIdCountDTO.setFinishStageNum(i7);
+        stageIdCountDTO.setReadyStageNum(params.get(READY_STAGE_NUM));
+        stageIdCountDTO.setAnalysisStageNum(params.get(ANALYSIS_STAGE_NUM));
+        stageIdCountDTO.setDesignStageNum(params.get(DESIGN_STAGE_NUM));
+        stageIdCountDTO.setDevelopStageNum(params.get(DEVELOP_STAGE_NUM));
+        stageIdCountDTO.setTestStageNum(params.get(TEST_STAGE_NUM));
+        stageIdCountDTO.setOnlineStageNum(params.get(ONLINE_STAGE_NUM));
+        stageIdCountDTO.setFinishStageNum(params.get(FINISH_STAGE_NUM));
     }
-
-
 }

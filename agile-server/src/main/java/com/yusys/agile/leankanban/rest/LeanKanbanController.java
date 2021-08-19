@@ -1,11 +1,9 @@
 package com.yusys.agile.leankanban.rest;
 
 import com.google.common.collect.Lists;
-import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
-import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

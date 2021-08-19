@@ -108,7 +108,7 @@ public class FeatureServiceImpl implements FeatureService {
     private boolean hasChildren(Long issueId) {
         IssueExample issueExample = new IssueExample();
         issueExample.createCriteria().andParentIdEqualTo(issueId).andStateEqualTo(IssueStateEnum.TYPE_VALID.CODE);
-        return CollectionUtils.isNotEmpty(issueMapper.selectByExample(issueExample)) ? true : false;
+        return CollectionUtils.isNotEmpty(issueMapper.selectByExample(issueExample));
     }
 
     @Override
@@ -148,9 +148,7 @@ public class FeatureServiceImpl implements FeatureService {
     private boolean checkIsLeanTeanm(Long teamId) {
         STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
         if(null != sTeam){
-            if(TeamTypeEnum.lean_team.getCode().equals(sTeam.getTeamType())){
-                return true;
-            }
+            return TeamTypeEnum.lean_team.getCode().equals(sTeam.getTeamType());
         }
         return false;
     }
@@ -195,7 +193,7 @@ public class FeatureServiceImpl implements FeatureService {
                 zenTaoStoryService.addStory(ztStoryDTO);
             }
         }catch (Exception e){
-            log.error("同步禅道需求feature报错"+e);
+            log.error("同步禅道需求feature报错：{}",e);
         }
     }
 }
