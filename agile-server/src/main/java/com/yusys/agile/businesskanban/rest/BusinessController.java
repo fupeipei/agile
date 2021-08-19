@@ -109,7 +109,7 @@ public class BusinessController {
         try {
             fixedIterms = businessService.getFixedIterms();
         } catch (Exception e) {
-            loggr.error("获取枚举类型异常", e.getMessage());
+           loggr.error("获取枚举类型异常{}", e.getMessage());
             return ControllerResponse.fail("获取枚举类型异常");
         }
         return ControllerResponse.success(fixedIterms);

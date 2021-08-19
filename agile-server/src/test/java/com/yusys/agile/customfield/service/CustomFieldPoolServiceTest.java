@@ -66,7 +66,7 @@ public class CustomFieldPoolServiceTest {
             customFieldPoolService.deleteCustomField(1L);
             Assert.assertTrue("删除自定义字段成功", true);
         }catch (Exception e){
-            Assert.assertFalse(e.getMessage() != null);
+            Assert.assertNull(e.getMessage());
         }
     }
 
