@@ -1,18 +1,17 @@
 package com.yusys.agile.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+@Slf4j
 public class StringTool {
 
     public static boolean isChanged(String newVal, String oldVal) {
-        if (StringUtils.isNotBlank(newVal) && !StringUtils.equals(newVal, oldVal)) {
-            return true;
-        }
-        return false;
+        return StringUtils.isNotBlank(newVal) && !StringUtils.equals(newVal, oldVal);
     }
 
     public static String convertCollectionToString(Collection<?> collection) {
@@ -38,6 +37,6 @@ public class StringTool {
         idHashSet.add(10L);
         idHashSet.add(16L);
         String idStr = convertCollectionToString(idHashSet);
-        System.out.println(idStr);
+        log.info(idStr);
     }
 }
