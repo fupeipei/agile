@@ -1397,10 +1397,10 @@ public class ExcelServiceImpl implements ExcelService {
         Long epicIssueId = issueFactory.getEpicId(issueId, issueType);
         if (null != epicIssueId) {
             //版本名称
-            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
-            if (null != versionManagerDTO) {
-                sysExtendFieldDeatilMap.put("versionName", versionManagerDTO.getVersionName());
-            }
+//            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
+//            if (null != versionManagerDTO) {
+//                sysExtendFieldDeatilMap.put("versionName", versionManagerDTO.getVersionName());
+//            }
             sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetail(epicIssueId);
             if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
                 for (SysExtendFieldDetail sysExtendFieldDetail : sysExtendFieldDetailList) {
