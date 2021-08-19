@@ -858,7 +858,7 @@ public class ExcelServiceImpl implements ExcelService {
                 String dateStr = cell.getStringCellValue();
                 sdf.setLenient(false);
                 Date finishTime = sdf.parse(dateStr);
-                if (finishTime.compareTo(date) != -1) {
+                if (finishTime.compareTo(date) >= 0) {
                     isValidDate = true;
                 }
             } catch (ParseException e) {

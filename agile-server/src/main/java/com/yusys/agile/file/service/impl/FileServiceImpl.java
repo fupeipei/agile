@@ -324,9 +324,9 @@ public class FileServiceImpl implements FileService {
             fileInfo.setFileUri(StringConstant.DOWNLOAD_STR1 + remoteFileName + StringConstant.DOWNLOAD_STR2 + originalFilename);
 
         } catch (IllegalStateException e) {
-            LOGGER.error("context", e.getMessage());
+            LOGGER.error("context:{}", e.getMessage());
         } catch (IOException e) {
-            LOGGER.error("context", e.getMessage());
+            LOGGER.error("context:{}", e.getMessage());
         }
         return fileInfo;
     }
@@ -368,20 +368,20 @@ public class FileServiceImpl implements FileService {
                 }
                 LOGGER.debug("下载成功");
             } catch (Exception e) {
-                LOGGER.error("error", e.getMessage());
+                LOGGER.error("error:{}", e.getMessage());
             } finally {
                 if (bis != null) {
                     try {
                         bis.close();
                     } catch (IOException e) {
-                        LOGGER.error("context", e.getMessage());
+                        LOGGER.error("context:{}", e.getMessage());
                     }
                 }
                 if (fis != null) {
                     try {
                         fis.close();
                     } catch (IOException e) {
-                        LOGGER.error("context", e.getMessage());
+                        LOGGER.error("context:{}", e.getMessage());
                     }
                 }
             }
