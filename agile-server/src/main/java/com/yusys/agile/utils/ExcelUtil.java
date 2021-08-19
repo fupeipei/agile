@@ -438,7 +438,8 @@ public class ExcelUtil {
         switch (cell.getCellTypeEnum()) {
             // 数字类型
             case NUMERIC:
-                if (HSSFDateUtil.isCellDateFormatted(cell)) {// 处理日期格式、时间格式
+                // 处理日期格式、时间格式
+                if (DateUtil.isCellDateFormatted(cell)) {
                     SimpleDateFormat sdf = null;
                     if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {// 时间
                         sdf = new SimpleDateFormat("HH:mm");
@@ -482,7 +483,7 @@ public class ExcelUtil {
             case FORMULA:
                 cell.setCellType(CellType.NUMERIC);
                 try {
-                    if (HSSFDateUtil.isCellDateFormatted(cell)) {// 处理日期格式、时间格式
+                    if (DateUtil.isCellDateFormatted(cell)) {// 处理日期格式、时间格式
                         SimpleDateFormat sdf = null;
                         if (cell.getCellStyle().getDataFormat() == HSSFDataFormat.getBuiltinFormat("h:mm")) {// 时间
                             sdf = new SimpleDateFormat("HH:mm");

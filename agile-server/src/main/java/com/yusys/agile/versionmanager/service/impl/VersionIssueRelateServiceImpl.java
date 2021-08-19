@@ -1,5 +1,6 @@
 package com.yusys.agile.versionmanager.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.constant.NumberConstant;
 import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
 import com.yusys.agile.issue.dao.IssueMapper;
@@ -97,7 +98,7 @@ public class VersionIssueRelateServiceImpl implements VersionIssueRelateService 
 
         // 不传page信息时查全部数据
         if (Optional.ofNullable(pageSize).isPresent() && Optional.ofNullable(pageNum).isPresent()) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         IssueDTO issueExample = new IssueDTO();
         issueExample.setProjectId(projectId);

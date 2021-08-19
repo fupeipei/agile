@@ -86,7 +86,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         boolean check = iFacadeUserApi.checkIsTenantAdmin(userId);
         //如果是租户管理员
         if (check) {
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+            PageMethod.startPage(dto.getPageNum(), dto.getPageSize());
             rest = sTeamMapper.queryAllTeam(params);
         } else { //不是租户管理员
             STeamMemberExample teamMemberExample=new STeamMemberExample();
@@ -644,7 +644,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     @Override
     public List<TeamListDTO> queryTeams(List<Long> teamIds, String teamName, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         List<TeamListDTO> sTeams = sTeamMapper.queryTeams(teamIds, teamName);
         //按ids分别查询团队/系统
         return buildResultList(sTeams);

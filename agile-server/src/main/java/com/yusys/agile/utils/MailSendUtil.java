@@ -319,15 +319,11 @@ public class MailSendUtil {
         });
 
         //2.1、根据项目编码/阶段ID不等于7、103、1004，并且endDate小于等于当前时间的工作项列表数据
-        List<Long> stageIdState = new ArrayList<Long>() {
-            {
-                add(TaskStatusEnum.TYPE_CLOSED_STATE.CODE);
-                add(StageConstant.FirstStageEnum.READY_STAGE.getValue());
-                add(StageConstant.FirstStageEnum.FINISH_STAGE.getValue());
-                add(FaultStatusEnum.CLOSED.CODE);
-            }
-        };
-
+        List<Long> stageIdState = new ArrayList<>();
+        stageIdState.add(TaskStatusEnum.TYPE_CLOSED_STATE.CODE);
+        stageIdState.add(StageConstant.FirstStageEnum.READY_STAGE.getValue());
+        stageIdState.add(StageConstant.FirstStageEnum.FINISH_STAGE.getValue());
+        stageIdState.add(FaultStatusEnum.CLOSED.CODE);
         IssueExample issueExample = new IssueExample();
         IssueExample.Criteria criteria = issueExample.createCriteria();
         criteria.andProjectIdIn(projectIds)

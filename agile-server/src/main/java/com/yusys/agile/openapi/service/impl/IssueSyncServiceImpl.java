@@ -1,5 +1,6 @@
 package com.yusys.agile.openapi.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -70,8 +71,8 @@ public class IssueSyncServiceImpl implements IssueSyncService {
              *          cmp_sync_result字段值含义：-1:未同步 0:同步失败 1:同步成功
              */
             String result = resultFeature.get();
-            if(Optional.ofNullable(result).isPresent()&&JSONObject.parseObject(result).containsKey("code")){
-               String code = JSONObject.parseObject(result).getString("code");
+            if(Optional.ofNullable(result).isPresent()&&JSON.parseObject(result).containsKey("code")){
+               String code = JSON.parseObject(result).getString("code");
                 if("200".equals(code)){
                     LOGGER.info("与测试平台同步需求成功："+list.toString());
                     syncResult(list,cmp_sync_result_1);

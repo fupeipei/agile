@@ -1,5 +1,6 @@
 package com.yusys.agile.module.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.module.dao.ModuleMapper;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.domain.ModuleExample;
@@ -54,7 +55,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleDTO> listModule(String moduleName, Integer pageNum, Integer pageSize, Long systemId) {
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         ModuleExample example = new ModuleExample();
         ModuleExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.toString()).andSystemIdEqualTo(systemId);
