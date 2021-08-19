@@ -54,42 +54,21 @@ public class RedisCacheConfiguration {
         }
 
         /**
-         * @description redisson集群模式客户端
-         * @return org.redisson.api.RedissonClient
+         * @param nodes
+         * @return java.util.List
+         * @description 查询节点
          */
-        /*@Bean
-        RedissonClient redissonCluster() {
-            List<String> nodes = redisProperties.getCluster().getNodes();
-            List<String> addressList = getNodeAddresses(nodes);
-            String[] addresses = new String[addressList.size()];
-            addressList.toArray(addresses);
-            Config config = new Config();
-            ClusterServersConfig clusterServersConfig = config.useClusterServers()
-                    .addNodeAddress(addresses)
-                    .setTimeout(Integer.parseInt(String.valueOf(redisProperties.getTimeout().toMillis())));
-            String password = redisProperties.getPassword();
-            if (StringUtils.isNotBlank(password)) {
-                clusterServersConfig.setPassword(password);
+        private List<String> getNodeAddresses(List<String> nodes) {
+            List<String> addressList = Lists.newArrayList();
+            Iterator<String> iterator = nodes.iterator();
+            while (iterator.hasNext()) {
+                String node = iterator.next();
+                if (!node.startsWith(REDISSON_NODES_PREFIX)) {
+                    node = REDISSON_NODES_PREFIX + node;
+                }
+                addressList.add(node);
             }
-            return Redisson.create(config);
-        }*/
-    }
-
-    /**
-     * @param nodes
-     * @return java.util.List
-     * @description 查询节点
-     */
-    private List<String> getNodeAddresses(List<String> nodes) {
-        List<String> addressList = Lists.newArrayList();
-        Iterator<String> iterator = nodes.iterator();
-        while (iterator.hasNext()) {
-            String node = iterator.next();
-            if (!node.startsWith(REDISSON_NODES_PREFIX)) {
-                node = REDISSON_NODES_PREFIX + node;
-            }
-            addressList.add(node);
+            return addressList;
         }
-        return addressList;
     }
 }
