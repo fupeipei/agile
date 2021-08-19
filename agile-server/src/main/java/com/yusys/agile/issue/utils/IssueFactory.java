@@ -225,9 +225,11 @@ public class IssueFactory {
 
 
         //处理附件信息
-        List<IssueAttachment> attachments;
+        List<IssueAttachment> attachments = Lists.newArrayList();
         try {
-            attachments = ReflectUtil.copyProperties4List(issueDTO.getAttachments(), IssueAttachment.class);
+            if(CollectionUtils.isNotEmpty(issueDTO.getAttachments())){
+                attachments = ReflectUtil.copyProperties4List(issueDTO.getAttachments(), IssueAttachment.class);
+            }
         } catch (Exception e) {
             throw new BusinessException("附件转换失败！{}", e.getMessage());
         }
