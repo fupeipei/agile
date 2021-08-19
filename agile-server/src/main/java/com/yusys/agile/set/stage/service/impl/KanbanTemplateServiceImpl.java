@@ -1,5 +1,6 @@
 package com.yusys.agile.set.stage.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.set.stage.dao.KanbanTemplateMapper;
 import com.yusys.agile.set.stage.dao.TemplateStageMapper;
 import com.yusys.agile.set.stage.dto.KanbanTemplateDTO;
@@ -78,7 +79,7 @@ public class KanbanTemplateServiceImpl implements KanbanTemplateService {
     public PageInfo<List<KanbanTemplate>> getKanbanTemplateList(String tenantCode, String templateName, Integer pageNum, Integer pageSize) {
         pageNum = null == pageNum ? 1 : pageNum;
         pageSize = null == pageSize ? 20 : pageSize;
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         KanbanTemplateExample kanbanTemplateExample = new KanbanTemplateExample();
         kanbanTemplateExample.setOrderByClause("default_template desc,template_id asc");
         KanbanTemplateExample.Criteria criteria = kanbanTemplateExample.createCriteria();

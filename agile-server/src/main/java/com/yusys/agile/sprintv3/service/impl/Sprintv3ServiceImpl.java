@@ -3,6 +3,7 @@ package com.yusys.agile.sprintv3.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.dao.IssueMapper;
@@ -261,13 +262,13 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         boolean isTenantAdmin = iFacadeUserApi.checkIsTenantAdmin(userId);
         if (isTenantAdmin) {
             HashMap<String, Object> params = buildQueryParamsTenantAdmin(dto, security);
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+            PageMethod.startPage(dto.getPageNum(), dto.getPageSize());
             List<SprintListDTO> rest = ssprintMapper.queryAllSprint(params);
             rest = buildResultList(rest);
             return rest;
         } else { //不是租户管理员，查询与我相关的迭代
             HashMap<String, Object> params = buildQueryParamsOthers(dto, security);
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+            PageMethod.startPage(dto.getPageNum(), dto.getPageSize());
             List<SprintListDTO> rest = ssprintMapper.queryOtherSprint(params);
             rest = buildResultList(rest);
             return rest;
@@ -370,7 +371,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         /*
          * 按团队ID查询出所有（进行中、未开始）状态下的有效迭代
          */
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         List<SprintListDTO> result = ssprintMapper.selectByIdAndName(teamId, sprint);
         //属性值翻译
         result.forEach(item -> {
@@ -806,7 +807,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 Long systemId = ssoSystemRestDTO.getSystemId();
                 systemIdInfo.add(systemId);
             }
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
             issueDTOS = issueMapper.queryNotRelationStory(title, systemIdInfo);
             issueDTOS.stream().map(issueDTO -> {
                 ssoSystemRestDTOS.forEach(ssoSystemRestDTO -> {
@@ -822,7 +823,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
                 item.setStoryStatusName(StoryStatusEnum.getName(item.getLaneId()));
             });
         } else {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
             issueDTOS = issueMapper.queryNotRelationStory(title, systemIds);
             SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(systemIds.get(0));
             issueDTOS.stream().map(issueDTO -> {
@@ -843,7 +844,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     public List<SprintV3UserHourDTO> querySprintVagueUser(Long sprintId, String userName, Integer pageNum, Integer pageSize) {
         //通过迭代id查询迭代时长表的userid，然后再查人员
         if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()){
-            PageHelper.startPage(pageNum,pageSize);
+            PageMethod.startPage(pageNum,pageSize);
         }
         List<Long> spintIdList = Lists.newArrayList(sprintId);
         List<SprintV3UserHourDTO> userSprintHours = sSprintUserHourMapper.listUserHourBySprintId(spintIdList);
@@ -1048,7 +1049,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         List<Byte> status = new ArrayList<>();
         status.add(SprintStatusEnum.TYPE_NO_START_STATE.CODE);

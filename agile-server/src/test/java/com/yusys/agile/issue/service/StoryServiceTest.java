@@ -6,6 +6,7 @@ import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.utils.IssueFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +37,7 @@ public class StoryServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @After
     public void tearDown() throws Exception {
     }
 

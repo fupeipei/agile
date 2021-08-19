@@ -1,7 +1,9 @@
 package com.yusys.agile.scheduleplan.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.domain.IssueExample;
@@ -67,7 +69,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
     @Override
     @Transactional
     public void saveSchedulePlan(ScheduleplanDTO scheduleplanDTO) {
-        log.info("需求排期获取接口入参:{}", JSONObject.toJSONString(scheduleplanDTO));
+        log.info("需求排期获取接口入参:{}", JSON.toJSONString(scheduleplanDTO));
         Long epicId = scheduleplanDTO.getEpicId();
         //删除之前数据
         SScheduleExample sScheduleExample = new SScheduleExample();
@@ -151,7 +153,7 @@ public class SchedulePlanServiceImpl implements SchedulePlanService {
     @Override
     public List<ToDoListDTO> queryToDoList(String target,Integer pageNum, Integer pageSize) {
         if (Optional.ofNullable(pageNum).isPresent() && Optional.ofNullable(pageSize).isPresent()) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
 
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();

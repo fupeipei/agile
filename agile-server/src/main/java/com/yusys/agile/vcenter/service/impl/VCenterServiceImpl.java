@@ -1,5 +1,6 @@
 package com.yusys.agile.vcenter.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.vcenter.dao.VcenterApplicationMapper;
 import com.yusys.agile.vcenter.dao.VcenterDevMapper;
 import com.yusys.agile.vcenter.dao.VcenterVmIpMapper;
@@ -336,7 +337,7 @@ public class VCenterServiceImpl implements VCenterService {
     public List<VcenterApplication> getList(VcenterApplication vcenterApplication) {
         // 不传page信息时查全部数据
         if (null != vcenterApplication.getPageNum() && null != vcenterApplication.getPageSize()) {
-            PageHelper.startPage(vcenterApplication.getPageNum(), vcenterApplication.getPageSize());
+            PageMethod.startPage(vcenterApplication.getPageNum(), vcenterApplication.getPageSize());
         }
         VcenterApplicationExample vcenterApplicationExample = new VcenterApplicationExample();
         VcenterApplicationExample.Criteria criteria = vcenterApplicationExample.createCriteria();

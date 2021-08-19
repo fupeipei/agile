@@ -3,6 +3,7 @@ package com.yusys.agile.versionmanager.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.yusys.agile.constant.StringConstant;
 import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
@@ -335,7 +336,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
         }
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
 
         VersionManagerExample managerExample = new VersionManagerExample();
