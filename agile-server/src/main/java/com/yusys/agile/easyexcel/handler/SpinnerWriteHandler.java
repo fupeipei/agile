@@ -3,10 +3,8 @@ package com.yusys.agile.easyexcel.handler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
-import org.apache.commons.collections.MapUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -111,7 +109,7 @@ public class SpinnerWriteHandler implements SheetWriteHandler {
     @Override
     public void beforeSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
 
-        throw new UnsupportedOperationException();
+        System.out.println("创建sheet");
     }
 
 
