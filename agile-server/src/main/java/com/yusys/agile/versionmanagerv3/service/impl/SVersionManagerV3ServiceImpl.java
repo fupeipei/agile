@@ -2,6 +2,7 @@ package com.yusys.agile.versionmanagerv3.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.enums.IssueTypeEnum;
@@ -119,7 +120,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
 
     @Override
     public PageInfo<SVersionManagerDTO> queryVersionManagerList(Integer pageNum, Integer pageSize, String searchKey) throws Exception {
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         List<SVersionManagerDTO> sVersionManagerDTOList = sVersionManagerMapper.queryVersionManagerListByExample(searchKey, UserThreadLocalUtil.getUserInfo().getSystemId());
         if (CollectionUtils.isNotEmpty(sVersionManagerDTOList)) {
             sVersionManagerDTOList.forEach(x -> {
@@ -156,7 +157,7 @@ public class SVersionManagerV3ServiceImpl implements SVersionManagerV3Service {
         } else if ("update".equals(operateType)) {
             filterIssueIds = sVersionManagerMapper.selectAllIssueIds(versionManagerId, UserThreadLocalUtil.getUserInfo().getSystemId());
         }
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         List<SVersionIssueRelateDTO> sVersionIssueRelateDTOS = issueService.queryFeatureScheduleRelByOperateType(teamId, searchKey, UserThreadLocalUtil.getUserInfo().getSystemId(), filterIssueIds);
         return new PageInfo(buildSVersionIssueRelateList(sVersionIssueRelateDTOS));
     }

@@ -850,7 +850,7 @@ public class ExcelServiceImpl implements ExcelService {
         } catch (ParseException e) {
             isValidDate = false;
         }
-        if (cellType.equals(CellType.NUMERIC) && cell.getDateCellValue().compareTo(date) != -1) {
+        if (cellType.equals(CellType.NUMERIC) && cell.getDateCellValue().compareTo(date)>0) {
             isValidDate = true;
         } else if (cellType.equals(CellType.STRING)) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");

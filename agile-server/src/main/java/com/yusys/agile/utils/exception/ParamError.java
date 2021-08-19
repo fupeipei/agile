@@ -1,6 +1,10 @@
 package com.yusys.agile.utils.exception;
 
-public class ParamError {
+import java.io.Serializable;
+
+public class ParamError implements Serializable {
+
+    private static final long serialVersionUID = 6408175163093495856L;
     private String name;
     private String message;
 

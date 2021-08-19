@@ -13,7 +13,7 @@ public class FileUtil {
         if (isIE(request)) {
             fileName = java.net.URLEncoder.encode(fileName, "UTF8");
         } else if (request.getHeader("USER-AGENT") != null
-                && request.getHeader("USER-AGENT").toLowerCase().indexOf("firefox") > 0) {
+                && request.getHeader("USER-AGENT").toLowerCase().contains("firefox")) {
             fileName = "=?UTF-8?B?" + (new String(Base64.byteArrayToBase64(fileName.getBytes("utf-8"))))
                     + "?=";
         } else {
@@ -23,9 +23,8 @@ public class FileUtil {
     }
 
     private static boolean isIE(HttpServletRequest request) {
-        return (request.getHeader("USER-AGENT").toLowerCase().indexOf("msie") > 0
-                || request.getHeader("USER-AGENT").toLowerCase().indexOf("rv:11.0") > 0
-                || request.getHeader("USER-AGENT").toLowerCase().indexOf("edge") > 0) ? true
-                : false;
+        return request.getHeader("USER-AGENT").toLowerCase().contains("msie")
+                || request.getHeader("USER-AGENT").toLowerCase().contains("rv:11.0")
+                || request.getHeader("USER-AGENT").toLowerCase().contains("edge");
     }
 }
