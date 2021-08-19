@@ -359,7 +359,6 @@ public class StageServiceImpl implements StageService {
                 } else {
                     Thread.sleep(10);
                 }
-                rLock.unlock();
             }
             if (result) {
                 //阶段序值
