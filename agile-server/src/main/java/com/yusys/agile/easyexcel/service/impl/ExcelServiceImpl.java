@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
@@ -236,7 +237,7 @@ public class ExcelServiceImpl implements IExcelService {
             issueDTO.setDescription(StringUtils.isNotBlank(issueFiles.get(2)) ? issueFiles.get(2) : null);
             issueDTO.setTaskType(TaskTypeEnum.getCode(issueFiles.get(3)));
             issueDTO.setPlanWorkload(StringUtils.isNotBlank(issueFiles.get(4)) ? Integer.valueOf(issueFiles.get(4)) : null);
-            JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
+            JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(issueDTO));
             jsonObjects.add(jsonObject);
         }
         return jsonObjects;
@@ -275,7 +276,7 @@ public class ExcelServiceImpl implements IExcelService {
             SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
             issueDTO.setTenantCode(userInfo.getTenantCode());
             issueDTO.setSystemId(userInfo.getSystemId());
-            JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
+            JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(issueDTO));
             jsonObject.put("storyPoint", issueFiles.get(6));
             jsonObjects.add(jsonObject);
         }
@@ -309,7 +310,7 @@ public class ExcelServiceImpl implements IExcelService {
             issueDTO.setImportance(StringUtils.isNotBlank(issueFiles.get(6)) ? IssueImportanceEnum.getCode(issueFiles.get(6)) : null);
             SecurityDTO userInfo = UserThreadLocalUtil.getUserInfo();
             issueDTO.setTenantCode(userInfo.getTenantCode());
-            JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(issueDTO));
+            JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(issueDTO));
             jsonObjects.add(jsonObject);
         }
         return jsonObjects;
@@ -369,18 +370,18 @@ public class ExcelServiceImpl implements IExcelService {
     public FileInfo uploadFile(List<List<String>> copyData, String templateName, String sheetName, String type, ExcelCommentField field) throws Exception {
         //写错误文件上传文件服务器
         copyData.remove(0);
-        log.info("错误数据信息:{}", JSONObject.toJSONString(copyData));
+        log.info("错误数据信息:{}", JSON.toJSONString(copyData));
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         DownloadExcelTempletService templetService = ExcelTempletFactory.get(type);
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(templetService.getDropDownInfo(field));
         ClassPathResource classPathResource = new ClassPathResource("excelTemplate/" + templateName);
-        ExcelWriter writer = EasyExcel.write(os)
+        ExcelWriter writer = EasyExcelFactory.write(os)
                 .withTemplate(classPathResource.getInputStream())
                 .autoCloseStream(Boolean.TRUE)
                 .registerWriteHandler(spinnerWriteHandler)
                 .build();
-        WriteSheet writeSheet = EasyExcel.writerSheet(sheetName).build();
+        WriteSheet writeSheet = EasyExcelFactory.writerSheet(sheetName).build();
         writer.write(copyData, writeSheet);
         writer.finish();
         byte[] content = os.toByteArray();
@@ -592,7 +593,7 @@ public class ExcelServiceImpl implements IExcelService {
         List<List<String>> dataResult = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(issueList)) {
             List<IssueExportDTO> exportDTOList = transformaData(issueList);
-            log.info("issue数据转换后:{}", JSONObject.toJSONString(exportDTOList));
+            log.info("issue数据转换后:{}", JSON.toJSONString(exportDTOList));
             for (IssueExportDTO issue : exportDTOList) {
                 String makeMan = getMakeMan(issue);
                 issue.setMakeMan(makeMan);

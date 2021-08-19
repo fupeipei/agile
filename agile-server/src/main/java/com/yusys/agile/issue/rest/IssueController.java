@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.rest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.yusys.agile.consumer.constant.AgileConstant;
@@ -493,7 +494,7 @@ public class IssueController {
     @PostMapping("/issue/queryEpicList")
     public PageInfo<IssueDTO> queryEpicList(@RequestBody IssueConditionDTO issueConditionDTO) {
 
-        log.info("根据条件查询epic数据 入参条件为:{}",JSONObject.toJSONString(issueConditionDTO));
+        log.info("根据条件查询epic数据 入参条件为:{}", JSON.toJSONString(issueConditionDTO));
         Integer pageNum = issueConditionDTO.getPageNum();
         Integer pageSize = issueConditionDTO.getPageSize();
         List<Long> systemIds = issueConditionDTO.getSystemIds();
@@ -507,7 +508,7 @@ public class IssueController {
         List<IssueDTO> issueDTOS = issueService.queryEpicList(pageNum,pageSize,title,systemIds);
 
         PageInfo<IssueDTO> pageInfo = new PageInfo<>(issueDTOS);
-        log.info("epic数据查询结果集：{}",JSONObject.toJSONString(pageInfo));
+        log.info("epic数据查询结果集：{}",JSON.toJSONString(pageInfo));
         return pageInfo;
     }
 }

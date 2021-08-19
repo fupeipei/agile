@@ -3,10 +3,12 @@ package com.yusys.agile.scheduleplan.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class SystemInfoDTO {
+public class SystemInfoDTO implements Serializable {
+    private static final long serialVersionUID = -9025863997356458545L;
 
     @ApiModelProperty("系统Id")
     private Long systemId;

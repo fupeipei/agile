@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.yusys.agile.actionlog.service.SActionLogService;
@@ -576,7 +577,7 @@ public class TaskServiceImpl implements TaskService {
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中
     private int updateStoryLaneIdByTaskCount(Issue task) {
        if (task == null || task.getParentId() == null) {
-            log.info("task或task.getParentId()为空" + JSONObject.toJSONString(task));
+            log.info("task或task.getParentId()为空" + JSON.toJSONString(task));
             return -1;
         }
         Long storyId = task.getParentId();
@@ -592,7 +593,7 @@ public class TaskServiceImpl implements TaskService {
 
         //故事的状态未开始的数量
         long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
-        log.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
+        log.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSON.toJSONString(story));
 //        if(unStartCount>0){
 //            return -2;
 //        }
@@ -619,7 +620,7 @@ public class TaskServiceImpl implements TaskService {
             storyIssue.setLaneId(StoryStatusEnum.TYPE_ADD_STATE.CODE);
         }
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
-        log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
+        log.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSON.toJSONString(storyIssue));
 
         //如果故事更新，则调用向上更新方法。
         if(i>0){

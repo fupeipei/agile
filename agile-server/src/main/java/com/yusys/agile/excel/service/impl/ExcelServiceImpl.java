@@ -1313,7 +1313,7 @@ public class ExcelServiceImpl implements ExcelService {
             }*/
             //部署说明
             else if ("deployIllustration".equals(fieldName)) {
-                List<String> deployIllustrationList = JSONArray.parseArray(result, String.class);
+                List<String> deployIllustrationList = JSON.parseArray(result, String.class);
                 StringBuilder sb = new StringBuilder();
                 if (CollectionUtils.isNotEmpty(deployIllustrationList)) {
                     for (String illustration : deployIllustrationList) {

@@ -2,6 +2,7 @@ package com.yusys.agile.sprintV3.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,8 @@ import java.util.Date;
  * @date 2021/05/11
  */
 @Data
-public class SprintV3UserHourDTO {
+public class SprintV3UserHourDTO implements Serializable {
+    private static final long serialVersionUID = -9025863997356458545L;
 
     /**
      * 小时id

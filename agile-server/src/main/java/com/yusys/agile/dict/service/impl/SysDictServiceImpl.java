@@ -1,5 +1,6 @@
 package com.yusys.agile.dict.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.dict.dao.SysDictDetailMapper;
 import com.yusys.agile.dict.domain.SysDictDetail;
 import com.yusys.agile.dict.domain.SysDictDetailExample;
@@ -22,7 +23,7 @@ public class SysDictServiceImpl implements SysDictService {
 
     @Override
     public List<SysDictDetail> getResponsiblePerson(Integer pageNum, Integer pageSize, String detailName) {
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         SysDictDetailExample sysDictDetailExample = new SysDictDetailExample();
         SysDictDetailExample.Criteria criteria = sysDictDetailExample.createCriteria();
         criteria.andDictCodeEqualTo("responsiblePerson");
