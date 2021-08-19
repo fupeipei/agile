@@ -162,11 +162,15 @@ public class ModuleServiceImpl implements ModuleService {
                     List<JSONObject> resultList = resultMap.get(systemId);
                     resultList.add(jsonObject);
                 } else {
-                    List<JSONObject> resultList = new ArrayList() {
-                        {
-                            add(jsonObject);
-                        }
-                    };
+                    List<JSONObject> resultList=new ArrayList<>();
+                    resultList.add(jsonObject);
+
+
+//                    List<JSONObject> resultList = new ArrayList() {
+//                        {
+//                            add(jsonObject);
+//                        }
+//                    };
                     resultMap.put(systemId, resultList);
                 }
 
