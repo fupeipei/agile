@@ -47,7 +47,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
@@ -77,9 +76,16 @@ public class MailSendUtil {
 
     private static final Logger log = LoggerFactory.getLogger(MailSendUtil.class);
     private static final String CREATE_TIME_DESC = "CREATE_TIME DESC";
+    private static final String USER_NAME = "userName";
+    private static final String ISSUE_TYPE_NAME = "issueTypeName";
+    private static final String TITLE = "title";
+    private static final String PROJECT_NAME = "projectName";
+    private static final String CONTENT = "content";
+    private static final String YU_DO_WEB_IP = "YuDOWebIp";
+    private static final String PROJECT_LOCATION = "projectLocation";
 
     @Value("${YuDO.url}")
-    private String YuDOWebIp;
+    private String yuDOWebIp;
     @Value("${project.location}")
     private String projectLocation;
 
@@ -120,35 +126,35 @@ public class MailSendUtil {
             String mailSubject;
             String mailContent;
             if (EmailOperationTypeEnum.ADD.CODE.equals(operationType)) {
-                mailSubject = MailContent.ISSUE_CREATE_SUBJECT.replace("userName", userName)
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle());
+                mailSubject = MailContent.ISSUE_CREATE_SUBJECT.replace(USER_NAME, userName)
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle());
 
-                mailContent = MailContent.ISSUE_CREATE_CONTENT.replace("userName", userName)
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle());
+                mailContent = MailContent.ISSUE_CREATE_CONTENT.replace(USER_NAME, userName)
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle());
             } else if (EmailOperationTypeEnum.MODIFY.CODE.equals(operationType)) {
-                mailSubject = MailContent.ISSUE_CHANGE_SUBJECT.replace("userName", userName)
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle());
-                mailContent = MailContent.ISSUE_CHANGE_CONTENT.replace("userName", userName)
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle())
+                mailSubject = MailContent.ISSUE_CHANGE_SUBJECT.replace(USER_NAME, userName)
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle());
+                mailContent = MailContent.ISSUE_CHANGE_CONTENT.replace(USER_NAME, userName)
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle())
                         .replace("stageStatus", stageStatus);
             } else if (EmailOperationTypeEnum.DELETE.CODE.equals(operationType)) {
-                mailSubject = MailContent.ISSUE_DELETE_SUBJECT.replace("userName", userName)
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle());
-                mailContent = MailContent.ISSUE_DELETE_CONTENT.replace("userName", userName)
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle());
+                mailSubject = MailContent.ISSUE_DELETE_SUBJECT.replace(USER_NAME, userName)
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle());
+                mailContent = MailContent.ISSUE_DELETE_CONTENT.replace(USER_NAME, userName)
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle());
             } else {
-                mailSubject = MailContent.ISSUE_DRAG_CHANGE_SUBJECT.replace("userName", userName)
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle());
+                mailSubject = MailContent.ISSUE_DRAG_CHANGE_SUBJECT.replace(USER_NAME, userName)
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle());
                 mailContent = MailContent.ISSUE_DRAG_CHANGE_CONTENT
-                        .replace("issueTypeName", IssueTypeEnum.getDesc(issueType))
-                        .replace("title", issue.getTitle())
+                        .replace(ISSUE_TYPE_NAME, IssueTypeEnum.getDesc(issueType))
+                        .replace(TITLE, issue.getTitle())
                         .replace("stageStatus", stageStatus);
             }
 
@@ -194,9 +200,7 @@ public class MailSendUtil {
                 hourExample.createCriteria().andSprintIdEqualTo(sprintId);
                 List<SSprintUserHour> userSprintHours = sprintHourMapper.selectByExample(hourExample);
                 if (CollectionUtils.isNotEmpty(userSprintHours)) {
-                    userSprintHours.forEach(userSprintHour -> {
-                        userIds.add(userSprintHour.getUserId());
-                    });
+                    userSprintHours.forEach(userSprintHour ->  userIds.add(userSprintHour.getUserId()));
                 }
             }
             //3、人员去重
@@ -236,7 +240,7 @@ public class MailSendUtil {
                 });
             }
             if (CollectionUtils.isEmpty(sendReceivers)) {
-                log.info("工作项:{},邮件发送,接收邮件人员为空，直接return停止邮件发送");
+                log.info("工作项:邮件发送,接收邮件人员为空，直接return停止邮件发送");
                 return;
             }
             //4、查询邮件发送人员的邮箱
@@ -263,21 +267,21 @@ public class MailSendUtil {
 
             mailSendDTO.setMailSubject(mailSubject);
             Map<String, String> map = new HashedMap();
-            map.put("projectName", projectName);
+            map.put(PROJECT_NAME, projectName);
             map.put("issueId", issueId.toString());
-            map.put("title", title);
+            map.put(TITLE, title);
             map.put("business", business);
             map.put("dealUserName", dealUserName);
-            map.put("content", content);
-            map.put("YuDOWebIp", YuDOWebIp);
-            map.put("projectLocation", getProjectName(projectLocation));
+            map.put(CONTENT, content);
+            map.put(YU_DO_WEB_IP, yuDOWebIp);
+            map.put(PROJECT_LOCATION, getProjectName(projectLocation));
             mailSendDTO.setTemplateData(map);
             mailSendDTO.setMailType(MailTypeEnum.MAIL_TYPE_2.getType());
             mailSendDTO.setMailTemplateType(MailTemplateTypeEnum.ISSUE.getValue());
             mailList.forEach(mailAddress -> {
                 mailSendDTO.setMailReceivers(mailAddress);
                 //rabbitTemplate.convertAndSend(FlowConstant.Queue.MAIL_SEND_QUEUE, mailSendDTO);
-                log.info("工作项:{},web服务地址:{},平台名称：{},邮件发送success,接收邮件人员邮箱：{}", title, YuDOWebIp, getProjectName(projectLocation), mailAddress);
+                log.info("工作项:{},web服务地址:{},平台名称：{},邮件发送success,接收邮件人员邮箱：{}", title, yuDOWebIp, getProjectName(projectLocation), mailAddress);
             });
 
         } catch (Exception e) {
@@ -533,10 +537,10 @@ public class MailSendUtil {
             MailSendDTO mailSendDTO = new MailSendDTO();
             mailSendDTO.setMailSubject(mailSubject);
             Map<String, String> map = new HashedMap();
-            map.put("projectName", projectName);
-            map.put("content", contents);
-            map.put("YuDOWebIp", YuDOWebIp);
-            map.put("projectLocation", getProjectName(projectLocation));
+            map.put(PROJECT_NAME, projectName);
+            map.put(CONTENT, contents);
+            map.put(YU_DO_WEB_IP, yuDOWebIp);
+            map.put(PROJECT_LOCATION, getProjectName(projectLocation));
             mailSendDTO.setTemplateData(map);
             mailSendDTO.setMailType(MailTypeEnum.MAIL_TYPE_2.getType());
             mailSendDTO.setMailTemplateType(MailTemplateTypeEnum.ISSUE_TIMEOUT.getValue());
@@ -691,12 +695,12 @@ public class MailSendUtil {
                     MailSendDTO mailSendDTO = new MailSendDTO();
                     mailSendDTO.setMailSubject(mailSubject);
                     Map<String, String> map = new HashedMap();
-                    map.put("projectName", projectName);
+                    map.put(PROJECT_NAME, projectName);
                     map.put("kanbanName", kanbanName);
                     map.put("overTitle", type + "内容");
-                    map.put("content", content.toString());
-                    map.put("YuDOWebIp", YuDOWebIp);
-                    map.put("projectLocation", getProjectName(projectLocation));
+                    map.put(CONTENT, content.toString());
+                    map.put(YU_DO_WEB_IP, yuDOWebIp);
+                    map.put(PROJECT_LOCATION, getProjectName(projectLocation));
                     mailSendDTO.setTemplateData(map);
                     mailSendDTO.setMailType(MailTypeEnum.MAIL_TYPE_2.getType());
                     mailSendDTO.setMailTemplateType(MailTemplateTypeEnum.BUSSINESS_TIMEOUT.getValue());
@@ -713,12 +717,8 @@ public class MailSendUtil {
 
     private String getProjectName(String projectLocation) {
         String projectName = "研发运维一体化平台";
-        switch (projectLocation) {
-            case "yuxin":
-                projectName = "研发运维一体化平台";
-                break;
-            default:
-                break;
+        if ("yuxin".equals(projectLocation)){
+            projectName = "研发运维一体化平台";
         }
         return projectName;
     }
