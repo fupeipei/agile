@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
@@ -35,7 +36,7 @@ public class EpicTemplateDownloadServiceImpl implements DownloadExcelTempletServ
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
             ClassPathResource classPathResource = new ClassPathResource("excelTemplate/epicImportTemplate.xlsx");
-            EasyExcel.write(ExcelUtil.dealResponse("epicImportTemplate",response))
+            EasyExcelFactory.write(ExcelUtil.dealResponse("epicImportTemplate",response))
                     .withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("epics")

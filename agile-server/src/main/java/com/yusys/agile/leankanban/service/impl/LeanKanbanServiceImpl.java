@@ -1,7 +1,6 @@
 package com.yusys.agile.leankanban.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.yusys.agile.issue.enums.IssueTypeEnum;
+import com.alibaba.fastjson.JSON;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.leankanban.dao.SLeanKanbanMapper;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
@@ -77,7 +76,7 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
            throw new BusinessException("团队看板创建失败.");
         }
 
-        log.info("获取看板阶段数据：{}", JSONObject.toJSONString(kanbanStageInstances));
+        log.info("获取看板阶段数据：{}", JSON.toJSONString(kanbanStageInstances));
         if(CollectionUtils.isNotEmpty(kanbanStageInstances)){
             for (KanbanStageInstance kanbanStageInstance: kanbanStageInstances) {
                 kanbanStageInstance.setTeamId(teamId);
@@ -109,29 +108,28 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
             } catch (Exception e) {
                 log.info("精益看板阶段转换异常：{}",e.getMessage());
             }
-
-            if(CollectionUtils.isNotEmpty(instanceDTOS)){
-                for(KanbanStageInstanceDTO kanbanStageInstanceDTO : instanceDTOS){
-                    Long stageId = kanbanStageInstanceDTO.getStageId();
-                    List<KanbanStageInstance> secondStageList = stageService.getSecondStageList(stageId, kanbanId);
-                    if(CollectionUtils.isNotEmpty(secondStageList)){
-                        try {
-                            List<KanbanStageInstanceDTO> secondStages = ReflectUtil.copyProperties4List(secondStageList, KanbanStageInstanceDTO.class);
-                            kanbanStageInstanceDTO.setSecondStages(secondStages);
-                        } catch (Exception e) {
-                            log.info("精益看板二级阶段转换异常：{}",e.getMessage());
-                        }
-                    }
-                }
-            }
-            kanbanDTO.setKanbanStageInstances(instanceDTOS);
-
-            //工作项数据
-            //issueService.getIssueTrees(kanbanId, IssueTypeEnum.TYPE_EPIC.CODE);
-
+            kanbanDTO.setKanbanStageInstances(buildInstanceDTOS(instanceDTOS,kanbanId));
             return kanbanDTO;
         }
         return null;
+    }
+
+    private List<KanbanStageInstanceDTO> buildInstanceDTOS(List<KanbanStageInstanceDTO> instanceDTOS,Long kanbanId) {
+        if(CollectionUtils.isNotEmpty(instanceDTOS)){
+            for(KanbanStageInstanceDTO kanbanStageInstanceDTO : instanceDTOS){
+                Long stageId = kanbanStageInstanceDTO.getStageId();
+                List<KanbanStageInstance> secondStageList = stageService.getSecondStageList(stageId, kanbanId);
+                if(CollectionUtils.isNotEmpty(secondStageList)){
+                    try {
+                        List<KanbanStageInstanceDTO> secondStages = ReflectUtil.copyProperties4List(secondStageList, KanbanStageInstanceDTO.class);
+                        kanbanStageInstanceDTO.setSecondStages(secondStages);
+                    } catch (Exception e) {
+                        log.info("精益看板二级阶段转换异常：{}",e.getMessage());
+                    }
+                }
+            }
+        }
+        return instanceDTOS;
     }
 
     @Override

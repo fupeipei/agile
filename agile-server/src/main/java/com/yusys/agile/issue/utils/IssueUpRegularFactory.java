@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.headerfield.enums.IsCustomEnum;
 import com.yusys.agile.issue.dao.IssueHistoryRecordMapper;
@@ -68,7 +69,7 @@ public class IssueUpRegularFactory {
         Long handler = issue.getHandler();
         Long teamId = issue.getTeamId();
         if(teamId==null){
-            logger.info("团队id为空，直接return+"+ JSONObject.toJSONString(issue));
+            logger.info("团队id为空，直接return+"+ JSON.toJSONString(issue));
             return;
         }
 

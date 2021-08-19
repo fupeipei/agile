@@ -1,10 +1,13 @@
 package com.yusys.agile.project.dto;
 
+import java.io.Serializable;
+
 /**
  * @Date 2021/2/7
  * @Description 迭代中所有故事数以及完成数
  */
-public class ProjectStoryDTO {
+public class ProjectStoryDTO implements Serializable {
+    private static final long serialVersionUID = -9025863997356458545L;
     private Integer all;
     private Integer done;
 

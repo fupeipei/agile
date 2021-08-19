@@ -3,6 +3,8 @@ package com.yusys.agile.teamV3.dto;
 import com.yusys.agile.sprintV3.dto.SprintV3UserHourDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +15,8 @@ import java.util.List;
  * @Date 2021/6/1
  **/
 @Data
-public class TeamV3DTO {
+public class TeamV3DTO implements Serializable {
+    private static final long serialVersionUID = -9025863997356458545L;
     private Long teamId;
 
     private String teamName;

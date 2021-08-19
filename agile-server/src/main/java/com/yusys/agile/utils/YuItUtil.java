@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct;
 public class YuItUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(YuItUtil.class);
 
-    public static final String YuIt = "YuIt";
+    public static final String YU_IT = "YuIt";
 
     @Value("${fault.source}")
     private String faultSource;
@@ -41,7 +41,7 @@ public class YuItUtil {
      * @date 2020/4/24
      */
     public static Boolean yuItSync() {
-        if (StringUtils.equalsIgnoreCase(itBean.getSource(), YuIt)) {
+        if (StringUtils.equalsIgnoreCase(itBean.getSource(), YU_IT)) {
             LOGGER.debug("缺陷模式：YuIt同步缺陷");
             return true;
         }

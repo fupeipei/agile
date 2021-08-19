@@ -3288,8 +3288,8 @@ public class IssueServiceImpl implements IssueService {
 
         if (Optional.ofNullable(issueStringDTO.getPageNum()).isPresent() &&
                 Optional.ofNullable(issueStringDTO.getPageSize()).isPresent()) {
-            issueRecord.setPageNum(StringUtil.StringtoInteger(issueStringDTO.getPageNum()));
-            issueRecord.setPageSize(StringUtil.StringtoInteger(issueStringDTO.getPageSize()));
+            issueRecord.setPageNum(StringUtil.stringtoInteger(issueStringDTO.getPageNum()));
+            issueRecord.setPageSize(StringUtil.stringtoInteger(issueStringDTO.getPageSize()));
         }
         if (StringUtils.isNotEmpty(issueStringDTO.getIssueType())) {
             issueRecord.setIssueTypes(dealData(issueStringDTO.getIssueType(), BYTE));

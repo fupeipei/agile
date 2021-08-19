@@ -2,6 +2,7 @@ package com.yusys.agile.customfield.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.constant.StringConstant;
 import com.yusys.agile.customfield.dao.SCustomFieldPoolMapper;
 import com.yusys.agile.customfield.domain.SCustomFieldPool;
@@ -195,7 +196,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
     public List<CustomFieldDTO> listCustomFieldsBySystemId(Long systemId, String fieldName, Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         SCustomFieldPoolExample example = new SCustomFieldPoolExample();
         SCustomFieldPoolExample.Criteria criteria = example.createCriteria()

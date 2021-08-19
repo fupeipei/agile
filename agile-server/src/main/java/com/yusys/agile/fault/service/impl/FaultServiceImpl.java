@@ -1,5 +1,6 @@
 package com.yusys.agile.fault.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
 import com.yusys.agile.constant.NumberConstant;
@@ -543,7 +544,7 @@ public class FaultServiceImpl implements FaultService {
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         IssueExample example = new IssueExample();
         example.setOrderByClause(CREATE_TIME_DESC);
@@ -627,7 +628,7 @@ public class FaultServiceImpl implements FaultService {
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
 
 

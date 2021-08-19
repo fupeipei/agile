@@ -13,8 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class XStreamUtils {
 
-    private static final Map<String, XStream> XStreamMap = new ConcurrentHashMap<String, XStream>();
+    private static final Map<String, XStream> XStreamMap = new ConcurrentHashMap<>();
 
+    private XStreamUtils(){
+        System.out.println("XStreamUtils class");
+    }
     /**
      * 获取xstream对象
      *
