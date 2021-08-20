@@ -649,7 +649,7 @@ public class FaultServiceImpl implements FaultService {
                 criteria2.andTitleLike(StringConstant.PERCENT_SIGN + filter + StringConstant.PERCENT_SIGN);
                 example.or(criteria2);
             } catch (Exception e) {
-                LOGGER.info("转换异常e:{}", e);
+                LOGGER.info("转换异常e:{}", e.getMessage());
                 // 存在异常说明只能查name
                 criteria.andTitleLike(StringConstant.PERCENT_SIGN + filter + StringConstant.PERCENT_SIGN);
             }
@@ -847,7 +847,7 @@ public class FaultServiceImpl implements FaultService {
                 return userDTO.getUserName();
             }
         } catch (Exception e) {
-            LOGGER.info("error={}", e);
+            LOGGER.info("error={}", e.getMessage());
             return null;
         }
         return null;

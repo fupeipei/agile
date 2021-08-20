@@ -29,7 +29,7 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public ControllerResponse exceptionHandler(Exception e) {
-        LOGGER.error("全局异常处理 BusinessException: {} ", e);
+        LOGGER.error("全局异常处理 BusinessException: {} ", e.getMessage());
         return ControllerResponse.fail(e.getMessage());
     }
 

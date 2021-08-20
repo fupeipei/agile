@@ -127,7 +127,7 @@ public class MyBatisInsertInterceptor implements Interceptor {
                 LOGGER.info("create id generator instance use workerId:{} dataCenterId:{}", workerId, dataCenterId);
                 idGenerator = new IdGenerator(Long.parseLong(workerId), Long.parseLong(dataCenterId));
             } else {
-                LOGGER.error("illegal workerId or dataCenterId, number required. workerId:{} and dataCenterId:{} provide.");
+                LOGGER.error("illegal workerId or dataCenterId, number required. workerId:{} and dataCenterId:{} provide.",workerId,dataCenterId);
                 LOGGER.info("create id generator instance use default workerId:{} and dataCenterId:{}", DEFAULT_WORK_ID,
                         DEFAULT_DATA_CENTER_ID);
                 idGenerator = new IdGenerator(DEFAULT_WORK_ID, DEFAULT_DATA_CENTER_ID);
@@ -155,7 +155,7 @@ public class MyBatisInsertInterceptor implements Interceptor {
                     return true;
                 }
             } catch (Exception e) {
-                LOGGER.error("e={}", e);
+                LOGGER.error("e= {}", e.getMessage());
             }
         }
 
@@ -179,7 +179,7 @@ public class MyBatisInsertInterceptor implements Interceptor {
                     return true;
                 }
             } catch (Exception e) {
-                LOGGER.error("e={}", e);
+                LOGGER.error("e={}", e.getMessage());
             }
         }
         return false;

@@ -46,7 +46,7 @@ public class IssueConsumer {
                 log.info("接收到工作项向上规整队列命令,工作项ID:{},issueId", issueId);
                 regularFactory.commonIssueUpRegular(issueId);
             } catch (Exception e) {
-                log.error("工作项向上规则异常:{}", e);
+                log.error("工作项向上规则异常:{}", e.getMessage());
             }
         }
     }
@@ -61,7 +61,7 @@ public class IssueConsumer {
                 log.info("接收到工作项邮件发送队列命令,工作项ID:{},操作类型:{}", issue.getIssueId(), EmailOperationTypeEnum.getName(operationType));
                 mailSendUtil.sendMailContent(issue, operationType, securityDTO);
             } catch (Exception e) {
-                log.error("敏捷模块工作项邮件发送异常:{}", e);
+                log.error("敏捷模块工作项邮件发送异常:{}", e.getMessage());
             }
         }
     }
