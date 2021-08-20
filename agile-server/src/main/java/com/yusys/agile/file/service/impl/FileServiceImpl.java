@@ -302,11 +302,11 @@ public class FileServiceImpl implements FileService {
         try {
             // 原文件名
             String originalFilename = file.getOriginalFilename();
-            LOGGER.info("原文件名：" + originalFilename);
+            LOGGER.info("原文件名：{}",originalFilename);
             // 远程文件名用时间戳生成
             String remoteFileName = System.currentTimeMillis() + "." + StringUtils.substringAfterLast(originalFilename,
                     ".");
-            LOGGER.info("新文件名：" + remoteFileName);
+            LOGGER.info("新文件名：{}",remoteFileName);
 
             //上传文件
             String filePath = remoteDir;//nas路径
