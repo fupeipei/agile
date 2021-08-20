@@ -3129,7 +3129,7 @@ public class IssueServiceImpl implements IssueService {
                     }
             );
 
-            loggr.info("获取看板:{},所有laneId集合 :{}", leanKanbanDTO.getKanbanName(), JSONObject.toJSONString(laneIds));
+            loggr.info("获取看板:{},所有laneId集合 :{}", leanKanbanDTO.getKanbanName(), JSON.toJSONString(laneIds));
             if (laneIds.indexOf(toLaneId) < laneIds.indexOf(fromLaneId)) {
 
                 throw new BusinessException("任务卡片不能往回拖动");
@@ -3633,8 +3633,8 @@ public class IssueServiceImpl implements IssueService {
 
         PageMethod.startPage(pageNum, pageSize);
         List<IssueDTO> issueDTOS = issueMapper.queryEpicListByCondition(systemIds, title);
-
-        loggr.info("查询出issueDTOS数据为：{}", JSONObject.toJSONString(issueDTOS));
+        String s1 = JSON.toJSONString(issueDTOS);
+        loggr.info("查询出issueDTOS数据为：{}",s1 );
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             issueDTOS.forEach(issueDTO -> {
                 Long issueId = issueDTO.getIssueId();
