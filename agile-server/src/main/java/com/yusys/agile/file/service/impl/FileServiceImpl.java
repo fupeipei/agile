@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.Optional;
 
 /**
  * 文件上传下载
@@ -112,21 +113,28 @@ public class FileServiceImpl implements FileService {
      * @date 2020/4/21
      */
     private FileInfo fastdfsUpload(MultipartFile file, FileInfo fileInfo) throws Exception {
-        String realFileName = file.getOriginalFilename();
-        int suffixIndex=0;
-        if (StringUtils.isNotEmpty(realFileName)) {
-            suffixIndex = realFileName.lastIndexOf('.');
-        }
+        int suffixIndex = 0;
+        String realFileName = "";
         String[] result;
-        String suffix;
+
+        if (Optional.ofNullable(file).isPresent()) {
+            realFileName = file.getOriginalFilename();
+            if (StringUtils.isNotEmpty(realFileName)) {
+                suffixIndex = realFileName.lastIndexOf('.');
+            }
         if (suffixIndex != -1) {
-            suffix = realFileName.substring(realFileName.lastIndexOf('.') + 1, realFileName.length());
+            String suffix = "";
+            if (StringUtils.isNotEmpty(realFileName)) {
+                suffix = realFileName.substring(realFileName.lastIndexOf('.') + 1, realFileName.length());
+            }
             result = storageClient.upload_file(file.getBytes(), suffix, null);
         } else {
             result = storageClient.upload_file(file.getBytes(), null, null);
         }
+
         String remoteName = result[0] + "/" + result[1];
         fileInfo = new FileInfo(realFileName, remoteName, file.getSize(), null, this.fileServer);
+        }
         return fileInfo;
     }
 
@@ -294,11 +302,11 @@ public class FileServiceImpl implements FileService {
         try {
             // 原文件名
             String originalFilename = file.getOriginalFilename();
-            LOGGER.info("原文件名：" + originalFilename);
+            LOGGER.info("原文件名：{}",originalFilename);
             // 远程文件名用时间戳生成
             String remoteFileName = System.currentTimeMillis() + "." + StringUtils.substringAfterLast(originalFilename,
                     ".");
-            LOGGER.info("新文件名：" + remoteFileName);
+            LOGGER.info("新文件名：{}",remoteFileName);
 
             //上传文件
             String filePath = remoteDir;//nas路径
@@ -316,9 +324,9 @@ public class FileServiceImpl implements FileService {
             fileInfo.setFileUri(StringConstant.DOWNLOAD_STR1 + remoteFileName + StringConstant.DOWNLOAD_STR2 + originalFilename);
 
         } catch (IllegalStateException e) {
-            LOGGER.error("context", e.getMessage());
+            LOGGER.error("context:{}", e.getMessage());
         } catch (IOException e) {
-            LOGGER.error("context", e.getMessage());
+            LOGGER.error("context:{}", e.getMessage());
         }
         return fileInfo;
     }
@@ -360,20 +368,20 @@ public class FileServiceImpl implements FileService {
                 }
                 LOGGER.debug("下载成功");
             } catch (Exception e) {
-                LOGGER.error("error", e.getMessage());
+                LOGGER.error("error:{}", e.getMessage());
             } finally {
                 if (bis != null) {
                     try {
                         bis.close();
                     } catch (IOException e) {
-                        LOGGER.error("context", e.getMessage());
+                        LOGGER.error("context:{}", e.getMessage());
                     }
                 }
                 if (fis != null) {
                     try {
                         fis.close();
                     } catch (IOException e) {
-                        LOGGER.error("context", e.getMessage());
+                        LOGGER.error("context:{}", e.getMessage());
                     }
                 }
             }

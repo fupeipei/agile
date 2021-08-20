@@ -12,6 +12,16 @@ public class SVersionManagerExample {
 
     protected List<Criteria> oredCriteria;
 
+    private static final String VERSION_MANAGER_ID = "versionManagerId";
+
+    private static final String VERSION_NAME = "versionName";
+
+    private static final String RAISE_TEST_DATE = "raiseTestDate";
+
+    private static final String RELEASE_DATE ="releaseDate";
+
+    private static final String CREATE_UID ="createUid";
+
     public SVersionManagerExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
@@ -143,52 +153,52 @@ public class SVersionManagerExample {
         }
 
         public Criteria andVersionManagerIdEqualTo(Long value) {
-            addCriterion("version_manager_id =", value, "versionManagerId");
+            addCriterion("version_manager_id =", value, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdNotEqualTo(Long value) {
-            addCriterion("version_manager_id <>", value, "versionManagerId");
+            addCriterion("version_manager_id <>", value, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdGreaterThan(Long value) {
-            addCriterion("version_manager_id >", value, "versionManagerId");
+            addCriterion("version_manager_id >", value, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("version_manager_id >=", value, "versionManagerId");
+            addCriterion("version_manager_id >=", value, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdLessThan(Long value) {
-            addCriterion("version_manager_id <", value, "versionManagerId");
+            addCriterion("version_manager_id <", value, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdLessThanOrEqualTo(Long value) {
-            addCriterion("version_manager_id <=", value, "versionManagerId");
+            addCriterion("version_manager_id <=", value, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdIn(List<Long> values) {
-            addCriterion("version_manager_id in", values, "versionManagerId");
+            addCriterion("version_manager_id in", values, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdNotIn(List<Long> values) {
-            addCriterion("version_manager_id not in", values, "versionManagerId");
+            addCriterion("version_manager_id not in", values, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdBetween(Long value1, Long value2) {
-            addCriterion("version_manager_id between", value1, value2, "versionManagerId");
+            addCriterion("version_manager_id between", value1, value2, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
         public Criteria andVersionManagerIdNotBetween(Long value1, Long value2) {
-            addCriterion("version_manager_id not between", value1, value2, "versionManagerId");
+            addCriterion("version_manager_id not between", value1, value2, VERSION_MANAGER_ID);
             return (Criteria) this;
         }
 
@@ -203,62 +213,62 @@ public class SVersionManagerExample {
         }
 
         public Criteria andVersionNameEqualTo(String value) {
-            addCriterion("version_name =", value, "versionName");
+            addCriterion("version_name =", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameNotEqualTo(String value) {
-            addCriterion("version_name <>", value, "versionName");
+            addCriterion("version_name <>", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameGreaterThan(String value) {
-            addCriterion("version_name >", value, "versionName");
+            addCriterion("version_name >", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameGreaterThanOrEqualTo(String value) {
-            addCriterion("version_name >=", value, "versionName");
+            addCriterion("version_name >=", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameLessThan(String value) {
-            addCriterion("version_name <", value, "versionName");
+            addCriterion("version_name <", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameLessThanOrEqualTo(String value) {
-            addCriterion("version_name <=", value, "versionName");
+            addCriterion("version_name <=", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameLike(String value) {
-            addCriterion("version_name like", value, "versionName");
+            addCriterion("version_name like", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameNotLike(String value) {
-            addCriterion("version_name not like", value, "versionName");
+            addCriterion("version_name not like", value, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameIn(List<String> values) {
-            addCriterion("version_name in", values, "versionName");
+            addCriterion("version_name in", values, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameNotIn(List<String> values) {
-            addCriterion("version_name not in", values, "versionName");
+            addCriterion("version_name not in", values, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameBetween(String value1, String value2) {
-            addCriterion("version_name between", value1, value2, "versionName");
+            addCriterion("version_name between", value1, value2, VERSION_NAME);
             return (Criteria) this;
         }
 
         public Criteria andVersionNameNotBetween(String value1, String value2) {
-            addCriterion("version_name not between", value1, value2, "versionName");
+            addCriterion("version_name not between", value1, value2, VERSION_NAME);
             return (Criteria) this;
         }
 
@@ -273,52 +283,52 @@ public class SVersionManagerExample {
         }
 
         public Criteria andRaiseTestDateEqualTo(Date value) {
-            addCriterionForJDBCDate("raise_test_date =", value, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date =", value, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateNotEqualTo(Date value) {
-            addCriterionForJDBCDate("raise_test_date <>", value, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date <>", value, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateGreaterThan(Date value) {
-            addCriterionForJDBCDate("raise_test_date >", value, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date >", value, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateGreaterThanOrEqualTo(Date value) {
-            addCriterionForJDBCDate("raise_test_date >=", value, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date >=", value, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateLessThan(Date value) {
-            addCriterionForJDBCDate("raise_test_date <", value, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date <", value, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateLessThanOrEqualTo(Date value) {
-            addCriterionForJDBCDate("raise_test_date <=", value, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date <=", value, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateIn(List<Date> values) {
-            addCriterionForJDBCDate("raise_test_date in", values, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date in", values, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateNotIn(List<Date> values) {
-            addCriterionForJDBCDate("raise_test_date not in", values, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date not in", values, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateBetween(Date value1, Date value2) {
-            addCriterionForJDBCDate("raise_test_date between", value1, value2, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date between", value1, value2, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
         public Criteria andRaiseTestDateNotBetween(Date value1, Date value2) {
-            addCriterionForJDBCDate("raise_test_date not between", value1, value2, "raiseTestDate");
+            addCriterionForJDBCDate("raise_test_date not between", value1, value2, RAISE_TEST_DATE);
             return (Criteria) this;
         }
 
@@ -333,52 +343,52 @@ public class SVersionManagerExample {
         }
 
         public Criteria andReleaseDateEqualTo(Date value) {
-            addCriterionForJDBCDate("release_date =", value, "releaseDate");
+            addCriterionForJDBCDate("release_date =", value, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateNotEqualTo(Date value) {
-            addCriterionForJDBCDate("release_date <>", value, "releaseDate");
+            addCriterionForJDBCDate("release_date <>", value, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateGreaterThan(Date value) {
-            addCriterionForJDBCDate("release_date >", value, "releaseDate");
+            addCriterionForJDBCDate("release_date >", value, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateGreaterThanOrEqualTo(Date value) {
-            addCriterionForJDBCDate("release_date >=", value, "releaseDate");
+            addCriterionForJDBCDate("release_date >=", value, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateLessThan(Date value) {
-            addCriterionForJDBCDate("release_date <", value, "releaseDate");
+            addCriterionForJDBCDate("release_date <", value, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateLessThanOrEqualTo(Date value) {
-            addCriterionForJDBCDate("release_date <=", value, "releaseDate");
+            addCriterionForJDBCDate("release_date <=", value, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateIn(List<Date> values) {
-            addCriterionForJDBCDate("release_date in", values, "releaseDate");
+            addCriterionForJDBCDate("release_date in", values, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateNotIn(List<Date> values) {
-            addCriterionForJDBCDate("release_date not in", values, "releaseDate");
+            addCriterionForJDBCDate("release_date not in", values, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateBetween(Date value1, Date value2) {
-            addCriterionForJDBCDate("release_date between", value1, value2, "releaseDate");
+            addCriterionForJDBCDate("release_date between", value1, value2, RELEASE_DATE);
             return (Criteria) this;
         }
 
         public Criteria andReleaseDateNotBetween(Date value1, Date value2) {
-            addCriterionForJDBCDate("release_date not between", value1, value2, "releaseDate");
+            addCriterionForJDBCDate("release_date not between", value1, value2, RELEASE_DATE);
             return (Criteria) this;
         }
 
@@ -393,52 +403,52 @@ public class SVersionManagerExample {
         }
 
         public Criteria andCreateUidEqualTo(Long value) {
-            addCriterion("create_uid =", value, "createUid");
+            addCriterion("create_uid =", value, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidNotEqualTo(Long value) {
-            addCriterion("create_uid <>", value, "createUid");
+            addCriterion("create_uid <>", value, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidGreaterThan(Long value) {
-            addCriterion("create_uid >", value, "createUid");
+            addCriterion("create_uid >", value, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidGreaterThanOrEqualTo(Long value) {
-            addCriterion("create_uid >=", value, "createUid");
+            addCriterion("create_uid >=", value, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidLessThan(Long value) {
-            addCriterion("create_uid <", value, "createUid");
+            addCriterion("create_uid <", value, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidLessThanOrEqualTo(Long value) {
-            addCriterion("create_uid <=", value, "createUid");
+            addCriterion("create_uid <=", value, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidIn(List<Long> values) {
-            addCriterion("create_uid in", values, "createUid");
+            addCriterion("create_uid in", values, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidNotIn(List<Long> values) {
-            addCriterion("create_uid not in", values, "createUid");
+            addCriterion("create_uid not in", values, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidBetween(Long value1, Long value2) {
-            addCriterion("create_uid between", value1, value2, "createUid");
+            addCriterion("create_uid between", value1, value2, CREATE_UID);
             return (Criteria) this;
         }
 
         public Criteria andCreateUidNotBetween(Long value1, Long value2) {
-            addCriterion("create_uid not between", value1, value2, "createUid");
+            addCriterion("create_uid not between", value1, value2, CREATE_UID);
             return (Criteria) this;
         }
 

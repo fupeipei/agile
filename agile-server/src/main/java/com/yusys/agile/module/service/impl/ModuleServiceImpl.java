@@ -1,5 +1,6 @@
 package com.yusys.agile.module.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.module.dao.ModuleMapper;
 import com.yusys.agile.module.domain.Module;
 import com.yusys.agile.module.domain.ModuleExample;
@@ -54,7 +55,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public List<ModuleDTO> listModule(String moduleName, Integer pageNum, Integer pageSize, Long systemId) {
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         ModuleExample example = new ModuleExample();
         ModuleExample.Criteria criteria = example.createCriteria();
         criteria.andStateEqualTo(StateEnum.U.toString()).andSystemIdEqualTo(systemId);
@@ -84,7 +85,10 @@ public class ModuleServiceImpl implements ModuleService {
         Module module = ReflectUtil.copyProperties(moduleDTO, Module.class);
         if (Optional.ofNullable(module.getModuleId()).isPresent()) {
             Module module1 = moduleMapper.selectByPrimaryKey(module.getModuleId());
-            Optional.ofNullable(module1).orElseThrow(() -> new BusinessException("更新的模块信息不存在"));
+            if(!Optional.ofNullable(module1).isPresent()){
+                throw new BusinessException("更新的模块信息不存在");
+            }
+           // Optional.ofNullable(module1).orElseThrow(() -> new BusinessException("更新的模块信息不存在"));
             moduleMapper.updateByPrimaryKeySelective(module);
         } else {
             moduleMapper.insert(module);
@@ -159,11 +163,15 @@ public class ModuleServiceImpl implements ModuleService {
                     List<JSONObject> resultList = resultMap.get(systemId);
                     resultList.add(jsonObject);
                 } else {
-                    List<JSONObject> resultList = new ArrayList() {
-                        {
-                            add(jsonObject);
-                        }
-                    };
+                    List<JSONObject> resultList=new ArrayList<>();
+                    resultList.add(jsonObject);
+
+
+//                    List<JSONObject> resultList = new ArrayList() {
+//                        {
+//                            add(jsonObject);
+//                        }
+//                    };
                     resultMap.put(systemId, resultList);
                 }
 

@@ -1,6 +1,7 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.fastjson.JSON;
 import com.yusys.agile.easyexcel.vo.ExcelCommentField;
 import com.yusys.agile.headerfield.dao.HeaderFieldMapper;
@@ -57,7 +58,7 @@ public class TaskTemplateDownloadServiceImpl implements DownloadExcelTempletServ
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         ClassPathResource classPathResource = new ClassPathResource("excelTemplate/taskImportTemplate.xlsx");
         try {
-            EasyExcel.write(ExcelUtil.dealResponse("taskImportTemplate", response)).withTemplate(classPathResource.getInputStream())
+            EasyExcelFactory.write(ExcelUtil.dealResponse("taskImportTemplate", response)).withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("tasks")
                     .registerWriteHandler(spinnerWriteHandler)

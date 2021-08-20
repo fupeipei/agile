@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -143,6 +144,11 @@ public class IssueServiceImpl implements IssueService {
     private static final String MAPHEADERFIELDCONTENT = "mapHeaderFieldContent";
     private static final String STAGEID = "stageId";
     private static final String LANEID = "laneId";
+    private static final String ISSUETYPE ="issueType";
+    private static final String SYSTEMID = "systemId";
+    private static final String TEAMNAME = "teamName";
+    private static final String TEAMID = "teamId";
+    private static final String TEAMTYPE = "teamType";
 
 
     /**
@@ -249,7 +255,7 @@ public class IssueServiceImpl implements IssueService {
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
         JSONObject jsonObject = new JSONObject(map);
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
-        Byte issueType = Byte.parseByte(map.get("issueType").toString());
+        Byte issueType = Byte.parseByte(map.get(ISSUETYPE).toString());
         //根据查询条件过滤issue
         List<Issue> issues = queryIssueList(map);
         if (CollectionUtils.isEmpty(issues)) {
@@ -376,7 +382,7 @@ public class IssueServiceImpl implements IssueService {
     public void sortIssueDTO(Byte queryType, String rootIds, com.yusys.agile.issue.dto.IssueListDTO issueListDTO, Map<String, Map> mapMap) {
         List<IssueListDTO> issueListDTOS = Lists.newArrayList();
         Boolean flag;
-        Map<Long, List<Issue>> issueParentMap = mapMap.containsKey(ISSUEPARENTMAP) ? mapMap.get("issueParentMap") : new HashMap<>();
+        Map<Long, List<Issue>> issueParentMap = mapMap.containsKey(ISSUEPARENTMAP) ? mapMap.get(ISSUEPARENTMAP) : new HashMap<>();
         if (issueParentMap == null) {
             return;
         }
@@ -685,7 +691,7 @@ public class IssueServiceImpl implements IssueService {
         //将一些属性转成对象
         arrangeIssueListDTO(issue, issueListDTO, mapMap);
         //查询是否有children
-        Map<Long, List<Issue>> issueParentMap = mapMap.containsKey(ISSUEPARENTMAP) ? mapMap.get("issueParentMap") : new HashMap<>();
+        Map<Long, List<Issue>> issueParentMap = mapMap.containsKey(ISSUEPARENTMAP) ? mapMap.get(ISSUEPARENTMAP) : new HashMap<>();
         issueListDTO.setIsParent(false);
         if (issueParentMap != null && issueParentMap.containsKey(issueId)) {
             issueListDTO.setIsParent(true);
@@ -711,7 +717,7 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         Map map = new HashMap<String, String>();
         if (issue != null) {
-            map.put("issueType", issue.getIssueType());
+            map.put(ISSUETYPE, issue.getIssueType());
             Long sprintId = issue.getSprintId();
             map.put("sprintId", sprintId);
             SSprintWithBLOBs sprint = ssprintMapper.selectByPrimaryKey(sprintId);
@@ -719,7 +725,7 @@ public class IssueServiceImpl implements IssueService {
                 map.put("sprintName", sprint.getSprintName());
             }
             Long issueSystemId = issue.getSystemId();
-            map.put("systemId", issueSystemId == null ? "" : issueSystemId);
+            map.put(SYSTEMID, issueSystemId == null ? "" : issueSystemId);
             try {
                 if (null != issueSystemId) {
                     SsoSystem ssoSystem = iFacadeSystemApi.querySystemBySystemId(issue.getSystemId());
@@ -749,13 +755,13 @@ public class IssueServiceImpl implements IssueService {
 
     private void setTeamInfo(Map map, Long teamId, Long sprintId, Long issueId, Byte issueType) {
         if (IssueTypeEnum.TYPE_FEATURE.CODE.equals(issueType)) {
-            map.put("teamId", teamId == null ? "" : teamId);
+            map.put(TEAMID, teamId == null ? "" : teamId);
             if (null != teamId) {
                 STeam sTeam = teamv3Service.getTeamById(teamId);
                 setTeamDetail(map, sTeam);
             } else {
-                map.put("teamName", "");
-                map.put("teamType", "");
+                map.put(TEAMNAME, "");
+                map.put(TEAMTYPE, "");
             }
         } else {
             //story or task
@@ -787,13 +793,13 @@ public class IssueServiceImpl implements IssueService {
 
     private void setTeamDetail(Map map, STeam sTeam) {
         if (null != sTeam) {
-            map.put("teamId", sTeam.getTeamId());
-            map.put("teamName", sTeam.getTeamName());
-            map.put("teamType", sTeam.getTeamType());
+            map.put(TEAMID, sTeam.getTeamId());
+            map.put(TEAMNAME, sTeam.getTeamName());
+            map.put(TEAMTYPE, sTeam.getTeamType());
         } else {
-            map.put("teamId", "");
-            map.put("teamName", "");
-            map.put("teamType", "");
+            map.put(TEAMID, "");
+            map.put(TEAMNAME, "");
+            map.put(TEAMTYPE, "");
         }
     }
 
@@ -953,7 +959,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public ControllerResponse recordHistories(Long issueId, Integer pageNum, Integer pageSize, SecurityDTO securityDTO) {
         try {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
             //查询历史记录
             IssueHistoryRecordExample example = new IssueHistoryRecordExample();
             IssueHistoryRecordExample.Criteria criteria = example.createCriteria();
@@ -1230,8 +1236,8 @@ public class IssueServiceImpl implements IssueService {
         IssueStringDTO issueStringDTO = JSON.parseObject(jsonObject.toJSONString(), IssueStringDTO.class);
         IssueRecord issueRecord = new IssueRecord();
         Long systemId = null;
-        if (map.containsKey("systemId") && Optional.ofNullable(map.get("systemId")).isPresent()) {
-            systemId = Long.parseLong(map.get("systemId").toString());
+        if (map.containsKey(SYSTEMID) && Optional.ofNullable(map.get(SYSTEMID)).isPresent()) {
+            systemId = Long.parseLong(map.get(SYSTEMID).toString());
         }
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         if (StringUtils.isNotEmpty(tenantCode)) {
@@ -1452,8 +1458,10 @@ public class IssueServiceImpl implements IssueService {
     @Transactional(rollbackFor = Exception.class)
     public void dragDemand(Long issueId, Long sprintId, Long parentId, Long projectId) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
-
-        Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在!"));
+        if(!Optional.ofNullable(issue).isPresent()){
+        throw new BusinessException("工作项不存在!");
+        }
+        //Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在!"));
         if (StateEnum.E.toString().equals(issue.getState())) {
             throw new BusinessException("工作项不存在!");
         }
@@ -1598,7 +1606,7 @@ public class IssueServiceImpl implements IssueService {
             }
         }));
         Map<String, String> mapTemp = new HashMap<>();
-        Byte issueType = Byte.parseByte(map.get("issueType").toString());
+        Byte issueType = Byte.parseByte(map.get(ISSUETYPE).toString());
         for (String key : map.keySet()) {
             String[] strings = key.split("-");
             if (strings.length > 1) {
@@ -1654,7 +1662,7 @@ public class IssueServiceImpl implements IssueService {
         Assert.notNull(sprintId, "迭代编号不能为空");
         pageNumber = null == pageNumber ? 1 : pageNumber;
         pageSize = null == pageSize ? 20 : pageSize;
-        PageHelper.startPage(pageNumber, pageSize);
+        PageMethod.startPage(pageNumber, pageSize);
         IssueExample issueExample = new IssueExample();
         issueExample.setOrderByClause("issue_id desc");
         IssueExample.Criteria criteria = issueExample.createCriteria();
@@ -1980,7 +1988,7 @@ public class IssueServiceImpl implements IssueService {
 
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         //获取登入用户id
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();
@@ -3121,7 +3129,7 @@ public class IssueServiceImpl implements IssueService {
                     }
             );
 
-            loggr.info("获取看板:{},所有laneId集合 :{}", leanKanbanDTO.getKanbanName(), JSONObject.toJSONString(laneIds));
+            loggr.info("获取看板:{},所有laneId集合 :{}", leanKanbanDTO.getKanbanName(), JSON.toJSONString(laneIds));
             if (laneIds.indexOf(toLaneId) < laneIds.indexOf(fromLaneId)) {
 
                 throw new BusinessException("任务卡片不能往回拖动");
@@ -3170,7 +3178,7 @@ public class IssueServiceImpl implements IssueService {
                 STeam sTeam = mapSTeam.get(teamId).get(0);
                 map.put("name", sTeam.getTeamName());
                 map.put("id", sTeam.getTeamId());
-                map.put("TeamType", sTeam.getTeamType());
+                map.put(TEAMTYPE, sTeam.getTeamType());
                 map.put("TeamTypeName", TeamTypeEnum.getNameByCode(sTeam.getTeamType()));
             }
         }
@@ -3188,7 +3196,7 @@ public class IssueServiceImpl implements IssueService {
 
         Map<String, Boolean> stringBooleanMap = new HashMap<>();
         stringBooleanMap.put("stringBooleanMap", true);
-        Byte issueType = Byte.parseByte(map.get("issueType").toString());
+        Byte issueType = Byte.parseByte(map.get(ISSUETYPE).toString());
         Map<Byte, List<Long>> extendFieldIssueIds = getExtendFields(map, stringBooleanMap);
         if (stringBooleanMap.get("stringBooleanMap")) {
             if (MapUtils.isEmpty(extendFieldIssueIds)) {
@@ -3280,8 +3288,8 @@ public class IssueServiceImpl implements IssueService {
 
         if (Optional.ofNullable(issueStringDTO.getPageNum()).isPresent() &&
                 Optional.ofNullable(issueStringDTO.getPageSize()).isPresent()) {
-            issueRecord.setPageNum(StringUtil.StringtoInteger(issueStringDTO.getPageNum()));
-            issueRecord.setPageSize(StringUtil.StringtoInteger(issueStringDTO.getPageSize()));
+            issueRecord.setPageNum(StringUtil.stringtoInteger(issueStringDTO.getPageNum()));
+            issueRecord.setPageSize(StringUtil.stringtoInteger(issueStringDTO.getPageSize()));
         }
         if (StringUtils.isNotEmpty(issueStringDTO.getIssueType())) {
             issueRecord.setIssueTypes(dealData(issueStringDTO.getIssueType(), BYTE));
@@ -3389,7 +3397,7 @@ public class IssueServiceImpl implements IssueService {
     public void isArchive(Long issueId, Byte isArchive) {
         Issue issue = issueMapper.selectByPrimaryKey(issueId);
         IssueDTO issueDTO = ReflectUtil.copyProperties(issue, IssueDTO.class);
-        if (Optional.ofNullable(issue).isPresent()) {
+        if (!Optional.ofNullable(issue).isPresent()) {
             throw new BusinessException("工作项不存在");
         }
         if (StateEnum.E.toString().equals(issue.getState())) {
@@ -3623,10 +3631,10 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title, List<Long> systemIds) {
 
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         List<IssueDTO> issueDTOS = issueMapper.queryEpicListByCondition(systemIds, title);
-
-        loggr.info("查询出issueDTOS数据为：{}", JSONObject.toJSONString(issueDTOS));
+        String s1 = JSON.toJSONString(issueDTOS);
+        loggr.info("查询出issueDTOS数据为：{}",s1 );
         if (CollectionUtils.isNotEmpty(issueDTOS)) {
             issueDTOS.forEach(issueDTO -> {
                 Long issueId = issueDTO.getIssueId();

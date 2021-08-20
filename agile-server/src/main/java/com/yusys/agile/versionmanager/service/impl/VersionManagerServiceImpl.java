@@ -3,6 +3,7 @@ package com.yusys.agile.versionmanager.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.yusys.agile.constant.StringConstant;
 import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
@@ -149,7 +150,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
                 });
             }
         } catch (Exception e) {
-            log.error("获取版本管理异常：{}", e);
+            log.error("获取版本管理异常：{}", e.getMessage());
         }
         return versionManagerDTOS;
     }
@@ -175,7 +176,9 @@ public class VersionManagerServiceImpl implements VersionManagerService {
             }
 
             VersionManager versionOld = versionManagerMapper.selectByPrimaryKey(versionId);
-            Optional.ofNullable(versionOld).orElseThrow(() -> new BusinessException("变更的版本计划不存在"));
+            if(!Optional.ofNullable(versionOld).isPresent()){
+                throw new BusinessException("变更的版本计划不存在");
+            }
             versionManagerMapper.updateByPrimaryKeySelective(versionManager);
         } else {
 
@@ -232,7 +235,10 @@ public class VersionManagerServiceImpl implements VersionManagerService {
         VersionManager versionPlan = new VersionManager();
         versionPlan.setId(versionPlanId);
         versionPlan.setReviewCount(reviewCount);
-        versionPlan.setOperationUid(Integer.getInteger(Optional.ofNullable(userId).orElse(null).toString()));
+
+
+        versionPlan.setOperationUid(userId.intValue());
+        //versionPlan.setOperationUid(Integer.getInteger(Optional.ofNullable(userId).orElse(null).toString()));
         versionPlan.setVersionState(VersionStateEnum.VERSION_STATE_REVIEW.CODE);
         versionPlan.setSendToRmp(VersionConstants.VersionManagerConstant.SYNC_SUCCESSFULLY);
         // 第一次发送版本审批成功后 begin
@@ -329,7 +335,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
         }
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
 
         VersionManagerExample managerExample = new VersionManagerExample();
@@ -363,7 +369,10 @@ public class VersionManagerServiceImpl implements VersionManagerService {
     @Override
     public List<VersionManagerDTO> getOtherVersionInfo(Long versionId) {
         VersionManager versionOld = versionManagerMapper.selectByPrimaryKey(versionId);
-        Optional.ofNullable(versionOld).orElseThrow(() -> new BusinessException("版本计划不存在"));
+        if(!Optional.ofNullable(versionOld).isPresent()){
+            throw new BusinessException("版本计划不存在");
+        }
+        //Optional.ofNullable(versionOld).orElseThrow(() -> new BusinessException("版本计划不存在"));
         List<VersionManagerDTO> versionManagerDTOS = Lists.newArrayList();
         VersionManagerExample versionManagerExample = new VersionManagerExample();
         VersionManagerExample.Criteria criteria = versionManagerExample.createCriteria();

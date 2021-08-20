@@ -1,8 +1,11 @@
 package com.yusys.agile.sysextendfield;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SysExtendFieldDetailDTO {
+public class SysExtendFieldDetailDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Long id;
 
     private Long issueId;
@@ -24,8 +27,6 @@ public class SysExtendFieldDetailDTO {
     private Date updateTime;
 
     private String tenantCode;
-
-    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;

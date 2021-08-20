@@ -1,5 +1,6 @@
 package com.yusys.agile.openapi.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -7,9 +8,7 @@ import com.yusys.agile.externalapiconfig.dao.util.ExternalApiConfigUtil;
 import com.yusys.agile.issue.dto.IssueDTO;
 import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.openapi.service.IssueSyncService;
-import com.yusys.portal.common.service.IBsStaticDataService;
-import com.yusys.portal.common.service.impl.BsStaticDataServiceImpl;
-import com.yusys.portal.model.common.entity.BsStaticData;
+import com.yusys.portal.common.exception.BusinessException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
@@ -36,18 +35,20 @@ public class IssueSyncServiceImpl implements IssueSyncService {
     /**
      *   0:同步失败
      */
-    private static final Byte cmp_sync_result_0 = Byte.decode("0");
+    private static final Byte CMP_SYNC_RESULT_0 = Byte.decode("0");
     /**
      *   1:同步成功
      */
-    private static final Byte cmp_sync_result_1 = Byte.decode("1");
+    private static final Byte CMP_SYNC_RESULT_1 = Byte.decode("1");
 
-    private static final String issueSyncState_add = "add";
-    private static final String issueSyncState_update = "update";
-    private static final String issueSyncState_delete = "delete";
+    private static final String ISSUE_SYNC_STATE_ADD = "add";
+    private static final String ISSUE_SYNC_STATE_UPDATE = "update";
+    private static final String ISSUE_SYNC_STATE_DELETE = "delete";
+    private static final String TEST_ISSUE_SYNC_URL = "testIssueSyncUrl";
 
 
-    private static final String issueSyncState_Error = "未配置测试平台同步需求url,key:testIssueSyncUrl";
+    private static final String ISSUE_SYNC_STATE_ERROR = "未配置测试平台同步需求url,key:testIssueSyncUrl";
+    private static final String LOG_ERROR1 = "与测试平台同步需求报错：{}";
 
     @Resource
     private ExternalApiConfigUtil externalApiConfigUtil;
@@ -55,7 +56,7 @@ public class IssueSyncServiceImpl implements IssueSyncService {
     private IssueService issueService;
 
 
-    protected  void invoke( IssueSyncTask issueSyncTask,List<IssueDTO> list) throws Exception {
+    protected  void invoke( IssueSyncTask issueSyncTask,List<IssueDTO> list){
 
         ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("deployPackage-pool-%d").build();
         ExecutorService executorService = new ThreadPoolExecutor(10, 200,
@@ -70,64 +71,61 @@ public class IssueSyncServiceImpl implements IssueSyncService {
              *          cmp_sync_result字段值含义：-1:未同步 0:同步失败 1:同步成功
              */
             String result = resultFeature.get();
-            if(Optional.ofNullable(result).isPresent()&&JSONObject.parseObject(result).containsKey("code")){
-               String code = JSONObject.parseObject(result).getString("code");
+            if(Optional.ofNullable(result).isPresent()&&JSON.parseObject(result).containsKey("code")){
+               String code = JSON.parseObject(result).getString("code");
                 if("200".equals(code)){
-                    LOGGER.info("与测试平台同步需求成功："+list.toString());
-                    syncResult(list,cmp_sync_result_1);
+                    LOGGER.info("与测试平台同步需求成功：{}",list);
+                    syncResult(list,CMP_SYNC_RESULT_1);
                }else {
-                    LOGGER.error("与测试平台同步需求报错："+list.toString());
-                    syncResult(list,cmp_sync_result_0);
-                    throw new MyException(issueSyncState_Error+"具体错误日志"+result);
+                    LOGGER.error(LOG_ERROR1,list);
+                    syncResult(list,CMP_SYNC_RESULT_0);
+                    throw new MyException(ISSUE_SYNC_STATE_ERROR+"具体错误日志"+result);
                 }
             }else{
-                LOGGER.error("与测试平台同步需求报错："+list.toString());
-                syncResult(list,cmp_sync_result_0);
-                throw new MyException(issueSyncState_Error+"具体错误日志"+result);
+                LOGGER.error(LOG_ERROR1,list);
+                syncResult(list,CMP_SYNC_RESULT_0);
+                throw new MyException(ISSUE_SYNC_STATE_ERROR+"具体错误日志"+result);
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            LOGGER.error("与测试平台同步需求报错："+list.toString());
-            syncResult(list,cmp_sync_result_0);
-            throw e;
+            LOGGER.error(LOG_ERROR1,list);
+            syncResult(list,CMP_SYNC_RESULT_0);
+            throw new BusinessException();
         }
     }
 
     @Override
     public void issueSyncAdd(List<IssueDTO> list) throws Exception {
-        String staticDataKey  = "testIssueSyncUrl";
-        initUrl(staticDataKey);
-        LOGGER.info("新增需求,开始与测试平台同步，报文 ："+list.toString());
+        initUrl(TEST_ISSUE_SYNC_URL);
+        LOGGER.info("新增需求,开始与测试平台同步，报文 ：{}",list);
         Map<String, Object> headers = new HashMap<>();
         headers.put("clientType","1");
         headers.put("Content-Type","application/json");
-        IssueSyncTask issueSyncTask = new IssueSyncTask(uri,headers,issueSyncState_add,list.toString());
+        IssueSyncTask issueSyncTask = new IssueSyncTask(uri,headers,ISSUE_SYNC_STATE_ADD,list.toString());
         invoke(issueSyncTask,list);
     }
 
     @Override
     public void issueSyncUpdate(List<IssueDTO> list) throws Exception {
-        String staticDataKey  = "testIssueSyncUrl";
-        initUrl(staticDataKey);
-        LOGGER.info("变更需求,开始与测试平台同步，报文 ："+list.toString());
+        initUrl(TEST_ISSUE_SYNC_URL);
+        LOGGER.info("变更需求,开始与测试平台同步，报文 ：{}",list);
         Map<String, Object> headers = new HashMap<>();
-        IssueSyncTask issueSyncTask = new IssueSyncTask(uri,headers,issueSyncState_update,list.toString());
+        IssueSyncTask issueSyncTask = new IssueSyncTask(uri,headers,ISSUE_SYNC_STATE_UPDATE,list.toString());
         invoke(issueSyncTask,list);
     }
 
     @Override
     public void issueSyncDelete(List<Long> list) throws Exception {
-        String staticDataKey  = "testIssueSyncUrl";
-        initUrl(staticDataKey);
+        initUrl(TEST_ISSUE_SYNC_URL);
         JSONArray  jsonArray = new JSONArray();
         for (Long id:list) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("issueId",id);
             jsonArray.add(jsonObject);
         }
-        LOGGER.info("变更需求,开始与测试平台同步，报文 ："+list.toString());
+        LOGGER.info("变更需求,开始与测试平台同步，报文 ：{}",list);
         Map<String, Object> headers = new HashMap<>();
-        IssueSyncTask issueSyncTask = new IssueSyncTask(uri,headers,issueSyncState_delete,jsonArray.toJSONString());
+        IssueSyncTask issueSyncTask = new IssueSyncTask(uri,headers,ISSUE_SYNC_STATE_DELETE,jsonArray.toJSONString());
         List<IssueDTO> result = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(list)){
             for (Long  id:list) {
@@ -148,7 +146,7 @@ public class IssueSyncServiceImpl implements IssueSyncService {
     }
 
 
-    private void initUrl(String staticDataKey)throws Exception{
+    private void initUrl(String staticDataKey) throws MyException {
         //判断是否配置url
         String staticDataValue =  externalApiConfigUtil.getPropValue(staticDataKey);
         staticDataValue = "http://192.168.245.70:9060/agile/issue/sync/stage" ;
@@ -156,7 +154,7 @@ public class IssueSyncServiceImpl implements IssueSyncService {
             this.uri = staticDataValue;
         }
         else{
-            throw new MyException(issueSyncState_Error);
+            throw new MyException(ISSUE_SYNC_STATE_ERROR);
         }
     }
     /**

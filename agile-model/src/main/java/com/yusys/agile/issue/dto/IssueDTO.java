@@ -152,14 +152,14 @@ public class IssueDTO implements Serializable {
      * @date 2021/2/2
      * @return
      */
-    List<Long> inVersionIssueList;
+    private List<Long>  inVersionIssueList;
     /**
      * 功能描述 扩展表中需求id
      *
      * @date 2021/2/2
      * @return
      */
-    List<Long> sysExtendList;
+    private List<Long> sysExtendList;
     private String reason;
     private List<SysExtendFieldDetailDTO> sysExtendFieldDetailDTOList;
     private Integer operateType;
@@ -275,7 +275,7 @@ public class IssueDTO implements Serializable {
     private List<Integer> taskTypes;
     private List<IssueHistoryRecordDTO> records;
 
-    private List<IssueAttachmentDTO> attachments = new ArrayList<>();
+    private List<IssueAttachmentDTO> attachments;
 
     private List<IssueCustomFieldDTO> customFieldDetailDTOList;
 

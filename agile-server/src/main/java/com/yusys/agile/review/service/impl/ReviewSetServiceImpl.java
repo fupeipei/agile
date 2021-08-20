@@ -7,6 +7,7 @@ import com.yusys.agile.review.dto.ReviewSetDTO;
 import com.yusys.agile.review.service.ReviewSetService;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.portal.common.component.RedisCacheComponent;
+import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.util.code.ReflectUtil;
 import com.yusys.portal.util.thread.UserThreadLocalUtil;
@@ -33,7 +34,7 @@ public class ReviewSetServiceImpl implements ReviewSetService {
 
     private static final String SEPARATOR_UNDERLINE = "_";
 
-    private static final long TTL = 24 * 60 * 60 * 1000;
+    private static final long TTL = 24 * 60 * 60 * 1000L;
 
     @Autowired
     private RedisCacheComponent redisCacheComponent;
@@ -74,7 +75,6 @@ public class ReviewSetServiceImpl implements ReviewSetService {
      */
     private String splitReviewRedisKey(Byte issueType) {
         StringBuilder key = new StringBuilder();
-        //key.append(REVIEW_SET_KEY_PREFIX).append(projectId).append(SEPARATOR_UNDERLINE).append(issueType);
         key.append(REVIEW_SET_KEY_PREFIX).append(SEPARATOR_UNDERLINE).append(issueType);
         return key.toString();
     }
@@ -113,7 +113,7 @@ public class ReviewSetServiceImpl implements ReviewSetService {
             reviewSet.setUpdateTime(new Date());
             count = reviewSetMapper.updateByPrimaryKeySelective(reviewSet);
             if (count != 1) {
-                throw new RuntimeException("编辑评审设置信息失败");
+                throw new BusinessException("编辑评审设置信息失败");
             }
         } else {
             reviewSet.setCreateUid(userId);
@@ -122,7 +122,7 @@ public class ReviewSetServiceImpl implements ReviewSetService {
             reviewSet.setTenantCode(UserThreadLocalUtil.getTenantCode());
             count = reviewSetMapper.insert(reviewSet);
             if (count != 1) {
-                throw new RuntimeException("新增评审设置信息失败");
+                throw new BusinessException("新增评审设置信息失败");
             }
         }
         String key = splitReviewRedisKey( reviewSetDTO.getIssueType());

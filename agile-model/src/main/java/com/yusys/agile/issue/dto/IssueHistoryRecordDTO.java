@@ -1,11 +1,13 @@
 package com.yusys.agile.issue.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  */
-public class IssueHistoryRecordDTO {
+public class IssueHistoryRecordDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long recordId;
 
     private String operationField;

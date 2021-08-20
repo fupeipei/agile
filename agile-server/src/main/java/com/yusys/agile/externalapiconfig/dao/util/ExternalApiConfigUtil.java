@@ -21,7 +21,7 @@ public class ExternalApiConfigUtil {
 
     public String getPropValue(String key) {
         ExternalApiConfigExample externalApiConfigExample = new ExternalApiConfigExample();
-        ExternalApiConfigExample.Criteria criteria = externalApiConfigExample.createCriteria().andFieldNameEqualTo(key);
+        externalApiConfigExample.createCriteria().andFieldNameEqualTo(key);
         List<ExternalApiConfig> configs = externalApiConfigMapper.selectByExample(externalApiConfigExample);
         if (CollectionUtils.isEmpty(configs)) {
             return null;

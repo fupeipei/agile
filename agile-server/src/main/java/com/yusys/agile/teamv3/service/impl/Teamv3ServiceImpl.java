@@ -1,8 +1,10 @@
 package com.yusys.agile.teamv3.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
@@ -72,6 +74,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
     private IFacadeSystemApi iFacadeSystemApi;
+    private static final String TEAM_EXIT = "团队名称已存在"; // Compliant
 
     @Override
     public List<TeamListDTO> listTeam(TeamQueryDTO dto, SecurityDTO security) {
@@ -83,7 +86,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         boolean check = iFacadeUserApi.checkIsTenantAdmin(userId);
         //如果是租户管理员
         if (check) {
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+            PageMethod.startPage(dto.getPageNum(), dto.getPageSize());
             rest = sTeamMapper.queryAllTeam(params);
         } else { //不是租户管理员
             STeamMemberExample teamMemberExample=new STeamMemberExample();
@@ -95,7 +98,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
                 return rest;
             }
             List<Long> teamIds = sTeamMembers.stream().map(s -> s.getTeamId()).collect(Collectors.toList());
-            PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+
+            PageMethod.startPage(dto.getPageNum(), dto.getPageSize());
             String team=dto.getTeam();
             String teamType=dto.getTeamType();
             rest=sTeamMapper.queryTeamsByOrderIds(teamIds,team,teamType);
@@ -276,8 +280,9 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     public void insertTeam(STeam team) {
         String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
+        team.setTenantCode(tenantCode);
         if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode, teamType) > 0) {
-            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + "团队名称已存在");
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + TEAM_EXIT);
         }
         //取出数据
         List<STeamMember> teamPoS = team.getTeamPoS();
@@ -381,7 +386,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         STeam sTeam = sTeamMapper.selectByPrimaryKey(teamId);
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), team.getTeamName(), tenantCode) > 0) {
-            throw new BusinessException("团队名称已存在");
+            throw new BusinessException(TEAM_EXIT);
         }
 
         //删除团队与系统的绑定关系
@@ -523,7 +528,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode, teamType) > 0) {
-            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + "团队名称已存在");
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + TEAM_EXIT);
         }
         //取出数据
         List<STeamMember> teamLean = team.getTeamLean();
@@ -567,8 +572,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         String tenantCode = UserThreadLocalUtil.getTenantCode();
         String teamType = team.getTeamType();
         if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode, teamType) > 0) {
-            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + "团队名称已存在");
+            throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + TEAM_EXIT);
         }
+
+        team.setTenantCode(tenantCode);
 
         //删除团队与系统的绑定关系
         teamSystemMapper.deleteByTeamId(teamId);
@@ -640,7 +647,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
 
     @Override
     public List<TeamListDTO> queryTeams(List<Long> teamIds, String teamName, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         List<TeamListDTO> sTeams = sTeamMapper.queryTeams(teamIds, teamName);
         //按ids分别查询团队/系统
         return buildResultList(sTeams);
@@ -657,7 +664,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     public List<TeamListDTO> queryTeamsBySystemIdList(List<Long> systemIdList) {
         List<Long> teamIds = teamSystemMapper.queryTeamIdBySystemId(systemIdList);
 
-        log.info("根据系统ID查询团队信息，teamIds,{}", JSONObject.toJSONString(teamIds));
+        log.info("根据系统ID查询团队信息，teamIds,{}", JSON.toJSONString(teamIds));
 
         if(CollectionUtils.isEmpty(teamIds)){
             return Lists.newArrayList();

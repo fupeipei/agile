@@ -15,47 +15,47 @@ import java.util.stream.Collectors;
  * :
  *
  * @Date: 2021/2/6
- * @Description: TODO
+ * @Description:
  */
 public class StringUtil {
     private static final Logger log = LoggerFactory.getLogger(StringUtil.class);
-
+    private static final String ERROR_DESC = "StringUtil异常：{}";
     private StringUtil() {
 
     }
 
-    public static List<Long> StringtoListLong(String string) {
+    public static List<Long> stringtoListLong(String string) {
 
         List<String> list = Lists.newArrayList(string.split(","));
         List<Long> longList = Lists.newArrayList();
         try {
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 for (String str : list) {
                     longList.add(Long.parseLong(str));
                 }
             }
         } catch (Exception e) {
-            log.error("StringUtil异常：" + e);
+            log.error(ERROR_DESC , e);
         }
         return longList;
     }
 
-    public static Long StringtoLong(String string) {
+    public static Long stringtoLong(String string) {
 
         try {
             return Long.parseLong(string);
         } catch (Exception e) {
-            log.error("StringUtil异常：" + e);
+            log.error(ERROR_DESC ,e);
             return null;
         }
     }
 
-    public static Integer StringtoInteger(String string) {
+    public static Integer stringtoInteger(String string) {
 
         try {
             return Integer.parseInt(string);
         } catch (Exception e) {
-            log.error("StringUtil异常：" + e);
+            log.error(ERROR_DESC , e);
             return null;
         }
     }
@@ -76,12 +76,7 @@ public class StringUtil {
         Matcher m;
         p = Pattern.compile(regEx1);
         m = p.matcher(string);
-        if (m.matches()) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return m.matches();
     }
 
     /**
@@ -92,10 +87,7 @@ public class StringUtil {
      * @date 2021/3/30
      **/
     public static boolean isChanged(String newVal, String oldVal) {
-        if (org.apache.commons.lang.StringUtils.isNotBlank(newVal) && !org.apache.commons.lang.StringUtils.equals(newVal, oldVal)) {
-            return true;
-        }
-        return false;
+        return StringUtils.isNotBlank(newVal) && !StringUtils.equals(newVal, oldVal);
     }
 
     /**
@@ -114,10 +106,6 @@ public class StringUtil {
         }
         return builder.toString();
     }
-
-//    public static void main(String[] args){
-//        System.out.println(isPureDigital("0"));
-//    }
 
     /**
      * String字符串转成List<Byte>数据格式
@@ -161,11 +149,7 @@ public class StringUtil {
         // 转换为list
         List<String> tempList = Arrays.asList(stringArray);
         // 利用list的包含方法,进行判断
-        if (tempList.contains(source)) {
-            return true;
-        } else {
-            return false;
-        }
+        return tempList.contains(source);
     }
 
     /**
@@ -177,9 +161,11 @@ public class StringUtil {
      */
     public static List<String> removeNULL(String substring, String[] source) {
         List<String> sourceList = new ArrayList<>(Arrays.asList(source));
-        for (int i = 0; i < sourceList.size(); i++) {
-            if (sourceList.get(i).equals(substring)) {
-                sourceList.remove(i);
+        Iterator<String> iterator = sourceList.iterator();
+        while(iterator.hasNext()){
+            String e=iterator.next();
+            if(e.equals(substring)){
+                iterator.remove();
             }
         }
         return sourceList;

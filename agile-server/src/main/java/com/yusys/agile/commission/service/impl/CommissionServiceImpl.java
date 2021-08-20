@@ -1,5 +1,6 @@
 package com.yusys.agile.commission.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.commission.constants.CommissionConstant;
 import com.yusys.agile.commission.dao.CommissionMapper;
 import com.yusys.agile.commission.dao.CommissionRecordMapper;
@@ -130,7 +131,7 @@ public class CommissionServiceImpl implements CommissionService {
     @Override
     public PageInfo<List<SCommissionDTO>> getCommissionList(Long currentHandler, String title, Integer pageNum, Integer pageSize) {
         List<SCommissionDTO> sCommissionDTOList = Lists.newArrayList();
-        PageHelper.startPage(pageNum, pageSize);
+        PageMethod.startPage(pageNum, pageSize);
         SCommission sCommission = new SCommission();
         sCommission.setCurrentHandler(currentHandler);
         sCommission.setTitle(title);

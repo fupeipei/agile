@@ -16,9 +16,6 @@ import com.google.common.collect.Lists;
 import com.yusys.agile.utils.ReflectObjectUtil;
 import com.yusys.portal.model.common.enums.StateEnum;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +30,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
-
-    private static final Logger log = LoggerFactory.getLogger(IssueCustomFieldServiceImpl.class);
-
     @Resource
     private SIssueCustomFieldMapper issueCustomFieldMapper;
 
@@ -54,8 +48,6 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
     @Override
     public List<IssueCustomFieldDTO> listCustomField(Long systemId, Long issueId, Byte issueType) {
         // 只查询应用的自定义字段
-        //List<IssueCustomFieldDTO> issueCustomFieldDTOList  = issueCustomFieldMapper.listCustomField(issueId);
-        //List<HeaderFieldDTO> headerFieldDTOS = customFieldPoolService.listAllCustomFieldsBySystemId(null, issueType.toString(), StateEnum.U.getValue(), null, null, projectId);
         // 某类型的工作项展示的的自定义字段
         List<CustomFieldDTO> customFieldDTOList = customRelationService.getCustomFieldList(systemId, issueType);
         List<IssueCustomFieldDTO> issueCustomFieldDTOList = Lists.newArrayList();
@@ -126,7 +118,7 @@ public class IssueCustomFieldServiceImpl implements IssueCustomFieldService {
         List<SIssueCustomField> addCustomFieldList = Lists.newArrayList();
         for (SIssueCustomField tempIssueCustomField : fieldsAfterEdit) {
                 // 新增时必须要填写实际值，修改时可以允许把值去掉
-            if (StringUtils.isBlank(tempIssueCustomField.getFieldValue())) {
+            if (!Optional.ofNullable(tempIssueCustomField.getFieldValue()).isPresent()) {
                     continue;
             }
             //先删除

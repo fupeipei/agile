@@ -67,7 +67,7 @@ public class IssueServiceTest {
             issueService.isArchive(issueId,isArchive);
             Assert.assertTrue("设置归档成功", true);
         }catch (Exception e){
-            Assert.assertTrue(e.getMessage() != null);
+            Assert.assertNotNull(e.getMessage());
         }
     }
 }

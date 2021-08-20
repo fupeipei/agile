@@ -1,8 +1,11 @@
 package com.yusys.agile.versionmanager.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SendRMSRequestDTO {
+public class SendRMSRequestDTO implements Serializable {
+    private static final long serialVersionUID = -9025863997356458545L;
+
     public String getAnalyst() {
         return analyst;
     }

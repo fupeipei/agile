@@ -1,6 +1,7 @@
 package com.yusys.agile.businesskanban.service.impl;
 
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.businesskanban.dao.BusinessAttachmentMapper;
 import com.yusys.agile.businesskanban.dao.BusinessHistoryRecordMapper;
 import com.yusys.agile.businesskanban.dao.BusinessMapper;
@@ -351,7 +352,7 @@ public class BusinessServiceImpl implements BusinessService {
     public List<BusinessHistoryRecordDTO> getByBusinessId(Long businessId, Integer pageNum, Integer pageSize) {
 
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         List<BusinessHistoryRecordDTO> historyRecordDTOS = Lists.newArrayList();
         BusinessHistoryRecordExample historyRecordExample = new BusinessHistoryRecordExample();
@@ -484,7 +485,7 @@ public class BusinessServiceImpl implements BusinessService {
     public List<BusinessDTO> getBusinessInfList(BusinessDTO businessDTO) {
 
         if (null != businessDTO.getPageNum() && null != businessDTO.getPageSize()) {
-            PageHelper.startPage(businessDTO.getPageNum(), businessDTO.getPageSize());
+            PageMethod.startPage(businessDTO.getPageNum(), businessDTO.getPageSize());
         }
         BusinessExample example = new BusinessExample();
         BusinessExample.Criteria criteria = example.createCriteria();
@@ -543,7 +544,7 @@ public class BusinessServiceImpl implements BusinessService {
     public PageInfo getBusinessCommissionOwner(Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         //获取登入用户id
         Long userId = UserThreadLocalUtil.getUserInfo().getUserId();

@@ -850,7 +850,7 @@ public class ExcelServiceImpl implements ExcelService {
         } catch (ParseException e) {
             isValidDate = false;
         }
-        if (cellType.equals(CellType.NUMERIC) && cell.getDateCellValue().compareTo(date) != -1) {
+        if (cellType.equals(CellType.NUMERIC) && cell.getDateCellValue().compareTo(date)>0) {
             isValidDate = true;
         } else if (cellType.equals(CellType.STRING)) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -858,7 +858,7 @@ public class ExcelServiceImpl implements ExcelService {
                 String dateStr = cell.getStringCellValue();
                 sdf.setLenient(false);
                 Date finishTime = sdf.parse(dateStr);
-                if (finishTime.compareTo(date) != -1) {
+                if (finishTime.compareTo(date) >= 0) {
                     isValidDate = true;
                 }
             } catch (ParseException e) {
@@ -1313,7 +1313,7 @@ public class ExcelServiceImpl implements ExcelService {
             }*/
             //部署说明
             else if ("deployIllustration".equals(fieldName)) {
-                List<String> deployIllustrationList = JSONArray.parseArray(result, String.class);
+                List<String> deployIllustrationList = JSON.parseArray(result, String.class);
                 StringBuilder sb = new StringBuilder();
                 if (CollectionUtils.isNotEmpty(deployIllustrationList)) {
                     for (String illustration : deployIllustrationList) {
@@ -1364,10 +1364,10 @@ public class ExcelServiceImpl implements ExcelService {
         Long epicIssueId = issueFactory.getEpicId(issueId, issueType);
         if (null != epicIssueId) {
             //版本名称
-            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
-            if (null != versionManagerDTO) {
-                versionNameMap.put("versionName", versionManagerDTO.getVersionName());
-            }
+//            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
+//            if (null != versionManagerDTO) {
+//                versionNameMap.put("versionName", versionManagerDTO.getVersionName());
+//            }
         }
         return versionNameMap;
     }
@@ -1397,10 +1397,10 @@ public class ExcelServiceImpl implements ExcelService {
         Long epicIssueId = issueFactory.getEpicId(issueId, issueType);
         if (null != epicIssueId) {
             //版本名称
-            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
-            if (null != versionManagerDTO) {
-                sysExtendFieldDeatilMap.put("versionName", versionManagerDTO.getVersionName());
-            }
+//            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
+//            if (null != versionManagerDTO) {
+//                sysExtendFieldDeatilMap.put("versionName", versionManagerDTO.getVersionName());
+//            }
             sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetail(epicIssueId);
             if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
                 for (SysExtendFieldDetail sysExtendFieldDetail : sysExtendFieldDetailList) {

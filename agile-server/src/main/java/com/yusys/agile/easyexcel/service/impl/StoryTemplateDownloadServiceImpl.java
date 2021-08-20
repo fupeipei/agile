@@ -1,6 +1,8 @@
 package com.yusys.agile.easyexcel.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.yusys.agile.easyexcel.ExcelUtil;
 import com.yusys.agile.easyexcel.handler.SpinnerWriteHandler;
@@ -41,7 +43,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
         SpinnerWriteHandler spinnerWriteHandler = new SpinnerWriteHandler(mapDropDown);
         try {
             ClassPathResource classPathResource = new ClassPathResource("excelTemplate/storyImportTemplate.xlsx");
-            EasyExcel.write(ExcelUtil.dealResponse("storyImportTemplate",response))
+            EasyExcelFactory.write(ExcelUtil.dealResponse("storyImportTemplate",response))
                     .withTemplate(classPathResource.getInputStream())
                     .autoCloseStream(Boolean.TRUE)
                     .sheet("storys")
@@ -79,7 +81,7 @@ public class StoryTemplateDownloadServiceImpl implements DownloadExcelTempletSer
 
            log.info("获取迭代信息下拉 systemId：{}",systemId);
            List<SprintListDTO> sprintListDTOS = sprintv3Service.getEffectiveSprintsBySystemId(systemId);
-           log.info("获取迭代信息：{}", JSONObject.toJSONString(sprintListDTOS));
+           log.info("获取迭代信息：{}", JSON.toJSONString(sprintListDTOS));
            if(CollectionUtils.isNotEmpty(sprintListDTOS)){
                Set<String> collect = sprintListDTOS.stream().
                        map(s-> s.getSprintId() + "+" + s.getSprintName()).collect(Collectors.toSet());

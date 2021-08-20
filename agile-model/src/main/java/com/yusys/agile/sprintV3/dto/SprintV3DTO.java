@@ -5,6 +5,8 @@ import com.yusys.agile.project.dto.ProjectStoryDTO;
 import com.yusys.agile.project.dto.ProjectTaskDTO;
 import com.yusys.agile.teamV3.dto.TeamV3DTO;
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +16,9 @@ import java.util.List;
  * @date 2021/05/11
  */
 @Data
-public class SprintV3DTO {
+public class SprintV3DTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 迭代id
@@ -173,7 +177,6 @@ public class SprintV3DTO {
      */
     private String tenantCode;
 
-    private static final long serialVersionUID = 1L;
 
 
 }

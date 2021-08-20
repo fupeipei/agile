@@ -1,5 +1,6 @@
 package com.yusys.agile.vcenter.service.impl;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.vcenter.dao.VcenterApplicationMapper;
 import com.yusys.agile.vcenter.dao.VcenterDevMapper;
 import com.yusys.agile.vcenter.dao.VcenterVmIpMapper;
@@ -70,7 +71,7 @@ public class VCenterServiceImpl implements VCenterService {
                     ManagedEntity[] template = (ManagedEntity[]) inventoryNavigator.searchManagedEntities(VirtualMachine);
                     for (int i = 0; i < template.length; i++) {
                         com.vmware.vim25.mo.VirtualMachine vm = (com.vmware.vim25.mo.VirtualMachine) template[i];
-                        if (vm.getConfig().isTemplate() == true) {
+                        if (vm.getConfig().isTemplate()) {
                             Map map = new HashMap();
                             map.put("name", vm.getConfig().getName());
                             map.put("guestName", vm.getConfig().getGuestFullName());
@@ -146,7 +147,7 @@ public class VCenterServiceImpl implements VCenterService {
                         result.add(map);
                     }
                 } catch (RemoteException e) {
-                    log.error("查询集群异常" + e);
+                    log.error("查询集群异常{}", e.getMessage());
                 }
             }
         } catch (Exception e) {
@@ -336,7 +337,7 @@ public class VCenterServiceImpl implements VCenterService {
     public List<VcenterApplication> getList(VcenterApplication vcenterApplication) {
         // 不传page信息时查全部数据
         if (null != vcenterApplication.getPageNum() && null != vcenterApplication.getPageSize()) {
-            PageHelper.startPage(vcenterApplication.getPageNum(), vcenterApplication.getPageSize());
+            PageMethod.startPage(vcenterApplication.getPageNum(), vcenterApplication.getPageSize());
         }
         VcenterApplicationExample vcenterApplicationExample = new VcenterApplicationExample();
         VcenterApplicationExample.Criteria criteria = vcenterApplicationExample.createCriteria();

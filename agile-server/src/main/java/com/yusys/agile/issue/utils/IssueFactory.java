@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.utils;
 
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.commission.domain.SCommission;
 import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
@@ -224,9 +225,11 @@ public class IssueFactory {
 
 
         //处理附件信息
-        List<IssueAttachment> attachments;
+        List<IssueAttachment> attachments = Lists.newArrayList();
         try {
-            attachments = ReflectUtil.copyProperties4List(issueDTO.getAttachments(), IssueAttachment.class);
+            if(CollectionUtils.isNotEmpty(issueDTO.getAttachments())){
+                attachments = ReflectUtil.copyProperties4List(issueDTO.getAttachments(), IssueAttachment.class);
+            }
         } catch (Exception e) {
             throw new BusinessException("附件转换失败！{}", e.getMessage());
         }
@@ -1134,7 +1137,7 @@ public class IssueFactory {
     public List<IssueDTO> getIssueDTOS(Long systemId, Byte issueType, Integer pageNum, Integer pageSize, boolean isAll, String title, Long parentId) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
 
         IssueExample example = new IssueExample();
@@ -1472,7 +1475,7 @@ public class IssueFactory {
     public List<IssueDTO> queryUnlinkedStory(Long featureId, Integer pageNum, Integer pageSize, String title) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
-            PageHelper.startPage(pageNum, pageSize);
+            PageMethod.startPage(pageNum, pageSize);
         }
         Issue feature = issueMapper.getIssue(featureId);
         STeam sTeam = sTeamMapper.queryTeam(feature.getTeamId());
@@ -1520,7 +1523,7 @@ public class IssueFactory {
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
     public int updateStoryLaneIdByTaskCount(Issue task) {
         if (task == null || task.getParentId() == null) {
-            LOGGER.info("task或task.getParentId()为空" + JSONObject.toJSONString(task));
+            LOGGER.info("task或task.getParentId()为空" + JSON.toJSONString(task));
             return -1;
         }
         Long storyId = task.getParentId();
@@ -1536,7 +1539,7 @@ public class IssueFactory {
 
         //故事的状态未开始的数量
         long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
-        LOGGER.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSONObject.toJSONString(story));
+        LOGGER.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSON.toJSONString(story));
 //        if(unStartCount>0){
 //            return -2;
 //        }
@@ -1566,11 +1569,11 @@ public class IssueFactory {
         Issue storyOld = issueMapper.selectByPrimaryKey(storyId);
 
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
-        LOGGER.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSONObject.toJSONString(storyIssue));
+        LOGGER.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSON.toJSONString(storyIssue));
 
         if(storyOld!=null&&i>0){
             List<IssueHistoryRecord> issueHistoryRecordsForStory = SpringBeanService.getBean(TaskService.class).createIssueHistoryRecordsForStory(storyOld.getLaneId(), storyIssue.getLaneId(), storyIssue);
-            LOGGER.info("issueHistoryRecordsForStory" + JSONObject.toJSONString(issueHistoryRecordsForStory) );
+            LOGGER.info("issueHistoryRecordsForStory" + JSON.toJSONString(issueHistoryRecordsForStory) );
         }
 
 
