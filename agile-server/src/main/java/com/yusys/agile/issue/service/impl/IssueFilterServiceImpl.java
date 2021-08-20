@@ -125,7 +125,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             }
             return ControllerResponse.success("过滤器新增成功");
         } catch (Exception e) {
-            log.error("过滤器新增异常:{}", e);
+            log.error("过滤器新增异常:{}", e.getMessage());
             return ControllerResponse.success("过滤器新增异常");
         }
 
@@ -189,7 +189,7 @@ public class IssueFilterServiceImpl implements IssueFilterService {
             //组装过滤器内容
             return ControllerResponse.success(buildIssueFilterDTOS(category,securityDTO,issueFilterDTOS));
         } catch (Exception e) {
-            log.error("获取过滤器列表数据异常:{}", e);
+            log.error("获取过滤器列表数据异常:{}", e.getMessage());
             return ControllerResponse.fail("获取过滤器列表数据异常!");
         }
     }

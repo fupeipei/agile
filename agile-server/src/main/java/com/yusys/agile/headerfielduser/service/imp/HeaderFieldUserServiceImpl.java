@@ -100,7 +100,7 @@ public class HeaderFieldUserServiceImpl implements HeaderFieldUserService {
             securityDTO.setUserId(userId);
             return headerFieldService.queryHeaderFields(securityDTO, headerFieldListDTO.getCategory(), headerFieldListDTO.getIsFilter());
         } catch (Exception e) {
-            log.error("更新列头异常" + e);
+            log.error("更新列头异常{}", e.getMessage());
         }
         return null;
     }

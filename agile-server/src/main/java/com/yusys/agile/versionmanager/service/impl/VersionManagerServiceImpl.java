@@ -235,10 +235,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
         VersionManager versionPlan = new VersionManager();
         versionPlan.setId(versionPlanId);
         versionPlan.setReviewCount(reviewCount);
-
-
         versionPlan.setOperationUid(userId.intValue());
-        //versionPlan.setOperationUid(Integer.getInteger(Optional.ofNullable(userId).orElse(null).toString()));
         versionPlan.setVersionState(VersionStateEnum.VERSION_STATE_REVIEW.CODE);
         versionPlan.setSendToRmp(VersionConstants.VersionManagerConstant.SYNC_SUCCESSFULLY);
         // 第一次发送版本审批成功后 begin

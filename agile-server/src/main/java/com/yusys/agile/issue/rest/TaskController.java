@@ -52,7 +52,7 @@ public class TaskController {
         }catch (BusinessException b){
             return ControllerResponse.fail(b.getMessage());
         } catch (Exception e) {
-            LOGGER.error("新增任务失败：{}", e);
+            LOGGER.error("新增任务失败：{}", e.getMessage());
             return ControllerResponse.fail("新增任务失败：" + e.getMessage());
         }
 
@@ -82,7 +82,7 @@ public class TaskController {
         } catch (BusinessException b){
             return ControllerResponse.fail(b.getMessage());
         } catch (Exception e) {
-            LOGGER.error("删除任务失败：{}", e);
+            LOGGER.error("删除任务失败：{}", e.getMessage());
             return ControllerResponse.fail("删除任务失败：" + e.getMessage());
         }
         return ControllerResponse.success("删除任务成功！");
@@ -112,7 +112,7 @@ public class TaskController {
             Long newTaskId = taskService.copyTask(taskId);
             return ControllerResponse.success(newTaskId);
         } catch (Exception e) {
-            LOGGER.error("复制任务失败：{}", e);
+            LOGGER.error("复制任务失败：{}", e.getMessage());
             return ControllerResponse.fail("复制任务失败：" + e.getMessage());
         }
     }

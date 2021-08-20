@@ -105,7 +105,7 @@ public class SprintReviewv3ServiceImpl implements SprintReviewv3Service {
             sprintAttachment.setUploadUid(loginUserId);
             sSprintAttachmentMapper.insert(sprintAttachment);
         } catch (Exception e) {
-            log.error("文件上传失败：{}", e);
+            log.error("文件上传失败：{}", e.getMessage());
             throw new BusinessException("文件上传失败：{}", e.getMessage());
         }
         return sprintAttachment;

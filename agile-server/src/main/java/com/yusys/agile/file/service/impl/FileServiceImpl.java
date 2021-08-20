@@ -150,17 +150,17 @@ public class FileServiceImpl implements FileService {
 
         // 原文件名
         String originalFilename = file.getOriginalFilename();
-        LOGGER.info("原文件名：" + originalFilename);
+        LOGGER.info("原文件名：{}" ,originalFilename);
         // 远程文件名用时间戳生成
         String remoteFileName = System.currentTimeMillis() + "." + StringUtils.substringAfterLast(originalFilename,
                 ".");
-        LOGGER.info("新文件名：" + remoteFileName);
+        LOGGER.info("新文件名：{}" ,remoteFileName);
 
         LOGGER.info("ip={},hostUser={},pwd={},port={}", ip, hostUser, pwd, port);
         //上传文件
         SftpHostDTO sftpHostDTO = new SftpHostDTO(hostUser, pwd, ip, Integer.valueOf(port), null);
         SftpFileInfo sftpFileInfo = JschUtilProxy.uploadFile(sftpHostDTO, file.getInputStream(), remoteDir, remoteFileName);
-        LOGGER.info("上传文件" + originalFilename + "至" + remoteDir + ",生成的远端文件remoteFileName:{}", remoteFileName);
+        LOGGER.info("上传文件{}至{},生成的远端文件remoteFileName:{}", originalFilename,remoteDir,remoteFileName);
 
         String remotePath = remoteDir + File.separator + sftpFileInfo.getFileName();
         fileInfo.setSize(file.getSize());

@@ -1523,7 +1523,8 @@ public class IssueFactory {
     //根据故事id查询有效的、未完成的任务，如果为0，则更新故事为完成，否则 进行中。
     public int updateStoryLaneIdByTaskCount(Issue task) {
         if (task == null || task.getParentId() == null) {
-            LOGGER.info("task或task.getParentId()为空" + JSON.toJSONString(task));
+            String s = JSON.toJSONString(task);
+            LOGGER.info("task或task.getParentId()为空{}",s);
             return -1;
         }
         Long storyId = task.getParentId();
@@ -1539,7 +1540,8 @@ public class IssueFactory {
 
         //故事的状态未开始的数量
         long unStartCount = story.stream().filter(t -> StoryStatusEnum.TYPE_ADD_STATE.CODE.equals(t.getLaneId())).count();
-        LOGGER.info("故事信息unStartCount="+unStartCount+" 故事信息+"+JSON.toJSONString(story));
+        String s2 = JSON.toJSONString(story);
+        LOGGER.info("故事信息unStartCount={} 故事信息{}",unStartCount,s2);
 //        if(unStartCount>0){
 //            return -2;
 //        }
@@ -1569,11 +1571,13 @@ public class IssueFactory {
         Issue storyOld = issueMapper.selectByPrimaryKey(storyId);
 
         int i = issueMapper.updateByPrimaryKeySelective(storyIssue);
-        LOGGER.info("根据故事id查询有效的、未完成的任务,finishCount=" + finishCount + " 故事更新数量=" + i + " storyIssue=" + JSON.toJSONString(storyIssue));
+        String s = JSON.toJSONString(storyIssue);
+        LOGGER.info("根据故事id查询有效的、未完成的任务,finishCount={}故事更新数量={} storyIssue={}",finishCount ,i,s);
 
         if(storyOld!=null&&i>0){
             List<IssueHistoryRecord> issueHistoryRecordsForStory = SpringBeanService.getBean(TaskService.class).createIssueHistoryRecordsForStory(storyOld.getLaneId(), storyIssue.getLaneId(), storyIssue);
-            LOGGER.info("issueHistoryRecordsForStory" + JSON.toJSONString(issueHistoryRecordsForStory) );
+            String s1 = JSON.toJSONString(issueHistoryRecordsForStory);
+            LOGGER.info("issueHistoryRecordsForStory{}",s1);
         }
 
 

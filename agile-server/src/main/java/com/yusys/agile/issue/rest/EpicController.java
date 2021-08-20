@@ -57,7 +57,7 @@ public class EpicController {
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
             return ControllerResponse.success(issueId);
         } catch (Exception e) {
-            LOGGER.error("新增业务需求失败：{}", e);
+            LOGGER.error("新增业务需求失败：{}", e.getMessage());
             return ControllerResponse.fail("新增业务需求失败：" + e.getMessage());
         }
     }
@@ -67,7 +67,7 @@ public class EpicController {
         try {
             epicService.deleteEpic(epicId,deleteChild);
         } catch (Exception e) {
-            LOGGER.error("删除业务需求失败：{}", e);
+            LOGGER.error("删除业务需求失败：{}", e.getMessage());
             return ControllerResponse.fail("删除业务需求失败：" + e.getMessage());
         }
         return ControllerResponse.success("删除业务需求成功！");
@@ -111,7 +111,7 @@ public class EpicController {
             Long newEpicId = epicService.copyEpic(epicId);
             return ControllerResponse.success(newEpicId);
         } catch (Exception e) {
-            LOGGER.error("复制业务需求失败：{}", e);
+            LOGGER.error("复制业务需求失败：{}", e.getMessage());
             return ControllerResponse.fail("复制业务需求失败：" + e.getMessage());
         }
     }
