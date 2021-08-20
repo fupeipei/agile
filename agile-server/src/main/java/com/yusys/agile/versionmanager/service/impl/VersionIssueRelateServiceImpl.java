@@ -169,7 +169,6 @@ public class VersionIssueRelateServiceImpl implements VersionIssueRelateService 
                         }
                     }
                     if(StringUtils.isNotBlank(strName)&&StringUtils.isNotBlank(strIds)){
-                    //if (!"".equals(strName) && !"".equals(strIds)) {
                         issueDTO.setSystemName(strName.toString());
                     }
                     //laneId

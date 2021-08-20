@@ -280,6 +280,7 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     public void insertTeam(STeam team) {
         String teamType = team.getTeamType();
         String tenantCode = UserThreadLocalUtil.getTenantCode();
+        team.setTenantCode(tenantCode);
         if (sTeamMapper.teamNameNumber(team.getTeamId(), team.getTeamName(), tenantCode, teamType) > 0) {
             throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + TEAM_EXIT);
         }
@@ -573,6 +574,8 @@ public class Teamv3ServiceImpl implements Teamv3Service {
         if (sTeamMapper.teamNameNumber(teamId, team.getTeamName(), tenantCode, teamType) > 0) {
             throw new BusinessException(TeamTypeEnum.getNameByCode(teamType) + TEAM_EXIT);
         }
+
+        team.setTenantCode(tenantCode);
 
         //删除团队与系统的绑定关系
         teamSystemMapper.deleteByTeamId(teamId);

@@ -150,7 +150,7 @@ public class VersionManagerServiceImpl implements VersionManagerService {
                 });
             }
         } catch (Exception e) {
-            log.error("获取版本管理异常：{}", e);
+            log.error("获取版本管理异常：{}", e.getMessage());
         }
         return versionManagerDTOS;
     }
@@ -179,7 +179,6 @@ public class VersionManagerServiceImpl implements VersionManagerService {
             if(!Optional.ofNullable(versionOld).isPresent()){
                 throw new BusinessException("变更的版本计划不存在");
             }
-            //Optional.ofNullable(versionOld).orElseThrow(() -> new BusinessException("变更的版本计划不存在"));
             versionManagerMapper.updateByPrimaryKeySelective(versionManager);
         } else {
 

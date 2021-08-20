@@ -37,7 +37,7 @@ public class issueTemplateTest {
             Assert.assertTrue("逻辑删除关联关系成功", true);
         }catch (Exception e){
             log.error("逻辑删除关联关系失败：",e);
-            Assert.assertFalse( e.getMessage() != null);
+            Assert.assertNull(e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class issueTemplateTest {
             List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), null);
             Assert.assertTrue("查询成功", true);
         }catch (Exception e){
-            Assert.assertFalse(e.getMessage() != null);
+            Assert.assertNull(e.getMessage());
         }
     }
 
@@ -69,7 +69,7 @@ public class issueTemplateTest {
             List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), "测试");
             Assert.assertTrue("查询成功", true);
         }catch (Exception e){
-            Assert.assertFalse(e.getMessage() != null);
+            Assert.assertNull(e.getMessage());
         }
     }
 

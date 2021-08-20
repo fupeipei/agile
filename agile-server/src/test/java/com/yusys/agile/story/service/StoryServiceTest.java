@@ -81,7 +81,7 @@ public class StoryServiceTest {
         jsonObject.put("storyPoint","11");
         log.info("转换为 object值为:{}",JSONObject.toJSONString(jsonObject));
         issueFactory.batchSaveOrUpdateSysExtendFieldDetail(jsonObject, issueDTO);
-        org.junit.Assert.assertTrue(story == null);
+        Assert.assertNull(story);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class StoryServiceTest {
         Long sprintId= 130190l;
         Long storyId=507077l;
         int i = storyService.removeStory4Sprint(sprintId, storyId);
-        org.junit.Assert.assertTrue(i==1);
+        Assert.assertEquals(1, i);
     }
 
 
@@ -136,7 +136,7 @@ public class StoryServiceTest {
        sprintDTO.setSprintId(10000L);
        System.out.println(sprintDTO);
        boolean b = sprintv3Service.arrangeIssue(sprintDTO);
-       org.junit.Assert.assertTrue(b==true);
+       Assert.assertEquals(true, b);
 
    }
 

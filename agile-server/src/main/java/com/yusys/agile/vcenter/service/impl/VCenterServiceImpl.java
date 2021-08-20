@@ -71,7 +71,7 @@ public class VCenterServiceImpl implements VCenterService {
                     ManagedEntity[] template = (ManagedEntity[]) inventoryNavigator.searchManagedEntities(VirtualMachine);
                     for (int i = 0; i < template.length; i++) {
                         com.vmware.vim25.mo.VirtualMachine vm = (com.vmware.vim25.mo.VirtualMachine) template[i];
-                        if (vm.getConfig().isTemplate() == true) {
+                        if (vm.getConfig().isTemplate()) {
                             Map map = new HashMap();
                             map.put("name", vm.getConfig().getName());
                             map.put("guestName", vm.getConfig().getGuestFullName());
@@ -147,7 +147,7 @@ public class VCenterServiceImpl implements VCenterService {
                         result.add(map);
                     }
                 } catch (RemoteException e) {
-                    log.error("查询集群异常" + e);
+                    log.error("查询集群异常{}", e.getMessage());
                 }
             }
         } catch (Exception e) {

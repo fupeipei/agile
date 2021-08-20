@@ -111,7 +111,7 @@ public class Teamv3ServiceImplTest {
             teamv3Service.insertTeam(team);
             Assert.assertTrue("insertTeam成功", true);
         }catch (Exception e){
-            Assert.assertTrue(e.getMessage() != null);
+            Assert.assertNotNull(e.getMessage());
         }
     }
     /**
@@ -138,7 +138,7 @@ public class Teamv3ServiceImplTest {
             teamv3Service.insertTeam(team);
             Assert.assertTrue("insertTeam2成功", true);
         }catch (Exception e){
-            Assert.assertTrue(e.getMessage() != null);
+            Assert.assertNotNull(e.getMessage());
         }
     }
 
@@ -176,7 +176,7 @@ public class Teamv3ServiceImplTest {
             teamv3Service.updateTeam(team);
             Assert.assertTrue("updateTeam成功", true);
         }catch (Exception e){
-            Assert.assertTrue(e.getMessage() != null);
+            Assert.assertNotNull(e.getMessage());
         }
     }
 
@@ -195,7 +195,7 @@ public class Teamv3ServiceImplTest {
     public void testQuerySystemByTeamId(){
         Long teamId=100002L;
         List<SsoSystemRestDTO> ssoSystemRestDTOS = teamv3Service.querySystemByTeamId(teamId);
-        Assert.assertTrue(ssoSystemRestDTOS.size()==1);
+        Assert.assertEquals(1, ssoSystemRestDTOS.size());
     }
 
 
