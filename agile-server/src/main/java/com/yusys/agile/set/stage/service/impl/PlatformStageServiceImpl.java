@@ -105,8 +105,8 @@ public class PlatformStageServiceImpl implements IStageService {
                         if(StageConstant.FirstStageEnum.DEVELOP_STAGE.getValue().equals(instanceDTO.getStageId())){
                             List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
                                     IssueTypeEnum.TYPE_STORY.CODE.equals(k.getAppType())).collect(Collectors.toList());
-
-                            log.info("故事阶段过滤后数据为:{}",JSON.toJSONString(secondStageResults));
+                            String s = JSON.toJSONString(secondStageResults);
+                            log.info("故事阶段过滤后数据为:{}",s);
 
                             instanceDTO.setSecondStages(secondStageResults);
                         }
@@ -151,8 +151,8 @@ public class PlatformStageServiceImpl implements IStageService {
                         List<KanbanStageInstanceDTO> secondStages = instanceDTO.getSecondStages();
                         List<KanbanStageInstanceDTO> secondStageResults = secondStages.stream().filter(k ->
                                 IssueTypeEnum.TYPE_TASK.CODE.equals(k.getAppType())).collect(Collectors.toList());
-
-                        log.info("任务阶段过滤后的数据为：{}",JSON.toJSONString(secondStageResults));
+                        String s = JSON.toJSONString(secondStageResults);
+                        log.info("任务阶段过滤后的数据为：{}",s);
                         instanceDTO.setSecondStages(secondStageResults);
 
                     }
@@ -380,7 +380,8 @@ public class PlatformStageServiceImpl implements IStageService {
 
             }
         }
-        log.info("查询阶段信息返回数据 map:{}", JSON.toJSONString(map));
+        String s = JSON.toJSONString(map);
+        log.info("查询阶段信息返回数据 map:{}",s );
         return map;
     }
 

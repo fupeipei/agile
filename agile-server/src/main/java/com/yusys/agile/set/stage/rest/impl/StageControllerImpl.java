@@ -1,5 +1,6 @@
 package com.yusys.agile.set.stage.rest.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.agile.set.stage.domain.StageInstance;
@@ -84,7 +85,8 @@ public class StageControllerImpl {
      */
     @PostMapping("/addSecondStages")
     public ControllerResponse addSecondStages(@RequestHeader("projectId") Long projectId, @RequestBody KanbanStageInstanceDTO kanbanStageInstanceDTO) {
-        LOGGER.info("addSecondStages methods Params: {}", kanbanStageInstanceDTO.toString());
+        String s = JSON.toJSONString(kanbanStageInstanceDTO);
+        LOGGER.info("addSecondStages methods Params: {}", s);
         try {
             int count = stageService.addSecondStage(projectId, kanbanStageInstanceDTO);
             if (count > 0) {

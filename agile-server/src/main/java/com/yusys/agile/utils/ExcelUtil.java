@@ -290,7 +290,7 @@ public class ExcelUtil {
         try {
             out.close();
         } catch (IOException e) {
-            LOGGER.error("error:{}", e);
+            LOGGER.error("error:{}", e.getMessage());
         }
     }
 

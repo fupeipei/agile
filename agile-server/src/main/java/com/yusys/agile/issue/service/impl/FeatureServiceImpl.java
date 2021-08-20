@@ -193,7 +193,7 @@ public class FeatureServiceImpl implements FeatureService {
                 zenTaoStoryService.addStory(ztStoryDTO);
             }
         }catch (Exception e){
-            log.error("同步禅道需求feature报错：{}",e);
+            log.error("同步禅道需求feature报错：{}",e.getMessage());
         }
     }
 }

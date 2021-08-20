@@ -160,7 +160,7 @@ public class MailSendUtil {
 
             sendMail(operationName, issue, mailSubject, mailContent, securityDTO);
         } catch (Exception e) {
-            log.info("邮件发送封装数据异常：{}", e);
+            log.info("邮件发送封装数据异常：{}", e.getMessage());
         }
     }
 
