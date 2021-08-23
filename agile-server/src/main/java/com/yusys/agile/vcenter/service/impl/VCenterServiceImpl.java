@@ -52,7 +52,7 @@ public class VCenterServiceImpl implements VCenterService {
             example.createCriteria().andStateEqualTo(Byte.parseByte("0"));
             return vcenterDevMapper.selectByExample(example);
         } catch (Exception e) {
-            log.error("查询环境异常" + e);
+            log.error("查询环境异常{}" , e.getMessage());
         }
         return null;
     }
@@ -80,11 +80,11 @@ public class VCenterServiceImpl implements VCenterService {
                         }
                     }
                 } catch (RemoteException e) {
-                    log.error("查询集群中心异常" + e);
+                    log.error("查询集群中心异常{}" ,e.getMessage());
                 }
             }
         } catch (Exception e) {
-            log.error("查询模板异常" + e);
+            log.error("查询模板异常{}",e.getMessage());
         } finally {
             if (serviceInstance != null) {
                 serviceInstance.getServerConnection().logout();

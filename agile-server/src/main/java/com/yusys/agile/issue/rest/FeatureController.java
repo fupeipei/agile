@@ -51,7 +51,7 @@ public class FeatureController {
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
             return ControllerResponse.success(issueId);
         } catch (Exception e) {
-            LOGGER.error("新增研发需求失败：{}", e);
+            LOGGER.error("新增研发需求失败：{}", e.getMessage());
             return ControllerResponse.fail("新增研发需求失败：" + e.getMessage());
         }
     }
@@ -72,7 +72,7 @@ public class FeatureController {
         try {
             featureService.deleteFeature(featureId,deleteChild);
         } catch (Exception e) {
-            LOGGER.error("删除研发需求失败：{}", e);
+            LOGGER.error("删除研发需求失败：{}", e.getMessage());
             return ControllerResponse.fail("删除研发需求失败：" + e.getMessage());
         }
         return ControllerResponse.success("删除研发需求成功！");
@@ -101,7 +101,7 @@ public class FeatureController {
             Long newFeatureId = featureService.copyFeature(featureId);
             return ControllerResponse.success(newFeatureId);
         } catch (Exception e) {
-            LOGGER.error("复制研发需求失败：{}", e);
+            LOGGER.error("复制研发需求失败：{}", e.getMessage());
             return ControllerResponse.fail("复制研发需求失败：" + e.getMessage());
         }
     }

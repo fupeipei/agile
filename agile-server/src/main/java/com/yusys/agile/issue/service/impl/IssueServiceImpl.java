@@ -1099,7 +1099,7 @@ public class IssueServiceImpl implements IssueService {
             }
             return ControllerResponse.success(new PageInfo<>(issueHistoryRecords));
         } catch (Exception e) {
-            loggr.error("工作项查询操作历史失败:{}", e);
+            loggr.error("工作项查询操作历史失败:{}", e.getMessage());
             return ControllerResponse.fail("查询操作历史失败");
         }
 
@@ -1449,7 +1449,7 @@ public class IssueServiceImpl implements IssueService {
             planDTO.setStorys(storys);
             return planDTO;
         } catch (Exception e) {
-            loggr.error("获取需求规划列表异常：{}", e);
+            loggr.error("获取需求规划列表异常：{}", e.getMessage());
             throw new BusinessException("获取需求规划列表异常");
         }
     }
@@ -1461,7 +1461,6 @@ public class IssueServiceImpl implements IssueService {
         if(!Optional.ofNullable(issue).isPresent()){
         throw new BusinessException("工作项不存在!");
         }
-        //Optional.ofNullable(issue).orElseThrow(() -> new BusinessException("工作项不存在!"));
         if (StateEnum.E.toString().equals(issue.getState())) {
             throw new BusinessException("工作项不存在!");
         }
@@ -3128,8 +3127,8 @@ public class IssueServiceImpl implements IssueService {
                         }
                     }
             );
-
-            loggr.info("获取看板:{},所有laneId集合 :{}", leanKanbanDTO.getKanbanName(), JSON.toJSONString(laneIds));
+            String s = JSON.toJSONString(laneIds);
+            loggr.info("获取看板:{},所有laneId集合 :{}", leanKanbanDTO.getKanbanName(),s);
             if (laneIds.indexOf(toLaneId) < laneIds.indexOf(fromLaneId)) {
 
                 throw new BusinessException("任务卡片不能往回拖动");
@@ -3375,7 +3374,7 @@ public class IssueServiceImpl implements IssueService {
                 Long id = Long.valueOf(idOrTitle);
                 issueRecord.setIssueId(id);
             } catch (Exception e) {
-                loggr.info("idOrTitle转换异常e:{}", e);
+                loggr.info("idOrTitle转换异常e:{}", e.getMessage());
                 // 存在异常说明只能查name
                 issueRecord.setTitle(idOrTitle);
             }

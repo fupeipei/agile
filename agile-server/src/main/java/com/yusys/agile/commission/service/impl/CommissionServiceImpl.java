@@ -11,7 +11,6 @@ import com.yusys.agile.commission.dto.SCommissionDTO;
 import com.yusys.agile.commission.service.CommissionService;
 import com.yusys.agile.issue.dao.IssueMapper;
 import com.yusys.agile.issue.domain.Issue;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -140,7 +139,7 @@ public class CommissionServiceImpl implements CommissionService {
             try {
                 sCommissionDTOList = ReflectUtil.copyProperties4List(sCommissionList, SCommissionDTO.class);
             } catch (Exception e) {
-                LOGGER.error("getCommissionList copyProperties4List method param currentHandler:{}, title:{} occur exception:{}", e.getMessage());
+                LOGGER.error("getCommissionList copyProperties4List method param currentHandler:{}, title:{} occur exception:{}", currentHandler,title,e.getMessage());
             }
             Set<Long> projectIdSet = Sets.newHashSet();
             sCommissionList.forEach(obj -> {
@@ -311,7 +310,7 @@ public class CommissionServiceImpl implements CommissionService {
             commission.setUpdateTime(new Date());
             commission.setState(state);
             int count = commissionMapper.updateByIssueIdSelective(commission);
-            LOGGER.info("updateCommissionState param issueId:{}, state:{}, affect row:{}", count);
+            LOGGER.info("updateCommissionState param issueId:{}, state:{}, affect row:{}",issueId,state, count);
             if (count != 1) {
                 throw new RuntimeException("updateCommissionState issueId: " + issueId + " state: " + state + "异常");
             }

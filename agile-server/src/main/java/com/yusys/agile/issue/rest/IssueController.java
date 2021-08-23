@@ -103,7 +103,7 @@ public class IssueController {
 //                rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
 //            }
         } catch (Exception e) {
-            LOGGER.error("建立关联失败：{}", e);
+            LOGGER.error("建立关联失败：{}", e.getMessage());
             return ControllerResponse.fail("建立关联失败：" + e.getMessage());
         }
 
@@ -122,7 +122,7 @@ public class IssueController {
             issueService.deleteRelation(parentId, issueId);
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
         } catch (Exception e) {
-            LOGGER.error("删除关联失败：{}", e);
+            LOGGER.error("删除关联失败：{}", e.getMessage());
             return ControllerResponse.fail("删除关联失败：" + e.getMessage());
         }
 
@@ -143,7 +143,7 @@ public class IssueController {
         try {
             issueListDTO = issueService.getIssue(issueId, issueQuery, null);
         } catch (Exception e) {
-            LOGGER.error("查询异常：{}", e);
+            LOGGER.error("查询异常：{}", e.getMessage());
             return ControllerResponse.fail("查询异常：" + e.getMessage());
         }
         return ControllerResponse.success(issueListDTO);
@@ -164,7 +164,7 @@ public class IssueController {
             try {
                 map = issueService.getIssueByIssueId(Long.parseLong(issueId), systemId);
             } catch (Exception e) {
-                LOGGER.error("查询异常：{}", e);
+                LOGGER.error("查询异常：{}", e.getMessage());
                 return ControllerResponse.fail("查询异常：" + e.getMessage());
             }
         }
@@ -184,7 +184,7 @@ public class IssueController {
         try {
             issueService.isCollect(issueId, isCollect, securityDTO);
         } catch (Exception e) {
-            LOGGER.error(" 添加、取消Issue的收藏异常：{}", e);
+            LOGGER.error(" 添加、取消Issue的收藏异常：{}", e.getMessage());
             return ControllerResponse.fail("添加、取消Issue的收藏异常：" + e.getMessage());
         }
         return ControllerResponse.success("操作成功");
@@ -222,7 +222,7 @@ public class IssueController {
                 issueUpRegularFactory.commonIssueUpRegular(issueDTO.getListIssueIds().get(0));
             }
         } catch (Exception e) {
-            LOGGER.error("批量建立关联失败：{}", e);
+            LOGGER.error("批量建立关联失败：{}", e.getMessage());
             return ControllerResponse.fail("批量建立关联失败：" + e.getMessage());
         }
         return ControllerResponse.success("批量建立关联成功！");
@@ -258,7 +258,7 @@ public class IssueController {
         try {
             issueService.createBatchIssue(listIssue);
         } catch (Exception e) {
-            LOGGER.error("批量建立工作项失败：{}", e);
+            LOGGER.error("批量建立工作项失败：{}", e.getMessage());
             return ControllerResponse.fail("批量建立工作项失败：" + e.getMessage());
         }
         return ControllerResponse.success("批量建立工作项成功！");
@@ -276,7 +276,7 @@ public class IssueController {
         try {
             issueService.updateHandler(issueId, handler);
         } catch (Exception e) {
-            LOGGER.error(" 更新处理人异常：{}", e);
+            LOGGER.error(" 更新处理人异常：{}", e.getMessage());
             return ControllerResponse.fail("更新处理人异常：" + e.getMessage());
         }
         return ControllerResponse.success("更新处理人成功");
@@ -350,7 +350,7 @@ public class IssueController {
         try {
             issueService.dragDemand(issueId, sprintId, parentId, projectId);
         } catch (Exception e) {
-            LOGGER.error("卡片拖拽异常：{}", e);
+            LOGGER.error("卡片拖拽异常：{}", e.getMessage());
             return ControllerResponse.fail("卡片拖拽异常");
         }
         return ControllerResponse.success("卡片拖拽成功");
@@ -398,7 +398,7 @@ public class IssueController {
     public ControllerResponse updateIssueLaunchState(@PathVariable Long issueId, @PathVariable Byte issueType) {
         try {
             issueService.updateIssueLaunchState(issueId, issueType);
-            LOGGER.info("更新工作项" + issueId + "已上线状态成功");
+            LOGGER.info("更新工作项 {} 已上线状态成功" ,issueId );
             return ControllerResponse.success("更新工作项" + issueId + "已上线状态成功");
         } catch (Exception e) {
             LOGGER.error("updateIssueLaunchState occur exception, message:{}", e.getMessage());
@@ -451,7 +451,7 @@ public class IssueController {
         try {
             issueService.isArchive(issueId, isArchive);
         } catch (Exception e) {
-            LOGGER.error("添加、取消Issue的归档异常：{}", e);
+            LOGGER.error("添加、取消Issue的归档异常：{}", e.getMessage());
             return ControllerResponse.fail("添加、取消Issue的归档异常：" + e.getMessage());
         }
         return ControllerResponse.success("操作成功");

@@ -69,7 +69,8 @@ public class IssueUpRegularFactory {
         Long handler = issue.getHandler();
         Long teamId = issue.getTeamId();
         if(teamId==null){
-            logger.info("团队id为空，直接return+"+ JSON.toJSONString(issue));
+            String s = JSON.toJSONString(issue);
+            logger.info("团队id为空，直接return+{}",s );
             return;
         }
 
@@ -229,7 +230,7 @@ public class IssueUpRegularFactory {
 //                pIssue.setHandler(handler);
 //            }
             issueMapper.updateByPrimaryKey(pIssue);
-            logger.info("更新父工作项的阶段状态成功:{}", pIssue.toString());
+            logger.info("更新父工作项的阶段状态成功:{}", pIssue);
         }
     }
 }

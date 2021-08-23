@@ -59,7 +59,7 @@ public class StoryController {
             rabbitTemplate.convertAndSend(AgileConstant.Queue.ISSUE_UP_REGULAR_QUEUE, issueId);
             return ControllerResponse.success(issueId);
         } catch (Exception e) {
-            LOGGER.error("新增用户故事失败：{}", e);
+            LOGGER.error("新增用户故事失败：{}", e.getMessage());
             return ControllerResponse.fail("新增用户故事失败：" + e.getMessage());
         }
     }
@@ -93,7 +93,7 @@ public class StoryController {
         try {
             storyService.deleteStory(storyId, deleteChild,securityDTO.getUserId());
         } catch (Exception e) {
-            LOGGER.error("删除用户故事失败：{}", e);
+            LOGGER.error("删除用户故事失败：{}", e.getMessage());
             return ControllerResponse.fail("删除用户故事失败：" + e.getMessage());
         }
         return ControllerResponse.success("删除用户故事成功！");
@@ -123,7 +123,7 @@ public class StoryController {
             Long newStoryId = storyService.copyStory(storyId);
             return ControllerResponse.success(newStoryId);
         } catch (Exception e) {
-            LOGGER.error("复制故事失败：{}", e);
+            LOGGER.error("复制故事失败：{}", e.getMessage());
             return ControllerResponse.fail("复制故事失败：" + e.getMessage());
         }
 

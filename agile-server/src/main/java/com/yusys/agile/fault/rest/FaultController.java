@@ -93,7 +93,7 @@ public class FaultController {
         try {
             faultService.updateFault(faultDTO);
         } catch (Exception e) {
-            LOGGER.error("修改缺陷错误 e : {}", e);
+            LOGGER.error("修改缺陷错误 e : {}", e.getMessage());
             return ControllerResponse.fail("修改缺陷失败!");
         }
 
@@ -213,7 +213,7 @@ public class FaultController {
             List<IssueDTO> result = faultService.listFaults(filter, faultLevel, faultType, stageId, sprintId, createUid, createDate, fixedUid, testUid, projectId, pageNum, pageSize);
             return ControllerResponse.success(new PageInfo<>(result));
         } catch (Exception e) {
-            LOGGER.error("查询缺陷失败! e={}", e);
+            LOGGER.error("查询缺陷失败! e={}", e.getMessage());
             return ControllerResponse.fail("查询缺陷失败！ " + e.getMessage());
         }
 

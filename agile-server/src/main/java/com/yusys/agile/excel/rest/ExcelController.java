@@ -49,7 +49,7 @@ public class ExcelController {
         try {
             excelService.downloadTemplateByExcelType(excelType, projectId, sprintId, request, response);
         } catch (Exception e) {
-            LOGGER.error("excel模版下载失败：{}", e);
+            LOGGER.error("excel模版下载失败：{}", e.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class ExcelController {
         try {
             return excelService.importExcel(excelType, projectId, sprintId, multiReq, request, response);
         } catch (Exception e) {
-            LOGGER.error("导入excel失败：{}", e);
+            LOGGER.error("导入excel失败：{}", e.getMessage());
             return ControllerResponse.fail("导入excel失败！");
         }
     }

@@ -88,7 +88,6 @@ public class ModuleServiceImpl implements ModuleService {
             if(!Optional.ofNullable(module1).isPresent()){
                 throw new BusinessException("更新的模块信息不存在");
             }
-           // Optional.ofNullable(module1).orElseThrow(() -> new BusinessException("更新的模块信息不存在"));
             moduleMapper.updateByPrimaryKeySelective(module);
         } else {
             moduleMapper.insert(module);
@@ -166,12 +165,6 @@ public class ModuleServiceImpl implements ModuleService {
                     List<JSONObject> resultList=new ArrayList<>();
                     resultList.add(jsonObject);
 
-
-//                    List<JSONObject> resultList = new ArrayList() {
-//                        {
-//                            add(jsonObject);
-//                        }
-//                    };
                     resultMap.put(systemId, resultList);
                 }
 

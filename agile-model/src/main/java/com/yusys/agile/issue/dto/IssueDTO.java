@@ -8,9 +8,7 @@ import com.yusys.portal.model.facade.dto.SsoUserDTO;
 import com.yusys.portal.model.project.dto.ProjectManagerDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

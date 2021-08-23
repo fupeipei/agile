@@ -1364,10 +1364,7 @@ public class ExcelServiceImpl implements ExcelService {
         Long epicIssueId = issueFactory.getEpicId(issueId, issueType);
         if (null != epicIssueId) {
             //版本名称
-//            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
-//            if (null != versionManagerDTO) {
-//                versionNameMap.put("versionName", versionManagerDTO.getVersionName());
-//            }
+
         }
         return versionNameMap;
     }
@@ -1396,11 +1393,7 @@ public class ExcelServiceImpl implements ExcelService {
         //业务需求工作项id
         Long epicIssueId = issueFactory.getEpicId(issueId, issueType);
         if (null != epicIssueId) {
-            //版本名称
-//            VersionManagerDTO versionManagerDTO = queryVersionManageInfo(epicIssueId);
-//            if (null != versionManagerDTO) {
-//                sysExtendFieldDeatilMap.put("versionName", versionManagerDTO.getVersionName());
-//            }
+
             sysExtendFieldDetailList = sysExtendFieldDetailService.getSysExtendFieldDetail(epicIssueId);
             if (CollectionUtils.isNotEmpty(sysExtendFieldDetailList)) {
                 for (SysExtendFieldDetail sysExtendFieldDetail : sysExtendFieldDetailList) {

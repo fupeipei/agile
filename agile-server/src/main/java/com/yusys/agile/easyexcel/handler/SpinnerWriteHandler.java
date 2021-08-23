@@ -3,7 +3,6 @@ package com.yusys.agile.easyexcel.handler;
 import com.alibaba.excel.write.handler.SheetWriteHandler;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
-import com.yusys.agile.aop.SubSecurityInfoAspect;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.slf4j.Logger;
@@ -20,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SpinnerWriteHandler implements SheetWriteHandler {
 
-    private final static Logger log = LoggerFactory.getLogger(SpinnerWriteHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(SpinnerWriteHandler.class);
 
     private Map<Integer,String []> mapDropDown = new ConcurrentHashMap<>();
     private int index;
