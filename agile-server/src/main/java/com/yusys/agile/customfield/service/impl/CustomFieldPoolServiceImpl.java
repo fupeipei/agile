@@ -1,7 +1,6 @@
 package com.yusys.agile.customfield.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.constant.StringConstant;
 import com.yusys.agile.customfield.dao.SCustomFieldPoolMapper;
@@ -271,7 +270,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         criteria.andStateEqualTo("U");
         List<CustomFieldDTO> customFieldDTOS = customFieldPoolMapper.selectDTOByExampleWithBLOBs(example);
         boolean result=false;
-        if(customFieldDTOS!=null&&customFieldDTOS.size()>0){
+        if(customFieldDTOS!=null&&!customFieldDTOS.isEmpty()){
             result=true;
         }
         return result;

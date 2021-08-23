@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class DeployRecordController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommitRecordController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeployRecordController.class);
 
     @Autowired
     DeployRecordService deployRecordService;

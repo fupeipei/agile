@@ -3,7 +3,6 @@ package com.yusys.agile.set.stage.dto;
 import com.yusys.agile.issue.dto.IssueDTO;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
