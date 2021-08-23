@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "com.yusys.agile.scheduletask")
 public class JobConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(FaultServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(JobConfig.class);
 
     @Value("${xxl.job.admin.addresses}")
     private String adminAddresses;

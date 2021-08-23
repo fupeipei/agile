@@ -5,7 +5,6 @@ import com.yusys.agile.dict.dao.SysDictDetailMapper;
 import com.yusys.agile.dict.domain.SysDictDetail;
 import com.yusys.agile.dict.domain.SysDictDetailExample;
 import com.yusys.agile.dict.service.SysDictService;
-import com.github.pagehelper.PageHelper;
 import jodd.util.StringUtil;
 import org.springframework.stereotype.Service;
 
