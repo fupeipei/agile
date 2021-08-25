@@ -307,7 +307,7 @@ public interface SSprintMapper {
      * @return boolean
      * @author 张宇
      */
-    boolean checkIdentityInPoSmOrCreatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
+    int checkIdentityInPoSmOrCreatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
     /**
      * 迭代是否已经绑定问题
@@ -316,7 +316,7 @@ public interface SSprintMapper {
      * @return boolean
      * @author 张宇
      */
-    boolean sprintBindingIssue(long sprintId);
+    int sprintBindingIssue(long sprintId);
 
     /**
      * 查询迭代成员id
