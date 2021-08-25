@@ -670,12 +670,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
 
         //没有故事不允许完成迭代
-        if (!ssprintMapper.querySprintHasRelevanceStory(sprintId)) {
+        if (ssprintMapper.querySprintHasRelevanceStory(sprintId) == 0 ) {
             throw new BusinessException("该迭代下未关联用户故事,不允许迭代完成");
         }
 
         //迭代有用户故事,切故事状态必须为开发阶段-已完成状态才允许完成
-        if (ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_CLOSED_STATE.CODE)) {
+        int unfinishedStoryCount = ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE
+                , StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
+        if ( unfinishedStoryCount > 0) {
             throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
         }
 
