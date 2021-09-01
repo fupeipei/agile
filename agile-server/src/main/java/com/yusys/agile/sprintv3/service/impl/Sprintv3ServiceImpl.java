@@ -627,16 +627,16 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String cancelSprint(long sprintId, long userId) {
-        boolean sprintBindingIssue = ssprintMapper.sprintBindingIssue(sprintId);
+        int sprintBindingIssue = ssprintMapper.sprintBindingIssue(sprintId);
 
         //只有迭代Po,SM或创建人允许取消迭代
-        if (!ssprintMapper.checkIdentityInPoSmOrCreatUser(sprintId, userId)) {
+        if (ssprintMapper.checkIdentityInPoSmOrCreatUser(sprintId, userId) == 0) {
             throw new BusinessException("只有迭代Po,SM或创建人允许取消迭代");
         }
 
         if (!TYPE_NO_START_STATE.CODE.equals(ssprintMapper.querySprintStatus(sprintId))) {
             //迭代已经开始
-            if (sprintBindingIssue) {
+            if (sprintBindingIssue > 0) {
                 //迭代开始,已经绑定任务
                 throw new BusinessException("该迭代已经关联任务,不允许取消");
             }
@@ -646,7 +646,7 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
 
         //迭代未开始,但已经绑定任务
-        if (sprintBindingIssue) {
+        if (sprintBindingIssue > 0) {
             ssprintMapper.changeIssueStatusBySprintId(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_ADD_STATE.CODE);
             ssprintMapper.changeIssueStatusBySprintId(sprintId, IssueTypeEnum.TYPE_TASK.CODE, TaskStatusEnum.TYPE_ADD_STATE.CODE);
         }
@@ -670,12 +670,14 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
 
         //没有故事不允许完成迭代
-        if (!ssprintMapper.querySprintHasRelevanceStory(sprintId)) {
+        if (ssprintMapper.querySprintHasRelevanceStory(sprintId) == 0 ) {
             throw new BusinessException("该迭代下未关联用户故事,不允许迭代完成");
         }
 
         //迭代有用户故事,切故事状态必须为开发阶段-已完成状态才允许完成
-        if (ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE, StoryStatusEnum.TYPE_CLOSED_STATE.CODE)) {
+        int unfinishedStoryCount = ssprintMapper.querySprintExistUnfinishedStory(sprintId, IssueTypeEnum.TYPE_STORY.CODE
+                , StoryStatusEnum.TYPE_CLOSED_STATE.CODE);
+        if ( unfinishedStoryCount > 0) {
             throw new BusinessException("该迭代下有未完成的用户故事，不允许迭代完成");
         }
 

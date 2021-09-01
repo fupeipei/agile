@@ -639,8 +639,8 @@
     </select>
 
 
-    <select id="querySprintExistUnfinishedStory" resultType="java.lang.Boolean">
-        select if(count(issue_id) > 0, true, false)
+    <select id="querySprintExistUnfinishedStory" resultType="int">
+        select count(issue_id)
         from s_issue
         where sprint_id = #{sprintId}
           and issue_type = 3
@@ -874,25 +874,21 @@
           and state = 'U'
     </update>
 
-    <select id="checkIdentityInPoSmOrCreatUser" resultType="boolean">
-        select if((select count(*)
+    <select id="checkIdentityInPoSmOrCreatUser" resultType="int">
+        select count(*)
                    from s_sprint a
                                 left join s_team_member b on a.team_id = b.team_id
-                   where b.user_id = #{userId}
-                     and b.role_id in (103, 104)
-                     and a.sprint_id = #{sprintId})
-                          +
-                  (select count(*)
-                   from s_sprint a
-                   where sprint_id = #{sprintId}
-                     and create_uid = #{userId}) > 0, true, false)
+                   where a.sprint_id = #{sprintId}
+                   and ((b.user_id = #{userId}
+                     and b.role_id in (103, 104)) or a.create_uid = #{userId})
+
     </select>
 
-    <select id="sprintBindingIssue" resultType="boolean">
-        select if((select count(issue_id)
+    <select id="sprintBindingIssue" resultType="int">
+        select count(issue_id)
                    from s_issue
                    where sprint_id = #{sprintId}
-                     and state = 'U') > 0, true, false)
+                     and state = 'U'
     </select>
 
     <select id="querySprintMembersId" resultType="java.lang.Long">
@@ -901,11 +897,12 @@
         where sprint_id = #{sprintId}
     </select>
 
-    <select id="querySprintHasRelevanceStory" resultType="boolean">
-        select if(count(sprint_id) > 0, true, false)
+    <select id="querySprintHasRelevanceStory" resultType="int">
+        select count(sprint_id)
         from s_issue
         where sprint_id = #{sprintId}
           and state = 'U'
+          and issue_type = 3
     </select>
 
     <select id="querySprintByTeamId" resultMap="BaseResultMap">

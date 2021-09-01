@@ -92,7 +92,7 @@ public interface SSprintMapper {
      * @return int
      * @author 张宇
      */
-    boolean querySprintExistUnfinishedStory(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
+    int querySprintExistUnfinishedStory(@Param("sprintId") long sprintId, @Param("issueType") Byte IssueType, @Param("status") Long Status);
 
     /**
      * 查询迭代故事
@@ -307,7 +307,7 @@ public interface SSprintMapper {
      * @return boolean
      * @author 张宇
      */
-    boolean checkIdentityInPoSmOrCreatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
+    int checkIdentityInPoSmOrCreatUser(@Param("sprintId") long sprintId, @Param("userId") long userId);
 
     /**
      * 迭代是否已经绑定问题
@@ -316,7 +316,7 @@ public interface SSprintMapper {
      * @return boolean
      * @author 张宇
      */
-    boolean sprintBindingIssue(long sprintId);
+    int sprintBindingIssue(long sprintId);
 
     /**
      * 查询迭代成员id
@@ -335,7 +335,7 @@ public interface SSprintMapper {
      * @return boolean
      * @author 张宇
      */
-    boolean querySprintHasRelevanceStory(long sprintId);
+    int querySprintHasRelevanceStory(long sprintId);
     /**
      * 按团队查询迭代
      * @author zhaofeng
