@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>com.yusys</groupId>
 		<artifactId>agile</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0-POC-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>com.yusys</groupId>
 			<artifactId>portal-model</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-POC-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -41,18 +41,18 @@
 		<dependency>
 			<groupId>com.yusys</groupId>
 			<artifactId>agile-model</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-POC-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.yusys</groupId>
 			<artifactId>portal-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-POC-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.yusys</groupId>
 			<artifactId>portal-util</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0-POC-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 

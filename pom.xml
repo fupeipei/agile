@@ -6,7 +6,7 @@
 
     <groupId>com.yusys</groupId>
     <artifactId>agile</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-POC-SNAPSHOT</version>
     <modules>
         <module>agile-model</module>
         <module>agile-server</module>
@@ -20,19 +20,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <module.version>1.0.0-SNAPSHOT</module.version>
         <org.mapstruct.version>1.2.0.CR2</org.mapstruct.version>
         <swagger.version>2.2.2</swagger.version>
         <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
         <github.pagehelper.version>1.2.5</github.pagehelper.version>
-        <portal.persistence.version>1.0-SNAPSHOT</portal.persistence.version>
-        <portal.model.version>1.0-SNAPSHOT</portal.model.version>
+        <portal.persistence.version>1.0-POC-SNAPSHOT</portal.persistence.version>
+        <portal.model.version>1.0-POC-SNAPSHOT</portal.model.version>
         <cicd.ms.version>1.0-SNAPSHOT</cicd.ms.version>
     </properties>
     <parent>
         <groupId>com.yusys</groupId>
         <artifactId>portal</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-POC-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
