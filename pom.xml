@@ -26,7 +26,6 @@
         <github.pagehelper.version>1.2.5</github.pagehelper.version>
         <portal.persistence.version>1.0-POC-SNAPSHOT</portal.persistence.version>
         <portal.model.version>1.0-POC-SNAPSHOT</portal.model.version>
-        <cicd.ms.version>1.0-SNAPSHOT</cicd.ms.version>
     </properties>
     <parent>
         <groupId>com.yusys</groupId>
