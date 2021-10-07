@@ -11,7 +11,7 @@ build_maven:
   image: maven:3.5.2-jdk-8
   script:
     - mvn clean deploy -U -s "settings.xml" -Dmaven.test.skip=true
-    - tag=`date +%Y%m%d`-`echo $CI_BUILD_REF | cut -c 1-8`
+    - tag=`date +%Y%m%d%H%M%y`-`echo $CI_BUILD_REF | cut -c 1-8`
     - echo $tag > docker-tag
     - sed -i s/latest/$tag/g docker-compose.yaml
     - docker-compose build 
