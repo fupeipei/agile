@@ -31,7 +31,7 @@ public class CustomFieldPoolServiceTest {
     @Test
     public void testListAllCustomFields1(){
         List<CustomFieldDTO> list = customFieldPoolService.listCustomFieldsBySystemId(850397896869163008L,
-                null, 1, 10);
+                null, null,1, 10);
         log.info("list = {}", list);
         Assert.assertTrue("testListAllCustomFields1成功", true);
     }
@@ -43,7 +43,7 @@ public class CustomFieldPoolServiceTest {
     @Test
     public void testListAllCustomFields2(){
         List<CustomFieldDTO> list = customFieldPoolService.listCustomFieldsBySystemId(850397896869163008L,
-                "本", 1, 10);
+                "本", null,1, 10);
         log.info("list = {}", list);
         Assert.assertTrue("testListAllCustomFields1成功", true);
     }
@@ -55,7 +55,7 @@ public class CustomFieldPoolServiceTest {
     @Test
     public void testListAllCustomFields3(){
         List<CustomFieldDTO> list = customFieldPoolService.listCustomFieldsBySystemId(null,
-                "本", 1, 10);
+                "本", null,1, 10);
         log.info("list = {}", list);
         Assert.assertTrue("testListAllCustomFields1成功", true);
     }

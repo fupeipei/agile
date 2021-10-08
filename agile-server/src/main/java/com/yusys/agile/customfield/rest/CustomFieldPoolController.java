@@ -104,10 +104,11 @@ public class CustomFieldPoolController {
     public ControllerResponse listAllCustomFields(
             SecurityDTO security,
             @RequestParam(name = "fieldName", required = false) String fieldName,
+            @RequestParam(name="fieldType",required = false) String fieldType,
             @RequestParam(name = "pageNum") Integer pageNum,
             @RequestParam(name = "pageSize") Integer pageSize) {
         Long systemId = security.getSystemId();
-        List<CustomFieldDTO> list = customFieldPoolService.listCustomFieldsBySystemId(systemId, fieldName, pageNum, pageSize);
+        List<CustomFieldDTO> list = customFieldPoolService.listCustomFieldsBySystemId(systemId, fieldName,fieldType, pageNum, pageSize);
         return ControllerResponse.success(new PageInfo<>(list));
     }
 

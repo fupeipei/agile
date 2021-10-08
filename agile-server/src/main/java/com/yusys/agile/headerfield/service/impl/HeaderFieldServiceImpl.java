@@ -64,7 +64,7 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
     @Override
     public List<HeaderField> queryAllHeaderFields(SecurityDTO securityDTO, Byte category, Byte isFilter) {
 
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(securityDTO.getSystemId(), null, null,null);
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(securityDTO.getSystemId(), null, null,null,null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(securityDTO.getSystemId(), category);
         Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
@@ -322,7 +322,7 @@ public class HeaderFieldServiceImpl implements HeaderFieldService {
 
     @Override
     public List<HeaderField> getAllCustomHeaderFieldBySystemId(Long systemId) {
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(systemId, null, null, null);
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(systemId, null, null, null,null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         List<SIssueCustomRelation> issueCustomRelationList = issueCustomRelationService.getIssueCustomRelations(systemId, null);
         Map<Long, List<SIssueCustomRelation>> longListMap = issueCustomRelationList.stream().collect(Collectors.groupingBy(SIssueCustomRelation::getId));
