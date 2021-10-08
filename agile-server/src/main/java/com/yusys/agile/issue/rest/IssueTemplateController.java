@@ -1,5 +1,6 @@
 package com.yusys.agile.issue.rest;
 
+import com.github.pagehelper.PageInfo;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.issue.domain.IssueCustomRelationList;
 import com.yusys.agile.issue.service.IssueCustomRelationService;
@@ -87,10 +88,13 @@ public class IssueTemplateController {
     public ControllerResponse getUnApplied(
             SecurityDTO security,
             @RequestParam(name = "issueType") Byte issueType,
-            @RequestParam(name = "fieldName", required = false) String fieldName) {
+            @RequestParam(name = "fieldName", required = false) String fieldName,
+            @RequestParam(name="fieldType",required = false) String fieldType,
+            @RequestParam(name = "pageNum") Integer pageNum,
+            @RequestParam(name = "pageSize") Integer pageSize) {
         Long systemId = security.getSystemId();
-        List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(systemId, issueType, fieldName);
-        return ControllerResponse.success(list);
+        List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(systemId, issueType, fieldName,fieldType,pageNum,pageSize);
+        return ControllerResponse.success(new PageInfo<>(list));
     }
 
 

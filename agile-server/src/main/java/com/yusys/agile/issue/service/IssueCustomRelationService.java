@@ -32,7 +32,7 @@ public interface IssueCustomRelationService {
 
     void deleteIssueCustomRelationByFieldId(Long fieldId);
 
-    List<CustomFieldDTO>  getUnApplied(Long systemId, Byte issueType, String fieldName);
+    List<CustomFieldDTO>  getUnApplied(Long systemId, Byte issueType, String fieldName,String fieldType,Integer pageNum,Integer pageSize);
 
 
     List<SIssueCustomRelation> getIssueCustomRelationsByTenantCode(String tenantCode);

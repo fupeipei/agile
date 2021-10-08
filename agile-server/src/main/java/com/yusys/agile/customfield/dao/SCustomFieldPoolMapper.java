@@ -79,5 +79,5 @@ public interface SCustomFieldPoolMapper {
      * @param issueType
      * @param fieldName
      */
-    List<CustomFieldDTO> getUnAppByIssueType(@Param("issueType") Byte issueType, @Param("fieldName") String fieldName, @Param("systemId") Long systemId);
+    List<CustomFieldDTO> getUnAppByIssueType(@Param("issueType") Byte issueType, @Param("fieldName") String fieldName, @Param("systemId") Long systemId,@Param("fieldTypes") List<Integer> fieldTypes);
 }

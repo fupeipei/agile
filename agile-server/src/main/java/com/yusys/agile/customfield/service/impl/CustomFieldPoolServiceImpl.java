@@ -21,7 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 自定义字段池实现类
@@ -105,7 +109,9 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         if (ObjectUtil.isEmpty(customFieldDTO.getFieldName()) && ObjectUtil.isEmpty(customFieldDTO.getComment())) {
             return "修改成功";
         }
-
+        if(Optional.ofNullable(customFieldDTO.getFieldName()).isPresent() && customFieldDTO.getFieldName().length()>50){
+            throw new BusinessException("入参错误！");
+        }
         SCustomFieldPool customFieldPool = new SCustomFieldPool();
         BeanUtils.copyProperties(customFieldDTO, customFieldPool);
 
@@ -192,7 +198,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
 
 
     @Override
-    public List<CustomFieldDTO> listCustomFieldsBySystemId(Long systemId, String fieldName, Integer pageNum, Integer pageSize) {
+    public List<CustomFieldDTO> listCustomFieldsBySystemId(Long systemId, String fieldName,  String fieldType,Integer pageNum, Integer pageSize) {
         // 不传page信息时查全部数据
         if (null != pageNum && null != pageSize) {
             PageMethod.startPage(pageNum, pageSize);
@@ -202,6 +208,12 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
                 .andStateEqualTo(StateEnum.U.getValue());
         if (StringUtils.isNotBlank(fieldName)) {
             criteria.andFieldNameLike(StringConstant.PERCENT_SIGN + fieldName + StringConstant.PERCENT_SIGN);
+        }
+        if (StringUtils.isNotEmpty(fieldType)){
+            String[] fieldTypes = fieldType.split(",");
+            List<String> fieldTypeList = Arrays.asList(fieldTypes);
+            List<Integer> fieldTypeInteger = fieldTypeList.stream().map(Integer::parseInt).collect(Collectors.toList());
+            criteria.andFieldTypeIn(fieldTypeInteger);
         }
         if (systemId != null) {
             criteria.andSystemIdEqualTo(systemId);
@@ -264,7 +276,7 @@ public class CustomFieldPoolServiceImpl implements CustomFieldPoolService {
         }
 
         if (customFieldPool.getFieldId()!=null) {
-            criteria.andFieldIdEqualTo(customFieldPool.getFieldId());
+            criteria.andFieldIdNotEqualTo(customFieldPool.getFieldId());
         }
 
         criteria.andStateEqualTo("U");
