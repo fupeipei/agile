@@ -36,12 +36,12 @@ public class BaseBusinessException extends RuntimeException {
 
     public BaseBusinessException(String errorMsg) {
         super(errorMsg);
-        this.errorMsg = errorMsg;
+        this.errorMsg = "系统错误提示："+errorMsg;
     }
     public BaseBusinessException(Integer code,String errorMsg) {
         super(errorMsg);
         this.code = code;
-        this.errorMsg = errorMsg;
+        this.errorMsg = "系统错误提示："+errorMsg;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class BaseBusinessException extends RuntimeException {
             for (int i = 0, len = args.length; i < len; i++) {
                 errorMsg = errorMsg.replace(getPlaceHolder(i), args[i]);
             }
-            this.errorMsg = errorMsg;
+            this.errorMsg = "系统错误提示："+errorMsg;
         }
     }
 
