@@ -2,6 +2,7 @@ package com.yusys.agile.issue.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.page.PageMethod;
 import com.yusys.agile.customfield.dao.SCustomFieldPoolMapper;
 import com.yusys.agile.customfield.dto.CustomFieldDTO;
 import com.yusys.agile.customfield.service.CustomFieldPoolService;
@@ -15,6 +16,7 @@ import com.yusys.agile.issue.service.IssueCustomRelationService;
 import com.yusys.agile.issue.service.IssueTemplateService;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +58,7 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
     @Override
     public List<SIssueCustomRelation> getIssueCustomRelations(Long systemId, Byte issueType) {
         //查询自定义字段集合，并转换成map结构
-        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(systemId, "", null, null);
+        List<CustomFieldDTO> customFieldDTOList = customFieldPoolService.listCustomFieldsBySystemId(systemId, "", null,null, null);
         Map<Long, List<CustomFieldDTO>> listMap = customFieldDTOList.stream().collect(Collectors.groupingBy(CustomFieldDTO::getFieldId));
         //查询关联关系
         SIssueCustomRelationExample example = new SIssueCustomRelationExample();
@@ -161,9 +163,19 @@ public class IssueCustomRelationServiceImpl implements IssueCustomRelationServic
 
 
     @Override
-    public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName) {
-        //查询自定义字段集合，并转换成map结构
-        return customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName, systemId);
+    public List<CustomFieldDTO> getUnApplied(Long systemId, Byte issueType, String fieldName,
+                                             String fieldType,Integer pageNum,Integer pageSize) {
+        if (null != pageNum && null != pageSize) {
+            PageMethod.startPage(pageNum, pageSize);
+        }        //查询自定义字段集合，并转换成map结构
+        List<Integer> fieldTypeInteger = new ArrayList<>();
+        if (StringUtils.isNotEmpty(fieldType)) {
+            String[] fieldTypes = fieldType.split(",");
+            List<String> fieldTypeList = Arrays.asList(fieldTypes);
+            fieldTypeInteger = fieldTypeList.stream().map(Integer::parseInt).collect(Collectors.toList());
+        }
+        return customFieldPoolMapper.getUnAppByIssueType(issueType, fieldName, systemId,fieldTypeInteger);
+
     }
 
     @Override

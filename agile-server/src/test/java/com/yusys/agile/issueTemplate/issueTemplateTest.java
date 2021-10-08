@@ -50,7 +50,7 @@ public class issueTemplateTest {
     @Transactional
     public void testGetUnApplied1(){
         try {
-            List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), null);
+            List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), null,null,1,10);
             Assert.assertTrue("查询成功", true);
         }catch (Exception e){
             Assert.assertNull(e.getMessage());
@@ -66,7 +66,7 @@ public class issueTemplateTest {
     @Transactional
     public void testGetUnApplied2(){
         try {
-            List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), "测试");
+            List<CustomFieldDTO> list = issueCustomRelationService.getUnApplied(847157263800733696L, Byte.parseByte("1"), "测试",null,1,10);
             Assert.assertTrue("查询成功", true);
         }catch (Exception e){
             Assert.assertNull(e.getMessage());
