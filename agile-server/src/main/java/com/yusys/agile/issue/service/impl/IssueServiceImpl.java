@@ -3447,7 +3447,7 @@ public class IssueServiceImpl implements IssueService {
      * @Param [fertureMsg]
      **/
     @Override
-    public List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException {
+    public List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws Exception {
         issue.setState(StateEnum.U.getValue());
         issue.setIssueType(IssueTypeEnum.TYPE_FEATURE.CODE);
         List<IssueDTO> issueDTOList = issueMapper.queryForFerture(issue);
