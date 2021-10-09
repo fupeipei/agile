@@ -494,7 +494,6 @@
         <if test="fieldName != null and fieldName != ''">
             and field_name like concat('%',#{fieldName},'%')
         </if>
-        and field_name like concat('%',#{fieldName},'%')
         order by s.create_time desc
     </select>
 </mapper>
