@@ -2639,7 +2639,7 @@ public class IssueServiceImpl implements IssueService {
      *
      * @param issues
      */
-    public void recursionGetIssues(List<IssueDTO> issues, Long kanbanId) throws ExecutionException {
+    public void recursionGetIssues(List<IssueDTO> issues, Long kanbanId) throws Exception {
         for (IssueDTO issueDTO : issues) {
 
             Long issueId = issueDTO.getIssueId();
@@ -2678,13 +2678,10 @@ public class IssueServiceImpl implements IssueService {
                     issueDTO.setTaskFinishNum(getIssueFinishNum(issueId, kanbanId));
                 }
 
-                try {
-                    childs = ReflectUtil.copyProperties4List(issueList, IssueDTO.class);
-                    issueDTO.setChildren(childs);
-                    recursionGetIssues(childs, kanbanId);
-                } catch (Exception e) {
-                    loggr.info("工作项数据转换异常:{}", e.getMessage());
-                }
+                childs = ReflectUtil.copyProperties4List(issueList, IssueDTO.class);
+                issueDTO.setChildren(childs);
+                recursionGetIssues(childs, kanbanId);
+
             } else {
                 issueDTO.setChildren(childs);
             }
