@@ -2626,10 +2626,10 @@ public class IssueServiceImpl implements IssueService {
         if (CollectionUtils.isNotEmpty(issues)) {
             try {
                 issueDTOS = ReflectUtil.copyProperties4List(issues, IssueDTO.class);
+                recursionGetIssues(issueDTOS, kanbanId);
             } catch (Exception e) {
                 loggr.info("工作项数据转换异常:{}", e.getMessage());
             }
-            recursionGetIssues(issueDTOS, kanbanId);
         }
         return issueDTOS;
     }
@@ -2641,22 +2641,31 @@ public class IssueServiceImpl implements IssueService {
      */
     public void recursionGetIssues(List<IssueDTO> issues, Long kanbanId) throws Exception {
         for (IssueDTO issueDTO : issues) {
-
+            if(issueDTO == null){
+                continue;
+            }
+            loggr.info("工作项信息:{}",JSON.toJSONString(issueDTO));
             Long issueId = issueDTO.getIssueId();
             //处理系统信息
             Long systemId = issueDTO.getSystemId();
-            SsoSystem ssoSystem = systemCache.get(systemId);
-            if (Optional.ofNullable(ssoSystem).isPresent()) {
-                issueDTO.setSystemCode(ssoSystem.getSystemCode());
-                issueDTO.setSystemName(ssoSystem.getSystemName());
+            if(systemId != null){
+                SsoSystem ssoSystem = systemCache.get(systemId);
+                if (Optional.ofNullable(ssoSystem).isPresent()) {
+                    issueDTO.setSystemCode(ssoSystem.getSystemCode());
+                    issueDTO.setSystemName(ssoSystem.getSystemName());
+                }
             }
+
             //处理人信息
             Long handler = issueDTO.getHandler();
-            SsoUser user = userCache.get(handler);
-            if (Optional.ofNullable(user).isPresent()) {
-                issueDTO.setHandlerAccount(user.getUserAccount());
-                issueDTO.setHandlerName(user.getUserName());
+            if(handler != null){
+                SsoUser user = userCache.get(handler);
+                if (Optional.ofNullable(user).isPresent()) {
+                    issueDTO.setHandlerAccount(user.getUserAccount());
+                    issueDTO.setHandlerName(user.getUserName());
+                }
             }
+
 
             IssueExample example = new IssueExample();
             example.createCriteria().andStateEqualTo(StateEnum.U.getValue())
