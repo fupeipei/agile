@@ -426,7 +426,7 @@ public interface IssueService {
      * @Param [fertureMsg]
      * @return com.yusys.agile.issue.domain.Issue
      **/
-    List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws ExecutionException;
+    List<IssueDTO> getIssueDtoByIssueId(Issue issue) throws Exception;
 
 
     Integer  updateIssueByIssueId(List<IssueDTO> issueDTOList);
