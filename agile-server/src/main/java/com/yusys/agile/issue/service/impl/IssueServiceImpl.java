@@ -2612,7 +2612,7 @@ public class IssueServiceImpl implements IssueService {
      * @return
      */
     @Override
-    public List<IssueDTO> getIssueTrees(Long kanbanId, Byte issueType) {
+    public List<IssueDTO> getIssueTrees(Long kanbanId, Byte issueType) throws Exception {
         IssueExample example = new IssueExample();
         example.createCriteria()
                 .andStateEqualTo(StateEnum.U.getValue())
@@ -2626,10 +2626,10 @@ public class IssueServiceImpl implements IssueService {
         if (CollectionUtils.isNotEmpty(issues)) {
             try {
                 issueDTOS = ReflectUtil.copyProperties4List(issues, IssueDTO.class);
-                recursionGetIssues(issueDTOS, kanbanId);
             } catch (Exception e) {
                 loggr.info("工作项数据转换异常:{}", e.getMessage());
             }
+            recursionGetIssues(issueDTOS, kanbanId);
         }
         return issueDTOS;
     }
