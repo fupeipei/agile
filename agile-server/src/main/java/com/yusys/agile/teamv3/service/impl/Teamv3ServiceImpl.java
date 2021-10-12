@@ -6,10 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.page.PageMethod;
 import com.google.common.collect.Lists;
+import com.yusys.agile.issue.service.IssueService;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.enums.SprintStatusEnum;
+import com.yusys.agile.sprintv3.service.Sprintv3Service;
 import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.team.dto.TeamSystemDTO;
@@ -28,6 +30,7 @@ import com.yusys.agile.teamv3.service.Teamv3Service;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.facade.client.api.IFacadeSystemApi;
 import com.yusys.portal.facade.client.api.IFacadeUserApi;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.model.common.enums.YesOrNoEnum;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -74,6 +77,10 @@ public class Teamv3ServiceImpl implements Teamv3Service {
     private IFacadeUserApi iFacadeUserApi;
     @Autowired
     private IFacadeSystemApi iFacadeSystemApi;
+    @Autowired
+    private Sprintv3Service sprintv3Service;
+    @Autowired
+    private IssueService issueService;
     private static final String TEAM_EXIT = "团队名称已存在"; // Compliant
 
     @Override
@@ -680,5 +687,18 @@ public class Teamv3ServiceImpl implements Teamv3Service {
             e.printStackTrace();
         }
         return teams;
+    }
+    @Override
+    public ControllerResponse listSprintOrKbByTeamId(Long teamId, String teamType, SecurityDTO securityDTO) {
+        if (!Optional.ofNullable(teamId).isPresent() || !Optional.ofNullable(teamType).isPresent()) {
+            log.error("迭代/看板参数错误");
+            throw new BusinessException("参数错误");
+        }
+        if (teamType.equals(TeamTypeEnum.agile_team.getCode())){
+            return ControllerResponse.success(sprintv3Service.listSprintsByTeamId(teamId,securityDTO));
+        }else if(teamType.equals(TeamTypeEnum.lean_team.getCode())){
+            return ControllerResponse.success(issueService.listKBInfoByTeamId(teamId,securityDTO));
+        }
+        return ControllerResponse.success();
     }
 }

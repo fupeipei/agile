@@ -5,6 +5,7 @@ import com.yusys.agile.commit.dto.CommitDTO;
 import com.yusys.agile.issue.domain.Issue;
 import com.yusys.agile.issue.dto.*;
 import com.yusys.agile.projectmanager.dto.StageNameAndValueDto;
+import com.yusys.agile.sprintV3.dto.KanBanDto;
 import com.yusys.agile.versionmanagerV3.SVersionIssueRelateDTO;
 import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
@@ -462,4 +463,6 @@ public interface IssueService {
 
 
     List<IssueDTO> queryEpicList(Integer pageNum, Integer pageSize, String title,List<Long> systemIds);
+
+    KanBanDto listKBInfoByTeamId(Long teamId, SecurityDTO securityDTO);
 }

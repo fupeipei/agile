@@ -37,6 +37,7 @@ import com.yusys.agile.issue.utils.IssueHistoryRecordFactory;
 import com.yusys.agile.issue.utils.IssueUpRegularFactory;
 import com.yusys.agile.leankanban.dao.SLeanKanbanMapper;
 import com.yusys.agile.leankanban.domain.SLeanKanban;
+import com.yusys.agile.leankanban.domain.SLeanKanbanExample;
 import com.yusys.agile.leankanban.dto.SLeanKanbanDTO;
 import com.yusys.agile.leankanban.enums.LaneKanbanStageConstant;
 import com.yusys.agile.leankanban.service.LeanKanbanService;
@@ -54,6 +55,7 @@ import com.yusys.agile.set.stage.domain.StageInstance;
 import com.yusys.agile.set.stage.dto.KanbanStageInstanceDTO;
 import com.yusys.agile.set.stage.service.IStageService;
 import com.yusys.agile.set.stage.service.StageService;
+import com.yusys.agile.sprintV3.dto.KanBanDto;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
 import com.yusys.agile.sprintv3.dao.SSprintMapper;
 import com.yusys.agile.sprintv3.domain.SSprint;
@@ -3668,5 +3670,54 @@ public class IssueServiceImpl implements IssueService {
             });
         }
         return issueDTOS;
+    }
+    @Override
+    public KanBanDto listKBInfoByTeamId(Long teamId, SecurityDTO securityDTO) {
+        SLeanKanbanExample sLeanKanbanExample = new SLeanKanbanExample();
+        sLeanKanbanExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andTeamIdEqualTo(teamId);
+        List<SLeanKanban> sLeanKanbans = leanKanbanMapper.selectByExample(sLeanKanbanExample);
+        KanBanDto kanBanDto = new KanBanDto();
+        if (CollectionUtils.isEmpty(sLeanKanbans)){
+            return kanBanDto;
+        }else{
+            SLeanKanban sLeanKanban = sLeanKanbans.get(0);
+            kanBanDto.setKanbanId(sLeanKanban.getKanbanId());
+            kanBanDto.setTeamId(teamId);
+            List<Issue> issueList = issueMapper.queryIssueListByTeamId(teamId);
+            if (CollectionUtils.isEmpty(issueList)){
+                return kanBanDto;
+            }
+            //已完成feature数量
+            long featureCompleted = issueList.stream().filter(issue ->
+                    IssueTypeEnum.TYPE_FEATURE.CODE.equals(issue.getIssueType())
+                            && issue.getStageId()==8).count();
+            long featureTotal = issueList.stream().filter(issue ->
+                    IssueTypeEnum.TYPE_FEATURE.CODE.equals(issue.getIssueType())).count();
+            //研发需求：feature;
+            kanBanDto.setFeatureInfo(featureCompleted+"/"+featureTotal);
+            //看板进度：feature;
+            kanBanDto.setRateOfProgress(String.format("%.0f",(double)(featureCompleted*100/featureTotal)));
+            long storyTotal = issueList.stream().filter(issue -> IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType())).count();
+            long storyComplated = issueList.stream().filter(issue -> IssueTypeEnum.TYPE_STORY.CODE.equals(issue.getIssueType())
+                    && (LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(issue.getLaneId())
+                    || LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue().equals(issue.getLaneId()))).count();
+            //需求条目：用户故事； 开发：4，110；测试：5，112
+            kanBanDto.setStoryInfo(storyComplated+"/"+storyTotal);
+            //任务；开发：4，110；测试：5，112
+            long taskTotal = issueList.stream().filter(issue ->
+                    IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())).count();
+            long taskComplated = issueList.stream().filter(issue -> IssueTypeEnum.TYPE_TASK.CODE.equals(issue.getIssueType())
+                    && (LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(issue.getLaneId())
+                    || LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue().equals(issue.getLaneId()))).count();
+            kanBanDto.setTaskInfo(taskComplated+"/"+taskTotal);
+            // 工作量；
+            long planWorkloadTotal = issueList.stream().mapToLong(Issue::getPlanWorkload).sum();
+            long complatedWorkloadTotal = issueList.stream().filter(issue ->
+                    LaneKanbanStageConstant.DevStageEnum.DEVFINISH.getValue().equals(issue.getLaneId())
+                            || LaneKanbanStageConstant.TestStageEnum.TESTFINISH.getValue().equals(issue.getLaneId())
+                            || issue.getStageId()== StageConstant.FirstStageEnum.FINISH_STAGE.getValue()).mapToLong(Issue::getPlanWorkload).sum();
+            kanBanDto.setWorkload(complatedWorkloadTotal+"/"+planWorkloadTotal);
+        }
+        return kanBanDto;
     }
 }

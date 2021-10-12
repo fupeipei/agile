@@ -1,7 +1,9 @@
 package com.yusys.agile.sprintv3.dao;
 
+import com.yusys.agile.sprintV3.dto.SprintDTO;
 import com.yusys.agile.sprintV3.dto.SprintListDTO;
 import com.yusys.agile.sprintV3.dto.SprintV3DTO;
+import com.yusys.agile.sprintV3.dto.TaskDto;
 import com.yusys.agile.sprintv3.domain.SSprint;
 import com.yusys.agile.sprintv3.domain.SSprintExample;
 import com.yusys.agile.sprintv3.domain.SSprintWithBLOBs;
@@ -347,4 +349,8 @@ public interface SSprintMapper {
     SSprint getOneSprintByTeamId(Long teamId);
 
     List<SprintV3DTO> selectByExampleDTO(SSprintExample sprintExample);
+
+    List<SprintDTO> selectSprintDTOByExample(SSprintExample sprintExample);
+
+    List<TaskDto> selectIssueBySprintIds(@Param("sprintIds") List<Long> sprintIds);
 }
