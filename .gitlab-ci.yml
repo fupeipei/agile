@@ -69,6 +69,7 @@ deploy_test:
 execute_test_sql:
   stage: execute_test_sql
   image: 192.168.48.2:5002/library/git-mysql:alpine
+  when: manual
   script:
     - env_name=test
     - git clone git@192.168.48.2:yusys_devops/devops_sql.git
