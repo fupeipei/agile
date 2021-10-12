@@ -3398,4 +3398,10 @@ select a.issue_id from s_issue a where a.parent_id = #{epicId} and a.state = 'U'
             and si.title LIKE CONCAT('%', #{title}, '%')
         </if>
     </select>
+    <select id="queryIssueListByTeamId" resultType="com.yusys.agile.issue.domain.Issue">
+        SELECT issue_id,issue_type,plan_workload,really_workload,stage_id,lane_id,team_id,kanban_id
+        FROM s_issue
+        WHERE state='U'
+        AND team_id = #{teamId}
+    </select>
 </mapper>

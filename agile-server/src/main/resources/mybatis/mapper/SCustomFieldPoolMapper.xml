@@ -475,6 +475,13 @@
         <if test="systemId == null">
            and s.system_id is null
         </if>
+        <if test="fieldTypes != null and fieldTypes.size>0">
+            and field_type in (
+            <foreach collection="fieldTypes" item="fieldType" separator=",">
+                #{fieldType}
+            </foreach>
+            )
+        </if>
          and s.field_id not in
         (select field_id from s_issue_custom_relation where 1=1
             <if test="fieldName != null and fieldName != ''">
@@ -484,7 +491,9 @@
             and state = 'U'
         )
         and state ='U'
-        and field_name like concat('%',#{fieldName},'%')
+        <if test="fieldName != null and fieldName != ''">
+            and field_name like concat('%',#{fieldName},'%')
+        </if>
         order by s.create_time desc
     </select>
 </mapper>
