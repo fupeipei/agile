@@ -6,7 +6,7 @@
 
     <groupId>com.yusys</groupId>
     <artifactId>agile</artifactId>
-    <version>1.0-POC-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <modules>
         <module>agile-model</module>
         <module>agile-server</module>
@@ -24,13 +24,13 @@
         <swagger.version>2.2.2</swagger.version>
         <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
         <github.pagehelper.version>1.2.5</github.pagehelper.version>
-        <portal.persistence.version>1.0-POC-SNAPSHOT</portal.persistence.version>
-        <portal.model.version>1.0-POC-SNAPSHOT</portal.model.version>
+        <portal.persistence.version>2.0-SNAPSHOT</portal.persistence.version>
+        <portal.model.version>2.0-SNAPSHOT</portal.model.version>
     </properties>
     <parent>
         <groupId>com.yusys</groupId>
         <artifactId>portal</artifactId>
-        <version>1.0-POC-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
