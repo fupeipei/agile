@@ -494,17 +494,12 @@
     SELECT
     DISTINCT issue_id
     FROM
-    `s_sys_extend_field_detail` a
+    s_sys_extend_field_detail a
     WHERE
-    <foreach collection="map" index="key"  item="value" separator="and">
-     EXISTS (
-
-    SELECT
-     1
-     FROM
-        `s_sys_extend_field_detail` a1
-    WHERE
-        a1.field_id = #{key}
+    <foreach collection="map" index="key"  item="value" separator="and" open="(" close=")">
+      exists ( SELECT 1 FROM s_sys_extend_field_detail a1
+      WHERE
+      a1.field_id = #{key}
       <if test="key =='responsiblePerson'">
         AND a1.`value` in
         <foreach collection="value" index="index"  item="item" separator="," open="(" close=")">
@@ -514,8 +509,8 @@
       <if test="key !='responsiblePerson'">
         AND a1.`value` LIKE CONCAT('%',#{value},'%')
       </if>
-        AND a.issue_id = a1.issue_id
-    )
+      AND a.issue_id = a1.issue_id
+      )
     </foreach>
       <if test="issueIds.size>0">
           and
