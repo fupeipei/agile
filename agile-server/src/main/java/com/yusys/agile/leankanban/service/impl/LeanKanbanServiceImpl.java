@@ -19,6 +19,7 @@ import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.portal.common.exception.BusinessException;
 import com.yusys.portal.model.common.enums.StateEnum;
 import com.yusys.portal.util.code.ReflectUtil;
+import com.yusys.portal.util.thread.UserThreadLocalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +94,7 @@ public class LeanKanbanServiceImpl  implements LeanKanbanService {
     public SLeanKanbanDTO queryLeanKanbanInfo(Long teamId) {
 
         SLeanKanbanExample sLeanKanbanExample = new SLeanKanbanExample();
-        sLeanKanbanExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andTeamIdEqualTo(teamId);
+        sLeanKanbanExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).andTeamIdEqualTo(teamId).andTenantCodeEqualTo(UserThreadLocalUtil.getTenantCode());
         List<SLeanKanban> sLeanKanbans = leanKanbanMapper.selectByExample(sLeanKanbanExample);
 
         if(CollectionUtils.isNotEmpty(sLeanKanbans)){

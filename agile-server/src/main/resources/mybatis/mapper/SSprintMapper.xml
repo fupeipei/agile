@@ -910,7 +910,9 @@
         <include refid="Base_Column_List" />
         from s_sprint
         where team_id = #{teamId}
+        and status not in (-1,0)
         and state = 'U'
+        order by create_time DESC
     </select>
 
     <select id="getOneSprintByTeamId" resultType="com.yusys.agile.sprintv3.domain.SSprint">

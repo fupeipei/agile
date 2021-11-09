@@ -2898,9 +2898,9 @@ public class IssueServiceImpl implements IssueService {
         }
         //处理人信息
         Long handler = issueDTO.getHandler();
-        SsoUser ssoUser = userCache.get(handler);
-        if (Optional.ofNullable(ssoUser).isPresent()) {
 
+        if (Optional.ofNullable(handler).isPresent()) {
+            SsoUser ssoUser = userCache.get(handler);
             issueDTO.setHandlerAccount(ssoUser.getUserAccount());
             issueDTO.setHandlerName(ssoUser.getUserName());
         }
