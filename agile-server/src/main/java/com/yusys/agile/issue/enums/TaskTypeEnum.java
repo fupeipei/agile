@@ -17,7 +17,8 @@ public enum TaskTypeEnum {
     REAR("后端", 3),
     TEST("测试", 4),
     JOINT_DEBUG("联调", 5),
-    FAULT("缺陷", 6);
+    FAULT("缺陷", 6),
+    TYPE_WORD("文档",7);
     /*TYPE_ANALYSE("分析", 1),
     TYPE_DESIGN("设计", 2),
     TYPE_DEVELOP("开发", 3),

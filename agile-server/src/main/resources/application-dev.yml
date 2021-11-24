@@ -45,17 +45,17 @@ frame:
       maxOpenPreparedStatements: 50
     ds:
       master:
-        url: jdbc:mysql://192.168.48.2:3306/agile?serverTimezone=Asia/Shanghai&allowMultiQueries=true
+        url: jdbc:mysql://192.168.48.21:3306/agile?serverTimezone=Asia/Shanghai&allowMultiQueries=true
         username: root
         password: root+654321
         driverClassName: com.mysql.cj.jdbc.Driver
       base:
-        url: jdbc:mysql://192.168.48.2:3306/base?serverTimezone=Asia/Shanghai
+        url: jdbc:mysql://192.168.48.21:3306/base?serverTimezone=Asia/Shanghai
         username: root
         password: root+654321
         driverClassName: com.mysql.cj.jdbc.Driver
       zentao:
-        url: jdbc:mysql://192.168.48.14:3307/zentao?serverTimezone=Asia/Shanghai
+        url: jdbc:mysql://192.168.48.21:3307/zentao?serverTimezone=Asia/Shanghai
         username: root
         password: 123456
         driverClassName: com.mysql.cj.jdbc.Driver

@@ -4,6 +4,7 @@ import com.yusys.agile.team.dto.TeamListDTO;
 import com.yusys.agile.team.dto.TeamQueryDTO;
 import com.yusys.agile.teamv3.domain.STeam;
 import com.yusys.agile.teamv3.response.QueryTeamResponse;
+import com.yusys.portal.model.common.dto.ControllerResponse;
 import com.yusys.portal.model.facade.dto.SecurityDTO;
 import com.yusys.portal.model.facade.dto.SsoSystemRestDTO;
 
@@ -134,4 +135,5 @@ public interface Teamv3Service {
      */
     List<TeamListDTO> queryTeamsBySystemIdList(List<Long> systemIdList);
 
+    ControllerResponse listSprintOrKbByTeamId(Long teamId, String teamType, SecurityDTO securityDTO);
 }

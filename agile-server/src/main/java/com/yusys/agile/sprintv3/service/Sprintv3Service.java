@@ -256,4 +256,6 @@ public interface Sprintv3Service {
      * @Return java.util.List<com.yusys.agile.sprint.dto.SprintDTO>
      */
     List<SprintV3DTO> queryUnFinishedByProjectId(String idOrName, Long projectId, Integer pageNum, Integer pageSize);
+
+    List<SprintDTO> listSprintsByTeamId(Long teamId, SecurityDTO securityDTO);
 }

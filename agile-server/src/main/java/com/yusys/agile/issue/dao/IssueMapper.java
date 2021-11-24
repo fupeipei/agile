@@ -652,4 +652,6 @@ public interface IssueMapper {
 
 
     List<IssueDTO> queryEpicListByCondition(@Param("systemIds")List<Long> systemIds,@Param("title")String title);
+
+    List<Issue> queryIssueListByTeamId(@Param("teamId") Long teamId);
 }

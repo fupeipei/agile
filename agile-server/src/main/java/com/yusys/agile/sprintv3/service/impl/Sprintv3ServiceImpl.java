@@ -1067,5 +1067,35 @@ public class Sprintv3ServiceImpl implements Sprintv3Service {
         }
         return sprintDTOS;
     }
-
+    @Override
+    public List<SprintDTO> listSprintsByTeamId(Long teamId, SecurityDTO securityDTO) {
+        //获取团队下所有的迭代
+        SSprintExample sprintExample = new SSprintExample();
+        sprintExample.createCriteria().andStateEqualTo(StateEnum.U.getValue()).
+                andTeamIdEqualTo(teamId).andTenantCodeEqualTo(securityDTO.getTenantCode());
+        sprintExample.setOrderByClause("create_time desc");
+        List<SprintDTO> sSprints = ssprintMapper.selectSprintDTOByExample(sprintExample);
+        if (CollectionUtils.isEmpty(sSprints)){
+            return sSprints;
+        }
+        List<Long> sprintIds = new ArrayList<>();
+        sSprints.forEach(item->sprintIds.add(item.getSprintId()));
+        List<TaskDto> taskDtoList = ssprintMapper.selectIssueBySprintIds(sprintIds);
+        if (CollectionUtils.isEmpty(taskDtoList)){
+            return sSprints;
+        }
+        sSprints.forEach(item->{
+            long issueCount = taskDtoList.stream().
+                    filter(issue -> issue.getSprintId().equals(item.getSprintId())).count();
+            long closedCount = taskDtoList.stream().
+                    filter(issue -> issue.getSprintId().equals(item.getSprintId())
+                            && issue.getLaneId().equals(TaskStatusEnum.TYPE_CLOSED_STATE.CODE)).count();
+            if (issueCount == 0){
+                item.setRateOfProgress("0");
+            }else{
+                item.setRateOfProgress(String.format("%.0f",(double)closedCount*100/issueCount));
+            }
+        });
+        return sSprints;
+    }
 }

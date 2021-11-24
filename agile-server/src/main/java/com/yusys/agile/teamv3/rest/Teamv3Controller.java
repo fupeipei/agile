@@ -150,4 +150,11 @@ public class Teamv3Controller {
 
         return result;
     }
+
+    @GetMapping("/listSprintOrKbByTeamId")
+    public ControllerResponse listSprintOrKbByTeamId(@RequestParam("teamId") Long teamId,
+                                                     @RequestParam("teamType") String teamType,
+                                                     SecurityDTO securityDTO ){
+        return teamv3Service.listSprintOrKbByTeamId(teamId,teamType,securityDTO);
+    }
 }

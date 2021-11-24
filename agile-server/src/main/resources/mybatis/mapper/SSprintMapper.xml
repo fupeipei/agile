@@ -910,7 +910,9 @@
         <include refid="Base_Column_List" />
         from s_sprint
         where team_id = #{teamId}
+        and status not in (-1,0)
         and state = 'U'
+        order by create_time DESC
     </select>
 
     <select id="getOneSprintByTeamId" resultType="com.yusys.agile.sprintv3.domain.SSprint">
@@ -936,5 +938,26 @@
             order by ${orderByClause}
         </if>
     </select>
-
+    <select id="selectSprintDTOByExample" resultType="com.yusys.agile.sprintV3.dto.SprintDTO">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        sprint_id,sprint_name,status,start_time,end_time,team_id, 0 rateOfProgress
+        from s_sprint
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectIssueBySprintIds" resultType="com.yusys.agile.sprintV3.dto.TaskDto">
+        SELECT sprint_id,issue_id,lane_id FROM  s_issue WHERE state = 'U'
+        AND (lane_id = 108 OR lane_id = 109 OR lane_id = 110)
+        AND sprint_id IN
+        <foreach collection="sprintIds" item="sprintId" open="(" close=")" separator=",">
+            #{sprintId}
+        </foreach>
+    </select>
 </mapper>
